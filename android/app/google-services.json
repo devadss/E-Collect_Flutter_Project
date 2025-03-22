@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "375597665548",
+    "project_id": "adsspay-6c58e",
+    "storage_bucket": "adsspay-6c58e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:375597665548:android:647289d1bec22844d40d29",
+        "android_client_info": {
+          "package_name": "com.finwon.adsspay"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBu5uzj0TRjQEBQU8Qcm4VMpuEvHYBQ1mw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
