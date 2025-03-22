@@ -83,8 +83,14 @@ class _OtpVerificationState extends State<OtpVerification> {
             print("request error= ${error.message}");
 
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Error: ${error.message}")),
-            );
+                SnackBar(
+                  content: Text(
+                    "Error: ${error.message}",
+                    style:
+                    GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
+                  ),
+                  backgroundColor: Colors.red,
+                )            );
             Navigator.pop(context);
           },
               (data) {
@@ -97,13 +103,25 @@ class _OtpVerificationState extends State<OtpVerification> {
         );
       }else{
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Enter 4 digit number")),
-        );
+            SnackBar(
+              content: Text(
+                "ENTER 4 DIGIT NUMBER",
+                style:
+                GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
+              ),
+              backgroundColor: Colors.red,
+            )        );
       }
     }else{
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Enter an otp")),
-      );
+          SnackBar(
+            content: Text(
+              "ENTER OTP",
+              style:
+              GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
+            ),
+            backgroundColor: Colors.red,
+          )      );
     }
 
   }
@@ -117,8 +135,14 @@ class _OtpVerificationState extends State<OtpVerification> {
           (error) {
        // Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error: ${error}")),
-        );
+            SnackBar(
+              content: Text(
+                "Error: ${error}",
+                style:
+                GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
+              ),
+              backgroundColor: Colors.red,
+            )        );
       },
           (data) {
             //Navigator.pop(context);

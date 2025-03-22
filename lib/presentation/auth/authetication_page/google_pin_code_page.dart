@@ -19,21 +19,38 @@ class GooglePinCodePage extends StatefulWidget {
 }
 
 class _GooglePinCodePageState extends State<GooglePinCodePage> {
+
+
+
   String pin = "";
   String custID = "";
   String token = "";
+  String m_pin = "";
   String mpin = "";
   String contactNum = ""; // contains +91
   bool _isClicked = false;
   final LocalAuthentication auth = LocalAuthentication();
   final String _sk = "770A8A65DA156D24EE2A093277530142";
   final String _iv = "1234567890123456";
+  @override
+  void initState() {
+    super.initState();
+  loadSharedData();
 
+  }
   void loadSharedData() async {
-    custID = SharedPref.shared.getCustId();
-    token = SharedPref.shared.getTokenValue();
-    mpin = SharedPref.shared.getMpinValue();
-    contactNum = SharedPref.shared.getMobNum();
+    custID = await SharedPref.shared.getCustId();
+    token = await SharedPref.shared.getTokenValue();
+
+      m_pin = await SharedPref.shared.getMpinValue();
+
+
+    contactNum = await SharedPref.shared.getMobNum();
+    setState(() {
+      mpin = m_pin;
+    });
+    print("MPIN $mpin");
+    _authenticateWithBiometrics();
   }
 
   Future<void> _authenticateWithBiometrics() async {
@@ -56,11 +73,12 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
     }
 
     if (!authenticated) {
+
       // Instead of popping the current screen, show a toast message
     //  EasyLoading.dismiss();
      // EasyLoading.showToast('Authentication canceled');
     } else {
-
+      validateMpinFingerAuth();
 
     }
   }
@@ -111,16 +129,32 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
             Navigator.pop(context);
             print("Error: ${error?.message}");
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Error: ${error?.message}")),
+                SnackBar(
+                  content: Text(
+                    "Error: ${error.message}- Invalid M-pin",
+                    style:
+                    const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 17),
+                  ),
+                  backgroundColor: Colors.red,
+                )
             );
           },
               (data) {
-            Navigator.pop(context);
+
 
 
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("RESULT: ${data.message}")),
+             // SnackBar(content: Text("RESULT: ${data.message}")),
+                SnackBar(
+                  content: Text(
+                    "${data.message}",
+                    style:
+                    GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
+                  ),
+                  backgroundColor: Colors.green,
+                )
             );
+            Navigator.pop(context);
           },
         );
 
@@ -128,6 +162,55 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       } else {
         print("Enter 6 digit mpin");
       }
+    } else {
+      print("Empty fields not allowed");
+    }
+  }
+
+  Future<void> validateMpinFingerAuth() async {
+    print("validateMpin");
+    if (mpin.isNotEmpty) {
+        showProgressDialog(context);
+        final provider = Provider.of<AuthProvider>(context, listen: false);
+        final response = await provider.getAuthResult(
+            contactNum, mpin);
+
+        response.fold(
+              (error) {
+            Navigator.pop(context);
+            print("Error: ${error?.message}");
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    "Error: ${error.message}- Invalid M-pin",
+                    style:
+                    const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 17),
+                  ),
+                  backgroundColor: Colors.red,
+                )
+            );
+          },
+              (data) {
+
+
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              // SnackBar(content: Text("RESULT: ${data.message}")),
+                SnackBar(
+                  content: Text(
+                    "Error: ${data.message}",
+                    style:
+                    GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
+                  ),
+                  backgroundColor: Colors.red,
+                )
+            );
+            Navigator.pop(context);
+          },
+        );
+
+        print("MPIN = ${encryptString(pin, _sk, _iv)}");
+
     } else {
       print("Empty fields not allowed");
     }

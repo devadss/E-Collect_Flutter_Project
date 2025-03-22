@@ -44,7 +44,8 @@ class _LoginPageState extends State<LoginPage> {
     return output;
   }
 
-  String? encryptString(String textToEncrypt, String? secretKey, String? initialVector) {
+  String? encryptString(
+      String textToEncrypt, String? secretKey, String? initialVector) {
     if (textToEncrypt.isEmpty || secretKey == null || initialVector == null) {
       return null;
     }
@@ -118,21 +119,53 @@ class _LoginPageState extends State<LoginPage> {
       response.fold(
         (error) {
           Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Error: ${error}")),
-          );
+          if (error == "User not found") {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  "Incorrect Username or Password",
+                  style: GoogleFonts.inter(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 17),
+                ),
+                backgroundColor: Colors.red,
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  "Error: $error",
+                  style: GoogleFonts.inter(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 17),
+                ),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
         },
         (data) {
           Navigator.pop(context);
           print("Token status : ${widget.tokenStatus}");
           SharedPref.shared.setTokenValue(data);
-          widget.tokenStatus == "MPIN_N"
-              ? Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => OtpVerification(mobNum: widget.mobNum,)))
-              :
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>
-          GooglePinCodePage()));
-          ;
+
+          if (widget.tokenStatus == "MPIN_N") {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => OtpVerification(
+                          mobNum: widget.mobNum,
+                        )));
+          } else {
+            SharedPref.shared.setLogin(true);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const GooglePinCodePage()));
+          }
         },
       );
     } else {
@@ -142,14 +175,21 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void showInSnackBar(String value) {
-    var snackBar = SnackBar(content: Text(value));
+    var snackBar = SnackBar(
+      content: Text(
+        value,
+        style: GoogleFonts.inter(
+            color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
+      ),
+      backgroundColor: Colors.red,
+    );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: false,
         backgroundColor: white,
         body: Column(
           children: [
@@ -246,59 +286,25 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(50),
+              padding: const EdgeInsets.only(
+                  left: 50, right: 50, top: 50, bottom: 20),
               child: GestureDetector(
                   onTap: () {
+                    FocusManager.instance.primaryFocus?.unfocus();
                     credentialValidation();
                   },
                   child: const BuildButton(buttonText: "LOGIN")),
             ),
+            Text(
+              "Forgot username or password ?",
+              style: GoogleFonts.inter(
+                  color: Colors.indigo,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w400),
+            )
           ],
         ));
   }
 }
 
-/*
-class UserNamePasswordPage extends StatefulWidget {
-  const UserNamePasswordPage({super.key});
 
-  @override
-  State<UserNamePasswordPage> createState() => _UserNamePasswordPageState();
-}
-
-class _UserNamePasswordPageState extends State<UserNamePasswordPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            height: 400,
-            width: double.infinity,
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-              colors: [
-                Colors.green.shade900,
-                Colors.green.shade500,
-                Colors.green.shade200
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            )),
-            child: const Icon(
-              Icons.supervised_user_circle,
-              color: Colors.white,
-              size: 100,
-            ),
-          ),
-          const SizedBox(height: 30,),
-          const Text(
-            "User Authentication",
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 22),
-          )
-        ],
-      ),
-    );
-  }
-}
-*/

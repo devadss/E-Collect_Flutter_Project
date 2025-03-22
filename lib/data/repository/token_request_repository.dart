@@ -35,7 +35,7 @@ class TokenRequestRepository implements TokenRequestInterface {
           return Left(responseBody);
         }
       }else{
-        return Left("UNABLE TO FETCH TOKEN");
+        return Left("User not found");
       }
     } catch (e) {
       return Left("UNABLE TO FETCH TOKEN :$e");

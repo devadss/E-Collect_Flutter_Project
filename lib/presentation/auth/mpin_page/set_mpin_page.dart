@@ -115,7 +115,14 @@ class _SetMpinPageState extends State<SetMpinPage> {
           (error) {
             Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Error: ${error.message}")),
+                SnackBar(
+                  content: Text(
+                    "Error: ${error}",
+                    style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 17),
+                  ),
+                  backgroundColor: Colors.red,
+                )
             );
           },
           (data) {
@@ -123,24 +130,37 @@ class _SetMpinPageState extends State<SetMpinPage> {
             print("MPIN RESPONSE : ${data.message}");
             SharedPref.shared.setLogin(true);
             SharedPref.shared.setMpinStatus("MPIN_S");
-            SharedPref.shared.setMpinValue(pinTwo);
+            SharedPref.shared.setMpinValue(encryptPasswordString(pinTwo, _sk, _iv).toString());
             data.message == "MPIN SET"
                 ? Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => GooglePinCodePage()))
+                        builder: (context) => const GooglePinCodePage()))
                 : "";
           },
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("MPIN MIS-MATCH")),
+            SnackBar(
+              content: Text(
+                "MPIN MIS-MATCH",
+                style:
+                TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 17),
+              ),
+              backgroundColor: Colors.red,
+            )
         );
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("ENTER 6 DIGIT MPIN")),
-      );
+          SnackBar(
+            content: Text(
+              "ENTER 6 DIGIT MPIN",
+              style:
+              GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
+            ),
+            backgroundColor: Colors.red,
+          )      );
     }
   }
 

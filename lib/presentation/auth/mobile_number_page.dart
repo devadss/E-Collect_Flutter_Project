@@ -49,14 +49,21 @@ class _MobileNumberVerificationPageState
           Navigator.pop(context);
           print("Error: ${error?.message}");
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Error: ${error?.message}")),
-          );
+              SnackBar(
+                content: Text(
+                  "Error: ${error}",
+                  style:
+                  GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
+                ),
+                backgroundColor: Colors.red,
+              )          );
         },
         (customer) {
           Navigator.pop(context);
           print("Customer Name: ${customer.response!.data!.firstName}");
           SharedPref.shared.setCustId(customer.response!.data!.custId.toString());
           SharedPref.shared.setMobNum(customer.response!.data!.contactNo.toString());
+          SharedPref.shared.setMpinValue(customer.mpin.toString());
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -73,7 +80,16 @@ class _MobileNumberVerificationPageState
   }
 
   void showInSnackBar(String value) {
-    var snackBar = SnackBar(content: Text(value));
+    var snackBar =
+    SnackBar(
+    content: Text(value,
+        style:GoogleFonts.inter(
+          color: Colors.white, fontSize: 17, fontWeight: FontWeight.w700
+        )
+      ),
+      backgroundColor: Colors.red,
+    );
+
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
