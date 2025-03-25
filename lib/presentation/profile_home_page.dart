@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:merchant_app_flutter/build_button.dart';
 import 'package:merchant_app_flutter/core/shared_pref_helper.dart';
+import 'package:merchant_app_flutter/presentation/home_page.dart';
 import 'package:merchant_app_flutter/presentation/splash_screen/splash_screen.dart';
 
 import '../core/colors.dart';
+import 'bottom_nav_bar_page.dart';
 
 class ProfileHomePage extends StatefulWidget {
   const ProfileHomePage({super.key});
@@ -44,96 +46,102 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: white,
-      body: Column(
-        children: [
-          Stack(
-            children: [
-              ClipPath(
-                clipper: ProfileClipper(),
-                child: Container(
-                  height: 300,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [deepTeal, yellowGreen],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+    return WillPopScope(
+      onWillPop: ()async{
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> const BottomNavScreen()));
+        return true;
+      },
+      child: Scaffold(
+        backgroundColor: white,
+        body: Column(
+          children: [
+            Stack(
+              children: [
+                ClipPath(
+                  clipper: ProfileClipper(),
+                  child: Container(
+                    height: 300,
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [deepTeal, yellowGreen],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                    child: Opacity(
+                      opacity: 0.15, // Adjust for visibility
+                      child: Image.asset(
+                        "assets/images/doodle.jpeg",
+                        fit: BoxFit.cover, // ✅ Ensures it fits the clipped area
+                        width: double.infinity,
+                        height: 300,
+                      ),
                     ),
                   ),
-                  child: Opacity(
-                    opacity: 0.15, // Adjust for visibility
-                    child: Image.asset(
-                      "assets/images/doodle.jpeg",
-                      fit: BoxFit.cover, // ✅ Ensures it fits the clipped area
-                      width: double.infinity,
-                      height: 300,
-                    ),
+                ),
+                Positioned(
+                  top: 200,
+                  left: 0,
+                  right: 0,
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 100,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: black, width: 3),
+                          color: white,
+                        ),
+                        child: const Center(
+                          child: Icon(Icons.person, size: 60, color: black),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text(
+              name!,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+                color: black,
+              ),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              mobNum!,
+              style: const TextStyle(
+                fontSize: 16,
+                color: black,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 30),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    children: profileItems.map((item) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: BuildProfileBox(
+                          icon: item["icon"],
+                          label: item["label"],
+                        ),
+                      );
+                    }).toList(),
                   ),
                 ),
               ),
-              Positioned(
-                top: 200,
-                left: 0,
-                right: 0,
-                child: Column(
-                  children: [
-                    Container(
-                      height: 100,
-                      width: 100,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: black, width: 3),
-                        color: white,
-                      ),
-                      child: const Center(
-                        child: Icon(Icons.person, size: 60, color: black),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Text(
-            name!,
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w800,
-              color: black,
             ),
-          ),
-          const SizedBox(height: 5),
-          Text(
-            mobNum!,
-            style: const TextStyle(
-              fontSize: 16,
-              color: black,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 30),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: profileItems.map((item) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: BuildProfileBox(
-                        icon: item["icon"],
-                        label: item["label"],
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

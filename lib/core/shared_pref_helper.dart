@@ -105,4 +105,15 @@ class SharedPref {
     return prefs.getString(SharedPrefKeys.mob_num) ?? '';
   }
 
+
+  setEmail(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.email, value);
+  }
+
+  getEmail() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.email) ?? '';
+  }
+
 }
