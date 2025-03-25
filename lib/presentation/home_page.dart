@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:merchant_app_flutter/data/provider/transaction_provider.dart';
+import 'package:provider/provider.dart';
 import '../../core/colors.dart';
 import '../../core/shared_pref_helper.dart';
 import '../core/general.dart';
+import '../domain/model/transaction_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,17 +23,40 @@ class _HomePageState extends State<HomePage> {
   String? userName;
   String? entityId;
   String? token;
-
+  List<Result> result = [];
   @override
   void initState() {
-
     super.initState();
     loadSharedPrefs();
+  }
 
+  Future<void> fetchTransaction() async {
+    final provider = Provider.of<TransactionProvider>(context, listen: false);
+    final tranactionResponse = await provider.fetchTransaction(
+        "", "", entityId.toString(), token.toString());
+
+    tranactionResponse.fold(
+      (error) {
+        print("Error: ${error.message}");
+      },
+      (customer) {
+        setState(() {
+          result = customer.result!;
+        });
+        print("Customer Name: ${customer.result}");
+      },
+    );
+  }
+
+  String formatTimestamp(int timestamp, {String format = 'yyyy-MM-dd HH:mm:ss'}) {
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    return DateFormat(format).format(dateTime);
   }
 
   Future<void> loadSharedPrefs() async {
     final name = await SharedPref().getUserName();
+    final entId = await SharedPref().getCustId();
+    final tok = await SharedPref().getTokenValue();
     printLog("-------------------USERNAME---------------");
     print(name);
 
@@ -37,10 +64,16 @@ class _HomePageState extends State<HomePage> {
     if (mounted) {
       setState(() {
         userName = name;
+        entityId = entId;
+        token = tok;
       });
     }
+    fetchTransaction();
   }
-
+  String addCommasToNumber(num number) {
+    final formatter = NumberFormat('#,##0');
+    return formatter.format(number);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,9 +95,7 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   Text(
-
                     "Hello, $userName",
                     style: GoogleFonts.inter(
                       fontSize: 20,
@@ -74,7 +105,12 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    "Your Balance: ₹50,000",
+                    "Your Balance: ₹ ${
+                        result.isNotEmpty
+                            ? addCommasToNumber(result[0].transaction!.balance!.toDouble())
+                            : '0'
+                    }"
+                    ,
                     style: GoogleFonts.inter(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -131,8 +167,8 @@ class _HomePageState extends State<HomePage> {
                                 !_isCvvVisible) // Allow copying only if test != 2
                               GestureDetector(
                                 onTap: () {
-                                  Clipboard.setData(
-                                      const ClipboardData(text: "123456789012"));
+                                  Clipboard.setData(const ClipboardData(
+                                      text: "123456789012"));
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text(
@@ -314,7 +350,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 child: ListView.separated(
-                  itemCount: 5,
+                  itemCount: result!.length,
                   separatorBuilder: (_, __) => const Divider(thickness: 1),
                   itemBuilder: (context, index) {
                     return ListTile(
@@ -329,11 +365,12 @@ class _HomePageState extends State<HomePage> {
                             fontSize: 16, fontWeight: FontWeight.w600),
                       ),
                       subtitle: Text(
-                        "March 20, 2025 • 3:30 PM",
+                        formatTimestamp(result![index].transaction!.time!.toInt()),
+                       // "March 20, 2025 • 3:30 PM",
                         style: GoogleFonts.inter(fontSize: 14, color: grey),
                       ),
                       trailing: Text(
-                        "+₹5,000",
+                        "₹ ${result![index].transaction!.amount.toString()}",
                         style: GoogleFonts.inter(
                           fontSize: 16,
                           fontWeight: FontWeight.w800,

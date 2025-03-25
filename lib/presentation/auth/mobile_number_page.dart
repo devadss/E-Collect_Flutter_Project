@@ -47,11 +47,11 @@ class _MobileNumberVerificationPageState
       response.fold(
         (error) {
           Navigator.pop(context);
-          print("Error: ${error?.message}");
+          print("Error: ${error.message}");
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  "Error: ${error}",
+                  "Error: ${error.message}",
                   style:
                   GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
                 ),
