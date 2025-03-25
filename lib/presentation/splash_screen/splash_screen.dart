@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:merchant_app_flutter/core/shared_pref_helper.dart';
+import 'package:merchant_app_flutter/data/provider/token_expiry_provider.dart';
+import 'package:merchant_app_flutter/data/provider/token_request_provider.dart';
 import 'package:merchant_app_flutter/data/service/notification_service/notification_service.dart';
 import 'package:merchant_app_flutter/presentation/auth/authetication_page/google_pin_code_page.dart';
+import 'package:provider/provider.dart';
 
 import '../auth/mobile_number_page.dart';
 
@@ -20,44 +23,130 @@ class _SplashScreenState extends State<SplashScreen> {
   String token = "";
   String mobnum = "";
   String mpin = "";
+
   @override
   void initState() {
     getSharedData();
 
     super.initState();
   }
-  
-  void getSharedData()async{
+
+  Future<void> validateToken(String token,
+
+      String userName,
+      String password,
+      String mobNum,
+      String type,
+
+
+      ) async {
+    final provider = Provider.of<TokenExpiryProvider>(context, listen: false);
+    final tokenValidateResponse = await provider.validateToken(token);
+
+    tokenValidateResponse.fold(
+      (error) {
+       // Navigator.pop(context);
+        print("Token Validation Error: ${error}");
+      },
+      (data) async {
+        print("Token Validation ${data.isExpired}");
+        if(data.isExpired == false){
+          if (loginStatus == true) {
+            if (fcmToken.isNotEmpty) {
+              Future.delayed(const Duration(milliseconds: 100), () {
+                if (mounted) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const GooglePinCodePage()));
+                }
+              });
+            }
+            else {
+              if (mounted) {
+                saveFcmToken(entityid, context, "GPIN", token, mobnum, mpin);
+              }
+            }
+          }
+          else {
+            Future.delayed(const Duration(milliseconds: 100), () {
+              // Do something
+              if (mounted) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MobileNumberVerificationPage()));
+              }
+            });
+          }
+        }else{
+          final tokenRequest = Provider.of<TokenRequestProvider>(context , listen: false);
+          final requestNewTokenResponse = await tokenRequest.requestToken(userName, password, mobNum, type);
+
+
+          requestNewTokenResponse.fold(
+                (error) {
+              print("Error: ${error}");
+
+            },
+                (data) {
+              print("Token Response : ${data}");
+              SharedPref.shared.setTokenValue(data);
+              if (loginStatus == true) {
+                if (fcmToken.isNotEmpty) {
+                  Future.delayed(const Duration(milliseconds: 100), () {
+                    if (mounted) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const GooglePinCodePage()));
+                    }
+                  });
+                }
+                else {
+                  if (mounted) {
+                    saveFcmToken(entityid, context, "GPIN", token, mobnum, mpin);
+                  }
+                }
+              }
+              else {
+                Future.delayed(const Duration(milliseconds: 100), () {
+                  // Do something
+                  if (mounted) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const MobileNumberVerificationPage()));
+                  }
+                });
+              }
+            },
+          );
+        }
+
+
+      },
+    );
+
+  }
+
+  void getSharedData() async {
     loginStatus = await SharedPref.shared.getLogin();
     fcmToken = await SharedPref.shared.getFcmToken();
     entityid = await SharedPref.shared.getCustId();
     token = await SharedPref.shared.getTokenValue();
     mobnum = await SharedPref.shared.getMobNum();
     mpin = await SharedPref.shared.getMpinValue();
-
+    String username = await SharedPref.shared.getUserName();
+    String password = await SharedPref.shared.getPassword();
     if(loginStatus == true){
-      if(fcmToken.isNotEmpty){
-        Future.delayed(const Duration(milliseconds: 100), () {
-          if (mounted) {
-
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const GooglePinCodePage()));
-          }
-        });
-      }
-      else{
-        if(mounted){
-          saveFcmToken(entityid, context, "GPIN", token, mobnum, mpin);
-        }
-      }
-
+      validateToken(token,
+          username , password,mobnum,"Mob"
+      );
     }else{
       Future.delayed(const Duration(milliseconds: 100), () {
         // Do something
         if (mounted) {
-
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -65,6 +154,7 @@ class _SplashScreenState extends State<SplashScreen> {
         }
       });
     }
+
 
 
   }

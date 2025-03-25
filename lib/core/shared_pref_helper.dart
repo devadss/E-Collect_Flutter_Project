@@ -43,10 +43,32 @@ class SharedPref {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.userId) ?? '';
   }
+
+  setPassword(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.password, value);
+  }
+
+  getPassword() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.password) ?? '';
+  }
+
+  setUserName(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.username, value);
+  }
+
+  getUserName() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.username) ?? '';
+  }
+
   setMpinValue(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.mpin_value, value);
   }
+
   getMpinValue() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.mpin_value) ?? '';

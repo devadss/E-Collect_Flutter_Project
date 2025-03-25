@@ -8,11 +8,13 @@ import 'package:merchant_app_flutter/data/provider/auth_provider.dart';
 import 'package:merchant_app_flutter/data/provider/otp_request_provider.dart';
 import 'package:merchant_app_flutter/data/provider/otp_verification_provider.dart';
 import 'package:merchant_app_flutter/data/provider/set_mpin_provider.dart';
+import 'package:merchant_app_flutter/data/provider/token_expiry_provider.dart';
 import 'package:merchant_app_flutter/data/provider/token_request_provider.dart';
 import 'package:merchant_app_flutter/data/repository/auth_repository.dart';
 import 'package:merchant_app_flutter/data/repository/otp_request_repository.dart';
 import 'package:merchant_app_flutter/data/repository/otp_verification_repository.dart';
 import 'package:merchant_app_flutter/data/repository/set_mpin_repository.dart';
+import 'package:merchant_app_flutter/data/repository/token%20_repository.dart';
 import 'package:merchant_app_flutter/data/repository/token_request_repository.dart';
 import 'package:merchant_app_flutter/presentation/splash_screen/splash_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -59,6 +61,8 @@ void main() async{
   create: (_) => SetMpinProvider(SetMpinRepository())),
     ChangeNotifierProvider(
   create: (_) => AuthProvider(AuthRepository())),
+ ChangeNotifierProvider(
+  create: (_) => TokenExpiryProvider(TokenExpiryRepository())),
 
   ], child: const MyApp()));
 }

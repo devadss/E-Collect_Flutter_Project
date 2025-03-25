@@ -14,10 +14,11 @@ class TokenRequestRepository implements TokenRequestInterface {
       print("UserName = $userName");
       print("Password = $password");
       print("PhoneNumber = $mobNum");
+
       final data = {
         'UserName': userName,
         "Password": password,
-        'PhoneNumber': '+91$mobNum',
+        'PhoneNumber': '+91${mobNum.replaceAll("+91", "")}',
         'Type': 'Mob'
       };
 

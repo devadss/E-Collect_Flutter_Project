@@ -3,13 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:merchant_app_flutter/core/shared_pref_helper.dart';
 import 'package:merchant_app_flutter/data/provider/auth_provider.dart';
+import 'package:merchant_app_flutter/presentation/bottom_nav_bar_page.dart';
 import 'package:pointycastle/export.dart' as pc;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../build_button.dart';
 import '../../../core/colors.dart';
-
 
 class GooglePinCodePage extends StatefulWidget {
   const GooglePinCodePage({super.key});
@@ -19,9 +19,6 @@ class GooglePinCodePage extends StatefulWidget {
 }
 
 class _GooglePinCodePageState extends State<GooglePinCodePage> {
-
-
-
   String pin = "";
   String custID = "";
   String token = "";
@@ -32,18 +29,18 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   final LocalAuthentication auth = LocalAuthentication();
   final String _sk = "770A8A65DA156D24EE2A093277530142";
   final String _iv = "1234567890123456";
+
   @override
   void initState() {
     super.initState();
-  loadSharedData();
-
+    loadSharedData();
   }
+
   void loadSharedData() async {
     custID = await SharedPref.shared.getCustId();
     token = await SharedPref.shared.getTokenValue();
 
-      m_pin = await SharedPref.shared.getMpinValue();
-
+    m_pin = await SharedPref.shared.getMpinValue();
 
     contactNum = await SharedPref.shared.getMobNum();
     setState(() {
@@ -64,22 +61,20 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       );
     } on PlatformException catch (e) {
       print('PlatformException: $e');
-    //  EasyLoading.showToast('Biometric/PIN authentication is not available');
+      //  EasyLoading.showToast('Biometric/PIN authentication is not available');
       return;
     } on Exception catch (e) {
       print('Exception during authentication: $e');
-    //  EasyLoading.showToast('Authentication error');
+      //  EasyLoading.showToast('Authentication error');
       return;
     }
 
     if (!authenticated) {
-
       // Instead of popping the current screen, show a toast message
-    //  EasyLoading.dismiss();
-     // EasyLoading.showToast('Authentication canceled');
+      //  EasyLoading.dismiss();
+      // EasyLoading.showToast('Authentication canceled');
     } else {
       validateMpinFingerAuth();
-
     }
   }
 
@@ -115,6 +110,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
           );
         });
   }
+
   Future<void> validateMpin() async {
     print("validateMpin");
     if (pin.isNotEmpty) {
@@ -125,36 +121,38 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
             contactNum, encryptString(pin, _sk, _iv).toString());
 
         response.fold(
-              (error) {
+          (error) {
             Navigator.pop(context);
             print("Error: ${error?.message}");
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    "Error: ${error.message}- Invalid M-pin",
-                    style:
-                    const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 17),
-                  ),
-                  backgroundColor: Colors.red,
-                )
-            );
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(
+                "Error: ${error.message}- Invalid M-pin",
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 17),
+              ),
+              backgroundColor: Colors.red,
+            ));
           },
-              (data) {
-
-
-
+          (data) {
             ScaffoldMessenger.of(context).showSnackBar(
-             // SnackBar(content: Text("RESULT: ${data.message}")),
+                // SnackBar(content: Text("RESULT: ${data.message}")),
                 SnackBar(
-                  content: Text(
-                    "${data.message}",
-                    style:
-                    GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
-                  ),
-                  backgroundColor: Colors.green,
-                )
-            );
+              content: Text(
+                "${data.message}",
+                style: GoogleFonts.inter(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 17),
+              ),
+              backgroundColor: Colors.green,
+            ));
             Navigator.pop(context);
+            if (data.message == "Login Successfull") {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => BottomNavScreen()));
+            }
           },
         );
 
@@ -168,49 +166,42 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   }
 
   Future<void> validateMpinFingerAuth() async {
-    print("validateMpin");
+    print("validateMpinFingerAuth");
     if (mpin.isNotEmpty) {
-        showProgressDialog(context);
-        final provider = Provider.of<AuthProvider>(context, listen: false);
-        final response = await provider.getAuthResult(
-            contactNum, mpin);
+      print("mpin.isNotEmpty");
+      print("mpin = $mpin");
 
-        response.fold(
-              (error) {
-            Navigator.pop(context);
-            print("Error: ${error?.message}");
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    "Error: ${error.message}- Invalid M-pin",
-                    style:
-                    const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 17),
-                  ),
-                  backgroundColor: Colors.red,
-                )
-            );
-          },
-              (data) {
+      showProgressDialog(context);
+      final provider = Provider.of<AuthProvider>(context, listen: false);
+      final response = await provider.getAuthResult(contactNum, mpin);
 
+      response.fold(
+        (error) {
+          Navigator.pop(context);
+          print("Error: ${error?.message}");
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+              "Error: ${error.message}- Invalid M-pin",
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 17),
+            ),
+            backgroundColor: Colors.red,
+          ));
+        },
+        (data) {
+          Navigator.pop(context);
+          print("data.message = ${data.message}");
+          if (data.message == "Login Successfull") {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => BottomNavScreen()));
+          }
+          // Navigator.pop(context);
+        },
+      );
 
-
-            ScaffoldMessenger.of(context).showSnackBar(
-              // SnackBar(content: Text("RESULT: ${data.message}")),
-                SnackBar(
-                  content: Text(
-                    "Error: ${data.message}",
-                    style:
-                    GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
-                  ),
-                  backgroundColor: Colors.red,
-                )
-            );
-            Navigator.pop(context);
-          },
-        );
-
-        print("MPIN = ${encryptString(pin, _sk, _iv)}");
-
+      print("MPIN = $mpin");
     } else {
       print("Empty fields not allowed");
     }

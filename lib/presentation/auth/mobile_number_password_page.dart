@@ -151,7 +151,11 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pop(context);
           print("Token status : ${widget.tokenStatus}");
           SharedPref.shared.setTokenValue(data);
-
+          SharedPref.shared.setUserName(userNameController.text.toString());
+          SharedPref.shared.setPassword(
+              encryptString(passwordController.text.toString(), _sk, _iv)
+                  .toString()
+          );
           if (widget.tokenStatus == "MPIN_N") {
             Navigator.push(
                 context,

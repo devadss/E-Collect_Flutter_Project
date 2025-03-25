@@ -61,6 +61,7 @@ class _MobileNumberVerificationPageState
         (customer) {
           Navigator.pop(context);
           print("Customer Name: ${customer.response!.data!.firstName}");
+          print("Customer MPin: ${customer.mpin.toString()}");
           SharedPref.shared.setCustId(customer.response!.data!.custId.toString());
           SharedPref.shared.setMobNum(customer.response!.data!.contactNo.toString());
           SharedPref.shared.setMpinValue(customer.mpin.toString());
