@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:merchant_app_flutter/data/repository/set_mpin_repository.dart';
-import 'package:merchant_app_flutter/domain/model/mpin_set_model.dart';
+import 'package:collection_qr_flutter/data/repository/set_mpin_repository.dart';
+import 'package:collection_qr_flutter/domain/model/mpin_set_model.dart';
 
 class SetMpinProvider with ChangeNotifier{
   SetMpinRepository _mpinRepository;

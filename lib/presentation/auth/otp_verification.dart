@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:merchant_app_flutter/data/provider/otp_request_provider.dart';
-import 'package:merchant_app_flutter/data/provider/otp_verification_provider.dart';
+import 'package:collection_qr_flutter/data/provider/otp_request_provider.dart';
+import 'package:collection_qr_flutter/data/provider/otp_verification_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../build_button.dart';

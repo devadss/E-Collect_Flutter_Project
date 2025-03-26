@@ -1,7 +1,7 @@
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:merchant_app_flutter/presentation/profile_home_page.dart';
+import 'package:collection_qr_flutter/presentation/profile_home_page.dart';
 import '../../core/colors.dart';
 import 'collection_home_page.dart';
 import 'dues_home_page.dart';

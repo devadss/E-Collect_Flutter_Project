@@ -63,6 +63,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '375597665548',
     projectId: 'adsspay-6c58e',
     storageBucket: 'adsspay-6c58e.appspot.com',
-    iosBundleId: 'com.finwon.adsspay',
+    iosBundleId: 'com.collection.qr',
   );
 }

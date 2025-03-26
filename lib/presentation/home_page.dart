@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:merchant_app_flutter/data/provider/transaction_provider.dart';
+import 'package:collection_qr_flutter/data/provider/transaction_provider.dart';
 import 'package:provider/provider.dart';
 import '../../core/colors.dart';
 import '../../core/shared_pref_helper.dart';
 import '../core/general.dart';
+import '../data/provider/balance_provider.dart';
 import '../domain/model/transaction_model.dart';
 
 class HomePage extends StatefulWidget {
@@ -206,8 +207,20 @@ class _HomePageState extends State<HomePage> {
     fetchTransaction();
   }
   String addCommasToNumber(num number) {
-    final formatter = NumberFormat('#,##0');
-    return formatter.format(number);
+    final formatter = NumberFormat('#,##0.##');
+    String formattedNumber = formatter.format(number);
+
+    // Truncate instead of rounding
+    if (number is double) {
+      formattedNumber = number.toStringAsFixed(2);
+      if (formattedNumber.endsWith('.00')) {
+        formattedNumber = formattedNumber.substring(0, formattedNumber.length - 3);
+      } else if (formattedNumber.endsWith('0')) {
+        formattedNumber = formattedNumber.substring(0, formattedNumber.length - 1);
+      }
+    }
+
+    return formattedNumber;
   }
   @override
   Widget build(BuildContext context) {
@@ -248,7 +261,7 @@ class _HomePageState extends State<HomePage> {
                       "Your Balance: ₹ ${
                           result.isNotEmpty
                               ? addCommasToNumber(result[0].transaction!.balance!.toDouble())
-                              : '0'
+                              : ' '
                       }"
                       ,
                       style: GoogleFonts.inter(

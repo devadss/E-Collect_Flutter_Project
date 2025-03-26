@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart'as http;
-import 'package:merchant_app_flutter/constants.dart';
-import 'package:merchant_app_flutter/domain/interface/otp_request_interface.dart';
-import 'package:merchant_app_flutter/domain/model/otp_request_model.dart';
+import 'package:collection_qr_flutter/constants.dart';
+import 'package:collection_qr_flutter/domain/interface/otp_request_interface.dart';
+import 'package:collection_qr_flutter/domain/model/otp_request_model.dart';
 
 class OtpRequestRepository implements OtpRequestInterface {
   @override

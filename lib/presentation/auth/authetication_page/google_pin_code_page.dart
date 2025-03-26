@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:merchant_app_flutter/core/shared_pref_helper.dart';
-import 'package:merchant_app_flutter/data/provider/auth_provider.dart';
-import 'package:merchant_app_flutter/presentation/bottom_nav_bar_page.dart';
+import 'package:collection_qr_flutter/core/shared_pref_helper.dart';
+import 'package:collection_qr_flutter/data/provider/auth_provider.dart';
+import 'package:collection_qr_flutter/presentation/bottom_nav_bar_page.dart';
 import 'package:pointycastle/export.dart' as pc;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

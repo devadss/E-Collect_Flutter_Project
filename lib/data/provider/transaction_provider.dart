@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:merchant_app_flutter/data/repository/TransactionRepository.dart';
-import 'package:merchant_app_flutter/domain/model/transaction_fail_model.dart';
-import 'package:merchant_app_flutter/domain/model/transaction_model.dart';
+import 'package:collection_qr_flutter/data/repository/TransactionRepository.dart';
+import 'package:collection_qr_flutter/domain/model/transaction_fail_model.dart';
+import 'package:collection_qr_flutter/domain/model/transaction_model.dart';
 
 class TransactionProvider with ChangeNotifier {
   final TransactionRepository _transactionRepository;

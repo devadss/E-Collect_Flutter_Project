@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/widgets.dart';
-import 'package:merchant_app_flutter/data/repository/token_request_repository.dart';
+import 'package:collection_qr_flutter/data/repository/token_request_repository.dart';
 
 class TokenRequestProvider with ChangeNotifier{
   final TokenRequestRepository _tokenRequestRepository;

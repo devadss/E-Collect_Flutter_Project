@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
-import 'package:merchant_app_flutter/constants.dart';
-import 'package:merchant_app_flutter/domain/interface/token_expiry_interface.dart';
-import 'package:merchant_app_flutter/domain/model/token_expiry_mode.dart';
+import 'package:collection_qr_flutter/constants.dart';
+import 'package:collection_qr_flutter/domain/interface/token_expiry_interface.dart';
+import 'package:collection_qr_flutter/domain/model/token_expiry_mode.dart';
 import 'package:http/http.dart' as http;
 
 class TokenExpiryRepository implements TokenExpiryInterface {

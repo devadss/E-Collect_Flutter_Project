@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:merchant_app_flutter/core/shared_pref_helper.dart';
-import 'package:merchant_app_flutter/data/provider/token_expiry_provider.dart';
-import 'package:merchant_app_flutter/data/provider/token_request_provider.dart';
-import 'package:merchant_app_flutter/data/service/notification_service/notification_service.dart';
-import 'package:merchant_app_flutter/presentation/auth/authetication_page/google_pin_code_page.dart';
+import 'package:collection_qr_flutter/core/shared_pref_helper.dart';
+import 'package:collection_qr_flutter/data/provider/token_expiry_provider.dart';
+import 'package:collection_qr_flutter/data/provider/token_request_provider.dart';
+import 'package:collection_qr_flutter/data/service/notification_service/notification_service.dart';
+import 'package:collection_qr_flutter/presentation/auth/authetication_page/google_pin_code_page.dart';
 import 'package:provider/provider.dart';
 
 import '../auth/mobile_number_page.dart';

@@ -1,4 +1,4 @@
-package com.finwon.adsspay.adsspay
+package com.collection.qr.adsspay
 
 import io.flutter.embedding.android.FlutterActivity
 

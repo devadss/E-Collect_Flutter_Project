@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:merchant_app_flutter/presentation/home_page.dart';
-import 'package:merchant_app_flutter/presentation/search_filter_page.dart';
+import 'package:collection_qr_flutter/presentation/home_page.dart';
+import 'package:collection_qr_flutter/presentation/search_filter_page.dart';
 import '../../../core/colors.dart';
 import 'bottom_nav_bar_page.dart';
 

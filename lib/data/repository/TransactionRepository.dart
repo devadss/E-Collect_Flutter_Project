@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:dartz/dartz.dart';
-import 'package:merchant_app_flutter/constants.dart';
-import 'package:merchant_app_flutter/domain/interface/transaction_interface.dart';
-import 'package:merchant_app_flutter/domain/model/transaction_fail_model.dart';
-import 'package:merchant_app_flutter/domain/model/transaction_model.dart';
+import 'package:collection_qr_flutter/constants.dart';
+import 'package:collection_qr_flutter/domain/interface/transaction_interface.dart';
+import 'package:collection_qr_flutter/domain/model/transaction_fail_model.dart';
+import 'package:collection_qr_flutter/domain/model/transaction_model.dart';
 import 'package:http/http.dart' as http;
 
 class TransactionRepository implements TransactionInterface {

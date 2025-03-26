@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
-import 'package:merchant_app_flutter/domain/interface/token_request_interface.dart';
+import 'package:collection_qr_flutter/domain/interface/token_request_interface.dart';
 import 'package:http/http.dart' as http;
 import '../../constants.dart';
 

@@ -4,26 +4,26 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:merchant_app_flutter/data/provider/auth_provider.dart';
-import 'package:merchant_app_flutter/data/provider/balance_provider.dart';
-import 'package:merchant_app_flutter/data/provider/otp_request_provider.dart';
-import 'package:merchant_app_flutter/data/provider/otp_verification_provider.dart';
-import 'package:merchant_app_flutter/data/provider/set_mpin_provider.dart';
-import 'package:merchant_app_flutter/data/provider/token_expiry_provider.dart';
-import 'package:merchant_app_flutter/data/provider/token_request_provider.dart';
-import 'package:merchant_app_flutter/data/provider/transaction_provider.dart';
-import 'package:merchant_app_flutter/data/repository/TransactionRepository.dart';
-import 'package:merchant_app_flutter/data/repository/agent_customer_details_repository.dart';
-import 'package:merchant_app_flutter/data/repository/auth_repository.dart';
-import 'package:merchant_app_flutter/data/repository/balance_repository.dart';
-import 'package:merchant_app_flutter/data/repository/due_list_repository.dart';
-import 'package:merchant_app_flutter/data/repository/order_create_repository.dart';
-import 'package:merchant_app_flutter/data/repository/otp_request_repository.dart';
-import 'package:merchant_app_flutter/data/repository/otp_verification_repository.dart';
-import 'package:merchant_app_flutter/data/repository/set_mpin_repository.dart';
-import 'package:merchant_app_flutter/data/repository/token%20_repository.dart';
-import 'package:merchant_app_flutter/data/repository/token_request_repository.dart';
-import 'package:merchant_app_flutter/presentation/splash_screen/splash_screen.dart';
+import 'package:collection_qr_flutter/data/provider/auth_provider.dart';
+import 'package:collection_qr_flutter/data/provider/balance_provider.dart';
+import 'package:collection_qr_flutter/data/provider/otp_request_provider.dart';
+import 'package:collection_qr_flutter/data/provider/otp_verification_provider.dart';
+import 'package:collection_qr_flutter/data/provider/set_mpin_provider.dart';
+import 'package:collection_qr_flutter/data/provider/token_expiry_provider.dart';
+import 'package:collection_qr_flutter/data/provider/token_request_provider.dart';
+import 'package:collection_qr_flutter/data/provider/transaction_provider.dart';
+import 'package:collection_qr_flutter/data/repository/TransactionRepository.dart';
+import 'package:collection_qr_flutter/data/repository/agent_customer_details_repository.dart';
+import 'package:collection_qr_flutter/data/repository/auth_repository.dart';
+import 'package:collection_qr_flutter/data/repository/balance_repository.dart';
+import 'package:collection_qr_flutter/data/repository/due_list_repository.dart';
+import 'package:collection_qr_flutter/data/repository/order_create_repository.dart';
+import 'package:collection_qr_flutter/data/repository/otp_request_repository.dart';
+import 'package:collection_qr_flutter/data/repository/otp_verification_repository.dart';
+import 'package:collection_qr_flutter/data/repository/set_mpin_repository.dart';
+import 'package:collection_qr_flutter/data/repository/token%20_repository.dart';
+import 'package:collection_qr_flutter/data/repository/token_request_repository.dart';
+import 'package:collection_qr_flutter/presentation/splash_screen/splash_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'data/provider/agent_customer_details_provider.dart';
@@ -34,11 +34,15 @@ import 'firebase_options.dart';
 import 'data/provider/cust_register_provider.dart';
 import 'data/repository/cust_reg_repository.dart';
 
+
+
 final GlobalKey<ScaffoldMessengerState> snackBarKey =
 GlobalKey<ScaffoldMessengerState>();
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   log("Handling a background message: ${message.messageId}");
 }
+
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await requestLocationPermission();
@@ -49,9 +53,20 @@ void main() async{
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
   ));
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+    //   await Firebase.initializeApp(
+    //   name: 'com.collection.qr',  // Replace this with your package name
+    //   options: DefaultFirebaseOptions.currentPlatform,
+    // );
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
+
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(
+      name: 'com.collection.qr', // Use a unique name
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
   await FirebaseMessaging.instance.getInitialMessage();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 

@@ -75,7 +75,7 @@ class NotificationServiceQrCode {
       'fcm_default_channel',
       'FCM Notifications',
       channelDescription: 'Channel for FCM notifications',
-      importance: Importance.high,
+      importance: Importance.max,
       priority: Priority.high,
       playSound: true,
       sound: RawResourceAndroidNotificationSound('notification_sound'), // Your sound file here

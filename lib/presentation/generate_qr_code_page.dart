@@ -2,13 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:merchant_app_flutter/data/provider/balance_provider.dart';
+import 'package:collection_qr_flutter/data/provider/balance_provider.dart';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -200,26 +199,30 @@ final data = await provider.getchBalance(widget.entityId.toString(), widget.toke
         final String? notificationBody = message.notification?.body;
 
         if (notificationTitle == "Wallet Load Successful 🎉") {
-          _showSuccessMessage(notificationBody);
+          if (mounted) {
+            _showSuccessMessage(notificationBody);
+          }
         }
       }
     });
   }
 
   void _showSuccessMessage(String? message) {
+    if (!mounted) return;
+
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("Success"),
+          title: const Text("Success"),
           content: Text(message ?? "Your wallet has been loaded successfully!"),
           actions: [
             TextButton(
               onPressed: () {
-                // _fetchBalance();
-                Navigator.pop(context); // Close the dialog
-                Navigator.pop(context, "fetch_balance");
-
+                if (mounted) {
+                  Navigator.pop(context); // Close the dialog
+                  Navigator.pop(context, "fetch_balance");
+                }
               },
               child: const Text("OK"),
             ),
