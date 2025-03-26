@@ -4,13 +4,26 @@ import 'package:collection_qr_flutter/data/repository/balance_repository.dart';
 import 'package:collection_qr_flutter/domain/model/balance_fail_model.dart';
 import 'package:collection_qr_flutter/domain/model/fetch_balance_model.dart';
 
-class BalanceProvider with ChangeNotifier{
+class BalanceProvider with ChangeNotifier {
+  final BalanceRepository _balanceRepository;
 
-final BalanceRepository _balanceRepository;
-BalanceProvider(this._balanceRepository);
+  BalanceProvider(this._balanceRepository);
 
-Future<Either<BalanceFailModel , BalanceModel>>getchBalance(String entityID , String token)async{
-  return _balanceRepository.getBalance(entityID, token);
+  BalanceModel? balanceModel;
+  BalanceModel? get balance => balanceModel;
 
-}
+  Future<Either<BalanceFailModel, BalanceModel>>getchBalance(
+      String entityID, String token) async {
+    final result = await _balanceRepository.getBalance(entityID, token);
+
+    result.fold((fail) {
+     // notifyListeners();
+    }, (success) {
+      balanceModel = success;
+      notifyListeners();
+    });
+
+    return result;
+  }
+
 }

@@ -7,8 +7,7 @@ import 'package:provider/provider.dart';
 import '../../core/colors.dart';
 import '../../core/shared_pref_helper.dart';
 import '../core/general.dart';
-import '../data/provider/balance_provider.dart';
-import '../domain/model/transaction_model.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,7 +23,7 @@ class _HomePageState extends State<HomePage> {
   String? userName;
   String? entityId;
   String? token;
-  List<Result> result = [];
+ // List<Result> result = [];
   @override
   void initState() {
     super.initState();
@@ -164,25 +163,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> fetchTransaction() async {
-    showProgressDialog(context);
     final provider = Provider.of<TransactionProvider>(context, listen: false);
-    final tranactionResponse = await provider.fetchTransaction(
+     await provider.fetchTransaction(
         "", "", entityId.toString(), token.toString());
 
-    tranactionResponse.fold(
-      (error) {
-        Navigator.pop(context);
-        print("Error: ${error.message}");
-      },
-      (customer) {
-        Navigator.pop(context);
-        setState(() {
-          result = customer.result!;
-        });
-        print("Customer Name: ${customer.result}");
-      },
-    );
   }
+  @override
 
   String formatTimestamp(int timestamp, {String format = 'yyyy-MM-dd HH:mm:ss'}) {
     DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
@@ -224,6 +210,11 @@ class _HomePageState extends State<HomePage> {
   }
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<TransactionProvider>(context, listen: true);
+
+    // if (provider.transactions == null) {
+    //   return const Center(child: CircularProgressIndicator());
+    // }
     return WillPopScope(
       onWillPop: ()async{
         exitAlertDialog(context);
@@ -257,10 +248,12 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     const SizedBox(height: 5),
+                    provider.transactions== null?
+                        const Center(child: CircularProgressIndicator(),):
                     Text(
                       "Your Balance: ₹ ${
-                          result.isNotEmpty
-                              ? addCommasToNumber(result[0].transaction!.balance!.toDouble())
+                          provider.transactions?.result?.isNotEmpty == true
+                              ? addCommasToNumber(provider.transactions!.result![0].transaction!.balance!.toDouble())
                               : ' '
                       }"
                       ,
@@ -269,7 +262,7 @@ class _HomePageState extends State<HomePage> {
                         fontWeight: FontWeight.w600,
                         color: white,
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -502,8 +495,11 @@ class _HomePageState extends State<HomePage> {
                       topRight: Radius.circular(25),
                     ),
                   ),
-                  child: ListView.separated(
-                    itemCount: result.length,
+                  child:
+                      provider.transactions == null?
+                          const Center(child: CircularProgressIndicator(),):
+                  ListView.separated(
+                    itemCount: provider.transactions!.result!.length,
                     separatorBuilder: (_, __) => const Divider(thickness: 1),
                     itemBuilder: (context, index) {
                       return ListTile(
@@ -518,12 +514,12 @@ class _HomePageState extends State<HomePage> {
                               fontSize: 16, fontWeight: FontWeight.w600),
                         ),
                         subtitle: Text(
-                          formatTimestamp(result[index].transaction!.time!.toInt()),
+                          formatTimestamp(provider.transactions!.result![index].transaction!.time!.toInt()),
                          // "March 20, 2025 • 3:30 PM",
                           style: GoogleFonts.inter(fontSize: 14, color: grey),
                         ),
                         trailing: Text(
-                          "₹ ${result[index].transaction!.amount.toString()}",
+                          "₹ ${provider.transactions!.result![index].transaction!.amount.toString()}",
                           style: GoogleFonts.inter(
                             fontSize: 16,
                             fontWeight: FontWeight.w800,

@@ -11,6 +11,7 @@ import '../build_button.dart';
 import '../core/colors.dart';
 import '../core/shared_pref_helper.dart';
 import '../data/provider/create_order_provider.dart';
+import '../data/provider/transaction_provider.dart';
 import 'generate_qr_code_page.dart';
 
 
@@ -32,7 +33,7 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
   String? name;
   String? phoneNumber;
   String? email;
-  double? balanceAmount = 0.0;
+ // double? balanceAmount = 0.0;
 
   void showProgressDialog(BuildContext context) {
     showDialog(
@@ -68,40 +69,9 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
   }
 
   Future<void> _fetchBalance() async {
-    showProgressDialog(context);
     final provider =
         Provider.of<BalanceProvider>(context, listen: false);
     await provider.getchBalance(entityId.toString(), tokenValue.toString());
-  //  setState(() async {
-      print('inside _fetchBalance');
-      final resposne  = await provider.getchBalance(entityId.toString(), tokenValue.toString());
-    resposne.fold(
-          (error) {
-            Navigator.pop(context);
-        print("request error= ${error.message}");
-
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                "Error: ${error.message}",
-                style:
-                GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
-              ),
-              backgroundColor: Colors.red,
-            )            );
-
-      },
-          (data) {
-            Navigator.pop(context);
-            setState(() {
-              balanceAmount = data.result![0].balance!.toDouble();
-            });
-
-      },
-    );
-     // printLog("---------------------FETCH BALANCE-----------------");
-     // printLog(balanceAmount);
-   // });
   }
 
   @override
@@ -130,6 +100,9 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
   }
   @override
   Widget build(BuildContext context) {
+    final provider =
+    Provider.of<BalanceProvider>(context, listen: true);
+
     return Scaffold(
       backgroundColor: white,
       appBar: AppBar(
@@ -141,7 +114,8 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
               fontWeight: FontWeight.w700, fontSize: 23, color: deepTeal),
         ),
       ),
-      body: SingleChildScrollView(
+      body:
+      SingleChildScrollView(
         child: Column(
           children: [
             Container(
@@ -153,9 +127,12 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
                   end: Alignment.bottomRight,
                 ),
               ),
-              child: Center(
+              child:
+              provider.balanceModel == null?
+              const Center(child: CircularProgressIndicator()):
+              Center(
                 child: Text(
-                  "₹ ${formatNumberWithCommas(balanceAmount)}",
+                  "₹ ${formatNumberWithCommas(provider.balanceModel?.result![0].balance!.toDouble())}",
                   style: GoogleFonts.inter(
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
@@ -288,11 +265,7 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
       ),
     );
   }
-Future<void> goBack()async{
-    Future.delayed(Duration(seconds: 10),(){
-      Navigator.pop(context);
-    });
-}
+
   Future<void> createOrderId(String? type) async {
     showProgressDialog(context);
     final orderCraeteProvider =
@@ -334,6 +307,8 @@ Future<void> goBack()async{
       if (result == "fetch_balance") {
         // goBack();
         // _fetchBalance();
+        fetchTransaction();
+        _fetchBalance();
         Navigator.pop(context);
 
       }
@@ -342,7 +317,12 @@ Future<void> goBack()async{
       EasyLoading.showToast("Session id is null");
     }
   }
+  Future<void> fetchTransaction() async {
 
+    final provider = Provider.of<TransactionProvider>(context, listen: true);
+    await provider.fetchTransaction(
+        "", "", entityId.toString(), tokenValue.toString());
+  }
   String formatNumberWithCommas(double? number) {
     final formatter =
         NumberFormat("#,##,##0.00", "en_IN"); // Indian numbering system
