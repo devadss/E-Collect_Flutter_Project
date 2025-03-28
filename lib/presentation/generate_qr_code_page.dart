@@ -2,13 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'package:collection_qr_flutter/data/provider/cash_deposit_provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:collection_qr_flutter/data/provider/balance_provider.dart';
-
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -19,13 +18,13 @@ import 'package:http/http.dart' as http;
 import '../../../core/colors.dart';
 import '../../../core/constants.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
-
-import '../domain/model/corp_load_fund_error_model.dart';
-import '../domain/model/corp_load_success_model.dart';
+import '../domain/model/cash_deposit_model.dart';
 import '../domain/model/load_card_status_model.dart';
 
 class GeneratedQrCodePage extends StatefulWidget {
   final String amount;
+  final String accountNumber;
+  final String agentId;
   final String entityId;
   final String email;
   final String userName;
@@ -33,16 +32,18 @@ class GeneratedQrCodePage extends StatefulWidget {
   final String token;
   final String sessionID;
   final String orderId;
-  const GeneratedQrCodePage(
-      {super.key,
-        required this.amount,
-        required this.entityId,
-        required this.email,
-        required this.userName,
-        required this.phoneNumber,
-        required this.token,
-        required this.sessionID,
-        required this.orderId});
+
+  const GeneratedQrCodePage({super.key,
+    required this.amount,
+    required this.entityId,
+    required this.email,
+    required this.userName,
+    required this.phoneNumber,
+    required this.token,
+    required this.sessionID,
+    required this.orderId,
+    required this.accountNumber,
+    required this.agentId});
 
   @override
   State<GeneratedQrCodePage> createState() => _GeneratedQrCodePageState();
@@ -50,16 +51,18 @@ class GeneratedQrCodePage extends StatefulWidget {
 
 class _GeneratedQrCodePageState extends State<GeneratedQrCodePage> {
   late Timer _timer;
+  bool _isFirebaseListenerInitialized = false; // ✅ Prevent duplicate listeners
   int _start = 180; // 3 minutes in seconds
+  //int _start = 30; // 30 seconds
   String _timeString = "03:00";
   final ScreenshotController _screenshotController = ScreenshotController();
+  StreamSubscription<RemoteMessage>? _firebaseMessageSubscription;
   String? entityId;
   String? phoneNumber;
   String? orderID;
   String? email;
   String? customerName;
   String paymentSessionId = "";
-  double? balanceAmount = 0.0;
   Uint8List? qrCodeImageBytes;
   String? qrCodeBase64;
   static const String secretKey =
@@ -70,129 +73,164 @@ class _GeneratedQrCodePageState extends State<GeneratedQrCodePage> {
   Timer? _paymentVerificationTimer; // Timer for payment verification
   bool isPaymentVerified = false; // Flag to check payment status
 
-  Future<void> loadCard() async {
-    showCustomCircularProgressDialog();
-    // EasyLoading.show(status: 'Please wait...');
-    print('loadCard');
-
-    const url = '${baseUrl}api/CardLoadV3';
-
-    // Prepare your data
-    final data = {
-      'Type': 'Mobile',
-      'amount': widget.amount,
-      'business': 'TCADSS',
-      'businessEntityId': 'TCADSS',
-      'description': 'transferfunds',
-      'externalTransactionId':
-      "ADSSBNK_${widget.entityId}_${generateRandom10DigitNumber()}",
-      'fromEntityId': 'TCADSS01',
-      'productId': 'GENERAL',
-      'toEntityId': widget.entityId,
-      'transactionOrigin': 'MOBILE',
-      'transactionType': 'M2C',
-      'yapcode': '1234',
-      'Source': 'BANK_LOAD'
-    };
-
-    // Encode your data
-    final encodedRequestData = json.encode(data);
-
-    // Create the final payload with encrypted data
-    final dataFinal = {
-      'Data': encryptData(encodedRequestData), // Encrypt the specific data
-    };
-
-    // Encode the final payload as JSON
-    final encodedDataFinal = json.encode(dataFinal);
-
-    // Perform the HTTP POST request
-    final response = await http.post(
-      Uri.parse(url),
-      body: encodedDataFinal, // Pass the encoded JSON string as the body
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${widget.token}',
-      },
-    );
-
-    // Handle the response
-    print('tokenvalue : ${widget.token}');
-    print('Data : $encodedRequestData');
-    print('response : ${response.body}');
-    Navigator.pop(context);
-    final Map<String, dynamic> jsonResponse = json.decode(response.body);
-    if (response.statusCode == 200) {
-      //EasyLoading.dismiss();
-      if (response.body.contains("txId")) {
-         CorpLoadlSuccessModel corpLoadlSuccessModel =
-         CorpLoadlSuccessModel.fromJson(jsonDecode(response.body));
-        EasyLoading.showToast("LOADING SUCCESS");
-        _fetchBalance();
-        Navigator.pop(context);
-      }
-      print('response : ${response.body}');
+  Future<void> depositCash() async {
+    print("INSIDE DEPOSIT CASH METHOD");
+    final provider = Provider.of<CashDepositProvider>(context, listen: false);
+    await provider.depositCash(
+      //  widget.accountNumber, widget.agentId, widget.amount);
+        widget.accountNumber, widget.agentId, "1");
+    if (provider.cashDepositModel != null) {
+      cashDepositDialog(provider.cashDepositModel);
     } else {
-      // EasyLoading.dismiss();
-      print('response : ${response.body}');
-      if (response.body.contains("Status") &&
-          response.body.contains("Message")) {
-        CorpFundErrorModel corpFundErrorModel =
-         CorpFundErrorModel.fromJson(jsonDecode(response.body));
-       //  EasyLoading.showToast(
-       //      corpFundErrorModel.message!.toUpperCase().toString(),
-       //      toastPosition: EasyLoadingToastPosition.bottom);
-      }
-    }
 
-    if (jsonResponse['exception'] != null &&
-        jsonResponse['exception']['detailMessage'] != null) {
-      EasyLoading.showToast(
-          jsonResponse['exception']['detailMessage'].toString().toUpperCase());
-      print(jsonResponse['exception']['detailMessage']);
-    } else {
-      print('No detailMessage found');
+        Navigator.pop(context, "fetch_balance");
     }
   }
 
-  Future<void> _fetchBalance() async {
-    final provider =
-    Provider.of<BalanceProvider>(context, listen: false);
-    await provider.getchBalance(widget.entityId, widget.token);
-    // Navigator.pop(context);
-    // EasyLoading.dismiss();
-    setState(() async {
-      print('inside _fetchBalance');
-      //  isLoading = false;
-final data = await provider.getchBalance(widget.entityId.toString(), widget.token.toString()
-);
-      data.fold(
-            (error) {
-          print("request error= ${error.message}");
-
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  "Error: ${error.message}",
-                  style:
-                  GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
-                ),
-                backgroundColor: Colors.red,
-              )            );
-          Navigator.pop(context);
-        },
-            (data) {
-          Navigator.pop(context);
-
-        setState(() {
-          balanceAmount = data.result![0].balance!.toDouble();
-        });
-        },
+  void cashDepositDialog(CashDepositModel? cashDepositModel) {
+    print("INSIDE DEPOSIT CASH DIALOG");
+    showDialog(context: context, builder: (context) {
+      return AlertDialog(
+        title: const Text(textAlign: TextAlign.center ,"Cash Deposit Status"),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+            Text("ACCOUNT NO : ${cashDepositModel?.receipt?.data?.accNo}"),
+            const SizedBox(height: 10,),
+            Text("TRAN ID : ${cashDepositModel?.receipt?.data?.tranId}"),
+              const SizedBox(height: 10,),
+            Text("NAME : ${cashDepositModel?.receipt?.data?.name}"),
+              const SizedBox(height: 10,),
+            Text("DEPOSIT AMOUNT : ${cashDepositModel?.receipt?.data
+                ?.depositAmount}"),
+              const SizedBox(height: 10,),
+            Text("CURRENT BALANCE : ${cashDepositModel?.receipt?.data
+                ?.currentBalance}"),
+              const SizedBox(height: 10,),
+            Text(
+                "DEPOSIT DATE : ${cashDepositModel?.receipt?.data?.depositDate}"),
+          
+          ],),
+        ),
+        actions: [
+          TextButton(onPressed: (){
+             _fetchBalance();
+            Navigator.pop(context);
+            Navigator.pop(context, "fetch_balance");
+          }, child: const Text("OK"))
+        ],
       );
     });
   }
 
+  Future<void> _fetchBalance() async {
+    final provider = Provider.of<BalanceProvider>(context, listen: false);
+    await provider.getchBalance(widget.entityId, widget.token);
+    // Navigator.pop(context);
+    // EasyLoading.dismiss();
+    // setState(() async {
+    //   print('inside _fetchBalance');
+    //   //  isLoading = false;
+    //   final data = await provider.getchBalance(
+    //       widget.entityId.toString(), widget.token.toString());
+    //   data.fold(
+    //         (error) {
+    //       print("request error= ${error.message}");
+    //
+    //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    //         content: Text(
+    //           "Error: ${error.message}",
+    //           style: GoogleFonts.inter(
+    //               color: Colors.white,
+    //               fontWeight: FontWeight.w700,
+    //               fontSize: 17),
+    //         ),
+    //         backgroundColor: Colors.red,
+    //       ));
+    //       Navigator.pop(context);
+    //     },
+    //         (data) {
+    //       Navigator.pop(context);
+    //
+    //       setState(() {
+    //         balanceAmount = data.result![0].balance!.toDouble();
+    //       });
+    //     },
+    //   );
+    // });
+  }
+
+
+
+/*  void _listenForFirebaseMessages() {
+    _firebaseMessageSubscription?.cancel(); // ✅ Ensure only one active listener
+
+    // ✅ Handle foreground messages
+    _firebaseMessageSubscription = FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("🔥 Incoming Firebase Message: ${message.data}");
+
+      if (message.notification != null) {
+        final String? notificationTitle = message.notification?.title;
+        final String? notificationBody = message.notification?.body;
+
+        if (notificationTitle == "Wallet Load Successful 🎉") {
+          if (mounted) {
+            print("✅ Foreground Notification Received");
+            _showSuccessMessage(notificationBody);
+          }
+        }
+      }
+    });
+
+    // ✅ Handle when the app is in background and user taps the notification
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print("🚀 Background Notification Clicked: ${message.data}");
+    });
+
+    // ✅ Handle when the app is terminated and launched by tapping a notification
+    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
+      if (message != null) {
+        print("📱 App Launched via Notification: ${message.data}");
+      }
+    });
+  }*/
   void _listenForFirebaseMessages() {
+    _firebaseMessageSubscription?.cancel(); // ✅ Ensure only one listener
+
+    _firebaseMessageSubscription = FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        final String? notificationTitle = message.notification?.title;
+        final String? notificationBody = message.notification?.body;
+
+        print("📩 Foreground Notification: $notificationTitle");
+
+        if (notificationTitle == "Wallet Load Successful 🎉") {
+          if (mounted) {
+            print("✅ Showing Success Message");
+            _showSuccessMessage(notificationBody);
+          }
+        }
+      } else {
+        print("⚠️ Empty Message Received: ${message.data}");
+      }
+    });
+
+    // ✅ Handle background notification clicks
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print("🚀 Background Notification Clicked: ${message.data}");
+    });
+
+    // ✅ Handle terminated app notification taps
+    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
+      if (message != null) {
+        print("📱 App Launched via Notification: ${message.data}");
+      }
+    });
+  }
+
+/*  void _listenForFirebaseMessages() {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
         final String? notificationTitle = message.notification?.title;
@@ -200,16 +238,45 @@ final data = await provider.getchBalance(widget.entityId.toString(), widget.toke
 
         if (notificationTitle == "Wallet Load Successful 🎉") {
           if (mounted) {
+             print("NOTIFICATION MESSAGE TITLE ${message.notification?.title}");
+             print("NOTIFICATION MESSAGE BODY ${message.notification?.body}");
             _showSuccessMessage(notificationBody);
           }
         }
       }
     });
+  }*/
+
+  void showWarning() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              "WARNING",
+              style: GoogleFonts.inter(
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            content: Text(
+              "Warning: You cannot go back or cancel this page until the transaction is complete. Please wait until the process finishes.",
+              style:
+              GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w300),
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("OK"))
+            ],
+          );
+        });
   }
 
   void _showSuccessMessage(String? message) {
     if (!mounted) return;
-
     showDialog(
       context: context,
       builder: (context) {
@@ -220,8 +287,10 @@ final data = await provider.getchBalance(widget.entityId.toString(), widget.toke
             TextButton(
               onPressed: () {
                 if (mounted) {
-                  Navigator.pop(context); // Close the dialog
-                  Navigator.pop(context, "fetch_balance");
+                  //Navigator.pop(context); // Close the dialog
+                  //depositCash();
+                    Navigator.pop(context); // Close the dialog
+                    Navigator.pop(context, "fetch_balance");
                 }
               },
               child: const Text("OK"),
@@ -233,11 +302,10 @@ final data = await provider.getchBalance(widget.entityId.toString(), widget.toke
   }
 
   Future<void> callverifyPaymentApi(String orderId) async {
-    // EasyLoading.show(status: "Please wait...");
     final url = Uri.parse('${baseUrl}api/Cashfree/$orderId/${widget.entityId}');
     final response = await http.get(url);
     print(response.statusCode);
-    print("----------VERIFY BODY--------");
+    print("----------callverifyPaymentApi VERIFY BODY--------");
     print(response.body);
     if (response.statusCode == 200) {
       //  Navigator.pop(context);
@@ -247,10 +315,14 @@ final data = await provider.getchBalance(widget.entityId.toString(), widget.toke
         CardLoadSuccessStatusResponseModel.fromJson(
             jsonDecode(response.body));
         //     jsonDecode(response.body));
-        //print("----------------YAYYYYYYYYYYYYY!!!!!!!!!!!!!!!!!!!!!!!!-------------------");
+        print("----------------PAYMENT VERIFICATION COMPLETED-------------------");
+        print("PAYMENT VERIFICATION RESPONSE :${response.body}");
+        setState(() {
+          isPaymentVerified = true;
+        });
         // EasyLoading.showToast(cardLoadSuccessStatusResponseModel.message.toString());
         //amountController.text = "";
-          //_fetchBalance();
+        //_fetchBalance();
         //loadCard();
       }
     } else {
@@ -308,7 +380,7 @@ final data = await provider.getchBalance(widget.entityId.toString(), widget.toke
   }
 
   void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       if (_start == 0) {
         _timer.cancel();
         Navigator.pop(
@@ -325,7 +397,9 @@ final data = await provider.getchBalance(widget.entityId.toString(), widget.toke
   String _formatTime(int seconds) {
     int minutes = seconds ~/ 60;
     int remainingSeconds = seconds % 60;
-    return "${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}";
+    return "${minutes.toString().padLeft(2, '0')}:${remainingSeconds
+        .toString()
+        .padLeft(2, '0')}";
   }
 
   @override
@@ -346,33 +420,34 @@ final data = await provider.getchBalance(widget.entityId.toString(), widget.toke
 
       pdf.addPage(
         pw.Page(
-          build: (context) => pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.center,
-            children: [
-              pw.Image(
-                pw.MemoryImage(logoBytes.buffer.asUint8List()),
-                height: 100,
+          build: (context) =>
+              pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.center,
+                children: [
+                  pw.Image(
+                    pw.MemoryImage(logoBytes.buffer.asUint8List()),
+                    height: 100,
+                  ),
+                  pw.SizedBox(height: 20),
+                  pw.Text(
+                    "Amount: ₹${widget.amount}",
+                    style: pw.TextStyle(
+                      fontSize: 18,
+                      fontWeight: pw.FontWeight.bold,
+                      color: PdfColors.teal,
+                    ),
+                  ),
+                  pw.SizedBox(height: 20),
+                  pw.Center(
+                    child: pw.BarcodeWidget(
+                      barcode: pw.Barcode.qrCode(),
+                      data: "Amount: ₹${widget.amount}",
+                      width: 200,
+                      height: 200,
+                    ),
+                  ),
+                ],
               ),
-              pw.SizedBox(height: 20),
-              pw.Text(
-                "Amount: ₹${widget.amount}",
-                style: pw.TextStyle(
-                  fontSize: 18,
-                  fontWeight: pw.FontWeight.bold,
-                  color: PdfColors.teal,
-                ),
-              ),
-              pw.SizedBox(height: 20),
-              pw.Center(
-                child: pw.BarcodeWidget(
-                  barcode: pw.Barcode.qrCode(),
-                  data: "Amount: ₹${widget.amount}",
-                  width: 200,
-                  height: 200,
-                ),
-              ),
-            ],
-          ),
         ),
       );
 
@@ -386,7 +461,7 @@ final data = await provider.getchBalance(widget.entityId.toString(), widget.toke
       );
 
       // Open the generated PDF file
-     // await OpenFile.open(file.path);
+      // await OpenFile.open(file.path);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error generating PDF: $e")),
@@ -427,7 +502,7 @@ final data = await provider.getchBalance(widget.entityId.toString(), widget.toke
 
     try {
       final response = await http.post(url, headers: headers, body: body);
-
+      print("QR BODY : ${response.body}");
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
         setState(() {
@@ -435,7 +510,7 @@ final data = await provider.getchBalance(widget.entityId.toString(), widget.toke
           qrCodeImageBytes = base64Decode(qrCodeBase64!.split(',').last);
         });
         // Start payment verification process
-        _startPaymentVerification();
+       // _startPaymentVerification();
       } else {
         // Handle API error
         print("Error: ${response.statusCode}");
@@ -453,12 +528,29 @@ final data = await provider.getchBalance(widget.entityId.toString(), widget.toke
     _paymentVerificationTimer =
         Timer.periodic(const Duration(seconds: 5), (timer) async {
           if (isPaymentVerified) {
+            timer.cancel(); // ✅ Ensure timer is canceled
+            return;
+          }
+
+          await callverifyPaymentApi(widget.orderId);
+
+          // ✅ Double-check and cancel if payment is verified
+          if (isPaymentVerified) {
+            timer.cancel();
+          }
+        });
+  }
+
+/*  void _startPaymentVerification() {
+    _paymentVerificationTimer =
+        Timer.periodic(const Duration(seconds: 5), (timer) async {
+          if (isPaymentVerified) {
             timer.cancel(); // Stop the timer if payment is verified
             return;
           }
           await callverifyPaymentApi(widget.orderId);
         });
-  }
+  }*/
 
   String encryptData(String plainText) {
     final key = encrypt.Key.fromUtf8(secretKey);
@@ -473,158 +565,169 @@ final data = await provider.getchBalance(widget.entityId.toString(), widget.toke
   void initState() {
     super.initState();
     _startTimer();
-    generateQRCode();// Fetch the QR code on initialization
-    _listenForFirebaseMessages();
+    generateQRCode(); // Fetch the QR code on initialization
+    if (!_isFirebaseListenerInitialized) {
+      _listenForFirebaseMessages();
+      _isFirebaseListenerInitialized = true;
+    }
+
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          "Scan To Pay",
-          style: GoogleFonts.inter(
-            fontWeight: FontWeight.w700,
-            color: deepTeal
+    return WillPopScope(
+      onWillPop: () async {
+        if(_timeString != "00:00" ){
+          showWarning();
+        }
+
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(
+            "Scan To Pay",
+            style:
+            GoogleFonts.inter(fontWeight: FontWeight.w700, color: deepTeal),
           ),
         ),
-      ),
-      body: Screenshot(
-        controller: _screenshotController,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 90),
-                child: Container(
-                  constraints:
-                  const BoxConstraints(minHeight: 40, minWidth: 150),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        offset: const Offset(0, 1),
-                        blurRadius: 10,
-                        color: Colors.black.withOpacity(0.25),
-                      )
-                    ],
-                    gradient: const LinearGradient(
-                      colors: [deepTeal,deepTeal,yellowGreen],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+        body: Screenshot(
+          controller: _screenshotController,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 90),
+                  child: Container(
+                    constraints:
+                    const BoxConstraints(minHeight: 40, minWidth: 150),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          offset: const Offset(0, 1),
+                          blurRadius: 10,
+                          color: Colors.black.withOpacity(0.25),
+                        )
+                      ],
+                      gradient: const LinearGradient(
+                        colors: [deepTeal, deepTeal, yellowGreen],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
                     ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Center(
-                      child: Text(
-                        "Amount :Rs. ${widget.amount}",
-                        style: GoogleFonts.inter(
-                            fontWeight: FontWeight.w700,
-                            color: white),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Center(
+                        child: Text(
+                          "Amount :Rs. ${widget.amount}",
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w700, color: white),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 30),
-              // Show QR code below the amount container
-              qrCodeImageBytes == null
-                  ? const CircularProgressIndicator()
-                  : Image.memory(qrCodeImageBytes!),
-              // qrCodeBase64 == null
-              //     ? const CircularProgressIndicator()
-              //     : Image.memory(
-              //         base64Decode(qrCodeBase64!.split(',').last),
-              //       ),
+                const SizedBox(height: 30),
+                // Show QR code below the amount container
+                qrCodeImageBytes == null
+                    ? const CircularProgressIndicator()
+                    : Image.memory(qrCodeImageBytes!),
+                // qrCodeBase64 == null
+                //     ? const CircularProgressIndicator()
+                //     : Image.memory(
+                //         base64Decode(qrCodeBase64!.split(',').last),
+                //       ),
 
-              const SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  GestureDetector(
-                    onTap: () async => await _downloadPdf(),
-                    child: Container(
-                      constraints: const BoxConstraints(
-                        minHeight: 40,
-                        minWidth: 120,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: deepTeal),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: Row(
-                          children: [
-                             Icon(
-                              Icons.download_for_offline_outlined,
-                              color: teal600,
-                            ),
-                            const SizedBox(width: 5),
-                            Text(
-                              "Download",
-                              style: GoogleFonts.inter(
+                const SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    GestureDetector(
+                      onTap: () async => await _downloadPdf(),
+                      child: Container(
+                        constraints: const BoxConstraints(
+                          minHeight: 40,
+                          minWidth: 120,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: deepTeal),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.download_for_offline_outlined,
                                 color: teal600,
-                                fontWeight: FontWeight.w500,
                               ),
-                            )
-                          ],
+                              const SizedBox(width: 5),
+                              Text(
+                                "Download",
+                                style: GoogleFonts.inter(
+                                  color: teal600,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  GestureDetector(
-                    onTap: () async => await _shareScreenshot(),
-                    child: Container(
-                      constraints: const BoxConstraints(
-                        minHeight: 40,
-                        minWidth: 120,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: deepTeal),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: Row(
-                          children: [
-                             Icon(Icons.share, color: teal600),
-                            const SizedBox(width: 15),
-                            Text(
-                              "Share",
-                              style: GoogleFonts.inter(
-                                color: teal600,
-                                fontWeight: FontWeight.w500,
+                    GestureDetector(
+                      onTap: () async => await _shareScreenshot(),
+                      child: Container(
+                        constraints: const BoxConstraints(
+                          minHeight: 40,
+                          minWidth: 120,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: deepTeal),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: Row(
+                            children: [
+                              Icon(Icons.share, color: teal600),
+                              const SizedBox(width: 15),
+                              Text(
+                                "Share",
+                                style: GoogleFonts.inter(
+                                  color: teal600,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 30),
-              Text(
-                "This page will close in:",
-                style: GoogleFonts.inter(fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                _timeString,
-                style: GoogleFonts.inter(
-                    fontWeight: FontWeight.w700, fontSize: 30),
-              ),
-            ],
+                  ],
+                ),
+                const SizedBox(height: 30),
+                Text(
+                  "This page will close in:",
+                  style: GoogleFonts.inter(fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  _timeString,
+                  style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w700, fontSize: 30),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+
   int generateRandom10DigitNumber() {
     final random = Random();
     int firstDigit = 1 + random.nextInt(9); // Generates the first digit (1-9)
@@ -634,3 +737,90 @@ final data = await provider.getchBalance(widget.entityId.toString(), widget.toke
         '$firstDigit${remainingDigits.toString().padLeft(9, '0')}');
   }
 }
+/*
+  Future<void> loadCard() async {
+    showCustomCircularProgressDialog();
+    // EasyLoading.show(status: 'Please wait...');
+    print('loadCard');
+
+    const url = '${baseUrl}api/CardLoadV3';
+
+    // Prepare your data
+    final data = {
+      'Type': 'Mobile',
+      'amount': widget.amount,
+      'business': 'TCADSS',
+      'businessEntityId': 'TCADSS',
+      'description': 'transferfunds',
+      'externalTransactionId':
+      "ADSSBNK_${widget.entityId}_${generateRandom10DigitNumber()}",
+      'fromEntityId': 'TCADSS01',
+      'productId': 'GENERAL',
+      'toEntityId': widget.entityId,
+      'transactionOrigin': 'MOBILE',
+      'transactionType': 'M2C',
+      'yapcode': '1234',
+      'Source': 'BANK_LOAD'
+    };
+
+    // Encode your data
+    final encodedRequestData = json.encode(data);
+
+    // Create the final payload with encrypted data
+    final dataFinal = {
+      'Data': encryptData(encodedRequestData), // Encrypt the specific data
+    };
+
+    // Encode the final payload as JSON
+    final encodedDataFinal = json.encode(dataFinal);
+
+    // Perform the HTTP POST request
+    final response = await http.post(
+      Uri.parse(url),
+      body: encodedDataFinal, // Pass the encoded JSON string as the body
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${widget.token}',
+      },
+    );
+
+    // Handle the response
+    print('tokenvalue : ${widget.token}');
+    print('Data : $encodedRequestData');
+    print('response : ${response.body}');
+    Navigator.pop(context);
+    final Map<String, dynamic> jsonResponse = json.decode(response.body);
+    if (response.statusCode == 200) {
+      //EasyLoading.dismiss();
+      if (response.body.contains("txId")) {
+        CorpLoadlSuccessModel corpLoadlSuccessModel =
+        CorpLoadlSuccessModel.fromJson(jsonDecode(response.body));
+        EasyLoading.showToast("LOADING SUCCESS");
+        //depositCash();
+          _fetchBalance();
+        // Navigator.pop(context);
+      }
+      print('response : ${response.body}');
+    } else {
+      // EasyLoading.dismiss();
+      print('response : ${response.body}');
+      if (response.body.contains("Status") &&
+          response.body.contains("Message")) {
+        CorpFundErrorModel corpFundErrorModel =
+        CorpFundErrorModel.fromJson(jsonDecode(response.body));
+        //  EasyLoading.showToast(
+        //      corpFundErrorModel.message!.toUpperCase().toString(),
+        //      toastPosition: EasyLoadingToastPosition.bottom);
+      }
+    }
+
+    if (jsonResponse['exception'] != null &&
+        jsonResponse['exception']['detailMessage'] != null) {
+      EasyLoading.showToast(
+          jsonResponse['exception']['detailMessage'].toString().toUpperCase());
+      print(jsonResponse['exception']['detailMessage']);
+    } else {
+      print('No detailMessage found');
+    }
+  }
+*/

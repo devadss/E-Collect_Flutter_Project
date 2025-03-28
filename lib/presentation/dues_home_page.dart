@@ -74,7 +74,7 @@ class _DuesHomePageState extends State<DuesHomePage> {
                                               DuesDetailPage(
                                                 name: provider.agentCustomerDetailsModel?.customerList?.data?[index].custName ?? "NAME" ,
                                                 acNumber: provider.agentCustomerDetailsModel?.customerList?.data?[index].accNo ?? "ACCNO" ,
-                                                phNumber: provider.agentCustomerDetailsModel?.customerList?.data?[index].mobile ?? "MOBILE" ,
+                                                phNumber: provider.agentCustomerDetailsModel?.customerList?.data?[index].mobile ?? "MOBILE", agentId: '361' ,
                                               )));
                                 },
                                 child: Container(

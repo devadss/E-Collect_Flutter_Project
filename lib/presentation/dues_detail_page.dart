@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:collection_qr_flutter/presentation/qr_code_home_page.dart';
@@ -9,13 +8,16 @@ import '../data/provider/due_list_provider.dart';
 
 class DuesDetailPage extends StatefulWidget {
   final String name;
+  final String agentId;
   final String acNumber;
   final String phNumber;
+
   const DuesDetailPage({
     super.key,
     required this.name,
     required this.acNumber,
     required this.phNumber,
+    required this.agentId,
   });
 
   @override
@@ -30,14 +32,17 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
   void updateTotalAmount() {
     final provider = Provider.of<DueListProvider>(context, listen: false);
 
-    int manualAmount = int.tryParse(amountController.text) ?? 0; // Preserve manual input
+    int manualAmount =
+        int.tryParse(amountController.text) ?? 0; // Preserve manual input
     int checkboxTotal = 0;
 
     // Calculate the sum of selected due amounts
     for (int i = 0; i < checkedItems.length; i++) {
       if (checkedItems[i]) {
         // Convert dueAmount to int safely
-        checkboxTotal += (provider.dueListModel!.duesList!.data![i].dueAmount as num).toInt();
+        checkboxTotal +=
+            (provider.dueListModel!.duesList!.data![i].dueAmount as num)
+                .toInt();
       }
     }
 
@@ -47,16 +52,15 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
       previousCheckboxTotal = 0;
     }
 
-    num newTotal = checkboxTotal + (manualAmount - previousCheckboxTotal); // Maintain manual edits
-    previousCheckboxTotal = checkboxTotal; // Store last calculated checkbox total
+    num newTotal = checkboxTotal +
+        (manualAmount - previousCheckboxTotal); // Maintain manual edits
+    previousCheckboxTotal =
+        checkboxTotal; // Store last calculated checkbox total
 
     setState(() {
       amountController.text = newTotal.toString();
     });
   }
-
-
-
 
   String _getLastThreeDigits(String phonedoubleber) {
     return phonedoubleber.length >= 3
@@ -83,6 +87,8 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
                   MaterialPageRoute(
                       builder: (context) => QrCodeHomePage(
                             payAbleAmount: amountController.text,
+                            accountNumber: widget.acNumber,
+                            agentId: widget.agentId,
                           )),
                 );
               },
@@ -219,7 +225,8 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
           _buildInfoRow("Customer Name", widget.name),
           _buildInfoRow("Account doubleber", widget.acNumber),
           _buildInfoRow("Account Status", "Active"),
-          _buildInfoRow("Mobile doubleber", _getLastThreeDigits(widget.phNumber)),
+          _buildInfoRow(
+              "Mobile doubleber", _getLastThreeDigits(widget.phNumber)),
         ],
       ),
     );
@@ -250,7 +257,8 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
               width: 120,
               child: TextField(
                 controller: amountController,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
                 style: const TextStyle(
                     color: white, fontSize: 16, fontWeight: FontWeight.w700),
                 textAlign: TextAlign.center,
@@ -301,10 +309,13 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
 
   TextStyle _labelTextStyle() => GoogleFonts.inter(
       fontWeight: FontWeight.w600, fontSize: 16, color: black87);
+
   TextStyle _valueTextStyle() => GoogleFonts.inter(
       fontWeight: FontWeight.w500, fontSize: 16, color: teal700!);
+
   TextStyle _infoTextStyle() => GoogleFonts.inter(
       fontWeight: FontWeight.w500, fontSize: 14, color: black87);
+
   TextStyle _bottomTextStyle() => GoogleFonts.inter(
       fontWeight: FontWeight.w600, fontSize: 16, color: white);
 }

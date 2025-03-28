@@ -17,7 +17,10 @@ import 'generate_qr_code_page.dart';
 
 class QrCodeHomePage extends StatefulWidget {
   final String payAbleAmount;
-  const QrCodeHomePage({super.key, required this.payAbleAmount});
+  final String accountNumber;
+  final String agentId;
+
+  const QrCodeHomePage({super.key, required this.payAbleAmount, required this.accountNumber, required this.agentId});
 
   @override
   State<QrCodeHomePage> createState() => _QrCodeHomePageState();
@@ -302,7 +305,8 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
                   entityId: entityId!,
                   token: tokenValue!,
                   sessionID: paymentSessionId,
-                  orderId: orderID)
+                  orderId: orderID, accountNumber: widget.accountNumber,
+              agentId: widget.agentId,)
               ));
       if (result == "fetch_balance") {
         // goBack();
@@ -319,7 +323,7 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
   }
   Future<void> fetchTransaction() async {
 
-    final provider = Provider.of<TransactionProvider>(context, listen: true);
+    final provider = Provider.of<TransactionProvider>(context, listen: false);
     await provider.fetchTransaction(
         "", "", entityId.toString(), tokenValue.toString());
   }
