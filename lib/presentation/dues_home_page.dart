@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../core/colors.dart';
 import '../data/provider/agent_customer_details_provider.dart';
 import 'dues_detail_page.dart';
+import 'dues_detail_page_copy.dart';
 
 class DuesHomePage extends StatefulWidget {
   const DuesHomePage({super.key});

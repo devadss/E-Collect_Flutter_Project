@@ -1,3 +1,5 @@
+import 'package:collection_qr_flutter/data/provider/agent_transaction_provider.dart';
+import 'package:collection_qr_flutter/presentation/transction_history_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -163,10 +165,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+
   Future<void> fetchTransaction() async {
-    final provider = Provider.of<TransactionProvider>(context, listen: false);
-     await provider.fetchTransaction(
+    final transProvider = Provider.of<TransactionProvider>(context, listen: false);
+     await transProvider.fetchTransaction(
         "", "", entityId.toString(), token.toString());
+    final provider =  Provider.of<AgentTransactionProvider>(context , listen: false);
+    await provider.getTransactions();
 
   }
   @override
@@ -211,7 +216,8 @@ class _HomePageState extends State<HomePage> {
   }
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<TransactionProvider>(context, listen: true);
+    final transProvider = Provider.of<TransactionProvider>(context, listen: true);
+    final provider = Provider.of<AgentTransactionProvider>(context, listen: true);
 
     // if (provider.transactions == null) {
     //   return const Center(child: CircularProgressIndicator());
@@ -244,12 +250,14 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   const SizedBox(height: 5),
-                  provider.transactions== null?
+                 // provider.transactions== null?
+                  provider.agentPaymentTransctionModel == null?
                       const Center(child: CircularProgressIndicator(),):
                   Text(
                     "Your Balance: ₹ ${
-                        provider.transactions?.result?.isNotEmpty == true
-                            ? addCommasToNumber(provider.transactions!.result![0].transaction!.balance!.toDouble())
+                        transProvider.transactions?.result?.isNotEmpty == true
+                      //  provider.agentPaymentTransctionModel?.data?.isNotEmpty == true
+                            ? addCommasToNumber(transProvider.transactions!.result![0].transaction!.balance!.toDouble())
                             : ' '
                     }"
                     ,
@@ -492,34 +500,47 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 child:
-                    provider.transactions == null?
+                  //  provider.transactions == null?
+                    provider.agentPaymentTransctionModel == null?
                         const Center(child: CircularProgressIndicator(),):
                 ListView.separated(
-                  itemCount: provider.transactions!.result!.length,
+                 // itemCount: provider.transactions!.result!.length,
+                  itemCount: provider.agentPaymentTransctionModel!.data!.length,
                   separatorBuilder: (_, __) => const Divider(thickness: 1),
                   itemBuilder: (context, index) {
-                    return ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: green.shade100,
-                        child: const Icon(Icons.account_balance_wallet,
-                            color: green),
-                      ),
-                      title: Text(
-                        "Payment Received",
-                        style: GoogleFonts.inter(
-                            fontSize: 16, fontWeight: FontWeight.w600),
-                      ),
-                      subtitle: Text(
-                        formatTimestamp(provider.transactions!.result![index].transaction!.time!.toInt()),
-                       // "March 20, 2025 • 3:30 PM",
-                        style: GoogleFonts.inter(fontSize: 14, color: grey),
-                      ),
-                      trailing: Text(
-                        "₹ ${provider.transactions!.result![index].transaction!.amount.toString()}",
-                        style: GoogleFonts.inter(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800,
-                          color: green,
+                    return GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>
+                        TransactionHistoryPage(agentTransaction: provider.agentPaymentTransctionModel!.data![index])));
+                      },
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: green.shade100,
+                          child:
+                            Image.asset("assets/images/payment_recived.png", scale: 20,)
+                          // const Icon(Icons.account_balance_wallet,
+                          //     color: green),
+                        ),
+                        title: Text(
+                          "Payment Received",
+                          style: GoogleFonts.inter(
+                              fontSize: 16, fontWeight: FontWeight.w600),
+                        ),
+                        subtitle: Text(
+                         // formatTimestamp(provider.transactions!.result![index].transaction!.time!.toInt()),
+                          //formatTimestamp(provider.agentPaymentTransctionModel!.data![index].createdAt.toString()),
+                      //    "March 20, 2025 • 3:30 PM",
+                            provider.agentPaymentTransctionModel!.data![index].createdAt.toString(),
+                          style: GoogleFonts.inter(fontSize: 14, color: grey),
+                        ),
+                        trailing: Text(
+                         // "₹ ${provider.transactions!.result![index].transaction!.amount.toString()}",
+                          "₹ ${provider.agentPaymentTransctionModel!.data![index].linkAmount.toString()}",
+                          style: GoogleFonts.inter(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                            color: green,
+                          ),
                         ),
                       ),
                     );

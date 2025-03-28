@@ -1,24 +1,24 @@
-
-import 'package:collection_qr_flutter/presentation/qr_code_home_page.dart';
+/*
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:collection_qr_flutter/presentation/qr_code_home_page.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../core/colors.dart';
-import '../core/general.dart';
 import '../data/provider/due_list_provider.dart';
-import '../data/repository/payment_link_repository.dart';
 
 class DuesDetailPage extends StatefulWidget {
   final String name;
+  final String agentId;
   final String acNumber;
   final String phNumber;
+
   const DuesDetailPage({
     super.key,
     required this.name,
     required this.acNumber,
-    required this.phNumber, required String agentId,
+    required this.phNumber,
+    required this.agentId,
   });
 
   @override
@@ -29,7 +29,6 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
   List<bool> checkedItems = List.generate(10, (index) => false);
   TextEditingController amountController = TextEditingController();
   num previousCheckboxTotal = 0;
-  DateTime? _dateTime;
 
   void updateTotalAmount() {
     final provider = Provider.of<DueListProvider>(context, listen: false);
@@ -64,10 +63,10 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
     });
   }
 
-  String _getLastThreeDigits(String phoneNumber) {
-    return phoneNumber.length >= 3
-        ? "*** *** ${phoneNumber.substring(phoneNumber.length - 3)}"
-        : phoneNumber;
+  String _getLastThreeDigits(String phonedoubleber) {
+    return phonedoubleber.length >= 3
+        ? "*** *** ${phonedoubleber.substring(phonedoubleber.length - 3)}"
+        : phonedoubleber;
   }
 
   void _proceedButtonClick() {
@@ -88,7 +87,9 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => QrCodeHomePage(
-                            payAbleAmount: amountController.text, accountNumber: '', agentId: '',
+                            payAbleAmount: amountController.text,
+                            accountNumber: widget.acNumber,
+                            agentId: widget.agentId,
                           )),
                 );
               },
@@ -97,7 +98,6 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
-                sendLinkFunction();
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: teal700,
@@ -111,45 +111,8 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
     );
   }
 
-  Future<void> sendLinkFunction() async {
-    final send = await PaymentLinkRepository().getPaymentLink(
-      "John Doe",
-      "AGT12345",
-      "ORG98765",
-      "+919876543210",
-      "agent@example.com",
-      "Rahul Sharma",
-      "+919123456789",
-      "123456789012",
-      "rahul.sharma@example.com",
-      "CUS12345",
-      num.parse(amountController.text),
-      "Payment for Order #12345",
-      "CORP001",
-      "CARD98765",
-    );
-
-    send.fold(
-      (error) {
-        printLog("-------------------ERROR---------------------");
-        printLog(error);
-      },
-      (sendLink) {
-        if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
-          Share.share("Here is your payment link: ${sendLink.linkUrl}");
-        } else {
-          printLog("Payment link is empty or null");
-        }
-      },
-    );
-  }
-
   @override
   void initState() {
-    _dateTime = DateTime.now();
-    printLog(
-        "--------------------------------DATE TIME--------------------------");
-    printLog(_dateTime);
     final provider = Provider.of<DueListProvider>(context, listen: false);
     provider.getDueList(widget.acNumber, "2025-03-25");
     super.initState();
@@ -347,10 +310,14 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
 
   TextStyle _labelTextStyle() => GoogleFonts.inter(
       fontWeight: FontWeight.w600, fontSize: 16, color: black87);
+
   TextStyle _valueTextStyle() => GoogleFonts.inter(
       fontWeight: FontWeight.w500, fontSize: 16, color: teal700!);
+
   TextStyle _infoTextStyle() => GoogleFonts.inter(
       fontWeight: FontWeight.w500, fontSize: 14, color: black87);
+
   TextStyle _bottomTextStyle() => GoogleFonts.inter(
       fontWeight: FontWeight.w600, fontSize: 16, color: white);
 }
+*/
