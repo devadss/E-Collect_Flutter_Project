@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection_qr_flutter/presentation/forgot_username_password_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -299,12 +300,19 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   child: const BuildButton(buttonText: "LOGIN")),
             ),
-            Text(
-              "Forgot username or password ?",
-              style: GoogleFonts.inter(
-                  color: Colors.indigo,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w400),
+            GestureDetector(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>
+                 ForgotUsernamePasswordPage(mobNum: widget.mobNum)));
+              },
+
+              child: Text(
+                "Forgot username or password ?",
+                style: GoogleFonts.inter(
+                    color: Colors.indigo,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w400),
+              ),
             )
           ],
         ));

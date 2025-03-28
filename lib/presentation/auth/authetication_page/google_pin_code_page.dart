@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../build_button.dart';
 import '../../../core/colors.dart';
+import '../../forgot_mpin_page.dart';
 
 class GooglePinCodePage extends StatefulWidget {
   const GooglePinCodePage({super.key});
@@ -285,7 +286,10 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
                   child: const BuildButton(buttonText: "submit")),
               const SizedBox(height: 10),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context )=>
+                  ForgotMpinPage()));
+                },
                 child: Text(
                   "Forgot M-PIN?",
                   style: GoogleFonts.inter(color: const Color(0xFF4200FF)),

@@ -1,7 +1,11 @@
 import 'dart:developer';
 
 import 'package:collection_qr_flutter/data/provider/cash_deposit_provider.dart';
+import 'package:collection_qr_flutter/data/provider/update_dop_provider.dart';
+import 'package:collection_qr_flutter/data/provider/update_password_provider.dart';
 import 'package:collection_qr_flutter/data/repository/cash_deposit_repository.dart';
+import 'package:collection_qr_flutter/data/repository/update_dop_repository.dart';
+import 'package:collection_qr_flutter/data/repository/update_password_repository.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -102,6 +106,10 @@ void main() async{
   create: (_) => CreateOrderProvider(OrderCreateRepository())),
   ChangeNotifierProvider(
   create: (_) => CashDepositProvider(CashDepositRepository())),
+    ChangeNotifierProvider(
+  create: (_) => UpdateDopProvider(UpdateDopRepository())),
+   ChangeNotifierProvider(
+  create: (_) => UpdatePasswordProvider(UpdatePasswordRepository())),
 
 
   ], child: const MyApp()));

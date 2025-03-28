@@ -101,6 +101,7 @@ flutter:
     - assets/images/collection_icon.png
     - assets/images/profile_icon.png
     - assets/images/money.png
+    - assets/images/reset-password.png
     - assets/images/card_agent.png
 
   #   - images/a_dot_burr.jpeg
