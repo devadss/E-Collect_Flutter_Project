@@ -120,7 +120,8 @@ class _ForgotUsernamePasswordPageState
       updateDopUserCredentials(
           userNameValue,
           passwordValue,
-          custData.response!.data!.custId.toString(),
+         // custData.response!.data!.custId.toString(),
+          custData.response!.data!["custId"].toString(),
           custData.status.toString());
     });
   }

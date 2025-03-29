@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../../core/colors.dart';
 import '../../../data/provider/agent_customer_details_provider.dart';
-import '../../../data/provider/due_list_provider.dart';
 import '../../../domain/model/agent_customer_details_model.dart' as agent;
 
 class SearchFilterPage extends StatefulWidget {
@@ -15,9 +14,9 @@ class SearchFilterPage extends StatefulWidget {
 }
 
 class _SearchFilterPageState extends State<SearchFilterPage> {
-  agent.AgentCustomerDetailsModel? agentCustomerDetailsModel =
-      agent.AgentCustomerDetailsModel();
-
+  agent.AgentCustomerDetailsModel? agentCustomerDetailsModel = agent.AgentCustomerDetailsModel();
+  agent.AgentCustomerDetailsModel? _agentCustomerDetailsModel = agent.AgentCustomerDetailsModel();
+  List<agent.Datum>? _originalCustomerList;
   String phoneNumber = "";
   String name = "";
   String accNo = "";
@@ -48,6 +47,31 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
     }
   }
 
+
+
+
+  Future<void> fetchCustName() async {
+    showProgressDialog(context);
+    final provider =
+    Provider.of<AgentCustomerDetailsProvider>(context, listen: false);
+
+    await provider.getAgentCustomerDetails("361");
+
+    if (!mounted) return; // ✅ Prevent setState if widget is disposed
+    if (provider.agentCustomerDetailsModel?.customerList?.data?.isNotEmpty == true) {
+      Navigator.pop(context);
+      setState(() {
+        _agentCustomerDetailsModel = provider.agentCustomerDetailsModel;
+        agentCustomerDetailsModel = _agentCustomerDetailsModel;
+
+        // 🔹 Save the original list
+        _originalCustomerList = List.from(agentCustomerDetailsModel!.customerList!.data!);
+      });
+    } else {
+      Navigator.pop(context);
+    }
+  }
+/*
   Future<void> fetchCustName() async {
     showProgressDialog(context);
     final provider =
@@ -60,12 +84,15 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
         true) {
       Navigator.pop(context);
       setState(() {
-        agentCustomerDetailsModel = provider.agentCustomerDetailsModel;
+        _agentCustomerDetailsModel = provider.agentCustomerDetailsModel;
+        agentCustomerDetailsModel = _agentCustomerDetailsModel;
+
       });
     } else {
       Navigator.pop(context);
     }
   }
+*/
 
   void showProgressDialog(BuildContext context) {
     showDialog(
@@ -101,6 +128,49 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
   }
 
   void onSubmitClick() {
+    if (_originalCustomerList == null) {
+      print("❌ Original customer list is null");
+      return;
+    }
+
+    setState(() {
+      agentCustomerDetailsModel = _agentCustomerDetailsModel;
+    });
+
+    if (nameController.text.isNotEmpty) {
+      showProgressDialog(context);
+      String searchQuery = nameController.text.trim().toLowerCase();
+
+      print("Searching for customer name: $searchQuery");
+
+      // 🔹 Always search in the original list
+      List<agent.Datum> filteredList = _originalCustomerList!
+          .where((customer) =>
+          customer.custName!.trim().toLowerCase().contains(searchQuery))
+          .toList();
+
+      Navigator.pop(context);
+
+      setState(() {
+        agentCustomerDetailsModel!.customerList!.data = filteredList;
+      });
+
+      if (filteredList.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("No customer found with the given name."),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    }
+  }
+
+/*  void onSubmitClick() {
+    setState(() {
+      agentCustomerDetailsModel = _agentCustomerDetailsModel;
+
+    });
     if (nameController.text.isNotEmpty) {
       showProgressDialog(context);
       String searchQuery = nameController.text.trim().toLowerCase();
@@ -133,7 +203,7 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
         print("❌ agentCustomerDetailsModel.customerList.data is null");
       }
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {

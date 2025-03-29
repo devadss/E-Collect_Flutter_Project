@@ -2,11 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-
 import '../../../core/colors.dart';
 import '../../../data/provider/agent_customer_details_provider.dart';
 import 'dues_detail_page.dart';
-import 'dues_detail_page_copy.dart';
+
 
 class DuesHomePage extends StatefulWidget {
   const DuesHomePage({super.key});
@@ -73,9 +72,10 @@ class _DuesHomePageState extends State<DuesHomePage> {
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               DuesDetailPage(
-                                                name: provider.agentCustomerDetailsModel?.customerList?.data?[index].custName ?? "NAME" ,
-                                                acNumber: provider.agentCustomerDetailsModel?.customerList?.data?[index].accNo ?? "ACCNO" ,
-                                                phNumber: provider.agentCustomerDetailsModel?.customerList?.data?[index].mobile ?? "MOBILE", agentId: '361' ,
+                                                custName: provider.agentCustomerDetailsModel?.customerList?.data?[index].custName ?? "NAME" ,
+                                                custAcNumber: provider.agentCustomerDetailsModel?.customerList?.data?[index].accNo ?? "ACCNO" ,
+                                                custPhoneNumber: provider.agentCustomerDetailsModel?.customerList?.data?[index].mobile ?? "MOBILE",
+                                                custId: '361',
                                               )));
                                 },
                                 child: Container(

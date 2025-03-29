@@ -58,24 +58,30 @@ class _MobileNumberVerificationPageState
                 backgroundColor: Colors.red,
               )          );
         },
-        (customer) {
+            (customer) {
           Navigator.pop(context);
-          print("Customer Name: ${customer.response!.data!.firstName}");
+          //print("Customer Name: ${customer.response!.data!.firstName}");
+          print("Customer Name: ${customer.response!.data!['firstName']}");
           print("Customer MPin: ${customer.mpin.toString()}");
-          SharedPref.shared.setAgentId(customer.response!.data!.custId.toString());
-          SharedPref.shared.setMobNum(customer.response!.data!.contactNo.toString());
+          SharedPref.shared.setAgentId(customer.response!.data!['custId'].toString());
+          SharedPref.shared.setMobNum(customer.response!.data!['contactNo'].toString());
+          SharedPref.shared.setAgentName(customer.response!.data!['firstName'].toString());
+          SharedPref.shared.setAgentOriginId(customer.response!.data!['agentOrginId'].toString());
+          SharedPref.shared.setEmail(customer.response!.data!['emailId'].toString());
+          SharedPref.shared.setCorpCode(customer.response!.data!['corpCode'].toString());
           SharedPref.shared.setMpinValue(customer.mpin.toString());
+          // SharedPref.shared.setCustId(customer.response!.data!.custId.toString());
+          //SharedPref.shared.setMobNum(customer.response!.data!.contactNo.toString());
+          //SharedPref.shared.setUserName(customer.response!.data!.firstName.toString());
           Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => LoginPage(
-                        mobNum: _mobileNumberController.text,
-                        tokenStatus: customer.status.toString(),
-                      )));
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Customer Name: ${customer.status}")),
-          );
+                    mobNum: _mobileNumberController.text,
+                    tokenStatus: customer.status.toString(),
+                  )));
         },
+
       );
     }
   }

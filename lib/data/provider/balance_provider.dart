@@ -17,7 +17,7 @@ class BalanceProvider with ChangeNotifier {
     final result = await _balanceRepository.getBalance(entityID, token);
 
     result.fold((fail) {
-     // notifyListeners();
+
     }, (success) {
       balanceModel = success;
       notifyListeners();
