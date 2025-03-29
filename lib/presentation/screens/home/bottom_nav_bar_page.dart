@@ -48,102 +48,200 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     // Show exit confirmation dialog
     // Ensure dialog runs in the next frame
     return Future.delayed(Duration.zero, () async {
-      bool exitApp = await showDialog(
-            context: context,
-            barrierDismissible: false, // Prevents closing by tapping outside
-            builder: (BuildContext context) {
-              return Dialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.0),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      const Icon(
-                        Icons.warning_amber_outlined,
-                        color: Color(0xFFEA307B),
-                        size: 40.0,
-                      ),
-                      const SizedBox(height: 16.0),
-                      Text(
-                        'Are you sure?',
-                        style: GoogleFonts.inter(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF404040),
+      bool exitApp = await
+      // showDialog(
+      //       context: context,
+      //       barrierDismissible: false, // Prevents closing by tapping outside
+      //       builder: (BuildContext context) {
+      //         return Dialog(
+      //           shape: RoundedRectangleBorder(
+      //             borderRadius: BorderRadius.circular(16.0),
+      //           ),
+      //           child: Padding(
+      //             padding: const EdgeInsets.all(20.0),
+      //             child: Column(
+      //               mainAxisSize: MainAxisSize.min,
+      //               children: <Widget>[
+      //                 const Icon(
+      //                   Icons.warning_amber_outlined,
+      //                   color: Color(0xFFEA307B),
+      //                   size: 40.0,
+      //                 ),
+      //                 const SizedBox(height: 16.0),
+      //                 Text(
+      //                   'Are you sure?',
+      //                   style: GoogleFonts.inter(
+      //                     fontSize: 20.0,
+      //                     fontWeight: FontWeight.w600,
+      //                     color: const Color(0xFF404040),
+      //                   ),
+      //                 ),
+      //                 const SizedBox(height: 8.0),
+      //                 Text(
+      //                   'Do you really want to exit Collection Qr ?',
+      //                   textAlign: TextAlign.center,
+      //                   style: GoogleFonts.inter(
+      //                     fontSize: 14.0,
+      //                     fontWeight: FontWeight.w400,
+      //                     color: const Color(0xFF404040).withOpacity(0.7),
+      //                   ),
+      //                 ),
+      //                 const SizedBox(height: 24.0),
+      //                 Row(
+      //                   mainAxisAlignment: MainAxisAlignment.center,
+      //                   children: [
+      //                     TextButton(
+      //                       onPressed: () {
+      //                         SystemNavigator.pop();
+      //                       },
+      //                       style: TextButton.styleFrom(
+      //                         foregroundColor: Colors.white,
+      //                         padding: const EdgeInsets.symmetric(
+      //                             horizontal: 20, vertical: 10),
+      //                         // backgroundColor: const Color(0xFFEA307B),
+      //                         backgroundColor: deepTeal,
+      //                         shape: RoundedRectangleBorder(
+      //                           borderRadius: BorderRadius.circular(8.0),
+      //                         ),
+      //                       ),
+      //                       child: Text(
+      //                         'Yes',
+      //                         style: GoogleFonts.inter(
+      //                           fontWeight: FontWeight.w600,
+      //                           fontSize: 16.0,
+      //                         ),
+      //                       ),
+      //                     ),
+      //                     const SizedBox(width: 16),
+      //                     TextButton(
+      //                       onPressed: () {
+      //                         Navigator.of(context)
+      //                             .pop(false); // Return true to exit
+      //                       },
+      //                       style: TextButton.styleFrom(
+      //                         foregroundColor: const Color(0xFF404040),
+      //                         padding: const EdgeInsets.symmetric(
+      //                             horizontal: 20, vertical: 10),
+      //                         // backgroundColor: const Color(0xFFEDEDED),
+      //                         backgroundColor: deepTeal,
+      //                         shape: RoundedRectangleBorder(
+      //                           borderRadius: BorderRadius.circular(8.0),
+      //                         ),
+      //                       ),
+      //                       child: Text(
+      //                         'No',
+      //                         style: GoogleFonts.inter(
+      //                           color: Colors.white,
+      //                           fontWeight: FontWeight.w600,
+      //                           fontSize: 16.0,
+      //                         ),
+      //                       ),
+      //                     ),
+      //                   ],
+      //                 ),
+      //               ],
+      //             ),
+      //           ),
+      //         );
+      //       },
+      //     )
+      showDialog(
+        context: context,
+        barrierDismissible: false, // Prevents closing by tapping outside
+        builder: (BuildContext context) {
+          return Dialog(
+            backgroundColor: white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Image.asset(
+                    "assets/images/exit.png",
+                    scale: 10,
+                  ),
+                  const SizedBox(height: 16.0),
+                  Text(
+                    'Are you sure?',
+                    style: GoogleFonts.inter(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF404040),
+                    ),
+                  ),
+                  const SizedBox(height: 8.0),
+                  Text(
+                    'Do you really want to exit Collection Qr ?',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.inter(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w400,
+                      color: const Color(0xFF404040).withOpacity(0.7),
+                    ),
+                  ),
+                  const SizedBox(height: 24.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          SystemNavigator.pop();
+                        },
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          // backgroundColor: const Color(0xFFEA307B),
+                          backgroundColor: white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                              side:
+                              const BorderSide(color: deepTeal, width: 1.5)),
+                        ),
+                        child: Text(
+                          'Yes',
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16.0,
+                              color: black),
                         ),
                       ),
-                      const SizedBox(height: 8.0),
-                      Text(
-                        'Do you really want to exit Collection Qr ?',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.inter(
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w400,
-                          color: const Color(0xFF404040).withOpacity(0.7),
+                      const SizedBox(width: 16),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Close the dialog
+                        },
+                        style: TextButton.styleFrom(
+                          foregroundColor: const Color(0xFF404040),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          // backgroundColor: const Color(0xFFEDEDED),
+                          backgroundColor: deepTeal,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 24.0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              SystemNavigator.pop();
-                            },
-                            style: TextButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                              // backgroundColor: const Color(0xFFEA307B),
-                              backgroundColor: deepTeal,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                            ),
-                            child: Text(
-                              'Yes',
-                              style: GoogleFonts.inter(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16.0,
-                              ),
-                            ),
+                        child: Text(
+                          'No',
+                          style: GoogleFonts.inter(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16.0,
                           ),
-                          const SizedBox(width: 16),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .pop(false); // Return true to exit
-                            },
-                            style: TextButton.styleFrom(
-                              foregroundColor: const Color(0xFF404040),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                              // backgroundColor: const Color(0xFFEDEDED),
-                              backgroundColor: deepTeal,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                            ),
-                            child: Text(
-                              'No',
-                              style: GoogleFonts.inter(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16.0,
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ],
                   ),
-                ),
-              );
-            },
-          ) ??
+                ],
+              ),
+            ),
+          );
+        },
+      )
+          ??
           false;
       return exitApp;
     });

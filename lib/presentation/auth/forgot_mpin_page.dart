@@ -10,7 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/build_button.dart';
 import '../../core/colors.dart';
 import '../../core/general.dart';
-import '../../core/shared_pref_helper.dart';
+import '../../data/storage/shared_pref_helper.dart';
 import '../../data/repository/otp_request_repository.dart';
 import '../../data/repository/otp_verification_repository.dart';
 import '../../data/repository/set_mpin_repository.dart';
@@ -50,7 +50,7 @@ class _ForgotMpinPageState extends State<ForgotMpinPage> {
                   padding: const EdgeInsets.all(50),
                   child: Column(
                     children: [
-                      const CircularProgressIndicator(),
+                      const CircularProgressIndicator(color: deepTeal),
                       const SizedBox(
                         height: 10,
                       ),

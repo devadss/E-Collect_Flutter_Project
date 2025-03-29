@@ -4,7 +4,7 @@ import 'package:collection_qr_flutter/presentation/auth/forgot_username_password
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:collection_qr_flutter/core/shared_pref_helper.dart';
+import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
 import 'package:collection_qr_flutter/data/provider/token_request_provider.dart';
 import 'package:collection_qr_flutter/presentation/auth/authetication_page/google_pin_code_page.dart';
 import 'package:collection_qr_flutter/presentation/auth/otp_verification.dart';
@@ -84,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
                   padding: const EdgeInsets.all(50),
                   child: Column(
                     children: [
-                      const CircularProgressIndicator(),
+                      const CircularProgressIndicator(color: deepTeal),
                       const SizedBox(
                         height: 10,
                       ),
@@ -152,7 +152,7 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pop(context);
           print("Token status : ${widget.tokenStatus}");
           SharedPref.shared.setTokenValue(data);
-          SharedPref.shared.setUserName(userNameController.text.toString());
+          SharedPref.shared.setAgentName(userNameController.text.toString());
           SharedPref.shared.setPassword(
               encryptString(passwordController.text.toString(), _sk, _iv)
                   .toString()

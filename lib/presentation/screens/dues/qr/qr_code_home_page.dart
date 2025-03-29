@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import '../../../../../core/general.dart';
 import '../../../../core/build_button.dart';
 import '../../../../core/colors.dart';
-import '../../../../core/shared_pref_helper.dart';
+import '../../../../data/storage/shared_pref_helper.dart';
 import '../../../../data/provider/create_order_provider.dart';
 import '../../../../data/provider/transaction_provider.dart';
 import 'generate_qr_code_page.dart';
@@ -52,7 +52,7 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
                   padding: const EdgeInsets.all(50),
                   child: Column(
                     children: [
-                      const CircularProgressIndicator(),
+                      const CircularProgressIndicator(color: deepTeal),
                       const SizedBox(
                         height: 10,
                       ),
@@ -86,8 +86,8 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
 
   Future<void> loadSharedPrefs() async {
     String? token = await SharedPref().getTokenValue();
-    String? userId = await SharedPref().getCustId();
-    String? userName = await SharedPref().getUserName();
+    String? userId = await SharedPref().getAgentId();
+    String? userName = await SharedPref().getAgentName();
     String? mobile = await SharedPref().getMobNum();
      String? emailId = await SharedPref.shared.getEmail();
     if (mounted) {
@@ -132,7 +132,7 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
               ),
               child:
               provider.balanceModel == null?
-              const Center(child: CircularProgressIndicator()):
+              const Center(child: CircularProgressIndicator(color: deepTeal)):
               Center(
                 child: Text(
                   "₹ ${formatNumberWithCommas(provider.balanceModel?.result![0].balance!.toDouble())}",

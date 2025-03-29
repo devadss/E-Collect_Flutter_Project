@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:collection_qr_flutter/core/shared_pref_helper.dart';
+import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
 import 'package:collection_qr_flutter/data/provider/auth_provider.dart';
 import 'package:collection_qr_flutter/presentation/screens/home/bottom_nav_bar_page.dart';
 import 'package:pointycastle/export.dart' as pc;
@@ -38,7 +38,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   }
 
   void loadSharedData() async {
-    custID = await SharedPref.shared.getCustId();
+    custID = await SharedPref.shared.getAgentId();
     token = await SharedPref.shared.getTokenValue();
 
     m_pin = await SharedPref.shared.getMpinValue();
@@ -93,7 +93,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
                   padding: const EdgeInsets.all(50),
                   child: Column(
                     children: [
-                      const CircularProgressIndicator(),
+                      const CircularProgressIndicator(color: deepTeal),
                       const SizedBox(
                         height: 10,
                       ),

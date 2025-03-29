@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:collection_qr_flutter/core/build_button.dart';
-import 'package:collection_qr_flutter/core/shared_pref_helper.dart';
+import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
 import 'package:collection_qr_flutter/presentation/screens/home/home_page.dart';
 import 'package:collection_qr_flutter/presentation/splash_screen/splash_screen.dart';
 
@@ -33,7 +33,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
   }
 
   Future<void> loadShredData() async {
-    String username = await SharedPref.shared.getUserName();
+    String username = await SharedPref.shared.getAgentName();
     String usermobNum = await SharedPref.shared.getMobNum();
 
     if (mounted) {
@@ -176,9 +176,9 @@ class BuildProfileBox extends StatelessWidget {
                       TextButton(
                           onPressed: () {
                             SharedPref.shared.setLogin(false);
-                            SharedPref.shared.setUserName("");
+                            SharedPref.shared.setAgentName("");
                             SharedPref.shared.setFcmToken("");
-                            SharedPref.shared.setCustId("");
+                            SharedPref.shared.setAgentId("");
                             SharedPref.shared.setPassword("");
                             SharedPref.shared.setMpinValue("");
                             SharedPref.shared.setMpinStatus("");

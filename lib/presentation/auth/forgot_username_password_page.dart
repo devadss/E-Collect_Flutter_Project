@@ -5,7 +5,7 @@ import 'package:pointycastle/export.dart' as pc;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/general.dart';
-import '../../../core/shared_pref_helper.dart';
+import '../../data/storage/shared_pref_helper.dart';
 import '../../../data/repository/cust_reg_repository.dart';
 import '../../core/build_button.dart';
 import '../../core/colors.dart';
@@ -68,7 +68,7 @@ class _ForgotUsernamePasswordPageState
  // String? phoneNumber;
 
   Future<void> loadSharedPrefs() async {
-    final name = await SharedPref.shared.getUserName();
+    final name = await SharedPref.shared.getAgentName();
     final phone = await SharedPref.shared.getMobNum();
     printLog("-------------------USERNAME---------------");
     print(name);

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:collection_qr_flutter/core/shared_pref_helper.dart';
+import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
 import 'package:collection_qr_flutter/data/provider/set_mpin_provider.dart';
 import 'package:collection_qr_flutter/presentation/auth/authetication_page/google_pin_code_page.dart';
 import 'package:provider/provider.dart';
@@ -44,7 +44,7 @@ class _SetMpinPageState extends State<SetMpinPage> {
                   padding: const EdgeInsets.all(50),
                   child: Column(
                     children: [
-                      const CircularProgressIndicator(),
+                      const CircularProgressIndicator(color: deepTeal),
                       const SizedBox(
                         height: 10,
                       ),

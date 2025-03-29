@@ -1,7 +1,7 @@
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'constants.dart';
+import '../../core/constants.dart';
 
 class SharedPref {
   static final SharedPref _singleton = SharedPref._internal();
@@ -17,7 +17,33 @@ class SharedPref {
     _prefs ??= await SharedPreferences.getInstance();
     return _prefs!;
   }
+  setAgentOriginId(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.agentOriginId, value);
+  }
 
+  getAgentOriginId() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.agentOriginId) ?? '';
+  }
+  setCorpCode(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.corpCode, value);
+  }
+
+  getCorpCode() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.corpCode) ?? '';
+  }
+  setCardRefNum(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.cardRefNum, value);
+  }
+
+  getCardRefNum() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.cardRefNum) ?? '';
+  }
   Future<bool> getLogin() async {
     final prefs = await _getPrefs();
     return prefs.getBool(SharedPrefKeys().login) ?? false;
@@ -35,11 +61,11 @@ class SharedPref {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.fcm_token) ?? '';
   }
-  setCustId(String value) async {
+  setAgentId(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.userId, value);
   }
-  getCustId() async {
+  getAgentId() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.userId) ?? '';
   }
@@ -54,12 +80,12 @@ class SharedPref {
     return prefs.getString(SharedPrefKeys.password) ?? '';
   }
 
-  setUserName(String value) async {
+  setAgentName(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.username, value);
   }
 
-  getUserName() async {
+  getAgentName() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.username) ?? '';
   }

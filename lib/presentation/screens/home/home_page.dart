@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:collection_qr_flutter/data/provider/transaction_provider.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/colors.dart';
-import '../../../../core/shared_pref_helper.dart';
+import '../../../data/storage/shared_pref_helper.dart';
 import '../../../core/general.dart';
 
 
@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.all(50),
                   child: Column(
                     children: [
-                      const CircularProgressIndicator(),
+                      const CircularProgressIndicator(color: deepTeal),
                       const SizedBox(
                         height: 10,
                       ),
@@ -65,7 +65,7 @@ class _HomePageState extends State<HomePage> {
         });
   }
 
-  void exitAlertDialog(BuildContext context) {
+/*  void exitAlertDialog(BuildContext context) {
     showDialog(
       context: context,
       barrierDismissible: false, // Prevents closing by tapping outside
@@ -163,7 +163,7 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
-  }
+  }*/
 
 
   Future<void> fetchTransaction() async {
@@ -182,8 +182,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> loadSharedPrefs() async {
-    final name = await SharedPref().getUserName();
-    final entId = await SharedPref().getCustId();
+    final name = await SharedPref().getAgentName();
+    final entId = await SharedPref().getAgentId();
     final tok = await SharedPref().getTokenValue();
     printLog("-------------------USERNAME---------------");
     print(name);
@@ -252,7 +252,7 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(height: 5),
                  // provider.transactions== null?
                   provider.agentPaymentTransctionModel == null?
-                      const Center(child: CircularProgressIndicator(),):
+                      const Center(child: CircularProgressIndicator(color: deepTeal),):
                   Text(
                     "Your Balance: ₹ ${
                         transProvider.transactions?.result?.isNotEmpty == true
@@ -502,7 +502,7 @@ class _HomePageState extends State<HomePage> {
                 child:
                   //  provider.transactions == null?
                     provider.agentPaymentTransctionModel == null?
-                        const Center(child: CircularProgressIndicator(),):
+                        const Center(child: CircularProgressIndicator(color: deepTeal),):
                 ListView.separated(
                  // itemCount: provider.transactions!.result!.length,
                   itemCount: provider.agentPaymentTransctionModel!.data!.length,

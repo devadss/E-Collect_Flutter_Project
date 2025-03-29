@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:collection_qr_flutter/core/shared_pref_helper.dart';
+import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
 import 'package:provider/provider.dart';
 import '../../core/build_button.dart';
 import '../../core/colors.dart';
@@ -62,7 +62,7 @@ class _MobileNumberVerificationPageState
           Navigator.pop(context);
           print("Customer Name: ${customer.response!.data!.firstName}");
           print("Customer MPin: ${customer.mpin.toString()}");
-          SharedPref.shared.setCustId(customer.response!.data!.custId.toString());
+          SharedPref.shared.setAgentId(customer.response!.data!.custId.toString());
           SharedPref.shared.setMobNum(customer.response!.data!.contactNo.toString());
           SharedPref.shared.setMpinValue(customer.mpin.toString());
           Navigator.push(
@@ -108,7 +108,7 @@ class _MobileNumberVerificationPageState
                   padding: const EdgeInsets.all(50),
                   child: Column(
                     children: [
-                      const CircularProgressIndicator(),
+                      const CircularProgressIndicator(color: deepTeal),
                       const SizedBox(
                         height: 10,
                       ),

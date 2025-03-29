@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:collection_qr_flutter/core/shared_pref_helper.dart';
+import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
 import 'package:collection_qr_flutter/data/provider/token_expiry_provider.dart';
 import 'package:collection_qr_flutter/data/provider/token_request_provider.dart';
 import 'package:collection_qr_flutter/data/service/notification_service/notification_service.dart';
@@ -133,11 +133,11 @@ class _SplashScreenState extends State<SplashScreen> {
   void getSharedData() async {
     loginStatus = await SharedPref.shared.getLogin();
     fcmToken = await SharedPref.shared.getFcmToken();
-    entityid = await SharedPref.shared.getCustId();
+    entityid = await SharedPref.shared.getAgentId();
     token = await SharedPref.shared.getTokenValue();
     mobnum = await SharedPref.shared.getMobNum();
     mpin = await SharedPref.shared.getMpinValue();
-    String username = await SharedPref.shared.getUserName();
+    String username = await SharedPref.shared.getAgentName();
     String password = await SharedPref.shared.getPassword();
     if(loginStatus == true){
       validateToken(token,

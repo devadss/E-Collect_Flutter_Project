@@ -56,7 +56,7 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
                   padding: const EdgeInsets.all(50),
                   child: Column(
                     children: [
-                      const CircularProgressIndicator(),
+                      const CircularProgressIndicator(color: deepTeal,),
                       const SizedBox(
                         height: 10,
                       ),
