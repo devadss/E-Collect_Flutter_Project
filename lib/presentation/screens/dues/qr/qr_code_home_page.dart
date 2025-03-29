@@ -6,12 +6,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:collection_qr_flutter/data/provider/balance_provider.dart';
 import 'package:provider/provider.dart';
-import '../../core/general.dart';
-import '../build_button.dart';
-import '../core/colors.dart';
-import '../core/shared_pref_helper.dart';
-import '../data/provider/create_order_provider.dart';
-import '../data/provider/transaction_provider.dart';
+import '../../../../../core/general.dart';
+import '../../../../core/build_button.dart';
+import '../../../../core/colors.dart';
+import '../../../../core/shared_pref_helper.dart';
+import '../../../../data/provider/create_order_provider.dart';
+import '../../../../data/provider/transaction_provider.dart';
 import 'generate_qr_code_page.dart';
 
 

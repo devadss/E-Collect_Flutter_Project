@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:collection_qr_flutter/core/shared_pref_helper.dart';
 import 'package:provider/provider.dart';
-import '../../build_button.dart';
+import '../../core/build_button.dart';
 import '../../core/colors.dart';
 import '../../data/provider/cust_register_provider.dart';
 import 'mobile_number_password_page.dart';

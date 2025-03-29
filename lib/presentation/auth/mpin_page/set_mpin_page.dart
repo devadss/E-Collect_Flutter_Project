@@ -7,7 +7,7 @@ import 'package:collection_qr_flutter/data/provider/set_mpin_provider.dart';
 import 'package:collection_qr_flutter/presentation/auth/authetication_page/google_pin_code_page.dart';
 import 'package:provider/provider.dart';
 import 'package:pointycastle/export.dart' as pc;
-import '../../../build_button.dart';
+import '../../../core/build_button.dart';
 import '../../../core/colors.dart';
 
 class SetMpinPage extends StatefulWidget {

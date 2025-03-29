@@ -6,7 +6,7 @@ import 'package:collection_qr_flutter/data/provider/otp_request_provider.dart';
 import 'package:collection_qr_flutter/data/provider/otp_verification_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../build_button.dart';
+import '../../core/build_button.dart';
 import '../../core/colors.dart';
 import '../../core/general.dart';
 import 'mpin_page/set_mpin_page.dart';

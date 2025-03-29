@@ -3,14 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:collection_qr_flutter/core/shared_pref_helper.dart';
 import 'package:collection_qr_flutter/data/provider/auth_provider.dart';
-import 'package:collection_qr_flutter/presentation/bottom_nav_bar_page.dart';
+import 'package:collection_qr_flutter/presentation/screens/home/bottom_nav_bar_page.dart';
 import 'package:pointycastle/export.dart' as pc;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import '../../../build_button.dart';
+import '../../../core/build_button.dart';
 import '../../../core/colors.dart';
-import '../../forgot_mpin_page.dart';
+import '../forgot_mpin_page.dart';
 
 class GooglePinCodePage extends StatefulWidget {
   const GooglePinCodePage({super.key});

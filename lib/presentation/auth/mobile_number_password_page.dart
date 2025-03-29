@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:collection_qr_flutter/presentation/forgot_username_password_page.dart';
+import 'package:collection_qr_flutter/presentation/auth/forgot_username_password_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,7 +10,7 @@ import 'package:collection_qr_flutter/presentation/auth/authetication_page/googl
 import 'package:collection_qr_flutter/presentation/auth/otp_verification.dart';
 import 'package:provider/provider.dart';
 import 'package:pointycastle/export.dart' as pc;
-import '../../build_button.dart';
+import '../../core/build_button.dart';
 import '../../core/colors.dart';
 
 class LoginPage extends StatefulWidget {

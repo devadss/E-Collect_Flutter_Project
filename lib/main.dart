@@ -38,7 +38,7 @@ import 'data/provider/agent_customer_details_provider.dart';
 import 'data/provider/create_order_provider.dart';
 import 'data/provider/due_list_provider.dart';
 import 'data/service/notification_service/firebase_notification_services.dart';
-import 'firebase_options.dart';
+import 'data/service/notification_service/firebase_options.dart';
 import 'data/provider/cust_register_provider.dart';
 import 'data/repository/cust_reg_repository.dart';
 

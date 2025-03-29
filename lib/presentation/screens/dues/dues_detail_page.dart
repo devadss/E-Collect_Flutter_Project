@@ -1,14 +1,11 @@
 
-import 'package:collection_qr_flutter/presentation/qr_code_home_page.dart';
+import 'package:collection_qr_flutter/presentation/screens/dues/qr/qr_code_home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
 
-import '../core/colors.dart';
-import '../core/general.dart';
-import '../data/provider/due_list_provider.dart';
-import '../data/repository/payment_link_repository.dart';
+import '../../../core/colors.dart';
+import '../../../data/provider/due_list_provider.dart';
 
 class DuesDetailPage extends StatefulWidget {
   final String name;
@@ -29,22 +26,18 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
   List<bool> checkedItems = List.generate(10, (index) => false);
   TextEditingController amountController = TextEditingController();
   num previousCheckboxTotal = 0;
-  DateTime? _dateTime;
 
   void updateTotalAmount() {
     final provider = Provider.of<DueListProvider>(context, listen: false);
 
-    int manualAmount =
-        int.tryParse(amountController.text) ?? 0; // Preserve manual input
+    int manualAmount = int.tryParse(amountController.text) ?? 0; // Preserve manual input
     int checkboxTotal = 0;
 
     // Calculate the sum of selected due amounts
     for (int i = 0; i < checkedItems.length; i++) {
       if (checkedItems[i]) {
         // Convert dueAmount to int safely
-        checkboxTotal +=
-            (provider.dueListModel!.duesList!.data![i].dueAmount as num)
-                .toInt();
+        checkboxTotal += (provider.dueListModel!.duesList!.data![i].dueAmount as num).toInt();
       }
     }
 
@@ -54,20 +47,21 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
       previousCheckboxTotal = 0;
     }
 
-    num newTotal = checkboxTotal +
-        (manualAmount - previousCheckboxTotal); // Maintain manual edits
-    previousCheckboxTotal =
-        checkboxTotal; // Store last calculated checkbox total
+    num newTotal = checkboxTotal + (manualAmount - previousCheckboxTotal); // Maintain manual edits
+    previousCheckboxTotal = checkboxTotal; // Store last calculated checkbox total
 
     setState(() {
       amountController.text = newTotal.toString();
     });
   }
 
-  String _getLastThreeDigits(String phoneNumber) {
-    return phoneNumber.length >= 3
-        ? "*** *** ${phoneNumber.substring(phoneNumber.length - 3)}"
-        : phoneNumber;
+
+
+
+  String _getLastThreeDigits(String phonedoubleber) {
+    return phonedoubleber.length >= 3
+        ? "*** *** ${phonedoubleber.substring(phonedoubleber.length - 3)}"
+        : phonedoubleber;
   }
 
   void _proceedButtonClick() {
@@ -97,7 +91,6 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
-                sendLinkFunction();
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: teal700,
@@ -111,45 +104,8 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
     );
   }
 
-  Future<void> sendLinkFunction() async {
-    final send = await PaymentLinkRepository().getPaymentLink(
-      "John Doe",
-      "AGT12345",
-      "ORG98765",
-      "+919876543210",
-      "agent@example.com",
-      "Rahul Sharma",
-      "+919123456789",
-      "123456789012",
-      "rahul.sharma@example.com",
-      "CUS12345",
-      num.parse(amountController.text),
-      "Payment for Order #12345",
-      "CORP001",
-      "CARD98765",
-    );
-
-    send.fold(
-      (error) {
-        printLog("-------------------ERROR---------------------");
-        printLog(error);
-      },
-      (sendLink) {
-        if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
-          Share.share("Here is your payment link: ${sendLink.linkUrl}");
-        } else {
-          printLog("Payment link is empty or null");
-        }
-      },
-    );
-  }
-
   @override
   void initState() {
-    _dateTime = DateTime.now();
-    printLog(
-        "--------------------------------DATE TIME--------------------------");
-    printLog(_dateTime);
     final provider = Provider.of<DueListProvider>(context, listen: false);
     provider.getDueList(widget.acNumber, "2025-03-25");
     super.initState();
@@ -168,7 +124,8 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
               fontWeight: FontWeight.w700, fontSize: 22, color: teal700),
         ),
       ),
-      body: Consumer<DueListProvider>(builder: (context, provider, child) {
+      body:
+      Consumer<DueListProvider>(builder: (context, provider, child) {
         return provider.dueListModel == null
             ? const Center(
                 child: CircularProgressIndicator(
@@ -263,8 +220,7 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
           _buildInfoRow("Customer Name", widget.name),
           _buildInfoRow("Account doubleber", widget.acNumber),
           _buildInfoRow("Account Status", "Active"),
-          _buildInfoRow(
-              "Mobile doubleber", _getLastThreeDigits(widget.phNumber)),
+          _buildInfoRow("Mobile doubleber", _getLastThreeDigits(widget.phNumber)),
         ],
       ),
     );
@@ -295,8 +251,7 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
               width: 120,
               child: TextField(
                 controller: amountController,
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 style: const TextStyle(
                     color: white, fontSize: 16, fontWeight: FontWeight.w700),
                 textAlign: TextAlign.center,

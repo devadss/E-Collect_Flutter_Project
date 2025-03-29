@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-
 import '../../core/general.dart';
 import '../../domain/model/agent_transction_model.dart';
 import '../repository/agent_transaction_repository.dart';

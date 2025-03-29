@@ -7,14 +7,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../build_button.dart';
-import '../core/colors.dart';
-import '../core/general.dart';
-import '../core/shared_pref_helper.dart';
-import '../data/repository/otp_request_repository.dart';
-import '../data/repository/otp_verification_repository.dart';
-import '../data/repository/set_mpin_repository.dart';
-import 'auth/authetication_page/google_pin_code_page.dart';
+import '../../core/build_button.dart';
+import '../../core/colors.dart';
+import '../../core/general.dart';
+import '../../core/shared_pref_helper.dart';
+import '../../data/repository/otp_request_repository.dart';
+import '../../data/repository/otp_verification_repository.dart';
+import '../../data/repository/set_mpin_repository.dart';
+import 'authetication_page/google_pin_code_page.dart';
 
 
 class ForgotMpinPage extends StatefulWidget {

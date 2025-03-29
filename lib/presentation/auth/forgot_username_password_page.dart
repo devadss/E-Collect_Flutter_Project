@@ -4,14 +4,14 @@ import 'package:flutter/services.dart';
 import 'package:pointycastle/export.dart' as pc;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/general.dart';
-import '../../core/shared_pref_helper.dart';
-import '../../data/repository/cust_reg_repository.dart';
-import '../build_button.dart';
-import '../core/colors.dart';
-import '../data/repository/update_dop_repository.dart';
-import '../data/repository/update_password_repository.dart';
-import 'auth/mobile_number_password_page.dart';
+import '../../../core/general.dart';
+import '../../../core/shared_pref_helper.dart';
+import '../../../data/repository/cust_reg_repository.dart';
+import '../../core/build_button.dart';
+import '../../core/colors.dart';
+import '../../data/repository/update_dop_repository.dart';
+import '../../data/repository/update_password_repository.dart';
+import 'mobile_number_password_page.dart';
 
 class ForgotUsernamePasswordPage extends StatefulWidget {
   final String mobNum;

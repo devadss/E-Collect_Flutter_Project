@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '../core/colors.dart';
-import '../data/provider/agent_customer_details_provider.dart';
+import '../../../core/colors.dart';
+import '../../../data/provider/agent_customer_details_provider.dart';
 import 'dues_detail_page.dart';
 import 'dues_detail_page_copy.dart';
 

@@ -15,11 +15,11 @@ import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:http/http.dart' as http;
-import '../../../core/colors.dart';
-import '../../../core/constants.dart';
+import '../../../../../../core/colors.dart';
+import '../../../../../../core/constants.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
-import '../domain/model/cash_deposit_model.dart';
-import '../domain/model/load_card_status_model.dart';
+import '../../../../domain/model/cash_deposit_model.dart';
+import '../../../../domain/model/load_card_status_model.dart';
 
 class GeneratedQrCodePage extends StatefulWidget {
   final String amount;

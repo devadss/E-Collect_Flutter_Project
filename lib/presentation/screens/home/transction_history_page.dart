@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../core/colors.dart';
-import '../domain/model/agent_transction_model.dart';
+import '../../../core/colors.dart';
+import '../../../domain/model/agent_transction_model.dart';
 
 class TransactionHistoryPage extends StatefulWidget {
   final AgentTransaction agentTransaction;

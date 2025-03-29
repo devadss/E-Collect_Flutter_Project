@@ -1,14 +1,14 @@
 import 'package:collection_qr_flutter/data/provider/agent_transaction_provider.dart';
-import 'package:collection_qr_flutter/presentation/transction_history_page.dart';
+import 'package:collection_qr_flutter/presentation/screens/home/transction_history_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:collection_qr_flutter/data/provider/transaction_provider.dart';
 import 'package:provider/provider.dart';
-import '../../core/colors.dart';
-import '../../core/shared_pref_helper.dart';
-import '../core/general.dart';
+import '../../../../core/colors.dart';
+import '../../../../core/shared_pref_helper.dart';
+import '../../../core/general.dart';
 
 
 class HomePage extends StatefulWidget {
