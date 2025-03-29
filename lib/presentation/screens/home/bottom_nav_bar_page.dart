@@ -155,15 +155,26 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       onWillPop: _onWillPop,
       child: Scaffold(
         backgroundColor: white,
-        body: IndexedStack(
+        body:
+        IndexedStack(
           index: _selectedIndex,
-          children: const [
-            HomePage(),
-            CollectionHomePage(),
-            DuesHomePage(),
-            ProfileHomePage(),
+          children: [
+            const HomePage( ), // Forces rebuild
+            CollectionHomePage(key: ObjectKey(_selectedIndex)),
+            const DuesHomePage( ),
+            const ProfileHomePage( ),
           ],
         ),
+
+        // IndexedStack(
+        //   index: _selectedIndex,
+        //   children: const [
+        //     HomePage(),
+        //     CollectionHomePage(),
+        //     DuesHomePage(),
+        //     ProfileHomePage(),
+        //   ],
+        // ),
         bottomNavigationBar: AnimatedNotchBottomBar(
           itemLabelStyle: GoogleFonts.inter(
               color: white, fontWeight: FontWeight.bold, fontSize: 10),

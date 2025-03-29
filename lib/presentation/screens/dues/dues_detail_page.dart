@@ -132,7 +132,9 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
                   color: deepTeal,
                 ),
               )
-            : Padding(
+            :
+
+        Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 child: Column(
@@ -195,7 +197,8 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
               );
       }),
       bottomNavigationBar:
-          checkedItems.contains(true) ? _buildBottomBar() : null,
+          checkedItems.contains(true) ?
+          _buildBottomBar() : null,
     );
   }
 

@@ -84,10 +84,10 @@ class AgentTransaction {
   factory AgentTransaction.fromJson(Map<String, dynamic> json) => AgentTransaction(
     id: json["Id"],
     orderId: json["Order_id"],
-    linkStatus: statusValues.map[json["link_status"]]!,
+    linkStatus: statusValues.map[json["link_status"]],
     linkCurrency: linkCurrencyValues.map[json["link_currency"]],
     linkAmount: json["link_amount"],
-    linkPurpose: linkPurposeValues.map[json["link_purpose"]]!,
+    linkPurpose: linkPurposeValues.map[json["link_purpose"]],
     linkCreatedAt: json["link_created_at"] == null ? null : DateTime.parse(json["link_created_at"]),
     customerName: customerNameValues.map[json["customer_name"]],
     customerId: json["customer_Id"],

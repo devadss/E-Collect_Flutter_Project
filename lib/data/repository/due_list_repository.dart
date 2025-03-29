@@ -14,8 +14,11 @@ class DueListRepository implements IDueListRepository {
     final url = Uri.parse(
         "https://doorstepmftctest.digicob.in/GetDuesList?accNo=$accountNumber&asOnDate=$onDate");
     bool checkConnection = await InternetConnectionChecker().hasConnection;
+
+
     if (checkConnection) {
       final response = await http.get(url);
+      print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         try {
           return Right(DueListModel.fromJson(jsonDecode(response.body)));
