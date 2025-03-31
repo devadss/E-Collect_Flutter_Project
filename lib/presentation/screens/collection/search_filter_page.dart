@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../../core/colors.dart';
 import '../../../data/provider/agent_customer_details_provider.dart';
+import '../../../data/storage/shared_pref_helper.dart';
 import '../../../domain/model/agent_customer_details_model.dart' as agent;
 
 class SearchFilterPage extends StatefulWidget {
@@ -22,16 +23,24 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
   String accNo = "";
   int listLen = 0;
   String custId = "";
+  String agentID = "";
   TextEditingController nameController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      fetchCustName();
+      getSharedData();
+      //fetchCustName();
     });
   }
-
+  void getSharedData()async{
+    String agentId = await SharedPref.shared.getAgentOriginId();
+    setState(() {
+      agentID = agentId;
+    });
+    fetchCustName();
+  }
   // Function to launch the dialer with a given phone number
   void _callNumber(String phoneNumber) async {
     final Uri url = Uri.parse("tel:$phoneNumber");
@@ -56,6 +65,7 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
     Provider.of<AgentCustomerDetailsProvider>(context, listen: false);
 
     await provider.getAgentCustomerDetails("361");
+   // await provider.getAgentCustomerDetails(agentID);
 
     if (!mounted) return; // ✅ Prevent setState if widget is disposed
     if (provider.agentCustomerDetailsModel?.customerList?.data?.isNotEmpty == true) {

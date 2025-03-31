@@ -7,6 +7,7 @@ import '../../../../../core/colors.dart';
 
 import '../../../data/provider/agent_customer_details_provider.dart';
 import '../../../data/provider/due_list_provider.dart';
+import '../../../data/storage/shared_pref_helper.dart';
 import '../../../domain/model/agent_customer_details_model.dart'as agent;
 import '../../../domain/model/due_list_model.dart';
 import '../dues/qr/qr_code_home_page.dart';
@@ -27,19 +28,28 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
   String accno="";
   String name = "";
   String type = "";
-
+  String agentID = "";
   List<bool> checkedItems = List.generate(3, (index) => false);
 
   @override
   void initState() {
     super.initState();
-    fetchCustName();
+    getSharedData();
     duesList?.data?.clear();
     accountNumController.addListener(() {
       setState(() {}); // Trigger UI update when text changes
     });
 
 
+  }
+
+
+  void getSharedData()async{
+    String agentId = await SharedPref.shared.getAgentOriginId();
+    setState(() {
+      agentID = agentId;
+    });
+    fetchCustName();
   }
 
   void showProgressDialog(BuildContext context) {
@@ -99,6 +109,7 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
     Provider.of<AgentCustomerDetailsProvider>(context, listen: false);
 
     await provider.getAgentCustomerDetails("361");
+   // await provider.getAgentCustomerDetails(agentID);
 
     if (!mounted) return; // ✅ Prevent setState if widget is disposed
 
@@ -367,7 +378,7 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
                               "Due amount: Rs. ${duesList!.data![index].dueAmount}",
                               style: _infoTextStyle(),
                             ),
-                            const SizedBox(height: 5),
+                          //  const SizedBox(height: 5),
                             Row(
                               children: [
                                 Text("Loan type: RD", style: _infoTextStyle()),

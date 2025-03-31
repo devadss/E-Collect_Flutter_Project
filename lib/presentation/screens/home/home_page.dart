@@ -11,7 +11,6 @@ import '../../../../core/colors.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../../core/general.dart';
 
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -20,9 +19,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final bool _isCardDetailsVisible = false;
+ // final bool _isCardDetailsVisible = false;
   int test = 0;
-  bool _isCvvVisible = false;
+  //bool _isCvvVisible = false;
   String? userName;
   String? entityId;
   String? token;
@@ -126,13 +125,8 @@ class _HomePageState extends State<HomePage> {
   }
   @override
   Widget build(BuildContext context) {
-     final transProvider = Provider.of<TransactionProvider>(context, listen: true);
     final fetchBalanceProvider = Provider.of<BalanceProvider>(context , listen: true);
     final provider = Provider.of<AgentTransactionProvider>(context, listen: true);
-
-    // if (provider.transactions == null) {
-    //   return const Center(child: CircularProgressIndicator());
-    // }
     return Scaffold(
       backgroundColor: white,
       body: Container(
@@ -161,13 +155,11 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   const SizedBox(height: 5),
-                 // provider.transactions== null?
                   provider.agentPaymentTransctionModel == null?
                       const Center(child: CircularProgressIndicator(color: deepTeal),):
                   Text(
                     "Your Balance: ₹ ${
                         fetchBalanceProvider.balanceModel?.result?.isNotEmpty == true
-                      //  provider.agentPaymentTransctionModel?.data?.isNotEmpty == true
                             ? addCommasToNumber(fetchBalanceProvider.balanceModel!.result![0].balance!.toDouble())
                             : ' '
                     }"
@@ -186,11 +178,11 @@ class _HomePageState extends State<HomePage> {
 
             /// **Agent Card**
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 35),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: CarouselSlider(
                 options: CarouselOptions(
                   height: MediaQuery.of(context).size.height *
-                      0.25, // Same height as previous container
+                      0.20, // Same height as previous container
                   autoPlay: true,
                   enlargeCenterPage: true,
                   viewportFraction: 1, // Ensure full width
@@ -241,7 +233,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 child:
-                  //  provider.transactions == null?
                     provider.agentPaymentTransctionModel == null?
                         const Center(child: CircularProgressIndicator(color: deepTeal),):
                 Column(
@@ -265,7 +256,6 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(height: 15),
                     Expanded(
                       child: ListView.separated(
-                       // itemCount: provider.transactions!.result!.length,
                         itemCount: provider.agentPaymentTransctionModel!.data!.length,
                         separatorBuilder: (_, __) => const Divider(thickness: 1),
                         itemBuilder: (context, index) {
@@ -278,36 +268,6 @@ class _HomePageState extends State<HomePage> {
                               TransactionHistoryPage(agentTransaction: provider.agentPaymentTransctionModel!.data![index])));
                             },
                             child:
-                            // ListTile(
-                            //   leading: CircleAvatar(
-                            //     backgroundColor: green.shade100,
-                            //     child:
-                            //       Image.asset("assets/images/payment_recived.png", scale: 20,)
-                            //     // const Icon(Icons.account_balance_wallet,
-                            //     //     color: green),
-                            //   ),
-                            //   title: Text(
-                            //     "Payment Received",
-                            //     style: GoogleFonts.inter(
-                            //         fontSize: 16, fontWeight: FontWeight.w600),
-                            //   ),
-                            //   subtitle: Text(
-                            //    // formatTimestamp(provider.transactions!.result![index].transaction!.time!.toInt()),
-                            //     //formatTimestamp(provider.agentPaymentTransctionModel!.data![index].createdAt.toString()),
-                            // //    "March 20, 2025 • 3:30 PM",
-                            //       provider.agentPaymentTransctionModel!.data![index].createdAt.toString(),
-                            //     style: GoogleFonts.inter(fontSize: 14, color: grey),
-                            //   ),
-                            //   trailing: Text(
-                            //   "₹ ${provider.transactions!.result![index].transaction!.amount.toString()}",
-                            //     "₹ ${provider.agentPaymentTransctionModel!.data![index].linkAmount.toString()}",
-                            //     style: GoogleFonts.inter(
-                            //       fontSize: 16,
-                            //       fontWeight: FontWeight.w800,
-                            //       color: green,
-                            //     ),
-                            //   ),
-                            // ),
                             ListTile(
                               leading: Container(
                                 height: 50,
@@ -403,102 +363,3 @@ class _HomePageState extends State<HomePage> {
 
 }
 
-/*  void exitAlertDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false, // Prevents closing by tapping outside
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                const Icon(
-                  Icons.warning_amber_outlined,
-                  color: Color(0xFFEA307B),
-                  size: 40.0,
-                ),
-                const SizedBox(height: 16.0),
-                Text(
-                  'Are you sure?',
-                  style: GoogleFonts.inter(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF404040),
-                  ),
-                ),
-                const SizedBox(height: 8.0),
-                Text(
-                  'Do you really want to exit Collection Qr ?',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.inter(
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w400,
-                    color: const Color(0xFF404040).withOpacity(0.7),
-                  ),
-                ),
-                const SizedBox(height: 24.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(); // Close dialog first
-                        SystemNavigator.pop(); // Exit app
-
-                      },
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
-                        // backgroundColor: const Color(0xFFEA307B),
-                        backgroundColor:   deepTeal,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                      child: Text(
-                        'Yes',
-                        style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16.0,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(); // Close the dialog
-                      },
-                      style: TextButton.styleFrom(
-                        foregroundColor: const Color(0xFF404040),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
-                        // backgroundColor: const Color(0xFFEDEDED),
-                        backgroundColor: deepTeal,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                      child: Text(
-                        'No',
-                        style: GoogleFonts.inter(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16.0,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }*/

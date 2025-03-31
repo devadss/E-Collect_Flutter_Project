@@ -1,4 +1,5 @@
 
+import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -15,14 +16,24 @@ class DuesHomePage extends StatefulWidget {
 }
 
 class _DuesHomePageState extends State<DuesHomePage> {
+  String agentID = "";
   @override
   void initState() {
-    final provider =
-        Provider.of<AgentCustomerDetailsProvider>(context, listen: false);
-    provider.getAgentCustomerDetails("361");
+
     super.initState();
+    getSharedData();
   }
 
+void getSharedData()async{
+    String agentId = await SharedPref.shared.getAgentOriginId();
+    setState(() {
+      agentID = agentId;
+    });
+    final provider =
+    Provider.of<AgentCustomerDetailsProvider>(context, listen: false);
+   // provider.getAgentCustomerDetails(agentID);
+   provider.getAgentCustomerDetails("361");
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,6 +87,7 @@ class _DuesHomePageState extends State<DuesHomePage> {
                                                 custAcNumber: provider.agentCustomerDetailsModel?.customerList?.data?[index].accNo ?? "ACCNO" ,
                                                 custPhoneNumber: provider.agentCustomerDetailsModel?.customerList?.data?[index].mobile ?? "MOBILE",
                                                 custId: '361',
+                                               // custId: agentID,
                                               )));
                                 },
                                 child: Container(
