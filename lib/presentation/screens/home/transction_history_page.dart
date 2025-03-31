@@ -6,6 +6,7 @@ import '../../../domain/model/agent_transction_model.dart';
 
 class TransactionHistoryPage extends StatefulWidget {
   final AgentTransaction agentTransaction;
+
   const TransactionHistoryPage({super.key, required this.agentTransaction});
 
   @override
@@ -21,10 +22,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
         title: Text(
           "Transaction Details",
           style: GoogleFonts.inter(
-              fontWeight: FontWeight.w700,
-              fontSize: 23,
-              color: deepTeal
-          ),
+              fontWeight: FontWeight.w700, fontSize: 23, color: deepTeal),
         ),
       ),
       backgroundColor: white,
@@ -63,7 +61,14 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                   child: Column(
                     children: [
                       Text(
-                        "Your payment ${widget.agentTransaction.linkStatus}",
+                        "Your payment ${widget.agentTransaction.linkStatus.toString().startsWith("Status") &&
+                            widget.agentTransaction.linkStatus != null ?
+                        widget.agentTransaction.linkStatus.toString().replaceAll("Status.", "") :
+                        widget.agentTransaction.linkStatus.toString().startsWith("Status") &&
+                            widget.agentTransaction.linkStatus == null ?
+                        widget.agentTransaction.linkStatus.toString().replaceAll('null', ""):
+                        widget.agentTransaction.linkStatus
+                        }",
                         style: GoogleFonts.inter(
                           color: black54,
                           fontSize: 16,
@@ -75,8 +80,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                         style: GoogleFonts.inter(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: teal700
-                        ),
+                            color: teal700),
                       ),
                     ],
                   ),
@@ -109,15 +113,42 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                     ),
                   ),
                   const SizedBox(height: 15),
-                  buildDetailRow("Transfer ID", "${widget.agentTransaction.orderId}"),
-                  buildDetailRow("Status", widget.agentTransaction.linkStatus.toString().replaceAll("Status.", "")),
-                  buildDetailRow("Amount", "Rs.${widget.agentTransaction.linkAmount}"),
-                  buildDetailRow("Currency", widget.agentTransaction.linkCurrency.toString().replaceAll("LinkCurrency.", "")),
-                  buildDetailRow("Purpose", widget.agentTransaction.linkPurpose.toString().replaceAll("LinkPurpose.", "").replaceAll("_", " ")),
-                  buildDetailRow("Customer", widget.agentTransaction.customerName.toString().replaceAll("CustomerName.", "").replaceAll("_", " ")),
-                  buildDetailRow("Customer ID", "${widget.agentTransaction.customerId}"),
-                  buildDetailRow("Customer Phone","${widget.agentTransaction.customerPhone}"),
+                  buildDetailRow("Transfer ID",
+                      "${widget.agentTransaction.orderId!.startsWith("null") ? widget.agentTransaction.orderId?.replaceAll("null", "") : widget.agentTransaction.orderId}"),
+                  widget.agentTransaction.linkStatus == null
+                      ? const SizedBox()
+                      : buildDetailRow(
+                          "Status",
+                          widget.agentTransaction.linkStatus
+                              .toString()
+                              .replaceAll("Status.", "")),
+                  buildDetailRow(
+                      "Amount", "Rs.${widget.agentTransaction.linkAmount}"),
+                  buildDetailRow(
+                      "Currency",
+                      widget.agentTransaction.linkCurrency
+                          .toString()
+                          .replaceAll("LinkCurrency.", "")),
+                  buildDetailRow(
+                      "Purpose",
+                      widget.agentTransaction.linkPurpose
+                          .toString()
+                          .replaceAll("LinkPurpose.", "")
+                          .replaceAll("_", " ")),
+                  buildDetailRow(
+                      "Customer",
+                      widget.agentTransaction.customerName
+                          .toString()
+                          .replaceAll("CustomerName.", "")
+                          .replaceAll("_", " ")),
+                  buildDetailRow(
+                      "Customer ID", "${widget.agentTransaction.customerId}"),
+                  buildDetailRow("Customer Phone",
+                      "${
 
+                          widget.agentTransaction.customerPhone
+
+                      }"),
                   const Spacer(),
                 ],
               ),
@@ -155,4 +186,3 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
     );
   }
 }
-

@@ -20,7 +20,7 @@ class CustRegRepository implements RegCustInterafce {
         headers: {'Content-Type': 'application/json'},
       );
 
-      print(response.body);
+      print("RegisteredCust : ${response.body}");
 
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(response.body);

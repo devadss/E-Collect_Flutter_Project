@@ -115,7 +115,7 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
                 backgroundColor: teal700,
                 foregroundColor: white,
               ),
-              child: const Text("Send Link"),
+              child: const Text('Send Link'),
             ),
           ],
         );

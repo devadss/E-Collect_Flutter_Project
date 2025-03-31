@@ -48,52 +48,76 @@ class _MobileNumberVerificationPageState
         (error) {
           Navigator.pop(context);
           print("Error: ${error.message}");
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  "Error: ${error.message}",
-                  style:
-                  GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
-                ),
-                backgroundColor: Colors.red,
-              )          );
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+              "Error: ${error.message}",
+              style: GoogleFonts.inter(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 17),
+            ),
+            backgroundColor: Colors.red,
+          ));
         },
-            (customer) {
+        (customer) {
           Navigator.pop(context);
           //print("Customer Name: ${customer.response!.data!.firstName}");
           print("Customer Name: ${customer.response!.data!['firstName']}");
           print("Customer MPin: ${customer.mpin.toString()}");
-          SharedPref.shared.setAgentId(customer.response!.data!['custId'].toString());
-          SharedPref.shared.setMobNum(customer.response!.data!['contactNo'].toString());
-          SharedPref.shared.setAgentName(customer.response!.data!['firstName'].toString());
-          SharedPref.shared.setAgentOriginId(customer.response!.data!['agentOrginId'].toString());
-          SharedPref.shared.setEmail(customer.response!.data!['emailId'].toString());
-          SharedPref.shared.setCorpCode(customer.response!.data!['corpCode'].toString());
-          SharedPref.shared.setMpinValue(customer.mpin.toString());
-          // SharedPref.shared.setCustId(customer.response!.data!.custId.toString());
-          //SharedPref.shared.setMobNum(customer.response!.data!.contactNo.toString());
-          //SharedPref.shared.setUserName(customer.response!.data!.firstName.toString());
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => LoginPage(
-                    mobNum: _mobileNumberController.text,
-                    tokenStatus: customer.status.toString(),
-                  )));
-        },
 
+          if(customer.response!.data!['Customer_type'] != null||
+              customer.response!.data!['Customer_type']?.isNotEmpty == true){
+            print("Phase 1");
+            if(customer.response!.data!['Customer_type'] == "COLLECTION_AGENT"){
+              print("Phase 2");
+              if (customer.response!.data!.containsKey("CustId")) {
+                SharedPref.shared
+                    .setAgentId(customer.response!.data!['CustId'].toString());
+              } else {
+                SharedPref.shared
+                    .setAgentId(customer.response!.data!['custId'].toString());
+              }
+
+              SharedPref.shared
+                  .setMobNum(customer.response!.data!['contactNo'].toString());
+              SharedPref.shared
+                  .setAgentName(customer.response!.data!['firstName'].toString());
+              SharedPref.shared.setAgentOriginId(
+                  customer.response!.data!['AgentOrginId'].toString());
+              SharedPref.shared
+                  .setEmail(customer.response!.data!['emailId'].toString());
+              SharedPref.shared
+                  .setCorpCode(customer.response!.data!['CorpCode'].toString());
+              SharedPref.shared.setMpinValue(customer.mpin.toString());
+              //SharedPref.shared.setMobNum(customer.response!.data!.contactNo.toString());
+              //SharedPref.shared.setUserName(customer.response!.data!.firstName.toString());
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => LoginPage(
+                        mobNum: _mobileNumberController.text,
+                        tokenStatus: customer.status.toString(),
+                      )));
+            }else{
+              print("Not a valid collection agent");
+              showInSnackBar("Not a valid collection agent");
+            }
+          }
+          else{
+            print("Not a valid collection agent");
+            showInSnackBar("Not a valid collection agent");
+          }
+
+        },
       );
     }
   }
 
   void showInSnackBar(String value) {
-    var snackBar =
-    SnackBar(
-    content: Text(value,
-        style:GoogleFonts.inter(
-          color: Colors.white, fontSize: 17, fontWeight: FontWeight.w700
-        )
-      ),
+    var snackBar = SnackBar(
+      content: Text(value,
+          style: GoogleFonts.inter(
+              color: Colors.white, fontSize: 17, fontWeight: FontWeight.w700)),
       backgroundColor: Colors.red,
     );
 

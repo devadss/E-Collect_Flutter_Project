@@ -300,18 +300,38 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   child: const BuildButton(buttonText: "LOGIN")),
             ),
+            // GestureDetector(
+            //   onTap: (){
+            //     Navigator.push(context, MaterialPageRoute(builder: (context)=>
+            //      ForgotUsernamePasswordPage(mobNum: widget.mobNum)));
+            //   },
+            //
+            //   child: Text(
+            //     "Forgot username or password ?",
+            //     style: GoogleFonts.inter(
+            //         color: Colors.indigo,
+            //         fontSize: 17,
+            //         fontWeight: FontWeight.w400),
+            //   ),
+            // )
+            const SizedBox(height: 40),
             GestureDetector(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>
-                 ForgotUsernamePasswordPage(mobNum: widget.mobNum)));
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ForgotUsernamePasswordPage(mobNum: widget.mobNum,)));
               },
-
-              child: Text(
-                "Forgot username or password ?",
-                style: GoogleFonts.inter(
-                    color: Colors.indigo,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w400),
+              child: Center(
+                child: Text(
+                  "Forgot Username / Password?",
+                  style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w700,
+                      decoration: TextDecoration.underline,
+                      color: colorBlue,
+                      decorationColor: colorBlue),
+                ),
               ),
             )
           ],
