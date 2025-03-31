@@ -8,10 +8,10 @@ class CreateOrderProvider extends ChangeNotifier{
   CreateOrderProvider(this._orderCreateRepository);
   PaymentGatewayOrderResponseModel? _paymentGatewayOrderResponseModel;
   PaymentGatewayOrderResponseModel? get paymentGatewayOrderResponseModel => _paymentGatewayOrderResponseModel;
-  Future<void> createOrderId(String? orderID,double? amount,String? custId,String? custName,String? custEmail,String? custMobNumber)async{
+  Future<void> createOrderId(String? orderID,double? amount,String? custId,String? custName,String? custEmail,String? custMobNumber, String token)async{
     print("--------------------CreateOrderProvider MODEL---------------------");
     print(paymentGatewayOrderResponseModel);
-    final result = await _orderCreateRepository.createOrderId(orderID, amount, custId, custName, custEmail, custMobNumber);
+    final result = await _orderCreateRepository.createOrderId(orderID, amount, custId, custName, custEmail, custMobNumber, token);
     result.fold(
           (failure){
         print("failure");

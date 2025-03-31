@@ -119,7 +119,8 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
         showProgressDialog(context);
         final provider = Provider.of<AuthProvider>(context, listen: false);
         final response = await provider.getAuthResult(
-            contactNum, encryptString(pin, _sk, _iv).toString());
+            contactNum, encryptString(pin, _sk, _iv).toString(),
+        token);
 
         response.fold(
           (error) {
@@ -174,7 +175,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
 
       showProgressDialog(context);
       final provider = Provider.of<AuthProvider>(context, listen: false);
-      final response = await provider.getAuthResult(contactNum, mpin);
+      final response = await provider.getAuthResult(contactNum, mpin, token);
 
       response.fold(
         (error) {

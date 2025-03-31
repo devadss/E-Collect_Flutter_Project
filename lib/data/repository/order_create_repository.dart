@@ -11,7 +11,8 @@ import '../service/error_handler.dart';
 
 class OrderCreateRepository implements CashFreeOrderCreateInterface{
   @override
-  Future<Either<ErrorHandler, PaymentGatewayOrderResponseModel>> createOrderId(String? orderID,double? amount,String? custId,String? custName,String? custEmail,String? custMobNumber) async{
+  Future<Either<ErrorHandler, PaymentGatewayOrderResponseModel>>createOrderId(String? orderID,double? amount,String? custId,String? custName,String? custEmail,String? custMobNumber,
+      String token) async{
 
     final uri = Uri.parse("${baseUrl}api/Cashfree/CashfeeOrder");
 
@@ -39,7 +40,8 @@ class OrderCreateRepository implements CashFreeOrderCreateInterface{
       final response = await http.post(
         uri,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
         },
         body: jsonEncode(body),
       );

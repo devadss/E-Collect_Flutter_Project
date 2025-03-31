@@ -289,7 +289,9 @@ class _GeneratedQrCodePageState extends State<GeneratedQrCodePage> {
                 if (mounted) {
                   //Navigator.pop(context); // Close the dialog
                   //depositCash();
+
                     Navigator.pop(context); // Close the dialog
+                    _fetchBalance();
                     Navigator.pop(context, "fetch_balance");
                 }
               },

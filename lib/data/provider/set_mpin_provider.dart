@@ -8,7 +8,8 @@ class SetMpinProvider with ChangeNotifier{
 
   SetMpinProvider(this._mpinRepository);
 
-  Future<Either<MpinSetResponse, MpinSetResponse>>setMpin(String mpin , String mobnum) async{
-    return _mpinRepository.setMpin(mpin, mobnum);
+  Future<Either<MpinSetResponse, MpinSetResponse>>setMpin(String mpin , String mobnum,
+      String token) async{
+    return _mpinRepository.setMpin(mpin, mobnum, token);
   }
 }

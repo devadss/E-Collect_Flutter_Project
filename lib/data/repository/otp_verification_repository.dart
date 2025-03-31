@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:collection_qr_flutter/domain/interface/otp_verification_interface.dart';
 import 'package:collection_qr_flutter/domain/model/otp_fail_model.dart';
 import 'package:collection_qr_flutter/domain/model/otp_verification_success.dart';
-
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 class OtpVerificationRepository implements OtpVerificationInterface {
   @override
@@ -16,28 +16,34 @@ class OtpVerificationRepository implements OtpVerificationInterface {
       print("mobnum = $mobnum");
       print("otp = $otp");
       final uri = Uri.parse("${baseUrl}api/VerifyOTP");
-      final data = {'MobileNo': '+91$mobnum', 'OTp': otp};  // Fixed "OTp" key
+      final data = {'MobileNo': '+91$mobnum', 'OTp': otp}; // Fixed "OTp" key
+      bool checkConnection = await InternetConnectionChecker().hasConnection;
+      if (checkConnection == true) {
+        final request = await http.post(
+          uri,
+          body: jsonEncode(data),
+          headers: {'Content-Type': 'application/json'},
+        );
+        print("request = ${request.body}");
+        print("request = ${request.statusCode}");
 
-      final request = await http.post(
-        uri,
-        body: jsonEncode(data),
-        headers: {'Content-Type': 'application/json'},
-      );
-      print("request = ${request.body}");
-      print("request = ${request.statusCode}");
-
-      if (request.statusCode == 200) {
-        final otpSuccessModel = OtpSuccessModel.fromJson(jsonDecode(request.body));
-        return Right(otpSuccessModel);
-      }
-      else if(request.statusCode == 401){
-        print("request.statusCode == 401");
-        final otpFailModel = OtpFailModel.fromJson(jsonDecode(request.body));
-        return Left(otpFailModel);
-      }
-      else {
-        // Handle all non-200 status codes with the same logic
-        final otpFailModel = OtpFailModel.fromJson(jsonDecode(request.body));
+        if (request.statusCode == 200) {
+          final otpSuccessModel =
+              OtpSuccessModel.fromJson(jsonDecode(request.body));
+          return Right(otpSuccessModel);
+        } else if (request.statusCode == 401) {
+          print("request.statusCode == 401");
+          final otpFailModel = OtpFailModel.fromJson(jsonDecode(request.body));
+          return Left(otpFailModel);
+        } else {
+          // Handle all non-200 status codes with the same logic
+          final otpFailModel = OtpFailModel.fromJson(jsonDecode(request.body));
+          return Left(otpFailModel);
+        }
+      } else {
+        final otpFailModel = OtpFailModel(
+          message: "CHECK NETWORK CONNECTION", status: "N"
+        );
         return Left(otpFailModel);
       }
     } catch (e) {

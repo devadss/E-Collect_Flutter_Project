@@ -21,7 +21,8 @@ class PaymentLinkProvider with ChangeNotifier {
       num linkAmount,
       String note,
       String corpCode,
-      String cardRefNum) async {
+      String cardRefNum,
+      String token) async {
     return _paymentLinkRepository.getPaymentLink(
         agentName,
         agentId,
@@ -36,6 +37,6 @@ class PaymentLinkProvider with ChangeNotifier {
         linkAmount,
         note,
         corpCode,
-        cardRefNum);
+        cardRefNum, token);
   }
 }

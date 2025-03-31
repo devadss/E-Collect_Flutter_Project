@@ -24,7 +24,8 @@ class PaymentLinkRepository implements IPaymentLinkRepository {
       num linkAmount,
       String note,
       String corpCode,
-      String cardRefNum) async {
+      String cardRefNum,
+      String token) async {
     final url = Uri.parse("${baseUrl}api/Cashfree/CreatePaymentLink");
 
     final Map<String, dynamic> body = {
@@ -59,6 +60,7 @@ class PaymentLinkRepository implements IPaymentLinkRepository {
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
+          'Authorization': 'Bearer $token',
         },
         body: jsonEncode(body), // Convert Map to JSON String
       );

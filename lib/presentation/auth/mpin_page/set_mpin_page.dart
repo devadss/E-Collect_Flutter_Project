@@ -13,6 +13,7 @@ import '../../../core/colors.dart';
 class SetMpinPage extends StatefulWidget {
   final String monNumber;
 
+
   const SetMpinPage({super.key, required this.monNumber});
 
   @override
@@ -22,6 +23,7 @@ class SetMpinPage extends StatefulWidget {
 class _SetMpinPageState extends State<SetMpinPage> {
   final String _sk = "770A8A65DA156D24EE2A093277530142";
   final String _iv = "1234567890123456";
+   String token ="";
   final List<TextEditingController> _mpinController =
       List.generate(6, (_) => TextEditingController());
 
@@ -29,6 +31,19 @@ class _SetMpinPageState extends State<SetMpinPage> {
       List.generate(6, (_) => TextEditingController());
 
   String? errorMsg;
+
+@override
+  void initState() {
+    super.initState();
+    loadSharedData();
+  }
+  void loadSharedData() async {
+
+    String tok = await SharedPref.shared.getTokenValue();
+    setState(() {
+      token = tok;
+    });
+  }
 
   void showProgressDialog(BuildContext context) {
     showDialog(
@@ -109,7 +124,7 @@ class _SetMpinPageState extends State<SetMpinPage> {
 
         final response = await provider.setMpin(
             encryptPasswordString(pinTwo, _sk, _iv).toString(),
-            widget.monNumber);
+            widget.monNumber,token);
 
         response.fold(
           (error) {
@@ -117,9 +132,9 @@ class _SetMpinPageState extends State<SetMpinPage> {
             ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    "Error: ${error}",
+                    "Error: $error",
                     style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 17),
+                    const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 17),
                   ),
                   backgroundColor: Colors.red,
                 )

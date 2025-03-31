@@ -280,7 +280,7 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
         entityId,
         name,
         email,
-        phoneNumber);
+        phoneNumber,tokenValue.toString());
     paymentSessionId = orderCraeteProvider
         .paymentGatewayOrderResponseModel!.paymentSessionId
         .toString();
@@ -311,8 +311,9 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
       if (result == "fetch_balance") {
         // goBack();
         // _fetchBalance();
-        fetchTransaction();
         _fetchBalance();
+        fetchTransaction();
+
         Navigator.pop(context);
 
       }

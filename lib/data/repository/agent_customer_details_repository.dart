@@ -12,6 +12,7 @@ class AgentCustomerDetailsRepository implements IAgentCustomerDetailsRepository{
   Future<Either<ErrorHandler, AgentCustomerDetailsModel>> getAgentCustomerDetails(String agentId) async{
    final url = Uri.parse("https://doorstepmftctest.digicob.in/getCustomerlist");
    bool checkConnection = await InternetConnectionChecker().hasConnection;
+
    final body = {
      "agent_id": agentId
    };

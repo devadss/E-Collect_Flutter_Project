@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'package:collection_qr_flutter/core/alerts.dart';
 import 'package:flutter/material.dart';
 import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
 import 'package:collection_qr_flutter/data/provider/token_expiry_provider.dart';
 import 'package:collection_qr_flutter/data/provider/token_request_provider.dart';
 import 'package:collection_qr_flutter/data/service/notification_service/notification_service.dart';
 import 'package:collection_qr_flutter/presentation/auth/authetication_page/google_pin_code_page.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../auth/mobile_number_page.dart';
@@ -30,6 +32,20 @@ class _SplashScreenState extends State<SplashScreen> {
 
     super.initState();
   }
+  void showInSnackBar(String value, String color) {
+    var snackBar = SnackBar(
+      content: Text(
+        value,
+        style: GoogleFonts.inter(
+            color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
+      ),
+      backgroundColor:
+      color == "RED"?
+      Colors.red:
+      Colors.green,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
 
   Future<void> validateToken(String token,
 
@@ -46,7 +62,8 @@ class _SplashScreenState extends State<SplashScreen> {
     tokenValidateResponse.fold(
       (error) {
        // Navigator.pop(context);
-        print("Token Validation Error: ${error}");
+        print("Token Validation Error: $error");
+        showInSnackBar(error, "RED");
       },
       (data) async {
         print("Token Validation ${data.isExpired}");

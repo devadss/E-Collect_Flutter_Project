@@ -10,7 +10,7 @@ class AuthProvider with ChangeNotifier {
   AuthProvider(this._authRepository);
 
   Future<Either<AuthFailtResponse, AuthSuccessResponse>> getAuthResult(
-      String mobnum, String mpin) {
-    return _authRepository.getAuthResult(mobnum, mpin);
+      String mobnum, String mpin, String token) {
+    return _authRepository.getAuthResult(mobnum, mpin,token);
   }
 }

@@ -19,5 +19,6 @@ abstract class IPaymentLinkRepository {
       num linkAmount,
       String note,
       String corpCode,
-      String cardRefNum);
+      String cardRefNum,
+      String token);
 }

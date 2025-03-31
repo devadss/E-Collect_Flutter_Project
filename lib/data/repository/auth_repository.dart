@@ -6,31 +6,39 @@ import 'package:collection_qr_flutter/domain/interface/auth_interface.dart';
 import 'package:collection_qr_flutter/domain/model/auth_fail_model.dart';
 import 'package:collection_qr_flutter/domain/model/auth_success_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 
 class AuthRepository implements AuthInterface{
   @override
-  Future<Either<AuthFailtResponse, AuthSuccessResponse>> getAuthResult(String mobnum, String mpin) async {
+  Future<Either<AuthFailtResponse, AuthSuccessResponse>> getAuthResult(String mobnum,
+      String mpin, String token) async {
 try{
+  bool checkConnection = await InternetConnectionChecker().hasConnection;
   final uri = Uri.parse("${baseUrl}api/MobLogin");
-  final request = await http.post(
-    uri,
-    body: json.encode({
-      "MobileNo":mobnum,
-      "MPIN":mpin,
+  if(checkConnection == true){
+    final request = await http.post(
+        uri,
+        body: json.encode({
+          "MobileNo":mobnum,
+          "MPIN":mpin,
 
-    }),
-    headers: {'Content-Type': 'application/json'}
-  );
-  print("response = ${request.body}");
-  if( request.statusCode ==  200){
-  AuthSuccessResponse authSuccessResponse = AuthSuccessResponse.fromJson(jsonDecode(request.body));
-    return Right(authSuccessResponse);
+        }),
+        headers: {'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        }
+    );
+    print("response = ${request.body}");
+    if( request.statusCode ==  200){
+      AuthSuccessResponse authSuccessResponse = AuthSuccessResponse.fromJson(jsonDecode(request.body));
+      return Right(authSuccessResponse);
+    }
+    if(request.statusCode == 401){
+      AuthFailtResponse authFailtResponse = AuthFailtResponse.fromJson(jsonDecode(request.body));
+      return Left(authFailtResponse);
+    }
   }
-  if(request.statusCode == 401){
-    AuthFailtResponse authFailtResponse = AuthFailtResponse.fromJson(jsonDecode(request.body));
-    return Left(authFailtResponse);
-  }
+
 }catch(e){
   
 }

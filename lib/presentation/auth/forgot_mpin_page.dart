@@ -32,10 +32,25 @@ class _ForgotMpinPageState extends State<ForgotMpinPage> {
   final String sk =  "770A8A65DA156D24EE2A093277530142";
   final String iv = "1234567890123456";
   String mobNumber = "";
+  String tokenValue = "";
   String entityId = "";
   final List<TextEditingController> _controllers =
       List.generate(4, (_) => TextEditingController());
   var otpValue = '';
+  @override
+  void initState() {
+
+    super.initState();
+    getShredValue();
+  }
+
+  Future<void> getShredValue() async {
+    String token = await SharedPref.shared.getTokenValue();
+    setState(() {
+      tokenValue = token;
+    });
+  }
+
   void showProgressDialog(BuildContext context) {
     showDialog(
         context: context,
@@ -156,7 +171,7 @@ class _ForgotMpinPageState extends State<ForgotMpinPage> {
 
   Future<void> setMpin(String ep,String mpin,String mobnum) async {
     showProgressDialog(context);
-    final setMpin = await SetMpinRepository().setMpin(mpin, mobnum);
+    final setMpin = await SetMpinRepository().setMpin(mpin, mobnum, tokenValue);
     setMpin.fold(
         (error){
           Navigator.pop(context);

@@ -42,6 +42,7 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
   String? customerNumber;
   String? customerAccountNumber;
   String? corpCode;
+  String? token;
 
   void updateTotalAmount() {
     final provider = Provider.of<DueListProvider>(context, listen: false);
@@ -138,7 +139,8 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
         num.parse(amountController.text),
         "Payment for Order #12345",
         corpCode!,
-        ""
+        "",
+        token.toString()
         // "John Doe",
         // "AGT12345",
         // "ORG98765",
@@ -189,6 +191,7 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
     final agentOrigin = await SharedPref().getAgentOriginId();
     final mail = await SharedPref().getEmail();
     final corp = await SharedPref().getCorpCode();
+    final tok = await SharedPref.shared.getTokenValue();
 
     // Trigger rebuild after fetching the userName
     if (mounted) {
@@ -199,6 +202,7 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
         agentOriginId = agentOrigin;
         agentEmail = mail;
         corpCode = corp;
+        token = tok;
       });
     }
   }

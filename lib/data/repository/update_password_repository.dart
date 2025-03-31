@@ -11,7 +11,8 @@ import '../service/error_handler.dart';
 
 class UpdatePasswordRepository implements IUpdatePasswordRepository{
   @override
-  Future<Either<ErrorHandler, UpdatePasswordModel>> updatePassword(String userName,String password,String mobPassword,String mobileNumber) async{
+  Future<Either<ErrorHandler, UpdatePasswordModel>> updatePassword(String userName,
+      String password,String mobPassword,String mobileNumber, String token) async{
     final url = Uri.parse("${baseUrl}api/UpdatePassword");
     final body = json.encode({
       "UserName": userName,
@@ -29,7 +30,9 @@ class UpdatePasswordRepository implements IUpdatePasswordRepository{
       final response = await http.post(
         url,
         body: body,
-          headers: {'Content-Type': 'application/json'}
+          headers: {'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          }
       );
       print(response.statusCode);
       print((response.body));

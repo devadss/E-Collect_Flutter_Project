@@ -60,6 +60,7 @@ class _ForgotUsernamePasswordPageState
 
   final String sk = "770A8A65DA156D24EE2A093277530142";
   final String iv = "1234567890123456";
+  String token = "";
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _reenterPasswordController = TextEditingController();
@@ -70,14 +71,14 @@ class _ForgotUsernamePasswordPageState
   Future<void> loadSharedPrefs() async {
     final name = await SharedPref.shared.getAgentName();
     final phone = await SharedPref.shared.getMobNum();
+    final tok = await SharedPref.shared.getTokenValue();
     printLog("-------------------USERNAME---------------");
     print(name);
 
     // Trigger rebuild after fetching the userName
     if (mounted) {
       setState(() {
-        // userName = name;
-        // phoneNumber = phone;
+     token = tok;
       });
     }
   }
@@ -96,7 +97,7 @@ class _ForgotUsernamePasswordPageState
 
   Future<void> resetCredentials(String encrypted) async {
     final result = await UpdatePasswordRepository()
-        .updatePassword(_nameController.text.toString(), encrypted, encrypted, widget.mobNum);
+        .updatePassword(_nameController.text.toString(), encrypted, encrypted, widget.mobNum, token);
     result.fold((error) {
       printLog("------------------ERROR----------------");
       printLog(error);

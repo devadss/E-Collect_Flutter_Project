@@ -7,7 +7,8 @@ import '../service/error_handler.dart';
 class UpdatePasswordProvider with ChangeNotifier{
   final UpdatePasswordRepository _updatePasswordRepository;
   UpdatePasswordProvider(this._updatePasswordRepository);
-  Future<Either<ErrorHandler, UpdatePasswordModel>> updatePassword(String userName,String password,String mobPassword,String mobileNumber) async{
-    return _updatePasswordRepository.updatePassword(userName, password, mobPassword, mobileNumber);
+  Future<Either<ErrorHandler, UpdatePasswordModel>> updatePassword(String userName,String password,String mobPassword,String mobileNumber,
+      String token) async{
+    return _updatePasswordRepository.updatePassword(userName, password, mobPassword, mobileNumber, token);
   }
 }
