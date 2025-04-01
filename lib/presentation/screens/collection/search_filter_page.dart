@@ -223,21 +223,45 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  buildShimmerText(width: 150), // Name
-                  const SizedBox(height: 10),
-                  buildShimmerText(width: 100), // Customer ID
-                  const SizedBox(height: 10),
-                  buildShimmerText(width: 180), // Account Number
+                  Row(children: [
+                    buildShimmerText(width: 150), // Name
+                    SizedBox(width: 30,),
+                    buildShimmerText(width: 100), // Name
+
+                  ],),
+                  SizedBox(height: 10,),
+                  Row(children: [
+                    buildShimmerText(width: 150), // Name
+                    SizedBox(width: 30,),
+                    buildShimmerText(width: 50), // Name
+
+                  ],),
+                  SizedBox(height: 10,),
+                  Row(children: [
+                    buildShimmerText(width: 150), // Name
+                    SizedBox(width: 30,),
+                    buildShimmerText(width: 120), // Name
+
+                  ],),
+                  SizedBox(height: 10,),
+                  Row(children: [
+                    buildShimmerText(width: 150), // Name
+                    SizedBox(width: 30,),
+                    buildShimmerText(width: 160), // Name
+
+                  ],),// Account Number
                   const SizedBox(height: 10),
 
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
+
+                      buildShimmerText(width: 30),
                       const Icon(
                         Icons.phone,
                         size: 20,
                         color: deepTeal,
                       ),
-                      buildShimmerText(width: 120)
                     ],
                   )
                 ],

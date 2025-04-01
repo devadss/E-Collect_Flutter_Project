@@ -120,12 +120,7 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
     });
   }
 
-  // Widget buildShimmerList(){
-  //   return
-  // }
-
   Future<void> fetchCustDetails(bool status) async {
-    //  showProgressDialog(context);
     isFetchDataCalled = status;
     final provider = Provider.of<DueListProvider>(context, listen: false);
     await provider.getDueList(accountNumController.text, "2025-03-25");
@@ -133,7 +128,12 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
     print("DUELIST : ${provider.dueListModel!.duesList!.data}");
 
     if (provider.dueListModel?.duesList?.data?.isEmpty == true) {
-      //  Navigator.pop(context);
+      setState(() {
+        duesList?.data?.clear();
+        name = "";
+        isFetchDataCalled = false;
+      });
+
       showInSnackBar("No results found!");
     } else {
       setState(() {
@@ -163,10 +163,10 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
               type = "RD";
 
               break; // Exit loop after finding a match
-            } else {setState(() {
-              isFetchDataCalled = false;
-
-            });
+            } else {
+              setState(() {
+                isFetchDataCalled = false;
+              });
               // Navigator.pop(context);
             }
           }
@@ -197,11 +197,11 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildShimmerInfoRow("Customer Name", "........"),
-          SizedBox(
+          const SizedBox(
             height: 5,
           ),
           _buildShimmerInfoRow("Account Number", "........"),
-          SizedBox(
+          const SizedBox(
             height: 5,
           ),
           _buildShimmerInfoRow("Account Status", "........"),
@@ -211,38 +211,34 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
   }
 
   Widget buildShimmerCustRd() {
-    return Expanded(
+    return SizedBox(
+      height: 300, // Set a height; Adjust based on your UI
       child: ListView.builder(
         itemCount: 3, // Simulated shimmer items
         itemBuilder: (_, index) {
           return Padding(
             padding: const EdgeInsets.only(bottom: 12),
-            child: Shimmer.fromColors(
-              baseColor: Colors.grey[300]!,  // Light gray
-              highlightColor: Colors.grey[100]!, // White-ish effect
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey[300], // ✅ Ensure shimmer background color
-                  border: Border.all(color: deepTeal, width: 0.5),
-                ),
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildShimmerBox(width: 150, height: 16), // Simulated text
-                    const SizedBox(height: 5),
-                    Row(
-                      children: [
-                        _buildShimmerBox(width: 100, height: 14),
-                        const Spacer(),
-                        _buildShimmerBox(width: 24, height: 24), // Simulated checkbox
-                      ],
-                    ),
-                    const SizedBox(height: 5),
-                    _buildShimmerBox(width: 180, height: 14),
-                  ],
-                ),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: deepTeal, width: 0.5),
+              ),
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  buildShimmerText(width: 150, height: 16),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      buildShimmerText(width: 100, height: 14),
+                      const Spacer(),
+                      buildShimmerText(width: 24, height: 24),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  buildShimmerText(width: 180, height: 14),
+                ],
               ),
             ),
           );
@@ -251,31 +247,20 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
     );
   }
 
-  /// 🔹 Helper function to create shimmer placeholders (for text, checkboxes, etc.)
-  Widget _buildShimmerBox({double width = double.infinity, double height = 16}) {
-    return Container(
+  Widget buildShimmerText({double width = 150, double height = 16}) {
+    return SizedBox(
+      // Ensures it has proper constraints
       width: width,
       height: height,
-      decoration: BoxDecoration(
-        color: Colors.grey[300], // Matches shimmer effect
-        borderRadius: BorderRadius.circular(4),
-      ),
-    );
-  }
-
-
-  Widget buildShimmerText(
-      {double width = double.infinity, double height = 16}) {
-    return Shimmer.fromColors(
-      period: const Duration(milliseconds: 1500), // Ensures smooth animation
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
-      child: Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(
-          color: Colors.grey[300],
-          borderRadius: BorderRadius.circular(4),
+      child: Shimmer.fromColors(
+        period: const Duration(milliseconds: 1500),
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+            borderRadius: BorderRadius.circular(4),
+          ),
         ),
       ),
     );
@@ -425,7 +410,8 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
                                           accno = "";
                                           isFetchDataCalled = false;
                                         });
-
+                                        FocusManager.instance.primaryFocus
+                                            ?.unfocus();
                                         fetchCustDetails(true);
                                         // accountNumController.clear();
                                       } else {
@@ -483,7 +469,7 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
                   ? _buildCustomerInfo()
                   : isFetchDataCalled == true
                       ? _buildShimmerCustomerInfo()
-                      : SizedBox(),
+                      : const SizedBox(),
 
               const SizedBox(height: 15),
               //duesList?.data != null
@@ -543,8 +529,8 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
                       ),
                     )
                   : isFetchDataCalled == true
-                      ?  buildShimmerCustRd()
-                      : SizedBox(),
+                      ? buildShimmerCustRd()
+                      : const SizedBox(),
             ],
           ),
         ),
@@ -554,168 +540,6 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
     );
   }
 
-/*  Widget build(BuildContext context) {
-
-    return Scaffold(
-      backgroundColor: white,
-      body:
-        Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          children: [
-            const SizedBox(height: 100),
-            Container(
-              height: MediaQuery.of(context).size.height *0.08,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: deepTeal,
-                  boxShadow: [
-                    BoxShadow(
-                        offset: const Offset(0, 2),
-                        blurRadius: 20,
-                        spreadRadius: 0,
-                        color: black.withOpacity(0.25)
-                    )
-                  ],
-                  border: Border.all(color: black,width:0.5)
-              ),
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Today's Collection : Rs.10,000",
-                      style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 18,
-                          color: white
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.07,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: white,
-                      border: Border.all(color: deepTeal, width: 1.5),
-                      boxShadow:  const [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 5,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child:
-                    Padding(
-                      padding:const  EdgeInsets.symmetric(horizontal: 15),
-                      child: Row(
-                        children: [
-
-                          const Icon(Icons.search, color: deepTeal),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: TextField(
-                              controller: accountNumController,
-                              keyboardType: TextInputType.number,
-                              inputFormatters: <TextInputFormatter>[
-                                LengthLimitingTextInputFormatter(8),
-                              ],
-                              decoration: const InputDecoration(
-
-                                suffixIcon: Icon(Icons.send),
-                                border: InputBorder.none,
-                                hintText: "Enter Account Number",
-                                hintStyle: TextStyle(color:black),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10), // Add some spacing between the input and search icon
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=> const SearchFilterPage()));
-                  },
-                  child: const Icon(Icons.search, color: deepTeal, size: 40),
-                ),
-              ],
-            ),
-            Column(
-              children: [
-                //_buildCustomerInfo(),
-                const SizedBox(height: 15),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount:1,
-                    // provider.dueListModel!.duesList!.data!.length,
-                    itemBuilder: (_, index) {
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: white,
-                            border:
-                            Border.all(color: deepTeal, width: 0.5)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                //  "Due amount: Rs.${provider.dueListModel!.duesList!.data![index].dueAmount}",
-                                  "Due amount: Rs. ",
-                                  style: _infoTextStyle()),
-                              const SizedBox(height: 5),
-                              Row(
-                                children: [
-                                  Text("Loan type: RD",
-                                      style: _infoTextStyle()),
-                                  const Spacer(),
-                                  Transform.scale(
-                                    scale: 1.2,
-                                    child: Checkbox(
-                                      value: checkedItems[index],
-                                      onChanged: (bool? value) {
-                                        setState(() {
-                                          checkedItems[index] = value!;
-                                          updateTotalAmount();
-                                        });
-                                      },
-                                      activeColor: teal700,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                  "Due date: ",
-                                  // "Due date: ${provider.dueListModel!.duesList!.data![index].dueMonth}",
-                                  style: _infoTextStyle()),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            )
-          ],
-        ),
-      ));
-
-  }*/
   void _proceedButtonClick() {
     showDialog(
       context: context,

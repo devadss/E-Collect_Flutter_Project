@@ -138,6 +138,7 @@ class _HomePageState extends State<HomePage> {
 
     return formattedNumber;
   }
+
   Widget buildShimmerText({String text = "Loading Balance.....", double fontSize = 16}) {
     return Shimmer.fromColors(
       baseColor: Colors.grey[400]!, // Darker base color
