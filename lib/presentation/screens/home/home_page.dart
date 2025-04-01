@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:collection_qr_flutter/data/provider/transaction_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../../core/colors.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../../core/general.dart';
@@ -131,6 +132,94 @@ class _HomePageState extends State<HomePage> {
 
     return formattedNumber;
   }
+  Widget buildShimmerText({String text = "Loading Balance.....", double fontSize = 16}) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[400]!, // Darker base color
+      highlightColor: Colors.grey[100]!, // Lighter highlight color
+      child: Text(
+        textAlign: TextAlign.start,
+        text,
+        style:GoogleFonts.inter(
+          fontSize: fontSize,
+          fontWeight: FontWeight.bold,
+          color: Colors.grey[300],
+        )
+      ),
+    );
+  }
+
+  Widget buildShimmerList(){
+    return Shimmer.fromColors(
+        baseColor: Colors.grey[400]!,
+        highlightColor: Colors.grey[100]!,
+        child:  Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildSummaryCard(
+                  icon: Icons.attach_money,
+                  title: "Total Initiated",
+                  amount: "",
+                ),
+                _buildSummaryCard(
+                  icon: Icons.account_balance_wallet,
+                  title: "Total Received",
+                  amount: "",
+                ),
+              ],
+            ),
+            const SizedBox(height: 15),
+            Expanded(
+              child: ListView.separated(
+                itemCount: 5,
+                separatorBuilder: (_, __) =>
+                const Divider(thickness: 1),
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    leading: Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        color: lightGreen.shade200,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: black),
+                      ),
+                      child: Image.asset(
+                        "assets/images/payment_recived.png",
+                        scale: 20,
+                        color: black,
+                      ),
+                    ),
+                    title: Text(
+                      "Please wait....",
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Text(
+                        "Please wait....",
+                      style: GoogleFonts.inter(
+                          fontSize: 10, color: grey),
+                    ),
+                    trailing: Text(
+                      "₹....",
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                        color: green,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ));
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -167,9 +256,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const SizedBox(height: 5),
                   provider.agentPaymentTransctionModel == null
-                      ? const Center(
-                          child: CircularProgressIndicator(color: deepTeal),
-                        )
+                      ?  buildShimmerText()
                       : Text(
                           "Your Balance: ₹ ${fetchBalanceProvider.balanceModel?.result?.isNotEmpty == true ? addCommasToNumber(fetchBalanceProvider.balanceModel!.result![0].balance!.toDouble()) : ' '}",
                           style: GoogleFonts.inter(
@@ -241,10 +328,11 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 child: provider.agentPaymentTransctionModel == null
-                    ? const Center(
-                        child: CircularProgressIndicator(color: deepTeal),
-                      )
-                    : Column(
+                    ?
+               // CircularProgressIndicator(color: deepTeal)
+                buildShimmerList()
+                    :
+                Column(
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

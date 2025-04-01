@@ -3,11 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:collection_qr_flutter/presentation/screens/collection/search_filter_page.dart';
 import 'package:provider/provider.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../../../core/colors.dart';
 import '../../../data/provider/agent_customer_details_provider.dart';
 import '../../../data/provider/due_list_provider.dart';
 import '../../../data/storage/shared_pref_helper.dart';
-import '../../../domain/model/agent_customer_details_model.dart'as agent;
+import '../../../domain/model/agent_customer_details_model.dart' as agent;
 import '../../../domain/model/due_list_model.dart';
 import '../dues/qr/qr_code_home_page.dart';
 
@@ -22,12 +24,14 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
   TextEditingController accountNumController = TextEditingController();
   TextEditingController amountController = TextEditingController();
   num previousCheckboxTotal = 0;
-  agent.AgentCustomerDetailsModel? agentCustomerDetailsModel = agent.AgentCustomerDetailsModel();
+  agent.AgentCustomerDetailsModel? agentCustomerDetailsModel =
+      agent.AgentCustomerDetailsModel();
   DuesList? duesList = DuesList();
-  String accno="";
+  String accno = "";
   String name = "";
   String type = "";
   String agentID = "";
+  bool isFetchDataCalled = false;
   List<bool> checkedItems = List.generate(3, (index) => false);
 
   @override
@@ -35,20 +39,19 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
     super.initState();
     getSharedData();
     duesList?.data?.clear();
+    isFetchDataCalled = false;
     accountNumController.addListener(() {
       setState(() {}); // Trigger UI update when text changes
     });
-
-
   }
 
-
-  void getSharedData()async{
+  void getSharedData() async {
     String agentId = await SharedPref.shared.getAgentOriginId();
     setState(() {
       agentID = agentId;
     });
-    fetchCustName();
+
+    fetchCustName(false);
   }
 
   void showProgressDialog(BuildContext context) {
@@ -65,7 +68,9 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
                   padding: const EdgeInsets.all(50),
                   child: Column(
                     children: [
-                      const CircularProgressIndicator(color: deepTeal,),
+                      const CircularProgressIndicator(
+                        color: deepTeal,
+                      ),
                       const SizedBox(
                         height: 10,
                       ),
@@ -83,32 +88,31 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
           );
         });
   }
+
   @override
   void dispose() {
     accountNumController.dispose();
     super.dispose();
   }
+
   void showInSnackBar(String value) {
-    var snackBar =
-    SnackBar(
+    var snackBar = SnackBar(
       content: Text(value,
-          style:GoogleFonts.inter(
-              color: Colors.white, fontSize: 17, fontWeight: FontWeight.w700
-          )
-      ),
+          style: GoogleFonts.inter(
+              color: Colors.white, fontSize: 17, fontWeight: FontWeight.w700)),
       backgroundColor: Colors.red,
     );
 
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  Future<void> fetchCustName() async {
-
+  Future<void> fetchCustName(bool status) async {
+    isFetchDataCalled = status;
     final provider =
-    Provider.of<AgentCustomerDetailsProvider>(context, listen: false);
+        Provider.of<AgentCustomerDetailsProvider>(context, listen: false);
 
     await provider.getAgentCustomerDetails("361");
-   // await provider.getAgentCustomerDetails(agentID);
+    // await provider.getAgentCustomerDetails(agentID);
 
     if (!mounted) return; // ✅ Prevent setState if widget is disposed
 
@@ -117,15 +121,20 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
     });
   }
 
-  Future<void> fetchCustDetails() async {
-    showProgressDialog(context);
+  // Widget buildShimmerList(){
+  //   return
+  // }
+
+  Future<void> fetchCustDetails(bool status) async {
+    //  showProgressDialog(context);
+    isFetchDataCalled = status;
     final provider = Provider.of<DueListProvider>(context, listen: false);
     await provider.getDueList(accountNumController.text, "2025-03-25");
 
     print("DUELIST : ${provider.dueListModel!.duesList!.data}");
 
     if (provider.dueListModel?.duesList?.data?.isEmpty == true) {
-      Navigator.pop(context);
+      //  Navigator.pop(context);
       showInSnackBar("No results found!");
     } else {
       setState(() {
@@ -141,11 +150,13 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
         if (agentCustomerDetailsModel?.customerList?.data != null) {
           print("Searching for account number: $data");
 
-          for (agent.Datum customer in agentCustomerDetailsModel!.customerList!.data!) {
+          for (agent.Datum customer
+              in agentCustomerDetailsModel!.customerList!.data!) {
             print("Checking customer account: ${customer.accNo}");
 
-            if (customer.accNo?.trim() == data) {  // 🔹 Ensure trimming
-              Navigator.pop(context);
+            if (customer.accNo?.trim() == data) {
+              // 🔹 Ensure trimming
+              //Navigator.pop(context);
               print("✅ Match found! Updating values.");
 
               accno = customer.accNo.toString();
@@ -153,18 +164,120 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
               type = "RD";
 
               break; // Exit loop after finding a match
-            }else{
-             // Navigator.pop(context);
+            } else {
+              // Navigator.pop(context);
             }
           }
         } else {
-          Navigator.pop(context);
+          //Navigator.pop(context);
           print("❌ agentCustomerDetailsModel.customerList.data is null");
         }
       });
     }
   }
 
+  Widget _buildShimmerCustomerInfo() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: teal700!, width: 1.5),
+        boxShadow: const [
+          BoxShadow(
+            color: black12,
+            blurRadius: 8,
+            offset: Offset(0, 3),
+          )
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildShimmerInfoRow("Customer Name", "........"),
+          SizedBox(
+            height: 5,
+          ),
+          _buildShimmerInfoRow("Account Number", "........"),
+          SizedBox(
+            height: 5,
+          ),
+          _buildShimmerInfoRow("Account Status", "........"),
+        ],
+      ),
+    );
+  }
+
+  Widget buildShimmerCustRd() {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: 3, // Simulated shimmer items
+        itemBuilder: (_, index) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Shimmer.fromColors(
+              baseColor: Colors.grey[300]!,  // Light gray
+              highlightColor: Colors.grey[100]!, // White-ish effect
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.grey[300], // ✅ Ensure shimmer background color
+                  border: Border.all(color: deepTeal, width: 0.5),
+                ),
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildShimmerBox(width: 150, height: 16), // Simulated text
+                    const SizedBox(height: 5),
+                    Row(
+                      children: [
+                        _buildShimmerBox(width: 100, height: 14),
+                        const Spacer(),
+                        _buildShimmerBox(width: 24, height: 24), // Simulated checkbox
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    _buildShimmerBox(width: 180, height: 14),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  /// 🔹 Helper function to create shimmer placeholders (for text, checkboxes, etc.)
+  Widget _buildShimmerBox({double width = double.infinity, double height = 16}) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: Colors.grey[300], // Matches shimmer effect
+        borderRadius: BorderRadius.circular(4),
+      ),
+    );
+  }
+
+
+  Widget buildShimmerText(
+      {double width = double.infinity, double height = 16}) {
+    return Shimmer.fromColors(
+      period: const Duration(milliseconds: 1500), // Ensures smooth animation
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          borderRadius: BorderRadius.circular(4),
+        ),
+      ),
+    );
+  }
 
   Widget _buildCustomerInfo() {
     return Container(
@@ -301,17 +414,17 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
                                 ],
                                 decoration: InputDecoration(
                                   suffixIcon: GestureDetector(
-                                    onTap: (){
-                                      if(accountNumController.text.length == 8){
-                                        fetchCustDetails();
-                                       // accountNumController.clear();
-                                      }else{
+                                    onTap: () {
+                                      if (accountNumController.text.length ==
+                                          8) {
+                                        duesList?.data?.clear();
+                                        fetchCustDetails(true);
+                                        // accountNumController.clear();
+                                      } else {
                                         null;
                                       }
                                     },
-                                    child: accountNumController
-                                                .text.length ==
-                                            8
+                                    child: accountNumController.text.length == 8
                                         ? const Icon(
                                             Icons.arrow_forward_outlined)
                                         : const SizedBox(),
@@ -331,18 +444,25 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
                   const SizedBox(width: 10),
                   GestureDetector(
                     onTap: () async {
-                      var page =
-                      await Navigator.push(
+                      setState(() {
+                        duesList?.data?.clear();
+                        name = "";
+                        accno = "";
+                        isFetchDataCalled = false;
+                      });
+
+                      var page = await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const SearchFilterPage(),
                         ),
                       );
                       if (page != null) {
-                        print("Selected Account Number: $page"); // ✅ Use accNo here
+                        print(
+                            "Selected Account Number: $page"); // ✅ Use accNo here
                         setState(() {
                           accountNumController.text = page;
-                          fetchCustDetails();
+                          fetchCustDetails(true);
                         });
                       }
                     },
@@ -351,71 +471,78 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
                 ],
               ),
               const SizedBox(height: 15),
-              duesList?.data !=null?
-              _buildCustomerInfo():const SizedBox(),
+              name != ""
+                  ? _buildCustomerInfo()
+                  : isFetchDataCalled == true
+                      ? _buildShimmerCustomerInfo()
+                      : SizedBox(),
 
               const SizedBox(height: 15),
-              duesList?.data !=null?
-              Expanded(
-                child: ListView.builder(
-                  itemCount: duesList!.data!.length,
-                  // Update with actual data count
-                  itemBuilder: (_, index) {
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: white,
-                        border: Border.all(color: deepTeal, width: 0.5),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Due amount: Rs. ${duesList!.data![index].dueAmount}",
-                              style: _infoTextStyle(),
+              //duesList?.data != null
+              name != ""
+                  ? Expanded(
+                      child: ListView.builder(
+                        itemCount: duesList!.data!.length,
+                        // Update with actual data count
+                        itemBuilder: (_, index) {
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: white,
+                              border: Border.all(color: deepTeal, width: 0.5),
                             ),
-                          //  const SizedBox(height: 5),
-                            Row(
-                              children: [
-                                Text("Loan type: RD", style: _infoTextStyle()),
-                                const Spacer(),
-                                Transform.scale(
-                                  scale: 1.2,
-                                  child: Checkbox(
-                                    value: checkedItems[index],
-                                    onChanged: (bool? value) {
-                                      setState(() {
-                                        checkedItems[index] = value ?? false;
-                                        updateTotalAmount();
-                                      });
-                                    },
-                                    activeColor: teal700,
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Due amount: Rs. ${duesList!.data![index].dueAmount}",
+                                    style: _infoTextStyle(),
                                   ),
-                                ),
-                              ],
+                                  //  const SizedBox(height: 5),
+                                  Row(
+                                    children: [
+                                      Text("Loan type: RD",
+                                          style: _infoTextStyle()),
+                                      const Spacer(),
+                                      Transform.scale(
+                                        scale: 1.2,
+                                        child: Checkbox(
+                                          value: checkedItems[index],
+                                          onChanged: (bool? value) {
+                                            setState(() {
+                                              checkedItems[index] =
+                                                  value ?? false;
+                                              updateTotalAmount();
+                                            });
+                                          },
+                                          activeColor: teal700,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    "Due date: ${duesList!.data![index].dueMonth}",
+                                    style: _infoTextStyle(),
+                                  ),
+                                ],
+                              ),
                             ),
-                            Text(
-                              "Due date: ${duesList!.data![index].dueMonth}",
-                              style: _infoTextStyle(),
-                            ),
-                          ],
-                        ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-              ):const SizedBox(),
-
+                    )
+                  : isFetchDataCalled == true
+                      ?  buildShimmerCustRd()
+                      : SizedBox(),
             ],
           ),
         ),
       ),
       bottomNavigationBar:
-      checkedItems.contains(true) ?
-      _buildBottomBar() : null,
+          checkedItems.contains(true) ? _buildBottomBar() : null,
     );
   }
 
@@ -599,8 +726,10 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => QrCodeHomePage(
-                        payAbleAmount: amountController.text, accountNumber: '', agentId: '',
-                      )),
+                            payAbleAmount: amountController.text,
+                            accountNumber: '',
+                            agentId: '',
+                          )),
                 );
               },
               child: Text("Qr Code", style: _valueTextStyle()),
@@ -646,7 +775,8 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
               width: 120,
               child: TextField(
                 controller: amountController,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
                 style: const TextStyle(
                     color: white, fontSize: 16, fontWeight: FontWeight.w700),
                 textAlign: TextAlign.center,
@@ -665,7 +795,7 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
               onPressed: _proceedButtonClick,
               style: ElevatedButton.styleFrom(
                 padding:
-                const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
                 backgroundColor: white,
@@ -679,6 +809,30 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
         ),
       ),
     );
+  }
+
+  Widget _buildShimmerInfoRow(String label, String value) {
+    return Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: Row(
+            children: [
+              Expanded(flex: 2, child: Text(label, style: _labelTextStyle())),
+              Container(
+                width: 100,
+                height: 16,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(flex: 3, child: Text(value, style: _valueTextStyle())),
+            ],
+          ),
+        ));
   }
 
   Widget _buildInfoRow(String label, String value) {

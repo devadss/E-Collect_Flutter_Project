@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../../core/colors.dart';
 import '../../../data/provider/agent_customer_details_provider.dart';
@@ -15,8 +16,10 @@ class SearchFilterPage extends StatefulWidget {
 }
 
 class _SearchFilterPageState extends State<SearchFilterPage> {
-  agent.AgentCustomerDetailsModel? agentCustomerDetailsModel = agent.AgentCustomerDetailsModel();
-  agent.AgentCustomerDetailsModel? _agentCustomerDetailsModel = agent.AgentCustomerDetailsModel();
+  agent.AgentCustomerDetailsModel? agentCustomerDetailsModel =
+      agent.AgentCustomerDetailsModel();
+  agent.AgentCustomerDetailsModel? _agentCustomerDetailsModel =
+      agent.AgentCustomerDetailsModel();
   List<agent.Datum>? _originalCustomerList;
   String phoneNumber = "";
   String name = "";
@@ -34,13 +37,15 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
       //fetchCustName();
     });
   }
-  void getSharedData()async{
+
+  void getSharedData() async {
     String agentId = await SharedPref.shared.getAgentOriginId();
     setState(() {
       agentID = agentId;
     });
     fetchCustName();
   }
+
   // Function to launch the dialer with a given phone number
   void _callNumber(String phoneNumber) async {
     final Uri url = Uri.parse("tel:$phoneNumber");
@@ -56,31 +61,31 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
     }
   }
 
-
-
-
   Future<void> fetchCustName() async {
-    showProgressDialog(context);
+    //showProgressDialog(context);
     final provider =
-    Provider.of<AgentCustomerDetailsProvider>(context, listen: false);
+        Provider.of<AgentCustomerDetailsProvider>(context, listen: false);
 
     await provider.getAgentCustomerDetails("361");
-   // await provider.getAgentCustomerDetails(agentID);
+    // await provider.getAgentCustomerDetails(agentID);
 
     if (!mounted) return; // ✅ Prevent setState if widget is disposed
-    if (provider.agentCustomerDetailsModel?.customerList?.data?.isNotEmpty == true) {
-      Navigator.pop(context);
+    if (provider.agentCustomerDetailsModel?.customerList?.data?.isNotEmpty ==
+        true) {
+      //Navigator.pop(context);
       setState(() {
         _agentCustomerDetailsModel = provider.agentCustomerDetailsModel;
         agentCustomerDetailsModel = _agentCustomerDetailsModel;
 
         // 🔹 Save the original list
-        _originalCustomerList = List.from(agentCustomerDetailsModel!.customerList!.data!);
+        _originalCustomerList =
+            List.from(agentCustomerDetailsModel!.customerList!.data!);
       });
     } else {
-      Navigator.pop(context);
+      // Navigator.pop(context);
     }
   }
+
 /*
   Future<void> fetchCustName() async {
     showProgressDialog(context);
@@ -156,7 +161,7 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
       // 🔹 Always search in the original list
       List<agent.Datum> filteredList = _originalCustomerList!
           .where((customer) =>
-          customer.custName!.trim().toLowerCase().contains(searchQuery))
+              customer.custName!.trim().toLowerCase().contains(searchQuery))
           .toList();
 
       Navigator.pop(context);
@@ -175,6 +180,82 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
       }
     }
   }
+  Widget buildShimmerText({double width = double.infinity, double height = 16}) {
+    return Shimmer.fromColors(
+      period: const Duration(milliseconds: 1500), // Ensures smooth animation
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          borderRadius: BorderRadius.circular(4),
+        ),
+      ),
+    );
+  }
+
+
+  Widget buildShimmerList() {
+    return Expanded(
+      child: ListView.separated(
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: 10,
+        separatorBuilder: (context, index) => const SizedBox(height: 10),
+        itemBuilder: (context, index) {
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.15,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+              border: Border.all(color: Colors.grey[300]!, width: 1),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black45,
+                  blurRadius: 8,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  buildShimmerText(width: 150), // Name
+                  const SizedBox(height: 5),
+                  buildShimmerText(width: 100), // Customer ID
+                  const SizedBox(height: 5),
+                  buildShimmerText(width: 180), // Account Number
+                  const SizedBox(height: 5),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     buildShimmerText(width: 120), // Phone number
+                  //   ],
+                  // ),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.phone,
+                        size: 20,
+                        color: deepTeal,
+                      ),
+                      buildShimmerText(width: 120)
+                    ],
+                  )
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+
 
 
 
@@ -231,88 +312,7 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
                 ),
               ),
             ),
-            /*     const SizedBox(height: 10),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Colors.white,
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 8,
-                    offset: Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: DropdownButtonFormField<String>(
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: deepTeal, width: 1),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: deepTeal, width: 2),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                ),
-                value: null, // Default value (shows hint)
-                hint: const Text(
-                  "Select Branch",
-                  style: TextStyle(color: Colors.black45),
-                ),
-                icon: const Icon(Icons.arrow_drop_down, color: deepTeal),
-                items: const [
-                  DropdownMenuItem(value: "Branch 1", child: Text("Branch 1")),
-                  DropdownMenuItem(value: "Branch 2", child: Text("Branch 2")),
-                  DropdownMenuItem(value: "Branch 3", child: Text("Branch 3")),
-                ],
-                onChanged: (value) {},
-              ),
-            ),*/
-            /*    const SizedBox(height: 10),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Colors.white,
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 8,
-                    offset: Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: DropdownButtonFormField<String>(
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: deepTeal, width: 1),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: deepTeal, width: 2),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                ),
-                value: null, // Default value (shows hint)
-                hint: const Text(
-                  "Select Account Type",
-                  style: TextStyle(color: Colors.black45),
-                ),
-                icon: const Icon(Icons.arrow_drop_down, color: deepTeal),
-                items: const [
-                  DropdownMenuItem(value: "Account 1", child: Text("Account 1")),
-                  DropdownMenuItem(value: "Account 2", child: Text("Account 2")),
-                  DropdownMenuItem(value: "Account 3", child: Text("Account 3")),
-                ],
-                onChanged: (value) {},
-              ),
-            ),*/
+
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -360,16 +360,16 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
               ],
             ),
             const SizedBox(height: 40),
-            Expanded(
-                child: agentCustomerDetailsModel
-                            ?.customerList?.data?.isNotEmpty ==
-                        true
-                    ? ListView.separated(
+            agentCustomerDetailsModel?.customerList?.data?.isNotEmpty == true
+                ? Expanded(
+                    child: ListView.separated(
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () {
-                              Navigator.pop(context ,agentCustomerDetailsModel
-                                  ?.customerList?.data![index].accNo);
+                              Navigator.pop(
+                                  context,
+                                  agentCustomerDetailsModel
+                                      ?.customerList?.data![index].accNo);
                             },
                             child: Container(
                               height: MediaQuery.of(context).size.height * 0.15,
@@ -428,7 +428,8 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
                                         ),
                                         const Spacer(),
                                         GestureDetector(
-                                          onTap: () => _callNumber("${agentCustomerDetailsModel?.customerList?.data![index].mobile}"),
+                                          onTap: () => _callNumber(
+                                              "${agentCustomerDetailsModel?.customerList?.data![index].mobile}"),
                                           child: Container(
                                             height: 30,
                                             width: 80,
@@ -473,8 +474,9 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
                           return const SizedBox(height: 10);
                         },
                         itemCount: agentCustomerDetailsModel!
-                            .customerList!.data!.length)
-                    : const SizedBox()),
+                            .customerList!.data!.length))
+                : buildShimmerList()
+            //const CircularProgressIndicator(),
           ],
         ),
       ),
