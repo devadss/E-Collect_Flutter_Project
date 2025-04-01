@@ -9,7 +9,7 @@ class DeleteFcmTokenRepository extends DeleteFcmTokenInterface {
   @override
   Future<Either<String, String>> deleteFcmToken(String entityID, String token) async {
     try {
-      final uri = Uri.parse("$baseUrl/api/DeleteToken");
+      final uri = Uri.parse("${baseUrl}api/DeleteToken");
       final request = await http.post(uri,
           headers: {
             'Content-Type': 'application/json',
@@ -17,6 +17,9 @@ class DeleteFcmTokenRepository extends DeleteFcmTokenInterface {
           },
           body: json.encode({"EntityId": entityID}));
 
+      print("Delete Fcm EntityId : ${entityID}");
+      print("Delete Fcm Response : ${request.body}");
+      print("Delete Fcm statusCode : ${request.statusCode}");
       if(request.statusCode == 200){
         return Right(request.body);
       }else{

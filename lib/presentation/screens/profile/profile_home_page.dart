@@ -1,7 +1,9 @@
+import 'package:collection_qr_flutter/data/provider/delete_fcm_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
 import 'package:collection_qr_flutter/presentation/splash_screen/splash_screen.dart';
+import 'package:provider/provider.dart';
 import '../../../core/colors.dart';
 
 class ProfileHomePage extends StatefulWidget {
@@ -36,6 +38,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
       setState(() {
         name = username;
         mobNum = usermobNum;
+
       });
     }
   }
@@ -143,6 +146,20 @@ class BuildProfileBox extends StatelessWidget {
 
   const BuildProfileBox({super.key, required this.icon, required this.label});
 
+  Future<void> deleteFcmToken(
+      BuildContext context, String entityId, String token) async {
+    final fcmProvider = Provider.of<DeleteFcmProvider>(context, listen: false);
+    await fcmProvider.deleteFirebaseToken(
+        entityId.toString(), token.toString());
+  }
+
+  Future<void> loadShredData(BuildContext context) async {
+    String enitityID = await SharedPref.shared.getAgentId();
+    String tok = await SharedPref.shared.getTokenValue();
+
+    deleteFcmToken(context, enitityID, tok);
+  }
+
   Future showMyDialog(BuildContext context) {
     return showDialog(
         barrierDismissible: false,
@@ -154,100 +171,108 @@ class BuildProfileBox extends StatelessWidget {
               borderRadius: BorderRadius.circular(16.0),
             ),
             child: SingleChildScrollView(
-              child: Padding(padding: const EdgeInsets.all(20.0),child:
-                Column(children: <Widget>[
-                  Image.asset(
-                    "assets/images/exit.png",
-                    scale: 10,
-                  ),
-                  const SizedBox(height: 16.0),
-                  Text(
-                    'Logout',
-                    style: GoogleFonts.inter(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF404040),
-                    ),
-                  ),
-                  const SizedBox(height: 8.0),
-                  Text(
-                    "Are you sure you want to logout ?",
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.inter(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w400,
-                      color: const Color(0xFF404040).withOpacity(0.7),
-                    ),
-                  ),
-                  const SizedBox(height: 24.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          SharedPref.shared.setLogin(false);
-                          SharedPref.shared.setAgentName("");
-                          SharedPref.shared.setFcmToken("");
-                          SharedPref.shared.setAgentId("");
-                          SharedPref.shared.setPassword("");
-                          SharedPref.shared.setMpinValue("");
-                          SharedPref.shared.setMpinStatus("");
-                          SharedPref.shared.setTokenValue("");
-                          SharedPref.shared.setMobNum("");
-                          SharedPref.shared.setAgentOriginId("");
-                          SharedPref.shared.setCorpCode("");
-                          SharedPref.shared.setCardRefNum("");
-                          SharedPref.shared.setEmail("");
-                          Navigator.pop(context);
-                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>
-                          const SplashScreen()), (route)=> false);
-                        },
-                        style: TextButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          // backgroundColor: const Color(0xFFEA307B),
-                          backgroundColor: white,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                              side:
-                              const BorderSide(color: deepTeal, width: 1.5)),
-                        ),
-                        child: Text(
-                          'Yes',
-                          style: GoogleFonts.inter(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16.0,
-                              color: black),
+              child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: <Widget>[
+                      Image.asset(
+                        "assets/images/exit.png",
+                        scale: 10,
+                      ),
+                      const SizedBox(height: 16.0),
+                      Text(
+                        'Logout',
+                        style: GoogleFonts.inter(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF404040),
                         ),
                       ),
-                      const SizedBox(width: 16),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(); // Close the dialog
-                        },
-                        style: TextButton.styleFrom(
-                          foregroundColor: const Color(0xFF404040),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          // backgroundColor: const Color(0xFFEDEDED),
-                          backgroundColor: deepTeal,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
+                      const SizedBox(height: 8.0),
+                      Text(
+                        "Are you sure you want to logout ?",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.inter(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xFF404040).withOpacity(0.7),
                         ),
-                        child: Text(
-                          'No',
-                          style: GoogleFonts.inter(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16.0,
+                      ),
+                      const SizedBox(height: 24.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              loadShredData(context);
+                              SharedPref.shared.setLogin(false);
+                              SharedPref.shared.setAgentName("");
+                              SharedPref.shared.setFcmToken("");
+                              SharedPref.shared.setAgentId("");
+                              SharedPref.shared.setPassword("");
+                              SharedPref.shared.setMpinValue("");
+                              SharedPref.shared.setMpinStatus("");
+                              SharedPref.shared.setTokenValue("");
+                              SharedPref.shared.setMobNum("");
+                              SharedPref.shared.setAgentOriginId("");
+                              SharedPref.shared.setCorpCode("");
+                              SharedPref.shared.setCardRefNum("");
+                              SharedPref.shared.setEmail("");
+                              Navigator.pop(context);
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const SplashScreen()),
+                                  (route) => false);
+                            },
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              // backgroundColor: const Color(0xFFEA307B),
+                              backgroundColor: white,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  side: const BorderSide(
+                                      color: deepTeal, width: 1.5)),
+                            ),
+                            child: Text(
+                              'Yes',
+                              style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16.0,
+                                  color: black),
+                            ),
                           ),
-                        ),
+                          const SizedBox(width: 16),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(); // Close the dialog
+                            },
+                            style: TextButton.styleFrom(
+                              foregroundColor: const Color(0xFF404040),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              // backgroundColor: const Color(0xFFEDEDED),
+                              backgroundColor: deepTeal,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                            child: Text(
+                              'No',
+                              style: GoogleFonts.inter(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
-                  ),
-                ],)),
+                  )),
             ),
           );
         });

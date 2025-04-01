@@ -1,6 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:collection_qr_flutter/core/constants.dart';
 import 'package:collection_qr_flutter/data/provider/agent_transaction_provider.dart';
 import 'package:collection_qr_flutter/data/provider/balance_provider.dart';
+import 'package:collection_qr_flutter/data/provider/collection_summary_provider.dart';
 import 'package:collection_qr_flutter/presentation/screens/home/transction_history_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -27,6 +29,7 @@ class _HomePageState extends State<HomePage> {
   String? userName;
   String? entityId;
   String? token;
+  String? agentOriginId;
   final List<String> bannerImages = [
     "assets/images/collection_splash_screen.jpg",
     "assets/images/collection_splash_screen.jpg",
@@ -87,7 +90,7 @@ class _HomePageState extends State<HomePage> {
         "", "", entityId.toString(), token.toString());
     final provider =
         Provider.of<AgentTransactionProvider>(context, listen: false);
-    await provider.getTransactions();
+    await provider.getTransactions(token.toString());
   }
 
   String formatTimestamp(DateTime? timestamp) {
@@ -99,6 +102,7 @@ class _HomePageState extends State<HomePage> {
     final name = await SharedPref().getAgentName();
     final entId = await SharedPref().getAgentId();
     final tok = await SharedPref().getTokenValue();
+    final agentOrgID = await SharedPref().getAgentOriginId();
     printLog("-------------------USERNAME---------------");
     print(name);
 
@@ -108,10 +112,12 @@ class _HomePageState extends State<HomePage> {
         userName = name;
         entityId = entId;
         token = tok;
+        agentOriginId = agentOrgID;
       });
     }
     fetchBalance();
     fetchTransaction();
+    fetchCollection();
   }
 
   String addCommasToNumber(num number) {
@@ -158,12 +164,12 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _buildSummaryCard(
-                  icon: Icons.attach_money,
+                  image: "assets/images/money_initated.png",
                   title: "Total Initiated",
                   amount: "",
                 ),
                 _buildSummaryCard(
-                  icon: Icons.account_balance_wallet,
+                  image: "assets/images/salary.png",
                   title: "Total Received",
                   amount: "",
                 ),
@@ -219,7 +225,11 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 
-
+Future<void> fetchCollection() async {
+    final provider = Provider.of<CollectionSummaryProvider>(context , listen: false);
+   // await provider.getCollectionSummary(agentOriginId.toString(), startDate, endDate, token)
+    provider.getCollectionSummary("AGT12345", "2025-03-01", "2025-03-31", token!);
+}
 
   @override
   Widget build(BuildContext context) {
@@ -334,20 +344,25 @@ class _HomePageState extends State<HomePage> {
                     :
                 Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              _buildSummaryCard(
-                                icon: Icons.attach_money,
-                                title: "Total Initiated",
-                                amount: "Rs. 10,000",
-                              ),
-                              _buildSummaryCard(
-                                icon: Icons.account_balance_wallet,
-                                title: "Total Received",
-                                amount: "Rs. 10,000",
-                              ),
-                            ],
+                          Consumer<CollectionSummaryProvider>(
+                              builder: (context,provider,child){
+                                return  Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    _buildSummaryCard(
+                                      image: "assets/images/money_initated.png",
+                                      title: "Total Initiated",
+                                      amount: "Rs. ${provider.collectionSummaryModel?.data?[0].pendingCollections}",
+                                    ),
+                                    _buildSummaryCard(
+                                      image: "assets/images/salary.png",
+                                      title: "Total Received",
+                                      amount: "Rs. ${provider.collectionSummaryModel?.data?[0].totalCollected}",
+                                    ),
+                                  ],
+                                );
+                              }
                           ),
                           const SizedBox(height: 15),
                           Expanded(
@@ -421,7 +436,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildSummaryCard(
-      {required IconData icon, required String title, required String amount}) {
+      {required String image, required String title, required String amount}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       decoration: BoxDecoration(
@@ -439,7 +454,7 @@ class _HomePageState extends State<HomePage> {
       ),
       child: Row(
         children: [
-          Icon(icon, color: white, size: 24),
+          Image.asset(image,scale: 15,),
           const SizedBox(width: 8),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,

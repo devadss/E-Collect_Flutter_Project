@@ -11,11 +11,13 @@ import '../service/error_handler.dart';
 
 class AgentTransactionRepository implements IAgentTransactionRepository{
   @override
-  Future<Either<ErrorHandler, AgentPaymentTransctionModel>> getTransactions() async{
+  Future<Either<ErrorHandler, AgentPaymentTransctionModel>> getTransactions(String token) async{
    final url = Uri.parse("${baseUrl}api/Cashfree/GetPaymentLinksQrTransactions");
    bool checkConnection = await InternetConnectionChecker().hasConnection;
    if(checkConnection){
-     final response = await http.get(url);
+     final response = await http.get(url, headers: {'Content-Type': 'application/json',
+       'Authorization': 'Bearer $token',
+     });
      if(response.statusCode == 200 || response.statusCode == 201){
        try{
          return Right(AgentPaymentTransctionModel.fromJson(jsonDecode(response.body)));

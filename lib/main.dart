@@ -2,11 +2,13 @@ import 'dart:developer';
 
 import 'package:collection_qr_flutter/data/provider/agent_transaction_provider.dart';
 import 'package:collection_qr_flutter/data/provider/cash_deposit_provider.dart';
+import 'package:collection_qr_flutter/data/provider/collection_summary_provider.dart';
 import 'package:collection_qr_flutter/data/provider/delete_fcm_provider.dart';
 import 'package:collection_qr_flutter/data/provider/update_dop_provider.dart';
 import 'package:collection_qr_flutter/data/provider/update_password_provider.dart';
 import 'package:collection_qr_flutter/data/repository/agent_transaction_repository.dart';
 import 'package:collection_qr_flutter/data/repository/cash_deposit_repository.dart';
+import 'package:collection_qr_flutter/data/repository/collection_summary_repository.dart';
 import 'package:collection_qr_flutter/data/repository/delete_fcm_repository.dart';
 import 'package:collection_qr_flutter/data/repository/update_dop_repository.dart';
 import 'package:collection_qr_flutter/data/repository/update_password_repository.dart';
@@ -118,6 +120,8 @@ void main() async{
   create: (_) => AgentTransactionProvider(AgentTransactionRepository())),
     ChangeNotifierProvider(
   create: (_) => DeleteFcmProvider(DeleteFcmTokenRepository())),
+    ChangeNotifierProvider(
+  create: (_) => CollectionSummaryProvider(CollectionSummaryRepository())),
 
 
   ], child: const MyApp()));

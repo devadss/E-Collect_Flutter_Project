@@ -10,10 +10,10 @@ class AgentTransactionProvider with ChangeNotifier{
   AgentTransactionProvider(this._agentTransactionRepository);
   AgentPaymentTransctionModel? _agentPaymentTransctionModel;
   AgentPaymentTransctionModel? get agentPaymentTransctionModel =>_agentPaymentTransctionModel;
-  Future<void>getTransactions() async{
+  Future<void>getTransactions(String token) async{
     printLog("------------------------AgentPaymentTransctionModel-----------------------");
     printLog(agentPaymentTransctionModel);
-    final result = await _agentTransactionRepository.getTransactions();
+    final result = await _agentTransactionRepository.getTransactions(token);
     result.fold(
         (error){
           printLog("--------------------ERROR-----------------");

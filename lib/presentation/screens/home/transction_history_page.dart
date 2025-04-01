@@ -114,7 +114,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                   ),
                   const SizedBox(height: 15),
                   buildDetailRow("Transfer ID",
-                      "${widget.agentTransaction.orderId!.startsWith("null") ? widget.agentTransaction.orderId?.replaceAll("null", "") : widget.agentTransaction.orderId}"),
+                      "${widget.agentTransaction.orderId?.startsWith("null")==true ? widget.agentTransaction.orderId?.replaceAll("null", "") : widget.agentTransaction.orderId}"),
                   widget.agentTransaction.linkStatus == null
                       ? const SizedBox()
                       : buildDetailRow(
@@ -144,9 +144,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                   buildDetailRow(
                       "Customer ID", "${widget.agentTransaction.customerId}"),
                   buildDetailRow("Customer Phone",
-                      "${
-
-                          widget.agentTransaction.customerPhone
+                      "${widget.agentTransaction.customerPhone
 
                       }"),
                   const Spacer(),

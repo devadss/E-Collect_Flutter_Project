@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:collection_qr_flutter/presentation/screens/collection/search_filter_page.dart';
 import 'package:provider/provider.dart';
-import 'package:screenshot/screenshot.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../../core/colors.dart';
 import '../../../data/provider/agent_customer_details_provider.dart';
@@ -164,7 +163,10 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
               type = "RD";
 
               break; // Exit loop after finding a match
-            } else {
+            } else {setState(() {
+              isFetchDataCalled = false;
+
+            });
               // Navigator.pop(context);
             }
           }
@@ -417,7 +419,13 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
                                     onTap: () {
                                       if (accountNumController.text.length ==
                                           8) {
-                                        duesList?.data?.clear();
+                                        setState(() {
+                                          duesList?.data?.clear();
+                                          name = "";
+                                          accno = "";
+                                          isFetchDataCalled = false;
+                                        });
+
                                         fetchCustDetails(true);
                                         // accountNumController.clear();
                                       } else {

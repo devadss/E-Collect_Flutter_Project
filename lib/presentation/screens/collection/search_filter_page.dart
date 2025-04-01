@@ -196,7 +196,6 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
     );
   }
 
-
   Widget buildShimmerList() {
     return Expanded(
       child: ListView.separated(
@@ -225,17 +224,12 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   buildShimmerText(width: 150), // Name
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 10),
                   buildShimmerText(width: 100), // Customer ID
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 10),
                   buildShimmerText(width: 180), // Account Number
-                  const SizedBox(height: 5),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //   children: [
-                  //     buildShimmerText(width: 120), // Phone number
-                  //   ],
-                  // ),
+                  const SizedBox(height: 10),
+
                   Row(
                     children: [
                       const Icon(

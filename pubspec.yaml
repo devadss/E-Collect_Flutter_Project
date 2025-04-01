@@ -103,6 +103,8 @@ flutter:
     - assets/images/collection_icon.png
     - assets/images/profile_icon.png
     - assets/images/money.png
+    - assets/images/money_initated.png
+    - assets/images/salary.png
     - assets/images/reset-password.png
     - assets/images/card_agent.png
     - assets/images/exit.png
