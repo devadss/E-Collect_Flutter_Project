@@ -176,44 +176,7 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
     }
   }
 
-/*  void onSubmitClick() {
-    setState(() {
-      agentCustomerDetailsModel = _agentCustomerDetailsModel;
 
-    });
-    if (nameController.text.isNotEmpty) {
-      showProgressDialog(context);
-      String searchQuery = nameController.text.trim().toLowerCase();
-
-      if (agentCustomerDetailsModel?.customerList?.data != null) {
-        print("Searching for customer name: $searchQuery");
-
-        List<agent.Datum> filteredList = agentCustomerDetailsModel!
-            .customerList!.data!
-            .where((customer) =>
-                customer.custName!.trim().toLowerCase().contains(searchQuery))
-            .toList();
-
-        Navigator.pop(context);
-
-        setState(() {
-          agentCustomerDetailsModel!.customerList!.data = filteredList;
-        });
-
-        if (filteredList.isEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("No customer found with the given name."),
-              duration: Duration(seconds: 2),
-            ),
-          );
-        }
-      } else {
-        Navigator.pop(context);
-        print("❌ agentCustomerDetailsModel.customerList.data is null");
-      }
-    }
-  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -465,7 +428,7 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
                                         ),
                                         const Spacer(),
                                         GestureDetector(
-                                          onTap: () => _callNumber(phoneNumber),
+                                          onTap: () => _callNumber("${agentCustomerDetailsModel?.customerList?.data![index].mobile}"),
                                           child: Container(
                                             height: 30,
                                             width: 80,
@@ -518,3 +481,41 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
     );
   }
 }
+/*  void onSubmitClick() {
+    setState(() {
+      agentCustomerDetailsModel = _agentCustomerDetailsModel;
+
+    });
+    if (nameController.text.isNotEmpty) {
+      showProgressDialog(context);
+      String searchQuery = nameController.text.trim().toLowerCase();
+
+      if (agentCustomerDetailsModel?.customerList?.data != null) {
+        print("Searching for customer name: $searchQuery");
+
+        List<agent.Datum> filteredList = agentCustomerDetailsModel!
+            .customerList!.data!
+            .where((customer) =>
+                customer.custName!.trim().toLowerCase().contains(searchQuery))
+            .toList();
+
+        Navigator.pop(context);
+
+        setState(() {
+          agentCustomerDetailsModel!.customerList!.data = filteredList;
+        });
+
+        if (filteredList.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("No customer found with the given name."),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      } else {
+        Navigator.pop(context);
+        print("❌ agentCustomerDetailsModel.customerList.data is null");
+      }
+    }
+  }*/

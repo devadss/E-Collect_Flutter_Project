@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 
 class ErrorHandler implements Exception {
   final dynamic _message;

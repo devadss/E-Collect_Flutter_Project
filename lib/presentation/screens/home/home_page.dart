@@ -19,8 +19,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
- // final bool _isCardDetailsVisible = false;
+  // final bool _isCardDetailsVisible = false;
   int test = 0;
+
   //bool _isCvvVisible = false;
   String? userName;
   String? entityId;
@@ -30,7 +31,8 @@ class _HomePageState extends State<HomePage> {
     "assets/images/collection_splash_screen.jpg",
     "assets/images/doodle.jpeg",
   ];
- // List<Result> result = [];
+
+  // List<Result> result = [];
   @override
   void initState() {
     super.initState();
@@ -70,20 +72,23 @@ class _HomePageState extends State<HomePage> {
         });
   }
 
-  Future<void> fetchBalance()async{
-    final fetchBalanceProvider = Provider.of<BalanceProvider>(context , listen: false);
-   await fetchBalanceProvider.getchBalance(entityId.toString(), token.toString());
-}
-
+  Future<void> fetchBalance() async {
+    final fetchBalanceProvider =
+        Provider.of<BalanceProvider>(context, listen: false);
+    await fetchBalanceProvider.getchBalance(
+        entityId.toString(), token.toString());
+  }
 
   Future<void> fetchTransaction() async {
-    final transProvider = Provider.of<TransactionProvider>(context, listen: false);
-     await transProvider.fetchTransaction(
+    final transProvider =
+        Provider.of<TransactionProvider>(context, listen: false);
+    await transProvider.fetchTransaction(
         "", "", entityId.toString(), token.toString());
-    final provider =  Provider.of<AgentTransactionProvider>(context , listen: false);
+    final provider =
+        Provider.of<AgentTransactionProvider>(context, listen: false);
     await provider.getTransactions();
-
   }
+
   String formatTimestamp(DateTime? timestamp) {
     if (timestamp == null) return "Invalid Date";
     return DateFormat('MMM dd, yyyy • hh:mm a').format(timestamp);
@@ -105,8 +110,9 @@ class _HomePageState extends State<HomePage> {
       });
     }
     fetchBalance();
-     fetchTransaction();
+    fetchTransaction();
   }
+
   String addCommasToNumber(num number) {
     final formatter = NumberFormat('#,##0.##');
     String formattedNumber = formatter.format(number);
@@ -115,18 +121,23 @@ class _HomePageState extends State<HomePage> {
     if (number is double) {
       formattedNumber = number.toStringAsFixed(2);
       if (formattedNumber.endsWith('.00')) {
-        formattedNumber = formattedNumber.substring(0, formattedNumber.length - 3);
+        formattedNumber =
+            formattedNumber.substring(0, formattedNumber.length - 3);
       } else if (formattedNumber.endsWith('0')) {
-        formattedNumber = formattedNumber.substring(0, formattedNumber.length - 1);
+        formattedNumber =
+            formattedNumber.substring(0, formattedNumber.length - 1);
       }
     }
 
     return formattedNumber;
   }
+
   @override
   Widget build(BuildContext context) {
-    final fetchBalanceProvider = Provider.of<BalanceProvider>(context , listen: true);
-    final provider = Provider.of<AgentTransactionProvider>(context, listen: true);
+    final fetchBalanceProvider =
+        Provider.of<BalanceProvider>(context, listen: true);
+    final provider =
+        Provider.of<AgentTransactionProvider>(context, listen: true);
     return Scaffold(
       backgroundColor: white,
       body: Container(
@@ -147,7 +158,7 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Hello, $userName",
+                    "Hello, ${userName?.replaceFirst(userName![0], userName![0].toUpperCase())}",
                     style: GoogleFonts.inter(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
@@ -155,21 +166,18 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   const SizedBox(height: 5),
-                  provider.agentPaymentTransctionModel == null?
-                      const Center(child: CircularProgressIndicator(color: deepTeal),):
-                  Text(
-                    "Your Balance: ₹ ${
-                        fetchBalanceProvider.balanceModel?.result?.isNotEmpty == true
-                            ? addCommasToNumber(fetchBalanceProvider.balanceModel!.result![0].balance!.toDouble())
-                            : ' '
-                    }"
-                    ,
-                    style: GoogleFonts.inter(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: white,
-                    ),
-                  )
+                  provider.agentPaymentTransctionModel == null
+                      ? const Center(
+                          child: CircularProgressIndicator(color: deepTeal),
+                        )
+                      : Text(
+                          "Your Balance: ₹ ${fetchBalanceProvider.balanceModel?.result?.isNotEmpty == true ? addCommasToNumber(fetchBalanceProvider.balanceModel!.result![0].balance!.toDouble()) : ' '}",
+                          style: GoogleFonts.inter(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: white,
+                          ),
+                        )
                 ],
               ),
             ),
@@ -181,14 +189,14 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: CarouselSlider(
                 options: CarouselOptions(
-                  height: MediaQuery.of(context).size.height *
-                      0.20, // Same height as previous container
+                  height: MediaQuery.of(context).size.height * 0.20,
+                  // Same height as previous container
                   autoPlay: true,
                   enlargeCenterPage: true,
-                  viewportFraction: 1, // Ensure full width
+                  viewportFraction: 1,
+                  // Ensure full width
                   autoPlayInterval: const Duration(seconds: 4),
-                  autoPlayAnimationDuration:
-                  const Duration(milliseconds: 800),
+                  autoPlayAnimationDuration: const Duration(milliseconds: 800),
                 ),
                 items: bannerImages.map((imagePath) {
                   return ClipRRect(
@@ -232,85 +240,90 @@ class _HomePageState extends State<HomePage> {
                     topRight: Radius.circular(25),
                   ),
                 ),
-                child:
-                    provider.agentPaymentTransctionModel == null?
-                        const Center(child: CircularProgressIndicator(color: deepTeal),):
-                Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween,
-                      children: [
-                        _buildSummaryCard(
-                          icon: Icons.attach_money,
-                          title: "Total Initiated",
-                          amount: "Rs. 10,000",
-                        ),
-                        _buildSummaryCard(
-                          icon: Icons.account_balance_wallet,
-                          title: "Total Received",
-                          amount: "Rs. 10,000",
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 15),
-                    Expanded(
-                      child: ListView.separated(
-                        itemCount: provider.agentPaymentTransctionModel!.data!.length,
-                        separatorBuilder: (_, __) => const Divider(thickness: 1),
-                        itemBuilder: (context, index) {
-                          final transaction = provider
-                              .agentPaymentTransctionModel!
-                              .data![index];
-                          return GestureDetector(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>
-                              TransactionHistoryPage(agentTransaction: provider.agentPaymentTransctionModel!.data![index])));
-                            },
-                            child:
-                            ListTile(
-                              leading: Container(
-                                height: 50,
-                                width: 50,
-                                decoration: BoxDecoration(
-                                  color: lightGreen.shade200,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: black),
-                                ),
-                                child: Image.asset(
-                                  "assets/images/payment_recived.png",
-                                  scale: 20,
-                                  color: black,
-                                ),
+                child: provider.agentPaymentTransctionModel == null
+                    ? const Center(
+                        child: CircularProgressIndicator(color: deepTeal),
+                      )
+                    : Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _buildSummaryCard(
+                                icon: Icons.attach_money,
+                                title: "Total Initiated",
+                                amount: "Rs. 10,000",
                               ),
-                              title: Text(
-                                "Payment Received from ${provider.agentPaymentTransctionModel?.data?[index].customerName ?? "Unknown"}",
-                                style: GoogleFonts.inter(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                              _buildSummaryCard(
+                                icon: Icons.account_balance_wallet,
+                                title: "Total Received",
+                                amount: "Rs. 10,000",
                               ),
-                              subtitle: Text(
-                                formatTimestamp(
-                                    transaction.createdAt),
-                                style: GoogleFonts.inter(
-                                    fontSize: 10, color: grey),
-                              ),
-                              trailing: Text(
-                                "₹ ${transaction.linkAmount}",
-                                style: GoogleFonts.inter(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w800,
-                                  color: green,
-                                ),
-                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 15),
+                          Expanded(
+                            child: ListView.separated(
+                              itemCount: provider
+                                  .agentPaymentTransctionModel!.data!.length,
+                              separatorBuilder: (_, __) =>
+                                  const Divider(thickness: 1),
+                              itemBuilder: (context, index) {
+                                final transaction = provider
+                                    .agentPaymentTransctionModel!.data![index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                TransactionHistoryPage(
+                                                    agentTransaction: provider
+                                                        .agentPaymentTransctionModel!
+                                                        .data![index])));
+                                  },
+                                  child: ListTile(
+                                    leading: Container(
+                                      height: 50,
+                                      width: 50,
+                                      decoration: BoxDecoration(
+                                        color: lightGreen.shade200,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(color: black),
+                                      ),
+                                      child: Image.asset(
+                                        "assets/images/payment_recived.png",
+                                        scale: 20,
+                                        color: black,
+                                      ),
+                                    ),
+                                    title: Text(
+                                      "Payment Received from ${provider.agentPaymentTransctionModel?.data?[index].customerName ?? "Unknown"}",
+                                      style: GoogleFonts.inter(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      formatTimestamp(transaction.createdAt),
+                                      style: GoogleFonts.inter(
+                                          fontSize: 10, color: grey),
+                                    ),
+                                    trailing: Text(
+                                      "₹ ${transaction.linkAmount}",
+                                      style: GoogleFonts.inter(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w800,
+                                        color: green,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
-                          );
-                        },
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
               ),
             ),
           ],
@@ -318,6 +331,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
   Widget _buildSummaryCard(
       {required IconData icon, required String title, required String amount}) {
     return Container(
@@ -360,6 +374,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
 }
-

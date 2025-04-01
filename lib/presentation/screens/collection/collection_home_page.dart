@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:collection_qr_flutter/presentation/screens/collection/search_filter_page.dart';
 import 'package:provider/provider.dart';
 import '../../../../../core/colors.dart';
-
 import '../../../data/provider/agent_customer_details_provider.dart';
 import '../../../data/provider/due_list_provider.dart';
 import '../../../data/storage/shared_pref_helper.dart';
@@ -315,7 +314,7 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
                                             8
                                         ? const Icon(
                                             Icons.arrow_forward_outlined)
-                                        : SizedBox(),
+                                        : const SizedBox(),
                                   ), // Show only if condition is met
                                   border: InputBorder.none,
                                   hintText: "Enter Account Number",
@@ -621,6 +620,7 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
       },
     );
   }
+
   Widget _buildBottomBar() {
     return Container(
       height: MediaQuery.of(context).size.height * 0.15,

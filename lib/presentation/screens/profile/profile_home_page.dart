@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:collection_qr_flutter/core/build_button.dart';
 import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
-import 'package:collection_qr_flutter/presentation/screens/home/home_page.dart';
 import 'package:collection_qr_flutter/presentation/splash_screen/splash_screen.dart';
-
 import '../../../core/colors.dart';
-import '../home/bottom_nav_bar_page.dart';
 
 class ProfileHomePage extends StatefulWidget {
   const ProfileHomePage({super.key});
@@ -100,7 +96,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
           ),
           const SizedBox(height: 10),
           Text(
-            name!,
+            name!.toUpperCase(),
             style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w800,
@@ -152,58 +148,106 @@ class BuildProfileBox extends StatelessWidget {
         barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(
-              textAlign: TextAlign.center,
-              "Logout",
-              style:
-                  GoogleFonts.inter(fontSize: 17, fontWeight: FontWeight.w700),
+          return Dialog(
+            backgroundColor: white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.0),
             ),
-            content: SingleChildScrollView(
-              child: Column(
-                children: [
+            child: SingleChildScrollView(
+              child: Padding(padding: const EdgeInsets.all(20.0),child:
+                Column(children: <Widget>[
+                  Image.asset(
+                    "assets/images/exit.png",
+                    scale: 10,
+                  ),
+                  const SizedBox(height: 16.0),
+                  Text(
+                    'Logout',
+                    style: GoogleFonts.inter(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF404040),
+                    ),
+                  ),
+                  const SizedBox(height: 8.0),
                   Text(
                     "Are you sure you want to logout ?",
+                    textAlign: TextAlign.center,
                     style: GoogleFonts.inter(
-                        fontSize: 15, fontWeight: FontWeight.w500),
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w400,
+                      color: const Color(0xFF404040).withOpacity(0.7),
+                    ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  const SizedBox(height: 24.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextButton(
-                          onPressed: () {
-                            SharedPref.shared.setLogin(false);
-                            SharedPref.shared.setAgentName("");
-                            SharedPref.shared.setFcmToken("");
-                            SharedPref.shared.setAgentId("");
-                            SharedPref.shared.setPassword("");
-                            SharedPref.shared.setMpinValue("");
-                            SharedPref.shared.setMpinStatus("");
-                            SharedPref.shared.setTokenValue("");
-                            SharedPref.shared.setMobNum("");
-                            Navigator.pop(context);
-                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>
-                            const SplashScreen()), (route)=> false);
-                          },
-                          child: Container(
-                              width: 70,
-                              height: 40,
-                              child: const BuildButton(buttonText: "Yes"))),
+                        onPressed: () {
+                          SharedPref.shared.setLogin(false);
+                          SharedPref.shared.setAgentName("");
+                          SharedPref.shared.setFcmToken("");
+                          SharedPref.shared.setAgentId("");
+                          SharedPref.shared.setPassword("");
+                          SharedPref.shared.setMpinValue("");
+                          SharedPref.shared.setMpinStatus("");
+                          SharedPref.shared.setTokenValue("");
+                          SharedPref.shared.setMobNum("");
+                          SharedPref.shared.setAgentOriginId("");
+                          SharedPref.shared.setCorpCode("");
+                          SharedPref.shared.setCardRefNum("");
+                          SharedPref.shared.setEmail("");
+                          Navigator.pop(context);
+                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>
+                          const SplashScreen()), (route)=> false);
+                        },
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          // backgroundColor: const Color(0xFFEA307B),
+                          backgroundColor: white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                              side:
+                              const BorderSide(color: deepTeal, width: 1.5)),
+                        ),
+                        child: Text(
+                          'Yes',
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16.0,
+                              color: black),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
                       TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Container(
-                              width: 70,
-                              height: 40,
-                              child: const BuildButton(buttonText: "No"))),
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Close the dialog
+                        },
+                        style: TextButton.styleFrom(
+                          foregroundColor: const Color(0xFF404040),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          // backgroundColor: const Color(0xFFEDEDED),
+                          backgroundColor: deepTeal,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: Text(
+                          'No',
+                          style: GoogleFonts.inter(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ),
                     ],
-                  )
-                ],
-              ),
+                  ),
+                ],)),
             ),
           );
         });

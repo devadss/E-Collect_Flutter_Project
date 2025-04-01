@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:dartz/dartz.dart';
 import 'package:collection_qr_flutter/constants.dart';
 import 'package:collection_qr_flutter/domain/interface/token_expiry_interface.dart';
@@ -27,10 +26,10 @@ class TokenExpiryRepository implements TokenExpiryInterface {
           return Right(tokenExpireModel);
         }
         if (request.statusCode == 400) {
-          return Left("Invalid token");
+          return const Left("Invalid token");
         }
       }else{
-        return Left("CHECK INTERNET CONNECTION");
+        return const Left("CHECK INTERNET CONNECTION");
       }
     } catch (e) {}
     throw UnimplementedError();
