@@ -113,8 +113,14 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                     ),
                   ),
                   const SizedBox(height: 15),
+                  widget.agentTransaction.orderId != null?
                   buildDetailRow("Transfer ID",
-                      "${widget.agentTransaction.orderId?.startsWith("null")==true ? widget.agentTransaction.orderId?.replaceAll("null", "") : widget.agentTransaction.orderId}"),
+                      "${widget.agentTransaction.orderId?.startsWith("null")==true ?
+                      widget.agentTransaction.orderId?.replaceAll("null", "") :
+                      widget.agentTransaction.orderId}"):
+                      const SizedBox()
+                  ,
+
                   widget.agentTransaction.linkStatus == null
                       ? const SizedBox()
                       : buildDetailRow(

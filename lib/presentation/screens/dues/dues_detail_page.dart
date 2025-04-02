@@ -10,6 +10,7 @@ import '../../../core/general.dart';
 import '../../../data/provider/due_list_provider.dart';
 import '../../../data/repository/payment_link_repository.dart';
 import '../../../data/storage/shared_pref_helper.dart';
+import '../../../domain/model/due_list_model.dart';
 
 class DuesDetailPage extends StatefulWidget {
   final String custName;
@@ -44,14 +45,19 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
   String? customerAccountNumber;
   String? corpCode;
   String? token;
-
+  double maxValue = 0;
   void updateTotalAmount() {
     final provider = Provider.of<DueListProvider>(context, listen: false);
 
     int manualAmount =
         int.tryParse(amountController.text) ?? 0; // Preserve manual input
     int checkboxTotal = 0;
-
+    final duesData = provider.dueListModel?.duesList?.data;
+    if (duesData != null) {
+      for (Datum amt in duesData) {
+        maxValue += double.parse(amt.dueAmount.toString());
+      }
+    }
     // Calculate the sum of selected due amounts
     for (int i = 0; i < checkedItems.length; i++) {
       if (checkedItems[i]) {
@@ -207,7 +213,17 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
       });
     }
   }
-
+  void onAmountChanges(String amount) {
+    if (amount.isNotEmpty) {
+      double? amountValue = double.parse(amount);
+      if(amountValue > maxValue){
+        amountController.value =TextEditingValue(
+          text: maxValue.toStringAsFixed(2), // Format to avoid extra zeros
+          selection: TextSelection.collapsed(offset: maxValue.toString().length),
+        );
+      }
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -437,6 +453,7 @@ resizeToAvoidBottomInset: true,
                     filled: true,
                     fillColor: deepTeal,
                   ),
+                  onChanged: onAmountChanges,
                 ),
               ),
               const SizedBox(width: 10),

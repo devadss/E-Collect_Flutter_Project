@@ -66,8 +66,8 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
     final provider =
         Provider.of<AgentCustomerDetailsProvider>(context, listen: false);
 
-    await provider.getAgentCustomerDetails("361");
-    // await provider.getAgentCustomerDetails(agentID);
+    //await provider.getAgentCustomerDetails("361");
+     await provider.getAgentCustomerDetails(agentID);
 
     if (!mounted) return; // ✅ Prevent setState if widget is disposed
     if (provider.agentCustomerDetailsModel?.customerList?.data?.isNotEmpty ==
@@ -203,68 +203,76 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
         itemCount: 10,
         separatorBuilder: (context, index) => const SizedBox(height: 10),
         itemBuilder: (context, index) {
-          return Container(
-            height: MediaQuery.of(context).size.height * 0.15,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.white,
-              border: Border.all(color: Colors.grey[300]!, width: 1),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black45,
-                  blurRadius: 8,
-                  offset: Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(children: [
-                    buildShimmerText(width: 150), // Name
-                    const SizedBox(width: 30,),
-                    buildShimmerText(width: 100), // Name
-
-                  ],),
-                  const SizedBox(height: 10,),
-                  Row(children: [
-                    buildShimmerText(width: 150), // Name
-                    const SizedBox(width: 30,),
-                    buildShimmerText(width: 50), // Name
-
-                  ],),
-                  const SizedBox(height: 10,),
-                  Row(children: [
-                    buildShimmerText(width: 150), // Name
-                    const SizedBox(width: 30,),
-                    buildShimmerText(width: 120), // Name
-
-                  ],),
-                  const SizedBox(height: 10,),
-                  Row(children: [
-                    buildShimmerText(width: 150), // Name
-                    const SizedBox(width: 30,),
-                    buildShimmerText(width: 160), // Name
-
-                  ],),// Account Number
-                  const SizedBox(height: 10),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-
-                      buildShimmerText(width: 30),
-                      const Icon(
-                        Icons.phone,
-                        size: 20,
-                        color: deepTeal,
-                      ),
-                    ],
-                  )
+          return Flexible(
+            child: Container(
+             // height: MediaQuery.of(context).size.height * 0.21,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+                border: Border.all(color: Colors.grey[300]!, width: 1),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black45,
+                    blurRadius: 8,
+                    offset: Offset(0, 4),
+                  ),
                 ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                child: Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(children: [
+                        Flexible(child: buildShimmerText(width: 150)), // Name
+                        const SizedBox(width: 30,),
+                        Flexible(child: buildShimmerText(width: 100)), // Name
+                  
+                      ],),
+                      const SizedBox(height: 10,),
+                      Row(children: [
+                        Flexible(child: buildShimmerText(width: 150)), // Name
+                        const SizedBox(width: 30,),
+                        Flexible(child: buildShimmerText(width: 50)), // Name
+                  
+                      ],),
+                      const SizedBox(height: 10,),
+                      Row(children: [
+                        Flexible(child: Flexible(child: buildShimmerText(width: 150))), // Name
+                        const SizedBox(width: 30,),
+                        Flexible(child: Flexible(child: buildShimmerText(width: 120))), // Name
+                  
+                      ],),
+                      const SizedBox(height: 10,),
+                      SingleChildScrollView(
+                        child: Row(children: [
+                          Flexible(child: buildShimmerText(width: 150)), // Name
+                          const SizedBox(width: 30,),
+                          Flexible(child: buildShimmerText(width: 160)), // Name
+                  
+                        ],),
+                      ),// Account Number
+                      const SizedBox(height: 10),
+                  
+                      SingleChildScrollView(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                  
+                            Flexible(child: buildShimmerText(width: 30)),
+                            const Icon(
+                              Icons.phone,
+                              size: 20,
+                              color: deepTeal,
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ),
             ),
           );
@@ -332,14 +340,34 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
             ),
 
             const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    onSubmitClick();
-                  },
-                  child: Container(
+            FittedBox(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      onSubmitClick();
+                    },
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.06,
+                      width: 170,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: deepTeal,
+                          border: Border.all(color: black, width: 2)),
+                      child: Center(
+                        child: Text(
+                          "SUBMIT",
+                          style: GoogleFonts.inter(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                              color: white),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
                     height: MediaQuery.of(context).size.height * 0.06,
                     width: 170,
                     decoration: BoxDecoration(
@@ -348,7 +376,7 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
                         border: Border.all(color: black, width: 2)),
                     child: Center(
                       child: Text(
-                        "SUBMIT",
+                        "CANCEL",
                         style: GoogleFonts.inter(
                             fontSize: 17,
                             fontWeight: FontWeight.w700,
@@ -356,26 +384,8 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 10),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.06,
-                  width: 170,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: deepTeal,
-                      border: Border.all(color: black, width: 2)),
-                  child: Center(
-                    child: Text(
-                      "CANCEL",
-                      style: GoogleFonts.inter(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w700,
-                          color: white),
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
             const SizedBox(height: 40),
             agentCustomerDetailsModel?.customerList?.data?.isNotEmpty == true
@@ -406,85 +416,91 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10, vertical: 5),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Customer Name : ${agentCustomerDetailsModel?.customerList?.data![index].custName}",
-                                      style: GoogleFonts.inter(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 17,
-                                          color: deepTeal),
-                                    ),
-                                    const SizedBox(height: 5),
-                                    Text(
-                                      "Customer Id : ${agentCustomerDetailsModel?.customerList?.data![index].custId}",
-                                      style: GoogleFonts.inter(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 14,
-                                          color: black87),
-                                    ),
-                                    const SizedBox(height: 5),
-                                    Text(
-                                      "Account Number : ${agentCustomerDetailsModel?.customerList?.data![index].accNo}",
-                                      style: GoogleFonts.inter(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 14,
-                                          color: black87),
-                                    ),
-                                    const SizedBox(height: 5),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                child: SafeArea(
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        FittedBox(
-                                          child: Text(
-                                            "Phone Number : +91 ${agentCustomerDetailsModel?.customerList?.data![index].mobile}",
-                                            style: GoogleFonts.inter(
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: 14,
-                                                color: black87),
+                                        Text(
+                                          "Customer Name : ${agentCustomerDetailsModel?.customerList?.data![index].custName}",
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 17,
+                                              color: deepTeal),
+                                        ),
+                                        const SizedBox(height: 5),
+                                        Text(
+                                          "Customer Id : ${agentCustomerDetailsModel?.customerList?.data![index].custId}",
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 14,
+                                              color: black87),
+                                        ),
+                                        const SizedBox(height: 5),
+                                        Text(
+                                          "Account Number : ${agentCustomerDetailsModel?.customerList?.data![index].accNo}",
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 14,
+                                              color: black87),
+                                        ),
+                                        const SizedBox(height: 5),
+                                        SingleChildScrollView(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              FittedBox(
+                                                child: Text(
+                                                  "Phone Number : +91 ${agentCustomerDetailsModel?.customerList?.data![index].mobile}",
+                                                  style: GoogleFonts.inter(
+                                                      fontWeight: FontWeight.w700,
+                                                      fontSize: 14,
+                                                      color: black87),
+                                                ),
+                                              ),
+                                              const Spacer(),
+                                              GestureDetector(
+                                                onTap: () => _callNumber(
+                                                    "${agentCustomerDetailsModel?.customerList?.data![index].mobile}"),
+                                                child: Container(
+                                                  height: 30,
+                                                  width: 80,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(30),
+                                                      border:
+                                                          Border.all(color: black)),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                            horizontal: 10),
+                                                    child: Row(
+                                                      children: [
+                                                        const Icon(
+                                                          Icons.phone,
+                                                          size: 20,
+                                                          color: deepTeal,
+                                                        ),
+                                                        Text(
+                                                          "Call",
+                                                          style: GoogleFonts.inter(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight.w700,
+                                                              color: black),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            ],
                                           ),
                                         ),
-                                        const Spacer(),
-                                        GestureDetector(
-                                          onTap: () => _callNumber(
-                                              "${agentCustomerDetailsModel?.customerList?.data![index].mobile}"),
-                                          child: Container(
-                                            height: 30,
-                                            width: 80,
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(30),
-                                                border:
-                                                    Border.all(color: black)),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                              child: Row(
-                                                children: [
-                                                  const Icon(
-                                                    Icons.phone,
-                                                    size: 20,
-                                                    color: deepTeal,
-                                                  ),
-                                                  Text(
-                                                    "Call",
-                                                    style: GoogleFonts.inter(
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                        color: black),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        )
                                       ],
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ),

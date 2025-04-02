@@ -1,5 +1,4 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:collection_qr_flutter/core/constants.dart';
 import 'package:collection_qr_flutter/data/provider/agent_transaction_provider.dart';
 import 'package:collection_qr_flutter/data/provider/balance_provider.dart';
 import 'package:collection_qr_flutter/data/provider/collection_summary_provider.dart';
@@ -9,7 +8,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:collection_qr_flutter/data/provider/transaction_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:screenshot/screenshot.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/colors.dart';
 import '../../../data/storage/shared_pref_helper.dart';
@@ -160,70 +158,75 @@ class _HomePageState extends State<HomePage> {
     return Shimmer.fromColors(
         baseColor: Colors.grey[400]!,
         highlightColor: Colors.grey[100]!,
-        child:  Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildSummaryCard(
-                  image: "assets/images/money_initated.png",
-                  title: "Total Initiated",
-                  amount: "",
-                ),
-                _buildSummaryCard(
-                  image: "assets/images/salary.png",
-                  title: "Total Received",
-                  amount: "",
-                ),
-              ],
-            ),
-            const SizedBox(height: 15),
-            Expanded(
-              child: ListView.separated(
-                itemCount: 5,
-                separatorBuilder: (_, __) =>
-                const Divider(thickness: 1),
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    leading: Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                        color: lightGreen.shade200,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: black),
-                      ),
-                      child: Image.asset(
-                        "assets/images/payment_recived.png",
-                        scale: 20,
-                        color: black,
-                      ),
-                    ),
-                    title: Text(
-                      "Please wait....",
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    subtitle: Text(
-                        "Please wait....",
-                      style: GoogleFonts.inter(
-                          fontSize: 10, color: grey),
-                    ),
-                    trailing: Text(
-                      "₹....",
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w800,
-                        color: green,
-                      ),
-                    ),
-                  );
-                },
+        child:  Flexible(
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                 // buildShimmerText(),
+                  _buildSummaryCard(
+                    image: "assets/images/money_initated.png",
+                    title: "Total Initiated",
+                    amount: "",
+                  ),
+                  const SizedBox(width: 10,),
+             //     buildShimmerText(),
+                  _buildSummaryCard(
+                    image: "assets/images/salary.png",
+                    title: "Total Received",
+                    amount: "",
+                  ),
+                ],
               ),
-            ),
-          ],
+              const SizedBox(height: 15),
+              Expanded(
+                child: ListView.separated(
+                  itemCount: 5,
+                  separatorBuilder: (_, __) =>
+                  const Divider(thickness: 1),
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      leading: Container(
+                        height: 50,
+                        width: 50,
+                        decoration: BoxDecoration(
+                          color: lightGreen.shade200,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: black),
+                        ),
+                        child: Image.asset(
+                          "assets/images/payment_recived.png",
+                          scale: 20,
+                          color: black,
+                        ),
+                      ),
+                      title: Text(
+                        "Please wait....",
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      subtitle: Text(
+                          "Please wait....",
+                        style: GoogleFonts.inter(
+                            fontSize: 10, color: grey),
+                      ),
+                      trailing: Text(
+                        "₹....",
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          color: green,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ));
   }
 
@@ -456,34 +459,36 @@ Future<void> fetchCollection() async {
             ),
           ],
         ),
-        child: Row(
-          children: [
-            Image.asset(image,scale: 15,),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  FittedBox(
-                    child: Text(
-                      title,
-                      style: GoogleFonts.inter(fontSize: 13, color: Colors.white),
-                    ),
-                  ),
-                  FittedBox(
-                    child: Text(
-                      amount,
-                      style: GoogleFonts.inter(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: white,
+        child: Flexible(
+          child: Row(
+            children: [
+              Image.asset(image,scale: 15,),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    FittedBox(
+                      child: Text(
+                        title,
+                        style: GoogleFonts.inter(fontSize: 13, color: Colors.white),
                       ),
                     ),
-                  ),
-                ],
+                    FittedBox(
+                      child: Text(
+                        amount,
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

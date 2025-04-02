@@ -17,6 +17,7 @@ class SharedPref {
     _prefs ??= await SharedPreferences.getInstance();
     return _prefs!;
   }
+
   setAgentOriginId(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.agentOriginId, value);
@@ -65,6 +66,7 @@ class SharedPref {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.userId, value);
   }
+
   getAgentId() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.userId) ?? '';

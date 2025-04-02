@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../core/build_button.dart';
 import '../../../core/colors.dart';
+import '../../../data/service/notification_service/notification_service.dart';
 import '../forgot_mpin_page.dart';
 
 class GooglePinCodePage extends StatefulWidget {
@@ -25,6 +26,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   String token = "";
   String m_pin = "";
   String mpin = "";
+  String fcmToken = "";
   String contactNum = ""; // contains +91
   bool _isClicked = false;
   final LocalAuthentication auth = LocalAuthentication();
@@ -38,14 +40,17 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   }
 
   void loadSharedData() async {
-    custID = await SharedPref.shared.getAgentId();
+    String custid = await SharedPref.shared.getAgentId();
     token = await SharedPref.shared.getTokenValue();
-
+    String fcmTok = await SharedPref.shared.getFcmToken();
     m_pin = await SharedPref.shared.getMpinValue();
 
-    contactNum = await SharedPref.shared.getMobNum();
+    String mobNum = await SharedPref.shared.getMobNum();
     setState(() {
+      contactNum = mobNum;
       mpin = m_pin;
+      custID = custid;
+      fcmToken = fcmTok;
     });
     print("MPIN $mpin");
     _authenticateWithBiometrics();
@@ -119,8 +124,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
         showProgressDialog(context);
         final provider = Provider.of<AuthProvider>(context, listen: false);
         final response = await provider.getAuthResult(
-            contactNum, encryptString(pin, _sk, _iv).toString(),
-        token);
+            contactNum, encryptString(pin, _sk, _iv).toString(), token);
 
         response.fold(
           (error) {
@@ -152,8 +156,13 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
             ));
             Navigator.pop(context);
             if (data.message == "Login Successfull") {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => BottomNavScreen()));
+              if (fcmToken.isNotEmpty) {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const BottomNavScreen()));
+              }else{
+                saveFcmToken(custID, context, "GPIN", token, contactNum, mpin);
+              }
+
             }
           },
         );
@@ -196,8 +205,12 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
           Navigator.pop(context);
           print("data.message = ${data.message}");
           if (data.message == "Login Successfull") {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => BottomNavScreen()));
+            if (fcmToken.isNotEmpty) {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => BottomNavScreen()));
+            } else {
+              saveFcmToken(custID, context, "GPIN", token, contactNum, mpin);
+            }
           }
           // Navigator.pop(context);
         },
@@ -288,8 +301,10 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
               const SizedBox(height: 10),
               TextButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context )=>
-                  ForgotMpinPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ForgotMpinPage()));
                 },
                 child: Text(
                   "Forgot M-PIN?",

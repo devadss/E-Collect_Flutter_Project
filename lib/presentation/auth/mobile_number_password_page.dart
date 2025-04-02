@@ -194,147 +194,151 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         backgroundColor: white,
-        body: Column(
-          children: [
-            const SizedBox(height: 10),
-            Center(
-              child: Image.asset("assets/images/login.jpg",
-                  width: 300, height: 300, fit: BoxFit.fill, scale: 28),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 10),
-                  Text(
-                    "User Authentication",
-                    style: GoogleFonts.inter(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 23,
-                        color: black),
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    height: 70,
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    decoration: BoxDecoration(
-                      color: deepTeal.withOpacity(0.4),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.person, color: black),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: TextField(
-                            controller: userNameController,
-                            keyboardType: TextInputType.name,
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Enter your user name',
-                              contentPadding:
-                                  EdgeInsets.symmetric(vertical: 15.0),
-                            ),
-                            inputFormatters: <TextInputFormatter>[
-                              LengthLimitingTextInputFormatter(10),
-                              FilteringTextInputFormatter.singleLineFormatter,
-                            ],
-                          ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const SizedBox(height: 10),
+                Center(
+                  child: Image.asset("assets/images/login.jpg",
+                      width: 300, height: 300, fit: BoxFit.fill, scale: 28),
+                ),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 10),
+                      Text(
+                        "User Authentication",
+                        style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 23,
+                            color: black),
+                      ),
+                      const SizedBox(height: 10),
+                      Container(
+                        height: 70,
+                        padding: const EdgeInsets.only(left: 20, right: 20),
+                        decoration: BoxDecoration(
+                          color: deepTeal.withOpacity(0.4),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  Container(
-                    height: 70,
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    decoration: BoxDecoration(
-                      color: deepTeal.withOpacity(0.4),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.lock, color: black),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: TextField(
-                            controller: passwordController,
-                            obscureText: isObscured,
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Enter Password',
-                              hintStyle:
-                                  GoogleFonts.inter(color: Colors.black54),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  isObscured
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
+                        child: Row(
+                          children: [
+                            const Icon(Icons.person, color: black),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: TextField(
+                                controller: userNameController,
+                                keyboardType: TextInputType.name,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'Enter your user name',
+                                  contentPadding:
+                                      EdgeInsets.symmetric(vertical: 15.0),
                                 ),
-                                onPressed: toggleVisibility,
+                                inputFormatters: <TextInputFormatter>[
+                                  LengthLimitingTextInputFormatter(10),
+                                  FilteringTextInputFormatter.singleLineFormatter,
+                                ],
                               ),
                             ),
-                            inputFormatters: <TextInputFormatter>[
-                              LengthLimitingTextInputFormatter(15),
-                              FilteringTextInputFormatter.singleLineFormatter,
-                            ],
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
+                      const SizedBox(height: 40),
+                      Container(
+                        height: 70,
+                        padding: const EdgeInsets.only(left: 20, right: 20),
+                        decoration: BoxDecoration(
+                          color: deepTeal.withOpacity(0.4),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.lock, color: black),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: TextField(
+                                controller: passwordController,
+                                obscureText: isObscured,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'Enter Password',
+                                  hintStyle:
+                                      GoogleFonts.inter(color: Colors.black54),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      isObscured
+                                          ? Icons.visibility
+                                          : Icons.visibility_off,
+                                    ),
+                                    onPressed: toggleVisibility,
+                                  ),
+                                ),
+                                inputFormatters: <TextInputFormatter>[
+                                  LengthLimitingTextInputFormatter(15),
+                                  FilteringTextInputFormatter.singleLineFormatter,
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 50, right: 50, top: 50, bottom: 20),
+                  child: GestureDetector(
+                      onTap: () {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        credentialValidation();
+                      },
+                      child: const BuildButton(buttonText: "LOGIN")),
+                ),
+                // GestureDetector(
+                //   onTap: (){
+                //     Navigator.push(context, MaterialPageRoute(builder: (context)=>
+                //      ForgotUsernamePasswordPage(mobNum: widget.mobNum)));
+                //   },
+                //
+                //   child: Text(
+                //     "Forgot username or password ?",
+                //     style: GoogleFonts.inter(
+                //         color: Colors.indigo,
+                //         fontSize: 17,
+                //         fontWeight: FontWeight.w400),
+                //   ),
+                // )
+                const SizedBox(height: 40),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                ForgotUsernamePasswordPage(mobNum: widget.mobNum,)));
+                  },
+                  child: Center(
+                    child: Text(
+                      "Forgot Username / Password?",
+                      style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w700,
+                          decoration: TextDecoration.underline,
+                          color: colorBlue,
+                          decorationColor: colorBlue),
                     ),
                   ),
-                ],
-              ),
+                )
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: 50, right: 50, top: 50, bottom: 20),
-              child: GestureDetector(
-                  onTap: () {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                    credentialValidation();
-                  },
-                  child: const BuildButton(buttonText: "LOGIN")),
-            ),
-            // GestureDetector(
-            //   onTap: (){
-            //     Navigator.push(context, MaterialPageRoute(builder: (context)=>
-            //      ForgotUsernamePasswordPage(mobNum: widget.mobNum)));
-            //   },
-            //
-            //   child: Text(
-            //     "Forgot username or password ?",
-            //     style: GoogleFonts.inter(
-            //         color: Colors.indigo,
-            //         fontSize: 17,
-            //         fontWeight: FontWeight.w400),
-            //   ),
-            // )
-            const SizedBox(height: 40),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            ForgotUsernamePasswordPage(mobNum: widget.mobNum,)));
-              },
-              child: Center(
-                child: Text(
-                  "Forgot Username / Password?",
-                  style: GoogleFonts.inter(
-                      fontWeight: FontWeight.w700,
-                      decoration: TextDecoration.underline,
-                      color: colorBlue,
-                      decorationColor: colorBlue),
-                ),
-              ),
-            )
-          ],
+          ),
         ));
   }
 }

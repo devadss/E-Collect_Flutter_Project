@@ -32,8 +32,8 @@ void getSharedData()async{
     });
     final provider =
     Provider.of<AgentCustomerDetailsProvider>(context, listen: false);
-   // provider.getAgentCustomerDetails(agentID);
-   provider.getAgentCustomerDetails("361");
+    provider.getAgentCustomerDetails(agentID);
+   //provider.getAgentCustomerDetails("361");
 }
 
   Widget buildShimmerText({double width = double.infinity, double height = 16}) {
@@ -51,8 +51,57 @@ void getSharedData()async{
       ),
     );
   }
-
   Widget buildShimmerList() {
+    return Expanded(
+      child: ListView.separated(
+        itemCount: 10,
+        separatorBuilder: (context, index) => const SizedBox(height: 10),
+        itemBuilder: (context, index) {
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+              border: Border.all(color: Colors.grey[300]!, width: 1),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black45,
+                  blurRadius: 8,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min, // Important: Shrink to fit content
+              children: [
+                buildShimmerText(width: 150), // Name
+                const SizedBox(height: 10),
+                buildShimmerText(width: 100), // Customer ID
+                const SizedBox(height: 10),
+                buildShimmerText(width: 180), // Account Number
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.phone,
+                      size: 20,
+                      color: deepTeal,
+                    ),
+                    SizedBox(width: 10), // Add space between icon and text
+                    buildShimmerText(width: 120),
+                  ],
+                )
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+/*  Widget buildShimmerList() {
     return Expanded(
       child: ListView.separated(
         physics: const NeverScrollableScrollPhysics(),
@@ -60,7 +109,7 @@ void getSharedData()async{
         separatorBuilder: (context, index) => const SizedBox(height: 10),
         itemBuilder: (context, index) {
           return Container(
-            height: MediaQuery.of(context).size.height * 0.15,
+           //height: MediaQuery.of(context).size.height * 0.15,
             width: double.infinity,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
@@ -76,34 +125,40 @@ void getSharedData()async{
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  buildShimmerText(width: 150), // Name
-                  const SizedBox(height: 10),
-                  buildShimmerText(width: 100), // Customer ID
-                  const SizedBox(height: 10),
-                  buildShimmerText(width: 180), // Account Number
-                  const SizedBox(height: 10),
 
-                  Row(
+                child: Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(
-                        Icons.phone,
-                        size: 20,
-                        color: deepTeal,
-                      ),
-                      buildShimmerText(width: 120)
+                      Flexible(child: buildShimmerText(width: 150)), // Name
+                      const SizedBox(height: 10),
+                      Flexible(child: buildShimmerText(width: 100)), // Customer ID
+                      const SizedBox(height: 10),
+                      Flexible(child: buildShimmerText(width: 180)), // Account Number
+                      const SizedBox(height: 10),
+
+                      Row(
+                        children: [
+                          const Flexible(
+                            child: Icon(
+                              Icons.phone,
+                              size: 20,
+                              color: deepTeal,
+                            ),
+                          ),
+                          Flexible(child: buildShimmerText(width: 120))
+                        ],
+                      )
                     ],
-                  )
-                ],
-              ),
+                  ),
+                ),
+
             ),
           );
         },
       ),
     );
-  }
+  }*/
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -159,13 +214,14 @@ void getSharedData()async{
                                 custName: customer.custName ?? "NAME",
                                 custAcNumber: customer.accNo ?? "ACCNO",
                                 custPhoneNumber: customer.mobile ?? "MOBILE",
-                                custId: '361',
+                               // custId: '361',
+                                custId: agentID,
                               ),
                             ),
                           );
                         },
                         child: Container(
-                          height: MediaQuery.of(context).size.height * 0.15,
+                          height: MediaQuery.of(context).size.height * 0.13,
                           width: double.infinity,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
@@ -186,48 +242,52 @@ void getSharedData()async{
                                     color: black,
                                   ),
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text(
-                                      "Account Number : ${customer.accNo ?? "ACC No"}",
-                                      style: GoogleFonts.inter(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 14,
-                                        color: black87,
+                                SingleChildScrollView(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Account Number : ${customer.accNo ?? "ACC No"}",
+                                        style: GoogleFonts.inter(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 14,
+                                          color: black87,
+                                        ),
+                                         // overflow: TextOverflow.ellipsis
                                       ),
-                                       // overflow: TextOverflow.ellipsis
-                                    ),
-                                    const Spacer(), // ✅ Moved correctly
-                                    Container(
-                                      height: 30,
-                                      width: 90,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(30),
-                                        border: Border.all(color: black, width: 1),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                                        child: Row(
-                                          children: [
-                                            Image.asset(
-                                              "assets/images/money.png",
-                                              scale: 25,
+                                      const Spacer(), // ✅ Moved correctly
+                                      FittedBox(
+                                        child: Container(
+                                          height: 30,
+                                          width: 90,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(30),
+                                            border: Border.all(color: black, width: 1),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                                            child: Row(
+                                              children: [
+                                                Image.asset(
+                                                  "assets/images/money.png",
+                                                  scale: 25,
+                                                ),
+                                                const SizedBox(width: 5),
+                                                Text(
+                                                  "Collect",
+                                                  style: GoogleFonts.inter(
+                                                    fontWeight: FontWeight.w700,
+                                                    fontSize: 12,
+                                                    color: deepTeal,
+                                                  ),
+                                                )
+                                              ],
                                             ),
-                                            const SizedBox(width: 5),
-                                            Text(
-                                              "Collect",
-                                              style: GoogleFonts.inter(
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: 12,
-                                                color: deepTeal,
-                                              ),
-                                            )
-                                          ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                                 Text(
                                   "Phone Number : ${customer.mobile ?? "MOBILE"}",

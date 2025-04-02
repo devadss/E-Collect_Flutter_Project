@@ -161,141 +161,145 @@ class _MobileNumberVerificationPageState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: white,
-      body: Column(
-        children: [
-          Stack(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
             children: [
-              // Gradient Background
-              Container(
-                height: MediaQuery.of(context).size.height * 0.45,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [deepTeal, yellowGreen],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-              ),
-
-              // Doodle Image with Opacity (positioned behind)
-              Positioned.fill(
-                child: Opacity(
-                  opacity: 0.1,
-                  child: Image.asset(
-                    "assets/images/doodle.jpeg",
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              Positioned.fill(
-                child: Center(
-                  child: Container(
-                    height: 200,
-                    width: 200,
+              Stack(
+                children: [
+                  // Gradient Background
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.45,
                     decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: white,
+                      gradient: LinearGradient(
+                        colors: [deepTeal, yellowGreen],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Image.asset("assets/images/mobile_number.png"),
+                  ),
+          
+                  // Doodle Image with Opacity (positioned behind)
+                  Positioned.fill(
+                    child: Opacity(
+                      opacity: 0.1,
+                      child: Image.asset(
+                        "assets/images/doodle.jpeg",
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 30),
-          Padding(
-            padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Enter mobile number",
-                  style: GoogleFonts.inter(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  width: 380,
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  decoration: BoxDecoration(
-                    color: deepTeal.withOpacity(0.4),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.phone_android_sharp, color: black),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: TextField(
-                          controller: _mobileNumberController,
-                          keyboardType: const TextInputType.numberWithOptions(),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Enter mobile number here',
-                            prefixIcon: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Text(
-                                '+91-',
-                                style: GoogleFonts.inter(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                  fontSize: 15,
-                                ),
-                              ),
-                            ),
-                            contentPadding:
-                                const EdgeInsets.symmetric(vertical: 15.0),
-                          ),
-                          inputFormatters: <TextInputFormatter>[
-                            LengthLimitingTextInputFormatter(10),
-                            // Limit to 10 characters
-                            FilteringTextInputFormatter.digitsOnly,
-                            // Only digits are allowed
-                          ],
-                          onChanged: (value) {
-                            // Validate length here and update error message if needed
-                            if (value.length < 10) {
-                              setState(() {
-                                errorMsg = 'Please enter at least 10 digits';
-                              });
-                            } else {
-                              setState(() {
-                                errorMsg = null; // Clear error message if valid
-                              });
-                            }
-                          },
+                  Positioned.fill(
+                    child: Center(
+                      child: Container(
+                        height: 200,
+                        width: 200,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: white,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Image.asset("assets/images/mobile_number.png"),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-                if (errorMsg != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(
-                      errorMsg!,
-                      style: const TextStyle(color: Colors.red),
                     ),
                   ),
-              ],
-            ),
+                ],
+              ),
+              const SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Enter mobile number",
+                      style: GoogleFonts.inter(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      width: 380,
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      decoration: BoxDecoration(
+                        color: deepTeal.withOpacity(0.4),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.phone_android_sharp, color: black),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: TextField(
+                              controller: _mobileNumberController,
+                              keyboardType: const TextInputType.numberWithOptions(),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Enter mobile number here',
+                                prefixIcon: Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Text(
+                                    '+91-',
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                                contentPadding:
+                                    const EdgeInsets.symmetric(vertical: 15.0),
+                              ),
+                              inputFormatters: <TextInputFormatter>[
+                                LengthLimitingTextInputFormatter(10),
+                                // Limit to 10 characters
+                                FilteringTextInputFormatter.digitsOnly,
+                                // Only digits are allowed
+                              ],
+                              onChanged: (value) {
+                                // Validate length here and update error message if needed
+                                if (value.length < 10) {
+                                  setState(() {
+                                    errorMsg = 'Please enter at least 10 digits';
+                                  });
+                                } else {
+                                  setState(() {
+                                    errorMsg = null; // Clear error message if valid
+                                  });
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (errorMsg != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          errorMsg!,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 40),
+              GestureDetector(
+                onTap: () {
+                  checkMobileNumber();
+                },
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 50),
+                  child: BuildButton(buttonText: "Confirm"),
+                ),
+              )
+            ],
           ),
-          const SizedBox(height: 40),
-          GestureDetector(
-            onTap: () {
-              checkMobileNumber();
-            },
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 50),
-              child: BuildButton(buttonText: "Confirm"),
-            ),
-          )
-        ],
+        ),
       ),
     );
   }

@@ -23,6 +23,7 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
   TextEditingController accountNumController = TextEditingController();
   TextEditingController amountController = TextEditingController();
   num previousCheckboxTotal = 0;
+  double maxValue = 0;
   agent.AgentCustomerDetailsModel? agentCustomerDetailsModel =
       agent.AgentCustomerDetailsModel();
   DuesList? duesList = DuesList();
@@ -110,8 +111,8 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
     final provider =
         Provider.of<AgentCustomerDetailsProvider>(context, listen: false);
 
-    await provider.getAgentCustomerDetails("361");
-    // await provider.getAgentCustomerDetails(agentID);
+    //await provider.getAgentCustomerDetails("361");
+    await provider.getAgentCustomerDetails(agentID);
 
     if (!mounted) return; // ✅ Prevent setState if widget is disposed
 
@@ -299,6 +300,12 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
     int manualAmount =
         int.tryParse(amountController.text) ?? 0; // Preserve manual input
     int checkboxTotal = 0;
+    final duesData = provider.dueListModel?.duesList?.data;
+    if (duesData != null) {
+      for (Datum amt in duesData) {
+        maxValue += double.parse(amt.dueAmount.toString());
+      }
+    }
 
     // Calculate the sum of selected due amounts
     for (int i = 0; i < checkedItems.length; i++) {
@@ -329,6 +336,7 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       backgroundColor: white,
       body: SafeArea(
         child: Padding(
@@ -336,7 +344,7 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
           child: Column(
             children: [
               const SizedBox(height: 40),
-
+          
               // Today's Collection Box
               Container(
                 height: MediaQuery.of(context).size.height * 0.08,
@@ -356,20 +364,18 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
                 ),
                 child: Center(
                   child: FittedBox(
-                    child: Text(
-                      "Today's Collection : Rs.10,000",
-                      style: GoogleFonts.inter(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 18,
-                        color: white,
-                      ),
-                        overflow: TextOverflow.ellipsis
-                    ),
+                    child: Text("Today's Collection : Rs.10,000",
+                        style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 18,
+                          color: white,
+                        ),
+                        overflow: TextOverflow.ellipsis),
                   ),
                 ),
               ),
               const SizedBox(height: 20),
-
+          
               // Search Field
               Row(
                 children: [
@@ -447,7 +453,7 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
                         accno = "";
                         isFetchDataCalled = false;
                       });
-
+          
                       var page = await Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -473,7 +479,7 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
                   : isFetchDataCalled == true
                       ? _buildShimmerCustomerInfo()
                       : const SizedBox(),
-
+          
               const SizedBox(height: 15),
               //duesList?.data != null
               name != ""
@@ -585,6 +591,18 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
     );
   }
 
+  void onAmountChanges(String amount) {
+    if (amount.isNotEmpty) {
+      double? amountValue = double.parse(amount);
+      if(amountValue > maxValue){
+        amountController.value =TextEditingValue(
+          text: maxValue.toStringAsFixed(2), // Format to avoid extra zeros
+          selection: TextSelection.collapsed(offset: maxValue.toString().length),
+        );
+      }
+    }
+  }
+
   Widget _buildBottomBar() {
     return Container(
       height: MediaQuery.of(context).size.height * 0.15,
@@ -609,6 +627,7 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
             SizedBox(
               width: 120,
               child: TextField(
+
                 controller: amountController,
                 keyboardType:
                     const TextInputType.numberWithOptions(decimal: true),
@@ -623,6 +642,7 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
                   filled: true,
                   fillColor: teal600!.withOpacity(0.3),
                 ),
+                onChanged: onAmountChanges,
               ),
             ),
             const SizedBox(width: 10),
