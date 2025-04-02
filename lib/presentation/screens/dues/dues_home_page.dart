@@ -165,7 +165,7 @@ void getSharedData()async{
                           );
                         },
                         child: Container(
-                          height: MediaQuery.of(context).size.height * 0.12,
+                          height: MediaQuery.of(context).size.height * 0.15,
                           width: double.infinity,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
@@ -187,7 +187,7 @@ void getSharedData()async{
                                   ),
                                 ),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Text(
                                       "Account Number : ${customer.accNo ?? "ACC No"}",
@@ -196,6 +196,7 @@ void getSharedData()async{
                                         fontSize: 14,
                                         color: black87,
                                       ),
+                                       // overflow: TextOverflow.ellipsis
                                     ),
                                     const Spacer(), // ✅ Moved correctly
                                     Container(

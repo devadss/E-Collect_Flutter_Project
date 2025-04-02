@@ -164,11 +164,13 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: GoogleFonts.inter(
-              fontSize: 16,
-              color: grey,
+          Expanded(
+            child: Text(
+              label,
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                color: grey,
+              ),
             ),
           ),
           Text(

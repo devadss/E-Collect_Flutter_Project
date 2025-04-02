@@ -355,12 +355,15 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
                   border: Border.all(color: black, width: 0.5),
                 ),
                 child: Center(
-                  child: Text(
-                    "Today's Collection : Rs.10,000",
-                    style: GoogleFonts.inter(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 18,
-                      color: white,
+                  child: FittedBox(
+                    child: Text(
+                      "Today's Collection : Rs.10,000",
+                      style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 18,
+                        color: white,
+                      ),
+                        overflow: TextOverflow.ellipsis
                     ),
                   ),
                 ),

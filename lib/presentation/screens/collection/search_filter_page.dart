@@ -225,28 +225,28 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
                 children: [
                   Row(children: [
                     buildShimmerText(width: 150), // Name
-                    SizedBox(width: 30,),
+                    const SizedBox(width: 30,),
                     buildShimmerText(width: 100), // Name
 
                   ],),
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                   Row(children: [
                     buildShimmerText(width: 150), // Name
-                    SizedBox(width: 30,),
+                    const SizedBox(width: 30,),
                     buildShimmerText(width: 50), // Name
 
                   ],),
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                   Row(children: [
                     buildShimmerText(width: 150), // Name
-                    SizedBox(width: 30,),
+                    const SizedBox(width: 30,),
                     buildShimmerText(width: 120), // Name
 
                   ],),
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                   Row(children: [
                     buildShimmerText(width: 150), // Name
-                    SizedBox(width: 30,),
+                    const SizedBox(width: 30,),
                     buildShimmerText(width: 160), // Name
 
                   ],),// Account Number
@@ -437,12 +437,14 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(
-                                          "Phone Number : +91 ${agentCustomerDetailsModel?.customerList?.data![index].mobile}",
-                                          style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w700,
-                                              fontSize: 14,
-                                              color: black87),
+                                        FittedBox(
+                                          child: Text(
+                                            "Phone Number : +91 ${agentCustomerDetailsModel?.customerList?.data![index].mobile}",
+                                            style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 14,
+                                                color: black87),
+                                          ),
                                         ),
                                         const Spacer(),
                                         GestureDetector(

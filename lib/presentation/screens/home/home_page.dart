@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:collection_qr_flutter/data/provider/transaction_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/colors.dart';
 import '../../../data/storage/shared_pref_helper.dart';
@@ -349,13 +350,14 @@ Future<void> fetchCollection() async {
                               builder: (context,provider,child){
                                 return  Row(
                                   mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                                  MainAxisAlignment.spaceEvenly,
                                   children: [
                                     _buildSummaryCard(
                                       image: "assets/images/money_initated.png",
                                       title: "Total Initiated",
                                       amount: "Rs. ${provider.collectionSummaryModel?.data?[0].pendingCollections}",
                                     ),
+                                    const SizedBox(width: 10,),
                                     _buildSummaryCard(
                                       image: "assets/images/salary.png",
                                       title: "Total Received",
@@ -404,7 +406,7 @@ Future<void> fetchCollection() async {
                                     title: Text(
                                       "Payment Received from ${provider.agentPaymentTransctionModel?.data?[index].customerName ?? "Unknown"}",
                                       style: GoogleFonts.inter(
-                                        fontSize: 12,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
@@ -438,43 +440,51 @@ Future<void> fetchCollection() async {
 
   Widget _buildSummaryCard(
       {required String image, required String title, required String amount}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-      decoration: BoxDecoration(
-        color: deepTeal,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: black, width: 1),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 10,
-            spreadRadius: 1,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Image.asset(image,scale: 15,),
-          const SizedBox(width: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: GoogleFonts.inter(fontSize: 13, color: Colors.white),
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        decoration: BoxDecoration(
+          color: deepTeal,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: black, width: 1),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 10,
+              spreadRadius: 1,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Image.asset(image,scale: 15,),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  FittedBox(
+                    child: Text(
+                      title,
+                      style: GoogleFonts.inter(fontSize: 13, color: Colors.white),
+                    ),
+                  ),
+                  FittedBox(
+                    child: Text(
+                      amount,
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: white,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              Text(
-                amount,
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: white,
-                ),
-              ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
