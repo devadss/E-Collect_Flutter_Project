@@ -9,8 +9,19 @@ class CustRegisterProvider with ChangeNotifier {
 
   CustRegisterProvider(this._custRegRepository);
 
+  RegistedCustomerModel? _registedCustomerModel;
+  RegistedCustomerModel? get registedCustomerModel => _registedCustomerModel;
+
   Future<Either<RegCustFailResponse, RegistedCustomerModel>> checkRegCust(
       int mobileNumber) async {
-    return _custRegRepository.checkRegCust(mobileNumber);
+    final response = await _custRegRepository.checkRegCust(mobileNumber);
+    response.fold((fail){
+
+    }, (success){
+      notifyListeners();
+      _registedCustomerModel = success;
+    });
+
+    return response;
   }
 }

@@ -10,6 +10,7 @@ import 'package:collection_qr_flutter/data/provider/transaction_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/colors.dart';
+import '../../../data/provider/cust_register_provider.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../../core/general.dart';
 
@@ -21,21 +22,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // final bool _isCardDetailsVisible = false;
   int test = 0;
-
-  //bool _isCvvVisible = false;
   String? userName;
   String? entityId;
   String? token;
   String? agentOriginId;
+  String? mobNum;
+  bool? isBannerAvailable;
   final List<String> bannerImages = [
     "assets/images/collection_splash_screen.jpg",
     "assets/images/collection_splash_screen.jpg",
     "assets/images/doodle.jpeg",
   ];
 
-  // List<Result> result = [];
   @override
   void initState() {
     super.initState();
@@ -101,8 +100,11 @@ class _HomePageState extends State<HomePage> {
     final name = await SharedPref().getAgentName();
     final entId = await SharedPref().getAgentId();
     final tok = await SharedPref().getTokenValue();
+    final mobnum = await SharedPref().getMobNum();
     final agentOrgID = await SharedPref().getAgentOriginId();
+
     printLog("-------------------USERNAME---------------");
+    printLog("-------------------mobnum $mobnum---------------");
     print(name);
 
     // Trigger rebuild after fetching the userName
@@ -112,11 +114,13 @@ class _HomePageState extends State<HomePage> {
         entityId = entId;
         token = tok;
         agentOriginId = agentOrgID;
+        mobNum = mobnum;
       });
     }
     fetchBalance();
     fetchTransaction();
     fetchCollection();
+    fetchBannerImages();
   }
 
   String addCommasToNumber(num number) {
@@ -138,40 +142,42 @@ class _HomePageState extends State<HomePage> {
     return formattedNumber;
   }
 
-  Widget buildShimmerText({String text = "Loading Balance.....", double fontSize = 16}) {
+  Widget buildShimmerText(
+      {String text = "Loading Balance.....", double fontSize = 16}) {
     return Shimmer.fromColors(
       baseColor: Colors.grey[400]!, // Darker base color
       highlightColor: Colors.grey[100]!, // Lighter highlight color
       child: Text(
-        textAlign: TextAlign.start,
-        text,
-        style:GoogleFonts.inter(
-          fontSize: fontSize,
-          fontWeight: FontWeight.bold,
-          color: Colors.grey[300],
-        )
-      ),
+          textAlign: TextAlign.start,
+          text,
+          style: GoogleFonts.inter(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: Colors.grey[300],
+          )),
     );
   }
 
-  Widget buildShimmerList(){
+  Widget buildShimmerList() {
     return Shimmer.fromColors(
         baseColor: Colors.grey[400]!,
         highlightColor: Colors.grey[100]!,
-        child:  Flexible(
+        child: Flexible(
           child: Column(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                 // buildShimmerText(),
+                  // buildShimmerText(),
                   _buildSummaryCard(
                     image: "assets/images/money_initated.png",
                     title: "Total Initiated",
                     amount: "",
                   ),
-                  const SizedBox(width: 10,),
-             //     buildShimmerText(),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  //     buildShimmerText(),
                   _buildSummaryCard(
                     image: "assets/images/salary.png",
                     title: "Total Received",
@@ -183,8 +189,7 @@ class _HomePageState extends State<HomePage> {
               Expanded(
                 child: ListView.separated(
                   itemCount: 5,
-                  separatorBuilder: (_, __) =>
-                  const Divider(thickness: 1),
+                  separatorBuilder: (_, __) => const Divider(thickness: 1),
                   itemBuilder: (context, index) {
                     return ListTile(
                       leading: Container(
@@ -209,9 +214,8 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       subtitle: Text(
-                          "Please wait....",
-                        style: GoogleFonts.inter(
-                            fontSize: 10, color: grey),
+                        "Please wait....",
+                        style: GoogleFonts.inter(fontSize: 10, color: grey),
                       ),
                       trailing: Text(
                         "₹....",
@@ -230,11 +234,35 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 
-Future<void> fetchCollection() async {
-    final provider = Provider.of<CollectionSummaryProvider>(context , listen: false);
-   // await provider.getCollectionSummary(agentOriginId.toString(), startDate, endDate, token)
-    provider.getCollectionSummary("AGT12345", "2025-03-01", "2025-03-31", token!);
-}
+  Future<void> fetchCollection() async {
+    final provider =
+        Provider.of<CollectionSummaryProvider>(context, listen: false);
+    // await provider.getCollectionSummary(agentOriginId.toString(), startDate, endDate, token)
+    provider.getCollectionSummary(
+        "AGT12345", "2025-03-01", "2025-03-31", token!);
+  }
+
+  Future<void> fetchBannerImages() async {
+    final provider = Provider.of<CustRegisterProvider>(context, listen: false);
+   await provider.checkRegCust(int.parse(mobNum.toString()));
+   final data = provider.registedCustomerModel?.response?.images;
+
+      if(data != null){
+        print("BANNER IMAGE IS FOUND");
+         bannerImages.add(data.banner1.toString());
+         bannerImages.add(data.banner2.toString());
+         bannerImages.add(data.banner3.toString());
+         bannerImages.add(data.banner4.toString());
+         setState(() {
+           isBannerAvailable = true;
+         });
+      }else{
+        print("NO BANNER IMAGE IS FOUND");
+        isBannerAvailable = false;
+      }
+
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -271,7 +299,7 @@ Future<void> fetchCollection() async {
                   ),
                   const SizedBox(height: 5),
                   provider.agentPaymentTransctionModel == null
-                      ?  buildShimmerText()
+                      ? buildShimmerText()
                       : Text(
                           "Your Balance: ₹ ${fetchBalanceProvider.balanceModel?.result?.isNotEmpty == true ? addCommasToNumber(fetchBalanceProvider.balanceModel!.result![0].balance!.toDouble()) : ' '}",
                           style: GoogleFonts.inter(
@@ -303,11 +331,19 @@ Future<void> fetchCollection() async {
                 items: bannerImages.map((imagePath) {
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(15),
-                    child: Image.asset(
+                    child:
+                    isBannerAvailable == true?
+                    Image.network(
                       imagePath,
                       width: double.infinity,
                       fit: BoxFit.cover,
-                    ),
+                    ):
+                    Image.asset(
+                      imagePath,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    )
+                    ,
                   );
                 }).toList(),
               ),
@@ -344,32 +380,33 @@ Future<void> fetchCollection() async {
                 ),
                 child: provider.agentPaymentTransctionModel == null
                     ?
-               // CircularProgressIndicator(color: deepTeal)
-                buildShimmerList()
-                    :
-                Column(
+                    // CircularProgressIndicator(color: deepTeal)
+                    buildShimmerList()
+                    : Column(
                         children: [
                           Consumer<CollectionSummaryProvider>(
-                              builder: (context,provider,child){
-                                return  Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    _buildSummaryCard(
-                                      image: "assets/images/money_initated.png",
-                                      title: "Total Initiated",
-                                      amount: "Rs. ${provider.collectionSummaryModel?.data?[0].pendingCollections}",
-                                    ),
-                                    const SizedBox(width: 10,),
-                                    _buildSummaryCard(
-                                      image: "assets/images/salary.png",
-                                      title: "Total Received",
-                                      amount: "Rs. ${provider.collectionSummaryModel?.data?[0].totalCollected}",
-                                    ),
-                                  ],
-                                );
-                              }
-                          ),
+                              builder: (context, provider, child) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                _buildSummaryCard(
+                                  image: "assets/images/money_initated.png",
+                                  title: "Total Initiated",
+                                  amount:
+                                      "Rs. ${provider.collectionSummaryModel?.data?[0].pendingCollections}",
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                _buildSummaryCard(
+                                  image: "assets/images/salary.png",
+                                  title: "Total Received",
+                                  amount:
+                                      "Rs. ${provider.collectionSummaryModel?.data?[0].totalCollected}",
+                                ),
+                              ],
+                            );
+                          }),
                           const SizedBox(height: 15),
                           Expanded(
                             child: ListView.separated(
@@ -462,7 +499,10 @@ Future<void> fetchCollection() async {
         child: Flexible(
           child: Row(
             children: [
-              Image.asset(image,scale: 15,),
+              Image.asset(
+                image,
+                scale: 15,
+              ),
               const SizedBox(width: 8),
               Expanded(
                 child: Column(
@@ -471,7 +511,8 @@ Future<void> fetchCollection() async {
                     FittedBox(
                       child: Text(
                         title,
-                        style: GoogleFonts.inter(fontSize: 13, color: Colors.white),
+                        style: GoogleFonts.inter(
+                            fontSize: 13, color: Colors.white),
                       ),
                     ),
                     FittedBox(
