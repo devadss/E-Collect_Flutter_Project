@@ -194,40 +194,41 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                 color: white,
               ),
               activeItem: Image.asset(
-                "assets/images/home_icon.png",
+                "assets/images/active_home.png",
                 color: white,
               ),
               itemLabel: 'Home',
             ),
             BottomBarItem(
               inActiveItem: Image.asset(
-                "assets/images/dues_list_icon.png",
+                "assets/images/due_list_icon.png",
                 color: white,
               ),
               activeItem: Image.asset(
-                "assets/images/due_list_icon.png",
+                "assets/images/active_due.png",
                 color: white,
               ),
               itemLabel: 'Due List',
             ),
+
             BottomBarItem(
               inActiveItem: Image.asset(
-                "assets/images/dues_list_icon.png",
+                "assets/images/collection_icon.png",
                 color: white,
               ),
               activeItem: Image.asset(
-                "assets/images/account_list.png",
+                "assets/images/active_due.png",
                 color: white,
               ),
               itemLabel: 'Account List',
             ),
             BottomBarItem(
               inActiveItem: Image.asset(
-                "assets/images/account_list_active.png",
+                "assets/images/profile_icon.png",
                 color: white,
               ),
               activeItem: Image.asset(
-                "assets/images/profile_icon.png",
+                "assets/images/profile_active.png",
                 color: white,
               ),
               itemLabel: 'Profile',
