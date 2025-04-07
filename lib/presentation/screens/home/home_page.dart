@@ -13,7 +13,6 @@ import '../../../../core/colors.dart';
 import '../../../data/provider/cust_register_provider.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../../core/general.dart';
-import '../../../domain/model/no_transaction.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -207,15 +206,40 @@ class _HomePageState extends State<HomePage> {
         child: Flexible(
           child: Column(
             children: [
+
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // buildShimmerText(),
-                  _buildSummaryCard(
-                    image: "assets/images/money_initated.png",
-                    title: "Total Initiated",
+                  Text(
+                    //"${DateFormat('MMM dd, yyyy').format(startDate)} - ${DateFormat('MMM dd, yyyy').format(endDate)}",
+                    "Please wait...",
+                    style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                        color: black),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      _selectDateRange(context);
+                    },
+                    child: Image.asset(
+                      "assets/images/calender.png",
+                      scale: 15,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildSummaryCard (
+                    image: "assets/images/salary.png",
+                    title: "Total Received",
                     amount: "",
                   ),
+
                   const SizedBox(
                     width: 10,
                   ),
@@ -419,14 +443,15 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 child: provider.agentPaymentTransctionModel == null
-
                     ?
                     buildShimmerList()
                     : Column(
                         children: [
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Row(
+                            child:
+
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
@@ -447,7 +472,9 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ],
                             ),
+
                           ),
+               const SizedBox(height: 10,),
                Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -477,6 +504,7 @@ class _HomePageState extends State<HomePage> {
       ),
       ],
     ),
+
                           // Consumer<CollectionSummaryProvider>(
                           //   builder: (context, provider, child) {
                           //     final hasData = provider.collectionSummaryModel?.data?.isNotEmpty == true;
@@ -641,4 +669,62 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+
+  Widget _buildSummaryCardShimmer({
+    required String image,
+    required String title,
+    required String amount,
+  }) {
+    return Expanded(
+      child: Shimmer.fromColors(
+        baseColor: Colors.grey[400]!,
+        highlightColor: Colors.grey[100]!,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.black, width: 1),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 10,
+                spreadRadius: 1,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                color: Colors.white,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 12,
+                      width: double.infinity,
+                      color: Colors.white,
+                      margin: const EdgeInsets.symmetric(vertical: 4),
+                    ),
+                    Container(
+                      height: 14,
+                      width: 60,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
 }
