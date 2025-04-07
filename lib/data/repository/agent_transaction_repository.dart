@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection_qr_flutter/domain/model/no_transaction.dart';
 import 'package:dartz/dartz.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:http/http.dart'as http;
@@ -11,7 +12,7 @@ import '../service/error_handler.dart';
 
 class AgentTransactionRepository implements IAgentTransactionRepository{
   @override
-  Future<Either<ErrorHandler, AgentPaymentTransctionModel>> getTransactions(String token) async{
+  Future<Either<NoTransactionModel, AgentPaymentTransctionModel>> getTransactions(String token) async{
    final url = Uri.parse("${baseUrl}api/Cashfree/GetPaymentLinksQrTransactions");
    bool checkConnection = await InternetConnectionChecker().hasConnection;
    if(checkConnection){
@@ -22,13 +23,13 @@ class AgentTransactionRepository implements IAgentTransactionRepository{
        try{
          return Right(AgentPaymentTransctionModel.fromJson(jsonDecode(response.body)));
        }catch(e){
-         return Left(DataParsingException(e));
+         return Left(NoTransactionModel.fromJson(jsonDecode(response.body)));
        }
      }else{
-       return Left(FetchDataError("Failed To Fetch Data"));
+       return Left(NoTransactionModel.fromJson(jsonDecode(response.body)));
      }
    }else{
-     return Left(FetchDataError("No Internet Connection"));
+     return Left(NoTransactionModel(message: "NO INTERNET"));
    }
   }
 }

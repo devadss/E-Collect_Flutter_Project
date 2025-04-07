@@ -21,7 +21,7 @@ class AgentCustomerDetailsProvider with ChangeNotifier{
         },
         (data){
           _agentCustomerDetailsModel = data;
-          printLog("---------------------DATA-------------------");
+          printLog("---------------------CUST DATA-------------------");
           printLog(data);
           notifyListeners();
         }

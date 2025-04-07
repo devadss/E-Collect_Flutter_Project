@@ -57,6 +57,8 @@ dependencies:
   share_plus: ^7.2.2
   screenshot: ^3.0.0
   carousel_slider: ^5.0.0
+  flutter_screenutil: ^5.9.3
+  slider_button: ^2.1.0
  # flutter_libserialport: ^0.5.0
   usb_serial: ^0.3.0
 
@@ -95,6 +97,7 @@ flutter:
     - assets/images/collection_splash_screen.jpg
     - assets/images/doodle.jpeg
     - assets/images/login.jpg
+    - assets/images/calender.png
     - assets/images/mobile_number.png
     - assets/images/mpin_page.jpg
     - assets/images/otp_verification.png
@@ -105,9 +108,15 @@ flutter:
     - assets/images/money.png
     - assets/images/money_initated.png
     - assets/images/salary.png
+    - assets/images/qr-code.png
+    - assets/images/account_list.png
+    - assets/images/account_list_active.png
+    - assets/images/due_list_icon.png
+    - assets/images/web-link.png
     - assets/images/reset-password.png
     - assets/images/card_agent.png
     - assets/images/exit.png
+    - assets/images/arrow.png
     - assets/images/payment_recived.png
 
   #   - images/a_dot_burr.jpeg

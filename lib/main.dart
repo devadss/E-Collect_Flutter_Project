@@ -4,6 +4,7 @@ import 'package:collection_qr_flutter/data/provider/agent_transaction_provider.d
 import 'package:collection_qr_flutter/data/provider/cash_deposit_provider.dart';
 import 'package:collection_qr_flutter/data/provider/collection_summary_provider.dart';
 import 'package:collection_qr_flutter/data/provider/delete_fcm_provider.dart';
+import 'package:collection_qr_flutter/data/provider/due_under_agent_provider.dart';
 import 'package:collection_qr_flutter/data/provider/update_dop_provider.dart';
 import 'package:collection_qr_flutter/data/provider/update_password_provider.dart';
 import 'package:collection_qr_flutter/data/repository/agent_transaction_repository.dart';
@@ -41,6 +42,7 @@ import 'package:provider/provider.dart';
 import 'data/provider/agent_customer_details_provider.dart';
 import 'data/provider/create_order_provider.dart';
 import 'data/provider/due_list_provider.dart';
+import 'data/repository/due_under_agent_repository.dart';
 import 'data/service/notification_service/firebase_notification_services.dart';
 import 'data/service/notification_service/firebase_options.dart';
 import 'data/provider/cust_register_provider.dart';
@@ -122,6 +124,8 @@ void main() async{
   create: (_) => DeleteFcmProvider(DeleteFcmTokenRepository())),
     ChangeNotifierProvider(
   create: (_) => CollectionSummaryProvider(CollectionSummaryRepository())),
+    ChangeNotifierProvider(
+  create: (_) => DueUnderAgentProvider(DueUnderAgentRepository())),
 
 
   ], child: const MyApp()));

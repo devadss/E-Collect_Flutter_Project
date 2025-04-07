@@ -13,6 +13,7 @@ import '../../../../core/colors.dart';
 import '../../../data/provider/cust_register_provider.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../../core/general.dart';
+import '../../../domain/model/no_transaction.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -34,6 +35,47 @@ class _HomePageState extends State<HomePage> {
     "assets/images/collection_splash_screen.jpg",
     "assets/images/doodle.jpeg",
   ];
+  DateTime startDate = DateTime.now().subtract(const Duration(days: 30));
+  DateTime endDate = DateTime.now();
+
+  Future<void> _selectDateRange(BuildContext context) async {
+    DateTime today = DateTime.now();
+    DateTime oneMonthAgo = today.subtract(const Duration(days: 30));
+
+    final picked = await showDateRangePicker(
+      context: context,
+      firstDate: oneMonthAgo,
+      lastDate: today,
+      initialDateRange: DateTimeRange(start: startDate, end: endDate),
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            primaryColor: deepTeal,
+            colorScheme: const ColorScheme.light(primary: deepTeal),
+            buttonTheme:
+                const ButtonThemeData(textTheme: ButtonTextTheme.primary),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null && picked.duration.inDays <= 30) {
+      setState(() {
+        startDate = picked.start;
+        endDate = picked.end;
+      });
+
+      fetchCollection();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please select a date range within one month."),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
 
   @override
   void initState() {
@@ -237,39 +279,39 @@ class _HomePageState extends State<HomePage> {
   Future<void> fetchCollection() async {
     final provider =
         Provider.of<CollectionSummaryProvider>(context, listen: false);
-    // await provider.getCollectionSummary(agentOriginId.toString(), startDate, endDate, token)
-    provider.getCollectionSummary(
-        "AGT12345", "2025-03-01", "2025-03-31", token!);
+    provider.getCollectionSummary("AGT12345", "$startDate", "$endDate", token!);
   }
 
   Future<void> fetchBannerImages() async {
     final provider = Provider.of<CustRegisterProvider>(context, listen: false);
-   await provider.checkRegCust(int.parse(mobNum.toString()));
-   final data = provider.registedCustomerModel?.response?.images;
+    await provider.checkRegCust(int.parse(mobNum.toString()));
+    final data = provider.registedCustomerModel?.response?.images;
 
-      if(data != null){
-        print("BANNER IMAGE IS FOUND");
-         bannerImages.add(data.banner1.toString());
-         bannerImages.add(data.banner2.toString());
-         bannerImages.add(data.banner3.toString());
-         bannerImages.add(data.banner4.toString());
-         setState(() {
-           isBannerAvailable = true;
-         });
-      }else{
-        print("NO BANNER IMAGE IS FOUND");
-        isBannerAvailable = false;
-      }
-
-
+    if (data != null) {
+      print("BANNER IMAGE IS FOUND");
+      bannerImages.add(data.banner1.toString());
+      bannerImages.add(data.banner2.toString());
+      bannerImages.add(data.banner3.toString());
+      bannerImages.add(data.banner4.toString());
+      setState(() {
+        isBannerAvailable = true;
+      });
+    } else {
+      print("NO BANNER IMAGE IS FOUND");
+      isBannerAvailable = false;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final collectionProvider =
+    Provider.of<CollectionSummaryProvider>(context, listen: true);
     final fetchBalanceProvider =
         Provider.of<BalanceProvider>(context, listen: true);
     final provider =
         Provider.of<AgentTransactionProvider>(context, listen: true);
+    final hasData = collectionProvider.collectionSummaryModel?.data?.isNotEmpty == true;
+    final noTransaction = provider.noTransactionModel?.message?.isNotEmpty == true;
     return Scaffold(
       backgroundColor: white,
       body: Container(
@@ -331,19 +373,17 @@ class _HomePageState extends State<HomePage> {
                 items: bannerImages.map((imagePath) {
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(15),
-                    child:
-                    isBannerAvailable == true?
-                    Image.network(
-                      imagePath,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ):
-                    Image.asset(
-                      imagePath,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    )
-                    ,
+                    child: isBannerAvailable == true
+                        ? Image.network(
+                            imagePath,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.asset(
+                            imagePath,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
                   );
                 }).toList(),
               ),
@@ -379,34 +419,101 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 child: provider.agentPaymentTransctionModel == null
+
                     ?
-                    // CircularProgressIndicator(color: deepTeal)
                     buildShimmerList()
                     : Column(
                         children: [
-                          Consumer<CollectionSummaryProvider>(
-                              builder: (context, provider, child) {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                _buildSummaryCard(
-                                  image: "assets/images/money_initated.png",
-                                  title: "Total Initiated",
-                                  amount:
-                                      "Rs. ${provider.collectionSummaryModel?.data?[0].pendingCollections}",
+                                Text(
+                                  "${DateFormat('MMM dd, yyyy').format(startDate)} - ${DateFormat('MMM dd, yyyy').format(endDate)}",
+                                  style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15,
+                                      color: black),
                                 ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                _buildSummaryCard(
-                                  image: "assets/images/salary.png",
-                                  title: "Total Received",
-                                  amount:
-                                      "Rs. ${provider.collectionSummaryModel?.data?[0].totalCollected}",
+                                GestureDetector(
+                                  onTap: () {
+                                    _selectDateRange(context);
+                                  },
+                                  child: Image.asset(
+                                    "assets/images/calender.png",
+                                    scale: 15,
+                                  ),
                                 ),
                               ],
-                            );
-                          }),
+                            ),
+                          ),
+               Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+
+            Expanded(
+            child: _buildSummaryCard(
+            image: "assets/images/money_initated.png",
+            title: "Total Initiated",
+            amount: hasData
+            ? "Rs. ${collectionProvider.collectionSummaryModel?.data?[0].pendingCollections}"
+                : noTransaction
+            ? collectionProvider.noTransactionModel!.message!
+                : "No Transaction Found",
+            ),
+      ),
+      const SizedBox(width: 10),
+      Expanded(
+        child: _buildSummaryCard(
+          image: "assets/images/salary.png",
+          title: "Total Received",
+          amount: hasData
+              ? "Rs. ${collectionProvider.collectionSummaryModel?.data?[0].totalCollected}"
+              : noTransaction
+              ? collectionProvider.noTransactionModel!.message!
+              : "No Transaction Found",
+        ),
+      ),
+      ],
+    ),
+                          // Consumer<CollectionSummaryProvider>(
+                          //   builder: (context, provider, child) {
+                          //     final hasData = provider.collectionSummaryModel?.data?.isNotEmpty == true;
+                          //     final noTransaction = provider.noTransactionModel?.message?.isNotEmpty == true;
+                          //
+                          //     return Row(
+                          //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          //       children: [
+                          //         Expanded(
+                          //           child: _buildSummaryCard(
+                          //             image: "assets/images/money_initated.png",
+                          //             title: "Total Initiated",
+                          //             amount: hasData
+                          //                 ? "Rs. ${provider.collectionSummaryModel?.data?[0].pendingCollections}"
+                          //                 : noTransaction
+                          //                 ? provider.noTransactionModel!.message!
+                          //                 : "No Transaction Found",
+                          //           ),
+                          //         ),
+                          //         const SizedBox(width: 10),
+                          //         Expanded(
+                          //           child: _buildSummaryCard(
+                          //             image: "assets/images/salary.png",
+                          //             title: "Total Received",
+                          //             amount: hasData
+                          //                 ? "Rs. ${provider.collectionSummaryModel?.data?[0].totalCollected}"
+                          //                 : noTransaction
+                          //                 ? provider.noTransactionModel!.message!
+                          //                 : "No Transaction Found",
+                          //           ),
+                          //         ),
+                          //       ],
+                          //     );
+                          //   },
+                          // )
+
+
                           const SizedBox(height: 15),
                           Expanded(
                             child: ListView.separated(

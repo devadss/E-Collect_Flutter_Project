@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:collection_qr_flutter/presentation/screens/profile/profile_home_page.dart';
 import '../../../../core/colors.dart';
+import '../account_list_home_page.dart';
 import '../collection/collection_home_page.dart';
 import '../dues/dues_home_page.dart';
 import 'home_page.dart';
@@ -162,8 +163,9 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
           index: _selectedIndex,
           children: [
             const HomePage( ), // Forces rebuild
-            CollectionHomePage(key: ObjectKey(_selectedIndex)),
             const DuesHomePage( ),
+           // CollectionHomePage(key: ObjectKey(_selectedIndex)),
+            AccountListHomePage(key: ObjectKey(_selectedIndex)),
 
             const ProfileHomePage( ),
           ],
@@ -199,29 +201,29 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
             ),
             BottomBarItem(
               inActiveItem: Image.asset(
-                "assets/images/collection_icon.png",
-                color: white,
-              ),
-              activeItem: Image.asset(
-                "assets/images/collection_icon.png",
-                color: white,
-              ),
-              itemLabel: 'Collection',
-            ),
-            BottomBarItem(
-              inActiveItem: Image.asset(
                 "assets/images/dues_list_icon.png",
                 color: white,
               ),
               activeItem: Image.asset(
-                "assets/images/dues_list_icon.png",
+                "assets/images/due_list_icon.png",
                 color: white,
               ),
               itemLabel: 'Due List',
             ),
             BottomBarItem(
               inActiveItem: Image.asset(
-                "assets/images/profile_icon.png",
+                "assets/images/dues_list_icon.png",
+                color: white,
+              ),
+              activeItem: Image.asset(
+                "assets/images/account_list.png",
+                color: white,
+              ),
+              itemLabel: 'Account List',
+            ),
+            BottomBarItem(
+              inActiveItem: Image.asset(
+                "assets/images/account_list_active.png",
                 color: white,
               ),
               activeItem: Image.asset(

@@ -1,4 +1,5 @@
 
+import 'package:collection_qr_flutter/domain/model/no_transaction.dart';
 import 'package:dartz/dartz.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:http/http.dart' as http;
@@ -10,7 +11,7 @@ import '../service/error_handler.dart';
 
 class CollectionSummaryRepository implements ICollectionSummaryRepository {
   @override
-  Future<Either<ErrorHandler, CollectionSummaryModel>> getCollectionSummary(
+  Future<Either<NoTransactionModel, CollectionSummaryModel>> getCollectionSummary(
       String agentId, String startDate, String endDate, String token) async {
     final url = Uri.parse(
         "${baseUrl}api/Cashfree/GetCollectionSummary?agentId=$agentId&startDate=$startDate&endDate=$endDate");
@@ -28,13 +29,13 @@ class CollectionSummaryRepository implements ICollectionSummaryRepository {
        try{
          return Right(CollectionSummaryModel.fromJson(jsonDecode(response.body)));
        }catch(e){
-         return Left(DataParsingException(e));
+         return Left(NoTransactionModel.fromJson(jsonDecode(response.body)));
        }
      }else{
-       return Left(FetchDataError("Failed To Fetch Data"));
+       return Left(NoTransactionModel.fromJson(jsonDecode(response.body)));
      }
    }else{
-     return Left(FetchDataError("No Internet Connection"));
+     return Left(NoTransactionModel(message: "No Internet"));
    }
   }
 }

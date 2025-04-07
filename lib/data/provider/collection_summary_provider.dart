@@ -1,3 +1,4 @@
+import 'package:collection_qr_flutter/domain/model/no_transaction.dart';
 import 'package:flutter/material.dart';
 import '../../core/general.dart';
 import '../../domain/model/collection_summary_model.dart';
@@ -8,14 +9,19 @@ class CollectionSummaryProvider with ChangeNotifier{
   CollectionSummaryProvider(this._collectionSummaryRepository);
   CollectionSummaryModel? _collectionSummaryModel;
   CollectionSummaryModel? get collectionSummaryModel =>_collectionSummaryModel;
+
+NoTransactionModel? _noTransactionModel;
+NoTransactionModel? get noTransactionModel => _noTransactionModel;
+
   Future<void>getCollectionSummary(String agentId, String startDate, String endDate, String token) async{
     printLog("-----------------------COLLECTION SUMMARY MODEL--------------------------");
     printLog(collectionSummaryModel);
     final result = await _collectionSummaryRepository.getCollectionSummary(agentId, startDate, endDate, token);
     result.fold(
         (error){
-          printLog("---------------ERROR----------------");
-          printLog(error);
+          printLog("---------------CollectionSummaryProvider ERROR----------------");
+          _noTransactionModel = error;
+          notifyListeners();
         },
         (data){
           _collectionSummaryModel = data;
