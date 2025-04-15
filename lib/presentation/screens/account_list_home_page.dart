@@ -135,7 +135,7 @@ class _AccountListHomePageState extends State<AccountListHomePage> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => DuesDetailPage(
+                                          builder: (context) =>   DuesDetailPage(
                                                 custName: provider
                                                         .agentCustomerDetailsModel
                                                         ?.customerList

@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:collection_qr_flutter/presentation/screens/profile/profile_home_page.dart';
 import '../../../../core/colors.dart';
 import '../account_list_home_page.dart';
-import '../collection/collection_home_page.dart';
 import '../dues/dues_home_page.dart';
 import 'home_page.dart';
 
@@ -162,8 +161,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         IndexedStack(
           index: _selectedIndex,
           children: [
-            const HomePage( ), // Forces rebuild
-            const DuesHomePage( ),
+             HomePage(key: ObjectKey(_selectedIndex) ), // Forces rebuild
+             DuesHomePage(key: ObjectKey(_selectedIndex)),
            // CollectionHomePage(key: ObjectKey(_selectedIndex)),
             AccountListHomePage(key: ObjectKey(_selectedIndex)),
 

@@ -1,6 +1,6 @@
-
 import 'dart:io';
 import 'package:collection_qr_flutter/presentation/screens/dues/qr/qr_code_home_page.dart';
+import 'package:collection_qr_flutter/presentation/screens/dues/qr/qr_code_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +17,7 @@ class DuesDetailPage extends StatefulWidget {
   final String custAcNumber;
   final String custPhoneNumber;
   final String custId;
+
   const DuesDetailPage({
     super.key,
     required this.custName,
@@ -46,6 +47,7 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
   String? corpCode;
   String? token;
   double maxValue = 0;
+
   void updateTotalAmount() {
     final provider = Provider.of<DueListProvider>(context, listen: false);
 
@@ -97,7 +99,8 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
         return AlertDialog(
           title: Text("Proceed Confirmation", style: _labelTextStyle()),
           content: Text(
-            "Select the Payment Mode to proceed with the total amount of Rs. ${amountController.text}?",
+            "Select the Payment Mode to proceed with the total amount of Rs. ${amountController
+                .text}?",
             style: _valueTextStyle(),
           ),
           actions: [
@@ -107,8 +110,15 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => QrCodeHomePage(
-                            payAbleAmount: amountController.text, accountNumber: widget.custAcNumber, agentId: widget.custId,
+                      builder: (context) =>
+                          QrCodePage(amount: amountController.text,
+                            token: token.toString(),
+                            custName: widget.custName,
+                            custAcNumber: widget.custAcNumber,
+                            custPhoneNumber: widget.custPhoneNumber,
+                            custId:widget.custId,
+                            custEmail: "testuser@gmail.com",
+
                           )),
                 );
               },
@@ -148,28 +158,28 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
         corpCode!,
         "",
         token.toString()
-        // "John Doe",
-        // "AGT12345",
-        // "ORG98765",
-        // "+919876543210",
-        // "agent@example.com",
-        // "Rahul Sharma",
-        // "+919123456789",
-        // "123456789012",
-        // "rahul.sharma@example.com",
-        // "CUS12345",
-        // num.parse(amountController.text),
-        // "Payment for Order #12345",
-        // "CORP001",
-        // "CARD98765",
-        );
+      // "John Doe",
+      // "AGT12345",
+      // "ORG98765",
+      // "+919876543210",
+      // "agent@example.com",
+      // "Rahul Sharma",
+      // "+919123456789",
+      // "123456789012",
+      // "rahul.sharma@example.com",
+      // "CUS12345",
+      // num.parse(amountController.text),
+      // "Payment for Order #12345",
+      // "CORP001",
+      // "CARD98765",
+    );
 
     send.fold(
-      (error) {
+          (error) {
         printLog("-------------------ERROR---------------------");
         printLog(error);
       },
-      (sendLink) {
+          (sendLink) {
         if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
           Share.share("Here is your payment link: ${sendLink.linkUrl}");
         } else {
@@ -213,21 +223,25 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
       });
     }
   }
+
   void onAmountChanges(String amount) {
     if (amount.isNotEmpty) {
       double? amountValue = double.parse(amount);
-      if(amountValue > maxValue){
-        amountController.value =TextEditingValue(
+      if (amountValue > maxValue) {
+        amountController.value = TextEditingValue(
           text: maxValue.toStringAsFixed(2), // Format to avoid extra zeros
-          selection: TextSelection.collapsed(offset: maxValue.toString().length),
+          selection: TextSelection.collapsed(offset: maxValue
+              .toString()
+              .length),
         );
       }
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: true,
       backgroundColor: deepTeal,
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -258,7 +272,7 @@ resizeToAvoidBottomInset: true,
               Container(
                 padding: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
-                    border: Border.all(color: black,width: 2),
+                    border: Border.all(color: black, width: 2),
                     borderRadius: BorderRadius.circular(10),
                     color: white,
                     boxShadow: [
@@ -298,7 +312,8 @@ resizeToAvoidBottomInset: true,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                                "Due amount: Rs.${provider.dueListModel!.duesList!.data![index].dueAmount}",
+                                "Due amount: Rs.${provider.dueListModel!
+                                    .duesList!.data![index].dueAmount}",
                                 style: _infoTextStyle()),
                             const SizedBox(height: 5),
                             Row(
@@ -330,7 +345,8 @@ resizeToAvoidBottomInset: true,
                               ],
                             ),
                             Text(
-                                "Due date: ${provider.dueListModel!.duesList!.data![index].dueMonth}",
+                                "Due date: ${provider.dueListModel!.duesList!
+                                    .data![index].dueMonth}",
                                 style: _infoTextStyle()),
                           ],
                         ),
@@ -346,7 +362,7 @@ resizeToAvoidBottomInset: true,
         );
       }),
       // bottomNavigationBar:
-    ///  bottomNavigationBar: checkedItems.contains(true) ? _showBottomBar(context) : null,
+      ///  bottomNavigationBar: checkedItems.contains(true) ? _showBottomBar(context) : null,
       // checkedItems.contains(true) ? _buildBottomBar() : null,
     );
   }
@@ -378,34 +394,44 @@ resizeToAvoidBottomInset: true,
       ),
     );
   }
+
   Future<void> _showBottomBar(BuildContext context) async {
     return showModalBottomSheet(
       context: context,
-      isScrollControlled: true, // Moves up when keyboard appears
-      enableDrag: false, // Prevents accidental swipe down
-      backgroundColor: Colors.transparent, // Allows clicking outside
-      builder: (context) => GestureDetector(
-        onTap: () {}, // Prevents closing when tapping outside
-        behavior: HitTestBehavior.opaque,
-        child: StatefulBuilder(
-          builder: (context, setStateModal) {
-            return Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: _buildBottomBar(setStateModal), // Pass state updater
-            );
-          },
-        ),
-      ),
+      isScrollControlled: true,
+      // Moves up when keyboard appears
+      enableDrag: false,
+      // Prevents accidental swipe down
+      backgroundColor: Colors.transparent,
+      // Allows clicking outside
+      builder: (context) =>
+          GestureDetector(
+            onTap: () {}, // Prevents closing when tapping outside
+            behavior: HitTestBehavior.opaque,
+            child: StatefulBuilder(
+              builder: (context, setStateModal) {
+                return Padding(
+                  padding: EdgeInsets.only(bottom: MediaQuery
+                      .of(context)
+                      .viewInsets
+                      .bottom),
+                  child: _buildBottomBar(setStateModal), // Pass state updater
+                );
+              },
+            ),
+          ),
     );
   }
-
 
 
   Widget _buildBottomBar(StateSetter setStateModal) {
     return SingleChildScrollView(
       reverse: true, // Moves content up when keyboard opens
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.15,
+        height: MediaQuery
+            .of(context)
+            .size
+            .height * 0.15,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [white, white],
@@ -429,7 +455,8 @@ resizeToAvoidBottomInset: true,
                 child: TextField(
                   cursorColor: white,
                   controller: amountController,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -460,11 +487,14 @@ resizeToAvoidBottomInset: true,
               ElevatedButton(
                 onPressed: _proceedButtonClick,
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
                   backgroundColor: white,
                   foregroundColor: teal700,
-                  textStyle: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 15),
+                  textStyle: GoogleFonts.inter(
+                      fontWeight: FontWeight.w600, fontSize: 15),
                 ),
                 child: const Text("Proceed"),
               ),
@@ -490,12 +520,19 @@ resizeToAvoidBottomInset: true,
     );
   }
 
-  TextStyle _labelTextStyle() => GoogleFonts.inter(
-      fontWeight: FontWeight.w600, fontSize: 16, color: black);
-  TextStyle _valueTextStyle() => GoogleFonts.inter(
-      fontWeight: FontWeight.w500, fontSize: 16, color: black87);
-  TextStyle _infoTextStyle() => GoogleFonts.inter(
-      fontWeight: FontWeight.w500, fontSize: 14, color: black87);
-  TextStyle _bottomTextStyle() => GoogleFonts.inter(
-      fontWeight: FontWeight.w600, fontSize: 16, color: black);
+  TextStyle _labelTextStyle() =>
+      GoogleFonts.inter(
+          fontWeight: FontWeight.w600, fontSize: 16, color: black);
+
+  TextStyle _valueTextStyle() =>
+      GoogleFonts.inter(
+          fontWeight: FontWeight.w500, fontSize: 16, color: black87);
+
+  TextStyle _infoTextStyle() =>
+      GoogleFonts.inter(
+          fontWeight: FontWeight.w500, fontSize: 14, color: black87);
+
+  TextStyle _bottomTextStyle() =>
+      GoogleFonts.inter(
+          fontWeight: FontWeight.w600, fontSize: 16, color: black);
 }

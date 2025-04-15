@@ -9,29 +9,29 @@ DueUnderAgentModel dueUnderAgentModelFromJson(String str) => DueUnderAgentModel.
 String dueUnderAgentModelToJson(DueUnderAgentModel data) => json.encode(data.toJson());
 
 class DueUnderAgentModel {
-  DuesList? duesList;
+  DuesList1? duesList1;
 
   DueUnderAgentModel({
-    this.duesList,
+    this.duesList1,
   });
 
   factory DueUnderAgentModel.fromJson(Map<String, dynamic> json) => DueUnderAgentModel(
-    duesList: json["DuesList"] == null ? null : DuesList.fromJson(json["DuesList"]),
+    duesList1: json["DuesList1"] == null ? null : DuesList1.fromJson(json["DuesList1"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "DuesList": duesList?.toJson(),
+    "DuesList1": duesList1?.toJson(),
   };
 }
 
-class DuesList {
+class DuesList1 {
   List<Datum>? data;
 
-  DuesList({
+  DuesList1({
     this.data,
   });
 
-  factory DuesList.fromJson(Map<String, dynamic> json) => DuesList(
+  factory DuesList1.fromJson(Map<String, dynamic> json) => DuesList1(
     data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
   );
 
@@ -46,6 +46,10 @@ class Datum {
   num? installAmt;
   DueMonth? dueMonth;
   num? dueAmount;
+  String? custId;
+  String? name;
+  String? phone;
+  String? email;
 
   Datum({
     this.accNo,
@@ -53,6 +57,10 @@ class Datum {
     this.installAmt,
     this.dueMonth,
     this.dueAmount,
+    this.custId,
+    this.name,
+    this.phone,
+    this.email,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
@@ -61,6 +69,10 @@ class Datum {
     installAmt: json["InstallAmt"],
     dueMonth: dueMonthValues.map[json["DueMonth"]]!,
     dueAmount: json["DueAmount"],
+    custId: json["CustId"],
+    name: json["Name"],
+    phone: json["Phone"],
+    email: json["Email"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -69,12 +81,14 @@ class Datum {
     "InstallAmt": installAmt,
     "DueMonth": dueMonthValues.reverse[dueMonth],
     "DueAmount": dueAmount,
+    "CustId": custId,
+    "Name": name,
+    "Phone": phone,
+    "Email": email,
   };
 }
 
 enum DueMonth {
-  THE_202406,
-  THE_202407,
   THE_202408,
   THE_202409,
   THE_202410,
@@ -82,8 +96,6 @@ enum DueMonth {
 }
 
 final dueMonthValues = EnumValues({
-  "2024-06": DueMonth.THE_202406,
-  "2024-07": DueMonth.THE_202407,
   "2024-08": DueMonth.THE_202408,
   "2024-09": DueMonth.THE_202409,
   "2024-10": DueMonth.THE_202410,

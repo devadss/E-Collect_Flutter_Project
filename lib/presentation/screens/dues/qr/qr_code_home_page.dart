@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:collection_qr_flutter/presentation/screens/dues/qr/qr_code_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -14,20 +15,22 @@ import '../../../../data/provider/create_order_provider.dart';
 import '../../../../data/provider/transaction_provider.dart';
 import 'generate_qr_code_page.dart';
 
-
 class QrCodeHomePage extends StatefulWidget {
   final String payAbleAmount;
   final String accountNumber;
   final String agentId;
 
-  const QrCodeHomePage({super.key, required this.payAbleAmount, required this.accountNumber, required this.agentId});
+  const QrCodeHomePage(
+      {super.key,
+      required this.payAbleAmount,
+      required this.accountNumber,
+      required this.agentId});
 
   @override
   State<QrCodeHomePage> createState() => _QrCodeHomePageState();
 }
 
 class _QrCodeHomePageState extends State<QrCodeHomePage> {
-
   TextEditingController amountController = TextEditingController();
   String paymentSessionId = "";
   String orderID = "";
@@ -36,7 +39,8 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
   String? name;
   String? phoneNumber;
   String? email;
- // double? balanceAmount = 0.0;
+
+  // double? balanceAmount = 0.0;
 
   void showProgressDialog(BuildContext context) {
     showDialog(
@@ -72,8 +76,7 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
   }
 
   Future<void> _fetchBalance() async {
-    final provider =
-        Provider.of<BalanceProvider>(context, listen: false);
+    final provider = Provider.of<BalanceProvider>(context, listen: false);
     await provider.getchBalance(entityId.toString(), tokenValue.toString());
   }
 
@@ -89,22 +92,22 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
     String? userId = await SharedPref().getAgentId();
     String? userName = await SharedPref().getAgentName();
     String? mobile = await SharedPref().getMobNum();
-     String? emailId = await SharedPref.shared.getEmail();
+    String? emailId = await SharedPref.shared.getEmail();
     if (mounted) {
       setState(() {
         tokenValue = token;
         entityId = userId;
         name = userName;
         phoneNumber = mobile;
-         email = emailId;
+        email = emailId;
       });
       _fetchBalance();
     }
   }
+
   @override
   Widget build(BuildContext context) {
-    final provider =
-    Provider.of<BalanceProvider>(context, listen: true);
+    final provider = Provider.of<BalanceProvider>(context, listen: true);
 
     return Scaffold(
       backgroundColor: white,
@@ -117,8 +120,7 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
               fontWeight: FontWeight.w700, fontSize: 23, color: deepTeal),
         ),
       ),
-      body:
-      SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Column(
           children: [
             Container(
@@ -130,18 +132,18 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
                   end: Alignment.bottomRight,
                 ),
               ),
-              child:
-              provider.balanceModel == null?
-              const Center(child: CircularProgressIndicator(color: deepTeal)):
-              Center(
-                child: Text(
-                  "₹ ${formatNumberWithCommas(provider.balanceModel?.result![0].balance!.toDouble())}",
-                  style: GoogleFonts.inter(
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                      fontSize: 30),
-                ),
-              ),
+              child: provider.balanceModel == null
+                  ? const Center(
+                      child: CircularProgressIndicator(color: deepTeal))
+                  : Center(
+                      child: Text(
+                        "₹ ${formatNumberWithCommas(provider.balanceModel?.result![0].balance!.toDouble())}",
+                        style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            fontSize: 30),
+                      ),
+                    ),
             ),
             Transform.translate(
               offset: const Offset(0, -50),
@@ -173,10 +175,11 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
                               filled: true,
                             ),
                             inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.allow(RegExp(
-                                  r'^\d+\.?\d{0,2}')), // Allows decimal input with up to 2 places
-                              LengthLimitingTextInputFormatter(
-                                  6), // Adjust length for decimals
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'^\d+\.?\d{0,2}')),
+                              // Allows decimal input with up to 2 places
+                              LengthLimitingTextInputFormatter(6),
+                              // Adjust length for decimals
                             ],
                             style: const TextStyle(color: black),
                             onChanged: (value) {
@@ -248,7 +251,6 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
               onTap: () {
                 if (amountController.text != '' ||
                     amountController.text.isNotEmpty) {
-
                   createOrderId('SELF');
                 } else {
                   print("Please Enter an Amount");
@@ -280,7 +282,8 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
         entityId,
         name,
         email,
-        phoneNumber,tokenValue.toString());
+        phoneNumber,
+        tokenValue.toString());
     paymentSessionId = orderCraeteProvider
         .paymentGatewayOrderResponseModel!.paymentSessionId
         .toString();
@@ -297,6 +300,16 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
       final result = await Navigator.push(
           context,
           MaterialPageRoute(
+              builder: (context) => QrCodePage(
+                    amount: amountController.text,
+                    token: tokenValue!,
+                    custName: name!,
+                    custAcNumber: widget.accountNumber,
+                    custPhoneNumber: phoneNumber!,
+                    custId: entityId!,
+                    custEmail: email.toString(),
+                  ))
+          /*      MaterialPageRoute(
               builder: (context) => GeneratedQrCodePage(
                   amount: amountController.text,
                   userName: name!,
@@ -307,7 +320,8 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
                   sessionID: paymentSessionId,
                   orderId: orderID, accountNumber: widget.accountNumber,
               agentId: widget.agentId,)
-              ));
+              )*/
+          );
       if (result == "fetch_balance") {
         // goBack();
         // _fetchBalance();
@@ -315,19 +329,19 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
         fetchTransaction();
 
         Navigator.pop(context);
-
       }
     } else {
       Navigator.pop(context);
       EasyLoading.showToast("Session id is null");
     }
   }
-  Future<void> fetchTransaction() async {
 
+  Future<void> fetchTransaction() async {
     final provider = Provider.of<TransactionProvider>(context, listen: false);
     await provider.fetchTransaction(
         "", "", entityId.toString(), tokenValue.toString());
   }
+
   String formatNumberWithCommas(double? number) {
     final formatter =
         NumberFormat("#,##,##0.00", "en_IN"); // Indian numbering system

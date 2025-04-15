@@ -2,12 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-import 'package:collection_qr_flutter/data/provider/cash_deposit_provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:collection_qr_flutter/data/provider/balance_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -18,6 +16,9 @@ import 'package:http/http.dart' as http;
 import '../../../../../../core/colors.dart';
 import '../../../../../../core/constants.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
+
+import '../../../../data/provider/balance_provider.dart';
+import '../../../../data/provider/cash_deposit_provider.dart';
 import '../../../../domain/model/cash_deposit_model.dart';
 import '../../../../domain/model/load_card_status_model.dart';
 
@@ -83,7 +84,7 @@ class _GeneratedQrCodePageState extends State<GeneratedQrCodePage> {
       cashDepositDialog(provider.cashDepositModel);
     } else {
 
-        Navigator.pop(context, "fetch_balance");
+      Navigator.pop(context, "fetch_balance");
     }
   }
 
@@ -97,26 +98,26 @@ class _GeneratedQrCodePageState extends State<GeneratedQrCodePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-            Text("ACCOUNT NO : ${cashDepositModel?.receipt?.data?.accNo}"),
-            const SizedBox(height: 10,),
-            Text("TRAN ID : ${cashDepositModel?.receipt?.data?.tranId}"),
+              Text("ACCOUNT NO : ${cashDepositModel?.receipt?.data?.accNo}"),
               const SizedBox(height: 10,),
-            Text("NAME : ${cashDepositModel?.receipt?.data?.name}"),
+              Text("TRAN ID : ${cashDepositModel?.receipt?.data?.tranId}"),
               const SizedBox(height: 10,),
-            Text("DEPOSIT AMOUNT : ${cashDepositModel?.receipt?.data
-                ?.depositAmount}"),
+              Text("NAME : ${cashDepositModel?.receipt?.data?.name}"),
               const SizedBox(height: 10,),
-            Text("CURRENT BALANCE : ${cashDepositModel?.receipt?.data
-                ?.currentBalance}"),
+              Text("DEPOSIT AMOUNT : ${cashDepositModel?.receipt?.data
+                  ?.depositAmount}"),
               const SizedBox(height: 10,),
-            Text(
-                "DEPOSIT DATE : ${cashDepositModel?.receipt?.data?.depositDate}"),
-          
-          ],),
+              Text("CURRENT BALANCE : ${cashDepositModel?.receipt?.data
+                  ?.currentBalance}"),
+              const SizedBox(height: 10,),
+              Text(
+                  "DEPOSIT DATE : ${cashDepositModel?.receipt?.data?.depositDate}"),
+
+            ],),
         ),
         actions: [
           TextButton(onPressed: (){
-             _fetchBalance();
+            _fetchBalance();
             Navigator.pop(context);
             Navigator.pop(context, "fetch_balance");
           }, child: const Text("OK"))
@@ -162,40 +163,6 @@ class _GeneratedQrCodePageState extends State<GeneratedQrCodePage> {
     // });
   }
 
-
-
-/*  void _listenForFirebaseMessages() {
-    _firebaseMessageSubscription?.cancel(); // ✅ Ensure only one active listener
-
-    // ✅ Handle foreground messages
-    _firebaseMessageSubscription = FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("🔥 Incoming Firebase Message: ${message.data}");
-
-      if (message.notification != null) {
-        final String? notificationTitle = message.notification?.title;
-        final String? notificationBody = message.notification?.body;
-
-        if (notificationTitle == "Wallet Load Successful 🎉") {
-          if (mounted) {
-            print("✅ Foreground Notification Received");
-            _showSuccessMessage(notificationBody);
-          }
-        }
-      }
-    });
-
-    // ✅ Handle when the app is in background and user taps the notification
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print("🚀 Background Notification Clicked: ${message.data}");
-    });
-
-    // ✅ Handle when the app is terminated and launched by tapping a notification
-    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
-      if (message != null) {
-        print("📱 App Launched via Notification: ${message.data}");
-      }
-    });
-  }*/
   void _listenForFirebaseMessages() {
     _firebaseMessageSubscription?.cancel(); // ✅ Ensure only one listener
 
@@ -230,22 +197,6 @@ class _GeneratedQrCodePageState extends State<GeneratedQrCodePage> {
     });
   }
 
-/*  void _listenForFirebaseMessages() {
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      if (message.notification != null) {
-        final String? notificationTitle = message.notification?.title;
-        final String? notificationBody = message.notification?.body;
-
-        if (notificationTitle == "Wallet Load Successful 🎉") {
-          if (mounted) {
-             print("NOTIFICATION MESSAGE TITLE ${message.notification?.title}");
-             print("NOTIFICATION MESSAGE BODY ${message.notification?.body}");
-            _showSuccessMessage(notificationBody);
-          }
-        }
-      }
-    });
-  }*/
 
   void showWarning() {
     showDialog(
@@ -290,9 +241,9 @@ class _GeneratedQrCodePageState extends State<GeneratedQrCodePage> {
                   //Navigator.pop(context); // Close the dialog
                   //depositCash();
 
-                    Navigator.pop(context); // Close the dialog
-                    _fetchBalance();
-                    Navigator.pop(context, "fetch_balance");
+                  Navigator.pop(context); // Close the dialog
+                  _fetchBalance();
+                  Navigator.pop(context, "fetch_balance");
                 }
               },
               child: const Text("OK"),
@@ -493,37 +444,36 @@ class _GeneratedQrCodePageState extends State<GeneratedQrCodePage> {
   }
 
   Future<void> generateQRCode() async {
-    final url = Uri.parse("${baseUrl}api/Cashfree/QRGenerator");
-    final headers = {'Content-Type': 'application/json'};
-    final body = json.encode({
-      "payment_method": {
-        "upi": {"channel": "qrcode"}
-      },
-      "payment_session_id": widget.sessionID
-    });
-
-    try {
-      final response = await http.post(url, headers: headers, body: body);
-      print("QR BODY : ${response.body}");
-      if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
-        setState(() {
-          qrCodeBase64 = responseData['data']['payload']['qrcode'];
-          qrCodeImageBytes = base64Decode(qrCodeBase64!.split(',').last);
-        });
-        // Start payment verification process
-       // _startPaymentVerification();
-      } else {
-        // Handle API error
-        print("Error: ${response.statusCode}");
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Failed to generate QR Code.")));
-      }
-    } catch (error) {
-      print("Error: $error");
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("An error occurred while generating QR Code.")));
-    }
+    // final url = Uri.parse("${baseUrl}api/Cashfree/QRGenerator");
+    // final headers = {'Content-Type': 'application/json'};
+    // final body = json.encode({
+    //   "payment_method": {
+    //     "upi": {"channel": "qrcode"}
+    //   },
+    //   "payment_session_id": widget.sessionID
+    // });
+    // try {
+    //   final response = await http.post(url, headers: headers, body: body);
+    //   print("QR BODY : ${response.body}");
+    //   if (response.statusCode == 200) {
+    //     final responseData = json.decode(response.body);
+    //     setState(() {
+    //       qrCodeBase64 = responseData['data']['payload']['qrcode'];
+    //       qrCodeImageBytes = base64Decode(qrCodeBase64!.split(',').last);
+    //     });
+    //     // Start payment verification process
+    //     // _startPaymentVerification();
+    //   } else {
+    //     // Handle API error
+    //     print("Error: ${response.statusCode}");
+    //     ScaffoldMessenger.of(context).showSnackBar(
+    //         const SnackBar(content: Text("Failed to generate QR Code.")));
+    //   }
+    // } catch (error) {
+    //   print("Error: $error");
+    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //       content: Text("An error occurred while generating QR Code.")));
+    // }
   }
 
   void _startPaymentVerification() {
@@ -739,90 +689,4 @@ class _GeneratedQrCodePageState extends State<GeneratedQrCodePage> {
         '$firstDigit${remainingDigits.toString().padLeft(9, '0')}');
   }
 }
-/*
-  Future<void> loadCard() async {
-    showCustomCircularProgressDialog();
-    // EasyLoading.show(status: 'Please wait...');
-    print('loadCard');
 
-    const url = '${baseUrl}api/CardLoadV3';
-
-    // Prepare your data
-    final data = {
-      'Type': 'Mobile',
-      'amount': widget.amount,
-      'business': 'TCADSS',
-      'businessEntityId': 'TCADSS',
-      'description': 'transferfunds',
-      'externalTransactionId':
-      "ADSSBNK_${widget.entityId}_${generateRandom10DigitNumber()}",
-      'fromEntityId': 'TCADSS01',
-      'productId': 'GENERAL',
-      'toEntityId': widget.entityId,
-      'transactionOrigin': 'MOBILE',
-      'transactionType': 'M2C',
-      'yapcode': '1234',
-      'Source': 'BANK_LOAD'
-    };
-
-    // Encode your data
-    final encodedRequestData = json.encode(data);
-
-    // Create the final payload with encrypted data
-    final dataFinal = {
-      'Data': encryptData(encodedRequestData), // Encrypt the specific data
-    };
-
-    // Encode the final payload as JSON
-    final encodedDataFinal = json.encode(dataFinal);
-
-    // Perform the HTTP POST request
-    final response = await http.post(
-      Uri.parse(url),
-      body: encodedDataFinal, // Pass the encoded JSON string as the body
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${widget.token}',
-      },
-    );
-
-    // Handle the response
-    print('tokenvalue : ${widget.token}');
-    print('Data : $encodedRequestData');
-    print('response : ${response.body}');
-    Navigator.pop(context);
-    final Map<String, dynamic> jsonResponse = json.decode(response.body);
-    if (response.statusCode == 200) {
-      //EasyLoading.dismiss();
-      if (response.body.contains("txId")) {
-        CorpLoadlSuccessModel corpLoadlSuccessModel =
-        CorpLoadlSuccessModel.fromJson(jsonDecode(response.body));
-        EasyLoading.showToast("LOADING SUCCESS");
-        //depositCash();
-          _fetchBalance();
-        // Navigator.pop(context);
-      }
-      print('response : ${response.body}');
-    } else {
-      // EasyLoading.dismiss();
-      print('response : ${response.body}');
-      if (response.body.contains("Status") &&
-          response.body.contains("Message")) {
-        CorpFundErrorModel corpFundErrorModel =
-        CorpFundErrorModel.fromJson(jsonDecode(response.body));
-        //  EasyLoading.showToast(
-        //      corpFundErrorModel.message!.toUpperCase().toString(),
-        //      toastPosition: EasyLoadingToastPosition.bottom);
-      }
-    }
-
-    if (jsonResponse['exception'] != null &&
-        jsonResponse['exception']['detailMessage'] != null) {
-      EasyLoading.showToast(
-          jsonResponse['exception']['detailMessage'].toString().toUpperCase());
-      print(jsonResponse['exception']['detailMessage']);
-    } else {
-      print('No detailMessage found');
-    }
-  }
-*/

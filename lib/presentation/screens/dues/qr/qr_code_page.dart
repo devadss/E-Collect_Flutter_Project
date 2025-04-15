@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,40 +10,34 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:http/http.dart' as http;
 import '../../../../../../core/colors.dart';
-import '../../../../../../core/constants.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
 import '../../../../data/repository/payment_link_repository.dart';
+import '../../../../data/storage/shared_pref_helper.dart';
 import '../../../../domain/model/cash_deposit_model.dart';
+
 
 class QrCodePage extends StatefulWidget {
   final String amount;
-  // final String accountNumber;
-  // final String agentId;
-  // final String entityId;
-  // final String email;
-  // final String userName;
-  // final String phoneNumber;
   final String token;
-  // final String sessionID;
-  // final String orderId;
+  final String custName;
+  final String custAcNumber;
+  final String custPhoneNumber;
+  final String custId;
+  final String custEmail;
 
-  const QrCodePage({super.key,
+  const QrCodePage({
+    super.key,
     required this.amount,
-    // required this.entityId,
-    // required this.email,
-    // required this.userName,
-    // required this.phoneNumber,
     required this.token,
-    // required this.sessionID,
-    // required this.orderId,
-    // required this.accountNumber,
-    // required this.agentId
+    required this.custName,
+    required this.custAcNumber,
+    required this.custPhoneNumber,
+    required this.custId,
+    required this.custEmail,
   });
 
   @override
@@ -57,12 +52,12 @@ class _QrCodePageState extends State<QrCodePage> {
   String _timeString = "03:00";
   final ScreenshotController _screenshotController = ScreenshotController();
   StreamSubscription<RemoteMessage>? _firebaseMessageSubscription;
-  String? entityId;
-  String? phoneNumber;
-  String? orderID;
-  String? email;
-  String? customerName;
-  String paymentSessionId = "";
+  String? agentId;
+  String? agentOriginId;
+  String? agentPhoneNumber;
+  String? agentName;
+  String? agentEmail;
+  String? corpCode;
   Uint8List? qrCodeImageBytes;
   String? qrCodeBase64;
   static const String secretKey =
@@ -73,99 +68,65 @@ class _QrCodePageState extends State<QrCodePage> {
   Timer? _paymentVerificationTimer; // Timer for payment verification
   bool isPaymentVerified = false; // Flag to check payment status
 
-  // Future<void> depositCash() async {
-  //   print("INSIDE DEPOSIT CASH METHOD");
-  //   final provider = Provider.of<CashDepositProvider>(context, listen: false);
-  //   await provider.depositCash(
-  //     //  widget.accountNumber, widget.agentId, widget.amount);
-  //       widget.accountNumber, widget.agentId, "1");
-  //   if (provider.cashDepositModel != null) {
-  //     cashDepositDialog(provider.cashDepositModel);
-  //   } else {
-  //
-  //     Navigator.pop(context, "fetch_balance");
-  //   }
-  // }
-
   void cashDepositDialog(CashDepositModel? cashDepositModel) {
     print("INSIDE DEPOSIT CASH DIALOG");
-    showDialog(context: context, builder: (context) {
-      return AlertDialog(
-        title: const Text(textAlign: TextAlign.center ,"Cash Deposit Status"),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text("ACCOUNT NO : ${cashDepositModel?.receipt?.data?.accNo}"),
-              const SizedBox(height: 10,),
-              Text("TRAN ID : ${cashDepositModel?.receipt?.data?.tranId}"),
-              const SizedBox(height: 10,),
-              Text("NAME : ${cashDepositModel?.receipt?.data?.name}"),
-              const SizedBox(height: 10,),
-              Text("DEPOSIT AMOUNT : ${cashDepositModel?.receipt?.data
-                  ?.depositAmount}"),
-              const SizedBox(height: 10,),
-              Text("CURRENT BALANCE : ${cashDepositModel?.receipt?.data
-                  ?.currentBalance}"),
-              const SizedBox(height: 10,),
-              Text(
-                  "DEPOSIT DATE : ${cashDepositModel?.receipt?.data?.depositDate}"),
-
-            ],),
-        ),
-        actions: [
-          TextButton(onPressed: (){
-           // _fetchBalance();
-            Navigator.pop(context);
-            Navigator.pop(context, "fetch_balance");
-          }, child: const Text("OK"))
-        ],
-      );
-    });
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title:
+                const Text(textAlign: TextAlign.center, "Cash Deposit Status"),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                      "ACCOUNT NO : ${cashDepositModel?.receipt?.data?.accNo}"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text("TRAN ID : ${cashDepositModel?.receipt?.data?.tranId}"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text("NAME : ${cashDepositModel?.receipt?.data?.name}"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                      "DEPOSIT AMOUNT : ${cashDepositModel?.receipt?.data?.depositAmount}"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                      "CURRENT BALANCE : ${cashDepositModel?.receipt?.data?.currentBalance}"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                      "DEPOSIT DATE : ${cashDepositModel?.receipt?.data?.depositDate}"),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    // _fetchBalance();
+                    Navigator.pop(context);
+                    Navigator.pop(context, "fetch_balance");
+                  },
+                  child: const Text("OK"))
+            ],
+          );
+        });
   }
-
-  // Future<void> _fetchBalance() async {
-  //   final provider = Provider.of<BalanceProvider>(context, listen: false);
-  //   await provider.getFetchBalance(widget.entityId, widget.token);
-  //   // Navigator.pop(context);
-  //   // EasyLoading.dismiss();
-  //   // setState(() async {
-  //   //   print('inside _fetchBalance');
-  //   //   //  isLoading = false;
-  //   //   final data = await provider.getchBalance(
-  //   //       widget.entityId.toString(), widget.token.toString());
-  //   //   data.fold(
-  //   //         (error) {
-  //   //       print("request error= ${error.message}");
-  //   //
-  //   //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //   //         content: Text(
-  //   //           "Error: ${error.message}",
-  //   //           style: GoogleFonts.inter(
-  //   //               color: Colors.white,
-  //   //               fontWeight: FontWeight.w700,
-  //   //               fontSize: 17),
-  //   //         ),
-  //   //         backgroundColor: Colors.red,
-  //   //       ));
-  //   //       Navigator.pop(context);
-  //   //     },
-  //   //         (data) {
-  //   //       Navigator.pop(context);
-  //   //
-  //   //       setState(() {
-  //   //         balanceAmount = data.result![0].balance!.toDouble();
-  //   //       });
-  //   //     },
-  //   //   );
-  //   // });
-  // }
 
   void _listenForFirebaseMessages() {
     _firebaseMessageSubscription?.cancel(); // ✅ Ensure only one listener
 
-    _firebaseMessageSubscription = FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    _firebaseMessageSubscription =
+        FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
         final String? notificationTitle = message.notification?.title;
         final String? notificationBody = message.notification?.body;
@@ -189,13 +150,14 @@ class _QrCodePageState extends State<QrCodePage> {
     });
 
     // ✅ Handle terminated app notification taps
-    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
+    FirebaseMessaging.instance
+        .getInitialMessage()
+        .then((RemoteMessage? message) {
       if (message != null) {
         print("📱 App Launched via Notification: ${message.data}");
       }
     });
   }
-
 
   void showWarning() {
     showDialog(
@@ -212,7 +174,7 @@ class _QrCodePageState extends State<QrCodePage> {
             content: Text(
               "Warning: You cannot go back or cancel this page until the transaction is complete. Please wait until the process finishes.",
               style:
-              GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w300),
+                  GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w300),
             ),
             actions: [
               TextButton(
@@ -252,36 +214,6 @@ class _QrCodePageState extends State<QrCodePage> {
       },
     );
   }
-
-  // Future<void> callverifyPaymentApi(String orderId) async {
-  //   final url = Uri.parse('${baseUrl}api/Cashfree/$orderId/${widget.entityId}');
-  //   final response = await http.get(url);
-  //   print(response.statusCode);
-  //   print("----------callverifyPaymentApi VERIFY BODY--------");
-  //   print(response.body);
-  //   if (response.statusCode == 200) {
-  //     //  Navigator.pop(context);
-  //     //EasyLoading.dismiss();
-  //     if (response.body.contains("TxnId")) {
-  //       CardLoadSuccessStatusResponseModel cardLoadSuccessStatusResponseModel =
-  //       CardLoadSuccessStatusResponseModel.fromJson(
-  //           jsonDecode(response.body));
-  //       //     jsonDecode(response.body));
-  //       print("----------------PAYMENT VERIFICATION COMPLETED-------------------");
-  //       print("PAYMENT VERIFICATION RESPONSE :${response.body}");
-  //       setState(() {
-  //         isPaymentVerified = true;
-  //       });
-  //       // EasyLoading.showToast(cardLoadSuccessStatusResponseModel.message.toString());
-  //       //amountController.text = "";
-  //       //_fetchBalance();
-  //       //loadCard();
-  //     }
-  //   } else {
-  //     Navigator.pop(context);
-  //     // EasyLoading.dismiss();
-  //   }
-  // }
 
   void showCustomCircularProgressDialog() {
     showDialog(
@@ -349,9 +281,7 @@ class _QrCodePageState extends State<QrCodePage> {
   String _formatTime(int seconds) {
     int minutes = seconds ~/ 60;
     int remainingSeconds = seconds % 60;
-    return "${minutes.toString().padLeft(2, '0')}:${remainingSeconds
-        .toString()
-        .padLeft(2, '0')}";
+    return "${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}";
   }
 
   @override
@@ -368,38 +298,37 @@ class _QrCodePageState extends State<QrCodePage> {
     try {
       // Load the asset image using rootBundle
       final logoBytes =
-      await rootBundle.load("assets/images/adsspay_logo_1.png");
+          await rootBundle.load("assets/images/adsspay_logo_1.png");
 
       pdf.addPage(
         pw.Page(
-          build: (context) =>
-              pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.center,
-                children: [
-                  pw.Image(
-                    pw.MemoryImage(logoBytes.buffer.asUint8List()),
-                    height: 100,
-                  ),
-                  pw.SizedBox(height: 20),
-                  pw.Text(
-                    "Amount: ₹${widget.amount}",
-                    style: pw.TextStyle(
-                      fontSize: 18,
-                      fontWeight: pw.FontWeight.bold,
-                      color: PdfColors.teal,
-                    ),
-                  ),
-                  pw.SizedBox(height: 20),
-                  pw.Center(
-                    child: pw.BarcodeWidget(
-                      barcode: pw.Barcode.qrCode(),
-                      data: "Amount: ₹${widget.amount}",
-                      width: 200,
-                      height: 200,
-                    ),
-                  ),
-                ],
+          build: (context) => pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.center,
+            children: [
+              pw.Image(
+                pw.MemoryImage(logoBytes.buffer.asUint8List()),
+                height: 100,
               ),
+              pw.SizedBox(height: 20),
+              pw.Text(
+                "Amount: ₹${widget.amount}",
+                style: pw.TextStyle(
+                  fontSize: 18,
+                  fontWeight: pw.FontWeight.bold,
+                  color: PdfColors.teal,
+                ),
+              ),
+              pw.SizedBox(height: 20),
+              pw.Center(
+                child: pw.BarcodeWidget(
+                  barcode: pw.Barcode.qrCode(),
+                  data: "Amount: ₹${widget.amount}",
+                  width: 200,
+                  height: 200,
+                ),
+              ),
+            ],
+          ),
         ),
       );
 
@@ -444,28 +373,28 @@ class _QrCodePageState extends State<QrCodePage> {
 
   Future<void> generateQRCode() async {
     final qrCode = await PaymentLinkRepository().getPaymentLink(
-        "Salim",
-        "adsslWAIaPncFH6",
-        "361",
-        "+919944112208",
-        "salim@gmail.com",
-        "RAHUL E RAMESH",
-        "8921503808",
-        "08041127",
-        "rahul.sharma@example.com",
-        "2600",
-        2000,
-        "Payment for Order #12345",
-        "BNKMYL",
+        agentName!,
+        agentId!,
+        agentOriginId!,
+        agentPhoneNumber!,
+        agentEmail!,
+        widget.custName,
+        widget.custPhoneNumber,
+        widget.custAcNumber,
+        widget.custEmail,
+        widget.custId,
+        num.parse(widget.amount),
+        "Payment for Order #1234",
+        corpCode!,
         "",
-        widget.token,
-    );
+        widget.token
+        );
     qrCode.fold(
-        (error){
-          print("-----------------------ERROR-----------------------");
-          print(error);
-        },
-          (qr) {
+      (error) {
+        print("-----------------------ERROR-----------------------");
+        print(error);
+      },
+      (qr) {
         final qrData = qr.linkQrcode;
         if (qrData != null && qrData.contains(',')) {
           setState(() {
@@ -476,65 +405,7 @@ class _QrCodePageState extends State<QrCodePage> {
         }
       },
     );
-    // final url = Uri.parse("${baseUrl}api/Cashfree/QRGenerator");
-    // final headers = {'Content-Type': 'application/json'};
-    // final body = json.encode({
-    //   "payment_method": {
-    //     "upi": {"channel": "qrcode"}
-    //   },
-    //   "payment_session_id": widget.sessionID
-    // });
-    // try {
-    //   final response = await http.post(url, headers: headers, body: body);
-    //   print("QR BODY : ${response.body}");
-    //   if (response.statusCode == 200) {
-    //     final responseData = json.decode(response.body);
-    //     setState(() {
-    //       qrCodeBase64 = responseData['data']['payload']['qrcode'];
-    //       qrCodeImageBytes = base64Decode(qrCodeBase64!.split(',').last);
-    //     });
-    //     // Start payment verification process
-    //     // _startPaymentVerification();
-    //   } else {
-    //     // Handle API error
-    //     print("Error: ${response.statusCode}");
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //         const SnackBar(content: Text("Failed to generate QR Code.")));
-    //   }
-    // } catch (error) {
-    //   print("Error: $error");
-    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    //       content: Text("An error occurred while generating QR Code.")));
-    // }
   }
-
-  // void _startPaymentVerification() {
-  //   _paymentVerificationTimer =
-  //       Timer.periodic(const Duration(seconds: 5), (timer) async {
-  //         if (isPaymentVerified) {
-  //           timer.cancel(); // ✅ Ensure timer is canceled
-  //           return;
-  //         }
-  //
-  //         await callverifyPaymentApi(widget.orderId);
-  //
-  //         // ✅ Double-check and cancel if payment is verified
-  //         if (isPaymentVerified) {
-  //           timer.cancel();
-  //         }
-  //       });
-  // }
-
-/*  void _startPaymentVerification() {
-    _paymentVerificationTimer =
-        Timer.periodic(const Duration(seconds: 5), (timer) async {
-          if (isPaymentVerified) {
-            timer.cancel(); // Stop the timer if payment is verified
-            return;
-          }
-          await callverifyPaymentApi(widget.orderId);
-        });
-  }*/
 
   String encryptData(String plainText) {
     final key = encrypt.Key.fromUtf8(secretKey);
@@ -549,21 +420,41 @@ class _QrCodePageState extends State<QrCodePage> {
   void initState() {
     super.initState();
     _startTimer();
-    generateQRCode(); // Fetch the QR code on initialization
+    loadSharedPrefs();
     if (!_isFirebaseListenerInitialized) {
       _listenForFirebaseMessages();
       _isFirebaseListenerInitialized = true;
     }
-
   }
-  
-  
+
+  Future<void> loadSharedPrefs() async {
+    final name = await SharedPref.shared.getAgentName();
+    final id = await SharedPref.shared.getAgentId();
+    final originId = await SharedPref.shared.getAgentOriginId();
+    final code = await SharedPref.shared.getCorpCode();
+    final email = await SharedPref.shared.getEmail();
+    final number = await SharedPref.shared.getMobNum();
+
+    if (mounted) {
+      setState(() {
+        agentName = name;
+        agentEmail = email;
+        agentId = id;
+        agentOriginId = originId;
+        corpCode = code;
+        agentPhoneNumber = number;
+      });
+    }
+
+    generateQRCode(); // Fetch the QR code on initialization
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        if(_timeString != "00:00" ){
+        if (_timeString != "00:00") {
           showWarning();
         }
 
@@ -577,7 +468,7 @@ class _QrCodePageState extends State<QrCodePage> {
           title: Text(
             "Scan To Pay",
             style:
-            GoogleFonts.inter(fontWeight: FontWeight.w700, color: deepTeal),
+                GoogleFonts.inter(fontWeight: FontWeight.w700, color: deepTeal),
           ),
         ),
         body: Screenshot(
@@ -591,7 +482,7 @@ class _QrCodePageState extends State<QrCodePage> {
                   padding: const EdgeInsets.symmetric(horizontal: 80),
                   child: Container(
                     constraints:
-                    const BoxConstraints(minHeight: 40, minWidth: 180),
+                        const BoxConstraints(minHeight: 40, minWidth: 180),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
@@ -624,11 +515,6 @@ class _QrCodePageState extends State<QrCodePage> {
                 qrCodeImageBytes == null
                     ? const CircularProgressIndicator()
                     : Image.memory(qrCodeImageBytes!),
-                // qrCodeBase64 == null
-                //     ? const CircularProgressIndicator()
-                //     : Image.memory(
-                //         base64Decode(qrCodeBase64!.split(',').last),
-                //       ),
 
                 const SizedBox(height: 30),
                 Row(
@@ -725,4 +611,3 @@ class _QrCodePageState extends State<QrCodePage> {
         '$firstDigit${remainingDigits.toString().padLeft(9, '0')}');
   }
 }
-

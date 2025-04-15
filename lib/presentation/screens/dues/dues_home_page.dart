@@ -25,6 +25,11 @@ class _DuesHomePageState extends State<DuesHomePage> {
   String? agentOriginId;
   String? _expandedAccNo;
   String? token;
+  String? name;
+  String? custid;
+  String? email;
+  String? mobnum;
+
 
   @override
   void initState() {
@@ -35,12 +40,22 @@ class _DuesHomePageState extends State<DuesHomePage> {
   Future<void> loadSharedPrefs() async {
     final id = await SharedPref.shared.getAgentOriginId();
     final tok = await SharedPref.shared.getTokenValue();
+    final nam = await SharedPref.shared.getAgentName();
+    final mobNum = await SharedPref.shared.getMobNum();
+    final custId = await SharedPref.shared.getAgentOriginId();
+    final emailValue = await SharedPref.shared.getEmail();
     if (mounted) {
       setState(() {
         agentOriginId = id;
         token = tok;
+        name = nam;
+        mobnum = mobNum;
+        email = emailValue;
+        custid = custId;
       });
     }
+    print("DUE PAGE TOKEN : $token");
+    print("DUE PAGE AGENT ID : $agentOriginId");
     final provider = Provider.of<DueUnderAgentProvider>(context, listen: false);
     provider.getDuesUnderAgent(agentOriginId);
   }
@@ -129,7 +144,7 @@ class _DuesHomePageState extends State<DuesHomePage> {
       ),
       body: Consumer<DueUnderAgentProvider>(
         builder: (context, provider, child) {
-          final data = provider.agentModel?.duesList?.data ?? [];
+          final data = provider.agentModel?.duesList1?.data ?? [];
 
           if (provider.agentModel == null) return buildShimmerList();
 
@@ -559,7 +574,7 @@ class _DuesHomePageState extends State<DuesHomePage> {
                                                                 amount: controller
                                                                     .text,
                                                                 token:
-                                                                token!)));
+                                                                token!, custName: name!, custAcNumber: '', custPhoneNumber: mobnum!, custId: agentOriginId!, custEmail: email!,)));
                                                     //Navigator.pop(context);
                                                   },
                                                 ),
