@@ -355,14 +355,16 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  userName?.isNotEmpty == true && userName != null ?
                   Text(
+
                     "Hello, ${userName?.replaceFirst(userName![0], userName![0].toUpperCase())}",
                     style: GoogleFonts.inter(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
                       color: white,
                     ),
-                  ),
+                  ):SizedBox(),
                   const SizedBox(height: 5),
                   provider.agentPaymentTransctionModel == null
                       ? buildShimmerText()
