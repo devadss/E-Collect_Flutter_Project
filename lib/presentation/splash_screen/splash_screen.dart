@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:collection_qr_flutter/core/alerts.dart';
 import 'package:flutter/material.dart';
 import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
 import 'package:collection_qr_flutter/data/provider/token_expiry_provider.dart';
@@ -185,7 +184,7 @@ class _SplashScreenState extends State<SplashScreen> {
         children: [
           Center(
             child: Image.asset(
-              "assets/images/collection_splash_screen.jpg",
+              "assets/images/collection_qr_image.png",
               fit: BoxFit.fill,
             ),
           )

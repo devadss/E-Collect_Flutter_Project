@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
             primaryColor: deepTeal,
             colorScheme: const ColorScheme.light(primary: deepTeal),
             buttonTheme:
-                const ButtonThemeData(textTheme: ButtonTextTheme.primary),
+            const ButtonThemeData(textTheme: ButtonTextTheme.primary),
           ),
           child: child!,
         );
@@ -117,18 +117,18 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> fetchBalance() async {
     final fetchBalanceProvider =
-        Provider.of<BalanceProvider>(context, listen: false);
+    Provider.of<BalanceProvider>(context, listen: false);
     await fetchBalanceProvider.getchBalance(
         entityId.toString(), token.toString());
   }
 
   Future<void> fetchTransaction() async {
     final transProvider =
-        Provider.of<TransactionProvider>(context, listen: false);
+    Provider.of<TransactionProvider>(context, listen: false);
     await transProvider.fetchTransaction(
         "", "", entityId.toString(), token.toString());
     final provider =
-        Provider.of<AgentTransactionProvider>(context, listen: false);
+    Provider.of<AgentTransactionProvider>(context, listen: false);
     await provider.getTransactions(token.toString());
   }
 
@@ -302,7 +302,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> fetchCollection() async {
     final provider =
-        Provider.of<CollectionSummaryProvider>(context, listen: false);
+    Provider.of<CollectionSummaryProvider>(context, listen: false);
     provider.getCollectionSummary("AGT12345", "$startDate", "$endDate", token!);
   }
 
@@ -331,9 +331,9 @@ class _HomePageState extends State<HomePage> {
     final collectionProvider =
     Provider.of<CollectionSummaryProvider>(context, listen: true);
     final fetchBalanceProvider =
-        Provider.of<BalanceProvider>(context, listen: true);
+    Provider.of<BalanceProvider>(context, listen: true);
     final provider =
-        Provider.of<AgentTransactionProvider>(context, listen: true);
+    Provider.of<AgentTransactionProvider>(context, listen: true);
     final hasData = collectionProvider.collectionSummaryModel?.data?.isNotEmpty == true;
     final noTransaction = provider.noTransactionModel?.message?.isNotEmpty == true;
     return Scaffold(
@@ -369,13 +369,13 @@ class _HomePageState extends State<HomePage> {
                   provider.agentPaymentTransctionModel == null
                       ? buildShimmerText()
                       : Text(
-                          "Your Balance: ₹ ${fetchBalanceProvider.balanceModel?.result?.isNotEmpty == true ? addCommasToNumber(fetchBalanceProvider.balanceModel!.result![0].balance!.toDouble()) : ' '}",
-                          style: GoogleFonts.inter(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: white,
-                          ),
-                        )
+                    "Your Balance: ₹ ${fetchBalanceProvider.balanceModel?.result?.isNotEmpty == true ? addCommasToNumber(fetchBalanceProvider.balanceModel!.result![0].balance!.toDouble()) : ' '}",
+                    style: GoogleFonts.inter(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: white,
+                    ),
+                  )
                 ],
               ),
             ),
@@ -401,15 +401,15 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(15),
                     child: isBannerAvailable == true
                         ? Image.network(
-                            imagePath,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          )
+                      imagePath,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    )
                         : Image.asset(
-                            imagePath,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
+                      imagePath,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
                   );
                 }).toList(),
               ),
@@ -436,7 +436,7 @@ class _HomePageState extends State<HomePage> {
             Expanded(
               child: Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 decoration: const BoxDecoration(
                   color: white,
                   borderRadius: BorderRadius.only(
@@ -446,167 +446,133 @@ class _HomePageState extends State<HomePage> {
                 ),
                 child: provider.agentPaymentTransctionModel == null
                     ?
-                    buildShimmerList()
+                buildShimmerList()
                     : Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child:
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child:
-
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "${DateFormat('MMM dd, yyyy').format(startDate)} - ${DateFormat('MMM dd, yyyy').format(endDate)}",
-                                  style: GoogleFonts.inter(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15,
-                                      color: black),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    _selectDateRange(context);
-                                  },
-                                  child: Image.asset(
-                                    "assets/images/calender.png",
-                                    scale: 15,
-                                  ),
-                                ),
-                              ],
-                            ),
-
+                          Text(
+                            "${DateFormat('MMM dd, yyyy').format(startDate)} - ${DateFormat('MMM dd, yyyy').format(endDate)}",
+                            style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
+                                color: black),
                           ),
-               const SizedBox(height: 10,),
-               Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-
-            Expanded(
-            child: _buildSummaryCard(
-            image: "assets/images/money_initated.png",
-            title: "Total Initiated",
-            amount: hasData
-            ? "Rs. ${collectionProvider.collectionSummaryModel?.data?[0].pendingCollections}"
-                : noTransaction
-            ? collectionProvider.noTransactionModel!.message!
-                : "No Transaction Found",
-            ),
-      ),
-      const SizedBox(width: 10),
-      Expanded(
-        child: _buildSummaryCard(
-          image: "assets/images/salary.png",
-          title: "Total Received",
-          amount: hasData
-              ? "Rs. ${collectionProvider.collectionSummaryModel?.data?[0].totalCollected}"
-              : noTransaction
-              ? collectionProvider.noTransactionModel!.message!
-              : "No Transaction Found",
-        ),
-      ),
-      ],
-    ),
-
-                          // Consumer<CollectionSummaryProvider>(
-                          //   builder: (context, provider, child) {
-                          //     final hasData = provider.collectionSummaryModel?.data?.isNotEmpty == true;
-                          //     final noTransaction = provider.noTransactionModel?.message?.isNotEmpty == true;
-                          //
-                          //     return Row(
-                          //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          //       children: [
-                          //         Expanded(
-                          //           child: _buildSummaryCard(
-                          //             image: "assets/images/money_initated.png",
-                          //             title: "Total Initiated",
-                          //             amount: hasData
-                          //                 ? "Rs. ${provider.collectionSummaryModel?.data?[0].pendingCollections}"
-                          //                 : noTransaction
-                          //                 ? provider.noTransactionModel!.message!
-                          //                 : "No Transaction Found",
-                          //           ),
-                          //         ),
-                          //         const SizedBox(width: 10),
-                          //         Expanded(
-                          //           child: _buildSummaryCard(
-                          //             image: "assets/images/salary.png",
-                          //             title: "Total Received",
-                          //             amount: hasData
-                          //                 ? "Rs. ${provider.collectionSummaryModel?.data?[0].totalCollected}"
-                          //                 : noTransaction
-                          //                 ? provider.noTransactionModel!.message!
-                          //                 : "No Transaction Found",
-                          //           ),
-                          //         ),
-                          //       ],
-                          //     );
-                          //   },
-                          // )
-
-
-                          const SizedBox(height: 15),
-                          Expanded(
-                            child: ListView.separated(
-                              itemCount: provider
-                                  .agentPaymentTransctionModel!.data!.length,
-                              separatorBuilder: (_, __) =>
-                                  const Divider(thickness: 1),
-                              itemBuilder: (context, index) {
-                                final transaction = provider
-                                    .agentPaymentTransctionModel!.data![index];
-                                return GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                TransactionHistoryPage(
-                                                    agentTransaction: provider
-                                                        .agentPaymentTransctionModel!
-                                                        .data![index])));
-                                  },
-                                  child: ListTile(
-                                    leading: Container(
-                                      height: 50,
-                                      width: 50,
-                                      decoration: BoxDecoration(
-                                        color: lightGreen.shade200,
-                                        shape: BoxShape.circle,
-                                        border: Border.all(color: black),
-                                      ),
-                                      child: Image.asset(
-                                        "assets/images/payment_recived.png",
-                                        scale: 20,
-                                        color: black,
-                                      ),
-                                    ),
-                                    title: Text(
-                                      "Payment Received from ${provider.agentPaymentTransctionModel?.data?[index].customerName ?? "Unknown"}",
-                                      style: GoogleFonts.inter(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    subtitle: Text(
-                                      formatTimestamp(transaction.createdAt),
-                                      style: GoogleFonts.inter(
-                                          fontSize: 10, color: grey),
-                                    ),
-                                    trailing: Text(
-                                      "₹ ${transaction.linkAmount}",
-                                      style: GoogleFonts.inter(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w800,
-                                        color: green,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
+                          GestureDetector(
+                            onTap: () {
+                              _selectDateRange(context);
+                            },
+                            child: Image.asset(
+                              "assets/images/calender.png",
+                              scale: 15,
                             ),
                           ),
                         ],
                       ),
+
+                    ),
+                    const SizedBox(height: 10,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+
+                        Expanded(
+                          child: _buildSummaryCard(
+                            image: "assets/images/money_initated.png",
+                            title: "Total Initiated",
+                            amount: hasData
+                                ? "Rs. ${collectionProvider.collectionSummaryModel?.data?[0].pendingCollections}"
+                                : noTransaction
+                                ? collectionProvider.noTransactionModel!.message!
+                                : "No Transaction Found",
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: _buildSummaryCard(
+                            image: "assets/images/salary.png",
+                            title: "Total Received",
+                            amount: hasData
+                                ? "Rs. ${collectionProvider.collectionSummaryModel?.data?[0].totalCollected}"
+                                : noTransaction
+                                ? collectionProvider.noTransactionModel!.message!
+                                : "No Transaction Found",
+                          ),
+                        ),
+                      ],
+                    ),
+
+
+
+
+                    const SizedBox(height: 15),
+                    Expanded(
+                      child: ListView.separated(
+                        itemCount: provider
+                            .agentPaymentTransctionModel!.data!.length,
+                        separatorBuilder: (_, __) =>
+                        const Divider(thickness: 1),
+                        itemBuilder: (context, index) {
+                          final transaction = provider
+                              .agentPaymentTransctionModel!.data![index];
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          TransactionHistoryPage(
+                                              agentTransaction: provider
+                                                  .agentPaymentTransctionModel!
+                                                  .data![index])));
+                            },
+                            child: ListTile(
+                              leading: Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                  color: lightGreen.shade200,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: black),
+                                ),
+                                child: Image.asset(
+                                  "assets/images/payment_recived.png",
+                                  scale: 20,
+                                  color: black,
+                                ),
+                              ),
+                              title: Text(
+                                "Payment Received from ${provider.agentPaymentTransctionModel?.data?[index].customerName ?? "Unknown"}",
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              subtitle: Text(
+                                formatTimestamp(transaction.createdAt),
+                                style: GoogleFonts.inter(
+                                    fontSize: 10, color: grey),
+                              ),
+                              trailing: Text(
+                                "₹ ${transaction.linkAmount}",
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w800,
+                                  color: green,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -730,3 +696,40 @@ class _HomePageState extends State<HomePage> {
   }
 
 }
+
+
+// Consumer<CollectionSummaryProvider>(
+//   builder: (context, provider, child) {
+//     final hasData = provider.collectionSummaryModel?.data?.isNotEmpty == true;
+//     final noTransaction = provider.noTransactionModel?.message?.isNotEmpty == true;
+//
+//     return Row(
+//       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//       children: [
+//         Expanded(
+//           child: _buildSummaryCard(
+//             image: "assets/images/money_initated.png",
+//             title: "Total Initiated",
+//             amount: hasData
+//                 ? "Rs. ${provider.collectionSummaryModel?.data?[0].pendingCollections}"
+//                 : noTransaction
+//                 ? provider.noTransactionModel!.message!
+//                 : "No Transaction Found",
+//           ),
+//         ),
+//         const SizedBox(width: 10),
+//         Expanded(
+//           child: _buildSummaryCard(
+//             image: "assets/images/salary.png",
+//             title: "Total Received",
+//             amount: hasData
+//                 ? "Rs. ${provider.collectionSummaryModel?.data?[0].totalCollected}"
+//                 : noTransaction
+//                 ? provider.noTransactionModel!.message!
+//                 : "No Transaction Found",
+//           ),
+//         ),
+//       ],
+//     );
+//   },
+// )

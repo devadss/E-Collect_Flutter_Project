@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:label="collection_qr_flutter"
+        android:label="Collection Qr"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 

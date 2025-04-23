@@ -17,10 +17,10 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
   String? name = "";
   String? mobNum = "";
   final List<Map<String, dynamic>> profileItems = [
-    {"icon": Icons.email, "label": "Email"},
-    {"icon": Icons.location_on, "label": "Address"},
-    {"icon": Icons.settings, "label": "Settings"},
-    {"icon": Icons.lock, "label": "Privacy"},
+   // {"icon": Icons.email, "label": "Email"},
+  //  {"icon": Icons.location_on, "label": "Address"},
+   // {"icon": Icons.settings, "label": "Settings"},
+   // {"icon": Icons.lock, "label": "Privacy"},
     {"icon": Icons.logout, "label": "Logout"},
   ];
 
