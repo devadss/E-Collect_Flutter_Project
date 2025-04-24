@@ -198,107 +198,188 @@ class _HomePageState extends State<HomePage> {
           )),
     );
   }
-
   Widget buildShimmerList() {
     return Shimmer.fromColors(
-        baseColor: Colors.grey[400]!,
-        highlightColor: Colors.grey[100]!,
-        child: Flexible(
-          child: Column(
-            children: [
-
-
-              Row(
+        baseColor: grey[400]!,
+        highlightColor: grey[100]!,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    //"${DateFormat('MMM dd, yyyy').format(startDate)} - ${DateFormat('MMM dd, yyyy').format(endDate)}",
-                    "Please wait...",
-                    style: GoogleFonts.inter(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15,
-                        color: black),
+                    "${DateFormat('MMM dd, yyyy').format(startDate)} - ${DateFormat('MMM dd, yyyy').format(endDate)}",
+                    style: const TextStyle(fontSize: 16),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      _selectDateRange(context);
-                    },
-                    child: Image.asset(
-                      "assets/images/calender.png",
-                      scale: 15,
-                    ),
+                  Image.asset(
+                    "assets/images/calender.png",
+                    scale: 15,
                   ),
                 ],
               ),
-              const SizedBox(height: 10,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _buildSummaryCard (
-                    image: "assets/images/salary.png",
-                    title: "Total Received",
-                    amount: "",
-                  ),
-
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  //     buildShimmerText(),
-                  _buildSummaryCard(
-                    image: "assets/images/salary.png",
-                    title: "Total Received",
-                    amount: "",
-                  ),
-                ],
-              ),
-              const SizedBox(height: 15),
-              Expanded(
-                child: ListView.separated(
-                  itemCount: 5,
-                  separatorBuilder: (_, __) => const Divider(thickness: 1),
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      leading: Container(
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                          color: lightGreen.shade200,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: black),
-                        ),
-                        child: Image.asset(
-                          "assets/images/payment_recived.png",
-                          scale: 20,
-                          color: black,
-                        ),
-                      ),
-                      title: Text(
-                        "Please wait....",
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      subtitle: Text(
-                        "Please wait....",
-                        style: GoogleFonts.inter(fontSize: 10, color: grey),
-                      ),
-                      trailing: Text(
-                        "₹....",
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w800,
-                          color: green,
-                        ),
-                      ),
-                    );
-                  },
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildSummaryCard(
+                  image: "assets/images/money_initated.png",
+                  title: "Total Initiated",
+                  amount: "",
                 ),
+                _buildSummaryCard(
+                  image: "assets/images/salary.png",
+                  title: "Total Received",
+                  amount: "",
+                ),
+              ],
+            ),
+            const SizedBox(height: 15),
+            Expanded(
+              child: ListView.separated(
+                itemCount: 5,
+                separatorBuilder: (_, __) => const Divider(thickness: 1),
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    leading: Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        color: lightGreen.shade200,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: black),
+                      ),
+                      child: Image.asset(
+                        "assets/images/payment_recived.png",
+                        scale: 20,
+                        color: black,
+                      ),
+                    ),
+                    title: Text(
+                      "Please wait....",
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Text(
+                      "Please wait....",
+                      style: GoogleFonts.inter(fontSize: 10, color: grey),
+                    ),
+                    trailing: Text(
+                      "₹....",
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                        color: green,
+                      ),
+                    ),
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ));
   }
+/*  Widget buildShimmerList() {
+    return Shimmer.fromColors(
+        baseColor: Colors.grey[400]!,
+        highlightColor: Colors.grey[100]!,
+        child: Column(
+          children: [
+
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  //"${DateFormat('MMM dd, yyyy').format(startDate)} - ${DateFormat('MMM dd, yyyy').format(endDate)}",
+                  "Please wait...",
+                  style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15,
+                      color: black),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    _selectDateRange(context);
+                  },
+                  child: Image.asset(
+                    "assets/images/calender.png",
+                    scale: 15,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildSummaryCard (
+                  image: "assets/images/salary.png",
+                  title: "Total Received",
+                  amount: "",
+                ),
+
+                const SizedBox(
+                  width: 10,
+                ),
+                //     buildShimmerText(),
+                _buildSummaryCard(
+                  image: "assets/images/salary.png",
+                  title: "Total Received",
+                  amount: "",
+                ),
+              ],
+            ),
+            const SizedBox(height: 15),
+            Expanded(
+              child: ListView.separated(
+                itemCount: 5,
+                separatorBuilder: (_, __) => const Divider(thickness: 1),
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    leading: Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        color: lightGreen.shade200,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: black),
+                      ),
+                      child: Image.asset(
+                        "assets/images/payment_recived.png",
+                        scale: 20,
+                        color: black,
+                      ),
+                    ),
+                    title: Text(
+                      "Please wait....",
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Text(
+                      "Please wait....",
+                      style: GoogleFonts.inter(fontSize: 10, color: grey),
+                    ),
+                    trailing: Text(
+                      "₹....",
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                        color: green,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ));
+  }*/
 
   Future<void> fetchCollection() async {
     final provider =
@@ -316,7 +397,6 @@ class _HomePageState extends State<HomePage> {
       bannerImages.add(data.banner1.toString());
       bannerImages.add(data.banner2.toString());
       bannerImages.add(data.banner3.toString());
-      bannerImages.add(data.banner4.toString());
       setState(() {
         isBannerAvailable = true;
       });
@@ -326,7 +406,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  @override
+/*  @override
   Widget build(BuildContext context) {
     final collectionProvider =
     Provider.of<CollectionSummaryProvider>(context, listen: true);
@@ -364,7 +444,7 @@ class _HomePageState extends State<HomePage> {
                       fontWeight: FontWeight.w600,
                       color: white,
                     ),
-                  ):SizedBox(),
+                  ):const SizedBox(),
                   const SizedBox(height: 5),
                   provider.agentPaymentTransctionModel == null
                       ? buildShimmerText()
@@ -579,9 +659,284 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }*/
+  @override
+  Widget build(BuildContext context) {
+    final fetchBalanceProvider =
+    Provider.of<BalanceProvider>(context, listen: true);
+    final provider =
+    Provider.of<AgentTransactionProvider>(context, listen: true);
+    return Scaffold(
+      backgroundColor: white,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [deepTeal, yellowGreen],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 50),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Hello, ${userName?.replaceFirst(userName![0], userName![0].toUpperCase())}",
+                    style: GoogleFonts.inter(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: white,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  provider.agentPaymentTransctionModel == null
+                      ? buildShimmerText()
+                      : Text(
+                    "Your Balance: ₹ ${fetchBalanceProvider.balanceModel?.result?.isNotEmpty == true ? addCommasToNumber(fetchBalanceProvider.balanceModel!.result![0].balance!.toDouble()) : ' '}",
+                    style: GoogleFonts.inter(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: white,
+                    ),
+                  )
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            /// **Agent Card**
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: CarouselSlider(
+                options: CarouselOptions(
+                  height: MediaQuery.of(context).size.height * 0.20,
+                  // Same height as previous container
+                  autoPlay: true,
+                  enlargeCenterPage: true,
+                  viewportFraction: 1,
+                  // Ensure full width
+                  autoPlayInterval: const Duration(seconds: 4),
+                  autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                ),
+                items: bannerImages.map((imagePath) {
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.asset(
+                      imagePath,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+            /// **Transaction History Title**
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                "Transaction History",
+                style: GoogleFonts.inter(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: white,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            /// **Transaction History List**
+            Flexible(
+              child: Container(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                decoration: const BoxDecoration(
+                  color: white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(25),
+                    topRight: Radius.circular(25),
+                  ),
+                ),
+                child: provider.agentPaymentTransctionModel == null
+                    ?
+                // CircularProgressIndicator(color: deepTeal)
+                buildShimmerList()
+                    : Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "${DateFormat('MMM dd, yyyy').format(startDate)} - ${DateFormat('MMM dd, yyyy').format(endDate)}",
+                            style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
+                                color: black),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              _selectDateRange(context);
+                            },
+                            child: Image.asset(
+                              "assets/images/calender.png",
+                              scale: 15,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Consumer<CollectionSummaryProvider>(
+                        builder: (context, provider, child) {
+                          print(
+                              "---------------------INITATED AMOUNT-------------------------");
+                          print(provider.collectionSummaryModel?.data?[0]
+                              .pendingCollections);
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _buildSummaryCard(
+                                image: "assets/images/money_initated.png",
+                                title: "Total Initiated",
+                                amount:
+                                "Rs. ${provider.collectionSummaryModel?.data?[0].pendingCollections}",
+                              ),
+                              _buildSummaryCard(
+                                image: "assets/images/salary.png",
+                                title: "Total Received",
+                                amount:
+                                "Rs. ${provider.collectionSummaryModel?.data?[0].totalCollected}",
+                              ),
+                            ],
+                          );
+                        }),
+                    Expanded(
+                      child: ListView.separated(
+                        itemCount: provider
+                            .agentPaymentTransctionModel!.data!.length,
+                        separatorBuilder: (_, __) =>
+                        const Divider(thickness: 1),
+                        itemBuilder: (context, index) {
+                          final transaction = provider
+                              .agentPaymentTransctionModel!.data![index];
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          TransactionHistoryPage(
+                                              agentTransaction: provider
+                                                  .agentPaymentTransctionModel!
+                                                  .data![index])));
+                            },
+                            child: ListTile(
+                              leading: Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                  color: lightGreen.shade200,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: black),
+                                ),
+                                child: Image.asset(
+                                  "assets/images/payment_recived.png",
+                                  scale: 20,
+                                  color: black,
+                                ),
+                              ),
+                              title: Text(
+                                "Payment Received from ${provider.agentPaymentTransctionModel?.data?[index].customerName ?? "Unknown"}",
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              subtitle: Text(
+                                formatTimestamp(transaction.createdAt),
+                                style: GoogleFonts.inter(
+                                    fontSize: 10, color: grey),
+                              ),
+                              trailing: Text(
+                                "₹ ${transaction.linkAmount}",
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w800,
+                                  color: green,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildSummaryCard(
+      {required String image, required String title, required String amount}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      decoration: BoxDecoration(
+        color: deepTeal,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: black, width: 1),
+        boxShadow: const [
+          BoxShadow(
+            color: black12,
+            blurRadius: 10,
+            spreadRadius: 1,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Image.asset(
+            image,
+            scale: 15,
+          ),
+          const SizedBox(width: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: GoogleFonts.inter(fontSize: 13, color: white),
+              ),
+              Text(
+                amount,
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: white,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+/*  Widget _buildSummaryCard(
       {required String image, required String title, required String amount}) {
     return Expanded(
       child: Container(
@@ -599,44 +954,42 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        child: Flexible(
-          child: Row(
-            children: [
-              Image.asset(
-                image,
-                scale: 15,
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    FittedBox(
-                      child: Text(
-                        title,
-                        style: GoogleFonts.inter(
-                            fontSize: 13, color: Colors.white),
+        child: Row(
+          children: [
+            Image.asset(
+              image,
+              scale: 15,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  FittedBox(
+                    child: Text(
+                      title,
+                      style: GoogleFonts.inter(
+                          fontSize: 13, color: Colors.white),
+                    ),
+                  ),
+                  FittedBox(
+                    child: Text(
+                      amount,
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: white,
                       ),
                     ),
-                    FittedBox(
-                      child: Text(
-                        amount,
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: white,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
-  }
+  }*/
 
 
   Widget _buildSummaryCardShimmer({
