@@ -164,10 +164,12 @@ class _GeneratedQrCodePageState extends State<GeneratedQrCodePage> {
   }
 
   void _listenForFirebaseMessages() {
+    print("_listenForFirebaseMessages");
     _firebaseMessageSubscription?.cancel(); // ✅ Ensure only one listener
 
     _firebaseMessageSubscription = FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
+        print("message.notification != null");
         final String? notificationTitle = message.notification?.title;
         final String? notificationBody = message.notification?.body;
 
@@ -518,9 +520,12 @@ class _GeneratedQrCodePageState extends State<GeneratedQrCodePage> {
     super.initState();
     _startTimer();
     generateQRCode(); // Fetch the QR code on initialization
+    print("GENERATE QR");
     if (!_isFirebaseListenerInitialized) {
       _listenForFirebaseMessages();
       _isFirebaseListenerInitialized = true;
+    }else{
+      print("_isFirebaseListenerInitialized not initalized");
     }
 
   }

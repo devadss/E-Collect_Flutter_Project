@@ -32,7 +32,7 @@ class DuesList1 {
   });
 
   factory DuesList1.fromJson(Map<String, dynamic> json) => DuesList1(
-    data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
+    data: json["data"] == null ? [] : List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -67,7 +67,7 @@ class Datum {
     accNo: json["AccNo"],
     openDate: json["OpenDate"],
     installAmt: json["InstallAmt"],
-    dueMonth: dueMonthValues.map[json["DueMonth"]]!,
+    dueMonth: dueMonthValues.map[json["DueMonth"]],
     dueAmount: json["DueAmount"],
     custId: json["CustId"],
     name: json["Name"],

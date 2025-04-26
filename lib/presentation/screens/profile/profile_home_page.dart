@@ -1,10 +1,11 @@
-import 'package:collection_qr_flutter/data/provider/delete_fcm_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
-import 'package:collection_qr_flutter/presentation/splash_screen/splash_screen.dart';
 import 'package:provider/provider.dart';
 import '../../../core/colors.dart';
+import '../../../data/provider/delete_fcm_provider.dart';
+import '../../../data/storage/shared_pref_helper.dart';
+import '../../splash_screen/splash_screen.dart';
+import '../home/bottom_nav_bar_page.dart';
+import 'contact_us_page.dart';
 
 class ProfileHomePage extends StatefulWidget {
   const ProfileHomePage({super.key});
@@ -14,276 +15,277 @@ class ProfileHomePage extends StatefulWidget {
 }
 
 class _ProfileHomePageState extends State<ProfileHomePage> {
-  String? name = "";
-  String? mobNum = "";
+  String name = "Unknown User";
+  String mobNum = "No Number";
+
   final List<Map<String, dynamic>> profileItems = [
-   // {"icon": Icons.email, "label": "Email"},
-  //  {"icon": Icons.location_on, "label": "Address"},
-   // {"icon": Icons.settings, "label": "Settings"},
-   // {"icon": Icons.lock, "label": "Privacy"},
-    {"icon": Icons.logout, "label": "Logout"},
+    {"image": "assets/images/telephone_5586610.png", "label": "Contact Us"},
+    {"image": "assets/images/logout.png", "label": "Logout"},
   ];
 
   @override
   void initState() {
     super.initState();
-    loadShredData();
+    loadSharedData();
   }
 
-  Future<void> loadShredData() async {
-    String username = await SharedPref.shared.getAgentName();
-    String usermobNum = await SharedPref.shared.getMobNum();
+  Future<void> loadSharedData() async {
+    String? username = await SharedPref.shared.getAgentName();
+    String? usermobNum = await SharedPref.shared.getMobNum();
 
     if (mounted) {
       setState(() {
-        name = username;
-        mobNum = usermobNum;
-
+        name = username ?? "Unknown User";
+        mobNum = usermobNum ?? "No Number";
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: white,
-      body: Column(
-        children: [
-          Stack(
-            children: [
-              ClipPath(
-                clipper: ProfileClipper(),
-                child: Container(
-                  height: 300,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [deepTeal, yellowGreen],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const BottomNavScreen()),
+        );
+        return true;
+      },
+      child: Scaffold(
+        backgroundColor: white,
+        body: Column(
+          children: [
+            Stack(
+              children: [
+                ClipPath(
+                  clipper: ProfileClipper(),
+                  child: Container(
+                    height: 300,
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [deepTeal, yellowGreen],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                    child: Opacity(
+                      opacity: 0.15,
+                      child: Image.asset(
+                        "assets/images/doodle.jpeg",
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: 300,
+                      ),
                     ),
                   ),
-                  child: Opacity(
-                    opacity: 0.15, // Adjust for visibility
-                    child: Image.asset(
-                      "assets/images/doodle.jpeg",
-                      fit: BoxFit.cover, // ✅ Ensures it fits the clipped area
-                      width: double.infinity,
-                      height: 300,
-                    ),
+                ),
+                Positioned(
+                  top: 200,
+                  left: 0,
+                  right: 0,
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 100,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: black, width: 3),
+                          color: white,
+                        ),
+                        child: const Center(
+                          child: Icon(Icons.person, size: 60, color: black),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text(
+              name,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+                color: black,
+              ),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              mobNum,
+              style: const TextStyle(
+                fontSize: 16,
+                color: black,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 30),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: profileItems.map((item) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: BuildProfileBox(
+                          image: item["image"],
+                          label: item["label"],
+                          onTap: () {
+                            handleProfileItemClick(context, item["label"]);
+                          },
+                        ),
+                      );
+                    }).toList(),
                   ),
                 ),
               ),
-              Positioned(
-                top: 200,
-                left: 0,
-                right: 0,
-                child: Column(
-                  children: [
-                    Container(
-                      height: 100,
-                      width: 100,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: black, width: 3),
-                        color: white,
-                      ),
-                      child: const Center(
-                        child: Icon(Icons.person, size: 60, color: black),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Text(
-            name!.toUpperCase(),
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w800,
-              color: black,
             ),
-          ),
-          const SizedBox(height: 5),
-          Text(
-            mobNum!,
-            style: const TextStyle(
-              fontSize: 16,
-              color: black,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 30),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: profileItems.map((item) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: BuildProfileBox(
-                        icon: item["icon"],
-                        label: item["label"],
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
+
+  void handleProfileItemClick(BuildContext context, String label) {
+    if (label == "Logout") {
+      showLogoutDialog(context);
+    } else if (label == "Contact Us") {
+      // Handle "Contact Us" click
+     Navigator.push(context, MaterialPageRoute(builder: (context)=> const ContactUsPage()));
+    }
+  }
+
+  Future<void> showLogoutDialog(BuildContext context) {
+    return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          title: const Text(
+            "Logout",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Image.asset(
+                  "assets/images/logout.png",
+                  scale: 8,
+                ),
+              ),
+              const SizedBox(height: 5),
+              const Text(
+                "Are you sure you want to logout?",
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  OutlinedButton(
+                    onPressed: () async {
+                      await performLogout(context);
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: deepTeal),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      minimumSize: const Size(80, 40),
+                    ),
+                    child: const Text(
+                      "Yes",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                        color: deepTeal,
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: deepTeal,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      minimumSize: const Size(80, 40),
+                    ),
+                    child: const Text(
+                      "No",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> performLogout(BuildContext context) async {
+    String entityId = await SharedPref.shared.getAgentId();
+    String token = await SharedPref.shared.getTokenValue();
+
+    final fcmProvider = Provider.of<DeleteFcmProvider>(context, listen: false);
+    await fcmProvider.deleteFirebaseToken(entityId, token);
+
+    await SharedPref.shared.setLogin(false);
+    await SharedPref.shared.setAgentName("");
+    await SharedPref.shared.setFcmToken("");
+    await SharedPref.shared.setAgentId("");
+    await SharedPref.shared.setPassword("");
+    await SharedPref.shared.setMpinValue("");
+    await SharedPref.shared.setMpinStatus("");
+    await SharedPref.shared.setTokenValue("");
+    await SharedPref.shared.setMobNum("");
+    await SharedPref.shared.setAgentOriginId("");
+    await SharedPref.shared.setCorpCode("");
+    await SharedPref.shared.setCardRefNum("");
+    await SharedPref.shared.setEmail("");
+
+    Navigator.pop(context);
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const SplashScreen()),
+          (route) => false,
+    );
+  }
+
 }
 
 class BuildProfileBox extends StatelessWidget {
-  final IconData icon;
+  final String image;
   final String label;
+  final VoidCallback onTap;
 
-  const BuildProfileBox({super.key, required this.icon, required this.label});
-
-  Future<void> deleteFcmToken(
-      BuildContext context, String entityId, String token) async {
-    final fcmProvider = Provider.of<DeleteFcmProvider>(context, listen: false);
-    await fcmProvider.deleteFirebaseToken(
-        entityId.toString(), token.toString());
-  }
-
-  Future<void> loadShredData(BuildContext context) async {
-    String enitityID = await SharedPref.shared.getAgentId();
-    String tok = await SharedPref.shared.getTokenValue();
-
-    deleteFcmToken(context, enitityID, tok);
-  }
-
-  Future showMyDialog(BuildContext context) {
-    return showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) {
-          return Dialog(
-            backgroundColor: white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.0),
-            ),
-            child: SingleChildScrollView(
-              child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    children: <Widget>[
-                      Image.asset(
-                        "assets/images/exit.png",
-                        scale: 10,
-                      ),
-                      const SizedBox(height: 16.0),
-                      Text(
-                        'Logout',
-                        style: GoogleFonts.inter(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF404040),
-                        ),
-                      ),
-                      const SizedBox(height: 8.0),
-                      Text(
-                        "Are you sure you want to logout ?",
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.inter(
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w400,
-                          color: const Color(0xFF404040).withOpacity(0.7),
-                        ),
-                      ),
-                      const SizedBox(height: 24.0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              loadShredData(context);
-                              SharedPref.shared.setLogin(false);
-                              SharedPref.shared.setAgentName("");
-                              SharedPref.shared.setFcmToken("");
-                              SharedPref.shared.setAgentId("");
-                              SharedPref.shared.setPassword("");
-                              SharedPref.shared.setMpinValue("");
-                              SharedPref.shared.setMpinStatus("");
-                              SharedPref.shared.setTokenValue("");
-                              SharedPref.shared.setMobNum("");
-                              SharedPref.shared.setAgentOriginId("");
-                              SharedPref.shared.setCorpCode("");
-                              SharedPref.shared.setCardRefNum("");
-                              SharedPref.shared.setEmail("");
-                              Navigator.pop(context);
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const SplashScreen()),
-                                  (route) => false);
-                            },
-                            style: TextButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                              // backgroundColor: const Color(0xFFEA307B),
-                              backgroundColor: white,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  side: const BorderSide(
-                                      color: deepTeal, width: 1.5)),
-                            ),
-                            child: Text(
-                              'Yes',
-                              style: GoogleFonts.inter(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16.0,
-                                  color: black),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(); // Close the dialog
-                            },
-                            style: TextButton.styleFrom(
-                              foregroundColor: const Color(0xFF404040),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                              // backgroundColor: const Color(0xFFEDEDED),
-                              backgroundColor: deepTeal,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                            ),
-                            child: Text(
-                              'No',
-                              style: GoogleFonts.inter(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16.0,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  )),
-            ),
-          );
-        });
-  }
+  const BuildProfileBox({
+    super.key,
+    required this.image,
+    required this.label,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        label == "Logout" ? showMyDialog(context) : null;
-      },
+      onTap: onTap,
       child: Container(
         height: 60,
         width: double.infinity,
@@ -295,11 +297,11 @@ class BuildProfileBox extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Row(
             children: [
-              Icon(icon, size: 40, color: white),
+              Image.asset(image, scale: 20, color: white),
               const SizedBox(width: 10),
               Text(
                 label,
-                style: GoogleFonts.inter(
+                style: const TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 20,
                   color: white,
@@ -330,7 +332,5 @@ class ProfileClipper extends CustomClipper<Path> {
   }
 
   @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return false;
-  }
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

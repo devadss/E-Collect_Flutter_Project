@@ -53,6 +53,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       fcmToken = fcmTok;
     });
     print("MPIN $mpin");
+    print("fcmTok $fcmTok");
     _authenticateWithBiometrics();
   }
 

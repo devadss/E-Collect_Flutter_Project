@@ -1,8 +1,10 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../core/build_button.dart';
 import '../../core/colors.dart';
 import '../../data/provider/cust_register_provider.dart';
@@ -19,10 +21,14 @@ class MobileNumberVerificationPage extends StatefulWidget {
 class _MobileNumberVerificationPageState
     extends State<MobileNumberVerificationPage> {
   String? errorMsg;
+  bool isChecked = false;
+  final String termsUrl = 'https://aanvinsolutions.com/terms.html';
+  final String privacyUrl = 'https://aanvinsolutions.com/privacy.html';
   final TextEditingController _mobileNumberController = TextEditingController();
 
   Future<void> checkMobileNumber() async {
     showProgressDialog(context);
+
     if (_mobileNumberController.text.isNotEmpty) {
       validateMobile(_mobileNumberController.text);
     } else {
@@ -40,6 +46,9 @@ class _MobileNumberVerificationPageState
       Navigator.pop(context);
       showInSnackBar('Please enter valid mobile number');
     } else {
+      setState(() {
+        isChecked = true;
+      });
       final provider =
           Provider.of<CustRegisterProvider>(context, listen: false);
       provider.checkRegCust(int.parse(value));
@@ -286,6 +295,65 @@ class _MobileNumberVerificationPageState
                       ),
                   ],
                 ),
+              ),
+              SizedBox(height: 20),
+              Row(
+                crossAxisAlignment:
+                CrossAxisAlignment.start, // Aligns text properly
+                children: [
+                  Checkbox(
+                    value: isChecked,
+                    onChanged: (bool? newValue) {
+                      setState(() {
+                        isChecked = newValue!;
+                      });
+                    },
+                  ),
+                  Expanded(
+                    //Ensures text wraps correctly
+                    child: RichText(
+                      text: TextSpan(
+                        style: GoogleFonts.inter(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: black,
+                        ),
+                        children: [
+                          const TextSpan(
+                              text:
+                              "By clicking 'Confirm', you agree to the Collection App's "),
+                          TextSpan(
+                            text: "Terms and Conditions",
+                            style: GoogleFonts.inter(
+                                color: const Color(0xFF4200FF)),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () async {
+                                if (await canLaunch(termsUrl)) {
+                                  await launch(termsUrl);
+                                } else {
+                                  print("Could not launch $termsUrl");
+                                }
+                              },
+                          ),
+                          const TextSpan(text: " and "),
+                          TextSpan(
+                            text: "Privacy Policy.",
+                            style: GoogleFonts.inter(
+                                color: const Color(0xFF4200FF)),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () async {
+                                if (await canLaunch(privacyUrl)) {
+                                  await launch(privacyUrl);
+                                } else {
+                                  print("Could not launch $privacyUrl");
+                                }
+                              },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 40),
               GestureDetector(

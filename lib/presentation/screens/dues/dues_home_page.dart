@@ -574,7 +574,16 @@ class _DuesHomePageState extends State<DuesHomePage> {
                                                                 amount: controller
                                                                     .text,
                                                                 token:
-                                                                token!, custName: name!, custAcNumber: '', custPhoneNumber: mobnum!, custId: agentOriginId!, custEmail: email!,)));
+                                                                token!, custEmail:
+                                                            provider.agentModel?.duesList1?.data?[index].email ?? "",
+                                                              custPhoneNumber:
+                                                              provider.agentModel?.duesList1?.data?[index].phone ?? "phone",
+                                                              custId:
+                                                              provider.agentModel?.duesList1?.data?[index].custId ?? "CustID",
+                                                              custAcNumber:
+                                                              provider.agentModel?.duesList1?.data?[index].accNo ?? "CustACCNo",
+                                                              custName:
+                                                              provider.agentModel?.duesList1?.data?[index].name ?? "NAME",)));
                                                     //Navigator.pop(context);
                                                   },
                                                 ),

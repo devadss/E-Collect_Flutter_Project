@@ -12,8 +12,11 @@ class DueUnderAgentRepository implements IDueUnderAgentRepository{
   Future<Either<ErrorHandler, DueUnderAgentModel>> getDuesUnderAgent(String? agentId) async{
     final url = Uri.parse("https://doorstepmftctest.digicob.in/GetDuesListunderAgent?agent_id=$agentId");
     bool checkConnection = await InternetConnectionChecker().hasConnection;
+
     if(checkConnection){
       final response = await http.get(url);
+
+      print("DueUnderAgentRepository ${response.body}");
       if(response.statusCode == 200 || response.statusCode == 201){
         try{
           return Right(DueUnderAgentModel.fromJson(jsonDecode(response.body)));

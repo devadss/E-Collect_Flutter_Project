@@ -5,6 +5,7 @@ import 'package:collection_qr_flutter/data/provider/collection_summary_provider.
 import 'package:collection_qr_flutter/presentation/screens/home/transction_history_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'package:intl/intl.dart';
 import 'package:collection_qr_flutter/data/provider/transaction_provider.dart';
 import 'package:provider/provider.dart';
@@ -79,7 +80,24 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    checkForUpdate();
     loadSharedPrefs();
+  }
+
+
+  void checkForUpdate() async {
+    try {
+      AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
+
+      if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
+        await InAppUpdate.performImmediateUpdate();
+        // OR if you prefer flexible update:
+        // await InAppUpdate.startFlexibleUpdate();
+      }
+    } catch (e) {
+      print('Failed to check for update: $e');
+      // You might want to handle errors here (e.g., no internet)
+    }
   }
 
   void showProgressDialog(BuildContext context) {

@@ -123,11 +123,47 @@ class _QrCodePageState extends State<QrCodePage> {
   }
 
   void _listenForFirebaseMessages() {
+    print("_listenForFirebaseMessages");
+    _firebaseMessageSubscription?.cancel(); // ✅ Ensure only one listener
+
+    _firebaseMessageSubscription = FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        print("message.notification != null");
+        final String? notificationTitle = message.notification?.title;
+        final String? notificationBody = message.notification?.body;
+
+        print("📩 Foreground Notification: $notificationTitle");
+
+        if (notificationTitle == "Wallet Load Successful 🎉") {
+          if (mounted) {
+            print("✅ Showing Success Message");
+            _showSuccessMessage(notificationBody);
+          }
+        }
+      } else {
+        print("⚠️ Empty Message Received: ${message.data}");
+      }
+    });
+
+    // ✅ Handle background notification clicks
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print("🚀 Background Notification Clicked: ${message.data}");
+    });
+
+    // ✅ Handle terminated app notification taps
+    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
+      if (message != null) {
+        print("📱 App Launched via Notification: ${message.data}");
+      }
+    });
+  }
+/*  void _listenForFirebaseMessages() {
     _firebaseMessageSubscription?.cancel(); // ✅ Ensure only one listener
 
     _firebaseMessageSubscription =
         FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
+        print("message.notification != null");
         final String? notificationTitle = message.notification?.title;
         final String? notificationBody = message.notification?.body;
 
@@ -157,7 +193,7 @@ class _QrCodePageState extends State<QrCodePage> {
         print("📱 App Launched via Notification: ${message.data}");
       }
     });
-  }
+  }*/
 
   void showWarning() {
     showDialog(
@@ -422,8 +458,11 @@ class _QrCodePageState extends State<QrCodePage> {
     _startTimer();
     loadSharedPrefs();
     if (!_isFirebaseListenerInitialized) {
+      print("__isFirebaseListenerInitialized");
       _listenForFirebaseMessages();
       _isFirebaseListenerInitialized = true;
+    }else{
+      print("_isFirebaseListenerInitialized not initalized");
     }
   }
 
