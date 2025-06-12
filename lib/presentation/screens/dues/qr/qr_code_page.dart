@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,11 +13,9 @@ import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../../../core/colors.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
-
 import '../../../../data/repository/payment_link_repository.dart';
 import '../../../../data/storage/shared_pref_helper.dart';
 import '../../../../domain/model/cash_deposit_model.dart';
-
 
 class QrCodePage extends StatefulWidget {
   final String amount;
@@ -60,10 +57,8 @@ class _QrCodePageState extends State<QrCodePage> {
   String? corpCode;
   Uint8List? qrCodeImageBytes;
   String? qrCodeBase64;
-  static const String secretKey =
-      "770A8A65DA156D24EE2A093277530142"; // Must be 32 characters for AES-256
-  static const String initialVector =
-      "1234567890123456"; // Must be 16 characters for AES
+  static const String secretKey = "770A8A65DA156D24EE2A093277530142"; // Must be 32 characters for AES-256
+  static const String initialVector = "1234567890123456"; // Must be 16 characters for AES
   StreamSubscription<RemoteMessage>? _messageSubscription;
   Timer? _paymentVerificationTimer; // Timer for payment verification
   bool isPaymentVerified = false; // Flag to check payment status
@@ -488,7 +483,6 @@ class _QrCodePageState extends State<QrCodePage> {
     generateQRCode(); // Fetch the QR code on initialization
   }
 
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -649,4 +643,5 @@ class _QrCodePageState extends State<QrCodePage> {
     return int.parse(
         '$firstDigit${remainingDigits.toString().padLeft(9, '0')}');
   }
+
 }

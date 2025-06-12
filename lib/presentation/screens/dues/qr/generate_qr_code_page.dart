@@ -16,7 +16,6 @@ import 'package:http/http.dart' as http;
 import '../../../../../../core/colors.dart';
 import '../../../../../../core/constants.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
-
 import '../../../../data/provider/balance_provider.dart';
 import '../../../../data/provider/cash_deposit_provider.dart';
 import '../../../../domain/model/cash_deposit_model.dart';
@@ -78,8 +77,8 @@ class _GeneratedQrCodePageState extends State<GeneratedQrCodePage> {
     print("INSIDE DEPOSIT CASH METHOD");
     final provider = Provider.of<CashDepositProvider>(context, listen: false);
     await provider.depositCash(
-      //  widget.accountNumber, widget.agentId, widget.amount);
-        widget.accountNumber, widget.agentId, "1");
+        widget.accountNumber, widget.agentId, widget.amount);
+       // widget.accountNumber, widget.agentId, "1");
     if (provider.cashDepositModel != null) {
       cashDepositDialog(provider.cashDepositModel);
     } else {
