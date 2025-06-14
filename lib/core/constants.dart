@@ -1,5 +1,7 @@
 // Production
+import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 const String apiUrl = "https://adsspayweb.digicob.in:8444/";
 const String apiUrlTwo = "https://adsspayweb.digicob.in:8444/";
@@ -42,6 +44,54 @@ class NotificationChannels {
   static const String nonDeliverableButton = "NON_DELIVERABLE_BUTTON";
   static const String getAllCart = "GET_ALL_CART";
   static const String getCart = "GET_CART";
+}
+
+
+AlertDialog exitAlert(BuildContext context){
+  return AlertDialog(
+    icon: const Icon(Icons.warning_amber, color: home1,size: 30,),
+    alignment: Alignment.center,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(10))
+    ),
+    title:const Center(child:Text("Alert")) ,
+    backgroundColor: Colors.white,
+    content: SizedBox(
+      height: 150,
+      child: Column(children: [
+        const Text("Are you sure do you want to exit Collection Qr? ",
+        style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black,
+        fontSize: 15),),
+        const SizedBox(height: 30,),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: home1,
+                foregroundColor: Colors.white,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))
+                  )
+              ),
+              onPressed: (){
+                SystemNavigator.pop();
+              }, child: const Text("YES")),
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: homeColor,
+                    foregroundColor: Colors.white,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10))
+                  )
+                ),
+                onPressed: (){
+                  Navigator.pop(context);
+                }, child: const Text("NO")),
+        ],)
+      ],),
+    ),
+  );
 }
 
 class SharedPrefKeys {

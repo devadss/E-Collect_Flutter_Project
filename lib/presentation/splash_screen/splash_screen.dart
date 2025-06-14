@@ -250,10 +250,8 @@
 //   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 // }
 
-
 import 'dart:async';
 import 'package:flutter_svg/svg.dart';
-
 import '../../core/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -291,7 +289,7 @@ class _SplashScreenState extends State<SplashScreen> {
     var snackBar = SnackBar(
       content: Text(
         value,
-        style: TextStyle(
+        style: const TextStyle(
             color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
       ),
       backgroundColor: color == "RED" ? Colors.red : Colors.green,
@@ -336,10 +334,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
           requestNewTokenResponse.fold(
                 (error) {
-              print("Error: ${error}");
+              print("Error: $error");
             },
                 (data) {
-              print("Token Response : ${data}");
+              print("Token Response : $data");
               SharedPref.shared.setTokenValue(data);
               if (loginStatus == true) {
                 if (fcmToken.isNotEmpty) {

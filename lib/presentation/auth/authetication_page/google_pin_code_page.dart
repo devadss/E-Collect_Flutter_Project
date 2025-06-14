@@ -283,107 +283,109 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                children: [
-                  const SizedBox(height: 40),
-                  const Icon(
-                    Icons.lock_outline,
-                    size: 60,
-                    color: home2,
-                  ),
-                  const SizedBox(height: 30),
-                  Text(
-                    "Enter your secure MPIN",
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      color: home2.withOpacity(0.8),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  children: [
+                    const SizedBox(height: 40),
+                    const Icon(
+                      Icons.lock_outline,
+                      size: 60,
+                      color: home2,
                     ),
-                  ),
-                  const SizedBox(height: 30),
-                  // PIN Display
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: List.generate(6, (index) {
-                      return AnimatedContainer(
-                        duration:const Duration(milliseconds: 200),
-                        width: 24,
-                        height: 24,
-                        margin:const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: index < pin.length ? home2 : home2.withOpacity(0.2),
-                          border: Border.all(
-                            color: home2,
-                            width: 1.5,
+                    const SizedBox(height: 30),
+                    Text(
+                      "Enter your secure MPIN",
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        color: home2.withOpacity(0.8),
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    // PIN Display
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: List.generate(6, (index) {
+                        return AnimatedContainer(
+                          duration:const Duration(milliseconds: 200),
+                          width: 24,
+                          height: 24,
+                          margin:const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: index < pin.length ? home2 : home2.withOpacity(0.2),
+                            border: Border.all(
+                              color: home2,
+                              width: 1.5,
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ],
+                ),
+
+                // Number Pad
+                Column(
+                  children: [
+                    GridView.count(
+                      physics:const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      crossAxisCount: 3,
+                      childAspectRatio: 1.5,
+                      padding: EdgeInsets.zero,
+                      children: [
+                        for (int i = 1; i <= 9; i++) _buildNumberButton(i),
+                        _buildBackButton(),
+                        _buildNumberButton(0),
+                        _buildBiometricButton(),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: validateMpin,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: home2,
+                          padding:const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                      );
-                    }),
-                  ),
-                ],
-              ),
-
-              // Number Pad
-              Column(
-                children: [
-                  GridView.count(
-                    physics:const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    crossAxisCount: 3,
-                    childAspectRatio: 1.5,
-                    padding: EdgeInsets.zero,
-                    children: [
-                      for (int i = 1; i <= 9; i++) _buildNumberButton(i),
-                      _buildBackButton(),
-                      _buildNumberButton(0),
-                      _buildBiometricButton(),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: validateMpin,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: home2,
-                        padding:const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                        child: Text(
+                          "SUBMIT",
+                          style: GoogleFonts.poppins(
+                            color: white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>const ForgotMpinPage()
+                          ),
+                        );
+                      },
                       child: Text(
-                        "SUBMIT",
+                        "Forgot MPIN?",
                         style: GoogleFonts.poppins(
-                          color: white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
+                          color: home1,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>const ForgotMpinPage()
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "Forgot MPIN?",
-                      style: GoogleFonts.poppins(
-                        color: home1,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
