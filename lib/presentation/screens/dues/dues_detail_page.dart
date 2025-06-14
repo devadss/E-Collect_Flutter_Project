@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/colors.dart';
 import '../../../core/general.dart';
+import '../../../data/provider/create_order_provider_new.dart';
 import '../../../data/provider/due_list_provider.dart';
 import '../../../data/repository/payment_link_repository.dart';
 import '../../../data/storage/shared_pref_helper.dart';
@@ -43,6 +44,7 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
   String? customerEmail;
   String? customerName;
   String? customerNumber;
+  String? sessionid;
   String? customerAccountNumber;
   String? corpCode;
   String? token;
@@ -92,6 +94,19 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
         : phoneNumber;
   }
 
+
+
+  Future<void> createOrderNew() async {
+    final createOrderNewProvider = Provider.of<CreateOrderProviderNew>(context , listen :false);
+    await createOrderNewProvider.createOrderNew(double.tryParse(amountController.text).toString(),
+      widget.custPhoneNumber.toString(), widget.custId.toString(), "");
+    if(createOrderNewProvider.paymentGatewayOrderResponseModel != null){
+   setState(() {
+     sessionid = createOrderNewProvider.paymentGatewayOrderResponseModel!.paymentSessionId.toString();
+   });
+    }
+  }
+
   void _proceedButtonClick() {
     showDialog(
       context: context,
@@ -117,7 +132,7 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
                             custAcNumber: widget.custAcNumber,
                             custPhoneNumber: widget.custPhoneNumber,
                             custId:widget.custId,
-                            custEmail: "testuser@gmail.com",
+                            custEmail: "testuser@gmail.com", sessionid: sessionid.toString(),
 
                           )),
                 );
@@ -198,6 +213,7 @@ class _DuesDetailPageState extends State<DuesDetailPage> {
     printLog(_dateTime);
     final provider = Provider.of<DueListProvider>(context, listen: false);
     provider.getDueList(widget.custAcNumber, "2025-03-25");
+    createOrderNew();
     super.initState();
   }
 

@@ -25,14 +25,14 @@ class DueUnderAgentModel {
 }
 
 class DuesList1 {
-  List<Datum>? data;
+  List<DueUnderAgnet>? data;
 
   DuesList1({
     this.data,
   });
 
   factory DuesList1.fromJson(Map<String, dynamic> json) => DuesList1(
-    data: json["data"] == null ? [] : List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+    data: json["data"] == null ? [] : List<DueUnderAgnet>.from(json["data"]!.map((x) => DueUnderAgnet.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -40,7 +40,7 @@ class DuesList1 {
   };
 }
 
-class Datum {
+class DueUnderAgnet {
   String? accNo;
   String? openDate;
   num? installAmt;
@@ -51,7 +51,7 @@ class Datum {
   String? phone;
   String? email;
 
-  Datum({
+  DueUnderAgnet({
     this.accNo,
     this.openDate,
     this.installAmt,
@@ -63,7 +63,7 @@ class Datum {
     this.email,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory DueUnderAgnet.fromJson(Map<String, dynamic> json) => DueUnderAgnet(
     accNo: json["AccNo"],
     openDate: json["OpenDate"],
     installAmt: json["InstallAmt"],
@@ -89,6 +89,8 @@ class Datum {
 }
 
 enum DueMonth {
+  THE_202406,
+  THE_202407,
   THE_202408,
   THE_202409,
   THE_202410,
@@ -96,6 +98,8 @@ enum DueMonth {
 }
 
 final dueMonthValues = EnumValues({
+  "2024-06": DueMonth.THE_202406,
+  "2024-07": DueMonth.THE_202407,
   "2024-08": DueMonth.THE_202408,
   "2024-09": DueMonth.THE_202409,
   "2024-10": DueMonth.THE_202410,

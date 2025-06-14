@@ -5,12 +5,15 @@ import 'package:collection_qr_flutter/data/provider/cash_deposit_provider.dart';
 import 'package:collection_qr_flutter/data/provider/collection_summary_provider.dart';
 import 'package:collection_qr_flutter/data/provider/delete_fcm_provider.dart';
 import 'package:collection_qr_flutter/data/provider/due_under_agent_provider.dart';
+import 'package:collection_qr_flutter/data/provider/payment_session_id_provider.dart';
 import 'package:collection_qr_flutter/data/provider/update_dop_provider.dart';
 import 'package:collection_qr_flutter/data/provider/update_password_provider.dart';
 import 'package:collection_qr_flutter/data/repository/agent_transaction_repository.dart';
 import 'package:collection_qr_flutter/data/repository/cash_deposit_repository.dart';
 import 'package:collection_qr_flutter/data/repository/collection_summary_repository.dart';
 import 'package:collection_qr_flutter/data/repository/delete_fcm_repository.dart';
+import 'package:collection_qr_flutter/data/repository/new_qr_code_repository.dart';
+import 'package:collection_qr_flutter/data/repository/payment_session_id_repository.dart';
 import 'package:collection_qr_flutter/data/repository/update_dop_repository.dart';
 import 'package:collection_qr_flutter/data/repository/update_password_repository.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -41,8 +44,13 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'data/provider/agent_customer_details_provider.dart';
 import 'data/provider/create_order_provider.dart';
+import 'data/provider/create_order_provider_new.dart';
 import 'data/provider/due_list_provider.dart';
+import 'data/provider/new_qr_code_provider.dart';
+import 'data/provider/qr_generation_provider_new.dart';
+import 'data/repository/create_order_repository_new.dart';
 import 'data/repository/due_under_agent_repository.dart';
+import 'data/repository/qr_generation_repository_new.dart';
 import 'data/service/notification_service/firebase_notification_services.dart';
 import 'data/service/notification_service/firebase_options.dart';
 import 'data/provider/cust_register_provider.dart';
@@ -126,6 +134,14 @@ void main() async{
   create: (_) => CollectionSummaryProvider(CollectionSummaryRepository())),
     ChangeNotifierProvider(
   create: (_) => DueUnderAgentProvider(DueUnderAgentRepository())),
+    ChangeNotifierProvider(
+  create: (_) => CreateOrderProviderNew(CreateOrderRepositoryNew())),
+    ChangeNotifierProvider(
+  create: (_) => QrGenerationProviderNew(QrGenerationRepositoryNew())),
+    ChangeNotifierProvider(
+  create: (_) => NewQrCodeProvider(NewQrCodeRepository())),
+    ChangeNotifierProvider(
+  create: (_) => CreatePaymentSessionIdProvider(CreatePaymentSessionIdRepository())),
 
 
   ], child: const MyApp()));

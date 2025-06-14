@@ -36,7 +36,8 @@ const String kOtpNullError = "Enter the otp";
 const String baseURL = apiUrl;
 //const String imageBaseURL = s3Url;
 
-
+const home1 = Color(0xFFEA307B);
+const home2 = Color(0xFF470952);
 class NotificationChannels {
   static const String getCartNonDeliverable = "GET_CART_NON_DELIVERABLE";
   static const String login = "LOGIN";

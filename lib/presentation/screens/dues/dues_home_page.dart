@@ -1,15 +1,16 @@
-
-import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
-import 'package:collection_qr_flutter/presentation/screens/dues/qr/qr_code_page.dart';
+import 'package:collection_qr_flutter/presentation/screens/dues/qr/new_qr_code_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
-
 import '../../../core/colors.dart';
+import '../../../core/constants.dart';
 import '../../../data/provider/due_under_agent_provider.dart';
 import '../../../data/repository/payment_link_repository.dart';
+import '../../../data/repository/payment_session_id_repository.dart';
+import '../../../data/storage/shared_pref_helper.dart';
 import '../../../domain/model/due_under_agent_model.dart';
 
 
@@ -22,14 +23,15 @@ class DuesHomePage extends StatefulWidget {
 
 class _DuesHomePageState extends State<DuesHomePage> {
   final Map<String, Map<int, bool>> _checkboxStates = {};
-  String? agentOriginId;
   String? _expandedAccNo;
   String? token;
-  String? name;
-  String? custid;
-  String? email;
-  String? mobnum;
-
+  String? agentOriginId;
+  String? agentId;
+  String? agentPhoneNumber;
+  String? agentName;
+  String? agentEmail;
+  String? corpCode;
+  String? paymentSessionId;
 
   @override
   void initState() {
@@ -38,26 +40,76 @@ class _DuesHomePageState extends State<DuesHomePage> {
   }
 
   Future<void> loadSharedPrefs() async {
-    final id = await SharedPref.shared.getAgentOriginId();
-    final tok = await SharedPref.shared.getTokenValue();
-    final nam = await SharedPref.shared.getAgentName();
-    final mobNum = await SharedPref.shared.getMobNum();
-    final custId = await SharedPref.shared.getAgentOriginId();
-    final emailValue = await SharedPref.shared.getEmail();
+    final name = await SharedPref().getAgentName();
+    final id = await SharedPref().getAgentId();
+    final originId = await SharedPref().getAgentOriginId();
+    final code = await SharedPref().getCorpCode();
+    final email = await SharedPref().getEmail();
+    final number = await SharedPref().getMobNum();
+    final tok = await SharedPref().getTokenValue();
     if (mounted) {
       setState(() {
-        agentOriginId = id;
+        agentName = name;
+        agentEmail = email;
+        agentId = id;
+        agentOriginId = originId;
+        corpCode = code;
+        agentPhoneNumber = number;
         token = tok;
-        name = nam;
-        mobnum = mobNum;
-        email = emailValue;
-        custid = custId;
       });
     }
-    print("DUE PAGE TOKEN : $token");
-    print("DUE PAGE AGENT ID : $agentOriginId");
     final provider = Provider.of<DueUnderAgentProvider>(context, listen: false);
     provider.getDuesUnderAgent(agentOriginId);
+  }
+
+  Future<void> getPaymentSessionId(String? token,String? amount,String? phoneNumber,String? entityId,String? note)async{
+    print("--------------------TOKEN---------------------");
+    print(token);
+    print("---------------------AMOUNT--------------------");
+    print(amount);
+    print("---------------------PHONENUMBER--------------------");
+    print(phoneNumber);
+    print("---------------------ENTITYID--------------------");
+    print(entityId);
+    print("---------------------NOTE--------------------");
+    print(note);
+    final paymentSession = await CreatePaymentSessionIdRepository().getPaymentSessionId(token, amount, phoneNumber, entityId, note);
+    paymentSession.fold(
+        (error){
+          print("---------------------------------ERROR PAYMENT---------------------------");
+          print(error);
+        },
+        (sessionId)async{
+          paymentSessionId = sessionId.paymentSessionId ?? "";
+          if (paymentSessionId!.isNotEmpty &&
+              paymentSessionId != null &&
+              paymentSessionId != "") {
+            if (!mounted) return;
+            Navigator.pop(context);
+
+            if (!mounted) return;
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) => NewQrCodePage(
+                  paymentSessionId: paymentSessionId!,
+                  amount: amount ?? "",
+                  token: token!,
+                ),
+              ),
+            );
+            if (!mounted) return;
+            if (result == "fetch_balance") {
+              Navigator.pop(context);
+            }
+          } else {
+            if (!mounted) return;
+            Navigator.pop(context);
+            EasyLoading.showToast( "Session id is null");
+          }
+        }
+    );
   }
 
   Widget buildShimmerList() {
@@ -88,7 +140,10 @@ class _DuesHomePageState extends State<DuesHomePage> {
                   ],
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -110,8 +165,10 @@ class _DuesHomePageState extends State<DuesHomePage> {
     );
   }
 
-
-  Widget buildShimmerText({double width = double.infinity, double height = 16}) {
+  Widget buildShimmerText({
+    double width = double.infinity,
+    double height = 16,
+  }) {
     return Shimmer.fromColors(
       period: const Duration(milliseconds: 1500), // Ensures smooth animation
       baseColor: grey[300]!,
@@ -127,7 +184,6 @@ class _DuesHomePageState extends State<DuesHomePage> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -136,10 +192,13 @@ class _DuesHomePageState extends State<DuesHomePage> {
         automaticallyImplyLeading: false,
         backgroundColor: white,
         centerTitle: true,
-        title: Text(
+        title: const Text(
           "Due List",
-          style: GoogleFonts.inter(
-              fontSize: 23, color: deepTeal, fontWeight: FontWeight.w700),
+          style: TextStyle(
+            fontSize: 23,
+            color: home2,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
       body: Consumer<DueUnderAgentProvider>(
@@ -160,15 +219,16 @@ class _DuesHomePageState extends State<DuesHomePage> {
             itemBuilder: (_, index) {
               final accNo = groupedData.keys.elementAt(index);
               final dues = groupedData[accNo]!;
-              final totalDue =
-              dues.fold<num>(0, (sum, item) => sum + (item.dueAmount ?? 0));
+              final totalDue = dues.fold<num>(
+                0,
+                (sum, item) => sum + (item.dueAmount ?? 0),
+              );
 
               return Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   color: white,
-                  border:
-                  Border.all(color: deepTeal.withOpacity(0.7), width: 1.5),
+                  border: Border.all(color: home2.withOpacity(0.7), width: 1.5),
                   boxShadow: [
                     BoxShadow(
                       offset: const Offset(0, 4),
@@ -190,15 +250,19 @@ class _DuesHomePageState extends State<DuesHomePage> {
                       });
                     },
                     tilePadding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 12),
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
                     childrenPadding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 12),
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           "Account Number",
-                          style: GoogleFonts.inter(
+                          style: TextStyle(
                             fontSize: 13,
                             color: grey[600],
                             fontWeight: FontWeight.w400,
@@ -207,20 +271,23 @@ class _DuesHomePageState extends State<DuesHomePage> {
                         const SizedBox(height: 4),
                         Text(
                           accNo,
-                          style: GoogleFonts.inter(
+                          style: const TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 16,
-                            color: deepTeal,
+                            color: home1,
                           ),
                         ),
                         const SizedBox(height: 8),
                         Row(
                           children: [
-                            const Icon(Icons.currency_rupee,
-                                size: 18, color: black87),
+                            const Icon(
+                              Icons.currency_rupee,
+                              size: 18,
+                              color: black87,
+                            ),
                             Text(
                               "Total Due: ₹$totalDue",
-                              style: GoogleFonts.inter(
+                              style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 15,
                                 color: black87,
@@ -230,420 +297,472 @@ class _DuesHomePageState extends State<DuesHomePage> {
                         ),
                       ],
                     ),
-                    children: dues.asMap().entries.map((entry) {
-                      final dueIndex = entry.key;
-                      final due = entry.value;
+                    children:
+                        dues.asMap().entries.map((entry) {
+                          final dueIndex = entry.key;
+                          final due = entry.value;
 
-                      _checkboxStates.putIfAbsent(accNo, () => {});
-                      _checkboxStates[accNo]!
-                          .putIfAbsent(dueIndex, () => false);
+                          _checkboxStates.putIfAbsent(accNo, () => {});
+                          _checkboxStates[accNo]!.putIfAbsent(
+                            dueIndex,
+                            () => false,
+                          );
 
-                      final isEnabled =
-                          _expandedAccNo == null || _expandedAccNo == accNo;
+                          final isEnabled =
+                              _expandedAccNo == null || _expandedAccNo == accNo;
 
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Checkbox(
-                              value: _checkboxStates[accNo]![dueIndex],
-                              onChanged: isEnabled
-                                  ? (bool? value) {
-                                setState(() {
-                                  // Uncheck all other account numbers
-                                  _checkboxStates.forEach((key, map) {
-                                    if (key != accNo) {
-                                      map.updateAll((_, __) => false);
-                                    }
-                                  });
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Checkbox(
+                                  value: _checkboxStates[accNo]![dueIndex],
+                                  onChanged:
+                                      isEnabled
+                                          ? (bool? value) {
+                                            setState(() {
+                                              // Uncheck all other account numbers
+                                              _checkboxStates.forEach((
+                                                key,
+                                                map,
+                                              ) {
+                                                if (key != accNo) {
+                                                  map.updateAll(
+                                                    (_, __) => false,
+                                                  );
+                                                }
+                                              });
 
-                                  // Update current checkbox state
-                                  _checkboxStates[accNo]![dueIndex] =
-                                      value ?? false;
-                                  _expandedAccNo = accNo;
-                                });
+                                              // Update current checkbox state
+                                              _checkboxStates[accNo]![dueIndex] =
+                                                  value ?? false;
+                                              _expandedAccNo = accNo;
+                                            });
 
-                                // Calculate the selected amount only for current group
-                                num modalSelectedAmount = 0;
-                                final map = _checkboxStates[accNo];
-                                if (map != null) {
-                                  map.forEach((i, isChecked) {
-                                    if (isChecked) {
-                                      modalSelectedAmount +=
-                                          dues[i].installAmt ?? 0;
-                                    }
-                                  });
-                                }
+                                            // Calculate the selected amount only for current group
+                                            num modalSelectedAmount = 0;
+                                            final map = _checkboxStates[accNo];
+                                            if (map != null) {
+                                              map.forEach((i, isChecked) {
+                                                if (isChecked) {
+                                                  modalSelectedAmount +=
+                                                      dues[i].installAmt ?? 0;
+                                                }
+                                              });
+                                            }
 
-                                final hasAnyChecked =
-                                    modalSelectedAmount > 0;
+                                            final hasAnyChecked =
+                                                modalSelectedAmount > 0;
 
-                                if (!hasAnyChecked) return;
+                                            if (!hasAnyChecked) return;
 
-                                final controller = TextEditingController(
-                                  text: modalSelectedAmount
-                                      .toStringAsFixed(2),
-                                );
+                                            final controller =
+                                                TextEditingController(
+                                                  text: modalSelectedAmount
+                                                      .toStringAsFixed(2),
+                                                );
 
-                                String selectedMethod =
-                                    "Link"; // Default selection
+                                            String selectedMethod =
+                                                "Link"; // Default selection
 
-                                showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(20)),
-                                  ),
-                                  backgroundColor: white,
-                                  builder: (context) {
-                                    return StatefulBuilder(
-                                      builder: (context, setModalState) {
-                                        return Padding(
-                                          padding: EdgeInsets.only(
-                                            top: 20,
-                                            left: 20,
-                                            right: 20,
-                                            bottom: MediaQuery.of(context)
-                                                .viewInsets
-                                                .bottom +
-                                                20,
-                                          ),
-                                          child: SingleChildScrollView(
-                                            child: Column(
-                                              mainAxisSize:
-                                              MainAxisSize.min,
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment
-                                                  .start,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    Container(
-                                                      height: 60,
-                                                      width: 60,
-                                                      decoration:
-                                                      BoxDecoration(
-                                                        borderRadius:
-                                                        BorderRadius
-                                                            .circular(
-                                                            10),
-                                                        border: Border.all(
-                                                            color:
-                                                            black54,
-                                                            width: 1),
+                                            showModalBottomSheet(
+                                              context: context,
+                                              isScrollControlled: true,
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.vertical(
+                                                          top: Radius.circular(
+                                                            20,
+                                                          ),
+                                                        ),
+                                                  ),
+                                              backgroundColor: white,
+                                              builder: (context) {
+                                                return StatefulBuilder(
+                                                  builder: (
+                                                    context,
+                                                    setModalState,
+                                                  ) {
+                                                    return Padding(
+                                                      padding: EdgeInsets.only(
+                                                        top: 20,
+                                                        left: 20,
+                                                        right: 20,
+                                                        bottom:
+                                                            MediaQuery.of(
+                                                                  context,
+                                                                )
+                                                                .viewInsets
+                                                                .bottom +
+                                                            20,
                                                       ),
-                                                      child: selectedMethod ==
-                                                          "Link"
-                                                          ? Image.asset(
-                                                          "assets/images/web-link.png",
-                                                          scale: 12)
-                                                          : Image.asset(
-                                                          "assets/images/qr-code.png",
-                                                          scale: 12),
-                                                    ),
-                                                    const SizedBox(
-                                                        width: 8),
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                        children: [
-                                                          Text(
-                                                            "Collect Payment Using",
-                                                            overflow:
-                                                            TextOverflow
-                                                                .ellipsis,
-                                                            style:
-                                                            GoogleFonts
-                                                                .inter(
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .w500,
-                                                              color:
-                                                              black87,
-                                                              fontSize:
-                                                              15,
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                            selectedMethod,
-                                                            overflow:
-                                                            TextOverflow
-                                                                .ellipsis,
-                                                            style:
-                                                            GoogleFonts
-                                                                .inter(
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .w700,
-                                                              color:
-                                                              black,
-                                                              fontSize:
-                                                              15,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                        width: 8),
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        showModalBottomSheet(
-                                                          context:
-                                                          context,
-                                                          shape:
-                                                          const RoundedRectangleBorder(
-                                                            borderRadius:
-                                                            BorderRadius.vertical(
-                                                                top: Radius.circular(
-                                                                    20)),
-                                                          ),
-                                                          builder:
-                                                              (ctx) =>
-                                                              Column(
-                                                                mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
-                                                                children: [
-                                                                  ListTile(
-                                                                    leading:
-                                                                    const Icon(
-                                                                        Icons.link),
-                                                                    title: const Text(
-                                                                        "Link"),
-                                                                    onTap:
-                                                                        () {
-                                                                      setModalState(() =>
-                                                                      selectedMethod =
-                                                                      "Link");
-                                                                      Navigator.pop(
-                                                                          ctx);
-                                                                    },
+                                                      child: SingleChildScrollView(
+                                                        child: Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Row(
+                                                              children: [
+                                                                Container(
+                                                                  height: 60,
+                                                                  width: 60,
+                                                                  decoration: BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                          10,
+                                                                        ),
+                                                                    border: Border.all(
+                                                                      color:
+                                                                          black54,
+                                                                      width: 1,
+                                                                    ),
                                                                   ),
-                                                                  ListTile(
-                                                                    leading:
-                                                                    const Icon(
-                                                                        Icons.qr_code),
-                                                                    title: const Text(
-                                                                        "QR Code"),
-                                                                    onTap:
-                                                                        () {
-                                                                      setModalState(() =>
-                                                                      selectedMethod =
-                                                                      "QR Code");
-                                                                      Navigator.pop(
-                                                                          ctx);
-                                                                    },
+                                                                  child:
+                                                                      selectedMethod ==
+                                                                              "Link"
+                                                                          ? Image.asset(
+                                                                            "assets/icons/web-link.png",
+                                                                            scale:
+                                                                                12,
+                                                                            color:
+                                                                                home2,
+                                                                          )
+                                                                          : Image.asset(
+                                                                            "assets/icons/qr-code.png",
+                                                                            scale:
+                                                                                12,
+                                                                            color:
+                                                                                home2,
+                                                                          ),
+                                                                ),
+                                                                const SizedBox(
+                                                                  width: 8,
+                                                                ),
+                                                                Expanded(
+                                                                  child: Column(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      Text(
+                                                                        "Collect Payment Using",
+                                                                        overflow:
+                                                                            TextOverflow.ellipsis,
+                                                                        style: GoogleFonts.inter(
+                                                                          fontWeight:
+                                                                              FontWeight.w500,
+                                                                          color:
+                                                                              black87,
+                                                                          fontSize:
+                                                                              15,
+                                                                        ),
+                                                                      ),
+                                                                      Text(
+                                                                        selectedMethod,
+                                                                        overflow:
+                                                                            TextOverflow.ellipsis,
+                                                                        style: GoogleFonts.inter(
+                                                                          fontWeight:
+                                                                              FontWeight.w700,
+                                                                          color:
+                                                                              black,
+                                                                          fontSize:
+                                                                              15,
+                                                                        ),
+                                                                      ),
+                                                                    ],
                                                                   ),
-                                                                ],
+                                                                ),
+                                                                const SizedBox(
+                                                                  width: 8,
+                                                                ),
+                                                                GestureDetector(
+                                                                  onTap: () {
+                                                                    showModalBottomSheet(
+                                                                      context:
+                                                                          context,
+                                                                      shape: const RoundedRectangleBorder(
+                                                                        borderRadius: BorderRadius.vertical(
+                                                                          top: Radius.circular(
+                                                                            20,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      builder:
+                                                                          (
+                                                                            ctx,
+                                                                          ) => Column(
+                                                                            mainAxisSize:
+                                                                                MainAxisSize.min,
+                                                                            children: [
+                                                                              ListTile(
+                                                                                leading: const Icon(
+                                                                                  Icons.link,
+                                                                                ),
+                                                                                title: const Text(
+                                                                                  "Link",
+                                                                                ),
+                                                                                onTap: () {
+                                                                                  setModalState(
+                                                                                    () =>
+                                                                                        selectedMethod =
+                                                                                            "Link",
+                                                                                  );
+                                                                                  Navigator.pop(
+                                                                                    ctx,
+                                                                                  );
+                                                                                },
+                                                                              ),
+                                                                              ListTile(
+                                                                                leading: const Icon(
+                                                                                  Icons.qr_code,
+                                                                                ),
+                                                                                title: const Text(
+                                                                                  "QR Code",
+                                                                                ),
+                                                                                onTap: () {
+                                                                                  setModalState(
+                                                                                    () =>
+                                                                                        selectedMethod =
+                                                                                            "QR Code",
+                                                                                  );
+                                                                                  Navigator.pop(
+                                                                                    ctx,
+                                                                                  );
+                                                                                },
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                    );
+                                                                  },
+                                                                  child: Text(
+                                                                    "Change Method >",
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    style: GoogleFonts.inter(
+                                                                      decoration:
+                                                                          TextDecoration
+                                                                              .underline,
+                                                                      decorationColor:
+                                                                          home2,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w800,
+                                                                      color:
+                                                                          home2,
+                                                                      fontSize:
+                                                                          12,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 15,
+                                                            ),
+                                                            const Text(
+                                                              "Installment Details",
+                                                              style: TextStyle(
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                color: home2,
                                                               ),
-                                                        );
-                                                      },
-                                                      child: Text(
-                                                        "Change Method >",
-                                                        overflow:
-                                                        TextOverflow
-                                                            .ellipsis,
-                                                        style: GoogleFonts
-                                                            .inter(
-                                                          decoration:
-                                                          TextDecoration
-                                                              .underline,
-                                                          decorationColor:
-                                                          deepTeal,
-                                                          fontWeight:
-                                                          FontWeight
-                                                              .w800,
-                                                          color: deepTeal,
-                                                          fontSize: 12,
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 12,
+                                                            ),
+                                                            Text(
+                                                              "Open Date: ${due.openDate}",
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                            Text(
+                                                              "Due Month: ${dueMonthValues.reverse[due.dueMonth]}",
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 20,
+                                                            ),
+                                                            Text(
+                                                              "Edit Total Selected Amount",
+                                                              style: TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color:
+                                                                    grey[800],
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 8,
+                                                            ),
+                                                            TextFormField(
+                                                              controller:
+                                                                  controller,
+                                                              keyboardType:
+                                                                  const TextInputType.numberWithOptions(
+                                                                    decimal:
+                                                                        true,
+                                                                    signed:
+                                                                        true,
+                                                                  ),
+                                                              decoration: InputDecoration(
+                                                                filled: true,
+                                                                fillColor:
+                                                                    home2,
+                                                                border: OutlineInputBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        10,
+                                                                      ),
+                                                                  borderSide:
+                                                                      const BorderSide(
+                                                                        color:
+                                                                            deepTeal,
+                                                                      ),
+                                                                ),
+                                                                focusedBorder: OutlineInputBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        10,
+                                                                      ),
+                                                                  borderSide:
+                                                                      const BorderSide(
+                                                                        color:
+                                                                            deepTeal,
+                                                                        width:
+                                                                            1.5,
+                                                                      ),
+                                                                ),
+                                                                contentPadding:
+                                                                    const EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          14,
+                                                                      vertical:
+                                                                          12,
+                                                                    ),
+                                                                prefixIcon:
+                                                                    const Icon(
+                                                                      Icons
+                                                                          .currency_rupee,
+                                                                      color:
+                                                                          white,
+                                                                    ),
+                                                              ),
+                                                              style: const TextStyle(
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                color: white,
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 20,
+                                                            ),
+                                                            CustomSliderButton(
+                                                              token: token!,
+                                                              label:
+                                                                  "Slide to Collect Using $selectedMethod",
+                                                              backgroundColor:
+                                                                  home2,
+                                                              buttonColor:
+                                                                  Colors.white,
+                                                              onConfirmed: () async {
+                                                                // final editedAmount = num.tryParse(controller.text.trim()) ?? 0;
+                                                                selectedMethod ==
+                                                                        "Link"
+                                                                    ? sendLinkFunction(
+                                                                      provider
+                                                                          .agentModel!
+                                                                          .duesList1!
+                                                                          .data![index],
+                                                                      controller
+                                                                          .text,
+                                                                    )
+                                                                    :
+                                                                getPaymentSessionId(token,
+                                                                    controller.text,
+                                                                    "$agentPhoneNumber",
+                                                                    agentId,
+                                                                    "Payment For Agent $agentName");
+
+                                                              },
+                                                            ),
+                                                          ],
                                                         ),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(
-                                                    height: 15),
-                                                Text(
-                                                  "Installment Details",
-                                                  style:
-                                                  GoogleFonts.inter(
-                                                    fontSize: 18,
-                                                    fontWeight:
-                                                    FontWeight.w600,
-                                                    color: deepTeal,
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                    height: 12),
-                                                Text(
-                                                    "Open Date: ${due.openDate}",
-                                                    overflow: TextOverflow
-                                                        .ellipsis),
-                                                Text(
-                                                    "Due Month: ${dueMonthValues.reverse[due.dueMonth]}",
-                                                    overflow: TextOverflow
-                                                        .ellipsis),
-                                                const SizedBox(
-                                                    height: 20),
-                                                Text(
-                                                  "Edit Total Selected Amount",
-                                                  style:
-                                                  GoogleFonts.inter(
-                                                    fontSize: 14,
-                                                    fontWeight:
-                                                    FontWeight.w500,
-                                                    color: grey[800],
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 8),
-                                                TextFormField(
-                                                  controller: controller,
-                                                  keyboardType:
-                                                  const TextInputType
-                                                      .numberWithOptions(
-                                                      decimal: true),
-                                                  decoration:
-                                                  InputDecoration(
-                                                    filled: true,
-                                                    fillColor: teal600,
-                                                    border:
-                                                    OutlineInputBorder(
-                                                      borderRadius:
-                                                      BorderRadius
-                                                          .circular(
-                                                          10),
-                                                      borderSide:
-                                                      const BorderSide(
-                                                          color:
-                                                          deepTeal),
-                                                    ),
-                                                    focusedBorder:
-                                                    OutlineInputBorder(
-                                                      borderRadius:
-                                                      BorderRadius
-                                                          .circular(
-                                                          10),
-                                                      borderSide:
-                                                      const BorderSide(
-                                                          color:
-                                                          deepTeal,
-                                                          width: 1.5),
-                                                    ),
-                                                    contentPadding:
-                                                    const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal:
-                                                        14,
-                                                        vertical: 12),
-                                                    prefixIcon: const Icon(
-                                                        Icons
-                                                            .currency_rupee,
-                                                        color: white),
-                                                  ),
-                                                  style:
-                                                  GoogleFonts.inter(
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                    FontWeight.w600,
-                                                    color: white,
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                    height: 20),
-                                                CustomSliderButton(
-                                                  token: token!,
-                                                  label:
-                                                  "Slide to Collect Using $selectedMethod",
-                                                  backgroundColor:
-                                                  deepTeal,
-                                                  buttonColor:
-                                                  Colors.white,
-                                                  onConfirmed: () async {
-                                                    // final editedAmount = num.tryParse(controller.text.trim()) ?? 0;
-                                                    selectedMethod ==
-                                                        "Link"
-                                                        ? sendLinkFunction()
-                                                        : Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) => QrCodePage(
-                                                                amount: controller
-                                                                    .text,
-                                                                token:
-                                                                token!, custEmail:
-                                                            provider.agentModel?.duesList1?.data?[index].email ?? "",
-                                                              custPhoneNumber:
-                                                              provider.agentModel?.duesList1?.data?[index].phone ?? "phone",
-                                                              custId:
-                                                              provider.agentModel?.duesList1?.data?[index].custId ?? "CustID",
-                                                              custAcNumber:
-                                                              provider.agentModel?.duesList1?.data?[index].accNo ?? "CustACCNo",
-                                                              custName:
-                                                              provider.agentModel?.duesList1?.data?[index].name ?? "NAME",)));
-                                                    //Navigator.pop(context);
+                                                    );
                                                   },
-                                                ),
-                                              ],
-                                            ),
+                                                );
+                                              },
+                                            );
+                                          }
+                                          : null,
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 14,
+                                      vertical: 12,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: home1,
+                                        width: 1.5,
+                                      ),
+                                      color: grey[50],
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Installment: ₹${due.installAmt}",
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14,
+                                            color: black87,
                                           ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                );
-                              }
-                                  : null,
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 14, vertical: 12),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  border:
-                                  Border.all(color: teal500!, width: 1.5),
-                                  color: grey[50],
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          "Open Date: ${due.openDate}",
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            color: grey[700],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          "Due Month: ${dueMonthValues.reverse[due.dueMonth]}",
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            color: grey[700],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Installment: ₹${due.installAmt}",
-                                      style: GoogleFonts.inter(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14,
-                                        color: black87,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      "Open Date: ${due.openDate}",
-                                      style: GoogleFonts.inter(
-                                        fontSize: 13,
-                                        color: grey[700],
-                                      ),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      "Due Month: ${dueMonthValues.reverse[due.dueMonth]}",
-                                      style: GoogleFonts.inter(
-                                        fontSize: 13,
-                                        color: grey[700],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              ],
                             ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
+                          );
+                        }).toList(),
                   ),
                 ),
               );
@@ -654,23 +773,33 @@ class _DuesHomePageState extends State<DuesHomePage> {
     );
   }
 
-  Future<void> sendLinkFunction() async {
+  Future<void> sendLinkFunction(
+    DueUnderAgnet custDetails,
+    String amount,
+  ) async {
+    if (agentName == null ||
+        agentId == null ||
+        agentOriginId == null ||
+        token == null) {
+      print("One or more required fields are null.");
+      return; // or handle the error appropriately
+    }
     final send = await PaymentLinkRepository().getPaymentLink(
-        "Salim",
-        "adsslWAIaPncFH6",
-        "361",
-        "+919944112208",
-        "salim@gmail.com",
-        "RAHUL E RAMESH",
-        "8921503808",
-        "08041127",
-        "rahul.sharma@example.com",
-        "2600",
-        2000,
-        "Payment for Order #12345",
-        "BNKMYL",
-        "",
-        token!
+      agentName!,
+      agentId!,
+      agentOriginId!,
+      agentPhoneNumber!,
+      agentEmail!,
+      custDetails.name!,
+      custDetails.phone!,
+      custDetails.accNo!,
+      custDetails.email!,
+      custDetails.custId!,
+      num.parse(amount),
+      "Payment for Order #1234",
+      corpCode!,
+      "",
+      token!,
       // agentName!,
       // agentId!,
       // agentOriginId!,
@@ -689,11 +818,11 @@ class _DuesHomePageState extends State<DuesHomePage> {
     );
 
     send.fold(
-          (error) {
+      (error) {
         print("-------------------ERROR---------------------");
         print(error);
       },
-          (sendLink) {
+      (sendLink) {
         if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
           Share.share("Here is your payment link: ${sendLink.linkUrl}");
         } else {
@@ -712,13 +841,13 @@ class CustomSliderButton extends StatefulWidget {
   final String token;
 
   const CustomSliderButton({
-    Key? key,
+    super.key,
     required this.onConfirmed,
     required this.label,
     required this.backgroundColor,
     required this.buttonColor,
     required this.token,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomSliderButton> createState() => _CustomSliderButtonState();
@@ -751,7 +880,7 @@ class _CustomSliderButtonState extends State<CustomSliderButton> {
               highlightColor: widget.buttonColor.withOpacity(0.25),
               child: Text(
                 widget.label,
-                style: GoogleFonts.inter(
+                style: const TextStyle(
                   fontWeight: FontWeight.w800,
                   fontSize: 12,
                   color: Colors.white,
@@ -798,14 +927,19 @@ class _CustomSliderButtonState extends State<CustomSliderButton> {
                   ),
                   child: AnimatedSwitcher(
                     duration: const Duration(seconds: 1),
-                    transitionBuilder: (child, animation) => RotationTransition(
-                      turns: Tween(begin: 0.75, end: 1.0).animate(animation),
-                      child: child,
-                    ),
+                    transitionBuilder:
+                        (child, animation) => RotationTransition(
+                          turns: Tween(
+                            begin: 0.75,
+                            end: 1.0,
+                          ).animate(animation),
+                          child: child,
+                        ),
                     child: Image.asset(
-                      "assets/images/arrow.png",
+                      "assets/icons/arrow.png",
                       key: const ValueKey('arrow-icon'),
                       scale: 20,
+                      color: home2,
                       fit: BoxFit.scaleDown,
                     ),
                   ),

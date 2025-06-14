@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:collection_qr_flutter/data/provider/create_order_provider_new.dart';
 import 'package:collection_qr_flutter/presentation/screens/dues/qr/qr_code_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,7 +14,7 @@ import '../../../../core/colors.dart';
 import '../../../../data/storage/shared_pref_helper.dart';
 import '../../../../data/provider/create_order_provider.dart';
 import '../../../../data/provider/transaction_provider.dart';
-import 'generate_qr_code_page.dart';
+import 'new_qr_code_page.dart';
 
 class QrCodeHomePage extends StatefulWidget {
   final String payAbleAmount;
@@ -255,7 +256,7 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
                 } else {
                   print("Please Enter an Amount");
                   // EasyLoading.showToast('Please Enter an Amount',
-                  //     toastPosition: EasyLoadingToastPosition.bottom);
+                  // toastPosition: EasyLoadingToastPosition.bottom);
                 }
               },
               child: const Padding(
@@ -269,6 +270,29 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
         ),
       ),
     );
+  }
+
+  Future<void> createOrderNew() async {
+    final createOrderNewProvider = Provider.of<CreateOrderProviderNew>(context , listen :false);
+    await createOrderNewProvider.createOrderNew(double.tryParse(amountController.text).toString(),
+        phoneNumber.toString(), entityId.toString(), "");
+    if(createOrderNewProvider.paymentGatewayOrderResponseModel != null){
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => QrCodePage(
+                amount: amountController.text,
+                token: tokenValue!,
+                custName: name!,
+                custAcNumber: widget.accountNumber,
+                custPhoneNumber: phoneNumber!,
+                custId: entityId!,
+                custEmail: email.toString(), sessionid:
+              createOrderNewProvider.paymentGatewayOrderResponseModel!.paymentSessionId.toString(),
+              ))
+
+      );
+    }
   }
 
   Future<void> createOrderId(String? type) async {
@@ -300,14 +324,12 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
       final result = await Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => QrCodePage(
+
+             // builder: (context) => QrCodePage(
+              builder: (context) => NewQrCodePage(
                     amount: amountController.text,
                     token: tokenValue!,
-                    custName: name!,
-                    custAcNumber: widget.accountNumber,
-                    custPhoneNumber: phoneNumber!,
-                    custId: entityId!,
-                    custEmail: email.toString(),
+                     paymentSessionId: paymentSessionId,
                   ))
           /*      MaterialPageRoute(
               builder: (context) => GeneratedQrCodePage(

@@ -9,10 +9,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../../../core/colors.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
+import '../../../../data/provider/qr_generation_provider_new.dart';
 import '../../../../data/repository/payment_link_repository.dart';
 import '../../../../data/storage/shared_pref_helper.dart';
 import '../../../../domain/model/cash_deposit_model.dart';
@@ -25,6 +27,8 @@ class QrCodePage extends StatefulWidget {
   final String custPhoneNumber;
   final String custId;
   final String custEmail;
+  final String sessionid;
+
 
   const QrCodePage({
     super.key,
@@ -34,7 +38,7 @@ class QrCodePage extends StatefulWidget {
     required this.custAcNumber,
     required this.custPhoneNumber,
     required this.custId,
-    required this.custEmail,
+    required this.custEmail, required this.sessionid,
   });
 
   @override
@@ -402,6 +406,16 @@ class _QrCodePageState extends State<QrCodePage> {
     }
   }
 
+  Future<void> generateQrNew() async {
+    final generateQrProvider = Provider.of<QrGenerationProviderNew>(context , listen:false);
+    await generateQrProvider.generateQrCode(widget.sessionid);
+    if(generateQrProvider.qrResponseData != null){
+      setState(() {
+        qrCodeImageBytes = base64Decode(generateQrProvider.qrResponseData!.data.payload.qrcode.split(',').last);
+      });
+    }
+  }
+  
   Future<void> generateQRCode() async {
     final qrCode = await PaymentLinkRepository().getPaymentLink(
         agentName!,
@@ -479,8 +493,8 @@ class _QrCodePageState extends State<QrCodePage> {
         agentPhoneNumber = number;
       });
     }
-
-    generateQRCode(); // Fetch the QR code on initialization
+    generateQrNew();
+   // generateQRCode(); // Fetch the QR code on initialization
   }
 
   @override
