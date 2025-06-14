@@ -1,6 +1,6 @@
 
-import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/constants.dart';
 
 class SharedPref {
@@ -18,33 +18,6 @@ class SharedPref {
     return _prefs!;
   }
 
-  setAgentOriginId(String value) async {
-    final prefs = await _getPrefs();
-    return prefs.setString(SharedPrefKeys.agentOriginId, value);
-  }
-
-  getAgentOriginId() async {
-    final prefs = await _getPrefs();
-    return prefs.getString(SharedPrefKeys.agentOriginId) ?? '';
-  }
-  setCorpCode(String value) async {
-    final prefs = await _getPrefs();
-    return prefs.setString(SharedPrefKeys.corpCode, value);
-  }
-
-  getCorpCode() async {
-    final prefs = await _getPrefs();
-    return prefs.getString(SharedPrefKeys.corpCode) ?? '';
-  }
-  setCardRefNum(String value) async {
-    final prefs = await _getPrefs();
-    return prefs.setString(SharedPrefKeys.cardRefNum, value);
-  }
-
-  getCardRefNum() async {
-    final prefs = await _getPrefs();
-    return prefs.getString(SharedPrefKeys.cardRefNum) ?? '';
-  }
   Future<bool> getLogin() async {
     final prefs = await _getPrefs();
     return prefs.getBool(SharedPrefKeys().login) ?? false;
@@ -66,7 +39,6 @@ class SharedPref {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.userId, value);
   }
-
   getAgentId() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.userId) ?? '';
@@ -133,7 +105,6 @@ class SharedPref {
     return prefs.getString(SharedPrefKeys.mob_num) ?? '';
   }
 
-
   setEmail(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.email, value);
@@ -142,6 +113,34 @@ class SharedPref {
   getEmail() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.email) ?? '';
+  }
+
+  setAgentOriginId(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.agentOriginId, value);
+  }
+
+  getAgentOriginId() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.agentOriginId) ?? '';
+  }
+  setCorpCode(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.corpCode, value);
+  }
+
+  getCorpCode() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.corpCode) ?? '';
+  }
+  setCardRefNum(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.cardRefNum, value);
+  }
+
+  getCardRefNum() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.cardRefNum) ?? '';
   }
 
 }

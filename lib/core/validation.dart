@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'general.dart';
-import 'package:provider/provider.dart';
-import 'alerts.dart';
+
 import 'constants.dart';
 
 String? validateEmail(String? email){

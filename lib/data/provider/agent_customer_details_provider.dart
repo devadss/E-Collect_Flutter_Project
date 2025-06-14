@@ -1,9 +1,7 @@
-
-import 'package:flutter/material.dart';
-
 import '../../core/general.dart';
+import '../../data/repository/agent_customer_details_repository.dart';
 import '../../domain/model/agent_customer_details_model.dart';
-import '../repository/agent_customer_details_repository.dart';
+import 'package:flutter/material.dart';
 
 class AgentCustomerDetailsProvider with ChangeNotifier{
   final AgentCustomerDetailsRepository _agentCustomerDetailsRepository;
@@ -21,7 +19,7 @@ class AgentCustomerDetailsProvider with ChangeNotifier{
         },
         (data){
           _agentCustomerDetailsModel = data;
-          printLog("---------------------CUST DATA-------------------");
+          printLog("---------------------DATA-------------------");
           printLog(data);
           notifyListeners();
         }

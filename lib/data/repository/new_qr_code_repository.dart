@@ -1,12 +1,12 @@
 import 'dart:convert';
+
+import '../../core/constants.dart';
+import '../../data/service/error_handler.dart';
+import '../../domain/interface/new_qr_code_interface.dart';
+import '../../domain/model/new_qr_code_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-
-import '../../constants.dart';
-import '../../domain/interface/new_qr_code_interface.dart';
-import '../../domain/model/new_qr_code_model.dart';
-import '../service/error_handler.dart';
 
 class NewQrCodeRepository implements INewQrCodeRepository {
   @override

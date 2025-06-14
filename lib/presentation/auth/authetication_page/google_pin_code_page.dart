@@ -1,16 +1,15 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
-import 'package:collection_qr_flutter/data/provider/auth_provider.dart';
-import 'package:collection_qr_flutter/presentation/screens/home/bottom_nav_bar_page.dart';
 import 'package:pointycastle/export.dart' as pc;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import '../../../core/build_button.dart';
 import '../../../core/colors.dart';
+import '../../../data/provider/auth_provider.dart';
 import '../../../data/service/notification_service/notification_service.dart';
+import '../../../data/storage/shared_pref_helper.dart';
+import '../../app/bottom_nav_bar_page.dart';
 import '../forgot_mpin_page.dart';
 
 class GooglePinCodePage extends StatefulWidget {
@@ -53,7 +52,6 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       fcmToken = fcmTok;
     });
     print("MPIN $mpin");
-    print("fcmTok $fcmTok");
     _authenticateWithBiometrics();
   }
 
@@ -95,17 +93,17 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
               child: Dialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
-                child: Padding(
-                  padding: const EdgeInsets.all(50),
+                child:const Padding(
+                  padding: EdgeInsets.all(50),
                   child: Column(
                     children: [
-                      const CircularProgressIndicator(color: deepTeal),
-                      const SizedBox(
+                      CircularProgressIndicator(color: home2),
+                      SizedBox(
                         height: 10,
                       ),
                       Text(
                         "Please wait....",
-                        style: GoogleFonts.inter(
+                        style: TextStyle(
                           fontSize: 17,
                         ),
                       )
@@ -128,7 +126,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
             contactNum, encryptString(pin, _sk, _iv).toString(), token);
 
         response.fold(
-          (error) {
+              (error) {
             Navigator.pop(context);
             print("Error: ${error?.message}");
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -142,19 +140,19 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
               backgroundColor: Colors.red,
             ));
           },
-          (data) {
+              (data) {
             ScaffoldMessenger.of(context).showSnackBar(
-                // SnackBar(content: Text("RESULT: ${data.message}")),
+              // SnackBar(content: Text("RESULT: ${data.message}")),
                 SnackBar(
-              content: Text(
-                "${data.message}",
-                style: GoogleFonts.inter(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 17),
-              ),
-              backgroundColor: Colors.green,
-            ));
+                  content: Text(
+                    "${data.message}",
+                    style:const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 17),
+                  ),
+                  backgroundColor: Colors.green,
+                ));
             Navigator.pop(context);
             if (data.message == "Login Successfull") {
               if (fcmToken.isNotEmpty) {
@@ -188,7 +186,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       final response = await provider.getAuthResult(contactNum, mpin, token);
 
       response.fold(
-        (error) {
+            (error) {
           Navigator.pop(context);
           print("Error: ${error?.message}");
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -202,13 +200,13 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
             backgroundColor: Colors.red,
           ));
         },
-        (data) {
+            (data) {
           Navigator.pop(context);
           print("data.message = ${data.message}");
           if (data.message == "Login Successfull") {
             if (fcmToken.isNotEmpty) {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => BottomNavScreen()));
+                  MaterialPageRoute(builder: (context) =>const BottomNavScreen()));
             } else {
               saveFcmToken(custID, context, "GPIN", token, contactNum, mpin);
             }
@@ -264,53 +262,126 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: white,
+      backgroundColor: white, // Using home2 as background
       appBar: AppBar(
-        backgroundColor: white,
+        backgroundColor: white, // Matching background
+        elevation: 0,
         centerTitle: true,
         title: Text(
-          "Enter 6 Digit M-PIN",
-          style:
-              GoogleFonts.inter(color: deepTeal, fontWeight: FontWeight.w700),
+          "Enter Your 6-Digit MPIN",
+          style: GoogleFonts.poppins(
+            color: home2, // Using home2 for text
+            fontWeight: FontWeight.w600,
+            fontSize: 20,
+          ),
+        ),
+        leading: IconButton(
+          icon:const Icon(Icons.arrow_back, color: home2),
+          onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      resizeToAvoidBottomInset: false,
-      body: Padding(
-        padding:
-            const EdgeInsets.only(left: 40, right: 40, top: 60, bottom: 10),
-        child: SingleChildScrollView(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              Column(
                 children: [
-                  // Display 6 PIN fields with smaller circles
-                  for (int i = 0; i < 6; i++) buildPinField(i),
+                  const SizedBox(height: 40),
+                  const Icon(
+                    Icons.lock_outline,
+                    size: 60,
+                    color: home2,
+                  ),
+                  const SizedBox(height: 30),
+                  Text(
+                    "Enter your secure MPIN",
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      color: home2.withOpacity(0.8),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  // PIN Display
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: List.generate(6, (index) {
+                      return AnimatedContainer(
+                        duration:const Duration(milliseconds: 200),
+                        width: 24,
+                        height: 24,
+                        margin:const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: index < pin.length ? home2 : home2.withOpacity(0.2),
+                          border: Border.all(
+                            color: home2,
+                            width: 1.5,
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
                 ],
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              buildNumberPad(),
-              const SizedBox(height: 20),
-              GestureDetector(
-                  onTap: () {
-                    validateMpin();
-                  },
-                  child: const BuildButton(buttonText: "submit")),
-              const SizedBox(height: 10),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ForgotMpinPage()));
-                },
-                child: Text(
-                  "Forgot M-PIN?",
-                  style: GoogleFonts.inter(color: const Color(0xFF4200FF)),
-                ),
+
+              // Number Pad
+              Column(
+                children: [
+                  GridView.count(
+                    physics:const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    crossAxisCount: 3,
+                    childAspectRatio: 1.5,
+                    padding: EdgeInsets.zero,
+                    children: [
+                      for (int i = 1; i <= 9; i++) _buildNumberButton(i),
+                      _buildBackButton(),
+                      _buildNumberButton(0),
+                      _buildBiometricButton(),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: validateMpin,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: home2,
+                        padding:const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(
+                        "SUBMIT",
+                        style: GoogleFonts.poppins(
+                          color: white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>const ForgotMpinPage()
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "Forgot MPIN?",
+                      style: GoogleFonts.poppins(
+                        color: home1,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -319,70 +390,193 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
     );
   }
 
-  Widget buildPinField(int index) {
-    return Container(
-      width: 22.0,
-      height: 22.0,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: index < pin.length ? Colors.black : const Color(0xFFD9D9D9),
-      ),
-    );
-  }
-
-  Widget buildNumberPad() {
-    return GridView.count(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      crossAxisCount: 3,
-      children: [
-        for (int i = 1; i <= 9; i++) buildIconButton(i),
-        TextButton(
-          onPressed: () {
-            setState(() {
-              if (pin.isNotEmpty) {
-                setState(() {
-                  pin = pin.substring(0, pin.length - 1);
-                });
-              }
-            });
-          },
-          child: const Icon(
-            Icons.arrow_back_ios,
-            color: deepTeal,
-            size: 40,
-          ),
-        ),
-        buildIconButton(0),
-      ],
-    );
-  }
-
-  Widget buildIconButton(int number) {
-    return InkWell(
-      onTap: () {
-        setState(() {
+  Widget _buildNumberButton(int number) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(45),
+        onTap: () {
           if (pin.length < 6) {
-            pin += number.toString();
+            setState(() {
+              pin += number.toString();
+            });
           }
-        });
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: deepTeal.withOpacity(0.6),
-          ),
-          child: Center(
-            child: Text(number.toString(),
-                style: GoogleFonts.inter(
-                  fontSize: 35.0,
-                  color: white,
-                )),
+        },
+        child: Center(
+          child: Text(
+            number.toString(),
+            style: GoogleFonts.poppins(
+              fontSize: 28,
+              color: home2,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
       ),
     );
   }
+
+  Widget _buildBackButton() {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(45),
+        onTap: () {
+          if (pin.isNotEmpty) {
+            setState(() {
+              pin = pin.substring(0, pin.length - 1);
+            });
+          }
+        },
+        child:const Center(
+          child: Icon(
+            Icons.backspace_outlined,
+            color: home2,
+            size: 28,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBiometricButton() {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(45),
+        onTap: _authenticateWithBiometrics,
+        child:const Center(
+          child: Icon(
+            Icons.fingerprint,
+            color: home2,
+            size: 32,
+          ),
+        ),
+      ),
+    );
+  }
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     backgroundColor: white,
+  //     appBar: AppBar(
+  //       backgroundColor: white,
+  //       centerTitle: true,
+  //       title: Text(
+  //         "Enter 6 Digit M-PIN",
+  //         style:
+  //         TextStyle(color: deepTeal, fontWeight: FontWeight.w700),
+  //       ),
+  //     ),
+  //     resizeToAvoidBottomInset: false,
+  //     body: Padding(
+  //       padding:
+  //       const EdgeInsets.only(left: 40, right: 40, top: 60, bottom: 10),
+  //       child: SingleChildScrollView(
+  //         child: Column(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: [
+  //             Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //               children: [
+  //                 // Display 6 PIN fields with smaller circles
+  //                 for (int i = 0; i < 6; i++) buildPinField(i),
+  //               ],
+  //             ),
+  //             const SizedBox(
+  //               height: 20,
+  //             ),
+  //             buildNumberPad(),
+  //             const SizedBox(height: 20),
+  //             GestureDetector(
+  //                 onTap: () {
+  //                   validateMpin();
+  //                 },
+  //                 child: const BuildButton(buttonText: "submit")),
+  //             const SizedBox(height: 10),
+  //             TextButton(
+  //               onPressed: () {
+  //                 Navigator.push(
+  //                     context,
+  //                     MaterialPageRoute(
+  //                         builder: (context) => ForgotMpinPage()));
+  //               },
+  //               child: Text(
+  //                 "Forgot M-PIN?",
+  //                 style: TextStyle(color: const Color(0xFF4200FF)),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+  //
+  // Widget buildPinField(int index) {
+  //   return Container(
+  //     width: 22.0,
+  //     height: 22.0,
+  //     decoration: BoxDecoration(
+  //       shape: BoxShape.circle,
+  //       color: index < pin.length ? Colors.black : const Color(0xFFD9D9D9),
+  //     ),
+  //   );
+  // }
+  //
+  // Widget buildNumberPad() {
+  //   return GridView.count(
+  //     physics: const NeverScrollableScrollPhysics(),
+  //     shrinkWrap: true,
+  //     crossAxisCount: 3,
+  //     children: [
+  //       for (int i = 1; i <= 9; i++) buildIconButton(i),
+  //       TextButton(
+  //         onPressed: () {
+  //           setState(() {
+  //             if (pin.isNotEmpty) {
+  //               setState(() {
+  //                 pin = pin.substring(0, pin.length - 1);
+  //               });
+  //             }
+  //           });
+  //         },
+  //         child: const Icon(
+  //           Icons.arrow_back_ios,
+  //           color: deepTeal,
+  //           size: 40,
+  //         ),
+  //       ),
+  //       buildIconButton(0),
+  //     ],
+  //   );
+  // }
+  //
+  // Widget buildIconButton(int number) {
+  //   return InkWell(
+  //     onTap: () {
+  //       setState(() {
+  //         if (pin.length < 6) {
+  //           pin += number.toString();
+  //         }
+  //       });
+  //     },
+  //     child: Padding(
+  //       padding: const EdgeInsets.all(8.0),
+  //       child: Container(
+  //         decoration: BoxDecoration(
+  //           borderRadius: BorderRadius.circular(20),
+  //           color: deepTeal.withOpacity(0.6),
+  //         ),
+  //         child: Center(
+  //           child: Text(number.toString(),
+  //               style: TextStyle(
+  //                 fontSize: 35.0,
+  //                 color: white,
+  //               )),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 }
+

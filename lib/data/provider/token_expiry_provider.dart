@@ -1,7 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:collection_qr_flutter/data/repository/token%20_repository.dart';
-import 'package:collection_qr_flutter/domain/model/token_expiry_mode.dart';
+
+import '../../domain/model/token_expiry_mode.dart';
+import '../repository/token _repository.dart';
+
 
 class TokenExpiryProvider with ChangeNotifier{
   final TokenExpiryRepository  _tokenExpiryRepository;

@@ -31,11 +31,12 @@ class AgentPaymentTransctionModel {
 class AgentTransaction {
   num? id;
   String? orderId;
-  String? linkStatus; // Changed from Status? to String?
+  Status? linkStatus;
   LinkCurrency? linkCurrency;
   num? linkAmount;
   LinkPurpose? linkPurpose;
   DateTime? linkCreatedAt;
+  //CustomerName? customerName;
   String? customerName;
   String? customerId;
   String? customerPhone;
@@ -84,13 +85,13 @@ class AgentTransaction {
   factory AgentTransaction.fromJson(Map<String, dynamic> json) => AgentTransaction(
     id: json["Id"],
     orderId: json["Order_id"],
-    linkStatus: json["link_status"], // Directly assign String
+    linkStatus: statusValues.map[json["link_status"]],
     linkCurrency: linkCurrencyValues.map[json["link_currency"]],
     linkAmount: json["link_amount"],
     linkPurpose: linkPurposeValues.map[json["link_purpose"]],
     linkCreatedAt: json["link_created_at"] == null ? null : DateTime.parse(json["link_created_at"]),
-    // customerName: customerNameValues.map[json["customer_name"]],
     customerName: json["customer_name"], // Directly assign String
+    //customerName: customerNameValues.map[json["customer_name"]],
     customerId: json["customer_Id"],
     customerPhone: json["customer_phone"],
     customerAcctno: json["customer_acctno"],
@@ -112,13 +113,13 @@ class AgentTransaction {
   Map<String, dynamic> toJson() => {
     "Id": id,
     "Order_id": orderId,
-    "link_status": linkStatus, // Store as String
+    "link_status": statusValues.reverse[linkStatus],
     "link_currency": linkCurrencyValues.reverse[linkCurrency],
     "link_amount": linkAmount,
     "link_purpose": linkPurposeValues.reverse[linkPurpose],
     "link_created_at": linkCreatedAt?.toIso8601String(),
     "customer_name": customerName, // Directly store String
-    // "customer_name": customerNameValues.reverse[customerName],
+    //"customer_name": customerNameValues.reverse[customerName],
     "customer_Id": customerId,
     "customer_phone": customerPhone,
     "customer_acctno": customerAcctno,
@@ -215,8 +216,7 @@ final linkPurposeValues = EnumValues({
 });
 
 enum Status {
-  INITIATED,
-  Initiated
+  INITIATED
 }
 
 final statusValues = EnumValues({

@@ -1,10 +1,9 @@
 import 'dart:convert';
-
-import 'package:collection_qr_flutter/data/service/error_handler.dart';
-import 'package:collection_qr_flutter/domain/interface/cash_deposit_interface.dart';
-import 'package:collection_qr_flutter/domain/model/cash_deposit_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
+import '../../domain/interface/cash_deposit_interface.dart';
+import '../../domain/model/cash_deposit_model.dart';
+import '../service/error_handler.dart';
 
 class CashDepositRepository implements CashDepositInterface {
   @override
@@ -37,3 +36,4 @@ class CashDepositRepository implements CashDepositInterface {
     }
   }
 }
+

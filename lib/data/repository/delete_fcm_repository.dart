@@ -1,9 +1,8 @@
 import 'dart:convert';
-
-import 'package:collection_qr_flutter/constants.dart';
-import 'package:collection_qr_flutter/domain/interface/delete_fcm_interface.dart';
 import 'package:dartz/dartz.dart';
 import "package:http/http.dart" as http;
+import '../../domain/interface/delete_fcm_interface.dart';
+import '../../widgets/constants.dart';
 
 class DeleteFcmTokenRepository extends DeleteFcmTokenInterface {
   @override
@@ -25,9 +24,50 @@ class DeleteFcmTokenRepository extends DeleteFcmTokenInterface {
       }else{
         return Left(request.body);
       }
-    } catch (e) {
-
-    }
+    } catch (e) {}
     throw UnimplementedError();
   }
 }
+
+// import 'dart:convert';
+//
+// import '../../data/service/error_handler.dart';
+// import '../../domain/interface/delete_fcm_interface.dart';
+// import '../../domain/model/default_model.dart';
+// import 'package:dartz/dartz.dart';
+// import 'package:http/http.dart' as http;
+// import 'package:internet_connection_checker/internet_connection_checker.dart';
+//
+// import '../../core/constants.dart';
+//
+// class DeleteFcmTokenRepository implements DeleteFcmTokenInterface {
+//   @override
+//   Future<Either<ErrorHandler, DefaultModel>> deleteFcmToken(
+//     String entityID,
+//     String token,
+//   ) async {
+//     final url = Uri.parse("${baseUrl}api/DeleteToken");
+//     bool checkConnection = await InternetConnectionChecker().hasConnection;
+//     if (checkConnection) {
+//       final response = await http.post(
+//         url,
+//         body: json.encode({"EntityId": entityID}),
+//         headers: {
+//           'Content-Type': 'application/json',
+//           'Authorization': 'Bearer $token',
+//         },
+//       );
+//       if(response.statusCode == 200 || response.statusCode == 201){
+//         try{
+//           return Right(DefaultModel.fromJson(jsonDecode(response.body)));
+//         }catch(e){
+//           return Left(DataParsingException(e));
+//         }
+//       }else{
+//         return Left(FetchDataError("Failed TO Fetch Data"));
+//       }
+//     } else {
+//       return Left(FetchDataError("No Internet Connection"));
+//     }
+//   }
+// }

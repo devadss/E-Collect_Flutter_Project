@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/services.dart';
 import 'package:pointycastle/export.dart' as pc;
 import 'package:flutter/material.dart';
@@ -7,10 +6,10 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/general.dart';
 import '../../data/storage/shared_pref_helper.dart';
 import '../../../data/repository/cust_reg_repository.dart';
-import '../../core/build_button.dart';
 import '../../core/colors.dart';
 import '../../data/repository/update_dop_repository.dart';
 import '../../data/repository/update_password_repository.dart';
+import '../../widgets/build_button.dart';
 import 'mobile_number_password_page.dart';
 
 class ForgotUsernamePasswordPage extends StatefulWidget {
@@ -24,6 +23,7 @@ class ForgotUsernamePasswordPage extends StatefulWidget {
 
 class _ForgotUsernamePasswordPageState
     extends State<ForgotUsernamePasswordPage> {
+  String? token;
   String? encryptString(
       String textToEncrypt, String? secretKey, String? initialVector) {
     if (textToEncrypt.isEmpty || secretKey == null || initialVector == null) {
@@ -60,13 +60,12 @@ class _ForgotUsernamePasswordPageState
 
   final String sk = "770A8A65DA156D24EE2A093277530142";
   final String iv = "1234567890123456";
-  String token = "";
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _reenterPasswordController = TextEditingController();
   String? encryptPassword;
   //String? userName;
- // String? phoneNumber;
+  // String? phoneNumber;
 
   Future<void> loadSharedPrefs() async {
     final name = await SharedPref.shared.getAgentName();
@@ -78,26 +77,28 @@ class _ForgotUsernamePasswordPageState
     // Trigger rebuild after fetching the userName
     if (mounted) {
       setState(() {
-     token = tok;
+        token = tok ;
+        // userName = name;
+        // phoneNumber = phone;
       });
     }
   }
 
-  void showInSnackBar(String value) {
-    var snackBar = SnackBar(
-      content: Text(
-        value,
-        style: GoogleFonts.inter(
-            color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
-      ),
-      backgroundColor: Colors.red,
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
+  // void showInSnackBar(String value) {
+  //   var snackBar = SnackBar(
+  //     content: Text(
+  //       value,
+  //       style: TextStyle(
+  //           color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
+  //     ),
+  //     backgroundColor: Colors.red,
+  //   );
+  //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  // }
 
   Future<void> resetCredentials(String encrypted) async {
     final result = await UpdatePasswordRepository()
-        .updatePassword(_nameController.text.toString(), encrypted, encrypted, widget.mobNum, token);
+        .updatePassword(_nameController.text.toString(), encrypted, encrypted, widget.mobNum,token!);
     result.fold((error) {
       printLog("------------------ERROR----------------");
       printLog(error);
@@ -113,7 +114,7 @@ class _ForgotUsernamePasswordPageState
   Future<void> checkIfRegistered(
       String userNameValue, String passwordValue) async {
     final checkIfReg =
-        await CustRegRepository().checkRegCust(int.parse(widget.mobNum));
+    await CustRegRepository().checkRegCust(int.parse(widget.mobNum));
     checkIfReg.fold((error) {
       printLog("--------------------ERROR_----------------------");
       printLog(error);
@@ -121,9 +122,10 @@ class _ForgotUsernamePasswordPageState
       updateDopUserCredentials(
           userNameValue,
           passwordValue,
-         // custData.response!.data!.custId.toString(),
+          // custData.response!.data!.custId.toString(),
           custData.response!.data!["custId"].toString(),
-          custData.status.toString());
+          custData.status.toString()
+      );
     });
   }
 
@@ -131,9 +133,9 @@ class _ForgotUsernamePasswordPageState
       String passwordValue, String entityID, String tokenStatus) async {
     print('updateDopUserCredentials');
     final updateDop = await UpdateDopRepository()
-        .getUpdateDop(entityID, userNameValue, passwordValue);
+        .getUpdateDop(entityID, userNameValue, passwordValue,token!);
     updateDop.fold((error) {
-    //  EasyLoading.dismiss();
+      //  EasyLoading.dismiss();
       printLog("---------------------ERROR_-----------------------");
       printLog(error);
     }, (data) {
@@ -141,146 +143,325 @@ class _ForgotUsernamePasswordPageState
           context,
           MaterialPageRoute(
               builder: (context) => LoginPage(
-                    mobNum: widget.mobNum,
-                    tokenStatus: tokenStatus,
-                  )));
+                mobNum: widget.mobNum,
+                tokenStatus: tokenStatus,
+              )));
     });
   }
 
   @override
+  void initState() {
+   loadSharedPrefs();
+    super.initState();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: white, // Using home2 as background
       appBar: AppBar(
-        backgroundColor: white,
+        backgroundColor: white, // Matching background
+        elevation: 0,
         centerTitle: true,
         title: Text(
           "Reset Credentials",
-          style: GoogleFonts.inter(
-              fontWeight: FontWeight.w700, fontSize: 23, color: deepTeal),
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            fontSize: 22,
+            color: home1, // Using home1 for text color
+          ),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: home1), // Using home1 for icon
+          onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      backgroundColor: white,
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 50),
-            Center(
-              child: Image.asset("assets/images/reset-password.png", scale: 3),
-            ),
-            const SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                      labelText: 'Username',
-                      labelStyle: GoogleFonts.inter(color: deepTeal),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: deepTeal, width: 2),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: deepTeal, width: 1),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    inputFormatters: <TextInputFormatter>[
-                      LengthLimitingTextInputFormatter(8)
-                    ],
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      labelStyle: GoogleFonts.inter(color: deepTeal),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: deepTeal, width: 2),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: deepTeal, width: 1),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: _reenterPasswordController,
-                    obscureText: true,
-                    inputFormatters: <TextInputFormatter>[
-                      LengthLimitingTextInputFormatter(8)
-                    ],
-                    decoration: InputDecoration(
-                      labelText: 'Confirm Password',
-                      labelStyle: GoogleFonts.inter(color: deepTeal),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: deepTeal, width: 2),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: deepTeal, width: 1),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  GestureDetector(
-                    onTap: () {
-                      // if(_nameController.text.isEmpty ||
-                      //     _passwordController.text.isEmpty||
-                      //     _reenterPasswordController.text.isEmpty){
-                      //   showInSnackBar("EMPTY FIELDS NOT ALLOWED");
-                      // }
-                      if (_passwordController.text.length >= 8 &&
-                          _reenterPasswordController.text.length >= 8) {
-                        if (_passwordController.text ==
-                            _reenterPasswordController.text) {
-                          print("BOTH ARE SAME");
-                          var ep =
-                              encryptString(_passwordController.text, sk, iv);
-                          print('ep = $ep');
-                          if (ep != null) {
-                            print('ep not null');
-                            encryptPassword = ep;
-                            resetCredentials(encryptPassword!);
-                          } else {
-                            print('ep null');
-                          }
-                        } else {
-                          showInSnackBar("Password do not match");
-                         // EasyLoading.showToast('Password do not match');
-                        }
-                      }
-                      else {
-                        print(
-                            "_passwordController.text.length = ${_passwordController.text.length}");
-                        print(
-                            "_passwordController.text.length = ${_passwordController.text}");
-                        print(
-                            "_reenterPasswordController.text.length = ${_reenterPasswordController.text.length}");
-                        print(
-                            "_reenterPasswordController.text.length = ${_reenterPasswordController.text}");
-                        // EasyLoading.showToast(
-                        //     'Password length must be of 8 characters',
-                        //     toastPosition: EasyLoadingToastPosition.bottom);
-                        showInSnackBar("PPassword length must be of 8 characters");
-                      }
-
-
-                    },
-                    child: const BuildButton(buttonText: "Confirm"),
-                  ),
-                ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Column(
+            children: [
+              const SizedBox(height: 30),
+              Hero(
+                tag: 'reset-password',
+                child: Image.asset(
+                  "assets/images/reset-password.png",
+                  height: 180,
+                  color: home1.withOpacity(0.8), // Tinting image with home1
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 30),
+              Text(
+                "Create New Credentials",
+                style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: home1, // Using home1 for heading
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                "Please enter your new username and password",
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: home1.withOpacity(0.7), // Semi-transparent home1
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 30),
+              _buildTextField(
+                controller: _nameController,
+                label: "Username",
+                icon: Icons.person_outline,
+              ),
+              const SizedBox(height: 20),
+              _buildTextField(
+                controller: _passwordController,
+                label: "Password",
+                icon: Icons.lock_outline,
+                isPassword: true,
+              ),
+              const SizedBox(height: 20),
+              _buildTextField(
+                controller: _reenterPasswordController,
+                label: "Confirm Password",
+                icon: Icons.lock_outline,
+                isPassword: true,
+              ),
+              const SizedBox(height: 30),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: _handleResetCredentials,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: home1, // Using home1 for button
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 3,
+                    shadowColor: home1.withOpacity(0.3), // Home1 with opacity
+                  ),
+                  child: Text(
+                    "Confirm",
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: home2, // Using home2 for button text (contrast)
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );
   }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    bool isPassword = false,
+  }) {
+    return TextField(
+      controller: controller,
+      obscureText: isPassword,
+      inputFormatters: isPassword
+          ? [LengthLimitingTextInputFormatter(8)]
+          : null,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: GoogleFonts.poppins(color: home1.withOpacity(0.6)),
+        prefixIcon: Icon(icon, color: home1),
+        filled: true,
+        fillColor: white, // Slightly lighter than background
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: home1.withOpacity(0.3)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: home1!, width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(vertical: 16),
+      ),
+      style: GoogleFonts.poppins(color: home1),
+    );
+  }
+
+  void _handleResetCredentials() {
+    if (_passwordController.text.length >= 8 &&
+        _reenterPasswordController.text.length >= 8) {
+      if (_passwordController.text == _reenterPasswordController.text) {
+        var ep = encryptString(_passwordController.text, sk, iv);
+        if (ep != null) {
+          encryptPassword = ep;
+          resetCredentials(encryptPassword!);
+        }
+      } else {
+        showInSnackBar("Passwords do not match");
+      }
+    } else {
+      showInSnackBar("Password must be 8 characters long");
+    }
+  }
+
+  void showInSnackBar(String value) {
+    var snackBar = SnackBar(
+      content: Text(
+        value,
+        style: GoogleFonts.poppins(
+          color: home2, // Using home2 for text
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+        ),
+      ),
+      backgroundColor: home1, // Using home1 for background
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      margin: EdgeInsets.all(20),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     appBar: AppBar(
+  //       backgroundColor: white,
+  //       centerTitle: true,
+  //       title: Text(
+  //         "Reset Credentials",
+  //         style: TextStyle(
+  //             fontWeight: FontWeight.w700, fontSize: 23, color: deepTeal),
+  //       ),
+  //     ),
+  //     backgroundColor: white,
+  //     body: SingleChildScrollView(
+  //       child: Column(
+  //         children: [
+  //           const SizedBox(height: 50),
+  //           Center(
+  //             child: Image.asset("assets/images/reset-password.png", scale: 3),
+  //           ),
+  //           const SizedBox(height: 30),
+  //           Padding(
+  //             padding: const EdgeInsets.symmetric(horizontal: 20),
+  //             child: Column(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 TextField(
+  //                   controller: _nameController,
+  //                   decoration: InputDecoration(
+  //                     labelText: 'Username',
+  //                     labelStyle: TextStyle(color: deepTeal),
+  //                     focusedBorder: OutlineInputBorder(
+  //                       borderRadius: BorderRadius.circular(10),
+  //                       borderSide: const BorderSide(color: deepTeal, width: 2),
+  //                     ),
+  //                     enabledBorder: OutlineInputBorder(
+  //                       borderRadius: BorderRadius.circular(10),
+  //                       borderSide: const BorderSide(color: deepTeal, width: 1),
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 const SizedBox(height: 10),
+  //                 TextField(
+  //                   controller: _passwordController,
+  //                   obscureText: true,
+  //                   inputFormatters: <TextInputFormatter>[
+  //                     LengthLimitingTextInputFormatter(8)
+  //                   ],
+  //                   decoration: InputDecoration(
+  //                     labelText: 'Password',
+  //                     labelStyle: TextStyle(color: deepTeal),
+  //                     focusedBorder: OutlineInputBorder(
+  //                       borderRadius: BorderRadius.circular(10),
+  //                       borderSide: const BorderSide(color: deepTeal, width: 2),
+  //                     ),
+  //                     enabledBorder: OutlineInputBorder(
+  //                       borderRadius: BorderRadius.circular(10),
+  //                       borderSide: const BorderSide(color: deepTeal, width: 1),
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 const SizedBox(height: 10),
+  //                 TextField(
+  //                   controller: _reenterPasswordController,
+  //                   obscureText: true,
+  //                   inputFormatters: <TextInputFormatter>[
+  //                     LengthLimitingTextInputFormatter(8)
+  //                   ],
+  //                   decoration: InputDecoration(
+  //                     labelText: 'Confirm Password',
+  //                     labelStyle: TextStyle(color: deepTeal),
+  //                     focusedBorder: OutlineInputBorder(
+  //                       borderRadius: BorderRadius.circular(10),
+  //                       borderSide: const BorderSide(color: deepTeal, width: 2),
+  //                     ),
+  //                     enabledBorder: OutlineInputBorder(
+  //                       borderRadius: BorderRadius.circular(10),
+  //                       borderSide: const BorderSide(color: deepTeal, width: 1),
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 const SizedBox(height: 40),
+  //                 GestureDetector(
+  //                   onTap: () {
+  //                     // if(_nameController.text.isEmpty ||
+  //                     //     _passwordController.text.isEmpty||
+  //                     //     _reenterPasswordController.text.isEmpty){
+  //                     //   showInSnackBar("EMPTY FIELDS NOT ALLOWED");
+  //                     // }
+  //                     if (_passwordController.text.length >= 8 &&
+  //                         _reenterPasswordController.text.length >= 8) {
+  //                       if (_passwordController.text ==
+  //                           _reenterPasswordController.text) {
+  //                         print("BOTH ARE SAME");
+  //                         var ep =
+  //                         encryptString(_passwordController.text, sk, iv);
+  //                         print('ep = $ep');
+  //                         if (ep != null) {
+  //                           print('ep not null');
+  //                           encryptPassword = ep;
+  //                           resetCredentials(encryptPassword!);
+  //                         } else {
+  //                           print('ep null');
+  //                         }
+  //                       } else {
+  //                         showInSnackBar("Password do not match");
+  //                         // EasyLoading.showToast('Password do not match');
+  //                       }
+  //                     }
+  //                     else {
+  //                       print(
+  //                           "_passwordController.text.length = ${_passwordController.text.length}");
+  //                       print(
+  //                           "_passwordController.text.length = ${_passwordController.text}");
+  //                       print(
+  //                           "_reenterPasswordController.text.length = ${_reenterPasswordController.text.length}");
+  //                       print(
+  //                           "_reenterPasswordController.text.length = ${_reenterPasswordController.text}");
+  //                       // EasyLoading.showToast(
+  //                       //     'Password length must be of 8 characters',
+  //                       //     toastPosition: EasyLoadingToastPosition.bottom);
+  //                       showInSnackBar("PPassword length must be of 8 characters");
+  //                     }
+  //
+  //
+  //                   },
+  //                   child: const BuildButton(buttonText: "Confirm"),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 }

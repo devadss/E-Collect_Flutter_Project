@@ -9,17 +9,17 @@ TokenExpireModel tokenExpireModelFromJson(String str) => TokenExpireModel.fromJs
 String tokenExpireModelToJson(TokenExpireModel data) => json.encode(data.toJson());
 
 class TokenExpireModel {
-  bool? isExpired;
+bool? isExpired;
 
-  TokenExpireModel({
-    this.isExpired,
-  });
+TokenExpireModel({
+this.isExpired,
+});
 
-  factory TokenExpireModel.fromJson(Map<String, dynamic> json) => TokenExpireModel(
-    isExpired: json["isExpired"],
-  );
+factory TokenExpireModel.fromJson(Map<String, dynamic> json) => TokenExpireModel(
+isExpired: json["isExpired"],
+);
 
-  Map<String, dynamic> toJson() => {
-    "isExpired": isExpired,
-  };
+Map<String, dynamic> toJson() => {
+"isExpired": isExpired,
+};
 }

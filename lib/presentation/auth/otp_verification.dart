@@ -1,14 +1,11 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:collection_qr_flutter/data/provider/otp_request_provider.dart';
-import 'package:collection_qr_flutter/data/provider/otp_verification_provider.dart';
 import 'package:provider/provider.dart';
-
-import '../../core/build_button.dart';
 import '../../core/colors.dart';
 import '../../core/general.dart';
+import '../../data/provider/otp_request_provider.dart';
+import '../../data/provider/otp_verification_provider.dart';
+import '../../widgets/build_button.dart';
 import 'mpin_page/set_mpin_page.dart';
 
 class OtpVerification extends StatefulWidget {
@@ -23,7 +20,7 @@ class OtpVerification extends StatefulWidget {
 
 class _OtpVerificationState extends State<OtpVerification> {
   final List<TextEditingController> _controllers =
-      List.generate(4, (_) => TextEditingController());
+  List.generate(4, (_) => TextEditingController());
   var otpValue = '';
   Timer? _timer;
   bool _canPop = false;
@@ -46,17 +43,17 @@ class _OtpVerificationState extends State<OtpVerification> {
               child: Dialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
-                child: Padding(
-                  padding: const EdgeInsets.all(50),
+                child: const Padding(
+                  padding: EdgeInsets.all(50),
                   child: Column(
                     children: [
-                      const CircularProgressIndicator(color: deepTeal),
-                      const SizedBox(
+                      CircularProgressIndicator(color: home2),
+                      SizedBox(
                         height: 10,
                       ),
                       Text(
                         "Please wait....",
-                        style: GoogleFonts.inter(
+                        style: TextStyle(
                           fontSize: 17,
                         ),
                       )
@@ -87,7 +84,7 @@ class _OtpVerificationState extends State<OtpVerification> {
                   content: Text(
                     "Error: ${error.message}",
                     style:
-                    GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
+                    const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
                   ),
                   backgroundColor: Colors.red,
                 )            );
@@ -103,22 +100,22 @@ class _OtpVerificationState extends State<OtpVerification> {
         );
       }else{
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text(
                 "ENTER 4 DIGIT NUMBER",
                 style:
-                GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
+                TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
               ),
               backgroundColor: Colors.red,
             )        );
       }
     }else{
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text(
               "ENTER OTP",
               style:
-              GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
+              TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
             ),
             backgroundColor: Colors.red,
           )      );
@@ -128,25 +125,25 @@ class _OtpVerificationState extends State<OtpVerification> {
 
 
   Future<void> otpRequest() async {
-   // showProgressDialog(context);
+    // showProgressDialog(context);
     final provider = Provider.of<OtpRequestProvider>(context , listen: false);
     final data = await provider.requestOtp(widget.mobNum);
     data.fold(
           (error) {
-       // Navigator.pop(context);
+        // Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                "Error: ${error}",
+                "Error: $error",
                 style:
-                GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
+                const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
               ),
               backgroundColor: Colors.red,
             )        );
       },
           (data) {
-            //Navigator.pop(context);
-       print("Otp request stst : ${data.message.toString()}");
+        //Navigator.pop(context);
+        print("Otp request stst : ${data.message.toString()}");
       },
     );
 
@@ -166,7 +163,7 @@ class _OtpVerificationState extends State<OtpVerification> {
     const oneSec = Duration(seconds: 1);
     _timer = Timer.periodic(
       oneSec,
-      (Timer timer) {
+          (Timer timer) {
         if (_start == 0) {
           setState(() {
             _updateCanPop(true);
@@ -207,20 +204,20 @@ class _OtpVerificationState extends State<OtpVerification> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'OTP Verification',
-                    style: GoogleFonts.inter(
+                    style: TextStyle(
                       color: black,
                       fontSize: 30.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 2),
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
+                  const Padding(
+                    padding: EdgeInsets.all(4.0),
                     child: Text(
                       'Enter the 4 digit OTP sent to your mobile number',
-                      style: GoogleFonts.inter(
+                      style: TextStyle(
                         color: black,
                         fontSize: 12.0,
                       ),
@@ -231,7 +228,7 @@ class _OtpVerificationState extends State<OtpVerification> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: List.generate(
                       4,
-                      (index) => SizedBox(
+                          (index) => SizedBox(
                         width: 60,
                         height: 60,
                         child: TextField(
@@ -263,10 +260,10 @@ class _OtpVerificationState extends State<OtpVerification> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Center(
+                        const Center(
                           child: Text(
                             "Haven’t got the confirmation code yet?",
-                            style: GoogleFonts.inter(color: grey),
+                            style: TextStyle(color: grey),
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -284,7 +281,7 @@ class _OtpVerificationState extends State<OtpVerification> {
                                 _start == 0
                                     ? 'Resend OTP'
                                     : "Resend Otp in $_start",
-                                style: GoogleFonts.inter(color: blueAccent),
+                                style:const TextStyle(color: blueAccent),
                               ),
                             )),
                       ],

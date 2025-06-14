@@ -1,8 +1,6 @@
-
-import 'package:flutter/material.dart';
-
+import '../../data/repository/due_under_agent_repository.dart';
 import '../../domain/model/due_under_agent_model.dart';
-import '../repository/due_under_agent_repository.dart';
+import 'package:flutter/material.dart';
 
 class DueUnderAgentProvider with ChangeNotifier{
   final DueUnderAgentRepository _dueUnderAgentRepository;

@@ -32,7 +32,7 @@ class DuesList {
   });
 
   factory DuesList.fromJson(Map<String, dynamic> json) => DuesList(
-    data: json["data"] == null ? [] : List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+    data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {

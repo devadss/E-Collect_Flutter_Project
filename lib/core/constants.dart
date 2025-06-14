@@ -5,7 +5,6 @@ const String apiUrl = "https://adsspayweb.digicob.in:8444/";
 const String apiUrlTwo = "https://adsspayweb.digicob.in:8444/";
 const String s3Url = "https://cdn.adsspayweb.digicob.in/";
 //const String baseUrl = "https://adsspay.aanvinsolutions.com:8444/";///LIVE
-//const String baseUrl = "https://adsspay.aanvinsolutions.com:8444/";///LIVE
 const String corpBaseUrl = "https://mydop.in/";///LIVE
 const String baseUrl = "https://adsspayweb.digicob.in/"; //TEST
 const String baseUrlTwo = "https://api.adsspay.digicob.in";
@@ -36,8 +35,7 @@ const String kOtpNullError = "Enter the otp";
 const String baseURL = apiUrl;
 //const String imageBaseURL = s3Url;
 
-const home1 = Color(0xFFEA307B);
-const home2 = Color(0xFF470952);
+
 class NotificationChannels {
   static const String getCartNonDeliverable = "GET_CART_NON_DELIVERABLE";
   static const String login = "LOGIN";
@@ -69,8 +67,6 @@ class SharedPrefKeys {
   static const String fcm_token = "FCM_TOKEN";
   static const String phoneNumber = "PHONE_NUMBER";
   static const String corpCode = "CORP_CODE";
-  static const String agentOriginId = "AGENT_ORIGIN_ID";
-  static const String cardRefNum = "CARD_REF_NUM";
   static const String email = "EMAIL_ID";
   static const String mpin = "MPIN";
   static const String mpin_value = "MPIN_VALUE";
@@ -101,5 +97,10 @@ class SharedPrefKeys {
   static const String notificationValue = "NOTIFICATION_VALUE";
   static const String quickaction = "QUICK_ACTION";
   static const String cardNumber = "CARD_NUMBER";
+  static const String businessId = "BUSINNESS_ID";
+  static const String businessCategoryId = "CATEGORY_ID";
+  static const String categoryId = "CATEGORY_ID";
+  static const String agentOriginId = "AGENT_ORIGIN_ID";
+  static const String cardRefNum = "CARD_REF_NUM";
 }
 

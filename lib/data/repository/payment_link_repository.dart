@@ -1,12 +1,12 @@
 import 'dart:convert';
+import '../../core/general.dart';
+import '../../data/service/error_handler.dart';
+import '../../domain/interface/payment_link_interface.dart';
+import '../../domain/model/payment_link_model.dart';
+import '../../widgets/constants.dart';
 import 'package:dartz/dartz.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:http/http.dart' as http;
-
-import '../../constants.dart';
-import '../../domain/interface/payment_link_interface.dart';
-import '../../domain/model/payment_link_model.dart';
-import '../service/error_handler.dart';
 
 class PaymentLinkRepository implements IPaymentLinkRepository {
   @override
@@ -24,8 +24,7 @@ class PaymentLinkRepository implements IPaymentLinkRepository {
       num linkAmount,
       String note,
       String corpCode,
-      String cardRefNum,
-      String token) async {
+      String cardRefNum,String token) async {
     final url = Uri.parse("${baseUrl}api/Cashfree/CreatePaymentLink");
 
     final Map<String, dynamic> body = {
@@ -58,14 +57,18 @@ class PaymentLinkRepository implements IPaymentLinkRepository {
       final response = await http.post(
         url,
         headers: {
+          'Authorization': 'Bearer $token', // Add token here
           "Content-Type": "application/json",
           "Accept": "application/json",
-          'Authorization': 'Bearer $token',
         },
         body: jsonEncode(body), // Convert Map to JSON String
       );
-print("body = $body");
+
       if (response.statusCode == 200 || response.statusCode == 201) {
+        printLog("---------------------body----------------------");
+        printLog(response.body);
+        printLog("-----------------------BODY-----------------------");
+        printLog(body);
         return Right(PaymentLinkModel.fromJson(jsonDecode(response.body)));
       } else {
         return Left(FetchDataError("Failed to fetch data: ${response.statusCode}"));

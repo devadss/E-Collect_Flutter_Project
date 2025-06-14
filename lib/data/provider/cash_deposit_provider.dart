@@ -1,8 +1,8 @@
-import 'package:collection_qr_flutter/data/repository/cash_deposit_repository.dart';
-import 'package:collection_qr_flutter/data/service/error_handler.dart';
-import 'package:collection_qr_flutter/domain/model/cash_deposit_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
+import '../../domain/model/cash_deposit_model.dart';
+import '../repository/cash_deposit_repository.dart';
+import '../service/error_handler.dart';
 
 class CashDepositProvider with ChangeNotifier {
 

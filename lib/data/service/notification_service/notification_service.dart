@@ -7,46 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:collection_qr_flutter/presentation/auth/authetication_page/google_pin_code_page.dart';
 import '../../../core/constants.dart';
 import '../../storage/shared_pref_helper.dart';
-/*
-Future<void> _authenticateWithBiometrics(BuildContext context) async {
-  final LocalAuthentication auth = LocalAuthentication();
+import '../../../presentation/auth/authetication_page/google_pin_code_page.dart';
 
-  bool authenticated = false;
-  try {
-    authenticated = await auth.authenticate(
-      localizedReason: 'Please authenticate to proceed',
-      options: const AuthenticationOptions(
-        biometricOnly: false,
-      ),
-    );
-  } on PlatformException catch (e) {
-    print('PlatformException: $e');
-    EasyLoading.showToast('Biometric/PIN authentication is not available');
-    return;
-  } on Exception catch (e) {
-    print('Exception during authentication: $e');
-    EasyLoading.showToast('Authentication error');
-    return;
-  }
-
-  if (!authenticated) {
-    // Instead of popping the current screen, show a toast message
-    EasyLoading.dismiss();
-    EasyLoading.showToast('Authentication canceled');
-  } else {
-    EasyLoading.dismiss();
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const BottomNavScreen(),
-      ),
-    );
-  }
-}
-*/
 class NotificationService {
   static final FirebaseMessaging _firebaseMessaging =
       FirebaseMessaging.instance;
@@ -164,13 +128,65 @@ class NotificationService {
       if (navPage == 'GPIN') {
         Navigator.push(context, MaterialPageRoute(builder: (context)=>
         GooglePinCodePage()));
-
+/*        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => GooglePayPinCodeField(
+              mpinValue: mpin,
+              mobNum: mobnum,
+              entityIdValue: entityID,
+              tok: appToken,
+              redirectRoutePage: 'LOGIN',
+              amount: '',
+              extTxnId: '',
+              categoryName: '',
+              billerName: '',
+            ),
+          ),
+        );*/
+        //   _authenticateWithBiometrics(context);
       }
     }
   }
 }
 bool _isRequestingPermission = false;
+/*
+Future<void> _authenticateWithBiometrics(BuildContext context) async {
+  final LocalAuthentication auth = LocalAuthentication();
 
+  bool authenticated = false;
+  try {
+    authenticated = await auth.authenticate(
+      localizedReason: 'Please authenticate to proceed',
+      options: const AuthenticationOptions(
+        biometricOnly: false,
+      ),
+    );
+  } on PlatformException catch (e) {
+    print('PlatformException: $e');
+    EasyLoading.showToast('Biometric/PIN authentication is not available');
+    return;
+  } on Exception catch (e) {
+    print('Exception during authentication: $e');
+    EasyLoading.showToast('Authentication error');
+    return;
+  }
+
+  if (!authenticated) {
+    // Instead of popping the current screen, show a toast message
+    EasyLoading.dismiss();
+    EasyLoading.showToast('Authentication canceled');
+  } else {
+    EasyLoading.dismiss();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const BottomNavScreen(),
+      ),
+    );
+  }
+}
+*/
 
 
 Future<String?> fetchFcmTokenWithRetries({int maxRetries = 3}) async {
@@ -191,8 +207,7 @@ Future<String?> fetchFcmTokenWithRetries({int maxRetries = 3}) async {
 }
 
 Future<void> saveFcmToken(
-    String entityID, BuildContext context, String navPage, String tok, String mob, String mpin) async
-{
+    String entityID, BuildContext context, String navPage, String tok, String mob, String mpin) async {
   if (_isRequestingPermission) {
     print("Permission request is already in progress.");
     return; // Exit if a request is already in progress

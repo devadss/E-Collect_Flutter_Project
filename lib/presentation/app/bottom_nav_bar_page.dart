@@ -1,0 +1,330 @@
+// import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
+// import '../../presentation/collection/home/collection_home_page.dart';
+// import '../../presentation/dues/dues_home_page.dart';
+// import 'package:flutter/material.dart';
+// import 'package:google_fonts/google_fonts.dart';
+// import '../../core/colors.dart';
+// import '../account_dues/account_list_home_page.dart';
+// import '../home/home_page.dart';
+// import '../profile/profile_home_page.dart';
+//
+// class BottomNavScreen extends StatefulWidget {
+//   const BottomNavScreen({super.key});
+//
+//   @override
+//   State<BottomNavScreen> createState() => _BottomNavScreenState();
+// }
+//
+// class _BottomNavScreenState extends State<BottomNavScreen> {
+//   int _selectedIndex = 0;
+//   String actionType = "";
+//
+//   final NotchBottomBarController _controller =
+//       NotchBottomBarController(index: 0);
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//   }
+//
+//   void _onItemTapped(int index) {
+//     if (_selectedIndex != index) {
+//       setState(() {
+//         _selectedIndex = index;
+//         _controller.index = index;
+//       });
+//     }
+//   }
+//
+//   Future<bool> _onWillPop() async {
+//     if (_selectedIndex != 0) {
+//       setState(() {
+//         _selectedIndex = 0;
+//         _controller.index = 0;
+//       });
+//       return false;
+//     }
+//     return true;
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: white,
+//       body: IndexedStack(
+//         index: _selectedIndex,
+//         children:  const [
+//           HomePage(),
+//           DuesHomePage(),
+//           //CollectionHomePage(key: ObjectKey(_selectedIndex)),
+//           AccountListHomePage(),
+//           ProfileHomePage(),
+//         ],
+//       ),
+//       bottomNavigationBar: AnimatedNotchBottomBar(
+//         itemLabelStyle: TextStyle(
+//             color: white, fontWeight: FontWeight.bold, fontSize: 10),
+//         notchColor: home2.withOpacity(0.7),
+//         notchBottomBarController: _controller,
+//         color: home2.withOpacity(0.7),
+//         onTap: _onItemTapped,
+//         bottomBarItems: [
+//           BottomBarItem(
+//             inActiveItem: Image.asset(
+//               "assets/icons/home_icon.png",
+//               color: white,
+//             ),
+//             activeItem: Image.asset(
+//               "assets/icons/active_home.png",
+//               color: white,
+//             ),
+//             itemLabel: 'Home',
+//           ),
+//           BottomBarItem(
+//             inActiveItem: Image.asset(
+//               "assets/icons/business_15907644.png",
+//               color: white,
+//             ),
+//             activeItem: Image.asset(
+//               "assets/icons/active_due.png",
+//               color: white,
+//             ),
+//             itemLabel: 'Due List',
+//           ),
+//           BottomBarItem(
+//             inActiveItem: Image.asset(
+//               "assets/icons/account_list.png",
+//               color: white,
+//             ),
+//             activeItem: Image.asset(
+//               "assets/icons/account_list_active.png",
+//               color: white,
+//             ),
+//             itemLabel: 'Account List',
+//           ),
+//           BottomBarItem(
+//             inActiveItem: Image.asset(
+//               "assets/icons/profile_icon.png",
+//               color: white,
+//             ),
+//             activeItem: Image.asset(
+//               "assets/icons/webpage_9805990.png",
+//               color: white,
+//             ),
+//             itemLabel: 'Profile',
+//           ),
+//         ],
+//         kIconSize: 25,
+//         kBottomRadius: 30.0,
+//       ),
+//     );
+//   }
+// }
+
+
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../core/colors.dart';
+import '../account_dues/account_list_home_page.dart';
+import '../dues/dues_home_page.dart';
+import '../home/home_page.dart';
+import '../profile/profile_home_page.dart';
+
+class BottomNavScreen extends StatefulWidget {
+  const BottomNavScreen({super.key});
+
+  @override
+  State<BottomNavScreen> createState() => _BottomNavScreenState();
+}
+
+class _BottomNavScreenState extends State<BottomNavScreen> {
+  int _selectedIndex = 0;
+  double _indicatorPosition = 0.0;
+  final List<GlobalKey> _tabKeys = List.generate(4, (index) => GlobalKey());
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _updateIndicatorPosition(animate: false);
+    });
+  }
+
+  void _updateIndicatorPosition({bool animate = true}) {
+    final RenderBox renderBox = _tabKeys[_selectedIndex].currentContext?.findRenderObject() as RenderBox;
+    final position = renderBox.localToGlobal(Offset.zero);
+    final newPosition = position.dx + (renderBox.size.width / 2) - 20;
+
+    if (animate) {
+      setState(() {
+        _indicatorPosition = newPosition;
+      });
+    } else {
+      _indicatorPosition = newPosition;
+      if (mounted) setState(() {});
+    }
+  }
+
+  void _onItemTapped(int index) {
+    if (_selectedIndex != index) {
+      setState(() {
+        _selectedIndex = index;
+      });
+      _updateIndicatorPosition();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: white,
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: const [
+          HomePage(),
+          DuesHomePage(),
+          AccountListHomePage(),
+          ProfileHomePage(),
+        ],
+      ),
+      bottomNavigationBar: Container(
+        height: 80,
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 20,
+              spreadRadius: 2,
+            ),
+          ],
+        ),
+        child: Stack(
+          children: [
+            // Background floating pill
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOutQuad,
+              left: _indicatorPosition,
+              bottom: 20,
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: home2,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: home2.withOpacity(0.4),
+                      blurRadius: 12,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // Navigation items
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: white,
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 15,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildNavItem(
+                      key: _tabKeys[0],
+                      index: 0,
+                      icon: Icons.home_outlined,
+                      activeIcon: Icons.home,
+                      label: 'Home',
+                    ),
+                    _buildNavItem(
+                      key: _tabKeys[1],
+                      index: 1,
+                      icon: Icons.receipt_long_outlined,
+                      activeIcon: Icons.receipt_long,
+                      label: 'Dues',
+                    ),
+                    _buildNavItem(
+                      key: _tabKeys[2],
+                      index: 2,
+                      icon: Icons.list_alt_outlined,
+                      activeIcon: Icons.list_alt,
+                      label: 'Accounts',
+                    ),
+                    _buildNavItem(
+                      key: _tabKeys[3],
+                      index: 3,
+                      icon: Icons.person_outline,
+                      activeIcon: Icons.person,
+                      label: 'Profile',
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavItem({
+    required GlobalKey key,
+    required int index,
+    required IconData icon,
+    required IconData activeIcon,
+    required String label,
+  }) {
+    final isSelected = _selectedIndex == index;
+    return Expanded(
+      child: GestureDetector(
+        key: key,
+        onTap: () => _onItemTapped(index),
+        child: Container(
+          height: 56,
+          color: Colors.transparent,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                transitionBuilder: (child, animation) {
+                  return ScaleTransition(
+                    scale: animation,
+                    child: child,
+                  );
+                },
+                child: Icon(
+                  isSelected ? activeIcon : icon,
+                  key: ValueKey<bool>(isSelected),
+                  size: 24,
+                  color: isSelected ? home2 : Colors.grey[600],
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: GoogleFonts.poppins(
+                  fontSize: 10,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                  color: isSelected ? home2 : Colors.grey[600],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

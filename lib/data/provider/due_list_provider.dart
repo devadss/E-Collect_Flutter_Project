@@ -1,9 +1,7 @@
-
-import 'package:flutter/material.dart';
-
 import '../../core/general.dart';
+import '../../data/repository/due_list_repository.dart';
 import '../../domain/model/due_list_model.dart';
-import '../repository/due_list_repository.dart';
+import 'package:flutter/material.dart';
 
 
 class DueListProvider with ChangeNotifier{

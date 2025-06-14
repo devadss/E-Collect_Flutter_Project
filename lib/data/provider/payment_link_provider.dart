@@ -1,7 +1,7 @@
+import '../../data/repository/payment_link_repository.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import '../../domain/model/payment_link_model.dart';
-import '../repository/payment_link_repository.dart';
 import '../service/error_handler.dart';
 
 class PaymentLinkProvider with ChangeNotifier {
@@ -21,8 +21,7 @@ class PaymentLinkProvider with ChangeNotifier {
       num linkAmount,
       String note,
       String corpCode,
-      String cardRefNum,
-      String token) async {
+      String cardRefNum,String token) async {
     return _paymentLinkRepository.getPaymentLink(
         agentName,
         agentId,
@@ -37,6 +36,6 @@ class PaymentLinkProvider with ChangeNotifier {
         linkAmount,
         note,
         corpCode,
-        cardRefNum, token);
+        cardRefNum,token);
   }
 }
