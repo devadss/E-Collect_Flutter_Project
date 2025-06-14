@@ -57,9 +57,9 @@ AlertDialog exitAlert(BuildContext context){
     title:const Center(child:Text("Alert")) ,
     backgroundColor: Colors.white,
     content: SizedBox(
-      height: 150,
+      height: 120,
       child: Column(children: [
-        const Text("Are you sure do you want to exit Collection Qr? ",
+        const Text("Are you sure you want to exit Collection Qr? ",
         style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black,
         fontSize: 15),),
         const SizedBox(height: 30,),
