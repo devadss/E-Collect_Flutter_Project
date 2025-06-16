@@ -949,8 +949,9 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () async {
-                          Navigator.pop(context);
+
                           await performLogout(context);
+                         // Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.redAccent,
@@ -1002,7 +1003,6 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
       );
     }
   }
-
   Future<void> performLogout(BuildContext context) async {
     String entityId = await SharedPref.shared.getAgentId();
     String token = await SharedPref.shared.getTokenValue();
@@ -1024,7 +1024,6 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
     await SharedPref.shared.setCardRefNum("");
     await SharedPref.shared.setEmail("");
 
-    if (!context.mounted) return;
 
     Navigator.pushAndRemoveUntil(
       context,
@@ -1032,6 +1031,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
           (route) => false,
     );
   }
+
 
 }
 
