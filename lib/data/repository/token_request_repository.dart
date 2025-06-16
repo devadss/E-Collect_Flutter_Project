@@ -18,6 +18,7 @@ class TokenRequestRepository implements TokenRequestInterface {
         'UserName': userName,
         "Password": password,
         'PhoneNumber': '+91$mobNum',
+
         'Type': 'Mob'
       };
 

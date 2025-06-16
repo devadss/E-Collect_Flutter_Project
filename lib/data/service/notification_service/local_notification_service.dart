@@ -4,17 +4,16 @@ import 'dart:ui';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-
 class LocalNotificationServices {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  FlutterLocalNotificationsPlugin();
   final AndroidInitializationSettings _androidInitializationSettings =
-      const AndroidInitializationSettings('@mipmap/adsspay_logo_notification');
+  const AndroidInitializationSettings('@mipmap/adsspay_logo_notification');
 
   void initInfo() async {
     DarwinInitializationSettings iosInitializationSetting =
-        const DarwinInitializationSettings();
+    const DarwinInitializationSettings();
     InitializationSettings initializationSettings = InitializationSettings(
         android: _androidInitializationSettings, iOS: iosInitializationSetting);
 
@@ -34,12 +33,12 @@ class LocalNotificationServices {
 
     await _flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onDidReceiveNotificationResponse: (payload) async {
-      try {
-        if (payload.payload != null) {
-        } else {}
-      } catch (e) {}
-      return;
-    });
+          try {
+            if (payload.payload != null) {
+            } else {}
+          } catch (e) {}
+          return;
+        });
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       print(".... .onMessage.... ");
       print(
@@ -53,7 +52,7 @@ class LocalNotificationServices {
       );
 
       AndroidNotificationDetails androidPlatformChannelSpecifics =
-          AndroidNotificationDetails(
+      AndroidNotificationDetails(
         visibility: NotificationVisibility.public,
         'Offers',
         'Promotions',
@@ -97,7 +96,7 @@ class LocalNotificationServices {
     );
 
     AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
+    AndroidNotificationDetails(
       visibility: NotificationVisibility.public,
       'Offers',
       'Promotions',

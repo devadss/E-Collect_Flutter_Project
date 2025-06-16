@@ -52,11 +52,17 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
+
     if (Firebase.apps.isEmpty) {
       await Firebase.initializeApp(
+        name: 'com.collection.qr', // Use a unique name
         options: DefaultFirebaseOptions.currentPlatform,
       );
     }
+    await FirebaseMessaging.instance.getInitialMessage();
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+    await NotificationServiceQrCode().initialize();
   } catch (e) {
     // Handle already initialized or any Firebase-related error
     debugPrint("Firebase initialization error: $e");

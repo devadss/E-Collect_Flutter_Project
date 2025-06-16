@@ -622,6 +622,7 @@
 
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:in_app_update/in_app_update.dart';
 import '../../data/repository/cust_reg_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -756,9 +757,23 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    checkForUpdate();
     loadSharedPrefs();
   }
+  void checkForUpdate() async {
+    try {
+      AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
 
+      if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
+        await InAppUpdate.performImmediateUpdate();
+        // OR if you prefer flexible update:
+        // await InAppUpdate.startFlexibleUpdate();
+      }
+    } catch (e) {
+      print('Failed to check for update: $e');
+      // You might want to handle errors here (e.g., no internet)
+    }
+  }
   void showProgressDialog(BuildContext context) {
     showDialog(
       context: context,

@@ -107,13 +107,14 @@ class _NewQrCodePageState extends State<NewQrCodePage>
       },
     );
   }
-
+//9745228327
   void _listenForFirebaseMessages() {
+    print("_listenForFirebaseMessages");
     _firebaseMessageSubscription?.cancel(); // ✅ Ensure only one listener
 
     _firebaseMessageSubscription = FirebaseMessaging.onMessage.listen((
-      RemoteMessage message,
-    ) {
+        RemoteMessage message,
+        ) {
       if (message.notification != null) {
         final String? notificationTitle = message.notification?.title;
         final String? notificationBody = message.notification?.body;
@@ -138,8 +139,8 @@ class _NewQrCodePageState extends State<NewQrCodePage>
 
     // ✅ Handle terminated app notification taps
     FirebaseMessaging.instance.getInitialMessage().then((
-      RemoteMessage? message,
-    ) {
+        RemoteMessage? message,
+        ) {
       if (message != null) {
         print("📱 App Launched via Notification: ${message.data}");
       }
@@ -430,6 +431,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
 
   @override
   void initState() {
+    print("NewQrCodePage");
     super.initState();
     _animationController = AnimationController(
       vsync: this,

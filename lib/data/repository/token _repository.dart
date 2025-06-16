@@ -18,7 +18,8 @@ class TokenExpiryRepository implements TokenExpiryInterface {
           uri,
           headers: {'Content-Type': 'application/json'},
         );
-
+        print("validateToken");
+        print("request.statusCode ${request.statusCode}");
         print(request.body);
 
         if (request.statusCode == 200) {
@@ -32,7 +33,9 @@ class TokenExpiryRepository implements TokenExpiryInterface {
       }else{
         return const Left("CHECK INTERNET CONNECTION");
       }
-    } catch (e) {}
+    } catch (e) {
+      print("validateToken $e");
+    }
     throw UnimplementedError();
   }
 }

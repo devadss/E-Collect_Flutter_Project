@@ -127,66 +127,14 @@ class NotificationService {
       print('stnavPageatusCode: ${navPage}');
       if (navPage == 'GPIN') {
         Navigator.push(context, MaterialPageRoute(builder: (context)=>
-        GooglePinCodePage()));
-/*        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => GooglePayPinCodeField(
-              mpinValue: mpin,
-              mobNum: mobnum,
-              entityIdValue: entityID,
-              tok: appToken,
-              redirectRoutePage: 'LOGIN',
-              amount: '',
-              extTxnId: '',
-              categoryName: '',
-              billerName: '',
-            ),
-          ),
-        );*/
-        //   _authenticateWithBiometrics(context);
+            GooglePinCodePage()));
+
       }
     }
   }
 }
 bool _isRequestingPermission = false;
-/*
-Future<void> _authenticateWithBiometrics(BuildContext context) async {
-  final LocalAuthentication auth = LocalAuthentication();
 
-  bool authenticated = false;
-  try {
-    authenticated = await auth.authenticate(
-      localizedReason: 'Please authenticate to proceed',
-      options: const AuthenticationOptions(
-        biometricOnly: false,
-      ),
-    );
-  } on PlatformException catch (e) {
-    print('PlatformException: $e');
-    EasyLoading.showToast('Biometric/PIN authentication is not available');
-    return;
-  } on Exception catch (e) {
-    print('Exception during authentication: $e');
-    EasyLoading.showToast('Authentication error');
-    return;
-  }
-
-  if (!authenticated) {
-    // Instead of popping the current screen, show a toast message
-    EasyLoading.dismiss();
-    EasyLoading.showToast('Authentication canceled');
-  } else {
-    EasyLoading.dismiss();
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const BottomNavScreen(),
-      ),
-    );
-  }
-}
-*/
 
 
 Future<String?> fetchFcmTokenWithRetries({int maxRetries = 3}) async {
@@ -207,7 +155,8 @@ Future<String?> fetchFcmTokenWithRetries({int maxRetries = 3}) async {
 }
 
 Future<void> saveFcmToken(
-    String entityID, BuildContext context, String navPage, String tok, String mob, String mpin) async {
+    String entityID, BuildContext context, String navPage, String tok, String mob, String mpin) async
+{
   if (_isRequestingPermission) {
     print("Permission request is already in progress.");
     return; // Exit if a request is already in progress
@@ -241,4 +190,3 @@ Future<void> saveFcmToken(
     _isRequestingPermission = false; // Reset the flag
   }
 }
-

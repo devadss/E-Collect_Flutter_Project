@@ -52,6 +52,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       fcmToken = fcmTok;
     });
     print("MPIN $mpin");
+    print("fcmTok $fcmTok");
     _authenticateWithBiometrics();
   }
 
@@ -82,7 +83,6 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       validateMpinFingerAuth();
     }
   }
-
   void showProgressDialog(BuildContext context) {
     showDialog(
         context: context,
@@ -146,7 +146,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
                 SnackBar(
                   content: Text(
                     "${data.message}",
-                    style:const TextStyle(
+                    style: GoogleFonts.inter(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
                         fontSize: 17),
@@ -174,7 +174,6 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       print("Empty fields not allowed");
     }
   }
-
   Future<void> validateMpinFingerAuth() async {
     print("validateMpinFingerAuth");
     if (mpin.isNotEmpty) {
@@ -206,7 +205,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
           if (data.message == "Login Successfull") {
             if (fcmToken.isNotEmpty) {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) =>const BottomNavScreen()));
+                  MaterialPageRoute(builder: (context) => BottomNavScreen()));
             } else {
               saveFcmToken(custID, context, "GPIN", token, contactNum, mpin);
             }
@@ -220,9 +219,55 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       print("Empty fields not allowed");
     }
   }
+/*  Future<void> validateMpinFingerAuth() async {
+    print("validateMpinFingerAuth");
+    if (mpin.isNotEmpty) {
+      print("mpin.isNotEmpty");
+      print("mpin = $mpin");
+
+      showProgressDialog(context);
+      final provider = Provider.of<AuthProvider>(context, listen: false);
+      final response = await provider.getAuthResult(contactNum, mpin, token);
+
+      response.fold(
+            (error) {
+          Navigator.pop(context);
+          print("Error: ${error?.message}");
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+              "Error: ${error.message}- Invalid M-pin",
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 17),
+            ),
+            backgroundColor: Colors.red,
+          ));
+        },
+            (data) {
+          Navigator.pop(context);
+          print("data.message = ${data.message}");
+          if (data.message == "Login Successfull") {
+            if (fcmToken.isNotEmpty) {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => BottomNavScreen()));
+            } else {
+              saveFcmToken(custID, context, "GPIN", token, contactNum, mpin);
+            }
+          }
+          // Navigator.pop(context);
+        },
+      );
+
+      print("MPIN = $mpin");
+    } else {
+      print("Empty fields not allowed");
+    }
+  }*/
 
   String? encryptString(
-      String textToEncrypt, String? secretKey, String? initialVector) {
+      String textToEncrypt, String? secretKey, String? initialVector)
+  {
     print("-------------------encryptString values----------------");
     print("textToEncrypt : $textToEncrypt");
     print("secretKey : $secretKey");
