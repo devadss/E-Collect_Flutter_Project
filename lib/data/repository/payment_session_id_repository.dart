@@ -11,7 +11,8 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 class CreatePaymentSessionIdRepository implements ICreatePaymentSessionIdRepository{
   @override
   Future<Either<ErrorHandler, PaymentSessionIdModel>> getPaymentSessionId(String? token, String? amount, String? phoneNumber, String? entityId, String? note) async{
-   final url = Uri.parse("${baseUrl}api/Cashfree/MerchantOrderCreate");
+   //final url = Uri.parse("${baseUrl}api/Cashfree/MerchantOrderCreate");
+   final url = Uri.parse("${baseUrl}api/Cashfree/CollectiontOrderCreate");
    final body = {
 
        "Amount": amount,

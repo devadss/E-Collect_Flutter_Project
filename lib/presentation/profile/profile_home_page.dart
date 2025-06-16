@@ -949,9 +949,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () async {
-
                           await performLogout(context);
-                         // Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.redAccent,

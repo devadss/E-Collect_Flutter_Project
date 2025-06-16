@@ -55,8 +55,43 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
     print("fcmTok $fcmTok");
     _authenticateWithBiometrics();
   }
-
   Future<void> _authenticateWithBiometrics() async {
+    bool authenticated = false;
+
+    try {
+      final canCheckBiometrics = await auth.canCheckBiometrics;
+      final isDeviceSupported = await auth.isDeviceSupported();
+
+      if (!canCheckBiometrics && !isDeviceSupported) {
+        print('No biometric or device auth support');
+        // EasyLoading.showToast('Authentication not available');
+        return;
+      }
+
+      authenticated = await auth.authenticate(
+        localizedReason: 'Please authenticate to proceed',
+        options: const AuthenticationOptions(
+          biometricOnly: false, // ✅ Allows device PIN/password fallback
+          stickyAuth: true,
+        ),
+      );
+    } on PlatformException catch (e) {
+      print('PlatformException during biometric auth: ${e.code} - ${e.message}');
+      return;
+    } on Exception catch (e) {
+      print('Exception during biometric authentication: $e');
+      return;
+    }
+
+    if (!authenticated) {
+      print('Authentication canceled by user.');
+      return;
+    }
+
+    validateMpinFingerAuth();
+  }
+
+/*  Future<void> _authenticateWithBiometrics() async {
     bool authenticated = false;
     try {
       authenticated = await auth.authenticate(
@@ -82,7 +117,8 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
     } else {
       validateMpinFingerAuth();
     }
-  }
+  }*/
+
   void showProgressDialog(BuildContext context) {
     showDialog(
         context: context,
@@ -174,6 +210,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       print("Empty fields not allowed");
     }
   }
+
   Future<void> validateMpinFingerAuth() async {
     print("validateMpinFingerAuth");
     if (mpin.isNotEmpty) {

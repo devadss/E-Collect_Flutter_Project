@@ -774,6 +774,7 @@ class _HomePageState extends State<HomePage> {
       // You might want to handle errors here (e.g., no internet)
     }
   }
+
   void showProgressDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -1010,8 +1011,8 @@ class _HomePageState extends State<HomePage> {
   }
   @override
   Widget build(BuildContext context) {
-    final fetchBalanceProvider = Provider.of<BalanceProvider>(context, listen: true);
-    final provider = Provider.of<AgentTransactionProvider>(context, listen: true);
+    final fetchBalanceProvider = Provider.of<BalanceProvider>(context, listen: false);
+    final provider = Provider.of<AgentTransactionProvider>(context, listen: false);
     final size = MediaQuery.of(context).size;
     final collectionProvider = Provider.of<CollectionSummaryProvider>(context,listen: false);
 
