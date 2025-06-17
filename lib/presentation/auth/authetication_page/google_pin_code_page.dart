@@ -242,7 +242,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
           if (data.message == "Login Successfull") {
             if (fcmToken.isNotEmpty) {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => BottomNavScreen()));
+                  MaterialPageRoute(builder: (context) => const BottomNavScreen()));
             } else {
               saveFcmToken(custID, context, "GPIN", token, contactNum, mpin);
             }

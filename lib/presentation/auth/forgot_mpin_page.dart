@@ -1,19 +1,14 @@
 import 'dart:convert';
-
 import 'package:pointycastle/export.dart' as pc;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../../core/colors.dart';
 import '../../core/general.dart';
 import '../../data/storage/shared_pref_helper.dart';
 import '../../data/repository/otp_request_repository.dart';
 import '../../data/repository/otp_verification_repository.dart';
 import '../../data/repository/set_mpin_repository.dart';
-import '../../widgets/build_button.dart';
 import 'authetication_page/google_pin_code_page.dart';
 
 
@@ -88,12 +83,12 @@ class _ForgotMpinPageState extends State<ForgotMpinPage> {
               child: Dialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
-                child: Padding(
-                  padding: const EdgeInsets.all(50),
+                child: const Padding(
+                  padding: EdgeInsets.all(50),
                   child: Column(
                     children: [
-                      const CircularProgressIndicator(color: home2),
-                      const SizedBox(
+                      CircularProgressIndicator(color: home2),
+                      SizedBox(
                         height: 10,
                       ),
                       Text(
@@ -185,7 +180,7 @@ class _ForgotMpinPageState extends State<ForgotMpinPage> {
     var snackBar = SnackBar(
       content: Text(
         value,
-        style: TextStyle(
+        style: const TextStyle(
             color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
       ),
       backgroundColor:
@@ -247,7 +242,7 @@ class _ForgotMpinPageState extends State<ForgotMpinPage> {
           ),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: home2),
+          icon: const Icon(Icons.arrow_back_rounded, color: home2),
           onPressed: () {
             if (_currentStep > 0) {
               setState(() => _currentStep--);
@@ -301,7 +296,7 @@ class _ForgotMpinPageState extends State<ForgotMpinPage> {
         const SizedBox(height: 24),
         _buildActionButton(
           text: "REQUEST OTP",
-          gradient: LinearGradient(
+          gradient: const LinearGradient(
             colors: [home1, home2],
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
@@ -329,7 +324,7 @@ class _ForgotMpinPageState extends State<ForgotMpinPage> {
         const SizedBox(height: 24),
         _buildActionButton(
           text: "VERIFY OTP",
-          gradient: LinearGradient(
+          gradient: const LinearGradient(
             colors: [home1, home2],
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
@@ -360,7 +355,7 @@ class _ForgotMpinPageState extends State<ForgotMpinPage> {
         const SizedBox(height: 32),
         _buildActionButton(
           text: "UPDATE MPIN",
-          gradient: LinearGradient(
+          gradient: const LinearGradient(
             colors: [home1, home2],
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,

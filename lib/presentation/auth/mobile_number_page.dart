@@ -379,7 +379,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/colors.dart';
 import '../../data/provider/cust_register_provider.dart';
 import '../../data/storage/shared_pref_helper.dart';
-import '../../widgets/build_button.dart';
 import 'mobile_number_password_page.dart';
 
 class MobileNumberVerificationPage extends StatefulWidget {
@@ -431,7 +430,7 @@ class _MobileNumberVerificationPageState
             SnackBar(
               content: Text(
                 "Error: ${error.message}",
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w700,
                   fontSize: 17,
@@ -503,7 +502,7 @@ class _MobileNumberVerificationPageState
     var snackBar = SnackBar(
       content: Text(
         value,
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.white,
           fontSize: 17,
           fontWeight: FontWeight.w700,
@@ -525,12 +524,12 @@ class _MobileNumberVerificationPageState
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(50),
+              child: const Padding(
+                padding: EdgeInsets.all(50),
                 child: Column(
                   children: [
-                    const CircularProgressIndicator(color: home2),
-                    const SizedBox(height: 10),
+                    CircularProgressIndicator(color: home2),
+                    SizedBox(height: 10),
                     Text("Please wait....", style: TextStyle(fontSize: 17)),
                   ],
                 ),
@@ -553,7 +552,7 @@ class _MobileNumberVerificationPageState
             Container(
               height: MediaQuery.of(context).size.height * 0.35,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
+                gradient: const LinearGradient(
                   colors: [Color(0xFFEA307B), Color(0xFF470952)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -572,7 +571,7 @@ class _MobileNumberVerificationPageState
               ),
               child: Stack(
                 children: [
-                  Positioned(
+                  const Positioned(
                     top: 20,
                     right: 20,
                     child: Opacity(
@@ -606,7 +605,7 @@ class _MobileNumberVerificationPageState
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Color(0xFFEA307B).withOpacity(0.3),
+                                color: const Color(0xFFEA307B).withOpacity(0.3),
                                 blurRadius: 15,
                                 spreadRadius: 5,
                               ),
@@ -766,7 +765,7 @@ class _MobileNumberVerificationPageState
                                 isChecked = newValue!;
                               });
                             },
-                            activeColor: Color(0xFFEA307B),
+                            activeColor: const Color(0xFFEA307B),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(4),
                             ),
@@ -788,7 +787,7 @@ class _MobileNumberVerificationPageState
                                 TextSpan(
                                   text: "Terms & Conditions",
                                   style: GoogleFonts.poppins(
-                                    color: Color(0xFFEA307B),
+                                    color: const Color(0xFFEA307B),
                                     fontWeight: FontWeight.w600,
                                   ),
                                   recognizer:
@@ -803,7 +802,7 @@ class _MobileNumberVerificationPageState
                                 TextSpan(
                                   text: "Privacy Policy",
                                   style: GoogleFonts.poppins(
-                                    color: Color(0xFFEA307B),
+                                    color: const Color(0xFFEA307B),
                                     fontWeight: FontWeight.w600,
                                   ),
                                   recognizer:
@@ -835,14 +834,14 @@ class _MobileNumberVerificationPageState
                         checkMobileNumber();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFFEA307B),
+                        backgroundColor: const Color(0xFFEA307B),
                         foregroundColor: Colors.white,
                         elevation: 5,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        shadowColor: Color(0xFFEA307B).withOpacity(0.3),
+                        shadowColor: const Color(0xFFEA307B).withOpacity(0.3),
                       ),
                       child: Text(
                         "CONFIRM",

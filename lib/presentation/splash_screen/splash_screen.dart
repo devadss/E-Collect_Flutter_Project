@@ -353,11 +353,11 @@ class _SplashScreenState extends State<SplashScreen> {
 
           requestNewTokenResponse.fold(
                 (error) {
-              print("Error: ${error}");
+              print("Error: $error");
 
             },
                 (data) {
-              print("Token Response : ${data}");
+              print("Token Response : $data");
               SharedPref.shared.setTokenValue(data);
               if (loginStatus == true) {
                 if (fcmToken.isNotEmpty) {

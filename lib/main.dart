@@ -50,9 +50,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   try {
-
     if (Firebase.apps.isEmpty) {
       await Firebase.initializeApp(
         name: 'com.collection.qr', // Use a unique name
@@ -61,9 +59,9 @@ void main() async {
     }
     await FirebaseMessaging.instance.getInitialMessage();
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
     await NotificationServiceQrCode().initialize();
-  } catch (e) {
+  }
+  catch (e) {
     // Handle already initialized or any Firebase-related error
     debugPrint("Firebase initialization error: $e");
   }
@@ -87,33 +85,20 @@ void main() async {
   }
 
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(
-        create: (_) => CustRegisterProvider(CustRegRepository())),
-    ChangeNotifierProvider(
-        create: (_) => TokenRequestProvider(TokenRequestRepository())),
-    ChangeNotifierProvider(
-        create: (_) => OtpRequestProvider(OtpRequestRepository())),
-    ChangeNotifierProvider(
-        create: (_) => OtpVerificationProvider(OtpVerificationRepository())),
+    ChangeNotifierProvider(create: (_) => CustRegisterProvider(CustRegRepository())),
+    ChangeNotifierProvider(create: (_) => TokenRequestProvider(TokenRequestRepository())),
+    ChangeNotifierProvider(create: (_) => OtpRequestProvider(OtpRequestRepository())),
+    ChangeNotifierProvider(create: (_) => OtpVerificationProvider(OtpVerificationRepository())),
     ChangeNotifierProvider(create: (_) => SetMpinProvider(SetMpinRepository())),
     ChangeNotifierProvider(create: (_) => AuthProvider(AuthRepository())),
-    ChangeNotifierProvider(
-        create: (_) =>
-            AgentCustomerDetailsProvider(AgentCustomerDetailsRepository())),
-    ChangeNotifierProvider(
-        create: (_) => CreateOrderProvider(OrderCreateRepository())),
-    ChangeNotifierProvider(
-        create: (_) => BalanceProvider(FetchAccountBalanceRepository())),
+    ChangeNotifierProvider(create: (_) => AgentCustomerDetailsProvider(AgentCustomerDetailsRepository())),
+    ChangeNotifierProvider(create: (_) => CreateOrderProvider(OrderCreateRepository())),
+    ChangeNotifierProvider(create: (_) => BalanceProvider(FetchAccountBalanceRepository())),
     ChangeNotifierProvider(create: (_) => DueListProvider(DueListRepository())),
-    ChangeNotifierProvider(
-        create: (_) => TransactionProvider(TransactionRepository())),
-    ChangeNotifierProvider(
-        create: (_) => AgentTransactionProvider(AgentTransactionRepository())),
-    ChangeNotifierProvider(
-        create: (_) =>
-            CollectionSummaryProvider(CollectionSummaryRepository())),
-    ChangeNotifierProvider(
-        create: (_) => DueUnderAgentProvider(DueUnderAgentRepository())),
+    ChangeNotifierProvider(create: (_) => TransactionProvider(TransactionRepository())),
+    ChangeNotifierProvider(create: (_) => AgentTransactionProvider(AgentTransactionRepository())),
+    ChangeNotifierProvider(create: (_) => CollectionSummaryProvider(CollectionSummaryRepository())),
+    ChangeNotifierProvider(create: (_) => DueUnderAgentProvider(DueUnderAgentRepository())),
     ChangeNotifierProvider(create: (_) => TokenExpiryProvider(TokenExpiryRepository())),
     ChangeNotifierProvider(create: (_) => DeleteFcmProvider(DeleteFcmTokenRepository())),
 
@@ -155,8 +140,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-
 
 // import 'dart:developer';
 // import '../../data/provider/agent_customer_details_provider.dart';

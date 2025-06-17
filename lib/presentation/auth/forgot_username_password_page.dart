@@ -9,7 +9,6 @@ import '../../../data/repository/cust_reg_repository.dart';
 import '../../core/colors.dart';
 import '../../data/repository/update_dop_repository.dart';
 import '../../data/repository/update_password_repository.dart';
-import '../../widgets/build_button.dart';
 import 'mobile_number_password_page.dart';
 
 class ForgotUsernamePasswordPage extends StatefulWidget {
@@ -173,7 +172,7 @@ class _ForgotUsernamePasswordPageState
           ),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: home1), // Using home1 for icon
+          icon: const Icon(Icons.arrow_back, color: home1), // Using home1 for icon
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -325,7 +324,7 @@ class _ForgotUsernamePasswordPageState
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
-      margin: EdgeInsets.all(20),
+      margin: const EdgeInsets.all(20),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }

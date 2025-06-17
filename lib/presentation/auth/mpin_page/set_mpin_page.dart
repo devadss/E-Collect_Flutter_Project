@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:pointycastle/export.dart' as pc;
 import '../../../core/colors.dart';
@@ -55,12 +54,12 @@ class _SetMpinPageState extends State<SetMpinPage> {
               child: Dialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
-                child: Padding(
-                  padding: const EdgeInsets.all(50),
+                child: const Padding(
+                  padding: EdgeInsets.all(50),
                   child: Column(
                     children: [
-                      const CircularProgressIndicator(color: home2),
-                      const SizedBox(
+                      CircularProgressIndicator(color: home2),
+                      SizedBox(
                         height: 10,
                       ),
                       Text(
@@ -156,7 +155,7 @@ class _SetMpinPageState extends State<SetMpinPage> {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text(
                 "MPIN MIS-MATCH",
                 style:
@@ -168,7 +167,7 @@ class _SetMpinPageState extends State<SetMpinPage> {
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text(
               "ENTER 6 DIGIT MPIN",
               style:
@@ -197,13 +196,13 @@ class _SetMpinPageState extends State<SetMpinPage> {
                 ),
               ),
               const SizedBox(height: 20),
-              Text(
+              const Text(
                 "Let's Create Mpin",
                 style: TextStyle(
                     fontWeight: FontWeight.w600, fontSize: 20),
               ),
               const SizedBox(height: 10),
-              Text(
+              const Text(
                 "Before continuing, create an MPIN. You are required to set a 6-digit MPIN.",
                 style: TextStyle(
                   fontWeight: FontWeight.w400,
@@ -248,7 +247,7 @@ class _SetMpinPageState extends State<SetMpinPage> {
       children: [
         Text(
           label,
-          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
+          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
         ),
         const SizedBox(height: 10),
         Row(

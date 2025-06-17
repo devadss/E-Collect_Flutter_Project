@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -120,12 +119,12 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
               child: Dialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
-                child: Padding(
-                  padding: const EdgeInsets.all(50),
+                child: const Padding(
+                  padding: EdgeInsets.all(50),
                   child: Column(
                     children: [
-                      const CircularProgressIndicator(color: home2),
-                      const SizedBox(
+                      CircularProgressIndicator(color: home2),
+                      SizedBox(
                         height: 10,
                       ),
                       Text(
@@ -289,7 +288,7 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
         backgroundColor: white,
         centerTitle: true,
         elevation: 0,
-        title: Text(
+        title: const Text(
           "Search Account",
           style: TextStyle(
             fontWeight: FontWeight.w700,
@@ -350,7 +349,7 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
                         borderRadius: BorderRadius.circular(10),
                         color: deepTeal,
                         border: Border.all(color: black, width: 2)),
-                    child: Center(
+                    child: const Center(
                       child: Text(
                         "SUBMIT",
                         style: TextStyle(
@@ -369,7 +368,7 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
                       borderRadius: BorderRadius.circular(10),
                       color: deepTeal,
                       border: Border.all(color: black, width: 2)),
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       "CANCEL",
                       style: TextStyle(
@@ -415,7 +414,7 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
                               children: [
                                 Text(
                                   "Customer Name : ${agentCustomerDetailsModel?.customerList?.data![index].custName}",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontWeight: FontWeight.w700,
                                       fontSize: 17,
                                       color: deepTeal),
@@ -423,7 +422,7 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
                                 const SizedBox(height: 5),
                                 Text(
                                   "Customer Id : ${agentCustomerDetailsModel?.customerList?.data![index].custId}",
-                                  style: TextStyle(
+                                  style:const TextStyle(
                                       fontWeight: FontWeight.w700,
                                       fontSize: 14,
                                       color: black87),
@@ -431,7 +430,7 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
                                 const SizedBox(height: 5),
                                 Text(
                                   "Account Number : ${agentCustomerDetailsModel?.customerList?.data![index].accNo}",
-                                  style: TextStyle(
+                                  style:const TextStyle(
                                       fontWeight: FontWeight.w700,
                                       fontSize: 14,
                                       color: black87),
@@ -444,7 +443,7 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
                                     FittedBox(
                                       child: Text(
                                         "Phone Number : +91 ${agentCustomerDetailsModel?.customerList?.data![index].mobile}",
-                                        style: TextStyle(
+                                        style:const TextStyle(
                                             fontWeight: FontWeight.w700,
                                             fontSize: 14,
                                             color: black87),
@@ -462,13 +461,13 @@ class _SearchFilterPageState extends State<SearchFilterPage> {
                                             BorderRadius.circular(30),
                                             border:
                                             Border.all(color: black)),
-                                        child: Padding(
+                                        child:const Padding(
                                           padding:
-                                          const EdgeInsets.symmetric(
+                                           EdgeInsets.symmetric(
                                               horizontal: 10),
                                           child: Row(
                                             children: [
-                                              const Icon(
+                                               Icon(
                                                 Icons.phone,
                                                 size: 20,
                                                 color: deepTeal,
