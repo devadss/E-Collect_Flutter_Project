@@ -105,10 +105,13 @@ class SharedPrefKeys {
   static const String nearestPinCode = "NEAREST_PIN_CODE";
   static const String pinCodeText = "PIN_CODE_TEXT";
   static const String username = "USER_NAME";
+  static const String parent_username = "PARENT_USERNAME";
+  static const String subAgent_username = "SUB_AGENT_USERNAME";
   static const String enteredusername = "ENTERED_USER_NAME";
   static const String balance = "ACC_BALANCE";
   static const String gendervalue = "GENDER_VALUE";
   static const String password = "PASSWORD";
+  static const String parent_agent_password = "PARENT_AGENT_PASSWORD";
   static const String encryptedPassword = "ENCRYPTED_PASSWORD";
   final String login = "LOGIN";
   final String cartLogin = "CART_LOGIN";
@@ -125,6 +128,10 @@ class SharedPrefKeys {
   static const String adsspay_token = "ADSSPAY_TOKEN";
   static const String adsspay_user_name = "ADSSPAY_USER_NAME";
   static const String mob_num = "MOB_NUM";
+  static const String parentAgentMobNum = "PARENT_AGENT_MOB_NUM";
+  static const String subAgentMobNum = "SUB_AGENT_MOB_NUM";
+  static const String subAgentCode = "SUB_AGENT_CODE";
+  static const String subAgentID = "SUB_AGENT_ID";
   static const String adsspay_pswd = "ADSSPAY_PSWD";
   static const String adsspay_entity_id = "ADSSPAY_ENTITY_ID";
   static const String cardType = "CARDTYPE";

@@ -23,7 +23,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   String pin = "";
   String custID = "";
   String token = "";
-  String m_pin = "";
+  //String m_pin = "";
   String mpin = "";
   String fcmToken = "";
   String contactNum = ""; // contains +91
@@ -40,12 +40,12 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
 
   void loadSharedData() async {
     String custid = await SharedPref.shared.getAgentId();
-    token = await SharedPref.shared.getTokenValue();
+    String tok = await SharedPref.shared.getTokenValue();
     String fcmTok = await SharedPref.shared.getFcmToken();
-    m_pin = await SharedPref.shared.getMpinValue();
-
-    String mobNum = await SharedPref.shared.getMobNum();
+    String m_pin = await SharedPref.shared.getMpinValue();
+    String mobNum = await SharedPref.shared.getParentAgentMobNum();
     setState(() {
+      token = tok;
       contactNum = mobNum;
       mpin = m_pin;
       custID = custid;
@@ -159,7 +159,9 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
         showProgressDialog(context);
         final provider = Provider.of<AuthProvider>(context, listen: false);
         final response = await provider.getAuthResult(
-            contactNum, encryptString(pin, _sk, _iv).toString(), token);
+            contactNum,
+            encryptString(pin, _sk, _iv).toString(),
+            token);
 
         response.fold(
               (error) {
@@ -303,8 +305,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   }*/
 
   String? encryptString(
-      String textToEncrypt, String? secretKey, String? initialVector)
-  {
+      String textToEncrypt, String? secretKey, String? initialVector) {
     print("-------------------encryptString values----------------");
     print("textToEncrypt : $textToEncrypt");
     print("secretKey : $secretKey");

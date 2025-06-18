@@ -414,10 +414,10 @@ class _SplashScreenState extends State<SplashScreen> {
     fcmToken = await SharedPref.shared.getFcmToken();
     entityid = await SharedPref.shared.getAgentId();
     token = await SharedPref.shared.getTokenValue();
-    mobnum = await SharedPref.shared.getMobNum();
+    mobnum = await SharedPref.shared.getParentAgentMobNum();
     mpin = await SharedPref.shared.getMpinValue();
-    String username = await SharedPref.shared.getAgentName();
-    String password = await SharedPref.shared.getPassword();
+    String username = await SharedPref.shared.getParentAgentName();
+    String password = await SharedPref.shared.getParentAgentPassword();
     if(loginStatus == true){
       validateToken(token,
           username , password,mobnum.replaceAll("+91", "") ,"Mob"

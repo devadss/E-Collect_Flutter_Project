@@ -826,11 +826,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> loadSharedPrefs() async {
-    final name = await SharedPref().getAgentName();
+    final name = await SharedPref().getSubAgentName();
     final entId = await SharedPref().getAgentId();
     final tok = await SharedPref().getTokenValue();
     final agentOrgID = await SharedPref().getAgentOriginId();
-    final mobnum = await SharedPref().getMobNum();
+    final mobnum = await SharedPref().getParentAgentMobNum();
 
     if (mounted) {
       setState(() {

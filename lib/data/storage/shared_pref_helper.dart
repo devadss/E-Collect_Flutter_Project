@@ -53,6 +53,31 @@ class SharedPref {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.password) ?? '';
   }
+  setSubAgentName(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.subAgent_username, value);
+  }
+  getSubAgentName() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.subAgent_username) ?? '';
+  }
+  setParentAgentName(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.parent_username, value);
+  }
+  getParentAgentName() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.parent_username) ?? '';
+  }
+
+  setParentAgentPassword(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.parent_agent_password, value);
+  }
+  getParentAgentPassword() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.parent_agent_password) ?? '';
+  }
 
   setAgentName(String value) async {
     final prefs = await _getPrefs();
@@ -94,7 +119,40 @@ class SharedPref {
     return prefs.getString(SharedPrefKeys.adsspay_token) ?? '';
   }
 
+  setSubAgentMobNum(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.subAgentMobNum, value);
+  }
+  setSubAgentCode(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.subAgentCode, value);
+  }
+  setSubAgentId(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.subAgentID, value);
+  }
+  getSubAgentId() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.subAgentID) ?? '';
+  }
+  getSubAgentCode() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.subAgentCode) ?? '';
+  }
+  getSubAgentMobNum() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.subAgentMobNum) ?? '';
+  }
 
+  setParentAgentMobNum(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.parentAgentMobNum, value);
+  }
+
+  getParentAgentMobNum() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.parentAgentMobNum) ?? '';
+  }
   setMobNum(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.mob_num, value);

@@ -25,6 +25,8 @@ import 'data/provider/auth_provider.dart';
 import 'data/provider/fetch_account_balance_provider.dart';
 import 'data/provider/otp_request_provider.dart';
 import 'data/provider/otp_verification_provider.dart';
+import 'data/provider/parent_agent_detail_provider/parent_agent_detil_provider.dart';
+import 'data/provider/parent_agent_detail_provider/parent_credential_provider/parent_credential_provider.dart';
 import 'data/provider/set_mpin_provider.dart';
 import 'data/provider/token_expiry_provider.dart';
 import 'data/provider/token_request_provider.dart';
@@ -34,6 +36,8 @@ import 'data/repository/auth_repository.dart';
 import 'data/repository/create_order_repository.dart';
 import 'data/repository/otp_request_repository.dart';
 import 'data/repository/otp_verification_repository.dart';
+import 'data/repository/parent_agent/fetch_parent_crentials/parent_agent_credential_repository.dart';
+import 'data/repository/parent_agent/parent_agent_detail_repo.dart';
 import 'data/repository/set_mpin_repository.dart';
 import 'data/repository/token _repository.dart';
 import 'data/repository/token_request_repository.dart';
@@ -101,6 +105,8 @@ void main() async {
     ChangeNotifierProvider(create: (_) => DueUnderAgentProvider(DueUnderAgentRepository())),
     ChangeNotifierProvider(create: (_) => TokenExpiryProvider(TokenExpiryRepository())),
     ChangeNotifierProvider(create: (_) => DeleteFcmProvider(DeleteFcmTokenRepository())),
+    ChangeNotifierProvider(create: (_) => ParentDetailAgentProvider(ParentAgentDetailRepository())),
+    ChangeNotifierProvider(create: (_) => ParentAgentCredentialProvider(ParentAgentCredentialRepository())),
 
   ], child: const MyApp()));
 }

@@ -453,8 +453,7 @@ class _LoginPageState extends State<LoginPage> {
     showProgressDialog(context);
     if (userNameController.text.isNotEmpty &&
         passwordController.text.isNotEmpty) {
-      final provider =
-      Provider.of<TokenRequestProvider>(context, listen: false);
+      final provider = Provider.of<TokenRequestProvider>(context, listen: false);
 
       final response = await provider.requestToken(
           userNameController.text,

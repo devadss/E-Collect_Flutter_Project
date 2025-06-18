@@ -123,7 +123,6 @@ class _OtpVerificationState extends State<OtpVerification> {
 
   }
 
-
   Future<void> otpRequest() async {
     // showProgressDialog(context);
     final provider = Provider.of<OtpRequestProvider>(context , listen: false);
@@ -143,7 +142,7 @@ class _OtpVerificationState extends State<OtpVerification> {
       },
           (data) {
         //Navigator.pop(context);
-        print("Otp request stst : ${data.message.toString()}");
+        print("Otp request status : ${data.message.toString()}");
       },
     );
 

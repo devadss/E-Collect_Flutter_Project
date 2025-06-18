@@ -616,8 +616,8 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
   }
 
   Future<void> loadSharedData() async {
-    String? username = await SharedPref.shared.getAgentName();
-    String? usermobNum = await SharedPref.shared.getMobNum();
+    String? username = await SharedPref.shared.getSubAgentName();
+    String? usermobNum = await SharedPref.shared.getSubAgentMobNum();
 
     if (mounted) {
       setState(() {
@@ -1010,6 +1010,13 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
 
     await SharedPref.shared.setLogin(false);
     await SharedPref.shared.setAgentName("");
+    await SharedPref.shared.setParentAgentName("");
+    await SharedPref.shared.setParentAgentPassword("");
+    await SharedPref.shared.setParentAgentMobNum("");
+    await SharedPref.shared.setSubAgentId("");
+    await SharedPref.shared.setSubAgentCode("");
+    await SharedPref.shared.setSubAgentName("");
+    await SharedPref.shared.setSubAgentMobNum("");
     await SharedPref.shared.setFcmToken("");
     await SharedPref.shared.setAgentId("");
     await SharedPref.shared.setPassword("");
