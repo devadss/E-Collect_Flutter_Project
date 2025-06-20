@@ -40,12 +40,13 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   }
 
   void loadSharedData() async {
-    String custid = await SharedPref.shared.getSubAgentId();
+   String custid = await SharedPref.shared.getSubAgentId();
+
     String tok = await SharedPref.shared.getTokenValue();
     String fcmTok = await SharedPref.shared.getFcmToken();
     String m_pin = await SharedPref.shared.getMpinValue();
     String mobNum = await SharedPref.shared.getParentAgentMobNum();
-    String subAgentMobNum = await SharedPref.shared.getParentAgentMobNum();
+    String subAgentMobNum = await SharedPref.shared.getSubAgentMobNum();
     setState(() {
       token = tok;
       contactNum = mobNum;
@@ -241,16 +242,17 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
             backgroundColor: Colors.red,
           ));
         },
-            (data) {
+            (data) async {
           Navigator.pop(context);
           print("data.message = ${data.message}");
           if (data.message == "Login Successfull") {
             if (fcmToken.isNotEmpty) {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const BottomNavScreen()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const BottomNavScreen()));
             } else {
-              saveFcmToken(custID, context, "GPIN", token, subAgentContactNum, mpin);
+              await  saveFcmToken(custID, context, "GPIN", token, subAgentContactNum, mpin);
             }
+          }else{
+            print("Login fail : ${data.message}");
           }
           // Navigator.pop(context);
         },

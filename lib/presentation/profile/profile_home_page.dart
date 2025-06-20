@@ -1002,7 +1002,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
     }
   }
   Future<void> performLogout(BuildContext context) async {
-    String entityId = await SharedPref.shared.getAgentId();
+    String entityId = await SharedPref.shared.getSubAgentId();
     String token = await SharedPref.shared.getTokenValue();
 
     final fcmProvider = Provider.of<DeleteFcmProvider>(context, listen: false);

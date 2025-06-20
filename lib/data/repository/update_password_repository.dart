@@ -1,10 +1,10 @@
 import 'dart:convert';
+import '../../core/constants.dart';
 import '../../data/service/error_handler.dart';
 import '../../domain/interface/update_password_interface.dart';
 import '../../domain/model/update_password_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-import '../../widgets/constants.dart';
 import 'package:http/http.dart'as http;
 
 class UpdatePasswordRepository implements IUpdatePasswordRepository{

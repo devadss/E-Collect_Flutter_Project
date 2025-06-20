@@ -8,6 +8,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import '../../../core/constants.dart';
+import '../../../presentation/app/bottom_nav_bar_page.dart';
 import '../../storage/shared_pref_helper.dart';
 import '../../../presentation/auth/authetication_page/google_pin_code_page.dart';
 
@@ -186,7 +187,12 @@ Future<void> saveFcmToken(
       ]);
       print('FCM token saved successfully');
       log('FCM token saved successfully');
-      SharedPref.shared.setFcmToken(fcmToken);
+       SharedPref.shared.setFcmToken(fcmToken);
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const BottomNavScreen()),
+            (route) => false,
+      );
     } else {
       print('Failed to fetch FCM token after retries');
       log('Failed to fetch FCM token after retries');

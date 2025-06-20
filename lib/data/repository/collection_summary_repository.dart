@@ -1,3 +1,4 @@
+import '../../core/constants.dart';
 import '../../data/service/error_handler.dart';
 import '../../domain/interface/collection_summary_interface.dart';
 import '../../domain/model/collection_summary_model.dart';
@@ -5,7 +6,6 @@ import 'package:dartz/dartz.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../../widgets/constants.dart';
 
 class CollectionSummaryRepository implements ICollectionSummaryRepository {
   @override

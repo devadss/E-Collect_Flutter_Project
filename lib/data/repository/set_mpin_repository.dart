@@ -1,10 +1,7 @@
 import 'dart:convert';
-
 import 'package:dartz/dartz.dart';
-
 import 'package:http/http.dart' as http;
-
-import '../../widgets/constants.dart';
+import '../../core/constants.dart';
 import '../../domain/interface/mpin_set_interface.dart';
 import '../../domain/model/mpin_set_model.dart';
 

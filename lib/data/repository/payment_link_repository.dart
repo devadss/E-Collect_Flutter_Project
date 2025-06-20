@@ -1,9 +1,9 @@
 import 'dart:convert';
+import '../../core/constants.dart';
 import '../../core/general.dart';
 import '../../data/service/error_handler.dart';
 import '../../domain/interface/payment_link_interface.dart';
 import '../../domain/model/payment_link_model.dart';
-import '../../widgets/constants.dart';
 import 'package:dartz/dartz.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:http/http.dart' as http;

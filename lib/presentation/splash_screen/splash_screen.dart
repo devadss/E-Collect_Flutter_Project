@@ -415,7 +415,7 @@ class _SplashScreenState extends State<SplashScreen> {
     loginStatus = await SharedPref.shared.getLogin();
     fcmToken = await SharedPref.shared.getFcmToken();
     entityid = await SharedPref.shared.getAgentId();
-    subAgentid = await SharedPref.shared.getSubAgentId();
+   subAgentid = await SharedPref.shared.getSubAgentId();
     token = await SharedPref.shared.getTokenValue();
     mobnum = await SharedPref.shared.getParentAgentMobNum();
     subAgentmobnum = await SharedPref.shared.getSubAgentMobNum();

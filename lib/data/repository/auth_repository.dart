@@ -1,11 +1,8 @@
 import 'dart:convert';
-
 import 'package:dartz/dartz.dart';
-
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-
-import '../../widgets/constants.dart';
+import '../../core/constants.dart';
 import '../../domain/interface/auth_interface.dart';
 import '../../domain/model/auth_fail_model.dart';
 import '../../domain/model/auth_success_model.dart';

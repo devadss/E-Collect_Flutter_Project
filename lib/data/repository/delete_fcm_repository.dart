@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import "package:http/http.dart" as http;
+import '../../core/constants.dart';
 import '../../domain/interface/delete_fcm_interface.dart';
-import '../../widgets/constants.dart';
+
 
 class DeleteFcmTokenRepository extends DeleteFcmTokenInterface {
   @override
@@ -15,7 +16,8 @@ class DeleteFcmTokenRepository extends DeleteFcmTokenInterface {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',
           },
-          body: json.encode({"EntityId": entityID}));
+         // body: json.encode({"EntityId": entityID}));
+          body: json.encode({"agentId": entityID}));
 
       print("Delete Fcm EntityId : ${entityID}");
       print("Delete Fcm Response : ${request.body}");
