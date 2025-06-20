@@ -465,6 +465,7 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
   num previousCheckboxTotal = 0;
   DateTime? _dateTime;
   String? agentId;
+  String? subagentId;
   String? agentOriginId;
   String? agentMobile;
   String? agentName;
@@ -529,7 +530,7 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
                 print(agentMobile);
                 print("---------------------ENTITYID--------------------");
                 print(agentId);
-                final paymentSession = await CreatePaymentSessionIdRepository().getPaymentSessionId(token, amountController.text, agentMobile, agentId, "Payment For Agent $agentName");
+                final paymentSession = await CreatePaymentSessionIdRepository().getPaymentSessionId(token, amountController.text, agentMobile, agentId, "Payment For Agent $agentName",subagentId);
                 paymentSession.fold(
                         (error){
                       print("---------------------------------ERROR PAYMENT---------------------------");
@@ -645,8 +646,9 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
 
   Future<void> loadSharedPrefs() async {
     final name = await SharedPref().getAgentName();
-    final phone = await SharedPref().getMobNum();
+    final phone = await SharedPref().getParentAgentMobNum();
     final agentid = await SharedPref().getAgentId();
+    final subAgentId = await SharedPref().getSubAgentId();
     final agentOrigin = await SharedPref().getAgentOriginId();
     final mail = await SharedPref().getEmail();
     final corp = await SharedPref().getCorpCode();
@@ -656,6 +658,7 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
     if (mounted) {
       setState(() {
         agentName = name;
+        subagentId= subAgentId;
         agentMobile = phone;
         agentId = agentid;
         agentOriginId = agentOrigin;

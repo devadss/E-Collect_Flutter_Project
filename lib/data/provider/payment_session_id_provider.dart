@@ -7,7 +7,7 @@ import '../repository/payment_session_id_repository.dart';
 class CreatePaymentSessionIdProvider with ChangeNotifier{
   final CreatePaymentSessionIdRepository _createPaymentSessionIdRepository;
   CreatePaymentSessionIdProvider(this._createPaymentSessionIdRepository);
-  Future<Either<ErrorHandler,PaymentSessionIdModel>>getPaymentSessionId(String? token, String? amount, String? phoneNumber, String? entityId, String? note) {
-    return _createPaymentSessionIdRepository.getPaymentSessionId(token, amount, phoneNumber, entityId, note);
+  Future<Either<ErrorHandler,PaymentSessionIdModel>>getPaymentSessionId(String? token, String? amount, String? phoneNumber, String? entityId, String? note, String? subagentid) {
+    return _createPaymentSessionIdRepository.getPaymentSessionId(token, amount, phoneNumber, entityId, note, subagentid);
   }
 }

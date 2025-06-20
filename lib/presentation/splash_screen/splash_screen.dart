@@ -274,8 +274,10 @@ class _SplashScreenState extends State<SplashScreen> {
   bool loginStatus = false;
   String fcmToken = "";
   String entityid = "";
+  String subAgentid = "";
   String token = "";
   String mobnum = "";
+  String subAgentmobnum = "";
   String mpin = "";
   bool _animationsCompleted = false;
 
@@ -331,7 +333,7 @@ class _SplashScreenState extends State<SplashScreen> {
             }
             else {
               if (mounted) {
-                saveFcmToken(entityid, context, "GPIN", token, mobnum, mpin);
+                saveFcmToken(subAgentid, context, "GPIN", token, subAgentmobnum, mpin);
               }
             }
           }
@@ -372,7 +374,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 }
                 else {
                   if (mounted) {
-                    saveFcmToken(entityid, context, "GPIN", token, mobnum, mpin);
+                    saveFcmToken(subAgentid, context, "GPIN", token, subAgentmobnum, mpin);
                   }
                 }
               }
@@ -413,8 +415,10 @@ class _SplashScreenState extends State<SplashScreen> {
     loginStatus = await SharedPref.shared.getLogin();
     fcmToken = await SharedPref.shared.getFcmToken();
     entityid = await SharedPref.shared.getAgentId();
+    subAgentid = await SharedPref.shared.getSubAgentId();
     token = await SharedPref.shared.getTokenValue();
     mobnum = await SharedPref.shared.getParentAgentMobNum();
+    subAgentmobnum = await SharedPref.shared.getSubAgentMobNum();
     mpin = await SharedPref.shared.getMpinValue();
     String username = await SharedPref.shared.getParentAgentName();
     String password = await SharedPref.shared.getParentAgentPassword();

@@ -106,13 +106,21 @@ class NotificationService {
 
   bool isAuthenticated = false;
 
-  Future<void> addFcmToken(String token, String entityID, BuildContext context,
+  Future<void> addFcmToken(String token,
+     // String entityID,
+      String agentID,
+      BuildContext context,
       String navPage, String appToken, String mobnum, String mpin) async {
-    final url = Uri.parse('${baseUrl}api/RegisterToken');
+    //final url = Uri.parse('${baseUrl}api/RegisterToken');
+    final url = Uri.parse('${baseUrl}api/AgentRegisterToken');
 
     final body = {
-      "EntityId": entityID.toString(),
-      "DeviceToken": token.trim().toString()
+      "agentId": agentID,
+      "mobileNumber": mobnum,
+      "deviceToken": token.trim().toString()
+      //"EntityId": entityID.toString(),
+      //"DeviceToken": token.trim().toString()
+
     };
     final response = await http.post(
       url,
@@ -171,7 +179,8 @@ Future<void> saveFcmToken(
     if (fcmToken != null) {
       // Adding a timeout for the server call
       await Future.any([
-        NotificationService().addFcmToken(fcmToken, entityID, context, navPage, tok , mob, mpin),
+        NotificationService().addFcmToken(fcmToken,
+            entityID, context, navPage, tok , mob, mpin),
         Future.delayed(const Duration(seconds: 5),
                 () => throw TimeoutException("Server call timed out"))
       ]);

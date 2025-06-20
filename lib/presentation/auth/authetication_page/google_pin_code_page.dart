@@ -27,6 +27,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   String mpin = "";
   String fcmToken = "";
   String contactNum = ""; // contains +91
+  String subAgentContactNum = ""; // contains +91
   bool _isClicked = false;
   final LocalAuthentication auth = LocalAuthentication();
   final String _sk = "770A8A65DA156D24EE2A093277530142";
@@ -39,15 +40,17 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   }
 
   void loadSharedData() async {
-    String custid = await SharedPref.shared.getAgentId();
+    String custid = await SharedPref.shared.getSubAgentId();
     String tok = await SharedPref.shared.getTokenValue();
     String fcmTok = await SharedPref.shared.getFcmToken();
     String m_pin = await SharedPref.shared.getMpinValue();
     String mobNum = await SharedPref.shared.getParentAgentMobNum();
+    String subAgentMobNum = await SharedPref.shared.getParentAgentMobNum();
     setState(() {
       token = tok;
       contactNum = mobNum;
       mpin = m_pin;
+      subAgentContactNum =subAgentMobNum;
       custID = custid;
       fcmToken = fcmTok;
     });
@@ -197,7 +200,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => const BottomNavScreen()));
               }else{
-                saveFcmToken(custID, context, "GPIN", token, contactNum, mpin);
+                saveFcmToken(custID, context, "GPIN", token, subAgentContactNum, mpin);
               }
 
             }
@@ -246,7 +249,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => const BottomNavScreen()));
             } else {
-              saveFcmToken(custID, context, "GPIN", token, contactNum, mpin);
+              saveFcmToken(custID, context, "GPIN", token, subAgentContactNum, mpin);
             }
           }
           // Navigator.pop(context);

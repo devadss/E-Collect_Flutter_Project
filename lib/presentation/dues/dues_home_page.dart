@@ -25,6 +25,7 @@ class _DuesHomePageState extends State<DuesHomePage> {
   String? token;
   String? agentOriginId;
   String? agentId;
+  String? subagentId;
   String? agentPhoneNumber;
   String? agentName;
   String? agentEmail;
@@ -41,12 +42,14 @@ class _DuesHomePageState extends State<DuesHomePage> {
     final name = await SharedPref().getAgentName();
     final id = await SharedPref().getAgentId();
     final originId = await SharedPref().getAgentOriginId();
+    final subAgentID = await SharedPref().getSubAgentId();
     final code = await SharedPref().getCorpCode();
     final email = await SharedPref().getEmail();
     final number = await SharedPref().getMobNum();
     final tok = await SharedPref().getTokenValue();
     if (mounted) {
       setState(() {
+        subagentId = subAgentID;
         agentName = name;
         agentEmail = email;
         agentId = id;
@@ -71,7 +74,7 @@ class _DuesHomePageState extends State<DuesHomePage> {
     print(entityId);
     print("---------------------NOTE--------------------");
     print(note);
-    final paymentSession = await CreatePaymentSessionIdRepository().getPaymentSessionId(token, amount, phoneNumber, entityId, note);
+    final paymentSession = await CreatePaymentSessionIdRepository().getPaymentSessionId(token, amount, phoneNumber, entityId, note,subagentId);
     paymentSession.fold(
         (error){
           print("---------------------------------ERROR PAYMENT---------------------------");
