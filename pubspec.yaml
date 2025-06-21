@@ -114,6 +114,7 @@ flutter:
     - assets/images/salary_17531132.png
     - assets/icons/
     - assets/svg/
+    - assets/images/otp_verify_img.jpg
     - assets/animations/
 
   #   - images/a_dot_burr.jpeg

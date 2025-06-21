@@ -10,7 +10,6 @@ import '../../../data/provider/auth_provider.dart';
 import '../../../data/service/notification_service/notification_service.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../app/bottom_nav_bar_page.dart';
-import '../forgot_mpin_page.dart';
 
 class GooglePinCodePage extends StatefulWidget {
   const GooglePinCodePage({super.key});
@@ -76,7 +75,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
         localizedReason: 'Please authenticate to proceed',
         options: const AuthenticationOptions(
           biometricOnly: false, // ✅ Allows device PIN/password fallback
-          stickyAuth: true,
+          stickyAuth: false,
         ),
       );
     } on PlatformException catch (e) {
@@ -170,7 +169,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
         response.fold(
               (error) {
             Navigator.pop(context);
-            print("Error: ${error?.message}");
+            print("Error: ${error.message}");
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text(
                 "Error: ${error.message}- Invalid M-pin",
@@ -356,7 +355,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          "Enter Your 6-Digit MPIN",
+          "Please authenticate to proceed",
           style: GoogleFonts.poppins(
             color: home2, // Using home2 for text
             fontWeight: FontWeight.w600,
@@ -375,17 +374,17 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
+                 Column(
                   children: [
                     const SizedBox(height: 40),
                     const Icon(
                       Icons.lock_outline,
-                      size: 60,
+                      size: 100,
                       color: home2,
                     ),
                     const SizedBox(height: 30),
                     Text(
-                      "Enter your secure MPIN",
+                      "Authenticate to Continue",
                       style: GoogleFonts.poppins(
                         fontSize: 18,
                         color: home2.withOpacity(0.8),
@@ -393,7 +392,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
                     ),
                     const SizedBox(height: 30),
                     // PIN Display
-                    Row(
+           /*         Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: List.generate(6, (index) {
                         return AnimatedContainer(
@@ -411,7 +410,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
                           ),
                         );
                       }),
-                    ),
+                    ),*/
                   ],
                 ),
 
@@ -421,18 +420,20 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
                     GridView.count(
                       physics:const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      crossAxisCount: 3,
-                      childAspectRatio: 1.5,
+                      crossAxisCount: 1,
+                      childAspectRatio: 2.5,
                       padding: EdgeInsets.zero,
                       children: [
-                        for (int i = 1; i <= 9; i++) _buildNumberButton(i),
-                        _buildBackButton(),
-                        _buildNumberButton(0),
-                        _buildBiometricButton(),
+                        _buildBiometricButton()
+                       // for (int i = 1; i <= 9; i++)
+                          //_buildNumberButton(i),
+                       // _buildBackButton(),
+                        //_buildNumberButton(0),
+                       // _buildBiometricButton(),
                       ],
                     ),
                     const SizedBox(height: 20),
-                    SizedBox(
+                 /*   SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: validateMpin,
@@ -452,8 +453,8 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
                           ),
                         ),
                       ),
-                    ),
-                    TextButton(
+                    ),*/
+                  /*  TextButton(
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -469,7 +470,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                    ),
+                    ),*/
                   ],
                 ),
               ],
@@ -539,7 +540,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
           child: Icon(
             Icons.fingerprint,
             color: home2,
-            size: 32,
+            size: 100,
           ),
         ),
       ),

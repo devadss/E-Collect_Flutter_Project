@@ -2,7 +2,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
@@ -133,10 +132,10 @@ class NotificationService {
     print('addFcmToken response = ${response.body}');
     print('statusCode: ${response.statusCode}');
     if (response.statusCode == 200) {
-      print('stnavPageatusCode: ${navPage}');
+      print('stnavPageatusCode: $navPage');
       if (navPage == 'GPIN') {
         Navigator.push(context, MaterialPageRoute(builder: (context)=>
-            GooglePinCodePage()));
+            const GooglePinCodePage()));
 
       }
     }

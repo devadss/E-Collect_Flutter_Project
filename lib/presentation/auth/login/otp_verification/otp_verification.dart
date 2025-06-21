@@ -294,7 +294,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
                   color: white,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Image.asset("assets/images/4707071.jpg"),
+                child: Image.asset("assets/images/otp_verify_img.jpg"),
               ),
             ),
 
