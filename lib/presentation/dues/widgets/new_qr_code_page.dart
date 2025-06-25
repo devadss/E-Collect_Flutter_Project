@@ -16,6 +16,7 @@ import 'package:encrypt/encrypt.dart' as encrypt;
 import '../../../data/repository/new_qr_code_repository.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../../domain/model/cash_deposit_model.dart';
+import '../../app/bottom_nav_bar_page.dart';
 
 class NewQrCodePage extends StatefulWidget {
   final String paymentSessionId;
@@ -149,24 +150,71 @@ class _NewQrCodePageState extends State<NewQrCodePage>
 
   void showWarning() {
     showDialog(
+
       context: context,
       builder: (context) {
         return AlertDialog(
-          title:const Text(
-            "WARNING",
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10)
           ),
-          content:const Text(
-            "Warning: You cannot go back or cancel this page until the transaction is complete. Please wait until the process finishes.",
-            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w300),
+          title: const Center(
+            child: Text(
+              "⚠️ WARNING",
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+            ),
+          ),
+          content: const Text(
+            softWrap: true,
+            "Are you sure you want to go back ?",
+            style: TextStyle(
+                fontSize: 14, fontWeight: FontWeight.w400, color: Colors.black),
           ),
           actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text("OK"),
-            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  style: TextButton.styleFrom(
+
+                      side: const BorderSide(color: home1),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)
+
+                      )
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _timeString = "00:00";
+                      _timer.cancel();
+                    });
+                    Navigator.pop(
+                      context,
+                    );
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const BottomNavScreen()));
+                  },
+                  child: const Text(
+                    "Yes",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+                const SizedBox(width: 10,),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: home1,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("No", style: TextStyle(color: Colors.white),),
+                ),
+              ],
+            )
           ],
         );
       },

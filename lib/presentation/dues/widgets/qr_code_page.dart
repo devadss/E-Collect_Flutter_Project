@@ -53,6 +53,7 @@ class _QrCodePageState extends State<QrCodePage> with SingleTickerProviderStateM
   String? agentOriginId;
   String? agentPhoneNumber;
   String? agentName;
+  String? subAgentId;
   String? agentEmail;
   String? corpCode;
   Uint8List? qrCodeImageBytes;
@@ -383,7 +384,7 @@ class _QrCodePageState extends State<QrCodePage> with SingleTickerProviderStateM
           "Payment for Order #1234",
           corpCode!,
           "",
-          widget.token,
+          widget.token,subAgentId!
         );
         qrCode.fold(
               (error) {
@@ -447,6 +448,7 @@ class _QrCodePageState extends State<QrCodePage> with SingleTickerProviderStateM
 
   Future<void> loadSharedPrefs() async {
     final name = await SharedPref().getAgentName();
+    final subagentId = await SharedPref().getSubAgentId();
     final id = await SharedPref().getAgentId();
     final originId = await SharedPref().getAgentOriginId();
     final code = await SharedPref().getCorpCode();
@@ -455,6 +457,7 @@ class _QrCodePageState extends State<QrCodePage> with SingleTickerProviderStateM
 
     if (mounted) {
       setState(() {
+        subAgentId =subAgentId;
         agentName = name;
         agentEmail = email;
         agentId = id;

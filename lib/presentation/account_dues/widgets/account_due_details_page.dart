@@ -444,17 +444,20 @@ import '../../../data/storage/shared_pref_helper.dart';
 import '../../dues/widgets/new_qr_code_page.dart';
 
 class AccountDueDetailsPage extends StatefulWidget {
+  final String corpCode;
   final String custName;
   final String custAcNumber;
   final String custPhoneNumber;
   final String custId;
   final String custEmail;
+
   const AccountDueDetailsPage({
     super.key,
     required this.custName,
     required this.custAcNumber,
     required this.custPhoneNumber,
-    required this.custId, required this.custEmail,
+    required this.custId,
+    required this.custEmail, required this.corpCode,
   });
 
   @override
@@ -518,12 +521,13 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
         return AlertDialog(
           title: Text("Proceed Confirmation", style: _labelTextStyle()),
           content: Text(
-            "Select the Payment Mode to proceed with the total amount of Rs. ${amountController.text}?",
+            "Select the Payment Mode to proceed with the total amount of Rs. ${amountController
+                .text}?",
             style: _valueTextStyle(),
           ),
           actions: [
             TextButton(
-              onPressed: () async{
+              onPressed: () async {
                 print("--------------------TOKEN---------------------");
                 print(token);
                 print("---------------------AMOUNT--------------------");
@@ -532,43 +536,66 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
                 print(agentMobile);
                 print("---------------------ENTITYID--------------------");
                 print(agentId);
-                final paymentSession = await CreatePaymentSessionIdRepository().getPaymentSessionId(token, amountController.text, agentMobile, agentId, "Payment For Agent $agentName",subagentId);
-                paymentSession.fold(
-                        (error){
-                      print("---------------------------------ERROR PAYMENT---------------------------");
-                      print(error);
-                    },
-                        (sessionId)async{
-                      paymentSessionId = sessionId.paymentSessionId ?? "";
-                      if (paymentSessionId!.isNotEmpty &&
-                          paymentSessionId != null &&
-                          paymentSessionId != "") {
-                        if (!mounted) return;
-                        Navigator.pop(context);
+                final paymentSession = await CreatePaymentSessionIdRepository()
+                    .getPaymentSessionId(
+                    agentOriginId
+                    :agentId,
+                    agentEmail
+                    :agentEmail,
+                    customerName
+                    :widget.custName,
+                    customerPhone
+                    :widget.custPhoneNumber,
+                    customerAccno
+                    :widget.custAcNumber,
+                    customerId
+                    :widget.custId,
+                    customerEmail
+                    :widget.custEmail,
+                    corpCode
+                    :widget.corpCode,
+                    cardRefNum: "",
+                    token: token,
+                    amount: amountController.text,
+                    agentPhone: agentMobile,
+                    agentId: agentId,
+                    note: "Payment For Agent $agentName",
+                    subAgentId: subagentId,
+                    agentName: agentName);
+                paymentSession.fold((error) {
+                  print(
+                      "---------------------------------ERROR PAYMENT---------------------------");
+                  print(error);
+                }, (sessionId) async {
+                  paymentSessionId = sessionId.paymentSessionId ?? "";
+                  if (paymentSessionId!.isNotEmpty &&
+                      paymentSessionId != null &&
+                      paymentSessionId != "") {
+                    if (!mounted) return;
+                    Navigator.pop(context);
 
-                        if (!mounted) return;
-                        final result = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => NewQrCodePage(
+                    if (!mounted) return;
+                    final result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            NewQrCodePage(
                               paymentSessionId: paymentSessionId!,
                               amount: amountController.text ?? "",
                               token: token!,
                             ),
-                          ),
-                        );
-                        if (!mounted) return;
-                        if (result == "fetch_balance") {
-                          Navigator.pop(context);
-                        }
-                      } else {
-                        if (!mounted) return;
-                        Navigator.pop(context);
-                        EasyLoading.showToast("Session id is null");
-                      }
+                      ),
+                    );
+                    if (!mounted) return;
+                    if (result == "fetch_balance") {
+                      Navigator.pop(context);
                     }
-                );
+                  } else {
+                    if (!mounted) return;
+                    Navigator.pop(context);
+                    EasyLoading.showToast("Session id is null");
+                  }
+                });
                 // Navigator.push(
                 //     context,
                 //     MaterialPageRoute(
@@ -617,14 +644,14 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
         "Payment for Order #12345",
         corpCode!,
         "",
-        token.toString());
+        token.toString(), subagentId!);
 
     send.fold(
-      (error) {
+          (error) {
         print("-------------------ERROR---------------------");
         print(error);
       },
-      (sendLink) {
+          (sendLink) {
         if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
           Share.share("Here is your payment link: ${sendLink.linkUrl}");
         } else {
@@ -660,7 +687,7 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
     if (mounted) {
       setState(() {
         agentName = name;
-        subagentId= subAgentId;
+        subagentId = subAgentId;
         agentMobile = phone;
         agentId = agentid;
         agentOriginId = agentOrigin;
@@ -680,8 +707,8 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
         elevation: 0,
         leading: IconButton(
           icon: Platform.isIOS
-          ?const Icon(Icons.arrow_back_ios, color: home2)
-          :const Icon(Icons.arrow_back, color: home2),
+              ? const Icon(Icons.arrow_back_ios, color: home2)
+              : const Icon(Icons.arrow_back, color: home2),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
@@ -769,7 +796,7 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
                 ),
                 if (label == "Mobile")
                   IconButton(
-                    icon:const Icon(Icons.call, color: home1, size: 20),
+                    icon: const Icon(Icons.call, color: home1, size: 20),
                     onPressed: () => _callNumber(value),
                   ),
               ],
@@ -815,8 +842,7 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
                     Row(
                       children: [
                         Expanded(
-                          child: Text(
-                              "Due Amount: ₹${due.dueAmount}",
+                          child: Text("Due Amount: ₹${due.dueAmount}",
                               style: GoogleFonts.poppins(
                                 color: home1,
                                 fontWeight: FontWeight.w600,
@@ -917,134 +943,140 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => GestureDetector(
-        onTap: () {},
-        behavior: HitTestBehavior.opaque,
-        child: Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: white,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(24),
+      builder: (context) =>
+          GestureDetector(
+            onTap: () {},
+            behavior: HitTestBehavior.opaque,
+            child: Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery
+                    .of(context)
+                    .viewInsets
+                    .bottom,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 20,
-                  spreadRadius: 2,
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "Total Amount Due",
-                  style: GoogleFonts.poppins(
-                    color: home1,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: white,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(24),
                   ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: amountController,
-                  keyboardType: TextInputType.number,
-                  style: GoogleFonts.poppins(
-                    color: home1,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.center,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                    prefixIcon: const Icon(Icons.currency_rupee),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: home1.withOpacity(0.3)),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: home1.withOpacity(0.3)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide:const BorderSide(color: home1, width: 1.5),
-                    ),
-                  ),
-                  onChanged: (value) {
-                    int enteredAmount = int.tryParse(value) ?? 0;
-                    int maxDueAmount = 0;
-
-                    final provider =
-                    Provider.of<DueListProvider>(context, listen: false);
-                    for (var due in provider.dueListModel!.duesList!.data!) {
-                      maxDueAmount += (due.dueAmount as num).toInt();
-                    }
-
-                    if (enteredAmount > maxDueAmount) {
-                      setState(() {
-                        amountController.text = maxDueAmount.toString();
-                      });
-                    }
-                  },
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => Navigator.pop(context),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          side:const BorderSide(color: home1),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: Text(
-                          "Cancel",
-                          style: GoogleFonts.poppins(
-                            color: home1,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: _proceedButtonClick,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: home1,
-                          foregroundColor: white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: Text(
-                          "Proceed",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 20,
+                      spreadRadius: 2,
                     ),
                   ],
                 ),
-              ],
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "Total Amount Due",
+                      style: GoogleFonts.poppins(
+                        color: home1,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: amountController,
+                      keyboardType: TextInputType.number,
+                      style: GoogleFonts.poppins(
+                        color: home1,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        prefixIcon: const Icon(Icons.currency_rupee),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: home1.withOpacity(0.3)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: home1.withOpacity(0.3)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                              color: home1, width: 1.5),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        int enteredAmount = int.tryParse(value) ?? 0;
+                        int maxDueAmount = 0;
+
+                        final provider =
+                        Provider.of<DueListProvider>(context, listen: false);
+                        for (var due in provider.dueListModel!.duesList!
+                            .data!) {
+                          maxDueAmount += (due.dueAmount as num).toInt();
+                        }
+
+                        if (enteredAmount > maxDueAmount) {
+                          setState(() {
+                            amountController.text = maxDueAmount.toString();
+                          });
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () => Navigator.pop(context),
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              side: const BorderSide(color: home1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: Text(
+                              "Cancel",
+                              style: GoogleFonts.poppins(
+                                color: home1,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: _proceedButtonClick,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: home1,
+                              foregroundColor: white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: Text(
+                              "Proceed",
+                              style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-      ),
     );
   }
 
@@ -1052,7 +1084,10 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
     return SingleChildScrollView(
       reverse: true, // Moves content up when keyboard opens
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.15,
+        height: MediaQuery
+            .of(context)
+            .size
+            .height * 0.15,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [white, white],
@@ -1077,7 +1112,7 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
                   cursorColor: white,
                   controller: amountController,
                   keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
+                  const TextInputType.numberWithOptions(decimal: true),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -1089,7 +1124,7 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
                     int maxDueAmount = 0;
 
                     final provider =
-                        Provider.of<DueListProvider>(context, listen: false);
+                    Provider.of<DueListProvider>(context, listen: false);
                     for (var due in provider.dueListModel!.duesList!.data!) {
                       maxDueAmount += (due.dueAmount as num).toInt();
                     }
@@ -1125,12 +1160,12 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
                 onPressed: _proceedButtonClick,
                 style: ElevatedButton.styleFrom(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                   backgroundColor: white,
                   foregroundColor: teal700,
-                  textStyle:const TextStyle(
+                  textStyle: const TextStyle(
                       fontWeight: FontWeight.w600, fontSize: 15),
                 ),
                 child: const Text("Proceed"),
@@ -1190,7 +1225,7 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
 
     try {
       bool launched =
-          await launchUrl(url, mode: LaunchMode.externalApplication);
+      await launchUrl(url, mode: LaunchMode.externalApplication);
       if (!launched) {
         throw 'Could not launch dialer';
       }
@@ -1207,19 +1242,24 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
 
   String formatNumberWithCommas(double? number) {
     final formatter =
-        NumberFormat("#,##,##0.00", "en_IN"); // Indian numbering system
+    NumberFormat("#,##,##0.00", "en_IN"); // Indian numbering system
 
     return formatter.format(number ?? 0.0); // Default to 0.0 if number is null
   }
 
-  TextStyle _labelTextStyle() =>const TextStyle(
-      fontWeight: FontWeight.w600, fontSize: 16, color: black);
-  TextStyle _valueTextStyle() =>const TextStyle(
-      fontWeight: FontWeight.w500, fontSize: 16, color: black87);
-  TextStyle _infoTextStyle() =>const TextStyle(
-      fontWeight: FontWeight.w500, fontSize: 14, color: black87);
-  TextStyle _bottomTextStyle() =>const TextStyle(
-      fontWeight: FontWeight.w600, fontSize: 16, color: black);
+  TextStyle _labelTextStyle() =>
+      const TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: black);
+
+  TextStyle _valueTextStyle() =>
+      const TextStyle(
+          fontWeight: FontWeight.w500, fontSize: 16, color: black87);
+
+  TextStyle _infoTextStyle() =>
+      const TextStyle(
+          fontWeight: FontWeight.w500, fontSize: 14, color: black87);
+
+  TextStyle _bottomTextStyle() =>
+      const TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: black);
 }
 
 String generateRandom12DigitNumber() {

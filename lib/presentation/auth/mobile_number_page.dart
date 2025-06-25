@@ -65,6 +65,9 @@ class _MobileNumberVerificationPageState
         await SharedPref.shared.setSubAgentMobNum(
           parentAgentDetailProvider.subAgent!.data.mobileNumber.toString(),
         );
+        await SharedPref.shared.setAgentOriginId(
+            parentAgentDetailProvider.subAgent!.data.subAgentOriginId.toString()
+        );
         await SharedPref.shared.setSubAgentCode(
           parentAgentDetailProvider.subAgent!.data.subAgentCode.toString(),
         );
@@ -82,6 +85,8 @@ class _MobileNumberVerificationPageState
               .parentAgentCredentialModel!.b.userName);
           SharedPref.shared.setParentAgentPassword(parentAgentCredentialProvider
               .parentAgentCredentialModel!.b.mobPassword);
+          SharedPref.shared.setAgentName(parentAgentCredentialProvider
+              .parentAgentCredentialModel!.b.userName);
           final custRegisterProvider = Provider.of<CustRegisterProvider>(context, listen: false,);
 
           await custRegisterProvider.checkRegCust(int.parse(
@@ -121,9 +126,9 @@ class _MobileNumberVerificationPageState
                     "COLLECTION_AGENT") {
                   print("Phase 2");
 
-                  SharedPref.shared.setAgentOriginId(
-                    customer.response!.data!['AgentOrginId'].toString(),
-                  );
+                  // SharedPref.shared.setAgentOriginId(
+                  //   customer.response!.data!['AgentOrginId'].toString(),
+                  // );
                   SharedPref.shared.setEmail(
                     customer.response!.data!['emailId'].toString(),
                   );

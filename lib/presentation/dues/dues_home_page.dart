@@ -39,7 +39,7 @@ class _DuesHomePageState extends State<DuesHomePage> {
   }
 
   Future<void> loadSharedPrefs() async {
-    final name = await SharedPref().getAgentName();
+    final name = await SharedPref().getParentAgentName();
     final id = await SharedPref().getAgentId();
     final originId = await SharedPref().getAgentOriginId();
     final subAgentID = await SharedPref().getSubAgentId();
@@ -63,7 +63,17 @@ class _DuesHomePageState extends State<DuesHomePage> {
     provider.getDuesUnderAgent(agentOriginId);
   }
 
-  Future<void> getPaymentSessionId(String? token,String? amount,String? phoneNumber,String? entityId,String? note)async{
+  Future<void> getPaymentSessionId(
+      String? token,
+      String? customerName,
+      String? custPhoneNumber,
+      String? custAcNumber,
+      String? custId,
+      String? custEmail,
+
+      String? amount,String?
+      phoneNumber,String?
+      entityId,String? note)async{
     print("--------------------TOKEN---------------------");
     print(token);
     print("---------------------AMOUNT--------------------");
@@ -74,7 +84,32 @@ class _DuesHomePageState extends State<DuesHomePage> {
     print(entityId);
     print("---------------------NOTE--------------------");
     print(note);
-    final paymentSession = await CreatePaymentSessionIdRepository().getPaymentSessionId(token, amount, phoneNumber, entityId, note,subagentId);
+    final paymentSession = await CreatePaymentSessionIdRepository()
+        .getPaymentSessionId(
+    agentOriginId
+        :agentId,
+    agentEmail
+        :agentEmail,
+    customerName
+        :customerName,
+    customerPhone
+        :custPhoneNumber,
+    customerAccno
+        : custAcNumber,
+    customerId
+        : custId,
+    customerEmail
+        : custEmail,
+    corpCode
+        :corpCode,
+    cardRefNum: "",
+    token: token,
+    amount: amount,
+    agentPhone: agentPhoneNumber,
+    agentId: agentId,
+    note: "Payment For Agent $agentName",
+    subAgentId: subagentId,
+    agentName: agentName);
     paymentSession.fold(
         (error){
           print("---------------------------------ERROR PAYMENT---------------------------");
@@ -693,7 +728,15 @@ class _DuesHomePageState extends State<DuesHomePage> {
                                                                       controller
                                                                           .text,
                                                                     )
-                                                                    :getPaymentSessionId(token, controller.text, "$agentPhoneNumber", agentId, "Payment For Agent $agentName");
+                                                                    :getPaymentSessionId(token,
+                                                                    provider.agentModel?.duesList1?.data?[index].name,
+                                                                    provider.agentModel?.duesList1?.data?[index].phone,
+                                                                    provider.agentModel?.duesList1?.data?[index].accNo,
+                                                                    provider.agentModel?.duesList1?.data?[index].custId,
+                                                                    provider.agentModel?.duesList1?.data?[index].email,
+
+
+                                                                    controller.text, "$agentPhoneNumber", agentId, "Payment For Agent $agentName");
                                                                     // : Navigator.push(
                                                                     //   context,
                                                                     //   MaterialPageRoute(
@@ -825,6 +868,7 @@ class _DuesHomePageState extends State<DuesHomePage> {
       corpCode!,
       "",
       token!,
+      subagentId!
       // agentName!,
       // agentId!,
       // agentOriginId!,

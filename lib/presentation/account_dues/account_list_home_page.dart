@@ -15,6 +15,7 @@ class AccountListHomePage extends StatefulWidget {
 
 class _AccountListHomePageState extends State<AccountListHomePage> {
   String? agentId;
+  String? corpCode;
 
   @override
   void initState() {
@@ -26,9 +27,11 @@ class _AccountListHomePageState extends State<AccountListHomePage> {
 
   Future<void> loadSharedPrefs() async {
     final id = await SharedPref().getAgentOriginId();
+    final crpCd = await SharedPref().getCorpCode();
     if (mounted) {
       setState(() {
         agentId = id;
+        corpCode = crpCd;
       });
       print(
           "----------------------------------AGENT ORIGIN ID---------------------------");
@@ -160,6 +163,7 @@ class _AccountListHomePageState extends State<AccountListHomePage> {
                                                         .custId ??
                                                     "CUSTID",
                                                 custEmail: "",
+                                                corpCode: corpCode.toString(),
                                               )));
                                 },
                                 child: Container(
@@ -169,8 +173,8 @@ class _AccountListHomePageState extends State<AccountListHomePage> {
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
                                       color: white,
-                                      border: Border.all(
-                                          color: home1, width: 1.2)),
+                                      border:
+                                          Border.all(color: home1, width: 1.2)),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 10),
@@ -228,14 +232,11 @@ class _AccountListHomePageState extends State<AccountListHomePage> {
                                                       const SizedBox(width: 5),
                                                       const Text(
                                                         "Collect",
-                                                        style:
-                                                            TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w700,
-                                                                fontSize: 12,
-                                                                color:
-                                                                home2),
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                            fontSize: 12,
+                                                            color: home2),
                                                       )
                                                     ],
                                                   ),

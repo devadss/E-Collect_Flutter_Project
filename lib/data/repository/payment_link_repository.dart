@@ -24,7 +24,8 @@ class PaymentLinkRepository implements IPaymentLinkRepository {
       num linkAmount,
       String note,
       String corpCode,
-      String cardRefNum,String token) async {
+      String cardRefNum,String token,
+      String  subAgentId) async {
     final url = Uri.parse("${baseUrl}api/Cashfree/CreatePaymentLink");
 
     final Map<String, dynamic> body = {
@@ -33,7 +34,8 @@ class PaymentLinkRepository implements IPaymentLinkRepository {
         "agent_id": agentId,
         "agent_orginId": agentOriginId,
         "agent_phone": agentPhone,
-        "agent_email": agentEmail
+        "agent_email": agentEmail,
+        "SubAgentId":subAgentId
       },
       "customer_details": {
         "customer_name": customerName,

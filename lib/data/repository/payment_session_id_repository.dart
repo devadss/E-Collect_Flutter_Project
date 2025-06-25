@@ -11,19 +11,52 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 class CreatePaymentSessionIdRepository
     implements ICreatePaymentSessionIdRepository {
   @override
-  Future<Either<ErrorHandler, PaymentSessionIdModel>> getPaymentSessionId(
-      String? token, String? amount, String? phoneNumber, String? entityId,
-      String? note, String? subAgentID) async {
+  Future<Either<ErrorHandler, PaymentSessionIdModel>>
+  getPaymentSessionId({
+    required String? token,
+    required String? agentName,
+      required String? agentId,
+      required String? agentOriginId,
+      required String? agentPhone,
+      required String? agentEmail,
+      required String? subAgentId,
+      required String? customerName,
+      required String? customerPhone,
+      required String? customerAccno,
+      required String? customerId,
+      required String? customerEmail,
+      required String? amount,
+      required String? note,
+      required String? corpCode,
+      required String? cardRefNum}) async {
     //final url = Uri.parse("${baseUrl}api/Cashfree/MerchantOrderCreate");
     final url = Uri.parse("${baseUrl}api/Cashfree/CollectiontOrderCreate");
     final body = {
-
+      "agent_details": {
+        "agent_name": agentName,
+        "agent_id": agentId,
+        "agent_orginId": agentOriginId,
+        "agent_phone": agentPhone,
+        "agent_email": agentEmail,
+        "SubAgentId": subAgentId
+      },
+      "customer_details": {
+        "customer_name": customerName,
+        "customer_phone": customerPhone,
+        "customer_accno": customerAccno,
+        "customer_id": customerId,
+        "customer_email": customerEmail
+      },
       "Amount": amount,
-      "CustomerMobNo": phoneNumber,
-      "EntityId": entityId,
-      "Note": note,
-      "SubAgentId":subAgentID
+      "note": "Payment for Order",
+      "CorpCode": corpCode,
+      "CardRefNum": ""
     };
+      // "Amount": amount,
+      // "CustomerMobNo": phoneNumber,
+      // "EntityId": entityId,
+      // "Note": note,
+      // "SubAgentId":subAgentID
     print("Body = $body");
     bool checkConnection = await InternetConnectionChecker().hasConnection;
     if (checkConnection) {
@@ -35,6 +68,7 @@ class CreatePaymentSessionIdRepository
             'Content-Type': 'application/json',
           }
       );
+      print("Body = ${response.body}");
       if (response.statusCode == 200 || response.statusCode == 201) {
         try {
           return Right(
