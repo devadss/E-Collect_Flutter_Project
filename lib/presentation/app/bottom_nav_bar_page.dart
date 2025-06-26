@@ -150,6 +150,21 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       _updateIndicatorPosition(animate: false);
     });
   }
+  Widget _getSelectedPage(int index) {
+    switch (index) {
+      case 0:
+        return HomePage();
+      case 1:
+        return DuesHomePage();
+      case 2:
+        return AccountListHomePage();
+      case 3:
+        return ProfileHomePage();
+      default:
+        return HomePage();
+    }
+  }
+
 
   void _updateIndicatorPosition({bool animate = true}) {
     final RenderBox renderBox = _tabKeys[_selectedIndex].currentContext?.findRenderObject() as RenderBox;
@@ -186,15 +201,17 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       },
       child: Scaffold(
         backgroundColor: white,
-        body: IndexedStack(
-          index: _selectedIndex,
-          children: const [
-            HomePage(),
-            DuesHomePage(),
-            AccountListHomePage(),
-            ProfileHomePage(),
-          ],
-        ),
+        body: _getSelectedPage(_selectedIndex),
+
+      // IndexedStack(
+        //   index: _selectedIndex,
+        //   children: const [
+        //     HomePage(),
+        //     DuesHomePage(),
+        //     AccountListHomePage(),
+        //     ProfileHomePage(),
+        //   ],
+        // ),
         bottomNavigationBar: Container(
           height: 80,
           decoration: BoxDecoration(

@@ -1,0 +1,37 @@
+import 'dart:convert';
+import 'package:dartz/dartz.dart';
+import 'package:http/http.dart' as http;
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+
+import '../../core/constants.dart';
+import '../../core/general.dart';
+import '../../domain/interface/qr_transcation_history_interface.dart';
+import '../../domain/model/qr_transaction_history_model.dart';
+import '../service/error_handler.dart';
+
+class QRTransactionHistoryRepository implements IQRTransactionHistoryRepository{
+  @override
+  Future<Either<ErrorHandler, QrTranscationHistoryModel>> getQrTranscationHistory(String? dateFilterType,String? startDate,String? endDate,String? source) async{
+   final url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source");
+   bool checkConnection = await InternetConnectionChecker().hasConnection;
+   if(checkConnection){
+     print(url);
+     final response = await http.get(url);
+     if(response.statusCode == 200 || response.statusCode == 201){
+       try{
+         printLog("==================================QR TRANSACTION STATUS CODE=================================");
+         printLog(response.statusCode);
+         printLog("==================================QR TRANSACTION STATUS CODE=================================");
+         printLog(response.body);
+         return Right(QrTranscationHistoryModel.fromJson(jsonDecode(response.body)));
+       }catch(e){
+         return Left(DataParsingException(e));
+       }
+     }else{
+       return Left(FetchDataError("Failed to Fetch Data"));
+     }
+   }else{
+     return Left(FetchDataError("No Internet Connection"));
+   }
+  }
+}

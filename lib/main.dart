@@ -22,22 +22,26 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'data/provider/auth_provider.dart';
+import 'data/provider/collection_base_url_provider.dart';
 import 'data/provider/fetch_account_balance_provider.dart';
 import 'data/provider/otp_request_provider.dart';
 import 'data/provider/otp_verification_provider.dart';
 import 'data/provider/parent_agent_detail_provider/parent_agent_detil_provider.dart';
 import 'data/provider/parent_agent_detail_provider/parent_credential_provider/parent_credential_provider.dart';
+import 'data/provider/qr_transcation_history_provider.dart';
 import 'data/provider/set_mpin_provider.dart';
 import 'data/provider/token_expiry_provider.dart';
 import 'data/provider/token_request_provider.dart';
 import 'data/provider/transaction_provider.dart';
 import 'data/repository/TransactionRepository.dart';
 import 'data/repository/auth_repository.dart';
+import 'data/repository/collection_base_url_repo.dart';
 import 'data/repository/create_order_repository.dart';
 import 'data/repository/otp_request_repository.dart';
 import 'data/repository/otp_verification_repository.dart';
 import 'data/repository/parent_agent/fetch_parent_crentials/parent_agent_credential_repository.dart';
 import 'data/repository/parent_agent/parent_agent_detail_repo.dart';
+import 'data/repository/qr_transcation_history_repository.dart';
 import 'data/repository/set_mpin_repository.dart';
 import 'data/repository/token _repository.dart';
 import 'data/repository/token_request_repository.dart';
@@ -89,6 +93,8 @@ void main() async {
   }
 
   runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => CollectionBaseUrlProvider(CollectionBaseUrlRepo())),
+    ChangeNotifierProvider(create: (_) => QRTransactionHistoryProvider(QRTransactionHistoryRepository())),
     ChangeNotifierProvider(create: (_) => CustRegisterProvider(CustRegRepository())),
     ChangeNotifierProvider(create: (_) => TokenRequestProvider(TokenRequestRepository())),
     ChangeNotifierProvider(create: (_) => OtpRequestProvider(OtpRequestRepository())),

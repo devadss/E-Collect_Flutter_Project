@@ -45,7 +45,7 @@ class _DuesHomePageState extends State<DuesHomePage> {
     final subAgentID = await SharedPref().getSubAgentId();
     final code = await SharedPref().getCorpCode();
     final email = await SharedPref().getEmail();
-    final number = await SharedPref().getMobNum();
+    final number = await SharedPref().getParentAgentMobNum();
     final tok = await SharedPref().getTokenValue();
     if (mounted) {
       setState(() {
@@ -137,7 +137,7 @@ class _DuesHomePageState extends State<DuesHomePage> {
             );
             if (!mounted) return;
             if (result == "fetch_balance") {
-              Navigator.pop(context);
+             // Navigator.pop(context);
             }
           } else {
             if (!mounted) return;
