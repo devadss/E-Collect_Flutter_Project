@@ -217,7 +217,7 @@ class _HomePageState extends State<HomePage> {
                             period = 'LAST_MONTH';
                             final today = DateTime.now();
                             final firstDayLastMonth = DateTime(today.year, today.month - 1, 1);
-                            final lastDayLastMonth = DateTime(today.year, today.month, 1).subtract(Duration(days: 1));
+                            final lastDayLastMonth = DateTime(today.year, today.month, 1).subtract(const Duration(days: 1));
 
                             final formattedFdate = DateFormat('yyyy-MM-dd').format(firstDayLastMonth);
                             final formattedTdate = DateFormat('yyyy-MM-dd').format(lastDayLastMonth);
