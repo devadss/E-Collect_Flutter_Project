@@ -1,5 +1,5 @@
-
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:collection_qr_flutter/data/provider/link_transcation_history_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -12,9 +12,8 @@ import '../../data/provider/fetch_account_balance_provider.dart';
 import '../../data/provider/qr_transcation_history_provider.dart';
 import '../../data/provider/transaction_provider.dart';
 import '../../data/repository/cust_reg_repository.dart';
-import '../../domain/model/agent_transction_model.dart';
+import '../../domain/model/link_transaction_history_model.dart';
 import '../../domain/model/qr_transaction_history_model.dart';
-import '../trancstion/transction_history_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -32,6 +31,7 @@ class _HomePageState extends State<HomePage> {
   String? td;
   String? agentOriginId;
   String? mobNum;
+  String? subAgentID;
   bool? isBannerAvailable;
   int _selectedTabIndex = 0;
   final List<String> bannerImages = [
@@ -45,110 +45,299 @@ class _HomePageState extends State<HomePage> {
       CarouselSliderController();
   int _currentBannerIndex = 0;
 
-
   @override
   void initState() {
     super.initState();
-    final provider = Provider.of<QRTransactionHistoryProvider>(context,listen: false);
-    provider.getQrTranscationHistory("CUSTOM", "2025-06-8", "2025-06-26", "MERCHANT");
+    final provider =
+        Provider.of<QRTransactionHistoryProvider>(context, listen: false);
+    provider.getQrTranscationHistory(
+        "CUSTOM", "2025-06-8", "2025-06-26", "MERCHANT");
 
-    loadSharedPrefs();
+    loadSharedPrefs(context);
   }
-
-  void filterDialog() {
-    final provider = Provider.of<QRTransactionHistoryProvider>(context,listen: false);
-
+  void showDateRangeFilter() {
+    final qrProvider = context.read<QRTransactionHistoryProvider>();
+    final linkProvider = context.read<LinkTransactionHistoryProvider>();
 
     DateTime? fromDate;
     DateTime? toDate;
+    int selectedIndex = 0; // 0=Today,1=This Week,...4=Custom
 
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-              title: const Text("Select Date Range"),
-              backgroundColor: Colors.white,
-              content: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.date_range),
-                      TextButton(
-                        onPressed: () async {
-                          DateTime? picked = await showDatePicker(
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: MediaQuery.of(context).viewInsets,
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              Widget buildDatePickers() {
+                String fmt(DateTime d) => DateFormat.yMMMd().format(d);
+                return Row(
+                  children: [
+                    Expanded(
+                      child: _DatePickerButton(
+                        label: fromDate != null ? fmt(fromDate!) : 'From',
+                        icon: Icons.calendar_today_outlined,
+                        onTap: () async {
+                          final picked = await showDatePicker(
                             context: context,
                             initialDate: fromDate ?? DateTime.now(),
                             firstDate: DateTime(2000),
                             lastDate: DateTime(2100),
                           );
-                          if (picked != null) {
-                            setState(() {
-                              fromDate = picked;
-                              fd = fromDate!.toLocal().toString().split(' ')[0];
-                            });
-                          }
+                          if (picked != null) setState(() => fromDate = picked);
                         },
-                        child: Text(
-                          fromDate != null
-                              ? "From: $fd"
-                              : "From Date",
-                        ),
                       ),
-                    ],
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.date_range),
-                      TextButton(
-                        onPressed: () async {
-                          DateTime? picked = await showDatePicker(
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _DatePickerButton(
+                        label: toDate != null ? fmt(toDate!) : 'To',
+                        icon: Icons.calendar_today_outlined,
+                        onTap: () async {
+                          final picked = await showDatePicker(
                             context: context,
                             initialDate: toDate ?? DateTime.now(),
                             firstDate: DateTime(2000),
                             lastDate: DateTime(2100),
                           );
-                          if (picked != null) {
-                            setState(() {
-                              toDate = picked;
-                              td = toDate!.toLocal().toString().split(' ')[0];
-                            });
-                          }
+                          if (picked != null) setState(() => toDate = picked);
                         },
-                        child: Text(
-                          toDate != null
-                              ? "To: $td"
-                              : "To Date",
-                        ),
                       ),
-                    ],
-                  ),
-                  TextButton(
-                    onPressed: () async {
+                    ),
+                  ],
+                );
+              }
 
-                      // ✅ Use fromDate and toDate here
-                      Navigator.pop(context); // Close the dialog
-                      await provider.getQrTranscationHistory("CUSTOM",
-                          fromDate!.toLocal().toString().split(' ')[0],
-                          toDate!.toLocal().toString().split(' ')[0], "MERCHANT");
-                      print("Selected From: $fromDate, To: $toDate");
+              bool isApplyEnabled = selectedIndex == 4 && fromDate != null && toDate != null;
 
-                    },
-                    child: const Text("GO"),
-                  ),
-                ],
-              ),
-            );
-          },
+              return Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    selectedIndex == 4?
+                    Text('Select Date Range', style: Theme.of(context).textTheme.titleLarge):
+                    Text('Select Filter type', style: Theme.of(context).textTheme.titleLarge)
+                    ,
+                    const SizedBox(height: 16),
+
+                    // Tabs
+                    ToggleButtons(
+                      hoverColor: home2,
+                      splashColor: home1.withOpacity(0.7),
+                      fillColor: home1.withOpacity(0.1),
+                      selectedBorderColor: home1,
+                      isSelected: List.generate(5, (i) => i == selectedIndex),
+                      onPressed: (i) => setState(() {
+                        selectedIndex = i;
+                        if (i != 4) {
+                          fromDate = null;
+                          toDate = null;
+                        }
+                      }),
+                      borderRadius: BorderRadius.circular(8),
+                      children: const [
+                        Padding(padding: EdgeInsets.symmetric(horizontal: 12), child: Text('Today', style: TextStyle(color: Colors.black),)),
+                        Padding(padding: EdgeInsets.symmetric(horizontal: 12), child: Text('This Week',style: TextStyle(color: Colors.black))),
+                        Padding(padding: EdgeInsets.symmetric(horizontal: 12), child: Text('This Month',style: TextStyle(color: Colors.black))),
+                        Padding(padding: EdgeInsets.symmetric(horizontal: 12), child: Text('Last Month',style: TextStyle(color: Colors.black))),
+                        Padding(padding: EdgeInsets.symmetric(horizontal: 12), child: Text('Custom',style: TextStyle(color: Colors.black))),
+                      ],
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Only show date pickers for Custom
+                    if (selectedIndex == 4) buildDatePickers(),
+
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: home1,
+                          foregroundColor: Colors.white,
+                          minimumSize: const Size.fromHeight(48)),
+                      onPressed: () async {
+                        Navigator.pop(context);
+
+                        late String period;
+                        String from = '', to = '';
+
+                        switch (selectedIndex) {
+                          case 0:
+                            period = 'TODAY';
+                            DateTime now = DateTime.now();
+                            final formatted = DateFormat('yyyy-MM-dd').format(now);
+                            await qrProvider.getQrTranscationHistory(
+                                period, formatted, formatted, 'MERCHANT');
+                            await linkProvider.getLinkTransactionHistory(
+                                period, formatted, formatted, subAgentID!);
+                            break;
+                          case 1:
+                            period = 'THIS_WEEK';
+                            DateTime today = DateTime.now();
+                            DateTime lastDate = today.add(const Duration(days: 7));
+
+                            final formattedFdate = DateFormat('yyyy-MM-dd').format(today!);
+                            final formattedTdate = DateFormat('yyyy-MM-dd').format(lastDate!);
+                            await qrProvider.getQrTranscationHistory(
+                                period, formattedFdate, formattedTdate, 'MERCHANT');
+                            await linkProvider.getLinkTransactionHistory(
+                                period, formattedFdate, formattedTdate, subAgentID!);
+
+                            break;
+                          case 2:
+                            period = 'THIS_MONTH';
+                            DateTime today = DateTime.now();
+                            DateTime lastDate = today.add(const Duration(days: 30));
+
+                            final formattedFdate = DateFormat('yyyy-MM-dd').format(today);
+                            final formattedTdate = DateFormat('yyyy-MM-dd').format(lastDate);
+                            await qrProvider.getQrTranscationHistory(
+                                period, formattedFdate, formattedTdate, 'MERCHANT');
+                            await linkProvider.getLinkTransactionHistory(
+                                period, formattedFdate, formattedTdate, subAgentID!);
+
+                            break;
+                          case 3:
+                            period = 'LAST_MONTH';
+                            DateTime today = DateTime.now();
+                            DateTime lastDate = today.add(const Duration(days: 60));
+
+                            final formattedFdate = DateFormat('yyyy-MM-dd').format(today);
+                            final formattedTdate = DateFormat('yyyy-MM-dd').format(lastDate);
+                            await qrProvider.getQrTranscationHistory(
+                                period, formattedFdate, formattedTdate, 'MERCHANT');
+                            await linkProvider.getLinkTransactionHistory(
+                                period, formattedFdate, formattedTdate, subAgentID!);
+
+                            break;
+                          case 4:
+                            period = 'CUSTOM';
+                            from = DateFormat('yyyy-MM-dd').format(fromDate!);
+                            to = DateFormat('yyyy-MM-dd').format(toDate!);
+
+                            await qrProvider.getQrTranscationHistory(
+                                period, from, to, 'MERCHANT');
+                            await linkProvider.getLinkTransactionHistory(
+                                period, from, to, subAgentID!);
+                            break;
+                        }
+
+                        await qrProvider.getQrTranscationHistory(period, from, to, 'MERCHANT');
+                        await linkProvider.getLinkTransactionHistory(period, from, to, subAgentID!);
+                      },
+                      // only enable 'Apply Filter' if custom and dates selected
+                      // Otherwise always enabled - you control logic separately
+                      onLongPress: null,
+                      child: Text(selectedIndex == 4 ? 'Apply Filter' : 'Apply'),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                ),
+              );
+            },
+          ),
         );
       },
     );
   }
+
+/*  void showDateRangeFilter() {
+    final qrProvider = context.read<QRTransactionHistoryProvider>();
+    final linkProvider = context.read<LinkTransactionHistoryProvider>();
+
+    DateTime? fromDate;
+    DateTime? toDate;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: MediaQuery.of(context).viewInsets,
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              String format(DateTime d) => DateFormat.yMMMd().format(d);
+              return Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Select Date Range',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _DatePickerButton(
+                            label: fromDate != null ? format(fromDate!) : 'From',
+                            icon: Icons.calendar_today_outlined,
+                            onTap: () async {
+                              final picked = await showDatePicker(
+                                context: context,
+                                initialDate: fromDate ?? DateTime.now(),
+                                firstDate: DateTime(2000),
+                                lastDate: DateTime(2100),
+                              );
+                              if (picked != null) setState(() => fromDate = picked);
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _DatePickerButton(
+                            label: toDate != null ? format(toDate!) : 'To',
+                            icon: Icons.calendar_today_outlined,
+                            onTap: () async {
+                              final picked = await showDatePicker(
+                                context: context,
+                                initialDate: toDate ?? DateTime.now(),
+                                firstDate: DateTime(2000),
+                                lastDate: DateTime(2100),
+                              );
+                              if (picked != null) setState(() => toDate = picked);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+                      onPressed: (fromDate != null && toDate != null)
+                          ? () async {
+                        Navigator.pop(context);
+                        final from = DateFormat('yyyy-MM-dd').format(fromDate!);
+                        final to = DateFormat('yyyy-MM-dd').format(toDate!);
+                        await qrProvider.getQrTranscationHistory(
+                            'CUSTOM', from, to, 'MERCHANT');
+                        await linkProvider.getLinkTransactionHistory(
+                            'CUSTOM', from, to, subAgentID!);
+                      }
+                          : null,
+                      child: const Text('Apply Filter'),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }*/
+
 
 
   void showProgressDialog(BuildContext context) {
@@ -162,12 +351,12 @@ class _HomePageState extends State<HomePage> {
           ),
           backgroundColor: white,
           child: const Padding(
-            padding:  EdgeInsets.all(24),
+            padding: EdgeInsets.all(24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                  CircularProgressIndicator(color: home2),
-                  SizedBox(height: 20),
+                CircularProgressIndicator(color: home2),
+                SizedBox(height: 20),
                 Text(
                   "Please wait...",
                   style: TextStyle(
@@ -218,12 +407,13 @@ class _HomePageState extends State<HomePage> {
     return DateFormat('MMM dd, yyyy • hh:mm a').format(timestamp);
   }
 
-  Future<void> loadSharedPrefs() async {
+  Future<void> loadSharedPrefs(BuildContext context) async {
     final name = await SharedPref().getSubAgentName();
     final entId = await SharedPref().getAgentId();
     final tok = await SharedPref().getTokenValue();
     final agentOrgID = await SharedPref().getAgentOriginId();
     final mobnum = await SharedPref().getParentAgentMobNum();
+    final subAgID = await SharedPref().getSubAgentId();
 
     if (mounted) {
       setState(() {
@@ -232,8 +422,16 @@ class _HomePageState extends State<HomePage> {
         token = tok;
         agentOriginId = agentOrgID;
         mobNum = mobnum;
+        subAgentID = subAgID;
       });
     }
+    final linkProvider = Provider.of<LinkTransactionHistoryProvider>(
+      context,
+      listen: false,
+    );
+    await linkProvider.getLinkTransactionHistory(
+        "CUSTOM", "2025-06-8", "2025-06-27", subAgentID!);
+
     fetchBalance();
     fetchTransaction();
     fetchCollection();
@@ -383,24 +581,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final qrProvider = Provider.of<QRTransactionHistoryProvider>(context);
-    final fetchBalanceProvider = Provider.of<BalanceProvider>(
-      context,
-      listen: true,
-    );
-    final provider = Provider.of<AgentTransactionProvider>(
-      context,
-      listen: true,
-    );
+    final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context);
     final size = MediaQuery.of(context).size;
-    final collectionProvider = Provider.of<CollectionSummaryProvider>(
-      context,
-      listen: false,
-    );
-    // Define the color theme (same as original)
     const Color backgroundColor = Color(0xFFF5F5F5); // Light grey
-    const Color cardColor = white;
-    const Color textColor = Color(0xFF333333);
-    const Color secondaryTextColor = Color(0xFF666666);
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -484,54 +667,50 @@ class _HomePageState extends State<HomePage> {
                                 });
                               },
                             ),
-                            items:
-                                bannerImages.map((imagePath) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      image: DecorationImage(
-                                        image: AssetImage(imagePath),
-                                        fit: BoxFit.cover,
-                                        colorFilter: ColorFilter.mode(
-                                          black.withOpacity(0.2),
-                                          BlendMode.darken,
-                                        ),
-                                      ),
+                            items: bannerImages.map((imagePath) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  image: DecorationImage(
+                                    image: AssetImage(imagePath),
+                                    fit: BoxFit.cover,
+                                    colorFilter: ColorFilter.mode(
+                                      black.withOpacity(0.2),
+                                      BlendMode.darken,
                                     ),
-                                  );
-                                }).toList(),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
                           ),
                         ),
                         // Modern dot indicators
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children:
-                              bannerImages.asMap().entries.map((entry) {
-                                return AnimatedContainer(
-                                  duration: const Duration(milliseconds: 200),
-                                  width:
-                                      _currentBannerIndex == entry.key ? 24 : 8,
-                                  height: 8,
-                                  margin: const EdgeInsets.symmetric(
-                                    horizontal: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(4),
-                                    color:
-                                        _currentBannerIndex == entry.key
-                                            ? white
-                                            : white.withOpacity(0.5),
-                                    boxShadow: [
-                                      if (_currentBannerIndex == entry.key)
-                                        BoxShadow(
-                                          color: white.withOpacity(0.5),
-                                          blurRadius: 4,
-                                          spreadRadius: 1,
-                                        ),
-                                    ],
-                                  ),
-                                );
-                              }).toList(),
+                          children: bannerImages.asMap().entries.map((entry) {
+                            return AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              width: _currentBannerIndex == entry.key ? 24 : 8,
+                              height: 8,
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                color: _currentBannerIndex == entry.key
+                                    ? white
+                                    : white.withOpacity(0.5),
+                                boxShadow: [
+                                  if (_currentBannerIndex == entry.key)
+                                    BoxShadow(
+                                      color: white.withOpacity(0.5),
+                                      blurRadius: 4,
+                                      spreadRadius: 1,
+                                    ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
                         ),
                       ],
                     ),
@@ -549,12 +728,11 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.all(12),
                   sliver: SliverList(
                     delegate: SliverChildListDelegate([
-
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(15),
-                          border: Border.all(color: home1,width: 1),
+                          border: Border.all(color: home1, width: 1),
                         ),
                         margin: const EdgeInsets.symmetric(
                           horizontal: 7,
@@ -571,9 +749,9 @@ class _HomePageState extends State<HomePage> {
                       Align(
                         alignment: Alignment.topRight,
                         child: InkWell(
-                          onTap: (){
+                          onTap: () {
                             print("Tapped");
-                            filterDialog();
+                      showDateRangeFilter();
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(right: 10),
@@ -581,18 +759,22 @@ class _HomePageState extends State<HomePage> {
                               height: 40,
                               width: 120,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: home2,width: 2),
-                                color: home2
-                              ),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: home2, width: 2),
+                                  color: home2),
                               child: const Center(
-                                child: Text("Filter",style: TextStyle(fontWeight: FontWeight.w700,fontSize: 15,color: white),),
+                                child: Text(
+                                  "Filter",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 15,
+                                      color: white),
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
-
                       IndexedStack(
                         index: _selectedTabIndex,
                         children: [
@@ -603,7 +785,7 @@ class _HomePageState extends State<HomePage> {
 
                           // Link Transactions
                           _buildLinkTransactionList(
-                            provider.agentPaymentTransctionModel,
+                            linkProvider.linkTranscationHistoryModel,
                           ),
                         ],
                       ),
@@ -633,7 +815,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     return SizedBox(
-     height: MediaQuery.of(context).size.height *0.8,
+      height: MediaQuery.of(context).size.height * 0.8,
       child: ListView.builder(
         padding: const EdgeInsets.symmetric(vertical: 8),
         itemCount: qrTransactions.data!.length,
@@ -645,21 +827,68 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+
+
+  Widget _buildLinkTransactionList(
+      LinkTranscationHistoryModel? linkTransactions)
+  {
+    if (linkTransactions == null || linkTransactions.data == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    final linkData =
+        linkTransactions.data?.where((t) => t.linkUrl == 'link_url').toList() ??
+            [];
+    print("linkData = $linkData");
+
+    if (linkTransactions.data?.isEmpty==true|| linkTransactions.data == null) {
+      return _buildEmptyState(
+        icon: Icons.link,
+        title: "No Link Transactions",
+        message: "Your payment link transactions will appear here",
+      );
+    }
+
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.9,
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        itemCount: linkTransactions.data!.length,
+        itemBuilder: (context, index) {
+          final transaction = linkTransactions.data![index];
+          return _buildLinkTransactionItem(transaction);
+        },
+      ),
+    );
+    // return ListView.builder(
+    //   padding: const EdgeInsets.symmetric(vertical: 8),
+    //   itemCount: linkData.length,
+    //   itemBuilder: (context, index) {
+    //     final transaction = linkData[index];
+    //     return _buildLinkTransactionItem(transaction);
+    //   },
+    // );
+  }
+  // if (linkData.isEmpty) {
+  //   return _buildEmptyState(
+  //     icon: Icons.link,
+  //     title: "No Link Transactions",
+  //     message: "Your payment link transactions will appear here",
+  //   );
+  // }
   Widget _buildQRTransactionItem(QrTransaction transaction) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: home1,width: 1),
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 10,
-            spreadRadius: 0,
-            offset: const Offset(0, 2),
-            color: Colors.black.withOpacity(0.25)
-          )
-        ]
-      ),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: home1, width: 1),
+          boxShadow: [
+            BoxShadow(
+                blurRadius: 10,
+                spreadRadius: 0,
+                offset: const Offset(0, 2),
+                color: Colors.black.withOpacity(0.25))
+          ]),
       margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
       child: ListTile(
         leading: const Icon(Icons.qr_code, color: Colors.pink),
@@ -668,7 +897,8 @@ class _HomePageState extends State<HomePage> {
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Text(
-          DateFormat('MMM dd, yyyy - hh:mm a').format(transaction.createdAt ?? DateTime.now()),
+          DateFormat('MMM dd, yyyy - hh:mm a')
+              .format(transaction.createdAt ?? DateTime.now()),
         ),
         trailing: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -681,8 +911,67 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Text(
-              transaction.orderStatus!.toString().replaceAll("OrderStatus.", ""),
-              style: const TextStyle(fontSize: 12,color: green,fontWeight: FontWeight.w700,),
+              transaction.orderStatus!
+                  .toString()
+                  .replaceAll("OrderStatus.", ""),
+              style: const TextStyle(
+                fontSize: 12,
+                color: green,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+        onTap: () {
+          // Navigate to transaction details
+        },
+      ),
+    );
+  }
+  Widget _buildLinkTransactionItem(LinkTransactions transaction) {
+
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: home1, width: 1),
+          boxShadow: [
+            BoxShadow(
+                blurRadius: 10,
+                spreadRadius: 0,
+                offset: const Offset(0, 2),
+                color: Colors.black.withOpacity(0.25))
+          ]),
+      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+      child: ListTile(
+        leading: const Icon(Icons.link, color: Colors.blue),
+        title: Text(
+          transaction.customerName!.toString().replaceAll("CustomerName.", ""),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(
+          DateFormat('MMM dd, yyyy - hh:mm a')
+              .format(transaction.createdAt ?? DateTime.now()),
+        ),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "₹${transaction.linkAmount}",
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.pink,
+              ),
+            ),
+            Text(
+              transaction.linkStatus!
+                  .toString()
+                  .replaceAll("OrderStatus.", ""),
+              style: const TextStyle(
+                fontSize: 12,
+                color: green,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ],
         ),
@@ -693,74 +982,10 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildLinkTransactionList(AgentPaymentTransctionModel? linkTransactions) {
-    if (linkTransactions == null || linkTransactions.data == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    final linkData = linkTransactions.data?.where((t) => t.linkUrl == 'link').toList() ?? [];
-
-    if (linkData.isEmpty) {
-      return _buildEmptyState(
-        icon: Icons.link,
-        title: "No Link Transactions",
-        message: "Your payment link transactions will appear here",
-      );
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      itemCount: linkData.length,
-      itemBuilder: (context, index) {
-        final transaction = linkData[index];
-        return _buildLinkTransactionItem(transaction);
-      },
-    );
-  }
-
-  Widget _buildLinkTransactionItem(AgentTransaction transaction) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: ListTile(
-        leading: const Icon(Icons.link, color: Colors.blue),
-        title: Text(
-          transaction.customerName ?? "Unknown Customer",
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        subtitle: Text(
-          formatTimestamp(transaction.createdAt),
-        ),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "₹${transaction.linkAmount}",
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
-              ),
-            ),
-            const Text(
-              "Completed",
-              style: TextStyle(fontSize: 12),
-            ),
-          ],
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => TransactionHistoryPage(agentTransaction: transaction),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-
-
-  Widget _buildEmptyState({required IconData icon, required String title, required String message}) {
+  Widget _buildEmptyState(
+      {required IconData icon,
+      required String title,
+      required String message}) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -780,6 +1005,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
   Widget _buildTabButton(int index, IconData icon, String text) {
     return Expanded(
       child: TextButton(
@@ -809,10 +1035,9 @@ class _HomePageState extends State<HomePage> {
             Text(
               text,
               style: TextStyle(
-                color: _selectedTabIndex == index ? home1 : black,
-                fontWeight: FontWeight.w700,
-                fontSize: 15
-              ),
+                  color: _selectedTabIndex == index ? home1 : black,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 15),
             ),
           ],
         ),
@@ -820,10 +1045,31 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+class _DatePickerButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
 
-  // Helper methods for building transaction lists
+  const _DatePickerButton({
+    super.key,
+    required this.label,
+    required this.icon,
+    required this.onTap,
+  });
 
-
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton.icon(
+      onPressed: onTap,
+      icon: Icon(icon),
+      label: Text(label),
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+      ),
+    );
+  }
+}
+// Helper methods for building transaction lists
 
 // @override
 // Widget build(BuildContext context) {
@@ -1284,3 +1530,19 @@ class _HomePageState extends State<HomePage> {
 // ),
 // const SizedBox(height: 20),
 // Tab bar for QR Code and Link transactions
+// final fetchBalanceProvider = Provider.of<BalanceProvider>(
+//   context,
+//   listen: true,
+// );
+// final provider = Provider.of<AgentTransactionProvider>(
+//   context,
+//   listen: true,
+// );
+// final collectionProvider = Provider.of<CollectionSummaryProvider>(
+//   context,
+//   listen: false,
+// );
+// Define the color theme (same as original)
+// const Color cardColor = white;
+// const Color textColor = Color(0xFF333333);
+// const Color secondaryTextColor = Color(0xFF666666);

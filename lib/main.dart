@@ -1,4 +1,6 @@
 import 'dart:developer';
+import 'package:collection_qr_flutter/data/provider/link_transcation_history_provider.dart';
+
 import '../../data/provider/agent_customer_details_provider.dart';
 import '../../data/provider/agent_transaction_provider.dart';
 import '../../data/provider/cerate_order_provider.dart';
@@ -37,6 +39,7 @@ import 'data/repository/TransactionRepository.dart';
 import 'data/repository/auth_repository.dart';
 import 'data/repository/collection_base_url_repo.dart';
 import 'data/repository/create_order_repository.dart';
+import 'data/repository/link_transaction_history_repository.dart';
 import 'data/repository/otp_request_repository.dart';
 import 'data/repository/otp_verification_repository.dart';
 import 'data/repository/parent_agent/fetch_parent_crentials/parent_agent_credential_repository.dart';
@@ -93,6 +96,7 @@ void main() async {
   }
 
   runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => LinkTransactionHistoryProvider(LinkTransactionHistoryRepository())),
     ChangeNotifierProvider(create: (_) => CollectionBaseUrlProvider(CollectionBaseUrlRepo())),
     ChangeNotifierProvider(create: (_) => QRTransactionHistoryProvider(QRTransactionHistoryRepository())),
     ChangeNotifierProvider(create: (_) => CustRegisterProvider(CustRegRepository())),
