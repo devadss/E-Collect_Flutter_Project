@@ -4,12 +4,21 @@ import 'package:http/http.dart' as http;
 import '../../domain/interface/cash_deposit_interface.dart';
 import '../../domain/model/cash_deposit_model.dart';
 import '../service/error_handler.dart';
+import '../storage/shared_pref_helper.dart';
 
 class CashDepositRepository implements CashDepositInterface {
+  Future<String> loadVendorUrl() async {
+    //final liveUrl = await SharedPref().getVendorUrlLive();
+    return await SharedPref().getVendorUrlTest();
+
+  }
+
   @override
   Future<Either<ErrorHandler, CashDepositModel>> depositCash(
       String accountNumber, String agentId, String amount) async {
-    final uri = Uri.parse("https://doorstepmftctest.digicob.in/cashDeposit");
+    //final uri = Uri.parse("https://doorstepmftctest.digicob.in/cashDeposit");
+    final vendorUrl = await loadVendorUrl();
+    final uri = Uri.parse("${vendorUrl}cashDeposit");
     final request = await http.post(
       uri,
       body: json.encode({

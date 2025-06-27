@@ -106,6 +106,8 @@ class SharedPrefKeys {
   static const String pinCodeText = "PIN_CODE_TEXT";
   static const String username = "USER_NAME";
   static const String parent_username = "PARENT_USERNAME";
+  static const String vendorUrlLive = "VENDOR_LIVE_URL";
+  static const String vendorUrlTest = "VENDOR_TEST_URL";
   static const String subAgent_username = "SUB_AGENT_USERNAME";
   static const String enteredusername = "ENTERED_USER_NAME";
   static const String balance = "ACC_BALANCE";

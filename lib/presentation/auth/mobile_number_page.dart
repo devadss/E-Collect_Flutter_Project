@@ -1,3 +1,4 @@
+import 'package:collection_qr_flutter/data/provider/collection_base_url_provider.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -49,9 +50,21 @@ class _MobileNumberVerificationPageState
       showInSnackBar('Please enter valid mobile number');
     } else {
       final parentAgentDetailProvider = Provider.of<ParentDetailAgentProvider>(context, listen: false);
+final vendorBaseUrlProvider = Provider.of<CollectionBaseUrlProvider>(context , listen :false);
 
       await parentAgentDetailProvider.fetchParentAgentDetails(value);
       if (parentAgentDetailProvider.subAgent != null) {
+        await vendorBaseUrlProvider.getCollectionUrl(parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);
+
+        if(vendorBaseUrlProvider.collectionBaseUrlModel != null){
+          SharedPref.shared.setVendorUrlLive(
+              vendorBaseUrlProvider.collectionBaseUrlModel!.pu.toString()
+          );
+          SharedPref.shared.setVendorUrlTest(
+              vendorBaseUrlProvider.collectionBaseUrlModel!.tu.toString()
+          );
+        }
+
         print(parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);
         await SharedPref.shared.setAgentId(
           parentAgentDetailProvider.subAgent!.data.parentAgentId.toString(),

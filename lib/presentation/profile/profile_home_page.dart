@@ -1015,6 +1015,8 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
     await SharedPref.shared.setParentAgentMobNum("");
     await SharedPref.shared.setSubAgentId("");
     await SharedPref.shared.setSubAgentCode("");
+    await SharedPref.shared.setVendorUrlLive("");
+    await SharedPref.shared.setVendorUrlTest("");
     await SharedPref.shared.setSubAgentName("");
     await SharedPref.shared.setSubAgentMobNum("");
     await SharedPref.shared.setFcmToken("");

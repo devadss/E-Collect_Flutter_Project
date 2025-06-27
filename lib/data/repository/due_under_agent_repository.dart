@@ -7,10 +7,19 @@ import 'package:dartz/dartz.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:http/http.dart'as http;
 
+import '../storage/shared_pref_helper.dart';
+
 class DueUnderAgentRepository implements IDueUnderAgentRepository{
+  Future<String> loadVendorUrl() async {
+    //final liveUrl = await SharedPref().getVendorUrlLive();
+    return await SharedPref().getVendorUrlTest();
+
+  }
   @override
   Future<Either<ErrorHandler, DueUnderAgentModel>> getDuesUnderAgent(String? agentId) async{
-    final url = Uri.parse("https://doorstepmftctest.digicob.in/GetDuesListunderAgent?agent_id=$agentId");
+    //final url = Uri.parse("https://doorstepmftctest.digicob.in/GetDuesListunderAgent?agent_id=$agentId");
+    final vendorUrl = await loadVendorUrl();
+    final url = Uri.parse("${vendorUrl}GetDuesListunderAgent?agent_id=$agentId");
     bool checkConnection = await InternetConnectionChecker().hasConnection;
     if(checkConnection){
       final response = await http.get(url);

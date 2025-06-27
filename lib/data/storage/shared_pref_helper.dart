@@ -59,6 +59,22 @@ class SharedPref {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.subAgent_username) ?? '';
   }
+  setVendorUrlTest(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.vendorUrlTest, value);
+  }
+  getVendorUrlTest() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.vendorUrlTest) ?? '';
+  }
+  setVendorUrlLive(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.vendorUrlLive, value);
+  }
+  getVendorUrlLive() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.vendorUrlLive) ?? '';
+  }
   setParentAgentName(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.parent_username, value);
