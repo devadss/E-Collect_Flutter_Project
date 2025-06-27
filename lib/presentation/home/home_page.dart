@@ -50,8 +50,16 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     final provider =
         Provider.of<QRTransactionHistoryProvider>(context, listen: false);
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day); // midnight today
+
+    final fromDate = today.subtract(const Duration(days: 30));
+    final toDate = today;
+    final formattedFdate = DateFormat('yyyy-MM-dd').format(fromDate);
+    final formattedTdate = DateFormat('yyyy-MM-dd').format(toDate);
+
     provider.getQrTranscationHistory(
-        "CUSTOM", "2025-06-8", "2025-06-26", "MERCHANT");
+        "THIS_MONTH", formattedFdate, formattedTdate, "COLLECTION");
 
     loadSharedPrefs(context);
   }
@@ -173,7 +181,7 @@ class _HomePageState extends State<HomePage> {
                             DateTime now = DateTime.now();
                             final formatted = DateFormat('yyyy-MM-dd').format(now);
                             await qrProvider.getQrTranscationHistory(
-                                period, formatted, formatted, 'MERCHANT');
+                                period, formatted, formatted, 'COLLECTION');
                             await linkProvider.getLinkTransactionHistory(
                                 period, formatted, formatted, subAgentID!);
                             break;
@@ -182,36 +190,39 @@ class _HomePageState extends State<HomePage> {
                             DateTime today = DateTime.now();
                             DateTime lastDate = today.add(const Duration(days: 7));
 
-                            final formattedFdate = DateFormat('yyyy-MM-dd').format(today!);
-                            final formattedTdate = DateFormat('yyyy-MM-dd').format(lastDate!);
+                            final formattedFdate = DateFormat('yyyy-MM-dd').format(today);
+                            final formattedTdate = DateFormat('yyyy-MM-dd').format(lastDate);
                             await qrProvider.getQrTranscationHistory(
-                                period, formattedFdate, formattedTdate, 'MERCHANT');
+                                period, formattedFdate, formattedTdate, 'COLLECTION');
                             await linkProvider.getLinkTransactionHistory(
                                 period, formattedFdate, formattedTdate, subAgentID!);
 
                             break;
                           case 2:
                             period = 'THIS_MONTH';
-                            DateTime today = DateTime.now();
-                            DateTime lastDate = today.add(const Duration(days: 30));
+                            final now = DateTime.now();
+                            final today = DateTime(now.year, now.month, now.day); // midnight today
 
-                            final formattedFdate = DateFormat('yyyy-MM-dd').format(today);
-                            final formattedTdate = DateFormat('yyyy-MM-dd').format(lastDate);
+                            final fromDate = today.subtract(const Duration(days: 30));
+                            final toDate = today;
+                            final formattedFdate = DateFormat('yyyy-MM-dd').format(fromDate);
+                            final formattedTdate = DateFormat('yyyy-MM-dd').format(toDate);
                             await qrProvider.getQrTranscationHistory(
-                                period, formattedFdate, formattedTdate, 'MERCHANT');
+                                period, formattedFdate, formattedTdate, 'COLLECTION');
                             await linkProvider.getLinkTransactionHistory(
                                 period, formattedFdate, formattedTdate, subAgentID!);
 
                             break;
                           case 3:
                             period = 'LAST_MONTH';
-                            DateTime today = DateTime.now();
-                            DateTime lastDate = today.add(const Duration(days: 60));
+                            final today = DateTime.now();
+                            final firstDayLastMonth = DateTime(today.year, today.month - 1, 1);
+                            final lastDayLastMonth = DateTime(today.year, today.month, 1).subtract(Duration(days: 1));
 
-                            final formattedFdate = DateFormat('yyyy-MM-dd').format(today);
-                            final formattedTdate = DateFormat('yyyy-MM-dd').format(lastDate);
+                            final formattedFdate = DateFormat('yyyy-MM-dd').format(firstDayLastMonth);
+                            final formattedTdate = DateFormat('yyyy-MM-dd').format(lastDayLastMonth);
                             await qrProvider.getQrTranscationHistory(
-                                period, formattedFdate, formattedTdate, 'MERCHANT');
+                                period, formattedFdate, formattedTdate, 'COLLECTION');
                             await linkProvider.getLinkTransactionHistory(
                                 period, formattedFdate, formattedTdate, subAgentID!);
 
@@ -222,13 +233,13 @@ class _HomePageState extends State<HomePage> {
                             to = DateFormat('yyyy-MM-dd').format(toDate!);
 
                             await qrProvider.getQrTranscationHistory(
-                                period, from, to, 'MERCHANT');
+                                period, from, to, 'COLLECTION');
                             await linkProvider.getLinkTransactionHistory(
                                 period, from, to, subAgentID!);
                             break;
                         }
 
-                        await qrProvider.getQrTranscationHistory(period, from, to, 'MERCHANT');
+                        await qrProvider.getQrTranscationHistory(period, from, to, 'COLLECTION');
                         await linkProvider.getLinkTransactionHistory(period, from, to, subAgentID!);
                       },
                       // only enable 'Apply Filter' if custom and dates selected
@@ -247,96 +258,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-/*  void showDateRangeFilter() {
-    final qrProvider = context.read<QRTransactionHistoryProvider>();
-    final linkProvider = context.read<LinkTransactionHistoryProvider>();
 
-    DateTime? fromDate;
-    DateTime? toDate;
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (context) {
-        return Padding(
-          padding: MediaQuery.of(context).viewInsets,
-          child: StatefulBuilder(
-            builder: (context, setState) {
-              String format(DateTime d) => DateFormat.yMMMd().format(d);
-              return Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Select Date Range',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _DatePickerButton(
-                            label: fromDate != null ? format(fromDate!) : 'From',
-                            icon: Icons.calendar_today_outlined,
-                            onTap: () async {
-                              final picked = await showDatePicker(
-                                context: context,
-                                initialDate: fromDate ?? DateTime.now(),
-                                firstDate: DateTime(2000),
-                                lastDate: DateTime(2100),
-                              );
-                              if (picked != null) setState(() => fromDate = picked);
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: _DatePickerButton(
-                            label: toDate != null ? format(toDate!) : 'To',
-                            icon: Icons.calendar_today_outlined,
-                            onTap: () async {
-                              final picked = await showDatePicker(
-                                context: context,
-                                initialDate: toDate ?? DateTime.now(),
-                                firstDate: DateTime(2000),
-                                lastDate: DateTime(2100),
-                              );
-                              if (picked != null) setState(() => toDate = picked);
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
-                      onPressed: (fromDate != null && toDate != null)
-                          ? () async {
-                        Navigator.pop(context);
-                        final from = DateFormat('yyyy-MM-dd').format(fromDate!);
-                        final to = DateFormat('yyyy-MM-dd').format(toDate!);
-                        await qrProvider.getQrTranscationHistory(
-                            'CUSTOM', from, to, 'MERCHANT');
-                        await linkProvider.getLinkTransactionHistory(
-                            'CUSTOM', from, to, subAgentID!);
-                      }
-                          : null,
-                      child: const Text('Apply Filter'),
-                    ),
-                    const SizedBox(height: 12),
-                  ],
-                ),
-              );
-            },
-          ),
-        );
-      },
-    );
-  }*/
 
 
 
@@ -429,8 +351,15 @@ class _HomePageState extends State<HomePage> {
       context,
       listen: false,
     );
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day); // midnight today
+
+    final fromDate = today.subtract(const Duration(days: 30));
+    final toDate = today;
+    final formattedFdate = DateFormat('yyyy-MM-dd').format(fromDate);
+    final formattedTdate = DateFormat('yyyy-MM-dd').format(toDate);
     await linkProvider.getLinkTransactionHistory(
-        "CUSTOM", "2025-06-8", "2025-06-27", subAgentID!);
+        "THIS_MONTH", formattedFdate, formattedTdate, subAgentID!);
 
     fetchBalance();
     fetchTransaction();
@@ -893,7 +822,8 @@ class _HomePageState extends State<HomePage> {
       child: ListTile(
         leading: const Icon(Icons.qr_code, color: Colors.pink),
         title: Text(
-          transaction.customerName!.toString().replaceAll("CustomerName.", ""),
+         // transaction.customerName.toString().replaceAll("CustomerName.", ""),
+          transaction.customerName.toString(),
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Text(
@@ -911,9 +841,11 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Text(
-              transaction.orderStatus!
-                  .toString()
-                  .replaceAll("OrderStatus.", ""),
+              transaction.orderStatus
+                  .toString(),
+                // transaction.orderStatus
+                //   .toString()
+                //   .replaceAll("OrderStatus.", ""),
               style: const TextStyle(
                 fontSize: 12,
                 color: green,
@@ -1051,7 +983,6 @@ class _DatePickerButton extends StatelessWidget {
   final VoidCallback onTap;
 
   const _DatePickerButton({
-    super.key,
     required this.label,
     required this.icon,
     required this.onTap,
