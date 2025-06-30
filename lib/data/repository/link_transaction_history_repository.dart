@@ -30,7 +30,8 @@ class LinkTransactionHistoryRepository implements ILinkTransactionHistoryReposit
         return Left(DataParsingException(e));
       }
     }else{
-      return Left(FetchDataError("Failed To Fetch Data"));
+      return Left(DataParsingException(response.body));
+     // return Left(FetchDataError("Failed To Fetch Data"));
     }
    }else{
      return Left(FetchDataError("No Internet Connection"));

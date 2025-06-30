@@ -23,12 +23,19 @@ class QRTransactionHistoryRepository implements IQRTransactionHistoryRepository{
          printLog(response.statusCode);
          printLog("==================================QR TRANSACTION STATUS CODE=================================");
          printLog(response.body);
-         return Right(QrTranscationHistoryModel.fromJson(jsonDecode(response.body)));
+         if(response.body.contains("OrderId")){
+           return Right(QrTranscationHistoryModel.fromJson(jsonDecode(response.body)));
+
+         }else{
+           return Left(DataParsingException(response.body));
+
+         }
        }catch(e){
          return Left(DataParsingException(e));
        }
      }else{
-       return Left(FetchDataError("Failed to Fetch Data"));
+      // return Left(FetchDataError("Failed to Fetch Data"));
+       return Left(DataParsingException(response.body));
      }
    }else{
      return Left(FetchDataError("No Internet Connection"));

@@ -7,6 +7,8 @@ import '../repository/qr_transcation_history_repository.dart';
 class QRTransactionHistoryProvider with ChangeNotifier {
   final QRTransactionHistoryRepository _qrTransactionHistoryRepository;
   QRTransactionHistoryProvider(this._qrTransactionHistoryRepository);
+  String? _errResponse;
+  String? get errResponse  => _errResponse;
   QrTranscationHistoryModel? _qrTranscationHistoryModel;
   QrTranscationHistoryModel? get qrTranscationHistoryModel =>
       _qrTranscationHistoryModel;
@@ -24,11 +26,14 @@ class QRTransactionHistoryProvider with ChangeNotifier {
         .getQrTranscationHistory(dateFilterType, startDate, endDate, source);
     result.fold(
       (error) {
+        _errResponse = error.message;
+        _qrTranscationHistoryModel = null;
         printLog("-------------Error QR Transcation-------------");
         printLog(error);
       },
       (data) {
         _qrTranscationHistoryModel = data;
+        _errResponse = null;
         printLog("-------------------DATA QR TRANS-----------------");
         printLog(data);
         notifyListeners();

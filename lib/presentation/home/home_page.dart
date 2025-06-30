@@ -708,13 +708,22 @@ class _HomePageState extends State<HomePage> {
                         index: _selectedTabIndex,
                         children: [
                           // QR Transactions
+                          qrProvider.errResponse != null?
                           _buildQRTransactionList(
-                            qrProvider.qrTranscationHistoryModel,
-                          ),
+                            qrProvider.qrTranscationHistoryModel,"ERROR"
+                          ):
+                          _buildQRTransactionList(
+                            qrProvider.qrTranscationHistoryModel,""
+                          )
+                          ,
 
                           // Link Transactions
+                          linkProvider.erResposne != null?
                           _buildLinkTransactionList(
-                            linkProvider.linkTranscationHistoryModel,
+                              linkProvider.linkTranscationHistoryModel, "ERROR"
+                          ):
+                          _buildLinkTransactionList(
+                            linkProvider.linkTranscationHistoryModel,""
                           ),
                         ],
                       ),
@@ -730,26 +739,27 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildQRTransactionList(QrTranscationHistoryModel? qrTransactions) {
-    if (qrTransactions == null || qrTransactions.data == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
+  Widget _buildQRTransactionList(QrTranscationHistoryModel? qrTransactions,
+      String? error) {
+    if (qrTransactions == null && error == "") {
 
-    if (qrTransactions.data!.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }else if(
+    qrTransactions == null && error == "ERROR"
+    ){
       return _buildEmptyState(
-        icon: Icons.qr_code_scanner,
+        icon: Icons.qr_code,
         title: "No QR Transactions",
-        message: "Your QR code transactions will appear here",
+        message: "Your payment Qr transactions will appear here",
       );
     }
-
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.8,
       child: ListView.builder(
         padding: const EdgeInsets.symmetric(vertical: 8),
-        itemCount: qrTransactions.data!.length,
+        itemCount: qrTransactions?.data!.length,
         itemBuilder: (context, index) {
-          final transaction = qrTransactions.data![index];
+          final transaction = qrTransactions!.data![index];
           return _buildQRTransactionItem(transaction);
         },
       ),
@@ -759,44 +769,54 @@ class _HomePageState extends State<HomePage> {
 
 
   Widget _buildLinkTransactionList(
-      LinkTranscationHistoryModel? linkTransactions)
+      LinkTranscationHistoryModel? linkTransactions, String? errMsg)
   {
-    if (linkTransactions == null || linkTransactions.data == null) {
+    if (linkTransactions == null && errMsg == "") {
       return const Center(child: CircularProgressIndicator());
-    }
-
-    final linkData =
-        linkTransactions.data?.where((t) => t.linkUrl == 'link_url').toList() ??
-            [];
-    print("linkData = $linkData");
-
-    if (linkTransactions.data?.isEmpty==true|| linkTransactions.data == null) {
+    }else if(linkTransactions == null &&errMsg == "ERROR"){
       return _buildEmptyState(
         icon: Icons.link,
         title: "No Link Transactions",
         message: "Your payment link transactions will appear here",
       );
     }
-
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.9,
       child: ListView.builder(
         padding: const EdgeInsets.symmetric(vertical: 8),
-        itemCount: linkTransactions.data!.length,
+        itemCount: linkTransactions!.data!.length,
         itemBuilder: (context, index) {
           final transaction = linkTransactions.data![index];
           return _buildLinkTransactionItem(transaction);
         },
       ),
     );
-    // return ListView.builder(
-    //   padding: const EdgeInsets.symmetric(vertical: 8),
-    //   itemCount: linkData.length,
-    //   itemBuilder: (context, index) {
-    //     final transaction = linkData[index];
-    //     return _buildLinkTransactionItem(transaction);
-    //   },
+
+    // final linkData =
+    //     linkTransactions.data?.where((t) => t.linkUrl == 'link_url').toList() ??
+    //         [];
+    // print("linkData = $linkData");
+    //
+    // if (linkTransactions?.data!.isEmpty) {
+    //   return _buildEmptyState(
+    //     icon: Icons.link,
+    //     title: "No Link Transactions",
+    //     message: "Your payment link transactions will appear here",
+    //   );
+    // }
+
+    // return SizedBox(
+    //   height: MediaQuery.of(context).size.height * 0.9,
+    //   child: ListView.builder(
+    //     padding: const EdgeInsets.symmetric(vertical: 8),
+    //     itemCount: linkTransactions.data!.length,
+    //     itemBuilder: (context, index) {
+    //       final transaction = linkTransactions.data![index];
+    //       return _buildLinkTransactionItem(transaction);
+    //     },
+    //   ),
     // );
+
   }
   // if (linkData.isEmpty) {
   //   return _buildEmptyState(
