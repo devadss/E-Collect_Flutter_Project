@@ -1,126 +1,3 @@
-// import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
-// import '../../presentation/collection/home/collection_home_page.dart';
-// import '../../presentation/dues/dues_home_page.dart';
-// import 'package:flutter/material.dart';
-// import 'package:google_fonts/google_fonts.dart';
-// import '../../core/colors.dart';
-// import '../account_dues/account_list_home_page.dart';
-// import '../home/home_page.dart';
-// import '../profile/profile_home_page.dart';
-//
-// class BottomNavScreen extends StatefulWidget {
-//   const BottomNavScreen({super.key});
-//
-//   @override
-//   State<BottomNavScreen> createState() => _BottomNavScreenState();
-// }
-//
-// class _BottomNavScreenState extends State<BottomNavScreen> {
-//   int _selectedIndex = 0;
-//   String actionType = "";
-//
-//   final NotchBottomBarController _controller =
-//       NotchBottomBarController(index: 0);
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//   }
-//
-//   void _onItemTapped(int index) {
-//     if (_selectedIndex != index) {
-//       setState(() {
-//         _selectedIndex = index;
-//         _controller.index = index;
-//       });
-//     }
-//   }
-//
-//   Future<bool> _onWillPop() async {
-//     if (_selectedIndex != 0) {
-//       setState(() {
-//         _selectedIndex = 0;
-//         _controller.index = 0;
-//       });
-//       return false;
-//     }
-//     return true;
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: white,
-//       body: IndexedStack(
-//         index: _selectedIndex,
-//         children:  const [
-//           HomePage(),
-//           DuesHomePage(),
-//           //CollectionHomePage(key: ObjectKey(_selectedIndex)),
-//           AccountListHomePage(),
-//           ProfileHomePage(),
-//         ],
-//       ),
-//       bottomNavigationBar: AnimatedNotchBottomBar(
-//         itemLabelStyle: TextStyle(
-//             color: white, fontWeight: FontWeight.bold, fontSize: 10),
-//         notchColor: home2.withOpacity(0.7),
-//         notchBottomBarController: _controller,
-//         color: home2.withOpacity(0.7),
-//         onTap: _onItemTapped,
-//         bottomBarItems: [
-//           BottomBarItem(
-//             inActiveItem: Image.asset(
-//               "assets/icons/home_icon.png",
-//               color: white,
-//             ),
-//             activeItem: Image.asset(
-//               "assets/icons/active_home.png",
-//               color: white,
-//             ),
-//             itemLabel: 'Home',
-//           ),
-//           BottomBarItem(
-//             inActiveItem: Image.asset(
-//               "assets/icons/business_15907644.png",
-//               color: white,
-//             ),
-//             activeItem: Image.asset(
-//               "assets/icons/active_due.png",
-//               color: white,
-//             ),
-//             itemLabel: 'Due List',
-//           ),
-//           BottomBarItem(
-//             inActiveItem: Image.asset(
-//               "assets/icons/account_list.png",
-//               color: white,
-//             ),
-//             activeItem: Image.asset(
-//               "assets/icons/account_list_active.png",
-//               color: white,
-//             ),
-//             itemLabel: 'Account List',
-//           ),
-//           BottomBarItem(
-//             inActiveItem: Image.asset(
-//               "assets/icons/profile_icon.png",
-//               color: white,
-//             ),
-//             activeItem: Image.asset(
-//               "assets/icons/webpage_9805990.png",
-//               color: white,
-//             ),
-//             itemLabel: 'Profile',
-//           ),
-//         ],
-//         kIconSize: 25,
-//         kBottomRadius: 30.0,
-//       ),
-//     );
-//   }
-// }
-
 import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
 import 'package:collection_qr_flutter/presentation/dues/rdcl_due_home_page.dart';
 import 'package:flutter/material.dart';
@@ -151,6 +28,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   void initState() {
     super.initState();
     isRdcl = true;
+    getSharedData();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _updateIndicatorPosition(animate: false);
     });
@@ -168,10 +46,13 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       case 0:
         return const HomePage();
       case 1:
-        return userTPYE?.contains("RDCL")==true  ? const RdclDuesHomePage() : const DuesHomePage();
+        return userTPYE?.contains("RDCL") == true
+            ? const RdclDuesHomePage()
+            : const DuesHomePage();
       case 2:
-
-        return userTPYE?.contains("RDCL")==true? const RdclAccountListHomePage():const AccountListHomePage();
+        return userTPYE?.contains("RDCL") == true
+            ? const RdclAccountListHomePage()
+            : const AccountListHomePage();
       case 3:
         return const ProfileHomePage();
       default:
@@ -215,16 +96,6 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       child: Scaffold(
         backgroundColor: white,
         body: _getSelectedPage(_selectedIndex),
-
-        // IndexedStack(
-        //   index: _selectedIndex,
-        //   children: const [
-        //     HomePage(),
-        //     DuesHomePage(),
-        //     AccountListHomePage(),
-        //     ProfileHomePage(),
-        //   ],
-        // ),
         bottomNavigationBar: Container(
           height: 80,
           decoration: BoxDecoration(

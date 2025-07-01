@@ -1,23 +1,27 @@
 class CollectionBaseUrlModel {
-  final String cu;
-  final String du;
-  final String type;
+  final String getCustomerUrl;
+  final String getDueListUrl;
+  final String userType;
 
-  CollectionBaseUrlModel({required this.cu, required this.du, required this.type});
+  CollectionBaseUrlModel({
+    required this.getCustomerUrl,
+    required this.getDueListUrl,
+    required this.userType,
+  });
 
   factory CollectionBaseUrlModel.fromJson(Map<String, dynamic> json) {
     return CollectionBaseUrlModel(
-      cu: json['getCustomerUrl'] ?? '',
-      du: json['getDueListUrl'] ?? '',
-      type: json['userType'] ?? '',
+      getCustomerUrl: json['getCustomerUrl'],
+      getDueListUrl: json['getDueListUrl'],
+      userType: json['userType'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'A': cu,
-      'B': du,
-      'C': type,
+      'getCustomerUrl': getCustomerUrl,
+      'getDueListUrl': getDueListUrl,
+      'userType': userType,
     };
   }
 }

@@ -254,7 +254,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
   Future<void> loadSharedPrefs() async {
     final name = await SharedPref().getAgentName();
     final phone = await SharedPref().getParentAgentMobNum();
-    final agentid = await SharedPref().getAgentId();
+    final agentid = await SharedPref().getSubAgentCode();
     final subAgentId = await SharedPref().getSubAgentId();
     final agentOrigin = await SharedPref().getAgentOriginId();
     final mail = await SharedPref().getEmail();
@@ -275,7 +275,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
       });
     }
     final provider = Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
-    await provider.getRdclDueList(widget.custAcNumber);
+    await provider.getRdclDueList(agentId!);
   //  List.generate(provider.rdclDueUnderAgentModel!.data.length, (index) => false);
 
   }

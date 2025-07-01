@@ -35,6 +35,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
   String? corpCode;
   String? paymentSessionId;
 
+
   @override
   void initState() {
     super.initState();
@@ -44,7 +45,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
   Future<void> loadSharedPrefs() async {
     final name = await SharedPref().getParentAgentName();
     final id = await SharedPref().getAgentId();
-    final originId = await SharedPref().getAgentOriginId();
+    final originId = await SharedPref().getSubAgentCode();
     final subAgentID = await SharedPref().getSubAgentId();
     final code = await SharedPref().getCorpCode();
     final email = await SharedPref().getEmail();
@@ -62,6 +63,9 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
         token = tok;
       });
     }
+    print("subagentId $subagentId");
+    print("agentId $agentId");
+    print("agentOriginId $agentOriginId");
     final provider = Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
     await provider.getRdclDueList(agentOriginId!);
   }
@@ -727,7 +731,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
                                                         "Link"
                                                         ? sendLinkFunction(
                                                       provider.rdclDueUnderAgentModel!
-                                                          .data![index],
+                                                          .data[index],
                                                       controller
                                                           .text,
                                                     )
@@ -736,12 +740,9 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
                                                        // provider.agentModel?.duesList1?.data?[index].phone,
                                                         "",
                                                         provider.rdclDueUnderAgentModel?.data[index].accNo,
-                                                       // provider.agentModel?.duesList1?.data?[index].custId,
+
                                                         "",
                                                        "",
-                                                       // provider.agentModel?.duesList1?.data?[index].email,
-
-
                                                         controller.text, "$agentPhoneNumber", agentId, "Payment For Agent $agentName");
                                                     // : Navigator.push(
                                                     //   context,
@@ -886,34 +887,17 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
         agentPhoneNumber!,
         agentEmail!,
         custDetails.name,
-        //custDetails.phone!,
-        "+919898234565",
+        agentPhoneNumber!,
         custDetails.accNo,
-        //custDetails.email!,
-        "abcd@gmail.com",
-        //custDetails.custId!,
-        "123324",
+        "",
+
+        "",
         num.parse(amount),
         "Payment for Order #1234",
         corpCode!,
         "",
         token!,
         subagentId!
-      // agentName!,
-      // agentId!,
-      // agentOriginId!,
-      // agentMobile!,
-      // agentEmail!,
-      // widget.custName,
-      // widget.custPhoneNumber,
-      // widget.custAcNumber,
-      // "rahul.sharma@example.com",
-      // widget.custId,
-      // num.parse(amountController.text),
-      // "Payment for Order #12345",
-      // corpCode!,
-      // "",
-      // token.toString()
     );
 
     send.fold(

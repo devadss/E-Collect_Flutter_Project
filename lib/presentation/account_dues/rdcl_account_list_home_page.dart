@@ -16,6 +16,7 @@ class RdclAccountListHomePage extends StatefulWidget {
 class _AccountListHomePageState extends State<RdclAccountListHomePage> {
   String? agentId;
   String? corpCode;
+  String? agentPhoneNumber;
 
   @override
   void initState() {
@@ -26,11 +27,13 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage> {
   }
 
   Future<void> loadSharedPrefs() async {
-    final id = await SharedPref().getAgentOriginId();
+    final id = await SharedPref().getSubAgentCode();
     final crpCd = await SharedPref().getCorpCode();
+    final number = await SharedPref().getParentAgentMobNum();
     if (mounted) {
       setState(() {
         agentId = id;
+        agentPhoneNumber = number;
         corpCode = crpCd;
       });
       print(
@@ -150,11 +153,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage> {
                                                   .rdclGlobalAccNo ??
                                                   "RDCL GLOBAL ACC NO",
                                                custPhoneNumber:
-                                              // provider
-                                              //     .rdclCustomerListModel
-                                              //     ?.data?[index]
-                                              //     . ??
-                                                  "MOBILE",
+                                               agentPhoneNumber!,
                                               custId: provider
                                                   .rdclCustomerListModel
                                                   ?.data[index]

@@ -60,11 +60,11 @@ class _MobileNumberVerificationPageState
 
         if (vendorBaseUrlProvider.collectionBaseUrlModel != null) {
           SharedPref.shared.setCustomerUnderAgentUrl(
-              vendorBaseUrlProvider.collectionBaseUrlModel!.cu.toString());
+              vendorBaseUrlProvider.collectionBaseUrlModel!.getCustomerUrl.toString());
           SharedPref.shared.setDueListUrl(
-              vendorBaseUrlProvider.collectionBaseUrlModel!.du.toString());
+              vendorBaseUrlProvider.collectionBaseUrlModel!.getDueListUrl .toString());
           SharedPref.shared.setUserType(
-              vendorBaseUrlProvider.collectionBaseUrlModel!.type.toString());
+              vendorBaseUrlProvider.collectionBaseUrlModel!.userType .toString());
         }
 
         print(parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);

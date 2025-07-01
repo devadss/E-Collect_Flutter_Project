@@ -65,7 +65,9 @@ class PaymentLinkRepository implements IPaymentLinkRepository {
         },
         body: jsonEncode(body), // Convert Map to JSON String
       );
-
+      printLog("PaymentLinkRepository");
+      printLog(response.body);
+      printLog("body = $body");
       if (response.statusCode == 200 || response.statusCode == 201) {
         printLog("---------------------body----------------------");
         printLog(response.body);
