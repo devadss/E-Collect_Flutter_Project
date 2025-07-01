@@ -15,7 +15,7 @@ class AgentCustomerDetailsRepository
 
   Future<String> loadVendorUrl() async {
     //final liveUrl = await SharedPref().getVendorUrlLive();
-    return await SharedPref().getVendorUrlTest();
+    return await SharedPref().getCustomerUnderAgentUrl();
 
   }
 
@@ -25,7 +25,8 @@ class AgentCustomerDetailsRepository
     final vendorUrl = await loadVendorUrl();
     final url =
        // Uri.parse("https://doorstepmftctest.digicob.in/getCustomerlist");
-        Uri.parse("${vendorUrl}getCustomerlist");
+      //  Uri.parse("${vendorUrl}getCustomerlist");
+        Uri.parse(vendorUrl);
     print("loadVendorUrl = ${await loadVendorUrl()}");
     bool checkConnection = await InternetConnectionChecker().hasConnection;
     final body = {"agent_id": agentId};

@@ -21,6 +21,7 @@ class NewQrCodeRepository implements INewQrCodeRepository {
         "upi": {"channel": "qrcode"},
       },
     };
+
     if(checkConnection){
       final response = await http.post(
         url,
@@ -30,6 +31,8 @@ class NewQrCodeRepository implements INewQrCodeRepository {
             'Content-Type': 'application/json',
           }
       );
+      print(response.statusCode);
+      print(response.body);
       if(response.statusCode == 200 || response.statusCode == 201){
         try{
           return Right(NewQrCodeModel.fromJson(jsonDecode(response.body)));

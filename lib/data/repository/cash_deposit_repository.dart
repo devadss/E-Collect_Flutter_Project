@@ -9,7 +9,7 @@ import '../storage/shared_pref_helper.dart';
 class CashDepositRepository implements CashDepositInterface {
   Future<String> loadVendorUrl() async {
     //final liveUrl = await SharedPref().getVendorUrlLive();
-    return await SharedPref().getVendorUrlTest();
+    return await SharedPref().getDueListUrl();
 
   }
 
@@ -18,7 +18,7 @@ class CashDepositRepository implements CashDepositInterface {
       String accountNumber, String agentId, String amount) async {
     //final uri = Uri.parse("https://doorstepmftctest.digicob.in/cashDeposit");
     final vendorUrl = await loadVendorUrl();
-    final uri = Uri.parse("${vendorUrl}cashDeposit");
+    final uri = Uri.parse("${vendorUrl.replaceAll("GetRdclDuesListunderAgent", "").trim()}cashDeposit");
     final request = await http.post(
       uri,
       body: json.encode({

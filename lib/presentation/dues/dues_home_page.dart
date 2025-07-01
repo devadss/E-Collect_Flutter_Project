@@ -60,7 +60,7 @@ class _DuesHomePageState extends State<DuesHomePage> {
       });
     }
     final provider = Provider.of<DueUnderAgentProvider>(context, listen: false);
-    provider.getDuesUnderAgent(agentOriginId);
+    await provider.getDuesUnderAgent(agentOriginId);
   }
 
   Future<void> getPaymentSessionId(

@@ -12,7 +12,6 @@ import '../../data/provider/parent_agent_detail_provider/parent_credential_provi
 import '../../data/storage/shared_pref_helper.dart';
 import 'login/otp_verification/otp_verification.dart';
 
-
 class MobileNumberVerificationPage extends StatefulWidget {
   const MobileNumberVerificationPage({super.key});
 
@@ -49,20 +48,23 @@ class _MobileNumberVerificationPageState
       Navigator.pop(context);
       showInSnackBar('Please enter valid mobile number');
     } else {
-      final parentAgentDetailProvider = Provider.of<ParentDetailAgentProvider>(context, listen: false);
-final vendorBaseUrlProvider = Provider.of<CollectionBaseUrlProvider>(context , listen :false);
+      final parentAgentDetailProvider =
+          Provider.of<ParentDetailAgentProvider>(context, listen: false);
+      final vendorBaseUrlProvider =
+          Provider.of<CollectionBaseUrlProvider>(context, listen: false);
 
       await parentAgentDetailProvider.fetchParentAgentDetails(value);
       if (parentAgentDetailProvider.subAgent != null) {
-        await vendorBaseUrlProvider.getCollectionUrl(parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);
+        await vendorBaseUrlProvider.getCollectionUrl(
+            parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);
 
-        if(vendorBaseUrlProvider.collectionBaseUrlModel != null){
-          SharedPref.shared.setVendorUrlLive(
-              vendorBaseUrlProvider.collectionBaseUrlModel!.pu.toString()
-          );
-          SharedPref.shared.setVendorUrlTest(
-              vendorBaseUrlProvider.collectionBaseUrlModel!.tu.toString()
-          );
+        if (vendorBaseUrlProvider.collectionBaseUrlModel != null) {
+          SharedPref.shared.setCustomerUnderAgentUrl(
+              vendorBaseUrlProvider.collectionBaseUrlModel!.cu.toString());
+          SharedPref.shared.setDueListUrl(
+              vendorBaseUrlProvider.collectionBaseUrlModel!.du.toString());
+          SharedPref.shared.setUserType(
+              vendorBaseUrlProvider.collectionBaseUrlModel!.type.toString());
         }
 
         print(parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);
@@ -78,21 +80,24 @@ final vendorBaseUrlProvider = Provider.of<CollectionBaseUrlProvider>(context , l
         await SharedPref.shared.setSubAgentMobNum(
           parentAgentDetailProvider.subAgent!.data.mobileNumber.toString(),
         );
-        await SharedPref.shared.setAgentOriginId(
-            parentAgentDetailProvider.subAgent!.data.subAgentOriginId.toString()
-        );
+        await SharedPref.shared.setAgentOriginId(parentAgentDetailProvider
+            .subAgent!.data.subAgentOriginId
+            .toString());
         await SharedPref.shared.setSubAgentCode(
           parentAgentDetailProvider.subAgent!.data.subAgentCode.toString(),
         );
         await SharedPref.shared.setSubAgentId(
           parentAgentDetailProvider.subAgent!.data.subAgentId.toString(),
         );
-        print("parentAgentDetailProvider.subAgent!.parentAgentMobNo.toString() = ${parentAgentDetailProvider.subAgent!.data.parentAgentMobNo.toString()}");
-        final parentAgentCredentialProvider = Provider.of<ParentAgentCredentialProvider>(context, listen: false);
+        print(
+            "parentAgentDetailProvider.subAgent!.parentAgentMobNo.toString() = ${parentAgentDetailProvider.subAgent!.data.parentAgentMobNo.toString()}");
+        final parentAgentCredentialProvider =
+            Provider.of<ParentAgentCredentialProvider>(context, listen: false);
 
         await parentAgentCredentialProvider.fetchParentAgentCredentials(
-            parentAgentDetailProvider.subAgent!.data.parentAgentMobNo.toString().replaceAll("+91", "")
-        );
+            parentAgentDetailProvider.subAgent!.data.parentAgentMobNo
+                .toString()
+                .replaceAll("+91", ""));
         if (parentAgentCredentialProvider.parentAgentCredentialModel != null) {
           SharedPref.shared.setParentAgentName(parentAgentCredentialProvider
               .parentAgentCredentialModel!.b.userName);
@@ -100,7 +105,10 @@ final vendorBaseUrlProvider = Provider.of<CollectionBaseUrlProvider>(context , l
               .parentAgentCredentialModel!.b.mobPassword);
           SharedPref.shared.setAgentName(parentAgentCredentialProvider
               .parentAgentCredentialModel!.b.userName);
-          final custRegisterProvider = Provider.of<CustRegisterProvider>(context, listen: false,);
+          final custRegisterProvider = Provider.of<CustRegisterProvider>(
+            context,
+            listen: false,
+          );
 
           await custRegisterProvider.checkRegCust(int.parse(
               parentAgentDetailProvider.subAgent!.data.parentAgentMobNo
@@ -149,7 +157,8 @@ final vendorBaseUrlProvider = Provider.of<CollectionBaseUrlProvider>(context , l
                     customer.response!.data!['CorpCode'].toString(),
                   );
                   SharedPref.shared.setMpinValue(customer.mpin.toString());
-                  print("customer.mpin.toString() = ${customer.mpin.toString()}");
+                  print(
+                      "customer.mpin.toString() = ${customer.mpin.toString()}");
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -180,7 +189,7 @@ final vendorBaseUrlProvider = Provider.of<CollectionBaseUrlProvider>(context , l
             null) {
           print(parentAgentCredentialProvider
               .parentAgentCredentialFailResponse!.message);
-   /*       EasyLoading.showToast(parentAgentCredentialProvider
+          /*       EasyLoading.showToast(parentAgentCredentialProvider
               .parentAgentCredentialFailResponse!.message);*/
         }
       }

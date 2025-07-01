@@ -39,7 +39,15 @@ class DuesList1 {
     "data": data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
   };
 }
-
+// "AccNo": "00071001",
+// "OpenDate": "2024-01-30",
+// "InstallAmt": 372500,
+// "PaidAmount": "46902",
+// "DueAmount": 325598,
+// "TotalInstallment": "17",
+// "Name": "UMMAR K",
+// "PaidInstallments": "3",
+// "DueInstallments": "14"
 class DueUnderAgnet {
   String? accNo;
   String? openDate;

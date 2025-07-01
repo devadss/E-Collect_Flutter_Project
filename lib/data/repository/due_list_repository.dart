@@ -13,7 +13,7 @@ class DueListRepository implements IDueListRepository {
 
   Future<String> loadVendorUrl() async {
     //final liveUrl = await SharedPref().getVendorUrlLive();
-    return await SharedPref().getVendorUrlTest();
+    return await SharedPref().getDueListUrl();
 
   }
 
@@ -24,7 +24,8 @@ class DueListRepository implements IDueListRepository {
     final vendorUrl = await loadVendorUrl();
     final url = Uri.parse(
        // "https://doorstepmftctest.digicob.in/GetDuesList?accNo=$accountNumber&asOnDate=$onDate");
-        "${vendorUrl}GetDuesList?accNo=$accountNumber&asOnDate=$onDate");
+       // "${vendorUrl}GetDuesList?accNo=$accountNumber&asOnDate=$onDate");
+        "${vendorUrl}?accNo=$accountNumber&asOnDate=$onDate");
     bool checkConnection = await InternetConnectionChecker().hasConnection;
     if (checkConnection) {
       final response = await http.get(url);

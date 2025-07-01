@@ -121,12 +121,14 @@
 //   }
 // }
 
-
+import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
+import 'package:collection_qr_flutter/presentation/dues/rdcl_due_home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/colors.dart';
 import '../../core/constants.dart';
 import '../account_dues/account_list_home_page.dart';
+import '../account_dues/rdcl_account_list_home_page.dart';
 import '../dues/dues_home_page.dart';
 import '../home/home_page.dart';
 import '../profile/profile_home_page.dart';
@@ -140,34 +142,47 @@ class BottomNavScreen extends StatefulWidget {
 
 class _BottomNavScreenState extends State<BottomNavScreen> {
   int _selectedIndex = 0;
+  bool? isRdcl;
+  String? userTPYE;
   double _indicatorPosition = 0.0;
   final List<GlobalKey> _tabKeys = List.generate(4, (index) => GlobalKey());
 
   @override
   void initState() {
     super.initState();
+    isRdcl = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _updateIndicatorPosition(animate: false);
     });
   }
+
+  Future<void> getSharedData() async {
+    var userType = await SharedPref.shared.getUserType();
+    setState(() {
+      userTPYE = userType;
+    });
+  }
+
   Widget _getSelectedPage(int index) {
     switch (index) {
       case 0:
-        return HomePage();
+        return const HomePage();
       case 1:
-        return DuesHomePage();
+        return userTPYE?.contains("RDCL")==true  ? const RdclDuesHomePage() : const DuesHomePage();
       case 2:
-        return AccountListHomePage();
+
+        return userTPYE?.contains("RDCL")==true? const RdclAccountListHomePage():const AccountListHomePage();
       case 3:
-        return ProfileHomePage();
+        return const ProfileHomePage();
       default:
-        return HomePage();
+        return const HomePage();
     }
   }
 
-
   void _updateIndicatorPosition({bool animate = true}) {
-    final RenderBox renderBox = _tabKeys[_selectedIndex].currentContext?.findRenderObject() as RenderBox;
+    final RenderBox renderBox = _tabKeys[_selectedIndex]
+        .currentContext
+        ?.findRenderObject() as RenderBox;
     final position = renderBox.localToGlobal(Offset.zero);
     final newPosition = position.dx + (renderBox.size.width / 2) - 20;
 
@@ -190,20 +205,18 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        showDialog(context: context, builder:(context) =>exitAlert(context) );
+        showDialog(context: context, builder: (context) => exitAlert(context));
         return false;
       },
       child: Scaffold(
         backgroundColor: white,
         body: _getSelectedPage(_selectedIndex),
 
-      // IndexedStack(
+        // IndexedStack(
         //   index: _selectedIndex,
         //   children: const [
         //     HomePage(),
@@ -250,7 +263,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
               ),
               // Navigation items
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 child: Container(
                   decoration: BoxDecoration(
                     color: white,

@@ -410,7 +410,8 @@ class _NewQrCodePageState extends State<NewQrCodePage>
   Future<void> generateQr(
       String amount,String paymentSessionId,String token) async {
 
-    final generateQr = await NewQrCodeRepository().getQrCode(paymentSessionId, token);
+    final generateQr = await NewQrCodeRepository().getQrCode(
+        paymentSessionId, token);
     generateQr.fold(
             (error){
           print("---------------------ERROR---------------");
