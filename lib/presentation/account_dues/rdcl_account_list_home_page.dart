@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../core/colors.dart';
 import '../../data/provider/rdcl_cust_list_provider.dart';
+import '../../data/provider/rdcl_due_under_agent_provider.dart';
 import '../../data/storage/shared_pref_helper.dart';
 
 class RdclAccountListHomePage extends StatefulWidget {
@@ -39,9 +40,14 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage> {
       print(
           "----------------------------------AGENT ORIGIN ID---------------------------");
       print(agentId);
+      final rdclDueUnderAgentProvider =
+      Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
+      await rdclDueUnderAgentProvider.getRdclDueList(agentId!,"");
       final provider =
       Provider.of<RdclCustListProvider>(context, listen: false);
-      await provider.getRdclCustomerunderAgent(agentId!, "");
+     //await provider.getRdclCustomerunderAgent(agentId!, "");
+      print("bRanch code : ${rdclDueUnderAgentProvider.rdclDueUnderAgentModel!.data[0].brCode}");
+      await provider.getRdclCustomerunderAgent("", rdclDueUnderAgentProvider.rdclDueUnderAgentModel!.data[0].brCode);
 
     }
   }
@@ -118,7 +124,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage> {
             automaticallyImplyLeading: false,
             centerTitle: true,
             title: const Text(
-              "Account List",
+              "Customer List",
               style: TextStyle(
                   fontWeight: FontWeight.w700, fontSize: 23, color: home2),
             )),
@@ -207,7 +213,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage> {
                                             const Spacer(),
                                             Container(
                                               height: 30,
-                                              width: 90,
+                                              width: 120,
                                               decoration: BoxDecoration(
                                                   borderRadius:
                                                   BorderRadius.circular(
@@ -227,7 +233,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage> {
                                                     ),
                                                     const SizedBox(width: 5),
                                                     const Text(
-                                                      "Collect",
+                                                      "View details",
                                                       style: TextStyle(
                                                           fontWeight:
                                                           FontWeight.w700,

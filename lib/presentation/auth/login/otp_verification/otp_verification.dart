@@ -85,12 +85,16 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
         Navigator.pop(context);
         await SharedPref.shared.setTokenValue(data.toString());
         if (widget.tokenStatus == "MPIN_N") {
-          Navigator.push(
+        /*  Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => OtpVerification(
                     mobNum: widget.subAgentmobNum,
-                  )));
+                  )));*/
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const GooglePinCodePage()));
         } else {
           SharedPref.shared.setLogin(true);
           Navigator.push(
@@ -138,9 +142,13 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
                 Navigator.push(
                     context,
                     MaterialPageRoute(
+                        builder: (context) => const GooglePinCodePage()));
+           /*     Navigator.push(
+                    context,
+                    MaterialPageRoute(
                         builder: (context) => OtpVerification(
                           mobNum: widget.subAgentmobNum,
-                        )));
+                        )));*/
               } else {
                 SharedPref.shared.setLogin(true);
                 tokenGeneration();

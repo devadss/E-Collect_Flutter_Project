@@ -12,11 +12,11 @@ class CollectionBaseUrlRepo implements CollectionBaseUrlInterface{
       ) async {
     parentMobNum!.startsWith("+91")?
   parentMobNum.replaceAll("+91", ""):parentMobNum;
-
+print("parentMobNum $parentMobNum");
    final uri = Uri.parse("https://devops.mydop.in/api/fetch/vendor/urls/$parentMobNum");
    final request = await http.get(uri);
    print("CollectionBaseUrlRepo : $uri");
-   print(request.body);
+   print("CollectionBaseUrlRepo Body:${request.body}");
    if(request.statusCode == 200){
      return Right(CollectionBaseUrlModel.fromJson(jsonDecode(request.body)));
    }else{

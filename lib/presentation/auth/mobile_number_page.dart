@@ -84,7 +84,7 @@ class _MobileNumberVerificationPageState
             .subAgent!.data.subAgentOriginId
             .toString());
         await SharedPref.shared.setSubAgentCode(
-          parentAgentDetailProvider.subAgent!.data.subAgentCode.toString(),
+          parentAgentDetailProvider.subAgent!.data.subAgentOriginId.toString(),
         );
         await SharedPref.shared.setSubAgentId(
           parentAgentDetailProvider.subAgent!.data.subAgentId.toString(),

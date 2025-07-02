@@ -11,21 +11,22 @@ import 'package:http/http.dart' as http;
 class PaymentLinkRepository implements IPaymentLinkRepository {
   @override
   Future<Either<ErrorHandler, PaymentLinkModel>> getPaymentLink(
-      String agentName,
-      String agentId,
-      String agentOriginId,
-      String agentPhone,
-      String agentEmail,
-      String customerName,
-      String customerPhone,
-      String customerAccountNumber,
-      String customerEmail,
-      String customerId,
-      num linkAmount,
-      String note,
-      String corpCode,
-      String cardRefNum,String token,
-      String  subAgentId) async {
+      {required String agentName,
+     required String agentId,
+     required String agentOriginId,
+     required String agentPhone,
+     required String agentEmail,
+     required String customerName,
+     required String customerPhone,
+     required String customerAccountNumber,
+     required String customerEmail,
+     required String customerId,
+     required num linkAmount,
+     required String note,
+     required String corpCode,
+     required String cardRefNum,
+     required String token,
+     required String subAgentId}) async {
     final url = Uri.parse("${baseUrl}api/Cashfree/CreatePaymentLink");
 
     final Map<String, dynamic> body = {

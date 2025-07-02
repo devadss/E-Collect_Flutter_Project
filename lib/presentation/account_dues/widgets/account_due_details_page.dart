@@ -630,21 +630,21 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
 
   Future<void> sendLinkFunction() async {
     final send = await PaymentLinkRepository().getPaymentLink(
-        agentName!,
-        agentId!,
-        agentOriginId!,
-        agentMobile!,
-        agentEmail!,
-        widget.custName,
-        widget.custPhoneNumber,
-        widget.custAcNumber,
-        widget.custEmail,
-        widget.custId,
-        num.parse(amountController.text),
-        "Payment for Order #12345",
-        corpCode!,
-        "",
-        token.toString(), subagentId!);
+       agentName:  agentName!,
+      agentId:   agentId!,
+      agentOriginId:   agentOriginId!,
+       agentPhone:  agentMobile!,
+      agentEmail:   agentEmail!,
+       customerName:  widget.custName,
+      customerPhone:   widget.custPhoneNumber,
+      customerAccountNumber:   widget.custAcNumber,
+       customerEmail:  widget.custEmail,
+       customerId:  widget.custId,
+       linkAmount:  num.parse(amountController.text),
+       note:  "Payment for Order #12345",
+       corpCode:  corpCode!,
+       cardRefNum:  "",
+       token:  token.toString(),subAgentId:  subagentId!);
 
     send.fold(
           (error) {

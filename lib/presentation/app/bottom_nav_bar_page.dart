@@ -19,7 +19,6 @@ class BottomNavScreen extends StatefulWidget {
 
 class _BottomNavScreenState extends State<BottomNavScreen> {
   int _selectedIndex = 0;
-  bool? isRdcl;
   String? userTPYE;
   double _indicatorPosition = 0.0;
   final List<GlobalKey> _tabKeys = List.generate(4, (index) => GlobalKey());
@@ -27,7 +26,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   @override
   void initState() {
     super.initState();
-    isRdcl = true;
+  //  isRdcl = true;
     getSharedData();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _updateIndicatorPosition(animate: false);
@@ -37,6 +36,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   Future<void> getSharedData() async {
     var userType = await SharedPref.shared.getUserType();
     setState(() {
+      print("getUserType value = $userType");
       userTPYE = userType;
     });
   }
@@ -170,7 +170,9 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                         index: 2,
                         icon: Icons.list_alt_outlined,
                         activeIcon: Icons.list_alt,
-                        label: 'Accounts',
+                        label:
+                        userTPYE?.contains("RDCL") == true?
+                        "Cust List":'Accounts',
                       ),
                       _buildNavItem(
                         key: _tabKeys[3],

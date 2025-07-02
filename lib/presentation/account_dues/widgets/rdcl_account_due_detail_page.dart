@@ -27,17 +27,19 @@ class RdclAccountDueDetailsPage extends StatefulWidget {
   final String custId;
   final String custEmail;
 
-  const RdclAccountDueDetailsPage({
-    super.key,
-    required this.custName,
-    required this.custAcNumber,
-    required this.custPhoneNumber,
-    required this.custId,
-    required this.custEmail, required this.corpCode, required this.indexValue
-  });
+  const RdclAccountDueDetailsPage(
+      {super.key,
+      required this.custName,
+      required this.custAcNumber,
+      required this.custPhoneNumber,
+      required this.custId,
+      required this.custEmail,
+      required this.corpCode,
+      required this.indexValue});
 
   @override
-  State<RdclAccountDueDetailsPage> createState() => _AccountDueDetailsPageState();
+  State<RdclAccountDueDetailsPage> createState() =>
+      _AccountDueDetailsPageState();
 }
 
 class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
@@ -60,23 +62,24 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
   String? token;
   String? paymentSessionId;
   String orderID = "";
-  void updateTotalAmount() {
 
-    final provider = Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
-    List.generate(provider.rdclDueUnderAgentModel!.data.length, (index) => false);
+  void updateTotalAmount() {
+    final provider =
+        Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
+    List.generate(
+        provider.rdclDueUnderAgentModel!.data.length, (index) => false);
 
     int manualAmount = int.tryParse(amountController.text) ?? 0;
     int checkboxTotal = 0;
     int maxDueAmount = 0;
 
-   // for (int i = 0; i < provider.rdclDueUnderAgentModel!.data.length; i++) {
+    // for (int i = 0; i < provider.rdclDueUnderAgentModel!.data.length; i++) {
     for (int i = 0; i < 1; i++) {
       maxDueAmount +=
           (provider.rdclDueUnderAgentModel?.data[i].dueAmount as num).toInt();
       if (checkedItems[i]) {
         checkboxTotal +=
-            (provider.rdclDueUnderAgentModel?.data[i].dueAmount as num)
-                .toInt();
+            (provider.rdclDueUnderAgentModel?.data[i].dueAmount as num).toInt();
       }
     }
 
@@ -100,8 +103,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
         return AlertDialog(
           title: Text("Proceed Confirmation", style: _labelTextStyle()),
           content: Text(
-            "Select the Payment Mode to proceed with the total amount of Rs. ${amountController
-                .text}?",
+            "Select the Payment Mode to proceed with the total amount of Rs. ${amountController.text}?",
             style: _valueTextStyle(),
           ),
           actions: [
@@ -117,30 +119,22 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
                 print(agentId);
                 final paymentSession = await CreatePaymentSessionIdRepository()
                     .getPaymentSessionId(
-                    agentOriginId
-                        :agentId,
-                    agentEmail
-                        :agentEmail,
-                    customerName
-                        :widget.custName,
-                    customerPhone
-                        :widget.custPhoneNumber,
-                    customerAccno
-                        :widget.custAcNumber,
-                    customerId
-                        :widget.custId,
-                    customerEmail
-                        :widget.custEmail,
-                    corpCode
-                        :widget.corpCode,
-                    cardRefNum: "",
-                    token: token,
-                    amount: amountController.text,
-                    agentPhone: agentMobile,
-                    agentId: agentId,
-                    note: "Payment For Agent $agentName",
-                    subAgentId: subagentId,
-                    agentName: agentName);
+                        agentOriginId: agentId,
+                        agentEmail: agentEmail,
+                        customerName: widget.custName,
+                        customerPhone: widget.custPhoneNumber,
+                        customerAccno: widget.custAcNumber,
+                        customerId: widget.custId,
+                        customerEmail: widget.custEmail,
+                        corpCode: widget.corpCode,
+                        cardRefNum: "",
+                        token: token,
+                        amount: amountController.text,
+                        agentPhone: agentMobile,
+                        agentId: agentId,
+                        note: "Payment For Agent $agentName",
+                        subAgentId: subagentId,
+                        agentName: agentName);
                 paymentSession.fold((error) {
                   print(
                       "---------------------------------ERROR PAYMENT---------------------------");
@@ -157,12 +151,11 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
                     final result = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            NewQrCodePage(
-                              paymentSessionId: paymentSessionId!,
-                              amount: amountController.text ?? "",
-                              token: token!,
-                            ),
+                        builder: (context) => NewQrCodePage(
+                          paymentSessionId: paymentSessionId!,
+                          amount: amountController.text ?? "",
+                          token: token!,
+                        ),
                       ),
                     );
                     if (!mounted) return;
@@ -209,28 +202,29 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
 
   Future<void> sendLinkFunction() async {
     final send = await PaymentLinkRepository().getPaymentLink(
-        agentName!,
-        agentId!,
-        agentOriginId!,
-        agentMobile!,
-        agentEmail!,
-        widget.custName,
-        widget.custPhoneNumber,
-        widget.custAcNumber,
-        widget.custEmail,
-        widget.custId,
-        num.parse(amountController.text),
-        "Payment for Order #12345",
-        corpCode!,
-        "",
-        token.toString(), subagentId!);
+        agentName: agentName!,
+        agentId: agentId!,
+        agentOriginId: agentOriginId!,
+        agentPhone: agentMobile!,
+        agentEmail: agentEmail!,
+        customerName: widget.custName,
+        customerPhone: agentMobile!,
+        customerAccountNumber: widget.custAcNumber,
+        customerEmail: "",
+        customerId: widget.custId,
+        linkAmount: num.parse(amountController.text),
+        note: "Payment for Order #12345",
+        corpCode: corpCode!,
+        cardRefNum: "",
+        token: token.toString(),
+        subAgentId: subagentId!);
 
     send.fold(
-          (error) {
+      (error) {
         print("-------------------ERROR---------------------");
         print(error);
       },
-          (sendLink) {
+      (sendLink) {
         if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
           Share.share("Here is your payment link: ${sendLink.linkUrl}");
         } else {
@@ -274,10 +268,10 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
         token = tok;
       });
     }
-    final provider = Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
-    await provider.getRdclDueList(agentId!);
-  //  List.generate(provider.rdclDueUnderAgentModel!.data.length, (index) => false);
-
+    final provider =
+        Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
+    await provider.getRdclDueList(agentId!, "");
+    //  List.generate(provider.rdclDueUnderAgentModel!.data.length, (index) => false);
   }
 
   @override
@@ -295,7 +289,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
         ),
         centerTitle: true,
         title: Text(
-          "RDCL Account Due Details",
+          "RDCL Account Details",
           style: GoogleFonts.poppins(
             color: home2,
             fontWeight: FontWeight.w600,
@@ -308,14 +302,14 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
           return provider.rdclDueUnderAgentModel == null
               ? _buildShimmerEffect()
               : Column(
-            children: [
-              _buildCustomerInfoCard(),
-              const SizedBox(height: 16),
-              Expanded(
-                child: _buildDueList(provider),
-              ),
-            ],
-          );
+                  children: [
+                    _buildCustomerInfoCard(),
+                    const SizedBox(height: 16),
+                    Expanded(
+                      child: _buildDueList(provider),
+                    ),
+                  ],
+                );
         },
       ),
     );
@@ -393,7 +387,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       child: ListView.builder(
-       // itemCount: provider.rdclDueUnderAgentModel!.data.length,
+        // itemCount: provider.rdclDueUnderAgentModel!.data.length,
         itemCount: 1,
         itemBuilder: (_, index) {
           final due = provider.rdclDueUnderAgentModel?.data[widget.indexValue!];
@@ -408,7 +402,8 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
               borderRadius: BorderRadius.circular(12),
               onTap: () {
                 setState(() {
-                  checkedItems[widget.indexValue!] = !checkedItems[widget.indexValue!];
+                  checkedItems[widget.indexValue!] =
+                      !checkedItems[widget.indexValue!];
 
                   updateTotalAmount();
                 });
@@ -432,24 +427,24 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
                                 fontWeight: FontWeight.w600,
                               )),
                         ),
-                        Transform.scale(
-                          scale: 1.2,
-                          child: Checkbox(
-                            value: checkedItems[index],
-                            onChanged: (bool? value) {
-                              setState(() {
-                                checkedItems[index] = value!;
-                                updateTotalAmount();
-                              });
-                              if (checkedItems.contains(true)) {
-                                _showBottomBar(context);
-                              } else {
-                                Navigator.of(context).pop();
-                              }
-                            },
-                            activeColor: home1,
-                          ),
-                        ),
+                        // Transform.scale(
+                        //   scale: 1.2,
+                        //   child: Checkbox(
+                        //     value: checkedItems[index],
+                        //     onChanged: (bool? value) {
+                        //       setState(() {
+                        //         checkedItems[index] = value!;
+                        //         updateTotalAmount();
+                        //       });
+                        //       if (checkedItems.contains(true)) {
+                        //         _showBottomBar(context);
+                        //       } else {
+                        //         Navigator.of(context).pop();
+                        //       }
+                        //     },
+                        //     activeColor: home1,
+                        //   ),
+                        // ),
                       ],
                     ),
                     const SizedBox(height: 8),
@@ -551,140 +546,135 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) =>
-          GestureDetector(
-            onTap: () {},
-            behavior: HitTestBehavior.opaque,
-            child: Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery
-                    .of(context)
-                    .viewInsets
-                    .bottom,
+      builder: (context) => GestureDetector(
+        onTap: () {},
+        behavior: HitTestBehavior.opaque,
+        child: Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: white,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(24),
               ),
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: white,
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 20,
+                  spreadRadius: 2,
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Total Amount Due",
+                  style: GoogleFonts.poppins(
+                    color: home1,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 20,
-                      spreadRadius: 2,
-                    ),
-                  ],
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                const SizedBox(height: 16),
+                TextField(
+                  controller: amountController,
+                  keyboardType: TextInputType.number,
+                  style: GoogleFonts.poppins(
+                    color: home1,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textAlign: TextAlign.center,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    prefixIcon: const Icon(Icons.currency_rupee),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: home1.withOpacity(0.3)),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: home1.withOpacity(0.3)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: home1, width: 1.5),
+                    ),
+                  ),
+                  onChanged: (value) {
+                    int enteredAmount = int.tryParse(value) ?? 0;
+                    int maxDueAmount = 0;
+
+                    final provider = Provider.of<RdclDueUnderAgentProvider>(
+                        context,
+                        listen: false);
+                    for (var due in provider.rdclDueUnderAgentModel!.data) {
+                      maxDueAmount += (due.dueAmount).toInt();
+                    }
+
+                    if (enteredAmount > maxDueAmount) {
+                      setState(() {
+                        amountController.text = maxDueAmount.toString();
+                      });
+                    }
+                  },
+                ),
+                const SizedBox(height: 16),
+                Row(
                   children: [
-                    Text(
-                      "Total Amount Due",
-                      style: GoogleFonts.poppins(
-                        color: home1,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: amountController,
-                      keyboardType: TextInputType.number,
-                      style: GoogleFonts.poppins(
-                        color: home1,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      textAlign: TextAlign.center,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                        prefixIcon: const Icon(Icons.currency_rupee),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: home1.withOpacity(0.3)),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: home1.withOpacity(0.3)),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(
-                              color: home1, width: 1.5),
-                        ),
-                      ),
-                      onChanged: (value) {
-                        int enteredAmount = int.tryParse(value) ?? 0;
-                        int maxDueAmount = 0;
-
-                        final provider =
-                        Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
-                        for (var due in provider.rdclDueUnderAgentModel!
-                            .data) {
-                          maxDueAmount += (due.dueAmount).toInt();
-                        }
-
-                        if (enteredAmount > maxDueAmount) {
-                          setState(() {
-                            amountController.text = maxDueAmount.toString();
-                          });
-                        }
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () => Navigator.pop(context),
-                            style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              side: const BorderSide(color: home1),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            child: Text(
-                              "Cancel",
-                              style: GoogleFonts.poppins(
-                                color: home1,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          side: const BorderSide(color: home1),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: _proceedButtonClick,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: home1,
-                              foregroundColor: white,
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            child: Text(
-                              "Proceed",
-                              style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
+                        child: Text(
+                          "Cancel",
+                          style: GoogleFonts.poppins(
+                            color: home1,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                      ],
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: _proceedButtonClick,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: home1,
+                          foregroundColor: white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          "Proceed",
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
-              ),
+              ],
             ),
           ),
+        ),
+      ),
     );
   }
 
@@ -692,10 +682,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
     return SingleChildScrollView(
       reverse: true, // Moves content up when keyboard opens
       child: Container(
-        height: MediaQuery
-            .of(context)
-            .size
-            .height * 0.15,
+        height: MediaQuery.of(context).size.height * 0.15,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [white, white],
@@ -720,7 +707,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
                   cursorColor: white,
                   controller: amountController,
                   keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
+                      const TextInputType.numberWithOptions(decimal: true),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -731,8 +718,9 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
                     int enteredAmount = int.tryParse(value) ?? 0;
                     int maxDueAmount = 0;
 
-                    final provider =
-                    Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
+                    final provider = Provider.of<RdclDueUnderAgentProvider>(
+                        context,
+                        listen: false);
                     for (var due in provider.rdclDueUnderAgentModel!.data) {
                       maxDueAmount += (due.dueAmount).toInt();
                     }
@@ -768,7 +756,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
                 onPressed: _proceedButtonClick,
                 style: ElevatedButton.styleFrom(
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                   backgroundColor: white,
@@ -833,7 +821,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
 
     try {
       bool launched =
-      await launchUrl(url, mode: LaunchMode.externalApplication);
+          await launchUrl(url, mode: LaunchMode.externalApplication);
       if (!launched) {
         throw 'Could not launch dialer';
       }
@@ -850,7 +838,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
 
   String formatNumberWithCommas(double? number) {
     final formatter =
-    NumberFormat("#,##,##0.00", "en_IN"); // Indian numbering system
+        NumberFormat("#,##,##0.00", "en_IN"); // Indian numbering system
 
     return formatter.format(number ?? 0.0); // Default to 0.0 if number is null
   }
@@ -858,13 +846,11 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
   TextStyle _labelTextStyle() =>
       const TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: black);
 
-  TextStyle _valueTextStyle() =>
-      const TextStyle(
-          fontWeight: FontWeight.w500, fontSize: 16, color: black87);
+  TextStyle _valueTextStyle() => const TextStyle(
+      fontWeight: FontWeight.w500, fontSize: 16, color: black87);
 
-  TextStyle _infoTextStyle() =>
-      const TextStyle(
-          fontWeight: FontWeight.w500, fontSize: 14, color: black87);
+  TextStyle _infoTextStyle() => const TextStyle(
+      fontWeight: FontWeight.w500, fontSize: 14, color: black87);
 
   TextStyle _bottomTextStyle() =>
       const TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: black);

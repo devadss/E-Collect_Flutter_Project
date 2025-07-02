@@ -26,6 +26,8 @@ class RDCLDueAccount {
   final String name;
   final String paidInstallments;
   final String dueInstallments;
+  final String custId;
+  final String brCode;
 
   RDCLDueAccount({
     required this.accNo,
@@ -37,6 +39,8 @@ class RDCLDueAccount {
     required this.name,
     required this.paidInstallments,
     required this.dueInstallments,
+    required this.custId,
+    required this.brCode,
   });
 
   factory RDCLDueAccount.fromJson(Map<String, dynamic> json) {
@@ -50,6 +54,8 @@ class RDCLDueAccount {
       name: json['Name'],
       paidInstallments: json['PaidInstallments'] ?? "0",
       dueInstallments: json['DueInstallments'],
+      custId: json['Cust_Id'],
+      brCode: json['Br_Code']
     );
   }
 
@@ -63,5 +69,7 @@ class RDCLDueAccount {
     "Name": name,
     "PaidInstallments": paidInstallments,
     "DueInstallments": dueInstallments,
+    "Cust_Id": custId,
+    "Br_Code": brCode,
   };
 }

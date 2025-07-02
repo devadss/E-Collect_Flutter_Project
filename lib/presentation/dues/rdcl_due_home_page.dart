@@ -1,19 +1,17 @@
 import 'package:collection_qr_flutter/data/provider/rdcl_due_under_agent_provider.dart';
 import 'package:collection_qr_flutter/domain/model/due_model/rdcl_due_under_agent_model.dart';
 import 'package:collection_qr_flutter/presentation/dues/widgets/new_qr_code_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
-
 import '../../core/alerts.dart';
 import '../../core/colors.dart';
 import '../../data/repository/payment_link_repository.dart';
 import '../../data/repository/payment_session_id_repository.dart';
 import '../../data/storage/shared_pref_helper.dart';
-import '../../domain/model/due_under_agent_model.dart';
+import '../../domain/model/account_list_model.dart';
 
 class RdclDuesHomePage extends StatefulWidget {
   const RdclDuesHomePage({super.key});
@@ -29,12 +27,12 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
   String? agentOriginId;
   String? agentId;
   String? subagentId;
+  RdclCustomerListModel? _rdclCustomerListModel;
   String? agentPhoneNumber;
   String? agentName;
   String? agentEmail;
   String? corpCode;
   String? paymentSessionId;
-
 
   @override
   void initState() {
@@ -45,6 +43,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
   Future<void> loadSharedPrefs() async {
     final name = await SharedPref().getParentAgentName();
     final id = await SharedPref().getAgentId();
+
     final originId = await SharedPref().getSubAgentCode();
     final subAgentID = await SharedPref().getSubAgentId();
     final code = await SharedPref().getCorpCode();
@@ -66,22 +65,25 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
     print("subagentId $subagentId");
     print("agentId $agentId");
     print("agentOriginId $agentOriginId");
-    final provider = Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
-    await provider.getRdclDueList(agentOriginId!);
+    final provider =
+        Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
+    await provider.getRdclDueList(agentOriginId!, "");
+    final providerTwo =
+    Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
+    await providerTwo.getRdclDueList("", provider.rdclDueUnderAgentModel!.data[0].brCode);
   }
 
   Future<void> getPaymentSessionId(
-      String? token,
-      String? customerName,
-      String? custPhoneNumber,
-      String? custAcNumber,
-      String? custId,
-      String? custEmail,
-
-      String? amount,String?
-      phoneNumber,String?
-      entityId,String? note)
-  async{
+      {required String? token,
+      required String? customerName,
+      required String? custPhoneNumber,
+      required String? custAcNumber,
+      required String? custId,
+      required String? custEmail,
+      required String? amount,
+      required String? phoneNumber,
+      required String? entityId,
+      required String? note}) async {
     print("--------------------TOKEN---------------------");
     print(token);
     print("---------------------AMOUNT--------------------");
@@ -94,67 +96,56 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
     print(note);
     final paymentSession = await CreatePaymentSessionIdRepository()
         .getPaymentSessionId(
-        agentOriginId
-            :agentId,
-        agentEmail
-            :agentEmail,
-        customerName
-            :customerName,
-        customerPhone
-            :custPhoneNumber,
-        customerAccno
-            : custAcNumber,
-        customerId
-            : custId,
-        customerEmail
-            : custEmail,
-        corpCode
-            :corpCode,
-        cardRefNum: "",
-        token: token,
-        amount: amount,
-        agentPhone: agentPhoneNumber,
-        agentId: agentId,
-        note: "Payment For Agent $agentName",
-        subAgentId: subagentId,
-        agentName: agentName);
-    paymentSession.fold(
-            (error){
-          print("---------------------------------ERROR PAYMENT---------------------------");
-          print(error);
-        },
-            (sessionId)async{
-          paymentSessionId = sessionId.paymentSessionId ?? "";
-          if (paymentSessionId!.isNotEmpty &&
-              paymentSessionId != null &&
-              paymentSessionId != "") {
-            if (!mounted) return;
-            Navigator.pop(context);
+            agentOriginId: agentOriginId,
+            agentEmail: agentEmail,
+            customerName: customerName,
+            customerPhone: custPhoneNumber,
+            customerAccno: custAcNumber,
+            customerId: custId,
+            customerEmail: custEmail,
+            corpCode: corpCode,
+            cardRefNum: "",
+            token: token,
+            amount: amount,
+            agentPhone: agentPhoneNumber,
+            agentId: agentId,
+            note: "Payment For Agent $agentName",
+            subAgentId: subagentId,
+            agentName: agentName);
+    paymentSession.fold((error) {
+      print(
+          "---------------------------------ERROR PAYMENT---------------------------");
+      print(error);
+    }, (sessionId) async {
+      paymentSessionId = sessionId.paymentSessionId ?? "";
+      if (paymentSessionId!.isNotEmpty &&
+          paymentSessionId != null &&
+          paymentSessionId != "") {
+        if (!mounted) return;
+        Navigator.pop(context);
 
-            if (!mounted) return;
-            final result = await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder:
-                    (context) => NewQrCodePage(
-                  paymentSessionId: paymentSessionId!,
-                  amount: amount ?? "",
-                  token: token!,
-                ),
-              ),
-            );
-            if (!mounted) return;
-            if (result == "fetch_balance") {
-              // Navigator.pop(context);
-            }
-          } else {
-            if (!mounted) return;
-            Navigator.pop(context);
-
-            showToast(message: "Session id is null",color: black);
-          }
+        if (!mounted) return;
+        final result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NewQrCodePage(
+              paymentSessionId: paymentSessionId!,
+              amount: amount ?? "",
+              token: token!,
+            ),
+          ),
+        );
+        if (!mounted) return;
+        if (result == "fetch_balance") {
+          // Navigator.pop(context);
         }
-    );
+      } else {
+        if (!mounted) return;
+        Navigator.pop(context);
+
+        showToast(message: "Session id is null", color: black);
+      }
+    });
   }
 
   Widget buildShimmerList() {
@@ -238,7 +229,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
         backgroundColor: white,
         centerTitle: true,
         title: const Text(
-          "Rdcl Due List",
+          "RDCL Due List",
           style: TextStyle(
             fontSize: 23,
             color: home2,
@@ -250,11 +241,15 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
         builder: (context, provider, child) {
           final data = provider.rdclDueUnderAgentModel?.data ?? [];
 
-          if (provider.rdclDueUnderAgentModel == null) return buildShimmerList();
+          if (provider.rdclDueUnderAgentModel == null) {
+            return buildShimmerList();
+          } else if (data.isEmpty) {
+            return const Text("No data found");
+          }
 
           final groupedData = <String, List<dynamic>>{};
           for (var due in data) {
-            groupedData.putIfAbsent(due.accNo!, () => []).add(due);
+            groupedData.putIfAbsent(due.accNo, () => []).add(due);
           }
 
           return ListView.separated(
@@ -266,7 +261,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
               final dues = groupedData[accNo]!;
               final totalDue = dues.fold<num>(
                 0,
-                    (sum, item) => sum + (item.dueAmount ?? 0),
+                (sum, item) => sum + (item.dueAmount ?? 0),
               );
 
               return Container(
@@ -342,15 +337,14 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
                         ),
                       ],
                     ),
-                    children:
-                    dues.asMap().entries.map((entry) {
+                    children: dues.asMap().entries.map((entry) {
                       final dueIndex = entry.key;
                       final due = entry.value;
 
                       _checkboxStates.putIfAbsent(accNo, () => {});
                       _checkboxStates[accNo]!.putIfAbsent(
                         dueIndex,
-                            () => false,
+                        () => false,
                       );
 
                       final isEnabled =
@@ -363,428 +357,424 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
                           children: [
                             Checkbox(
                               value: _checkboxStates[accNo]![dueIndex],
-                              onChanged:
-                              isEnabled
+                              onChanged: isEnabled
                                   ? (bool? value) {
-                                setState(() {
-                                  // Uncheck all other account numbers
-                                  _checkboxStates.forEach((
-                                      key,
-                                      map,
-                                      ) {
-                                    if (key != accNo) {
-                                      map.updateAll(
-                                            (_, __) => false,
+                                      setState(() {
+                                        // Uncheck all other account numbers
+                                        _checkboxStates.forEach((
+                                          key,
+                                          map,
+                                        ) {
+                                          if (key != accNo) {
+                                            map.updateAll(
+                                              (_, __) => false,
+                                            );
+                                          }
+                                        });
+
+                                        // Update current checkbox state
+                                        _checkboxStates[accNo]![dueIndex] =
+                                            value ?? false;
+                                        _expandedAccNo = accNo;
+                                      });
+
+                                      // Calculate the selected amount only for current group
+                                      num modalSelectedAmount = 0;
+                                      final map = _checkboxStates[accNo];
+                                      if (map != null) {
+                                        map.forEach((i, isChecked) {
+                                          if (isChecked) {
+                                            modalSelectedAmount +=
+                                                dues[i].installAmt ?? 0;
+                                          }
+                                        });
+                                      }
+
+                                      final hasAnyChecked =
+                                          modalSelectedAmount > 0;
+
+                                      if (!hasAnyChecked) return;
+
+                                      final controller = TextEditingController(
+                                        text: modalSelectedAmount
+                                            .toStringAsFixed(2),
                                       );
-                                    }
-                                  });
 
-                                  // Update current checkbox state
-                                  _checkboxStates[accNo]![dueIndex] =
-                                      value ?? false;
-                                  _expandedAccNo = accNo;
-                                });
+                                      String selectedMethod =
+                                          "Link"; // Default selection
 
-                                // Calculate the selected amount only for current group
-                                num modalSelectedAmount = 0;
-                                final map = _checkboxStates[accNo];
-                                if (map != null) {
-                                  map.forEach((i, isChecked) {
-                                    if (isChecked) {
-                                      modalSelectedAmount +=
-                                          dues[i].installAmt ?? 0;
-                                    }
-                                  });
-                                }
-
-                                final hasAnyChecked =
-                                    modalSelectedAmount > 0;
-
-                                if (!hasAnyChecked) return;
-
-                                final controller =
-                                TextEditingController(
-                                  text: modalSelectedAmount
-                                      .toStringAsFixed(2),
-                                );
-
-                                String selectedMethod =
-                                    "Link"; // Default selection
-
-                                showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  shape:
-                                  const RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.vertical(
-                                      top: Radius.circular(
-                                        20,
-                                      ),
-                                    ),
-                                  ),
-                                  backgroundColor: white,
-                                  builder: (context) {
-                                    return StatefulBuilder(
-                                      builder: (
-                                          context,
-                                          setModalState,
-                                          ) {
-                                        return Padding(
-                                          padding: EdgeInsets.only(
-                                            top: 20,
-                                            left: 20,
-                                            right: 20,
-                                            bottom:
-                                            MediaQuery.of(
-                                              context,
-                                            )
-                                                .viewInsets
-                                                .bottom +
-                                                20,
+                                      showModalBottomSheet(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(
+                                              20,
+                                            ),
                                           ),
-                                          child: SingleChildScrollView(
-                                            child: Column(
-                                              mainAxisSize:
-                                              MainAxisSize.min,
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment
-                                                  .start,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    Container(
-                                                      height: 60,
-                                                      width: 60,
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                        BorderRadius.circular(
-                                                          10,
-                                                        ),
-                                                        border: Border.all(
-                                                          color:
-                                                          black54,
-                                                          width: 1,
-                                                        ),
-                                                      ),
-                                                      child:
-                                                      selectedMethod ==
-                                                          "Link"
-                                                          ? Image.asset(
-                                                        "assets/icons/web-link.png",
-                                                        scale:
-                                                        12,
-                                                        color:
-                                                        home2,
-                                                      )
-                                                          : Image.asset(
-                                                        "assets/icons/qr-code.png",
-                                                        scale:
-                                                        12,
-                                                        color:
-                                                        home2,
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 8,
-                                                    ),
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment:
+                                        ),
+                                        backgroundColor: white,
+                                        builder: (context) {
+                                          return StatefulBuilder(
+                                            builder: (
+                                              context,
+                                              setModalState,
+                                            ) {
+                                              return Padding(
+                                                padding: EdgeInsets.only(
+                                                  top: 20,
+                                                  left: 20,
+                                                  right: 20,
+                                                  bottom: MediaQuery.of(
+                                                        context,
+                                                      ).viewInsets.bottom +
+                                                      20,
+                                                ),
+                                                child: SingleChildScrollView(
+                                                  child: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    crossAxisAlignment:
                                                         CrossAxisAlignment
                                                             .start,
+                                                    children: [
+                                                      Row(
                                                         children: [
-                                                          Text(
-                                                            "Collect Payment Using",
-                                                            overflow:
-                                                            TextOverflow.ellipsis,
-                                                            style: GoogleFonts.inter(
-                                                              fontWeight:
-                                                              FontWeight.w500,
-                                                              color:
-                                                              black87,
-                                                              fontSize:
-                                                              15,
+                                                          Container(
+                                                            height: 60,
+                                                            width: 60,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                10,
+                                                              ),
+                                                              border:
+                                                                  Border.all(
+                                                                color: black54,
+                                                                width: 1,
+                                                              ),
+                                                            ),
+                                                            child:
+                                                                selectedMethod ==
+                                                                        "Link"
+                                                                    ? Image
+                                                                        .asset(
+                                                                        "assets/icons/web-link.png",
+                                                                        scale:
+                                                                            12,
+                                                                        color:
+                                                                            home2,
+                                                                      )
+                                                                    : Image
+                                                                        .asset(
+                                                                        "assets/icons/qr-code.png",
+                                                                        scale:
+                                                                            12,
+                                                                        color:
+                                                                            home2,
+                                                                      ),
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 8,
+                                                          ),
+                                                          Expanded(
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                  "Collect Payment Using",
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  style:
+                                                                      GoogleFonts
+                                                                          .inter(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    color:
+                                                                        black87,
+                                                                    fontSize:
+                                                                        15,
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                  selectedMethod,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  style:
+                                                                      GoogleFonts
+                                                                          .inter(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w700,
+                                                                    color:
+                                                                        black,
+                                                                    fontSize:
+                                                                        15,
+                                                                  ),
+                                                                ),
+                                                              ],
                                                             ),
                                                           ),
-                                                          Text(
-                                                            selectedMethod,
-                                                            overflow:
-                                                            TextOverflow.ellipsis,
-                                                            style: GoogleFonts.inter(
-                                                              fontWeight:
-                                                              FontWeight.w700,
-                                                              color:
-                                                              black,
-                                                              fontSize:
-                                                              15,
+                                                          const SizedBox(
+                                                            width: 8,
+                                                          ),
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              showModalBottomSheet(
+                                                                context:
+                                                                    context,
+                                                                shape:
+                                                                    const RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .vertical(
+                                                                    top: Radius
+                                                                        .circular(
+                                                                      20,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                builder: (
+                                                                  ctx,
+                                                                ) =>
+                                                                    Column(
+                                                                  mainAxisSize:
+                                                                      MainAxisSize
+                                                                          .min,
+                                                                  children: [
+                                                                    ListTile(
+                                                                      leading:
+                                                                          const Icon(
+                                                                        Icons
+                                                                            .link,
+                                                                      ),
+                                                                      title:
+                                                                          const Text(
+                                                                        "Link",
+                                                                      ),
+                                                                      onTap:
+                                                                          () {
+                                                                        setModalState(
+                                                                          () => selectedMethod =
+                                                                              "Link",
+                                                                        );
+                                                                        Navigator
+                                                                            .pop(
+                                                                          ctx,
+                                                                        );
+                                                                      },
+                                                                    ),
+                                                                    ListTile(
+                                                                      leading:
+                                                                          const Icon(
+                                                                        Icons
+                                                                            .qr_code,
+                                                                      ),
+                                                                      title:
+                                                                          const Text(
+                                                                        "QR Code",
+                                                                      ),
+                                                                      onTap:
+                                                                          () {
+                                                                        setModalState(
+                                                                          () => selectedMethod =
+                                                                              "QR Code",
+                                                                        );
+                                                                        Navigator
+                                                                            .pop(
+                                                                          ctx,
+                                                                        );
+                                                                      },
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              );
+                                                            },
+                                                            child: Text(
+                                                              "Change Method >",
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: GoogleFonts
+                                                                  .inter(
+                                                                decoration:
+                                                                    TextDecoration
+                                                                        .underline,
+                                                                decorationColor:
+                                                                    home2,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w800,
+                                                                color: home2,
+                                                                fontSize: 12,
+                                                              ),
                                                             ),
                                                           ),
                                                         ],
                                                       ),
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 8,
-                                                    ),
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        showModalBottomSheet(
-                                                          context:
-                                                          context,
-                                                          shape: const RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.vertical(
-                                                              top: Radius.circular(
-                                                                20,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          builder:
-                                                              (
-                                                              ctx,
-                                                              ) => Column(
-                                                            mainAxisSize:
-                                                            MainAxisSize.min,
-                                                            children: [
-                                                              ListTile(
-                                                                leading: const Icon(
-                                                                  Icons.link,
-                                                                ),
-                                                                title: const Text(
-                                                                  "Link",
-                                                                ),
-                                                                onTap: () {
-                                                                  setModalState(
-                                                                        () =>
-                                                                    selectedMethod =
-                                                                    "Link",
-                                                                  );
-                                                                  Navigator.pop(
-                                                                    ctx,
-                                                                  );
-                                                                },
-                                                              ),
-                                                              ListTile(
-                                                                leading: const Icon(
-                                                                  Icons.qr_code,
-                                                                ),
-                                                                title: const Text(
-                                                                  "QR Code",
-                                                                ),
-                                                                onTap: () {
-                                                                  setModalState(
-                                                                        () =>
-                                                                    selectedMethod =
-                                                                    "QR Code",
-                                                                  );
-                                                                  Navigator.pop(
-                                                                    ctx,
-                                                                  );
-                                                                },
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        );
-                                                      },
-                                                      child: Text(
-                                                        "Change Method >",
-                                                        overflow:
-                                                        TextOverflow
-                                                            .ellipsis,
-                                                        style: GoogleFonts.inter(
-                                                          decoration:
-                                                          TextDecoration
-                                                              .underline,
-                                                          decorationColor:
-                                                          home2,
+                                                      const SizedBox(
+                                                        height: 15,
+                                                      ),
+                                                      const Text(
+                                                        "Installment Details",
+                                                        style: TextStyle(
+                                                          fontSize: 18,
                                                           fontWeight:
-                                                          FontWeight
-                                                              .w800,
-                                                          color:
-                                                          home2,
-                                                          fontSize:
-                                                          12,
+                                                              FontWeight.w600,
+                                                          color: home2,
                                                         ),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(
-                                                  height: 15,
-                                                ),
-                                                const Text(
-                                                  "Installment Details",
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight:
-                                                    FontWeight
-                                                        .w600,
-                                                    color: home2,
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 12,
-                                                ),
-                                                Text(
-                                                  "Open Date: ${due.openDate}",
-                                                  overflow:
-                                                  TextOverflow
-                                                      .ellipsis,
-                                                ),
-                                                Text(
-                                                  "Paid Installments: ${provider.rdclDueUnderAgentModel?.data[index].paidInstallments}",
-                                                  overflow:
-                                                  TextOverflow
-                                                      .ellipsis,
-                                                ),
-                                                const SizedBox(
-                                                  height: 20,
-                                                ),
-                                                Text(
-                                                  "Edit Total Selected Amount",
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight:
-                                                    FontWeight
-                                                        .w500,
-                                                    color:
-                                                    grey[800],
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 8,
-                                                ),
-                                                TextFormField(
-                                                  controller:
-                                                  controller,
-                                                  keyboardType:
-                                                  const TextInputType.numberWithOptions(
-                                                    decimal:
-                                                    true,
-                                                    signed:
-                                                    true,
-                                                  ),
-                                                  decoration: InputDecoration(
-                                                    filled: true,
-                                                    fillColor:
-                                                    home2,
-                                                    border: OutlineInputBorder(
-                                                      borderRadius:
-                                                      BorderRadius.circular(
-                                                        10,
+                                                      const SizedBox(
+                                                        height: 12,
                                                       ),
-                                                      borderSide:
-                                                      const BorderSide(
-                                                        color:
-                                                        deepTeal,
+                                                      Text(
+                                                        "Open Date: ${due.openDate}",
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                       ),
-                                                    ),
-                                                    focusedBorder: OutlineInputBorder(
-                                                      borderRadius:
-                                                      BorderRadius.circular(
-                                                        10,
+                                                      Text(
+                                                        "Paid Installments: ${provider.rdclDueUnderAgentModel?.data[index].paidInstallments}",
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                       ),
-                                                      borderSide:
-                                                      const BorderSide(
-                                                        color:
-                                                        deepTeal,
-                                                        width:
-                                                        1.5,
+                                                      const SizedBox(
+                                                        height: 20,
                                                       ),
-                                                    ),
-                                                    contentPadding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal:
-                                                      14,
-                                                      vertical:
-                                                      12,
-                                                    ),
-                                                    prefixIcon:
-                                                    const Icon(
-                                                      Icons
-                                                          .currency_rupee,
-                                                      color:
-                                                      white,
-                                                    ),
+                                                      Text(
+                                                        "Edit Total Selected Amount",
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: grey[800],
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 8,
+                                                      ),
+                                                      TextFormField(
+                                                        controller: controller,
+                                                        keyboardType:
+                                                            const TextInputType
+                                                                .numberWithOptions(
+                                                          decimal: true,
+                                                          signed: true,
+                                                        ),
+                                                        decoration:
+                                                            InputDecoration(
+                                                          filled: true,
+                                                          fillColor: home2,
+                                                          border:
+                                                              OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                              10,
+                                                            ),
+                                                            borderSide:
+                                                                const BorderSide(
+                                                              color: deepTeal,
+                                                            ),
+                                                          ),
+                                                          focusedBorder:
+                                                              OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                              10,
+                                                            ),
+                                                            borderSide:
+                                                                const BorderSide(
+                                                              color: deepTeal,
+                                                              width: 1.5,
+                                                            ),
+                                                          ),
+                                                          contentPadding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                            horizontal: 14,
+                                                            vertical: 12,
+                                                          ),
+                                                          prefixIcon:
+                                                              const Icon(
+                                                            Icons
+                                                                .currency_rupee,
+                                                            color: white,
+                                                          ),
+                                                        ),
+                                                        style: const TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: white,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 20,
+                                                      ),
+                                                      CustomSliderButton(
+                                                        token: token!,
+                                                        label:
+                                                            "Slide to Collect Using $selectedMethod",
+                                                        backgroundColor: home2,
+                                                        buttonColor:
+                                                            Colors.white,
+                                                        onConfirmed: () async {
+                                                          // final editedAmount = num.tryParse(controller.text.trim()) ?? 0;
+                                                          selectedMethod ==
+                                                                  "Link"
+                                                              ? sendLinkFunction(
+                                                                  provider.rdclDueUnderAgentModel!
+                                                                          .data[
+                                                                      index],
+                                                                  controller
+                                                                      .text)
+                                                              : getPaymentSessionId(
+                                                                  token: token,
+                                                                  customerName: provider
+                                                                      .rdclDueUnderAgentModel
+                                                                      ?.data[
+                                                                          index]
+                                                                      .name,
+                                                                  custPhoneNumber:
+                                                                      "",
+                                                                  custAcNumber: provider
+                                                                      .rdclDueUnderAgentModel
+                                                                      ?.data[
+                                                                          index]
+                                                                      .accNo,
+                                                                  custId: provider.rdclDueUnderAgentModel
+                                                            ?.data[
+                                                            index].custId,
+                                                                  custEmail: "",
+                                                                  phoneNumber:
+                                                                      "$agentPhoneNumber",
+                                                                  entityId:
+                                                                      agentId,
+                                                                  note:
+                                                                      "Payment For Agent $agentName",
+                                                                  amount:
+                                                                      controller
+                                                                          .text,
+                                                                );
+                                                        },
+                                                      ),
+                                                    ],
                                                   ),
-                                                  style: const TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                    FontWeight
-                                                        .w600,
-                                                    color: white,
-                                                  ),
                                                 ),
-                                                const SizedBox(
-                                                  height: 20,
-                                                ),
-                                                CustomSliderButton(
-                                                  token: token!,
-                                                  label:
-                                                  "Slide to Collect Using $selectedMethod",
-                                                  backgroundColor:
-                                                  home2,
-                                                  buttonColor:
-                                                  Colors.white,
-                                                  onConfirmed: () async {
-                                                    // final editedAmount = num.tryParse(controller.text.trim()) ?? 0;
-                                                    selectedMethod ==
-                                                        "Link"
-                                                        ? sendLinkFunction(
-                                                      provider.rdclDueUnderAgentModel!
-                                                          .data[index],
-                                                      controller
-                                                          .text,
-                                                    )
-                                                        :getPaymentSessionId(token,
-                                                        provider.rdclDueUnderAgentModel?.data?[index].name,
-                                                       // provider.agentModel?.duesList1?.data?[index].phone,
-                                                        "",
-                                                        provider.rdclDueUnderAgentModel?.data[index].accNo,
-
-                                                        "",
-                                                       "",
-                                                        controller.text, "$agentPhoneNumber", agentId, "Payment For Agent $agentName");
-                                                    // : Navigator.push(
-                                                    //   context,
-                                                    //   MaterialPageRoute(
-                                                    //     builder:
-                                                    //         (
-                                                    //           context,
-                                                    //         ) => QrCodePage(
-                                                    //           amount:
-                                                    //               controller.text,
-                                                    //           token:
-                                                    //               token!,
-                                                    //           custEmail:
-                                                    //               provider.agentModel?.duesList1?.data?[index].email ??
-                                                    //               "",
-                                                    //           custPhoneNumber:
-                                                    //               provider.agentModel?.duesList1?.data?[index].phone ??
-                                                    //               "phone",
-                                                    //           custId:
-                                                    //               provider.agentModel?.duesList1?.data?[index].custId ??
-                                                    //               "CustID",
-                                                    //           custAcNumber:
-                                                    //               provider.agentModel?.duesList1?.data?[index].accNo ??
-                                                    //               "CustACCNo",
-                                                    //           custName:
-                                                    //               provider.agentModel?.duesList1?.data?[index].name ??
-                                                    //               "NAME",
-                                                    //         ),
-                                                    //   ),
-                                                    // );
-                                                    //Navigator.pop(context);
-                                                  },
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                );
-                              }
+                                              );
+                                            },
+                                          );
+                                        },
+                                      );
+                                    }
                                   : null,
                             ),
                             const SizedBox(width: 10),
@@ -803,8 +793,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
                                   color: grey[50],
                                 ),
                                 child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       "Installment: ₹${due.installAmt}",
@@ -831,21 +820,24 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
                                       ),
                                     ),
                                     const SizedBox(height: 2),
-                                    Text("Paid Installemnts: ${provider.rdclDueUnderAgentModel!.data[index].paidInstallments}",
+                                    Text(
+                                      "Paid Installemnts: ${provider.rdclDueUnderAgentModel!.data[index].paidInstallments}",
                                       style: TextStyle(
                                         fontSize: 13,
                                         color: grey[700],
                                       ),
                                     ),
                                     const SizedBox(height: 2),
-                                    Text("DueInstallments: ${provider.rdclDueUnderAgentModel!.data[index].dueInstallments}",
+                                    Text(
+                                      "DueInstallments: ${provider.rdclDueUnderAgentModel!.data[index].dueInstallments}",
                                       style: TextStyle(
                                         fontSize: 13,
                                         color: grey[700],
                                       ),
                                     ),
                                     const SizedBox(height: 2),
-                                    Text("TotalInstallment: ${provider.rdclDueUnderAgentModel!.data[index].totalInstallment}",
+                                    Text(
+                                      "TotalInstallment: ${provider.rdclDueUnderAgentModel!.data[index].totalInstallment}",
                                       style: TextStyle(
                                         fontSize: 13,
                                         color: grey[700],
@@ -870,9 +862,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
   }
 
   Future<void> sendLinkFunction(
-      RDCLDueAccount custDetails,
-      String amount,
-      ) async {
+      RDCLDueAccount custDetails, String amount) async {
     if (agentName == null ||
         agentId == null ||
         agentOriginId == null ||
@@ -880,32 +870,30 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
       print("One or more required fields are null.");
       return; // or handle the error appropriately
     }
+
     final send = await PaymentLinkRepository().getPaymentLink(
-        agentName!,
-        agentId!,
-        agentOriginId!,
-        agentPhoneNumber!,
-        agentEmail!,
-        custDetails.name,
-        agentPhoneNumber!,
-        custDetails.accNo,
-        "",
-
-        "",
-        num.parse(amount),
-        "Payment for Order #1234",
-        corpCode!,
-        "",
-        token!,
-        subagentId!
-    );
-
+        agentName: agentName!,
+        agentId: agentId!,
+        agentOriginId: agentOriginId!,
+        agentPhone: agentPhoneNumber!,
+        agentEmail: agentEmail!,
+        customerEmail: "",
+        customerPhone: agentPhoneNumber!,
+        customerAccountNumber: custDetails.accNo,
+        customerId: custDetails.custId,
+        linkAmount: num.parse(amount),
+        note: "Payment for Order #1234",
+        corpCode: corpCode!,
+        cardRefNum: "",
+        token: token!,
+        subAgentId: subagentId!,
+        customerName: custDetails.name);
     send.fold(
-          (error) {
+      (error) {
         print("-------------------ERROR---------------------");
         print(error);
       },
-          (sendLink) {
+      (sendLink) {
         if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
           Share.share("Here is your payment link: ${sendLink.linkUrl}");
         } else {
@@ -1010,8 +998,7 @@ class _CustomSliderButtonState extends State<CustomSliderButton> {
                   ),
                   child: AnimatedSwitcher(
                     duration: const Duration(seconds: 1),
-                    transitionBuilder:
-                        (child, animation) => RotationTransition(
+                    transitionBuilder: (child, animation) => RotationTransition(
                       turns: Tween(
                         begin: 0.75,
                         end: 1.0,

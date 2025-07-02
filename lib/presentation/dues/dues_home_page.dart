@@ -853,37 +853,22 @@ class _DuesHomePageState extends State<DuesHomePage> {
       return; // or handle the error appropriately
     }
     final send = await PaymentLinkRepository().getPaymentLink(
-      agentName!,
-      agentId!,
-      agentOriginId!,
-      agentPhoneNumber!,
-      agentEmail!,
-      custDetails.name!,
-      custDetails.phone!,
-      custDetails.accNo!,
-      custDetails.email!,
-      custDetails.custId!,
-      num.parse(amount),
-      "Payment for Order #1234",
-      corpCode!,
-      "",
-      token!,
-      subagentId!
-      // agentName!,
-      // agentId!,
-      // agentOriginId!,
-      // agentMobile!,
-      // agentEmail!,
-      // widget.custName,
-      // widget.custPhoneNumber,
-      // widget.custAcNumber,
-      // "rahul.sharma@example.com",
-      // widget.custId,
-      // num.parse(amountController.text),
-      // "Payment for Order #12345",
-      // corpCode!,
-      // "",
-      // token.toString()
+      agentName:  agentName!,
+     agentId:  agentId!,
+     agentOriginId:  agentOriginId!,
+     agentPhone:  agentPhoneNumber!,
+     agentEmail:  agentEmail!,
+     customerName:  custDetails.name!,
+     customerPhone:  custDetails.phone!,
+     customerAccountNumber:  custDetails.accNo!,
+     customerEmail:  custDetails.email!,
+     customerId:  custDetails.custId!,
+     linkAmount:  num.parse(amount),
+     note:  "Payment for Order #1234",
+     corpCode:  corpCode!,
+     cardRefNum:  "",
+     token:  token!,
+     subAgentId:  subagentId!
     );
 
     send.fold(
