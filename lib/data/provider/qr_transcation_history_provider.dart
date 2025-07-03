@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../core/general.dart';
 import '../../domain/model/qr_transaction_history_model.dart';
 import '../repository/qr_transcation_history_repository.dart';

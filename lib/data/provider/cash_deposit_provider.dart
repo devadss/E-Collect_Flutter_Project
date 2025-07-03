@@ -6,7 +6,7 @@ import '../service/error_handler.dart';
 
 class CashDepositProvider with ChangeNotifier {
 
-  CashDepositRepository _cashDepositRepository;
+  final CashDepositRepository _cashDepositRepository;
 
   CashDepositProvider(this._cashDepositRepository);
 

@@ -370,6 +370,10 @@ class _HomePageState extends State<HomePage> {
       context,
       listen: false,
     );
+    final cashTransProvider = Provider.of<CashTransactionHistoryProvider>(
+      context,
+      listen: false,
+    );
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day); // midnight today
 
@@ -379,7 +383,8 @@ class _HomePageState extends State<HomePage> {
     final formattedTdate = DateFormat('yyyy-MM-dd').format(toDate);
     await linkProvider.getLinkTransactionHistory(
         "THIS_MONTH", formattedFdate, formattedTdate, subAgentID!);
-
+    cashTransProvider.getCashTranscationHistory(
+        "THIS_MONTH", formattedFdate, formattedTdate, "COLLECTION_CASH",subAgentID!);
     fetchBalance();
     fetchTransaction();
     fetchCollection();
@@ -634,6 +639,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         // Modern dot indicators
+                        const SizedBox(height: 10,),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: bannerImages.asMap().entries.map((entry) {
@@ -805,9 +811,9 @@ class _HomePageState extends State<HomePage> {
     qrTransactions == null && error == "ERROR"
     ){
       return _buildEmptyState(
-        icon: Icons.qr_code,
-        title: "No QR Transactions",
-        message: "Your payment Qr transactions will appear here",
+        icon: Icons.monetization_on_outlined,
+        title: "No Cash Transactions",
+        message: "Your payment Cash transactions will appear here",
       );
     }
     return SizedBox(

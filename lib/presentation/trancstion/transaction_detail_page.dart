@@ -25,6 +25,19 @@ class TransactionDetailsPage extends StatelessWidget {
             color: Colors.grey.withOpacity(0.2),
               borderRadius: BorderRadius.circular(10)
           ),
+          child: const Stack(
+            fit: StackFit.expand,
+          children: [
+            Row(children: [
+              Text("Data!"),
+              Text("Data")
+            ],),
+            Row(children: [
+              Text("Data@"),
+              Text("Data")
+            ],)
+          ],
+          ),
         ),
       )
     );
