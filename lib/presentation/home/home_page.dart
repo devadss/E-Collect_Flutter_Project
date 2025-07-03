@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:collection_qr_flutter/data/provider/link_transcation_history_provider.dart';
-import 'package:collection_qr_flutter/domain/model/cash_transcation_model.dart';
 import 'package:collection_qr_flutter/presentation/trancstion/transaction_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -9,6 +8,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/colors.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../data/provider/agent_transaction_provider.dart';
+import '../../data/provider/cash_transcation_history_provider.dart';
 import '../../data/provider/collection_summary_provider.dart';
 import '../../data/provider/fetch_account_balance_provider.dart';
 import '../../data/provider/qr_transcation_history_provider.dart';
@@ -67,6 +67,7 @@ class _HomePageState extends State<HomePage> {
   }
   void showDateRangeFilter() {
     final qrProvider = context.read<QRTransactionHistoryProvider>();
+    final cashTransProvider = context.read<CashTransactionHistoryProvider>();
     final linkProvider = context.read<LinkTransactionHistoryProvider>();
 
     DateTime? fromDate;
@@ -184,6 +185,8 @@ class _HomePageState extends State<HomePage> {
                             final formatted = DateFormat('yyyy-MM-dd').format(now);
                             await qrProvider.getQrTranscationHistory(
                                 period, formatted, formatted, 'COLLECTION');
+                            await cashTransProvider.getCashTranscationHistory(
+                                period, formatted, formatted, 'COLLECTION_CASH', subAgentID);
                             await linkProvider.getLinkTransactionHistory(
                                 period, formatted, formatted, subAgentID!);
                             break;
@@ -196,6 +199,9 @@ class _HomePageState extends State<HomePage> {
                             final formattedTdate = DateFormat('yyyy-MM-dd').format(lastDate);
                             await qrProvider.getQrTranscationHistory(
                                 period, formattedFdate, formattedTdate, 'COLLECTION');
+                            await cashTransProvider.getCashTranscationHistory(
+                                period, formattedFdate, formattedTdate, 'COLLECTION_CASH', subAgentID);
+
                             await linkProvider.getLinkTransactionHistory(
                                 period, formattedFdate, formattedTdate, subAgentID!);
 
@@ -211,6 +217,9 @@ class _HomePageState extends State<HomePage> {
                             final formattedTdate = DateFormat('yyyy-MM-dd').format(toDate);
                             await qrProvider.getQrTranscationHistory(
                                 period, formattedFdate, formattedTdate, 'COLLECTION');
+                            await cashTransProvider.getCashTranscationHistory(
+                                period, formattedFdate, formattedTdate, 'COLLECTION_CASH', subAgentID);
+
                             await linkProvider.getLinkTransactionHistory(
                                 period, formattedFdate, formattedTdate, subAgentID!);
 
@@ -225,6 +234,9 @@ class _HomePageState extends State<HomePage> {
                             final formattedTdate = DateFormat('yyyy-MM-dd').format(lastDayLastMonth);
                             await qrProvider.getQrTranscationHistory(
                                 period, formattedFdate, formattedTdate, 'COLLECTION');
+                            await cashTransProvider.getCashTranscationHistory(
+                                period, formattedFdate, formattedTdate, 'COLLECTION_CASH', subAgentID);
+
                             await linkProvider.getLinkTransactionHistory(
                                 period, formattedFdate, formattedTdate, subAgentID!);
 
@@ -236,12 +248,17 @@ class _HomePageState extends State<HomePage> {
 
                             await qrProvider.getQrTranscationHistory(
                                 period, from, to, 'COLLECTION');
+                            await cashTransProvider.getCashTranscationHistory(
+                                period, from, to,'COLLECTION_CASH', subAgentID);
+
                             await linkProvider.getLinkTransactionHistory(
                                 period, from, to, subAgentID!);
                             break;
                         }
 
                         await qrProvider.getQrTranscationHistory(period, from, to, 'COLLECTION');
+                        await cashTransProvider.getCashTranscationHistory(
+                            period, from, to,'COLLECTION_CASH', subAgentID);
                         await linkProvider.getLinkTransactionHistory(period, from, to, subAgentID!);
                       },
                       // only enable 'Apply Filter' if custom and dates selected
@@ -512,6 +529,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final qrProvider = Provider.of<QRTransactionHistoryProvider>(context);
+    final cashTranProvider = Provider.of<CashTransactionHistoryProvider>(context);
     final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context);
     final size = MediaQuery.of(context).size;
     const Color backgroundColor = Color(0xFFF5F5F5); // Light grey
@@ -672,8 +690,9 @@ class _HomePageState extends State<HomePage> {
                         child: Row(
                           children: [
                             _buildTabButton(0, Icons.qr_code, "QR Code"),
-                            _buildTabButton(1, Icons.link, "Link"),
-                            _buildTabButton(2, Icons.link, "Cash"),
+                            _buildTabButton(1, Icons.monetization_on, "Cash"),
+                            _buildTabButton(2, Icons.link, "Link"),
+
                           ],
                         ),
                       ),
@@ -719,6 +738,13 @@ class _HomePageState extends State<HomePage> {
                             qrProvider.qrTranscationHistoryModel,""
                           )
                           ,
+                          cashTranProvider.errResponse != null?
+                          _buildCashTransactionList(
+                            cashTranProvider.qrTranscationHistoryModel, "ERROR"
+                          ):
+                          _buildCashTransactionList(
+                              cashTranProvider.qrTranscationHistoryModel, ""
+                          ) ,
 
                           // Link Transactions
                           linkProvider.erResposne != null?
@@ -743,7 +769,35 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildQRTransactionList(QrTranscationHistoryModel? qrTransactions,
-      String? error) {
+      String? error)
+  {
+    if (qrTransactions == null && error == "") {
+
+      return const Center(child: CircularProgressIndicator());
+    }else if(
+    qrTransactions == null && error == "ERROR"
+    ){
+      return _buildEmptyState(
+        icon: Icons.qr_code,
+        title: "No QR Transactions",
+        message: "Your payment Qr transactions will appear here",
+      );
+    }
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.8,
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        itemCount: qrTransactions?.data!.length,
+        itemBuilder: (context, index) {
+          final transaction = qrTransactions!.data![index];
+          return _buildQRTransactionItem(transaction);
+        },
+      ),
+    );
+  }
+  Widget _buildCashTransactionList(QrTranscationHistoryModel? qrTransactions,
+      String? error)
+  {
     if (qrTransactions == null && error == "") {
 
       return const Center(child: CircularProgressIndicator());
@@ -881,8 +935,8 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-  Widget _buildLinkTransactionItem(LinkTransactions transaction) {
 
+  Widget _buildLinkTransactionItem(LinkTransactions transaction) {
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,

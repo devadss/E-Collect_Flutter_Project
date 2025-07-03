@@ -1,4 +1,3 @@
-import 'package:collection_qr_flutter/data/provider/cash_deposit_provider.dart';
 import 'package:collection_qr_flutter/data/provider/cash_transcation_provider.dart';
 import 'package:collection_qr_flutter/data/provider/rdcl_due_under_agent_provider.dart';
 import 'package:collection_qr_flutter/domain/model/due_model/rdcl_due_under_agent_model.dart';
@@ -107,9 +106,9 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
         cardRefNum: "",
         token: token);
     cash.fold((err) {
-      print("getCashTrans ${err}");
+      print("getCashTrans $err");
     }, (success) {
-      print("getCashTrans ${success}");
+      print("getCashTrans $success");
       showDialog(
         context: context,
         builder: (context) {
