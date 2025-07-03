@@ -15,7 +15,9 @@ class RdclDueUnderAgentProvider with ChangeNotifier {
   Future<Either<String, RdclDueUnderAgentModel>> getRdclDueList(
       String agentId,String branchCode) async {
     final data = await _rdclDueUnderAgentRepo.getRdclDueList(agentId, branchCode);
-    data.fold((err) {}, (success) {
+    data.fold((err) {
+      _rdclDueUnderAgentModel = null;
+    }, (success) {
       _rdclDueUnderAgentModel = success;
     });
     notifyListeners();

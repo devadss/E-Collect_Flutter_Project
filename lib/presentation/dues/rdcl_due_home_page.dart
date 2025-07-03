@@ -1,3 +1,5 @@
+import 'package:collection_qr_flutter/data/provider/cash_deposit_provider.dart';
+import 'package:collection_qr_flutter/data/provider/cash_transcation_provider.dart';
 import 'package:collection_qr_flutter/data/provider/rdcl_due_under_agent_provider.dart';
 import 'package:collection_qr_flutter/domain/model/due_model/rdcl_due_under_agent_model.dart';
 import 'package:collection_qr_flutter/presentation/dues/widgets/new_qr_code_page.dart';
@@ -69,8 +71,71 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
         Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
     await provider.getRdclDueList(agentOriginId!, "");
     final providerTwo =
-    Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
-    await providerTwo.getRdclDueList("", provider.rdclDueUnderAgentModel!.data[0].brCode);
+        Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
+    await providerTwo.getRdclDueList(
+        "", provider.rdclDueUnderAgentModel!.data[0].brCode);
+  }
+
+  Future<void> getCashTrans(
+      {required String? token,
+      required String? customerName,
+      required String? custPhoneNumber,
+      required String? custAcNumber,
+      required String? custId,
+      required String? custEmail,
+      required String? amount,
+      required String? phoneNumber,
+      required String? entityId,
+      required String? note}) async {
+    final cashPaymentProvider =
+        Provider.of<CashTranscationProvider>(context, listen: false);
+    final cash = await cashPaymentProvider.getTranscations(
+        agentName: agentName,
+        agentId: agentId,
+        agentOriginId: agentOriginId,
+        agentPhone: phoneNumber,
+        agentEmail: agentEmail,
+        subAgentId: subagentId,
+        customerName: customerName,
+        customerEmail: "",
+        customerAccNo: custAcNumber,
+        customerId: custId,
+        customerPhone: "",
+        amount: amount,
+        note: note,
+        corpCode: corpCode,
+        cardRefNum: "",
+        token: token);
+    cash.fold((err) {
+      print("getCashTrans ${err}");
+    }, (success) {
+      print("getCashTrans ${success}");
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Transaction Result"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Status: ${success.status ?? 'N/A'}"),
+                const SizedBox(height: 8),
+                Text("Transaction ID: ${success.transactionId ?? 'N/A'}"),
+                const SizedBox(height: 8),
+                Text("Message: ${success.message ?? 'N/A'}"),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
+    });
   }
 
   Future<void> getPaymentSessionId(
@@ -456,12 +521,19 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
                                                                 width: 1,
                                                               ),
                                                             ),
-                                                            child:
-                                                                selectedMethod ==
-                                                                        "Link"
+                                                            child: selectedMethod ==
+                                                                    "Link"
+                                                                ? Image.asset(
+                                                                    "assets/icons/web-link.png",
+                                                                    scale: 12,
+                                                                    color:
+                                                                        home2,
+                                                                  )
+                                                                : selectedMethod ==
+                                                                        "QR Code"
                                                                     ? Image
                                                                         .asset(
-                                                                        "assets/icons/web-link.png",
+                                                                        "assets/icons/qr-code.png",
                                                                         scale:
                                                                             12,
                                                                         color:
@@ -469,11 +541,9 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
                                                                       )
                                                                     : Image
                                                                         .asset(
-                                                                        "assets/icons/qr-code.png",
+                                                                        "assets/images/rupee_6414183.png",
                                                                         scale:
-                                                                            12,
-                                                                        color:
-                                                                            home2,
+                                                                            10,
                                                                       ),
                                                           ),
                                                           const SizedBox(
@@ -530,6 +600,9 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
                                                               showModalBottomSheet(
                                                                 context:
                                                                     context,
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .white,
                                                                 shape:
                                                                     const RoundedRectangleBorder(
                                                                   borderRadius:
@@ -537,63 +610,134 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
                                                                           .vertical(
                                                                     top: Radius
                                                                         .circular(
-                                                                      20,
-                                                                    ),
+                                                                            24),
                                                                   ),
                                                                 ),
-                                                                builder: (
-                                                                  ctx,
-                                                                ) =>
-                                                                    Column(
-                                                                  mainAxisSize:
-                                                                      MainAxisSize
-                                                                          .min,
-                                                                  children: [
-                                                                    ListTile(
-                                                                      leading:
-                                                                          const Icon(
-                                                                        Icons
-                                                                            .link,
+                                                                builder: (ctx) =>
+                                                                    Container(
+                                                                  padding: const EdgeInsets
+                                                                      .symmetric(
+                                                                      vertical:
+                                                                          16),
+                                                                  child: Column(
+                                                                    mainAxisSize:
+                                                                        MainAxisSize
+                                                                            .min,
+                                                                    children: [
+                                                                      // drag handle
+                                                                      Container(
+                                                                        width:
+                                                                            40,
+                                                                        height:
+                                                                            5,
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          color: Colors
+                                                                              .grey
+                                                                              .shade300,
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(10),
+                                                                        ),
                                                                       ),
-                                                                      title:
-                                                                          const Text(
-                                                                        "Link",
+                                                                      const SizedBox(
+                                                                          height:
+                                                                              16),
+                                                                      ListTile(
+                                                                        leading: const Icon(
+                                                                            Icons
+                                                                                .link,
+                                                                            color:
+                                                                                Colors.blueAccent),
+                                                                        title:
+                                                                            const Text(
+                                                                          "Link",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                            fontSize:
+                                                                                16,
+                                                                          ),
+                                                                        ),
+                                                                        trailing:
+                                                                            const Icon(Icons.chevron_right),
+                                                                        onTap:
+                                                                            () {
+                                                                          setModalState(() =>
+                                                                              selectedMethod = "Link");
+                                                                          Navigator.pop(
+                                                                              ctx);
+                                                                        },
                                                                       ),
-                                                                      onTap:
-                                                                          () {
-                                                                        setModalState(
-                                                                          () => selectedMethod =
-                                                                              "Link",
-                                                                        );
-                                                                        Navigator
-                                                                            .pop(
-                                                                          ctx,
-                                                                        );
-                                                                      },
-                                                                    ),
-                                                                    ListTile(
-                                                                      leading:
-                                                                          const Icon(
-                                                                        Icons
-                                                                            .qr_code,
+                                                                      const Divider(
+                                                                          indent:
+                                                                              16,
+                                                                          endIndent:
+                                                                              16),
+                                                                      ListTile(
+                                                                        leading: const Icon(
+                                                                            Icons
+                                                                                .qr_code,
+                                                                            color:
+                                                                                Colors.green),
+                                                                        title:
+                                                                            const Text(
+                                                                          "QR Code",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                            fontSize:
+                                                                                16,
+                                                                          ),
+                                                                        ),
+                                                                        trailing:
+                                                                            const Icon(Icons.chevron_right),
+                                                                        onTap:
+                                                                            () {
+                                                                          setModalState(() =>
+                                                                              selectedMethod = "QR Code");
+                                                                          Navigator.pop(
+                                                                              ctx);
+                                                                        },
                                                                       ),
-                                                                      title:
-                                                                          const Text(
-                                                                        "QR Code",
+                                                                      const Divider(
+                                                                          indent:
+                                                                              16,
+                                                                          endIndent:
+                                                                              16),
+                                                                      ListTile(
+                                                                        leading: const Icon(
+                                                                            Icons
+                                                                                .money,
+                                                                            color:
+                                                                                Colors.deepOrange),
+                                                                        title:
+                                                                            const Text(
+                                                                          "Cash",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                            fontSize:
+                                                                                16,
+                                                                          ),
+                                                                        ),
+                                                                        trailing:
+                                                                            const Icon(Icons.chevron_right),
+                                                                        onTap:
+                                                                            () {
+                                                                          setModalState(() =>
+                                                                              selectedMethod = "Cash");
+                                                                          Navigator.pop(
+                                                                              ctx);
+                                                                        },
                                                                       ),
-                                                                      onTap:
-                                                                          () {
-                                                                        setModalState(
-                                                                          () => selectedMethod =
-                                                                              "QR Code",
-                                                                        );
-                                                                        Navigator
-                                                                            .pop(
-                                                                          ctx,
-                                                                        );
-                                                                      },
-                                                                    ),
-                                                                  ],
+                                                                      const SizedBox(
+                                                                          height:
+                                                                              12),
+                                                                    ],
+                                                                  ),
                                                                 ),
                                                               );
                                                             },
@@ -736,34 +880,70 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
                                                                       index],
                                                                   controller
                                                                       .text)
-                                                              : getPaymentSessionId(
-                                                                  token: token,
-                                                                  customerName: provider
-                                                                      .rdclDueUnderAgentModel
-                                                                      ?.data[
-                                                                          index]
-                                                                      .name,
-                                                                  custPhoneNumber:
-                                                                      "",
-                                                                  custAcNumber: provider
-                                                                      .rdclDueUnderAgentModel
-                                                                      ?.data[
-                                                                          index]
-                                                                      .accNo,
-                                                                  custId: provider.rdclDueUnderAgentModel
-                                                            ?.data[
-                                                            index].custId,
-                                                                  custEmail: "",
-                                                                  phoneNumber:
-                                                                      "$agentPhoneNumber",
-                                                                  entityId:
-                                                                      agentId,
-                                                                  note:
-                                                                      "Payment For Agent $agentName",
-                                                                  amount:
-                                                                      controller
+                                                              : selectedMethod ==
+                                                                      "Cash"
+                                                                  ? getCashTrans(
+                                                                      token:
+                                                                          token,
+                                                                      customerName: provider
+                                                                          .rdclDueUnderAgentModel
+                                                                          ?.data[
+                                                                              index]
+                                                                          .name,
+                                                                      custPhoneNumber:
+                                                                          "",
+                                                                      custAcNumber: provider
+                                                                          .rdclDueUnderAgentModel
+                                                                          ?.data[
+                                                                              index]
+                                                                          .accNo,
+                                                                      custId: provider
+                                                                          .rdclDueUnderAgentModel
+                                                                          ?.data[
+                                                                              index]
+                                                                          .custId,
+                                                                      custEmail:
+                                                                          "",
+                                                                      phoneNumber:
+                                                                          "$agentPhoneNumber",
+                                                                      entityId:
+                                                                          agentId,
+                                                                      note:
+                                                                          "Payment For Agent $agentName",
+                                                                      amount: controller
                                                                           .text,
-                                                                );
+                                                                    )
+                                                                  : getPaymentSessionId(
+                                                                      token:
+                                                                          token,
+                                                                      customerName: provider
+                                                                          .rdclDueUnderAgentModel
+                                                                          ?.data[
+                                                                              index]
+                                                                          .name,
+                                                                      custPhoneNumber:
+                                                                          "",
+                                                                      custAcNumber: provider
+                                                                          .rdclDueUnderAgentModel
+                                                                          ?.data[
+                                                                              index]
+                                                                          .accNo,
+                                                                      custId: provider
+                                                                          .rdclDueUnderAgentModel
+                                                                          ?.data[
+                                                                              index]
+                                                                          .custId,
+                                                                      custEmail:
+                                                                          "",
+                                                                      phoneNumber:
+                                                                          "$agentPhoneNumber",
+                                                                      entityId:
+                                                                          agentId,
+                                                                      note:
+                                                                          "Payment For Agent $agentName",
+                                                                      amount: controller
+                                                                          .text,
+                                                                    );
                                                         },
                                                       ),
                                                     ],

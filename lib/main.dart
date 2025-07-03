@@ -24,6 +24,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'data/provider/auth_provider.dart';
+import 'data/provider/cash_transcation_provider.dart';
 import 'data/provider/collection_base_url_provider.dart';
 import 'data/provider/fetch_account_balance_provider.dart';
 import 'data/provider/otp_request_provider.dart';
@@ -39,6 +40,7 @@ import 'data/provider/token_request_provider.dart';
 import 'data/provider/transaction_provider.dart';
 import 'data/repository/TransactionRepository.dart';
 import 'data/repository/auth_repository.dart';
+import 'data/repository/cash_transcation_repository.dart';
 import 'data/repository/collection_base_url_repo.dart';
 import 'data/repository/create_order_repository.dart';
 import 'data/repository/link_transaction_history_repository.dart';
@@ -100,6 +102,7 @@ void main() async {
   }
 
   runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => CashTranscationProvider(CashTranscationRepository())),
     ChangeNotifierProvider(create: (_) => RdclCustListProvider(RdclCustListRep())),
     ChangeNotifierProvider(create: (_) => RdclDueUnderAgentProvider(RdclDueUnderAgentRepo())),
     ChangeNotifierProvider(create: (_) => LinkTransactionHistoryProvider(LinkTransactionHistoryRepository())),
