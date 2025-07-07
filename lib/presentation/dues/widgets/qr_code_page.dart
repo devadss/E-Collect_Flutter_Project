@@ -41,7 +41,8 @@ class QrCodePage extends StatefulWidget {
   State<QrCodePage> createState() => _QrCodePageState();
 }
 
-class _QrCodePageState extends State<QrCodePage> with SingleTickerProviderStateMixin{
+class _QrCodePageState extends State<QrCodePage>
+    with SingleTickerProviderStateMixin {
   late Timer _timer;
   bool _isFirebaseListenerInitialized = false; // ✅ Prevent duplicate listeners
   int _start = 180; // 3 minutes in seconds
@@ -160,11 +161,11 @@ class _QrCodePageState extends State<QrCodePage> with SingleTickerProviderStateM
       context: context,
       builder: (context) {
         return AlertDialog(
-          title:const Text(
+          title: const Text(
             "WARNING",
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
           ),
-          content:const Text(
+          content: const Text(
             "Warning: You cannot go back or cancel this page until the transaction is complete. Please wait until the process finishes.",
             style: TextStyle(fontSize: 13, fontWeight: FontWeight.w300),
           ),
@@ -298,34 +299,33 @@ class _QrCodePageState extends State<QrCodePage> with SingleTickerProviderStateM
 
       pdf.addPage(
         pw.Page(
-          build:
-              (context) => pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.center,
-                children: [
-                  pw.Image(
-                    pw.MemoryImage(logoBytes.buffer.asUint8List()),
-                    height: 100,
-                  ),
-                  pw.SizedBox(height: 20),
-                  pw.Text(
-                    "Amount: ₹${widget.amount}",
-                    style: pw.TextStyle(
-                      fontSize: 18,
-                      fontWeight: pw.FontWeight.bold,
-                      color: PdfColors.teal,
-                    ),
-                  ),
-                  pw.SizedBox(height: 20),
-                  pw.Center(
-                    child: pw.BarcodeWidget(
-                      barcode: pw.Barcode.qrCode(),
-                      data: "Amount: ₹${widget.amount}",
-                      width: 200,
-                      height: 200,
-                    ),
-                  ),
-                ],
+          build: (context) => pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.center,
+            children: [
+              pw.Image(
+                pw.MemoryImage(logoBytes.buffer.asUint8List()),
+                height: 100,
               ),
+              pw.SizedBox(height: 20),
+              pw.Text(
+                "Amount: ₹${widget.amount}",
+                style: pw.TextStyle(
+                  fontSize: 18,
+                  fontWeight: pw.FontWeight.bold,
+                  color: PdfColors.teal,
+                ),
+              ),
+              pw.SizedBox(height: 20),
+              pw.Center(
+                child: pw.BarcodeWidget(
+                  barcode: pw.Barcode.qrCode(),
+                  data: "Amount: ₹${widget.amount}",
+                  width: 200,
+                  height: 200,
+                ),
+              ),
+            ],
+          ),
         ),
       );
 
@@ -367,44 +367,41 @@ class _QrCodePageState extends State<QrCodePage> with SingleTickerProviderStateM
     }
   }
 
-
-   Future<void> generateQRCode() async {
-        final qrCode = await PaymentLinkRepository().getPaymentLink(
-          agentName!,
-          agentId!,
-          agentOriginId!,
-          agentPhoneNumber!,
-          agentEmail!,
-          widget.custName,
-          widget.custPhoneNumber,
-          widget.custAcNumber,
-          widget.custEmail,
-          widget.custId,
-          num.parse(widget.amount),
-          "Payment for Order #1234",
-          corpCode!,
-          "",
-          widget.token,subAgentId!
-        );
-        qrCode.fold(
-              (error) {
-            print("-----------------------ERROR-----------------------");
-            print(error);
-          },
-              (qr) {
-            final qrData = qr.linkQrcode;
-            if (qrData != null && qrData.contains(',')) {
-              setState(() {
-                qrCodeImageBytes = base64Decode(qrData.split(',').last);
-              });
-            } else {
-              print("Invalid or missing QR code data");
-            }
-          },
-        );
-      }
-
-
+  Future<void> generateQRCode() async {
+    final qrCode = await PaymentLinkRepository().getPaymentLink(
+        agentName: agentName!,
+        agentId: agentId!,
+        agentOriginId: agentOriginId!,
+        agentPhone: agentPhoneNumber!,
+        agentEmail: agentEmail!,
+        customerName: widget.custName,
+        customerPhone: widget.custPhoneNumber,
+        customerAccountNumber: widget.custAcNumber,
+        customerEmail: widget.custEmail,
+        customerId: widget.custId,
+        linkAmount: num.parse(widget.amount),
+        note: "Payment for Order #1234",
+        corpCode: corpCode!,
+        cardRefNum: "",
+        token: widget.token,
+        subAgentId: subAgentId!);
+    qrCode.fold(
+      (error) {
+        print("-----------------------ERROR-----------------------");
+        print(error);
+      },
+      (qr) {
+        final qrData = qr.linkQrcode;
+        if (qrData != null && qrData.contains(',')) {
+          setState(() {
+            qrCodeImageBytes = base64Decode(qrData.split(',').last);
+          });
+        } else {
+          print("Invalid or missing QR code data");
+        }
+      },
+    );
+  }
 
   String encryptData(String plainText) {
     final key = encrypt.Key.fromUtf8(secretKey);
@@ -415,8 +412,6 @@ class _QrCodePageState extends State<QrCodePage> with SingleTickerProviderStateM
     final encrypted = encrypter.encrypt(plainText, iv: iv);
     return encrypted.base64;
   }
-
-
 
   @override
   void initState() {
@@ -438,7 +433,7 @@ class _QrCodePageState extends State<QrCodePage> with SingleTickerProviderStateM
       ),
     );
     _animationController.forward();
-     _startTimer();
+    _startTimer();
     loadSharedPrefs();
     if (!_isFirebaseListenerInitialized) {
       _listenForFirebaseMessages();
@@ -457,7 +452,7 @@ class _QrCodePageState extends State<QrCodePage> with SingleTickerProviderStateM
 
     if (mounted) {
       setState(() {
-        subAgentId =subAgentId;
+        subAgentId = subAgentId;
         agentName = name;
         agentEmail = email;
         agentId = id;
@@ -468,7 +463,6 @@ class _QrCodePageState extends State<QrCodePage> with SingleTickerProviderStateM
     }
 
     generateQRCode();
-
   }
 
   @override
@@ -550,7 +544,7 @@ class _QrCodePageState extends State<QrCodePage> with SingleTickerProviderStateM
         ),
       ),
       leading: IconButton(
-        icon:const Icon(Icons.arrow_back_rounded, color: home2, size: 28),
+        icon: const Icon(Icons.arrow_back_rounded, color: home2, size: 28),
         onPressed: () {
           if (_timeString != "00:00") showWarning();
         },
@@ -564,7 +558,7 @@ class _QrCodePageState extends State<QrCodePage> with SingleTickerProviderStateM
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 24),
         decoration: BoxDecoration(
-          gradient:const LinearGradient(
+          gradient: const LinearGradient(
             colors: [home1, home2],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -584,7 +578,8 @@ class _QrCodePageState extends State<QrCodePage> with SingleTickerProviderStateM
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.currency_rupee_rounded, color: Colors.white, size: 32),
+              const Icon(Icons.currency_rupee_rounded,
+                  color: Colors.white, size: 32),
               const SizedBox(width: 8),
               Text(
                 widget.amount,
@@ -656,21 +651,21 @@ class _QrCodePageState extends State<QrCodePage> with SingleTickerProviderStateM
                   ],
                 ),
                 child: qrCodeImageBytes == null
-                    ?const SizedBox(
-                  width: 200,
-                  height: 200,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      color: deepTeal,
-                      strokeWidth: 3,
-                    ),
-                  ),
-                )
+                    ? const SizedBox(
+                        width: 200,
+                        height: 200,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: deepTeal,
+                            strokeWidth: 3,
+                          ),
+                        ),
+                      )
                     : Image.memory(
-                  qrCodeImageBytes!,
-                  width: 240,
-                  height: 240,
-                ),
+                        qrCodeImageBytes!,
+                        width: 240,
+                        height: 240,
+                      ),
               ),
             ),
             const SizedBox(height: 24),
@@ -802,7 +797,7 @@ class _QrCodePageState extends State<QrCodePage> with SingleTickerProviderStateM
           LinearProgressIndicator(
             value: _start / 180, // 3 minutes = 180 seconds
             backgroundColor: Colors.grey[200],
-            valueColor:const AlwaysStoppedAnimation<Color>(home2),
+            valueColor: const AlwaysStoppedAnimation<Color>(home2),
             minHeight: 6,
             borderRadius: BorderRadius.circular(10),
           ),
