@@ -34,6 +34,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   }
 
   Future<void> getSharedData() async {
+    await SharedPref.shared.setLogin(true);
     var userType = await SharedPref.shared.getUserType();
     setState(() {
       print("getUserType value = $userType");

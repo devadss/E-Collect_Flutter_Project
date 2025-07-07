@@ -183,6 +183,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
             ));
           },
               (data) {
+                Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(
               // SnackBar(content: Text("RESULT: ${data.message}")),
                 SnackBar(
@@ -195,7 +196,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
                   ),
                   backgroundColor: Colors.green,
                 ));
-            Navigator.pop(context);
+            //Navigator.pop(context);
             if (data.message == "Login Successfull") {
               if (fcmToken.isNotEmpty) {
                 Navigator.push(context,
@@ -219,28 +220,24 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
 
   Future<void> validateMpinFingerAuth() async {
     print("validateMpinFingerAuth");
-    if (mpin.isNotEmpty) {
-      print("mpin.isNotEmpty");
-      print("mpin = $mpin");
+    if (fcmToken.isNotEmpty) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const BottomNavScreen()));
+    } else {
+      await  saveFcmToken(custID, context, "GPIN", token, subAgentContactNum, mpin);
+    }
+    // if (mpin.isNotEmpty) {
+    //   print("mpin.isNotEmpty");
+    //   print("mpin = $mpin");
 
-      showProgressDialog(context);
-      final provider = Provider.of<AuthProvider>(context, listen: false);
-      final response = await provider.getAuthResult(contactNum, mpin, token);
+      //showProgressDialog(context);
+     // final provider = Provider.of<AuthProvider>(context, listen: false);
+     // final response = await provider.getAuthResult(contactNum, mpin, token);
 
-      response.fold(
-            (error) {
+    /*  response.fold(
+            (error) async {
           Navigator.pop(context);
           print("Error: ${error?.message}");
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(
-              "Error: ${error.message}- Invalid M-pin",
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 17),
-            ),
-            backgroundColor: Colors.red,
-          ));
+
         },
             (data) async {
           Navigator.pop(context);
@@ -256,12 +253,12 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
           }
           // Navigator.pop(context);
         },
-      );
+      );*/
 
       print("MPIN = $mpin");
-    } else {
-      print("Empty fields not allowed");
-    }
+    // } else {
+    //   print("Empty fields not allowed");
+    // }
   }
 /*  Future<void> validateMpinFingerAuth() async {
     print("validateMpinFingerAuth");

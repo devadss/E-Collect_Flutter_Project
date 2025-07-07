@@ -281,7 +281,7 @@ class _HomePageState extends State<HomePage> {
 
 
 
-  void showProgressDialog(BuildContext context) {
+/*  void showProgressDialog(BuildContext context) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -312,7 +312,7 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
-  }
+  }*/
 
   Future<void> fetchBalance() async {
     final fetchBalanceProvider = Provider.of<BalanceProvider>(
@@ -385,10 +385,10 @@ class _HomePageState extends State<HomePage> {
         "THIS_MONTH", formattedFdate, formattedTdate, subAgentID!);
     cashTransProvider.getCashTranscationHistory(
         "THIS_MONTH", formattedFdate, formattedTdate, "COLLECTION_CASH",subAgentID!);
-    fetchBalance();
-    fetchTransaction();
+   // fetchBalance();
+     fetchTransaction();
     fetchCollection();
-    fetchBannerImages();
+   // fetchBannerImages();
   }
 
   Future<void> fetchBannerImages() async {
@@ -934,15 +934,16 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>
-           TransactionDetailsPage(
-             amountValue: transaction.orderAmount.toString(),
-             custName: transaction.customerName,
-             orderid: transaction.orderId,
-             tranStatus:transaction.orderStatus,
-             brCode: transaction.branchCode.toString(),
-             corpName: transaction.corpName.toString(),
-           )));
+          // CURRENTLY TRANSACTION DETAIL PAGE IS COMMENTED.......
+          // Navigator.push(context, MaterialPageRoute(builder: (context)=>
+          //  TransactionDetailsPage(
+          //    amountValue: transaction.orderAmount.toString(),
+          //    custName: transaction.customerName,
+          //    orderid: transaction.orderId,
+          //    tranStatus:transaction.orderStatus,
+          //    brCode: transaction.branchCode.toString(),
+          //    corpName: transaction.corpName.toString(),
+          //  )));
           // Navigate to transaction details
         },
       ),

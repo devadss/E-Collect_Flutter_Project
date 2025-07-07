@@ -53,6 +53,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
     response.fold(
           (error) {
         Navigator.pop(context);
+        print("Inside tokenGeneration error");
         if (error == "User not found") {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -82,26 +83,33 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
         }
       },
           (data) async {
+            print("Inside tokenGeneration data");
         Navigator.pop(context);
         await SharedPref.shared.setTokenValue(data.toString());
-        if (widget.tokenStatus == "MPIN_N") {
-        /*  Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => OtpVerification(
-                    mobNum: widget.subAgentmobNum,
-                  )));*/
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const GooglePinCodePage()));
-        } else {
-          SharedPref.shared.setLogin(true);
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const GooglePinCodePage()));
-        }
+        await SharedPref.shared.setLogin(true);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const GooglePinCodePage()));
+        // if (widget.tokenStatus == "MPIN_N") {
+        // /*  Navigator.push(
+        //       context,
+        //       MaterialPageRoute(
+        //           builder: (context) => OtpVerification(
+        //             mobNum: widget.subAgentmobNum,
+        //           )));*/
+        //   SharedPref.shared.setLogin(true);
+        //   Navigator.push(
+        //       context,
+        //       MaterialPageRoute(
+        //           builder: (context) => const GooglePinCodePage()));
+        // } else {
+        //   SharedPref.shared.setLogin(true);
+        //   Navigator.push(
+        //       context,
+        //       MaterialPageRoute(
+        //           builder: (context) => const GooglePinCodePage()));
+        // }
       },
     );
   }
@@ -138,22 +146,24 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
           (data) {
             Navigator.pop(context);
             if (data.message == "OTP Verified") {
-              if (widget.tokenStatus == "MPIN_N") {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const GooglePinCodePage()));
-           /*     Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => OtpVerification(
-                          mobNum: widget.subAgentmobNum,
-                        )));*/
-              } else {
-                SharedPref.shared.setLogin(true);
-                tokenGeneration();
-
-              }
+              SharedPref.shared.setLogin(true);
+              tokenGeneration();
+           //    if (widget.tokenStatus == "MPIN_N") {
+           //      Navigator.push(
+           //          context,
+           //          MaterialPageRoute(
+           //              builder: (context) => const GooglePinCodePage()));
+           // /*     Navigator.push(
+           //          context,
+           //          MaterialPageRoute(
+           //              builder: (context) => OtpVerification(
+           //                mobNum: widget.subAgentmobNum,
+           //              )));*/
+           //    } else {
+           //      SharedPref.shared.setLogin(true);
+           //      tokenGeneration();
+           //
+           //    }
             }
             print("Otp request stst : ${data.message}");
           },
