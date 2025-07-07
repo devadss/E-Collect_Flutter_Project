@@ -40,9 +40,12 @@ class QrTransaction {
   CustomerEmail? customerEmail;
   DateTime? createdAt;
   String? source;
-  Code? corpCode;
-  Code? branchCode;
-  CorpName? corpName;
+ // Code? corpCode;
+  String? corpCode;
+  //Code? branchCode;
+  String? branchCode;
+  //CorpName? corpName;
+  String? corpName;
   String? shopName;
   Gsttin? gsttin;
   RegNo? regNo;
@@ -79,9 +82,9 @@ class QrTransaction {
     customerEmail: customerEmailValues.map[json["CustomerEmail"]],
     createdAt: json["CreatedAt"] == null ? null : DateTime.parse(json["CreatedAt"]),
     source: json["Source"] ,
-    corpCode: codeValues.map[json["CorpCode"]],
-    branchCode: codeValues.map[json["BranchCode"]],
-    corpName: corpNameValues.map[json["CorpName"]],
+    corpCode: json["CorpCode"],
+    branchCode:json["BranchCode"],
+    corpName: json["CorpName"],
     shopName: json["ShopName"],
     gsttin: gsttinValues.map[json["GSTTIN"]],
     regNo: regNoValues.map[json["RegNo"]],
@@ -99,9 +102,9 @@ class QrTransaction {
     "CustomerEmail": customerEmailValues.reverse[customerEmail],
     "CreatedAt": createdAt?.toIso8601String(),
     "Source":  source,
-    "CorpCode": codeValues.reverse[corpCode],
-    "BranchCode": codeValues.reverse[branchCode],
-    "CorpName": corpNameValues.reverse[corpName],
+    "CorpCode": corpCode,
+    "BranchCode": branchCode,
+    "CorpName": corpName,
     "ShopName":  shopName,
     "GSTTIN": gsttinValues.reverse[gsttin],
     "RegNo": regNoValues.reverse[regNo],
@@ -118,15 +121,8 @@ final codeValues = EnumValues({
   "DOPNKTR": Code.DOPNKTR
 });
 
-enum CorpName {
-  MAYYIL_SCB,
-  NAKSHATHRA
-}
 
-final corpNameValues = EnumValues({
-  "MAYYIL SCB": CorpName.MAYYIL_SCB,
-  "NAKSHATHRA": CorpName.NAKSHATHRA
-});
+
 
 enum CustomerEmail {
   ANANDHU_GMAIL_COM,

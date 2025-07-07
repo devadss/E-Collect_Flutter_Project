@@ -1,45 +1,114 @@
 import 'package:flutter/material.dart';
 
-class TransactionDetailsPage extends StatelessWidget {
-  const TransactionDetailsPage({super.key});
+class TransactionDetailsPage extends StatefulWidget {
+  final String? amountValue;
+  final String? custName;
+  final String? orderid;
+  final String? tranStatus;
+  final String? brCode;
+  final String? corpName;
+  const TransactionDetailsPage({super.key, this.amountValue,
+  this.custName,
+  this.orderid,
+    this.tranStatus,
+    this.brCode,
+    this.corpName
+  });
 
+  @override
+  State<TransactionDetailsPage> createState() => _TransactionDetailsPageState();
+}
+
+class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Center(
-          child: Text(
-            "Transaction Details",
-            style: TextStyle(fontWeight: FontWeight.bold),
+      backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: const Center(
+            child: Text(
+              "Transaction Details",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          backgroundColor: Colors.white,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Container(
+              width: double.infinity,
+               height: 300,
+              decoration: BoxDecoration(
+                  color: Colors.grey.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10)),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: [
+                    buildRow("Customer Name", widget.custName.toString()),
+                    const Divider(
+                      color: Colors.black12,
+                      height: 1,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildRow("Amount", "${widget.amountValue.toString()} Rs"),
+                    const Divider(
+                      color: Colors.black12,
+                      height: 1,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildRow("Order ID", widget.orderid.toString()),
+                    const Divider(
+                      color: Colors.black12,
+                      height: 1,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildRow("Transaction Status", widget.tranStatus.toString()),
+                    const Divider(
+                      color: Colors.black12,
+                      height: 1,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildRow("Branch Code",widget.brCode.toString()),
+                    const Divider(
+                      color: Colors.black12,
+                      height: 1,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildRow("Corp Name", widget.corpName.toString()),
+                    const Divider(
+                      color: Colors.black12,
+                      height: 1,
+                    ),
+                  ],
+                ),
+              )),
+        ));
+  }
+
+  Row buildRow(String key, String value) {
+    return  Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text(
+          "$key : ",
+          style: const TextStyle(
+            fontSize: 15,
           ),
         ),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black54,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Container(
-          width: double.infinity,
-         // height: 400,
-          decoration: BoxDecoration(
-            color: Colors.grey.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(10)
-          ),
-          child: const Stack(
-            fit: StackFit.expand,
-          children: [
-            Row(children: [
-              Text("Data!"),
-              Text("Data")
-            ],),
-            Row(children: [
-              Text("Data@"),
-              Text("Data")
-            ],)
-          ],
-          ),
-        ),
-      )
+        Text(
+            textAlign: TextAlign.center,value),
+      ],
     );
   }
 }

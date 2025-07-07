@@ -935,7 +935,14 @@ class _HomePageState extends State<HomePage> {
         ),
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context)=>
-          const TransactionDetailsPage()));
+           TransactionDetailsPage(
+             amountValue: transaction.orderAmount.toString(),
+             custName: transaction.customerName,
+             orderid: transaction.orderId,
+             tranStatus:transaction.orderStatus,
+             brCode: transaction.branchCode.toString(),
+             corpName: transaction.corpName.toString(),
+           )));
           // Navigate to transaction details
         },
       ),
