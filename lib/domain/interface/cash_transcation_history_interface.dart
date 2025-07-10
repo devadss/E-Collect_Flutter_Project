@@ -7,6 +7,7 @@ abstract class ICashTransactionHistoryRepository{
   Future<Either<ErrorHandler,QrTranscationHistoryModel>>
   getCashTranscationHistory(String? dateFilterType,String?
   startDate,String? endDate,String? source,
-      String? subAgentId
+      String? subAgentId,
+      String? corpCode
       );
 }

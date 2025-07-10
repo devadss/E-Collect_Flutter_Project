@@ -109,7 +109,7 @@ class _DuesHomePageState extends State<DuesHomePage> {
     agentId: agentId,
     note: "Payment For Agent $agentName",
     subAgentId: subagentId,
-    agentName: agentName);
+    agentName: agentName, subAgentBranchCode: '');
     paymentSession.fold(
         (error){
           print("---------------------------------ERROR PAYMENT---------------------------");

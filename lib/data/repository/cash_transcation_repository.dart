@@ -43,6 +43,7 @@ class CashTranscationRepository implements ICashTranscationRepository {
         "customer_accno": customerAccNo,
         "customer_id": customerId,
         "customer_email": customerEmail,
+
       },
       "Amount": amount,
       "note": note,
@@ -56,10 +57,12 @@ class CashTranscationRepository implements ICashTranscationRepository {
       });
       print(response.statusCode);
       print(response.body);
+      print(body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         try {
           print("===============+CASH STATUS CODE=====================");
           print(response.statusCode);
+          print(body);
           print("==============CASH RESPONSE BODY===================");
           print(response.body);
           return Right(CashTranscation.fromJson(jsonDecode(response.body)));

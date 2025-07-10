@@ -15,7 +15,8 @@ class RdclAccountListHomePage extends StatefulWidget {
   State<RdclAccountListHomePage> createState() => _AccountListHomePageState();
 }
 
-class _AccountListHomePageState extends State<RdclAccountListHomePage>with TickerProviderStateMixin {
+class _AccountListHomePageState extends State<RdclAccountListHomePage>
+    with TickerProviderStateMixin {
   String? agentId;
   String? corpCode;
   String? agentPhoneNumber;
@@ -26,13 +27,11 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>with Ticke
   final TextEditingController _searchController = TextEditingController();
   bool _isSearchFocused = false;
 
-
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       loadSharedPrefs();
     });
-    super.initState();
     _fadeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
@@ -57,6 +56,15 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>with Ticke
         _scaleController.reverse();
       }
     });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _fadeController.dispose();
+    _scaleController.dispose();
+    _searchController.dispose();
+    super.dispose();
   }
 
   Future<void> loadSharedPrefs() async {
@@ -73,15 +81,29 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>with Ticke
           "----------------------------------AGENT ORIGIN ID---------------------------");
       print(agentId);
       final rdclDueUnderAgentProvider =
-      Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
-      await rdclDueUnderAgentProvider.getRdclDueList(agentId!,"", "");
+          Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
+      await rdclDueUnderAgentProvider.getRdclDueList(agentId!, "","");
       final provider =
-      Provider.of<RdclCustListProvider>(context, listen: false);
-     //await provider.getRdclCustomerunderAgent(agentId!, "");
-      print("bRanch code : ${rdclDueUnderAgentProvider.rdclDueUnderAgentModel!.data[0].brCode}");
-      await provider.getRdclCustomerunderAgent("", rdclDueUnderAgentProvider.rdclDueUnderAgentModel!.data[0].brCode);
-
+          Provider.of<RdclCustListProvider>(context, listen: false);
+      //await provider.getRdclCustomerunderAgent(agentId!, "");
+      print(
+          "bRanch code : ${rdclDueUnderAgentProvider.rdclDueUnderAgentModel!.data[0].brCode}");
+      await provider.getRdclCustomerunderAgent(
+          "", rdclDueUnderAgentProvider.rdclDueUnderAgentModel!.data[0].brCode);
     }
+  }
+
+
+  // Filter customers based on search query
+  List<dynamic> _filterCustomers(List<dynamic> allCustomers, String query) {
+    if (query.isEmpty) return allCustomers;
+
+    return allCustomers.where((customer) {
+      final accNo = customer.rdclGlobalAccNo?.toLowerCase() ?? '';
+      final name = customer.custName?.toLowerCase() ?? '';
+      return accNo.contains(query.toLowerCase()) ||
+          name.contains(query.toLowerCase());
+    }).toList();
   }
 
   Widget buildShimmerText(
@@ -127,7 +149,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>with Ticke
               ),
               child: Padding(
                 padding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -161,7 +183,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>with Ticke
                   fontWeight: FontWeight.w700, fontSize: 23, color: home2),
             )),
         backgroundColor: white,
-        body:Column(
+        body: Column(
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -186,11 +208,10 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>with Ticke
                       _isSearchFocused = hasFocus;
                     });
                   },
-                  child:
-                  TextField(
+                  child: TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
-                      hintText: 'Search accounts...',
+                      hintText: 'Search customers...',
                       hintStyle: TextStyle(
                         color: grey[600],
                         fontSize: 14,
@@ -200,44 +221,42 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>with Ticke
                         child: _isSearchFocused
                             ? const Icon(Icons.search, color: home2, size: 24)
                             : ShakeTransition(
-                          duration: const Duration(milliseconds: 1500),
-                          child: Icon(
-                            Icons.search_rounded,
-                            color: home2.withOpacity(0.7),
-                            size: 24,
-                          ),
-                        ),
+                                duration: const Duration(milliseconds: 1500),
+                                child: Icon(
+                                  Icons.search_rounded,
+                                  color: home2.withOpacity(0.7),
+                                  size: 24,
+                                ),
+                              ),
                       ),
                       suffixIcon: _searchController.text.isNotEmpty
                           ? FadeTransition(
-                        opacity: _fadeAnimation,
-                        child: ScaleTransition(
-                          scale: _scaleAnimation,
-                          child: IconButton(
-                            icon: const Icon(Icons.close, color: home2),
-                            onPressed: () {
-                              _searchController.clear();
-                              setState(()  {
-
-
-
-                              });
-                            },
-                          ),
-                        ),
-                      )
+                              opacity: _fadeAnimation,
+                              child: ScaleTransition(
+                                scale: _scaleAnimation,
+                                child: IconButton(
+                                  icon: const Icon(Icons.close, color: home2),
+                                  onPressed: () {
+                                    _searchController.clear();
+                                    setState(() {});
+                                  },
+                                ),
+                              ),
+                            )
                           : AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 300),
-                        child: _isSearchFocused
-                            ? BounceTransition(
-                          duration: const Duration(milliseconds: 1000),
-                          child: IconButton(
-                            icon: const Icon(Icons.tune_rounded, color: home2),
-                            onPressed: () {},
-                          ),
-                        )
-                            : const SizedBox.shrink(),
-                      ),
+                              duration: const Duration(milliseconds: 300),
+                              child: _isSearchFocused
+                                  ? BounceTransition(
+                                      duration:
+                                          const Duration(milliseconds: 1000),
+                                      child: IconButton(
+                                        icon: const Icon(Icons.tune_rounded,
+                                            color: home2),
+                                        onPressed: () {},
+                                      ),
+                                    )
+                                  : const SizedBox.shrink(),
+                            ),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(vertical: 18),
                     ),
@@ -246,163 +265,151 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>with Ticke
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
                     ),
-                    onChanged: (value) async {
-                      if(value.length == 8){
-
-                        await provider.getRdclDueList("", "", _searchController.text);
-
-                      }
-                      setState(() {
-
-                      });
+                    onChanged: (value) {
+                      setState(() {});
                     },
                   ),
                 ),
               ),
             ),
+            Expanded(
+              child: Consumer<RdclCustListProvider>(
+                builder: (context, provider, child) {
+                  final allCustomers =
+                      provider.rdclCustomerListModel?.data ?? [];
+                  final filteredCustomers =
+                      _filterCustomers(allCustomers, _searchController.text);
 
+                  if (provider.rdclCustomerListModel == null) {
+                    return buildShimmerList();
+                  } else if (filteredCustomers.isEmpty) {
+                    return Center(
+                      child: Text(
+                        _searchController.text.isEmpty
+                            ? "No customers found"
+                            : "No results found for '${_searchController.text}'",
+                        style: TextStyle(color: grey[600]),
+                      ),
+                    );
+                  }
 
-        Consumer<RdclCustListProvider>(
-            builder: (context, provider, child) {
-              return provider.rdclCustomerListModel == null
-                  ? buildShimmerList()
-                  : Column(
-                children: [
-                  Expanded(
-                    child: ListView.separated(
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding:
-                            const EdgeInsets.symmetric(horizontal: 20),
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            RdclAccountDueDetailsPage(
-                                              custName: provider
-                                                  .rdclCustomerListModel
-                                                  ?.data[index]
-                                                  .custName ??
-                                                  "NAME",
-                                              custAcNumber: provider
-                                                  .rdclCustomerListModel
-                                                  ?.data[index]
-                                                  .rdclGlobalAccNo ??
-                                                  "RDCL GLOBAL ACC NO",
-                                               custPhoneNumber:
-                                               agentPhoneNumber!,
-                                              custId: provider
-                                                  .rdclCustomerListModel
-                                                  ?.data[index]
-                                                  .custId ??
-                                                  "CUSTID",
-                                              custEmail: "",
-                                              corpCode: corpCode.toString(), indexValue: index,
-                                            )));
-                              },
-                              child: Container(
-                                height:
-                                MediaQuery.of(context).size.height * 0.15,
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: white,
-                                    border:
-                                    Border.all(color: home1, width: 1.2)),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          provider
-                                              .rdclCustomerListModel
-                                              ?.data[index]
-                                              .custName ??
-                                              "CUST NAME",
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.w700,
-                                              fontSize: 17,
-                                              color: black),
-                                        ),
-                                        //const SizedBox(height: 5),
-                                        Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              "Account Number : ${provider.rdclCustomerListModel?.data[index].rdclGlobalAccNo ?? "ACC No"}",
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w700,
-                                                  fontSize: 14,
-                                                  color: black87),
-                                            ),
-                                            const Spacer(),
-                                            Container(
-                                              height: 30,
-                                              width: 120,
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                  BorderRadius.circular(
-                                                      30),
-                                                  border: Border.all(
-                                                      color: home1,
-                                                      width: 1)),
-                                              child: Padding(
-                                                padding: const EdgeInsets
-                                                    .symmetric(horizontal: 5),
-                                                child: Row(
-                                                  children: [
-                                                    Image.asset(
-                                                      "assets/images/money.png",
-                                                      color: home2,
-                                                      scale: 25,
-                                                    ),
-                                                    const SizedBox(width: 5),
-                                                    const Text(
-                                                      "View details",
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                          FontWeight.w700,
-                                                          fontSize: 12,
-                                                          color: home2),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        //const SizedBox(height: 5),
-                                        Text(
-                                          "Scheme Name : ${provider.rdclCustomerListModel!.data[index].schName}",
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.w700,
-                                              fontSize: 14,
-                                              color: black87),
-                                        ),
-                                      ]),
+                  return ListView.separated(
+                    itemBuilder: (context, index) {
+                      final customer = filteredCustomers[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RdclAccountDueDetailsPage(
+                                  custName: customer.custName,
+                                  custAcNumber: customer.rdclGlobalAccNo ??
+                                      "RDCL GLOBAL ACC NO",
+                                  custPhoneNumber: agentPhoneNumber!,
+                                  custId: customer.custId ?? "CUSTID",
+                                  custEmail: "",
+                                  corpCode: corpCode.toString(),
+                                  indexValue: index,
                                 ),
                               ),
+                            );
+                          },
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.15,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: white,
+                              border: Border.all(color: home1, width: 1.2),
                             ),
-                          );
-                        },
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(height: 10);
-                        },
-                        itemCount: provider.rdclCustomerListModel!
-                            .data.length),
-                  )
-                ],
-              );
-            })
-    ],
-    ));
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    customer.custName ?? "CUST NAME",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 17,
+                                      color: black,
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Account Number : ${customer.rdclGlobalAccNo ?? "ACC No"}",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 14,
+                                          color: black87,
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      Container(
+                                        height: 30,
+                                        width: 120,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                          border: Border.all(
+                                              color: home1, width: 1),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 5),
+                                          child: Row(
+                                            children: [
+                                              Image.asset(
+                                                "assets/images/money.png",
+                                                color: home2,
+                                                scale: 25,
+                                              ),
+                                              const SizedBox(width: 5),
+                                              const Text(
+                                                "View details",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: 12,
+                                                  color: home2,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    "Scheme Name : ${customer.schName}",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14,
+                                      color: black87,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return const SizedBox(height: 10);
+                    },
+                    itemCount: filteredCustomers.length,
+                  );
+                },
+              ),
+            ),
+          ],
+        ));
   }
 }

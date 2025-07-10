@@ -29,6 +29,7 @@ class _HomePageState extends State<HomePage> {
   String? token;
   String? fd;
   String? td;
+  String? corpCode;
   String? agentOriginId;
   String? mobNum;
   String? subAgentID;
@@ -48,18 +49,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    final provider =
-        Provider.of<QRTransactionHistoryProvider>(context, listen: false);
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day); // midnight today
 
-    final fromDate = today.subtract(const Duration(days: 30));
-    final toDate = today;
-    final formattedFdate = DateFormat('yyyy-MM-dd').format(fromDate);
-    final formattedTdate = DateFormat('yyyy-MM-dd').format(toDate);
-
-    provider.getQrTranscationHistory(
-        "THIS_MONTH", formattedFdate, formattedTdate, "COLLECTION");
 
     loadSharedPrefs(context);
   }
@@ -182,9 +172,9 @@ class _HomePageState extends State<HomePage> {
                             DateTime now = DateTime.now();
                             final formatted = DateFormat('yyyy-MM-dd').format(now);
                             await qrProvider.getQrTranscationHistory(
-                                period, formatted, formatted, 'COLLECTION');
+                                period, formatted, formatted, 'COLLECTION', corpCode);
                             await cashTransProvider.getCashTranscationHistory(
-                                period, formatted, formatted, 'COLLECTION_CASH', subAgentID);
+                                period, formatted, formatted, 'COLLECTION_CASH', subAgentID,corpCode);
                             await linkProvider.getLinkTransactionHistory(
                                 period, formatted, formatted, subAgentID!);
                             break;
@@ -196,9 +186,9 @@ class _HomePageState extends State<HomePage> {
                             final formattedFdate = DateFormat('yyyy-MM-dd').format(today);
                             final formattedTdate = DateFormat('yyyy-MM-dd').format(lastDate);
                             await qrProvider.getQrTranscationHistory(
-                                period, formattedFdate, formattedTdate, 'COLLECTION');
+                                period, formattedFdate, formattedTdate, 'COLLECTION',corpCode);
                             await cashTransProvider.getCashTranscationHistory(
-                                period, formattedFdate, formattedTdate, 'COLLECTION_CASH', subAgentID);
+                                period, formattedFdate, formattedTdate, 'COLLECTION_CASH', subAgentID,corpCode);
 
                             await linkProvider.getLinkTransactionHistory(
                                 period, formattedFdate, formattedTdate, subAgentID!);
@@ -214,9 +204,9 @@ class _HomePageState extends State<HomePage> {
                             final formattedFdate = DateFormat('yyyy-MM-dd').format(fromDate);
                             final formattedTdate = DateFormat('yyyy-MM-dd').format(toDate);
                             await qrProvider.getQrTranscationHistory(
-                                period, formattedFdate, formattedTdate, 'COLLECTION');
+                                period, formattedFdate, formattedTdate, 'COLLECTION',corpCode);
                             await cashTransProvider.getCashTranscationHistory(
-                                period, formattedFdate, formattedTdate, 'COLLECTION_CASH', subAgentID);
+                                period, formattedFdate, formattedTdate, 'COLLECTION_CASH', subAgentID,corpCode);
 
                             await linkProvider.getLinkTransactionHistory(
                                 period, formattedFdate, formattedTdate, subAgentID!);
@@ -231,9 +221,9 @@ class _HomePageState extends State<HomePage> {
                             final formattedFdate = DateFormat('yyyy-MM-dd').format(firstDayLastMonth);
                             final formattedTdate = DateFormat('yyyy-MM-dd').format(lastDayLastMonth);
                             await qrProvider.getQrTranscationHistory(
-                                period, formattedFdate, formattedTdate, 'COLLECTION');
+                                period, formattedFdate, formattedTdate, 'COLLECTION',corpCode);
                             await cashTransProvider.getCashTranscationHistory(
-                                period, formattedFdate, formattedTdate, 'COLLECTION_CASH', subAgentID);
+                                period, formattedFdate, formattedTdate, 'COLLECTION_CASH', subAgentID,corpCode);
 
                             await linkProvider.getLinkTransactionHistory(
                                 period, formattedFdate, formattedTdate, subAgentID!);
@@ -245,18 +235,18 @@ class _HomePageState extends State<HomePage> {
                             to = DateFormat('yyyy-MM-dd').format(toDate!);
 
                             await qrProvider.getQrTranscationHistory(
-                                period, from, to, 'COLLECTION');
+                                period, from, to, 'COLLECTION',corpCode);
                             await cashTransProvider.getCashTranscationHistory(
-                                period, from, to,'COLLECTION_CASH', subAgentID);
+                                period, from, to,'COLLECTION_CASH', subAgentID,corpCode);
 
                             await linkProvider.getLinkTransactionHistory(
                                 period, from, to, subAgentID!);
                             break;
                         }
 
-                        await qrProvider.getQrTranscationHistory(period, from, to, 'COLLECTION');
+                        await qrProvider.getQrTranscationHistory(period, from, to, 'COLLECTION',corpCode);
                         await cashTransProvider.getCashTranscationHistory(
-                            period, from, to,'COLLECTION_CASH', subAgentID);
+                            period, from, to,'COLLECTION_CASH', subAgentID,corpCode);
                         await linkProvider.getLinkTransactionHistory(period, from, to, subAgentID!);
                       },
                       // only enable 'Apply Filter' if custom and dates selected
@@ -353,6 +343,7 @@ class _HomePageState extends State<HomePage> {
     final agentOrgID = await SharedPref().getAgentOriginId();
     final mobnum = await SharedPref().getParentAgentMobNum();
     final subAgID = await SharedPref().getSubAgentId();
+    final crpCode = await SharedPref().getCorpCode();
 
     if (mounted) {
       setState(() {
@@ -362,8 +353,21 @@ class _HomePageState extends State<HomePage> {
         agentOriginId = agentOrgID;
         mobNum = mobnum;
         subAgentID = subAgID;
+        corpCode= crpCode;
       });
     }
+    final provider =
+    Provider.of<QRTransactionHistoryProvider>(context, listen: false);
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day); // midnight today
+
+    final fromDate = today.subtract(const Duration(days: 30));
+    final toDate = today;
+    final formattedFdate = DateFormat('yyyy-MM-dd').format(fromDate);
+    final formattedTdate = DateFormat('yyyy-MM-dd').format(toDate);
+
+    await provider.getQrTranscationHistory(
+        "THIS_MONTH", formattedFdate, formattedTdate, "COLLECTION", corpCode);
     final linkProvider = Provider.of<LinkTransactionHistoryProvider>(
       context,
       listen: false,
@@ -372,17 +376,17 @@ class _HomePageState extends State<HomePage> {
       context,
       listen: false,
     );
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day); // midnight today
-
-    final fromDate = today.subtract(const Duration(days: 30));
-    final toDate = today;
-    final formattedFdate = DateFormat('yyyy-MM-dd').format(fromDate);
-    final formattedTdate = DateFormat('yyyy-MM-dd').format(toDate);
+    // final now = DateTime.now();
+    // final today = DateTime(now.year, now.month, now.day); // midnight today
+    //
+    // final fromDate = today.subtract(const Duration(days: 30));
+    // final toDate = today;
+    // final formattedFdate = DateFormat('yyyy-MM-dd').format(fromDate);
+    // final formattedTdate = DateFormat('yyyy-MM-dd').format(toDate);
     await linkProvider.getLinkTransactionHistory(
         "THIS_MONTH", formattedFdate, formattedTdate, subAgentID!);
     cashTransProvider.getCashTranscationHistory(
-        "THIS_MONTH", formattedFdate, formattedTdate, "COLLECTION_CASH",subAgentID!);
+        "THIS_MONTH", formattedFdate, formattedTdate, "COLLECTION_CASH",subAgentID!,corpCode);
    // fetchBalance();
      fetchTransaction();
     fetchCollection();

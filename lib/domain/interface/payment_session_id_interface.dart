@@ -20,5 +20,7 @@ abstract class ICreatePaymentSessionIdRepository {
         required String? amount,
         required String? note,
         required String? corpCode,
-        required String? cardRefNum});
+        required String? cardRefNum,
+      required String? subAgentBranchCode
+      });
 }

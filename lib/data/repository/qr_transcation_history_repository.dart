@@ -11,8 +11,9 @@ import '../service/error_handler.dart';
 
 class QRTransactionHistoryRepository implements IQRTransactionHistoryRepository{
   @override
-  Future<Either<ErrorHandler, QrTranscationHistoryModel>> getQrTranscationHistory(String? dateFilterType,String? startDate,String? endDate,String? source) async{
-   final url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source");
+  Future<Either<ErrorHandler, QrTranscationHistoryModel>> getQrTranscationHistory(String? dateFilterType,String? startDate,String? endDate,String? source,
+      String? corpCode) async{
+   final url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&CorpCode=$corpCode");
    bool checkConnection = await InternetConnectionChecker().hasConnection;
    if(checkConnection){
      print(url);

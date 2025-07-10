@@ -7,8 +7,8 @@ const String apiUrl = "https://adsspayweb.digicob.in:8444/";
 const String apiUrlTwo = "https://adsspayweb.digicob.in:8444/";
 const String s3Url = "https://cdn.adsspayweb.digicob.in/";
 //******************************************************************
-const String baseUrl = "https://adsspay.aanvinsolutions.com:8444/";///LIVE
-//const String baseUrl = "https://adsspayweb.digicob.in/"; //TEST
+//const String baseUrl = "https://adsspay.aanvinsolutions.com:8444/";///LIVE
+const String baseUrl = "https://adsspayweb.digicob.in/"; //TEST
 //*******************************************************************
 const String corpBaseUrl = "https://mydop.in/";///LIVE
 
@@ -137,6 +137,7 @@ class SharedPrefKeys {
   static const String parentAgentMobNum = "PARENT_AGENT_MOB_NUM";
   static const String subAgentMobNum = "SUB_AGENT_MOB_NUM";
   static const String subAgentCode = "SUB_AGENT_CODE";
+  static const String subAgentCodeNew = "SUB_AGENT_CODE_NEW";
   static const String subAgentID = "SUB_AGENT_ID";
   static const String adsspay_pswd = "ADSSPAY_PSWD";
   static const String adsspay_entity_id = "ADSSPAY_ENTITY_ID";

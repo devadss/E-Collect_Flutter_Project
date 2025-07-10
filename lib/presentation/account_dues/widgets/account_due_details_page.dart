@@ -479,6 +479,7 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
   String? customerName;
   String? customerNumber;
   String? customerAccountNumber;
+  String? subAgentCodeNew;
   String? corpCode;
   String? token;
   String? paymentSessionId;
@@ -561,7 +562,7 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
                     agentId: agentId,
                     note: "Payment For Agent $agentName",
                     subAgentId: subagentId,
-                    agentName: agentName);
+                    agentName: agentName, subAgentBranchCode: subAgentCodeNew);
                 paymentSession.fold((error) {
                   print(
                       "---------------------------------ERROR PAYMENT---------------------------");
@@ -668,8 +669,8 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
     print(
         "--------------------------------DATE TIME--------------------------");
     print(_dateTime);
-    final provider = Provider.of<DueListProvider>(context, listen: false);
-    provider.getDueList(widget.custAcNumber, _dateTime.toString());
+    // final provider = Provider.of<DueListProvider>(context, listen: false);
+    // provider.getDueList(widget.custAcNumber, _dateTime.toString());
     super.initState();
   }
 
@@ -682,6 +683,7 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
     final mail = await SharedPref().getEmail();
     final corp = await SharedPref().getCorpCode();
     final tok = await SharedPref.shared.getTokenValue();
+    final sub_AgentCodeNew = await SharedPref.shared.getSubAgentCodeNew();
 
     // Trigger rebuild after fetching the userName
     if (mounted) {
@@ -694,8 +696,11 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
         agentEmail = mail;
         corpCode = corp;
         token = tok;
+        subAgentCodeNew = sub_AgentCodeNew;
       });
     }
+    final provider = Provider.of<DueListProvider>(context, listen: false);
+    await provider.getDueList(widget.custAcNumber, _dateTime.toString());
   }
 
   @override

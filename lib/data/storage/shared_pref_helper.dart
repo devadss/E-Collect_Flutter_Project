@@ -145,6 +145,14 @@ class SharedPref {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.subAgentMobNum, value);
   }
+  setSubAgentCodeNew(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.subAgentCodeNew, value);
+  }
+  getSubAgentCodeNew() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.subAgentCodeNew) ?? '';
+  }
   setSubAgentCode(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.subAgentCode, value);

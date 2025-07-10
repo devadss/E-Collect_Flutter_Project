@@ -28,7 +28,10 @@ class CreatePaymentSessionIdRepository
       required String? amount,
       required String? note,
       required String? corpCode,
-      required String? cardRefNum}) async {
+      required String? cardRefNum,
+      required String? subAgentBranchCode
+
+  }) async {
     //final url = Uri.parse("${baseUrl}api/Cashfree/MerchantOrderCreate");
     final url = Uri.parse("${baseUrl}api/Cashfree/CollectiontOrderCreate");
     final body = {
@@ -38,7 +41,8 @@ class CreatePaymentSessionIdRepository
         "agent_orginId": agentOriginId,
         "agent_phone": agentPhone,
         "agent_email": agentEmail,
-        "SubAgentId": subAgentId
+        "SubAgentId": subAgentId,
+        "SubAgentBranchCode":subAgentBranchCode
       },
       "customer_details": {
         "customer_name": customerName,
