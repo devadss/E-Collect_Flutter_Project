@@ -26,7 +26,6 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   @override
   void initState() {
     super.initState();
-  //  isRdcl = true;
     getSharedData();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _updateIndicatorPosition(animate: false);

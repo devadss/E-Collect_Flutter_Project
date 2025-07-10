@@ -13,9 +13,12 @@ class RdclDueUnderAgentRepo implements RdclDueUnderAgentModelInterface{
 
   @override
   Future<Either<String, RdclDueUnderAgentModel>> getRdclDueList(String agentId,
-      String branchCode) async {
+      String branchCode, String accNo) async {
+    print("inside getRdclDueList");
     final vendorUrl = await loadVendorUrl();
-   final uri = Uri.parse("$vendorUrl?agent_id=$agentId&br_code=$branchCode");
+    print("vendorUrl = $vendorUrl");
+   final uri = Uri.parse("$vendorUrl?agent_id=$agentId&br_code=$branchCode&acc_no=$accNo");
+    print("uri = $uri");
    final request = await  http.get(uri);
    print(request.statusCode);
    print("$vendorUrl?agent_id=$agentId");

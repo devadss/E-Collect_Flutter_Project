@@ -22,12 +22,10 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   String pin = "";
   String custID = "";
   String token = "";
-  //String m_pin = "";
   String mpin = "";
   String fcmToken = "";
   String contactNum = ""; // contains +91
   String subAgentContactNum = ""; // contains +91
-  bool _isClicked = false;
   final LocalAuthentication auth = LocalAuthentication();
   final String _sk = "770A8A65DA156D24EE2A093277530142";
   final String _iv = "1234567890123456";
@@ -68,7 +66,6 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
 
       if (!canCheckBiometrics && !isDeviceSupported) {
         print('No biometric or device auth support');
-        // EasyLoading.showToast('Authentication not available');
         return;
       }
 
@@ -95,33 +92,6 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
     validateMpinFingerAuth();
   }
 
-/*  Future<void> _authenticateWithBiometrics() async {
-    bool authenticated = false;
-    try {
-      authenticated = await auth.authenticate(
-        localizedReason: 'Please authenticate to proceed',
-        options: const AuthenticationOptions(
-          biometricOnly: false,
-        ),
-      );
-    } on PlatformException catch (e) {
-      print('PlatformException: $e');
-      //  EasyLoading.showToast('Biometric/PIN authentication is not available');
-      return;
-    } on Exception catch (e) {
-      print('Exception during authentication: $e');
-      //  EasyLoading.showToast('Authentication error');
-      return;
-    }
-
-    if (!authenticated) {
-      // Instead of popping the current screen, show a toast message
-      //  EasyLoading.dismiss();
-      // EasyLoading.showToast('Authentication canceled');
-    } else {
-      validateMpinFingerAuth();
-    }
-  }*/
 
   void showProgressDialog(BuildContext context) {
     showDialog(
@@ -225,86 +195,11 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
     } else {
       await  saveFcmToken(custID, context, "GPIN", token, subAgentContactNum, mpin);
     }
-    // if (mpin.isNotEmpty) {
-    //   print("mpin.isNotEmpty");
-    //   print("mpin = $mpin");
 
-      //showProgressDialog(context);
-     // final provider = Provider.of<AuthProvider>(context, listen: false);
-     // final response = await provider.getAuthResult(contactNum, mpin, token);
-
-    /*  response.fold(
-            (error) async {
-          Navigator.pop(context);
-          print("Error: ${error?.message}");
-
-        },
-            (data) async {
-          Navigator.pop(context);
-          print("data.message = ${data.message}");
-          if (data.message == "Login Successfull") {
-            if (fcmToken.isNotEmpty) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const BottomNavScreen()));
-            } else {
-              await  saveFcmToken(custID, context, "GPIN", token, subAgentContactNum, mpin);
-            }
-          }else{
-            print("Login fail : ${data.message}");
-          }
-          // Navigator.pop(context);
-        },
-      );*/
 
       print("MPIN = $mpin");
-    // } else {
-    //   print("Empty fields not allowed");
-    // }
   }
-/*  Future<void> validateMpinFingerAuth() async {
-    print("validateMpinFingerAuth");
-    if (mpin.isNotEmpty) {
-      print("mpin.isNotEmpty");
-      print("mpin = $mpin");
 
-      showProgressDialog(context);
-      final provider = Provider.of<AuthProvider>(context, listen: false);
-      final response = await provider.getAuthResult(contactNum, mpin, token);
-
-      response.fold(
-            (error) {
-          Navigator.pop(context);
-          print("Error: ${error?.message}");
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(
-              "Error: ${error.message}- Invalid M-pin",
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 17),
-            ),
-            backgroundColor: Colors.red,
-          ));
-        },
-            (data) {
-          Navigator.pop(context);
-          print("data.message = ${data.message}");
-          if (data.message == "Login Successfull") {
-            if (fcmToken.isNotEmpty) {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => BottomNavScreen()));
-            } else {
-              saveFcmToken(custID, context, "GPIN", token, contactNum, mpin);
-            }
-          }
-          // Navigator.pop(context);
-        },
-      );
-
-      print("MPIN = $mpin");
-    } else {
-      print("Empty fields not allowed");
-    }
-  }*/
 
   String? encryptString(
       String textToEncrypt, String? secretKey, String? initialVector) {
@@ -389,26 +284,6 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
                       ),
                     ),
                     const SizedBox(height: 30),
-                    // PIN Display
-           /*         Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: List.generate(6, (index) {
-                        return AnimatedContainer(
-                          duration:const Duration(milliseconds: 200),
-                          width: 24,
-                          height: 24,
-                          margin:const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: index < pin.length ? home2 : home2.withOpacity(0.2),
-                            border: Border.all(
-                              color: home2,
-                              width: 1.5,
-                            ),
-                          ),
-                        );
-                      }),
-                    ),*/
                   ],
                 ),
 
@@ -423,52 +298,9 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
                       padding: EdgeInsets.zero,
                       children: [
                         _buildBiometricButton()
-                       // for (int i = 1; i <= 9; i++)
-                          //_buildNumberButton(i),
-                       // _buildBackButton(),
-                        //_buildNumberButton(0),
-                       // _buildBiometricButton(),
                       ],
                     ),
                     const SizedBox(height: 20),
-                 /*   SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: validateMpin,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: home2,
-                          padding:const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: Text(
-                          "SUBMIT",
-                          style: GoogleFonts.poppins(
-                            color: white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ),*/
-                  /*  TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>const ForgotMpinPage()
-                          ),
-                        );
-                      },
-                      child: Text(
-                        "Forgot MPIN?",
-                        style: GoogleFonts.poppins(
-                          color: home1,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),*/
                   ],
                 ),
               ],
@@ -479,54 +311,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
     );
   }
 
-  Widget _buildNumberButton(int number) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(45),
-        onTap: () {
-          if (pin.length < 6) {
-            setState(() {
-              pin += number.toString();
-            });
-          }
-        },
-        child: Center(
-          child: Text(
-            number.toString(),
-            style: GoogleFonts.poppins(
-              fontSize: 28,
-              color: home2,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 
-  Widget _buildBackButton() {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(45),
-        onTap: () {
-          if (pin.isNotEmpty) {
-            setState(() {
-              pin = pin.substring(0, pin.length - 1);
-            });
-          }
-        },
-        child:const Center(
-          child: Icon(
-            Icons.backspace_outlined,
-            color: home2,
-            size: 28,
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget _buildBiometricButton() {
     return Material(
@@ -544,128 +329,6 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       ),
     );
   }
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     backgroundColor: white,
-  //     appBar: AppBar(
-  //       backgroundColor: white,
-  //       centerTitle: true,
-  //       title: Text(
-  //         "Enter 6 Digit M-PIN",
-  //         style:
-  //         TextStyle(color: deepTeal, fontWeight: FontWeight.w700),
-  //       ),
-  //     ),
-  //     resizeToAvoidBottomInset: false,
-  //     body: Padding(
-  //       padding:
-  //       const EdgeInsets.only(left: 40, right: 40, top: 60, bottom: 10),
-  //       child: SingleChildScrollView(
-  //         child: Column(
-  //           mainAxisAlignment: MainAxisAlignment.center,
-  //           children: [
-  //             Row(
-  //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //               children: [
-  //                 // Display 6 PIN fields with smaller circles
-  //                 for (int i = 0; i < 6; i++) buildPinField(i),
-  //               ],
-  //             ),
-  //             const SizedBox(
-  //               height: 20,
-  //             ),
-  //             buildNumberPad(),
-  //             const SizedBox(height: 20),
-  //             GestureDetector(
-  //                 onTap: () {
-  //                   validateMpin();
-  //                 },
-  //                 child: const BuildButton(buttonText: "submit")),
-  //             const SizedBox(height: 10),
-  //             TextButton(
-  //               onPressed: () {
-  //                 Navigator.push(
-  //                     context,
-  //                     MaterialPageRoute(
-  //                         builder: (context) => ForgotMpinPage()));
-  //               },
-  //               child: Text(
-  //                 "Forgot M-PIN?",
-  //                 style: TextStyle(color: const Color(0xFF4200FF)),
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-  //
-  // Widget buildPinField(int index) {
-  //   return Container(
-  //     width: 22.0,
-  //     height: 22.0,
-  //     decoration: BoxDecoration(
-  //       shape: BoxShape.circle,
-  //       color: index < pin.length ? Colors.black : const Color(0xFFD9D9D9),
-  //     ),
-  //   );
-  // }
-  //
-  // Widget buildNumberPad() {
-  //   return GridView.count(
-  //     physics: const NeverScrollableScrollPhysics(),
-  //     shrinkWrap: true,
-  //     crossAxisCount: 3,
-  //     children: [
-  //       for (int i = 1; i <= 9; i++) buildIconButton(i),
-  //       TextButton(
-  //         onPressed: () {
-  //           setState(() {
-  //             if (pin.isNotEmpty) {
-  //               setState(() {
-  //                 pin = pin.substring(0, pin.length - 1);
-  //               });
-  //             }
-  //           });
-  //         },
-  //         child: const Icon(
-  //           Icons.arrow_back_ios,
-  //           color: deepTeal,
-  //           size: 40,
-  //         ),
-  //       ),
-  //       buildIconButton(0),
-  //     ],
-  //   );
-  // }
-  //
-  // Widget buildIconButton(int number) {
-  //   return InkWell(
-  //     onTap: () {
-  //       setState(() {
-  //         if (pin.length < 6) {
-  //           pin += number.toString();
-  //         }
-  //       });
-  //     },
-  //     child: Padding(
-  //       padding: const EdgeInsets.all(8.0),
-  //       child: Container(
-  //         decoration: BoxDecoration(
-  //           borderRadius: BorderRadius.circular(20),
-  //           color: deepTeal.withOpacity(0.6),
-  //         ),
-  //         child: Center(
-  //           child: Text(number.toString(),
-  //               style: TextStyle(
-  //                 fontSize: 35.0,
-  //                 color: white,
-  //               )),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
+
 }
 

@@ -125,7 +125,7 @@ class _ForgotMpinPageState extends State<ForgotMpinPage> {
       Navigator.pop(context);
       printLog("-------------------------ERROR---------------------");
       printLog(error);
-      showInSnackBar(error!.message.toString(), "RED");
+      showInSnackBar(error.message.toString(), "RED");
       // EasyLoading.showToast('OTP Verification Failed',
       //     toastPosition: EasyLoadingToastPosition.bottom);
     }, (verifyOtp) {

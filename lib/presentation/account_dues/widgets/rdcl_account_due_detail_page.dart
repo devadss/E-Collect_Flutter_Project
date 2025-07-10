@@ -270,7 +270,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
     }
     final provider =
         Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
-    await provider.getRdclDueList(agentId!, "");
+    await provider.getRdclDueList(agentId!, "", "");
     //  List.generate(provider.rdclDueUnderAgentModel!.data.length, (index) => false);
   }
 

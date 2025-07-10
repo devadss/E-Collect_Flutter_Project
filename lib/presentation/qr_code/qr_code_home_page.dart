@@ -14,7 +14,6 @@ import '../../data/provider/cerate_order_provider.dart';
 import '../../data/provider/fetch_account_balance_provider.dart';
 import '../../widgets/build_button.dart';
 
-
 class QrCodeHomePage extends StatefulWidget {
   final String payAbleAmount;
   final String accountNumber;

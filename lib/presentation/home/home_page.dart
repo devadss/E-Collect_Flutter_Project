@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:collection_qr_flutter/data/provider/link_transcation_history_provider.dart';
-import 'package:collection_qr_flutter/presentation/trancstion/transaction_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +11,6 @@ import '../../data/provider/cash_transcation_history_provider.dart';
 import '../../data/provider/collection_summary_provider.dart';
 import '../../data/provider/fetch_account_balance_provider.dart';
 import '../../data/provider/qr_transcation_history_provider.dart';
-import '../../data/provider/transaction_provider.dart';
 import '../../data/repository/cust_reg_repository.dart';
 import '../../domain/model/link_transaction_history_model.dart';
 import '../../domain/model/qr_transaction_history_model.dart';
@@ -326,16 +324,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> fetchTransaction() async {
-    final transProvider = Provider.of<TransactionProvider>(
-      context,
-      listen: false,
-    );
-    await transProvider.fetchTransaction(
-      "",
-      "",
-      entityId.toString(),
-      token.toString(),
-    );
+    // final transProvider = Provider.of<TransactionProvider>(
+    //   context,
+    //   listen: false,
+    // );
+    // await transProvider.fetchTransaction(
+    //   "",
+    //   "",
+    //   entityId.toString(),
+    //   token.toString(),
+    // );
     final provider = Provider.of<AgentTransactionProvider>(
       context,
       listen: false,

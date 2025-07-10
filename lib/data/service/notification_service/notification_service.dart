@@ -118,8 +118,6 @@ class NotificationService {
       "agentId": agentID,
       "mobileNumber": mobnum,
       "deviceToken": token.trim().toString()
-      //"EntityId": entityID.toString(),
-      //"DeviceToken": token.trim().toString()
 
     };
     final response = await http.post(
@@ -163,7 +161,8 @@ Future<String?> fetchFcmTokenWithRetries({int maxRetries = 3}) async {
 }
 
 Future<void> saveFcmToken(
-    String entityID, BuildContext context, String navPage, String tok, String mob, String mpin) async
+    String entityID, BuildContext context,
+    String navPage, String tok, String mob, String mpin) async
 {
   if (_isRequestingPermission) {
     print("Permission request is already in progress.");

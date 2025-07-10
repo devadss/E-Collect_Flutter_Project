@@ -6,6 +6,7 @@ import '../../core/colors.dart';
 import '../../data/provider/rdcl_cust_list_provider.dart';
 import '../../data/provider/rdcl_due_under_agent_provider.dart';
 import '../../data/storage/shared_pref_helper.dart';
+import '../dues/rdcl_due_home_page.dart';
 
 class RdclAccountListHomePage extends StatefulWidget {
   const RdclAccountListHomePage({super.key});
@@ -14,10 +15,17 @@ class RdclAccountListHomePage extends StatefulWidget {
   State<RdclAccountListHomePage> createState() => _AccountListHomePageState();
 }
 
-class _AccountListHomePageState extends State<RdclAccountListHomePage> {
+class _AccountListHomePageState extends State<RdclAccountListHomePage>with TickerProviderStateMixin {
   String? agentId;
   String? corpCode;
   String? agentPhoneNumber;
+  late AnimationController _fadeController;
+  late Animation<double> _fadeAnimation;
+  late AnimationController _scaleController;
+  late Animation<double> _scaleAnimation;
+  final TextEditingController _searchController = TextEditingController();
+  bool _isSearchFocused = false;
+
 
   @override
   void initState() {
@@ -25,6 +33,30 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage> {
       loadSharedPrefs();
     });
     super.initState();
+    _fadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(_fadeController);
+
+    _scaleController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _scaleAnimation = CurvedAnimation(
+      parent: _scaleController,
+      curve: Curves.elasticOut,
+    );
+
+    _searchController.addListener(() {
+      if (_searchController.text.isNotEmpty) {
+        _fadeController.forward();
+        _scaleController.forward();
+      } else {
+        _fadeController.reverse();
+        _scaleController.reverse();
+      }
+    });
   }
 
   Future<void> loadSharedPrefs() async {
@@ -42,7 +74,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage> {
       print(agentId);
       final rdclDueUnderAgentProvider =
       Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
-      await rdclDueUnderAgentProvider.getRdclDueList(agentId!,"");
+      await rdclDueUnderAgentProvider.getRdclDueList(agentId!,"", "");
       final provider =
       Provider.of<RdclCustListProvider>(context, listen: false);
      //await provider.getRdclCustomerunderAgent(agentId!, "");
@@ -129,7 +161,108 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage> {
                   fontWeight: FontWeight.w700, fontSize: 23, color: home2),
             )),
         backgroundColor: white,
-        body: Consumer<RdclCustListProvider>(
+        body:Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                decoration: BoxDecoration(
+                  color: white,
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: [
+                    BoxShadow(
+                      color: home2.withOpacity(0.1),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                  border: Border.all(color: home2.withOpacity(0.2)),
+                ),
+                child: Focus(
+                  onFocusChange: (hasFocus) {
+                    setState(() {
+                      _isSearchFocused = hasFocus;
+                    });
+                  },
+                  child:
+                  TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: 'Search accounts...',
+                      hintStyle: TextStyle(
+                        color: grey[600],
+                        fontSize: 14,
+                      ),
+                      prefixIcon: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: _isSearchFocused
+                            ? const Icon(Icons.search, color: home2, size: 24)
+                            : ShakeTransition(
+                          duration: const Duration(milliseconds: 1500),
+                          child: Icon(
+                            Icons.search_rounded,
+                            color: home2.withOpacity(0.7),
+                            size: 24,
+                          ),
+                        ),
+                      ),
+                      suffixIcon: _searchController.text.isNotEmpty
+                          ? FadeTransition(
+                        opacity: _fadeAnimation,
+                        child: ScaleTransition(
+                          scale: _scaleAnimation,
+                          child: IconButton(
+                            icon: const Icon(Icons.close, color: home2),
+                            onPressed: () {
+                              _searchController.clear();
+                              setState(()  {
+
+
+
+                              });
+                            },
+                          ),
+                        ),
+                      )
+                          : AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: _isSearchFocused
+                            ? BounceTransition(
+                          duration: const Duration(milliseconds: 1000),
+                          child: IconButton(
+                            icon: const Icon(Icons.tune_rounded, color: home2),
+                            onPressed: () {},
+                          ),
+                        )
+                            : const SizedBox.shrink(),
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 18),
+                    ),
+                    style: const TextStyle(
+                      color: black87,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    onChanged: (value) async {
+                      if(value.length == 8){
+
+                        await provider.getRdclDueList("", "", _searchController.text);
+
+                      }
+                      setState(() {
+
+                      });
+                    },
+                  ),
+                ),
+              ),
+            ),
+
+
+        Consumer<RdclCustListProvider>(
             builder: (context, provider, child) {
               return provider.rdclCustomerListModel == null
                   ? buildShimmerList()
@@ -268,6 +401,8 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage> {
                   )
                 ],
               );
-            }));
+            })
+    ],
+    ));
   }
 }

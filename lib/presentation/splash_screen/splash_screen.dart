@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'package:flutter_svg/svg.dart';
 import '../../core/colors.dart';
@@ -49,12 +48,10 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> validateToken(String token,
-
       String userName,
       String password,
       String mobNum,
       String type,
-
 
       ) async {
     final provider = Provider.of<TokenExpiryProvider>(context, listen: false);

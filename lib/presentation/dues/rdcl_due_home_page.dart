@@ -3,6 +3,7 @@ import 'package:collection_qr_flutter/data/provider/rdcl_due_under_agent_provide
 import 'package:collection_qr_flutter/domain/model/due_model/rdcl_due_under_agent_model.dart';
 import 'package:collection_qr_flutter/presentation/dues/widgets/new_qr_code_page.dart';
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -21,7 +22,7 @@ class RdclDuesHomePage extends StatefulWidget {
   State<RdclDuesHomePage> createState() => _DuesHomePageState();
 }
 
-class _DuesHomePageState extends State<RdclDuesHomePage> {
+class _DuesHomePageState extends State<RdclDuesHomePage>with TickerProviderStateMixin {
   final Map<String, Map<int, bool>> _checkboxStates = {};
   String? _expandedAccNo;
   String? token;
@@ -34,13 +35,66 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
   String? agentEmail;
   String? corpCode;
   String? paymentSessionId;
+  late AnimationController _fadeController;
+  late Animation<double> _fadeAnimation;
+  late AnimationController _scaleController;
+  late Animation<double> _scaleAnimation;
+  final TextEditingController _searchController = TextEditingController();
+  bool _isSearchFocused = false;
 
   @override
   void initState() {
     super.initState();
     loadSharedPrefs();
+    _fadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(_fadeController);
+
+    _scaleController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _scaleAnimation = CurvedAnimation(
+      parent: _scaleController,
+      curve: Curves.elasticOut,
+    );
+
+    _searchController.addListener(() {
+      if (_searchController.text.isNotEmpty) {
+        _fadeController.forward();
+        _scaleController.forward();
+      } else {
+        _fadeController.reverse();
+        _scaleController.reverse();
+      }
+    });
+
+  }
+  @override
+  void dispose() {
+    _fadeController.dispose();
+    _scaleController.dispose();
+    _searchController.dispose();
+    super.dispose();
   }
 
+  List<dynamic> _filterDues(List<dynamic> allDues, String query) {
+    if (query.isEmpty) return allDues;
+
+    return allDues.where((due) {
+      final accNo = due.accNo?.toLowerCase() ?? '';
+      final name = due.name?.toLowerCase() ?? '';
+      final custId = due.custId?.toLowerCase() ?? '';
+      final openDate = due.openDate?.toLowerCase() ?? '';
+
+      return accNo.contains(query.toLowerCase()) ||
+          name.contains(query.toLowerCase()) ||
+          custId.contains(query.toLowerCase()) ||
+          openDate.contains(query.toLowerCase());
+    }).toList();
+  }
   Future<void> loadSharedPrefs() async {
     final name = await SharedPref().getParentAgentName();
     final id = await SharedPref().getAgentId();
@@ -66,13 +120,12 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
     print("subagentId $subagentId");
     print("agentId $agentId");
     print("agentOriginId $agentOriginId");
-    final provider =
-        Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
-    await provider.getRdclDueList(agentOriginId!, "");
+    final provider = Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
+    await provider.getRdclDueList(agentOriginId!, "", "");
     final providerTwo =
         Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
     await providerTwo.getRdclDueList(
-        "", provider.rdclDueUnderAgentModel!.data[0].brCode);
+        "", provider.rdclDueUnderAgentModel!.data[0].brCode, "");
   }
 
   Future<void> getCashTrans(
@@ -286,6 +339,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: white,
       appBar: AppBar(
@@ -301,147 +355,248 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
           ),
         ),
       ),
-      body: Consumer<RdclDueUnderAgentProvider>(
-        builder: (context, provider, child) {
-          final data = provider.rdclDueUnderAgentModel?.data ?? [];
-
-          if (provider.rdclDueUnderAgentModel == null) {
-            return buildShimmerList();
-          } else if (data.isEmpty) {
-            return const Text("No data found");
-          }
-
-          final groupedData = <String, List<dynamic>>{};
-          for (var due in data) {
-            groupedData.putIfAbsent(due.accNo, () => []).add(due);
-          }
-
-          return ListView.separated(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-            itemCount: groupedData.keys.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
-            itemBuilder: (_, index) {
-              final accNo = groupedData.keys.elementAt(index);
-              final dues = groupedData[accNo]!;
-              final totalDue = dues.fold<num>(
-                0,
-                (sum, item) => sum + (item.dueAmount ?? 0),
-              );
-
-              return Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color: white,
-                  border: Border.all(color: home2.withOpacity(0.7), width: 1.5),
-                  boxShadow: [
-                    BoxShadow(
-                      offset: const Offset(0, 4),
-                      blurRadius: 12,
-                      color: black.withOpacity(0.08),
-                    ),
-                  ],
-                ),
-                child: Theme(
-                  data: Theme.of(context).copyWith(
-                    splashColor: transparent,
-                    highlightColor: transparent,
-                    dividerColor: transparent,
+      body:
+      Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              decoration: BoxDecoration(
+                color: white,
+                borderRadius: BorderRadius.circular(30),
+                boxShadow: [
+                  BoxShadow(
+                    color: home2.withOpacity(0.1),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
                   ),
-                  child: ExpansionTile(
-                    onExpansionChanged: (expanded) {
-                      setState(() {
-                        _expandedAccNo = expanded ? accNo : null;
-                      });
-                    },
-                    tilePadding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
+                ],
+                border: Border.all(color: home2.withOpacity(0.2)),
+              ),
+              child: Focus(
+                onFocusChange: (hasFocus) {
+                  setState(() {
+                    _isSearchFocused = hasFocus;
+                  });
+                },
+                child:
+                TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Search accounts...',
+                    hintStyle: TextStyle(
+                      color: grey[600],
+                      fontSize: 14,
                     ),
-                    childrenPadding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
+                    prefixIcon: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: _isSearchFocused
+                          ? const Icon(Icons.search, color: home2, size: 24)
+                          : ShakeTransition(
+                        duration: const Duration(milliseconds: 1500),
+                        child: Icon(
+                          Icons.search_rounded,
+                          color: home2.withOpacity(0.7),
+                          size: 24,
+                        ),
+                      ),
                     ),
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Account Number",
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: grey[600],
-                            fontWeight: FontWeight.w400,
-                          ),
+                    suffixIcon: _searchController.text.isNotEmpty
+                        ? FadeTransition(
+                      opacity: _fadeAnimation,
+                      child: ScaleTransition(
+                        scale: _scaleAnimation,
+                        child: IconButton(
+                          icon: const Icon(Icons.close, color: home2),
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(()  {
+
+
+
+                            });
+                          },
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          accNo,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                            color: home1,
-                          ),
+                      ),
+                    )
+                        : AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: _isSearchFocused
+                          ? BounceTransition(
+                        duration: const Duration(milliseconds: 1000),
+                        child: IconButton(
+                          icon: const Icon(Icons.tune_rounded, color: home2),
+                          onPressed: () {},
                         ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.currency_rupee,
-                              size: 18,
-                              color: black87,
-                            ),
-                            Text(
-                              "Total Due: ₹$totalDue",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15,
-                                color: black87,
+                      )
+                          : const SizedBox.shrink(),
+                    ),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 18),
+                  ),
+                  style: const TextStyle(
+                    color: black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  onChanged: (value) async {
+                    if(value.length == 8){
+
+                      await provider.getRdclDueList("", "", _searchController.text);
+
+                    }
+                    setState(() {
+
+                    });
+                  },
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Consumer<RdclDueUnderAgentProvider>(
+              builder: (context, provider, child) {
+                final data = provider.rdclDueUnderAgentModel?.data ?? [];
+            
+                if (provider.rdclDueUnderAgentModel == null) {
+                  return buildShimmerList();
+                } else if (data.isEmpty) {
+                  return const Text("No data found");
+                }
+            
+                final groupedData = <String, List<dynamic>>{};
+                for (var due in data) {
+                  groupedData.putIfAbsent(due.accNo, () => []).add(due);
+                }
+            
+                return ListView.separated(
+                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  itemCount: groupedData.keys.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 12),
+                  itemBuilder: (_, index) {
+                    final accNo = groupedData.keys.elementAt(index);
+                    final dues = groupedData[accNo]!;
+                    final totalDue = dues.fold<num>(
+                      0,
+                          (sum, item) => sum + (item.dueAmount ?? 0),
+                    );
+            
+                    return Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: white,
+                        border: Border.all(color: home2.withOpacity(0.7), width: 1.5),
+                        boxShadow: [
+                          BoxShadow(
+                            offset: const Offset(0, 4),
+                            blurRadius: 12,
+                            color: black.withOpacity(0.08),
+                          ),
+                        ],
+                      ),
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                          splashColor: transparent,
+                          highlightColor: transparent,
+                          dividerColor: transparent,
+                        ),
+                        child: ExpansionTile(
+                          onExpansionChanged: (expanded) {
+                            setState(() {
+                              _expandedAccNo = expanded ? accNo : null;
+                            });
+                          },
+                          tilePadding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
+                          childrenPadding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Account Number",
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: grey[600],
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    children: dues.asMap().entries.map((entry) {
-                      final dueIndex = entry.key;
-                      final due = entry.value;
-
-                      _checkboxStates.putIfAbsent(accNo, () => {});
-                      _checkboxStates[accNo]!.putIfAbsent(
-                        dueIndex,
-                        () => false,
-                      );
-
-                      final isEnabled =
-                          _expandedAccNo == null || _expandedAccNo == accNo;
-
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Checkbox(
-                              value: _checkboxStates[accNo]![dueIndex],
-                              onChanged: isEnabled
-                                  ? (bool? value) {
+                              const SizedBox(height: 4),
+                              Text(
+                                accNo,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                  color: home1,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.currency_rupee,
+                                    size: 18,
+                                    color: black87,
+                                  ),
+                                  Text(
+                                    "Total Due: ₹$totalDue",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 15,
+                                      color: black87,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          children: dues.asMap().entries.map((entry) {
+                            final dueIndex = entry.key;
+                            final due = entry.value;
+            
+                            _checkboxStates.putIfAbsent(accNo, () => {});
+                            _checkboxStates[accNo]!.putIfAbsent(
+                              dueIndex,
+                                  () => false,
+                            );
+            
+                            final isEnabled =
+                                _expandedAccNo == null || _expandedAccNo == accNo;
+            
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Checkbox(
+                                    value: _checkboxStates[accNo]![dueIndex],
+                                    onChanged: isEnabled
+                                        ? (bool? value) {
                                       setState(() {
                                         // Uncheck all other account numbers
                                         _checkboxStates.forEach((
-                                          key,
-                                          map,
-                                        ) {
+                                            key,
+                                            map,
+                                            ) {
                                           if (key != accNo) {
                                             map.updateAll(
-                                              (_, __) => false,
+                                                  (_, __) => false,
                                             );
                                           }
                                         });
-
+            
                                         // Update current checkbox state
                                         _checkboxStates[accNo]![dueIndex] =
                                             value ?? false;
                                         _expandedAccNo = accNo;
                                       });
-
+            
                                       // Calculate the selected amount only for current group
                                       num modalSelectedAmount = 0;
                                       final map = _checkboxStates[accNo];
@@ -453,20 +608,20 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
                                           }
                                         });
                                       }
-
+            
                                       final hasAnyChecked =
                                           modalSelectedAmount > 0;
-
+            
                                       if (!hasAnyChecked) return;
-
+            
                                       final controller = TextEditingController(
                                         text: modalSelectedAmount
                                             .toStringAsFixed(2),
                                       );
-
+            
                                       String selectedMethod =
                                           "Link"; // Default selection
-
+            
                                       showModalBottomSheet(
                                         context: context,
                                         isScrollControlled: true,
@@ -481,26 +636,26 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
                                         builder: (context) {
                                           return StatefulBuilder(
                                             builder: (
-                                              context,
-                                              setModalState,
-                                            ) {
+                                                context,
+                                                setModalState,
+                                                ) {
                                               return Padding(
                                                 padding: EdgeInsets.only(
                                                   top: 20,
                                                   left: 20,
                                                   right: 20,
                                                   bottom: MediaQuery.of(
-                                                        context,
-                                                      ).viewInsets.bottom +
+                                                    context,
+                                                  ).viewInsets.bottom +
                                                       20,
                                                 ),
                                                 child: SingleChildScrollView(
                                                   child: Column(
                                                     mainAxisSize:
-                                                        MainAxisSize.min,
+                                                    MainAxisSize.min,
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+                                                    CrossAxisAlignment
+                                                        .start,
                                                     children: [
                                                       Row(
                                                         children: [
@@ -508,42 +663,42 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
                                                             height: 60,
                                                             width: 60,
                                                             decoration:
-                                                                BoxDecoration(
+                                                            BoxDecoration(
                                                               borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
+                                                              BorderRadius
+                                                                  .circular(
                                                                 10,
                                                               ),
                                                               border:
-                                                                  Border.all(
+                                                              Border.all(
                                                                 color: black54,
                                                                 width: 1,
                                                               ),
                                                             ),
                                                             child: selectedMethod ==
-                                                                    "Link"
+                                                                "Link"
                                                                 ? Image.asset(
-                                                                    "assets/icons/web-link.png",
-                                                                    scale: 12,
-                                                                    color:
-                                                                        home2,
-                                                                  )
+                                                              "assets/icons/web-link.png",
+                                                              scale: 12,
+                                                              color:
+                                                              home2,
+                                                            )
                                                                 : selectedMethod ==
-                                                                        "QR Code"
-                                                                    ? Image
-                                                                        .asset(
-                                                                        "assets/icons/qr-code.png",
-                                                                        scale:
-                                                                            12,
-                                                                        color:
-                                                                            home2,
-                                                                      )
-                                                                    : Image
-                                                                        .asset(
-                                                                        "assets/images/rupee_6414183.png",
-                                                                        scale:
-                                                                            10,
-                                                                      ),
+                                                                "QR Code"
+                                                                ? Image
+                                                                .asset(
+                                                              "assets/icons/qr-code.png",
+                                                              scale:
+                                                              12,
+                                                              color:
+                                                              home2,
+                                                            )
+                                                                : Image
+                                                                .asset(
+                                                              "assets/images/rupee_6414183.png",
+                                                              scale:
+                                                              10,
+                                                            ),
                                                           ),
                                                           const SizedBox(
                                                             width: 8,
@@ -551,41 +706,41 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
                                                           Expanded(
                                                             child: Column(
                                                               crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
+                                                              CrossAxisAlignment
+                                                                  .start,
                                                               children: [
                                                                 Text(
                                                                   "Collect Payment Using",
                                                                   overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
+                                                                  TextOverflow
+                                                                      .ellipsis,
                                                                   style:
-                                                                      GoogleFonts
-                                                                          .inter(
+                                                                  GoogleFonts
+                                                                      .inter(
                                                                     fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
+                                                                    FontWeight
+                                                                        .w500,
                                                                     color:
-                                                                        black87,
+                                                                    black87,
                                                                     fontSize:
-                                                                        15,
+                                                                    15,
                                                                   ),
                                                                 ),
                                                                 Text(
                                                                   selectedMethod,
                                                                   overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
+                                                                  TextOverflow
+                                                                      .ellipsis,
                                                                   style:
-                                                                      GoogleFonts
-                                                                          .inter(
+                                                                  GoogleFonts
+                                                                      .inter(
                                                                     fontWeight:
-                                                                        FontWeight
-                                                                            .w700,
+                                                                    FontWeight
+                                                                        .w700,
                                                                     color:
-                                                                        black,
+                                                                    black,
                                                                     fontSize:
-                                                                        15,
+                                                                    15,
                                                                   ),
                                                                 ),
                                                               ],
@@ -598,163 +753,163 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
                                                             onTap: () {
                                                               showModalBottomSheet(
                                                                 context:
-                                                                    context,
+                                                                context,
                                                                 backgroundColor:
-                                                                    Colors
-                                                                        .white,
+                                                                Colors
+                                                                    .white,
                                                                 shape:
-                                                                    const RoundedRectangleBorder(
+                                                                const RoundedRectangleBorder(
                                                                   borderRadius:
-                                                                      BorderRadius
-                                                                          .vertical(
+                                                                  BorderRadius
+                                                                      .vertical(
                                                                     top: Radius
                                                                         .circular(
-                                                                            24),
+                                                                        24),
                                                                   ),
                                                                 ),
                                                                 builder: (ctx) =>
                                                                     Container(
-                                                                  padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                      vertical:
+                                                                      padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                          vertical:
                                                                           16),
-                                                                  child: Column(
-                                                                    mainAxisSize:
+                                                                      child: Column(
+                                                                        mainAxisSize:
                                                                         MainAxisSize
                                                                             .min,
-                                                                    children: [
-                                                                      // drag handle
-                                                                      Container(
-                                                                        width:
+                                                                        children: [
+                                                                          // drag handle
+                                                                          Container(
+                                                                            width:
                                                                             40,
-                                                                        height:
+                                                                            height:
                                                                             5,
-                                                                        decoration:
+                                                                            decoration:
                                                                             BoxDecoration(
-                                                                          color: Colors
-                                                                              .grey
-                                                                              .shade300,
-                                                                          borderRadius:
+                                                                              color: Colors
+                                                                                  .grey
+                                                                                  .shade300,
+                                                                              borderRadius:
                                                                               BorderRadius.circular(10),
-                                                                        ),
-                                                                      ),
-                                                                      const SizedBox(
-                                                                          height:
+                                                                            ),
+                                                                          ),
+                                                                          const SizedBox(
+                                                                              height:
                                                                               16),
-                                                                      ListTile(
-                                                                        leading: const Icon(
-                                                                            Icons
-                                                                                .link,
-                                                                            color:
+                                                                          ListTile(
+                                                                            leading: const Icon(
+                                                                                Icons
+                                                                                    .link,
+                                                                                color:
                                                                                 Colors.blueAccent),
-                                                                        title:
+                                                                            title:
                                                                             const Text(
-                                                                          "Link",
-                                                                          style:
+                                                                              "Link",
+                                                                              style:
                                                                               TextStyle(
-                                                                            fontWeight:
+                                                                                fontWeight:
                                                                                 FontWeight.w600,
-                                                                            fontSize:
+                                                                                fontSize:
                                                                                 16,
-                                                                          ),
-                                                                        ),
-                                                                        trailing:
+                                                                              ),
+                                                                            ),
+                                                                            trailing:
                                                                             const Icon(Icons.chevron_right),
-                                                                        onTap:
-                                                                            () {
-                                                                          setModalState(() =>
+                                                                            onTap:
+                                                                                () {
+                                                                              setModalState(() =>
                                                                               selectedMethod = "Link");
-                                                                          Navigator.pop(
-                                                                              ctx);
-                                                                        },
-                                                                      ),
-                                                                      const Divider(
-                                                                          indent:
+                                                                              Navigator.pop(
+                                                                                  ctx);
+                                                                            },
+                                                                          ),
+                                                                          const Divider(
+                                                                              indent:
                                                                               16,
-                                                                          endIndent:
+                                                                              endIndent:
                                                                               16),
-                                                                      ListTile(
-                                                                        leading: const Icon(
-                                                                            Icons
-                                                                                .qr_code,
-                                                                            color:
+                                                                          ListTile(
+                                                                            leading: const Icon(
+                                                                                Icons
+                                                                                    .qr_code,
+                                                                                color:
                                                                                 Colors.green),
-                                                                        title:
+                                                                            title:
                                                                             const Text(
-                                                                          "QR Code",
-                                                                          style:
+                                                                              "QR Code",
+                                                                              style:
                                                                               TextStyle(
-                                                                            fontWeight:
+                                                                                fontWeight:
                                                                                 FontWeight.w600,
-                                                                            fontSize:
+                                                                                fontSize:
                                                                                 16,
-                                                                          ),
-                                                                        ),
-                                                                        trailing:
+                                                                              ),
+                                                                            ),
+                                                                            trailing:
                                                                             const Icon(Icons.chevron_right),
-                                                                        onTap:
-                                                                            () {
-                                                                          setModalState(() =>
+                                                                            onTap:
+                                                                                () {
+                                                                              setModalState(() =>
                                                                               selectedMethod = "QR Code");
-                                                                          Navigator.pop(
-                                                                              ctx);
-                                                                        },
-                                                                      ),
-                                                                      const Divider(
-                                                                          indent:
-                                                                              16,
-                                                                          endIndent:
-                                                                              16),
-                                                                      ListTile(
-                                                                        leading: const Icon(
-                                                                            Icons
-                                                                                .money,
-                                                                            color:
-                                                                                Colors.deepOrange),
-                                                                        title:
-                                                                            const Text(
-                                                                          "Cash",
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontWeight:
-                                                                                FontWeight.w600,
-                                                                            fontSize:
-                                                                                16,
+                                                                              Navigator.pop(
+                                                                                  ctx);
+                                                                            },
                                                                           ),
-                                                                        ),
-                                                                        trailing:
+                                                                          const Divider(
+                                                                              indent:
+                                                                              16,
+                                                                              endIndent:
+                                                                              16),
+                                                                          ListTile(
+                                                                            leading: const Icon(
+                                                                                Icons
+                                                                                    .money,
+                                                                                color:
+                                                                                Colors.deepOrange),
+                                                                            title:
+                                                                            const Text(
+                                                                              "Cash",
+                                                                              style:
+                                                                              TextStyle(
+                                                                                fontWeight:
+                                                                                FontWeight.w600,
+                                                                                fontSize:
+                                                                                16,
+                                                                              ),
+                                                                            ),
+                                                                            trailing:
                                                                             const Icon(Icons.chevron_right),
-                                                                        onTap:
-                                                                            () {
-                                                                          setModalState(() =>
+                                                                            onTap:
+                                                                                () {
+                                                                              setModalState(() =>
                                                                               selectedMethod = "Cash");
-                                                                          Navigator.pop(
-                                                                              ctx);
-                                                                        },
-                                                                      ),
-                                                                      const SizedBox(
-                                                                          height:
+                                                                              Navigator.pop(
+                                                                                  ctx);
+                                                                            },
+                                                                          ),
+                                                                          const SizedBox(
+                                                                              height:
                                                                               12),
-                                                                    ],
-                                                                  ),
-                                                                ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
                                                               );
                                                             },
                                                             child: Text(
                                                               "Change Method >",
                                                               overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
+                                                              TextOverflow
+                                                                  .ellipsis,
                                                               style: GoogleFonts
                                                                   .inter(
                                                                 decoration:
-                                                                    TextDecoration
-                                                                        .underline,
+                                                                TextDecoration
+                                                                    .underline,
                                                                 decorationColor:
-                                                                    home2,
+                                                                home2,
                                                                 fontWeight:
-                                                                    FontWeight
-                                                                        .w800,
+                                                                FontWeight
+                                                                    .w800,
                                                                 color: home2,
                                                                 fontSize: 12,
                                                               ),
@@ -770,7 +925,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
                                                         style: TextStyle(
                                                           fontSize: 18,
                                                           fontWeight:
-                                                              FontWeight.w600,
+                                                          FontWeight.w600,
                                                           color: home2,
                                                         ),
                                                       ),
@@ -795,7 +950,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
                                                         style: TextStyle(
                                                           fontSize: 14,
                                                           fontWeight:
-                                                              FontWeight.w500,
+                                                          FontWeight.w500,
                                                           color: grey[800],
                                                         ),
                                                       ),
@@ -805,48 +960,48 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
                                                       TextFormField(
                                                         controller: controller,
                                                         keyboardType:
-                                                            const TextInputType
-                                                                .numberWithOptions(
+                                                        const TextInputType
+                                                            .numberWithOptions(
                                                           decimal: true,
                                                           signed: true,
                                                         ),
                                                         decoration:
-                                                            InputDecoration(
+                                                        InputDecoration(
                                                           filled: true,
                                                           fillColor: home2,
                                                           border:
-                                                              OutlineInputBorder(
+                                                          OutlineInputBorder(
                                                             borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
+                                                            BorderRadius
+                                                                .circular(
                                                               10,
                                                             ),
                                                             borderSide:
-                                                                const BorderSide(
+                                                            const BorderSide(
                                                               color: deepTeal,
                                                             ),
                                                           ),
                                                           focusedBorder:
-                                                              OutlineInputBorder(
+                                                          OutlineInputBorder(
                                                             borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
+                                                            BorderRadius
+                                                                .circular(
                                                               10,
                                                             ),
                                                             borderSide:
-                                                                const BorderSide(
+                                                            const BorderSide(
                                                               color: deepTeal,
                                                               width: 1.5,
                                                             ),
                                                           ),
                                                           contentPadding:
-                                                              const EdgeInsets
-                                                                  .symmetric(
+                                                          const EdgeInsets
+                                                              .symmetric(
                                                             horizontal: 14,
                                                             vertical: 12,
                                                           ),
                                                           prefixIcon:
-                                                              const Icon(
+                                                          const Icon(
                                                             Icons
                                                                 .currency_rupee,
                                                             color: white,
@@ -855,7 +1010,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
                                                         style: const TextStyle(
                                                           fontSize: 16,
                                                           fontWeight:
-                                                              FontWeight.w600,
+                                                          FontWeight.w600,
                                                           color: white,
                                                         ),
                                                       ),
@@ -865,84 +1020,84 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
                                                       CustomSliderButton(
                                                         token: token!,
                                                         label:
-                                                            "Slide to Collect Using $selectedMethod",
+                                                        "Slide to Collect Using $selectedMethod",
                                                         backgroundColor: home2,
                                                         buttonColor:
-                                                            Colors.white,
+                                                        Colors.white,
                                                         onConfirmed: () async {
                                                           // final editedAmount = num.tryParse(controller.text.trim()) ?? 0;
                                                           selectedMethod ==
-                                                                  "Link"
+                                                              "Link"
                                                               ? sendLinkFunction(
-                                                                  provider.rdclDueUnderAgentModel!
-                                                                          .data[
-                                                                      index],
-                                                                  controller
-                                                                      .text)
+                                                              provider.rdclDueUnderAgentModel!
+                                                                  .data[
+                                                              index],
+                                                              controller
+                                                                  .text)
                                                               : selectedMethod ==
-                                                                      "Cash"
-                                                                  ? getCashTrans(
-                                                                      token:
-                                                                          token,
-                                                                      customerName: provider
-                                                                          .rdclDueUnderAgentModel
-                                                                          ?.data[
-                                                                              index]
-                                                                          .name,
-                                                                      custPhoneNumber:
-                                                                          "",
-                                                                      custAcNumber: provider
-                                                                          .rdclDueUnderAgentModel
-                                                                          ?.data[
-                                                                              index]
-                                                                          .accNo,
-                                                                      custId: provider
-                                                                          .rdclDueUnderAgentModel
-                                                                          ?.data[
-                                                                              index]
-                                                                          .custId,
-                                                                      custEmail:
-                                                                          "",
-                                                                      phoneNumber:
-                                                                          "$agentPhoneNumber",
-                                                                      entityId:
-                                                                          agentId,
-                                                                      note:
-                                                                          "Payment For Agent $agentName",
-                                                                      amount: controller
-                                                                          .text,
-                                                                    )
-                                                                  : getPaymentSessionId(
-                                                                      token:
-                                                                          token,
-                                                                      customerName: provider
-                                                                          .rdclDueUnderAgentModel
-                                                                          ?.data[
-                                                                              index]
-                                                                          .name,
-                                                                      custPhoneNumber:
-                                                                          "",
-                                                                      custAcNumber: provider
-                                                                          .rdclDueUnderAgentModel
-                                                                          ?.data[
-                                                                              index]
-                                                                          .accNo,
-                                                                      custId: provider
-                                                                          .rdclDueUnderAgentModel
-                                                                          ?.data[
-                                                                              index]
-                                                                          .custId,
-                                                                      custEmail:
-                                                                          "",
-                                                                      phoneNumber:
-                                                                          "$agentPhoneNumber",
-                                                                      entityId:
-                                                                          agentId,
-                                                                      note:
-                                                                          "Payment For Agent $agentName",
-                                                                      amount: controller
-                                                                          .text,
-                                                                    );
+                                                              "Cash"
+                                                              ? getCashTrans(
+                                                            token:
+                                                            token,
+                                                            customerName: provider
+                                                                .rdclDueUnderAgentModel
+                                                                ?.data[
+                                                            index]
+                                                                .name,
+                                                            custPhoneNumber:
+                                                            "",
+                                                            custAcNumber: provider
+                                                                .rdclDueUnderAgentModel
+                                                                ?.data[
+                                                            index]
+                                                                .accNo,
+                                                            custId: provider
+                                                                .rdclDueUnderAgentModel
+                                                                ?.data[
+                                                            index]
+                                                                .custId,
+                                                            custEmail:
+                                                            "",
+                                                            phoneNumber:
+                                                            "$agentPhoneNumber",
+                                                            entityId:
+                                                            agentId,
+                                                            note:
+                                                            "Payment For Agent $agentName",
+                                                            amount: controller
+                                                                .text,
+                                                          )
+                                                              : getPaymentSessionId(
+                                                            token:
+                                                            token,
+                                                            customerName: provider
+                                                                .rdclDueUnderAgentModel
+                                                                ?.data[
+                                                            index]
+                                                                .name,
+                                                            custPhoneNumber:
+                                                            "",
+                                                            custAcNumber: provider
+                                                                .rdclDueUnderAgentModel
+                                                                ?.data[
+                                                            index]
+                                                                .accNo,
+                                                            custId: provider
+                                                                .rdclDueUnderAgentModel
+                                                                ?.data[
+                                                            index]
+                                                                .custId,
+                                                            custEmail:
+                                                            "",
+                                                            phoneNumber:
+                                                            "$agentPhoneNumber",
+                                                            entityId:
+                                                            agentId,
+                                                            note:
+                                                            "Payment For Agent $agentName",
+                                                            amount: controller
+                                                                .text,
+                                                          );
                                                         },
                                                       ),
                                                     ],
@@ -954,89 +1109,789 @@ class _DuesHomePageState extends State<RdclDuesHomePage> {
                                         },
                                       );
                                     }
-                                  : null,
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 14,
-                                  vertical: 12,
-                                ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: home1,
-                                    width: 1.5,
+                                        : null,
                                   ),
-                                  color: grey[50],
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Installment: ₹${due.installAmt}",
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14,
-                                        color: black87,
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 14,
+                                        vertical: 12,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                          color: home1,
+                                          width: 1.5,
+                                        ),
+                                        color: grey[50],
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Installment: ₹${due.installAmt}",
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 14,
+                                              color: black87,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            "Name: ${provider.rdclDueUnderAgentModel!.data[index].name}",
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              color: grey[700],
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            "Open Date: ${provider.rdclDueUnderAgentModel!.data[index].openDate}",
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              color: grey[700],
+                                            ),
+                                          ),
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            "Paid Installemnts: ${provider.rdclDueUnderAgentModel!.data[index].paidInstallments}",
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              color: grey[700],
+                                            ),
+                                          ),
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            "DueInstallments: ${provider.rdclDueUnderAgentModel!.data[index].dueInstallments}",
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              color: grey[700],
+                                            ),
+                                          ),
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            "TotalInstallment: ${provider.rdclDueUnderAgentModel!.data[index].totalInstallment}",
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              color: grey[700],
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      "Name: ${provider.rdclDueUnderAgentModel!.data[index].name}",
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: grey[700],
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      "Open Date: ${provider.rdclDueUnderAgentModel!.data[index].openDate}",
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: grey[700],
-                                      ),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      "Paid Installemnts: ${provider.rdclDueUnderAgentModel!.data[index].paidInstallments}",
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: grey[700],
-                                      ),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      "DueInstallments: ${provider.rdclDueUnderAgentModel!.data[index].dueInstallments}",
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: grey[700],
-                                      ),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      "TotalInstallment: ${provider.rdclDueUnderAgentModel!.data[index].totalInstallment}",
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: grey[700],
-                                      ),
-                                    ),
-                                  ],
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+    /*      Expanded(
+            child: Consumer<RdclDueUnderAgentProvider>(
+              builder: (context, provider, child) {
+                final allData = provider.rdclDueUnderAgentModel?.data ?? [];
+                final filteredData = _filterDues(allData, _searchController.text);
+
+                if (provider.rdclDueUnderAgentModel == null) {
+                  return buildShimmerList();
+                }
+                else if (filteredData.isEmpty) {
+                  return Center(
+                    child: Text(
+                      _searchController.text.isEmpty
+                          ? "No data found"
+                          : "No results found for '${_searchController.text}'",
+                      style: TextStyle(color: grey[600]),
+                    ),
+                  );
+                }
+
+                final groupedData = <String, List<dynamic>>{};
+                for (var due in filteredData) {
+                  groupedData.putIfAbsent(due.accNo, () => []).add(due);
+                }
+
+                return ListView.separated(
+                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  itemCount: groupedData.keys.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 12),
+                  itemBuilder: (_, index) {
+                    final accNo = groupedData.keys.elementAt(index);
+                    final dues = groupedData[accNo]!;
+                    final totalDue = dues.fold<num>(
+                      0,
+                          (sum, item) => sum + (item.dueAmount ?? 0),
+                    );
+
+                    return Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: white,
+                        border: Border.all(
+                            color: home2.withOpacity(0.7), width: 1.5),
+                        boxShadow: [
+                          BoxShadow(
+                            offset: const Offset(0, 4),
+                            blurRadius: 12,
+                            color: black.withOpacity(0.08),
+                          ),
+                        ],
+                      ),
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                          splashColor: transparent,
+                          highlightColor: transparent,
+                          dividerColor: transparent,
+                        ),
+                        child: ExpansionTile(
+                          onExpansionChanged: (expanded) {
+                            setState(() {
+                              _expandedAccNo = expanded ? accNo : null;
+                            });
+                          },
+                          tilePadding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
+                          childrenPadding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Account Number",
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: grey[600],
+                                  fontWeight: FontWeight.w400,
                                 ),
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 4),
+                              Text(
+                                accNo,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                  color: home1,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.currency_rupee,
+                                    size: 18,
+                                    color: black87,
+                                  ),
+                                  Text(
+                                    "Total Due: ₹$totalDue",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 15,
+                                      color: black87,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          children: dues.asMap().entries.map((entry) {
+                            final dueIndex = entry.key;
+                            final due = entry.value;
+
+                            _checkboxStates.putIfAbsent(accNo, () => {});
+                            _checkboxStates[accNo]!.putIfAbsent(
+                              dueIndex,
+                                  () => false,
+                            );
+
+                            final isEnabled = _expandedAccNo == null ||
+                                _expandedAccNo == accNo;
+
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Checkbox(
+                                    value: _checkboxStates[accNo]![dueIndex],
+                                    onChanged: isEnabled
+                                        ? (bool? value) {
+                                      setState(() {
+                                        // Uncheck all other account numbers
+                                        _checkboxStates.forEach((
+                                            key,
+                                            map,
+                                            ) {
+                                          if (key != accNo) {
+                                            map.updateAll(
+                                                  (_, __) => false,
+                                            );
+                                          }
+                                        });
+
+                                        // Update current checkbox state
+                                        _checkboxStates[accNo]![
+                                        dueIndex] = value ?? false;
+                                        _expandedAccNo = accNo;
+                                      });
+
+                                      // Calculate the selected amount only for current group
+                                      num modalSelectedAmount = 0;
+                                      final map = _checkboxStates[accNo];
+                                      if (map != null) {
+                                        map.forEach((i, isChecked) {
+                                          if (isChecked) {
+                                            modalSelectedAmount +=
+                                                dues[i].installAmt ?? 0;
+                                          }
+                                        });
+                                      }
+
+                                      final hasAnyChecked =
+                                          modalSelectedAmount > 0;
+
+                                      if (!hasAnyChecked) return;
+
+                                      final controller =
+                                      TextEditingController(
+                                        text: modalSelectedAmount
+                                            .toStringAsFixed(2),
+                                      );
+
+                                      String selectedMethod =
+                                          "Link"; // Default selection
+
+                                      showModalBottomSheet(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        shape:
+                                        const RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.vertical(
+                                            top: Radius.circular(
+                                              20,
+                                            ),
+                                          ),
+                                        ),
+                                        backgroundColor: white,
+                                        builder: (context) {
+                                          return StatefulBuilder(
+                                            builder: (
+                                                context,
+                                                setModalState,
+                                                ) {
+                                              return Padding(
+                                                padding: EdgeInsets.only(
+                                                  top: 20,
+                                                  left: 20,
+                                                  right: 20,
+                                                  bottom: MediaQuery.of(
+                                                    context,
+                                                  )
+                                                      .viewInsets
+                                                      .bottom +
+                                                      20,
+                                                ),
+                                                child:
+                                                SingleChildScrollView(
+                                                  child: Column(
+                                                    mainAxisSize:
+                                                    MainAxisSize.min,
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment
+                                                        .start,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                            height: 60,
+                                                            width: 60,
+                                                            decoration:
+                                                            BoxDecoration(
+                                                              borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                10,
+                                                              ),
+                                                              border:
+                                                              Border
+                                                                  .all(
+                                                                color:
+                                                                black54,
+                                                                width: 1,
+                                                              ),
+                                                            ),
+                                                            child: selectedMethod ==
+                                                                "Link"
+                                                                ? Image
+                                                                .asset(
+                                                              "assets/icons/web-link.png",
+                                                              scale:
+                                                              12,
+                                                              color:
+                                                              home2,
+                                                            )
+                                                                : selectedMethod ==
+                                                                "QR Code"
+                                                                ? Image
+                                                                .asset(
+                                                              "assets/icons/qr-code.png",
+                                                              scale: 12,
+                                                              color: home2,
+                                                            )
+                                                                : Image
+                                                                .asset(
+                                                              "assets/images/rupee_6414183.png",
+                                                              scale: 10,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 8,
+                                                          ),
+                                                          Expanded(
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                              children: [
+                                                                Text(
+                                                                  "Collect Payment Using",
+                                                                  overflow:
+                                                                  TextOverflow.ellipsis,
+                                                                  style: GoogleFonts
+                                                                      .inter(
+                                                                    fontWeight:
+                                                                    FontWeight.w500,
+                                                                    color:
+                                                                    black87,
+                                                                    fontSize:
+                                                                    15,
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                  selectedMethod,
+                                                                  overflow:
+                                                                  TextOverflow.ellipsis,
+                                                                  style: GoogleFonts
+                                                                      .inter(
+                                                                    fontWeight:
+                                                                    FontWeight.w700,
+                                                                    color:
+                                                                    black,
+                                                                    fontSize:
+                                                                    15,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 8,
+                                                          ),
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              showModalBottomSheet(
+                                                                context:
+                                                                context,
+                                                                backgroundColor:
+                                                                Colors
+                                                                    .white,
+                                                                shape:
+                                                                const RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                  BorderRadius.vertical(
+                                                                    top: Radius.circular(
+                                                                        24),
+                                                                  ),
+                                                                ),
+                                                                builder:
+                                                                    (ctx) =>
+                                                                    Container(
+                                                                      padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                          vertical:
+                                                                          16),
+                                                                      child:
+                                                                      Column(
+                                                                        mainAxisSize:
+                                                                        MainAxisSize.min,
+                                                                        children: [
+                                                                          // drag handle
+                                                                          Container(
+                                                                            width: 40,
+                                                                            height: 5,
+                                                                            decoration: BoxDecoration(
+                                                                              color: Colors.grey.shade300,
+                                                                              borderRadius: BorderRadius.circular(10),
+                                                                            ),
+                                                                          ),
+                                                                          const SizedBox(height: 16),
+                                                                          ListTile(
+                                                                            leading: const Icon(Icons.link, color: Colors.blueAccent),
+                                                                            title: const Text(
+                                                                              "Link",
+                                                                              style: TextStyle(
+                                                                                fontWeight: FontWeight.w600,
+                                                                                fontSize: 16,
+                                                                              ),
+                                                                            ),
+                                                                            trailing: const Icon(Icons.chevron_right),
+                                                                            onTap: () {
+                                                                              setModalState(() => selectedMethod = "Link");
+                                                                              Navigator.pop(ctx);
+                                                                            },
+                                                                          ),
+                                                                          const Divider(
+                                                                              indent: 16,
+                                                                              endIndent: 16),
+                                                                          ListTile(
+                                                                            leading: const Icon(Icons.qr_code, color: Colors.green),
+                                                                            title: const Text(
+                                                                              "QR Code",
+                                                                              style: TextStyle(
+                                                                                fontWeight: FontWeight.w600,
+                                                                                fontSize: 16,
+                                                                              ),
+                                                                            ),
+                                                                            trailing: const Icon(Icons.chevron_right),
+                                                                            onTap: () {
+                                                                              setModalState(() => selectedMethod = "QR Code");
+                                                                              Navigator.pop(ctx);
+                                                                            },
+                                                                          ),
+                                                                          const Divider(
+                                                                              indent: 16,
+                                                                              endIndent: 16),
+                                                                          ListTile(
+                                                                            leading: const Icon(Icons.money, color: Colors.deepOrange),
+                                                                            title: const Text(
+                                                                              "Cash",
+                                                                              style: TextStyle(
+                                                                                fontWeight: FontWeight.w600,
+                                                                                fontSize: 16,
+                                                                              ),
+                                                                            ),
+                                                                            trailing: const Icon(Icons.chevron_right),
+                                                                            onTap: () {
+                                                                              setModalState(() => selectedMethod = "Cash");
+                                                                              Navigator.pop(ctx);
+                                                                            },
+                                                                          ),
+                                                                          const SizedBox(height: 12),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                              );
+                                                            },
+                                                            child: Text(
+                                                              "Change Method >",
+                                                              overflow:
+                                                              TextOverflow
+                                                                  .ellipsis,
+                                                              style: GoogleFonts
+                                                                  .inter(
+                                                                decoration:
+                                                                TextDecoration
+                                                                    .underline,
+                                                                decorationColor:
+                                                                home2,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .w800,
+                                                                color:
+                                                                home2,
+                                                                fontSize:
+                                                                12,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 15,
+                                                      ),
+                                                      const Text(
+                                                        "Installment Details",
+                                                        style: TextStyle(
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .w600,
+                                                          color: home2,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 12,
+                                                      ),
+                                                      Text(
+                                                        "Open Date: ${due.openDate}",
+                                                        overflow:
+                                                        TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                      Text(
+                                                        "Paid Installments: ${provider.rdclDueUnderAgentModel?.data[index].paidInstallments}",
+                                                        overflow:
+                                                        TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 20,
+                                                      ),
+                                                      Text(
+                                                        "Edit Total Selected Amount",
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .w500,
+                                                          color:
+                                                          grey[800],
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 8,
+                                                      ),
+                                                      TextFormField(
+                                                        controller:
+                                                        controller,
+                                                        keyboardType:
+                                                        const TextInputType
+                                                            .numberWithOptions(
+                                                          decimal: true,
+                                                          signed: true,
+                                                        ),
+                                                        decoration:
+                                                        InputDecoration(
+                                                          filled: true,
+                                                          fillColor:
+                                                          home2,
+                                                          border:
+                                                          OutlineInputBorder(
+                                                            borderRadius:
+                                                            BorderRadius
+                                                                .circular(
+                                                              10,
+                                                            ),
+                                                            borderSide:
+                                                            const BorderSide(
+                                                              color:
+                                                              deepTeal,
+                                                            ),
+                                                          ),
+                                                          focusedBorder:
+                                                          OutlineInputBorder(
+                                                            borderRadius:
+                                                            BorderRadius
+                                                                .circular(
+                                                              10,
+                                                            ),
+                                                            borderSide:
+                                                            const BorderSide(
+                                                              color:
+                                                              deepTeal,
+                                                              width: 1.5,
+                                                            ),
+                                                          ),
+                                                          contentPadding:
+                                                          const EdgeInsets
+                                                              .symmetric(
+                                                            horizontal:
+                                                            14,
+                                                            vertical: 12,
+                                                          ),
+                                                          prefixIcon:
+                                                          const Icon(
+                                                            Icons
+                                                                .currency_rupee,
+                                                            color: white,
+                                                          ),
+                                                        ),
+                                                        style:
+                                                        const TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .w600,
+                                                          color: white,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 20,
+                                                      ),
+                                                      CustomSliderButton(
+                                                        token: token!,
+                                                        label:
+                                                        "Slide to Collect Using $selectedMethod",
+                                                        backgroundColor:
+                                                        home2,
+                                                        buttonColor:
+                                                        Colors.white,
+                                                        onConfirmed:
+                                                            () async {
+                                                          selectedMethod ==
+                                                              "Link"
+                                                              ? sendLinkFunction(
+                                                              provider.rdclDueUnderAgentModel!
+                                                                  .data[
+                                                              index],
+                                                              controller
+                                                                  .text)
+                                                              : selectedMethod ==
+                                                              "Cash"
+                                                              ? getCashTrans(
+                                                            token:
+                                                            token,
+                                                            customerName:
+                                                            provider.rdclDueUnderAgentModel?.data[index].name,
+                                                            custPhoneNumber:
+                                                            "",
+                                                            custAcNumber:
+                                                            provider.rdclDueUnderAgentModel?.data[index].accNo,
+                                                            custId:
+                                                            provider.rdclDueUnderAgentModel?.data[index].custId,
+                                                            custEmail:
+                                                            "",
+                                                            phoneNumber:
+                                                            "$agentPhoneNumber",
+                                                            entityId:
+                                                            agentId,
+                                                            note:
+                                                            "Payment For Agent $agentName",
+                                                            amount:
+                                                            controller.text,
+                                                          )
+                                                              : getPaymentSessionId(
+                                                            token:
+                                                            token,
+                                                            customerName:
+                                                            provider.rdclDueUnderAgentModel?.data[index].name,
+                                                            custPhoneNumber:
+                                                            "",
+                                                            custAcNumber:
+                                                            provider.rdclDueUnderAgentModel?.data[index].accNo,
+                                                            custId:
+                                                            provider.rdclDueUnderAgentModel?.data[index].custId,
+                                                            custEmail:
+                                                            "",
+                                                            phoneNumber:
+                                                            "$agentPhoneNumber",
+                                                            entityId:
+                                                            agentId,
+                                                            note:
+                                                            "Payment For Agent $agentName",
+                                                            amount:
+                                                            controller.text,
+                                                          );
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        },
+                                      );
+                                    }
+                                        : null,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 14,
+                                        vertical: 12,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                          color: home1,
+                                          width: 1.5,
+                                        ),
+                                        color: grey[50],
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Installment: ₹${due.installAmt}",
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 14,
+                                              color: black87,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            "Name: ${provider.rdclDueUnderAgentModel!.data[index].name}",
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              color: grey[700],
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            "Open Date: ${provider.rdclDueUnderAgentModel!.data[index].openDate}",
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              color: grey[700],
+                                            ),
+                                          ),
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            "Paid Installemnts: ${provider.rdclDueUnderAgentModel!.data[index].paidInstallments}",
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              color: grey[700],
+                                            ),
+                                          ),
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            "DueInstallments: ${provider.rdclDueUnderAgentModel!.data[index].dueInstallments}",
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              color: grey[700],
+                                            ),
+                                          ),
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            "TotalInstallment: ${provider.rdclDueUnderAgentModel!.data[index].totalInstallment}",
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              color: grey[700],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
                         ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              );
-            },
-          );
-        },
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),*/
+        ],
       ),
+
     );
   }
 
@@ -1198,6 +2053,64 @@ class _CustomSliderButtonState extends State<CustomSliderButton> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class ShakeTransition extends StatelessWidget {
+  final Widget child;
+  final Duration duration;
+  final double offset;
+
+  const ShakeTransition({
+    super.key,
+    required this.child,
+    this.duration = const Duration(milliseconds: 1000),
+    this.offset = 10,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 1.0, end: 0.0),
+      duration: duration,
+      curve: Curves.elasticOut,
+      builder: (context, value, child) {
+        return Transform.translate(
+          offset: Offset(
+            value * offset * math.sin(value * math.pi * 2),
+            0,
+          ),
+          child: child,
+        );
+      },
+      child: child,
+    );
+  }
+}
+class BounceTransition extends StatelessWidget {
+  final Widget child;
+  final Duration duration;
+
+  const BounceTransition({
+    super.key,
+    required this.child,
+    this.duration = const Duration(milliseconds: 1000),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.0, end: 1.0),
+      duration: duration,
+      curve: Curves.elasticOut,
+      builder: (context, value, child) {
+        return Transform.scale(
+          scale: value,
+          child: child,
+        );
+      },
+      child: child,
     );
   }
 }
