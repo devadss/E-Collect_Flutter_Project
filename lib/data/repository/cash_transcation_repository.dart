@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:collection_qr_flutter/core/constants.dart';
 import 'package:collection_qr_flutter/data/service/error_handler.dart';
 import 'package:collection_qr_flutter/domain/interface/cash_transcation_interface.dart';
 import 'package:collection_qr_flutter/domain/model/cash_transcation_model.dart';
@@ -29,7 +30,7 @@ class CashTranscationRepository implements ICashTranscationRepository {
 
       }) async {
     final uri =
-        Uri.parse("https://adsspayweb.digicob.in/api/Cashfree/ReceiveCash");
+        Uri.parse("${baseUrl}api/Cashfree/ReceiveCash");
     bool checkConnection = await InternetConnectionChecker().hasConnection;
     final body = {
       "agent_details": {

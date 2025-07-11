@@ -3,16 +3,11 @@ import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-const String apiUrl = "https://adsspayweb.digicob.in:8444/";
-const String apiUrlTwo = "https://adsspayweb.digicob.in:8444/";
-const String s3Url = "https://cdn.adsspayweb.digicob.in/";
 //******************************************************************
 const String baseUrl = "https://adsspay.aanvinsolutions.com:8444/";///LIVE
 //const String baseUrl = "https://adsspayweb.digicob.in/"; //TEST
 //*******************************************************************
-const String corpBaseUrl = "https://mydop.in/";///LIVE
 
-const String baseUrlTwo = "https://api.adsspay.digicob.in";
 const String port = ":8444/";
 const String agentIdLive = "ADSS20231011";
 const String agentIdUat = "AANVIN20230627";
@@ -37,8 +32,7 @@ const String kPinCodeValidError = "Enter a valid pin code";
 const String kNameValidError = "Enter a valid name";
 const String kOtpNullError = "Enter the otp";
 
-const String baseURL = apiUrl;
-//const String imageBaseURL = s3Url;
+
 
 
 class NotificationChannels {
@@ -167,4 +161,3 @@ class SharedPrefKeys {
   static const String agentOriginId = "AGENT_ORIGIN_ID";
   static const String cardRefNum = "CARD_REF_NUM";
 }
-
