@@ -24,7 +24,10 @@ class CashTranscationRepository implements ICashTranscationRepository {
      required String? note,
      required String? corpCode,
      required String? cardRefNum,
-     required String? token}) async {
+     required String? token,
+     required String? subagentBranchCode
+
+      }) async {
     final uri =
         Uri.parse("https://adsspayweb.digicob.in/api/Cashfree/ReceiveCash");
     bool checkConnection = await InternetConnectionChecker().hasConnection;
@@ -35,7 +38,8 @@ class CashTranscationRepository implements ICashTranscationRepository {
         "agent_orginId": agentOriginId,
         "agent_phone": agentPhone,
         "agent_email": agentEmail,
-        "SubAgentId": subAgentId
+        "SubAgentId": subAgentId,
+        "SubAgentBranchCode":subagentBranchCode
       },
       "customer_details": {
         "customer_name": customerName,

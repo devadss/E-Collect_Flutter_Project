@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/colors.dart';
@@ -38,6 +39,24 @@ class _MobileNumberVerificationPageState
       showInSnackBar("EMPTY FIELD NOT ALLOWED");
     }
   }
+
+  @override
+  void initState() {
+
+    super.initState();
+    checkForUpdate();
+  }
+  void checkForUpdate() async {
+    try {
+      AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
+      if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
+        InAppUpdate.performImmediateUpdate(); // or .startFlexibleUpdate()
+      }
+    } catch (e) {
+      print("Update check failed: $e");
+    }
+  }
+
 
   Future<void> validateMobile(String value) async {
     String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';

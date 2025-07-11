@@ -23,7 +23,11 @@ class CashTranscationProvider with ChangeNotifier {
      required String? note,
      required String? corpCode,
      required String? cardRefNum,
-     required String? token}) {
+     required String? token,
+     required String? subagentBranchCode,
+
+
+      }) {
     return _cashTranscationRepository.getTranscations(
        agentName:  agentName,
        agentId:  agentId,
@@ -40,6 +44,7 @@ class CashTranscationProvider with ChangeNotifier {
         note: note,
         corpCode: corpCode,
        cardRefNum:  cardRefNum,
-       token:  token);
+       token:  token,
+    subagentBranchCode: subagentBranchCode);
   }
 }

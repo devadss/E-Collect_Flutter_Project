@@ -7,8 +7,8 @@ const String apiUrl = "https://adsspayweb.digicob.in:8444/";
 const String apiUrlTwo = "https://adsspayweb.digicob.in:8444/";
 const String s3Url = "https://cdn.adsspayweb.digicob.in/";
 //******************************************************************
-//const String baseUrl = "https://adsspay.aanvinsolutions.com:8444/";///LIVE
-const String baseUrl = "https://adsspayweb.digicob.in/"; //TEST
+const String baseUrl = "https://adsspay.aanvinsolutions.com:8444/";///LIVE
+//const String baseUrl = "https://adsspayweb.digicob.in/"; //TEST
 //*******************************************************************
 const String corpBaseUrl = "https://mydop.in/";///LIVE
 

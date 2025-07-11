@@ -21,5 +21,6 @@ abstract class ICashTranscationRepository {
    required String? corpCode,
    required String? cardRefNum,
    required String? token,
+   required String? subagentBranchCode,
   });
 }

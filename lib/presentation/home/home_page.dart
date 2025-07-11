@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:collection_qr_flutter/data/provider/link_transcation_history_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -46,11 +47,23 @@ class _HomePageState extends State<HomePage> {
       CarouselSliderController();
   int _currentBannerIndex = 0;
 
+
+  void checkForUpdate() async {
+    try {
+      AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
+      if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
+        InAppUpdate.performImmediateUpdate(); // or .startFlexibleUpdate()
+      }
+    } catch (e) {
+      print("Update check failed: $e");
+    }
+  }
+
   @override
   void initState() {
     super.initState();
 
-
+    checkForUpdate();
     loadSharedPrefs(context);
   }
   void showDateRangeFilter() {
@@ -388,7 +401,7 @@ class _HomePageState extends State<HomePage> {
     cashTransProvider.getCashTranscationHistory(
         "THIS_MONTH", formattedFdate, formattedTdate, "COLLECTION_CASH",subAgentID!,corpCode);
    // fetchBalance();
-     fetchTransaction();
+    fetchTransaction();
     fetchCollection();
    // fetchBannerImages();
   }

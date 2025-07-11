@@ -164,7 +164,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
         note: note,
         corpCode: corpCode,
         cardRefNum: "",
-        token: token);
+        token: token, subagentBranchCode: subAgentCodeNew);
     cash.fold((err) {
       print("getCashTrans $err");
     }, (success) {
