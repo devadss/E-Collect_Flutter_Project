@@ -29,12 +29,16 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
   String? token;
   String? agentOriginId;
   String? agentId;
+  String? selectedFilterType;
   String? subagentId;
   RdclCustomerListModel? _rdclCustomerListModel;
   String? agentPhoneNumber;
   String? agentName;
   String? agentEmail;
   String? corpCode;
+  String? branchCode;
+  final GlobalKey _filterIconKey = GlobalKey();
+  String? agentBranchCode;
   String? subAgentCodeNew;
   String? paymentSessionId;
   late AnimationController _fadeController;
@@ -43,12 +47,18 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
   late Animation<double> _scaleAnimation;
   final TextEditingController _searchController = TextEditingController();
   bool _isSearchFocused = false;
+  final FocusNode _searchFocusNode = FocusNode();
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     loadSharedPrefs();
+    _searchFocusNode.addListener(() {
+      setState(() {
+        _isSearchFocused = _searchFocusNode.hasFocus;
+      });
+    });
     _fadeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
@@ -63,7 +73,6 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
       parent: _scaleController,
       curve: Curves.elasticOut,
     );
-
     _searchController.addListener(() {
       if (_searchController.text.isNotEmpty) {
         _fadeController.forward();
@@ -72,18 +81,22 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
         _fadeController.reverse();
         _scaleController.reverse();
       }
+
+      // Trigger UI rebuild when the search text changes (add this line)
+      setState(() {});
     });
   }
 
   @override
   void dispose() {
     _fadeController.dispose();
+    _searchFocusNode.dispose();
     _scaleController.dispose();
     _searchController.dispose();
     super.dispose();
   }
 
-/*  List<dynamic> _filterDues(List<dynamic> allDues, String query) {
+  List<dynamic> _filterDues(List<dynamic> allDues, String query) {
     if (query.isEmpty) return allDues;
 
     return allDues.where((due) {
@@ -97,7 +110,40 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
           custId.contains(query.toLowerCase()) ||
           openDate.contains(query.toLowerCase());
     }).toList();
-  }*/
+  }
+
+  void showProgressDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Center(
+            child: SingleChildScrollView(
+              child: Dialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                child: const Padding(
+                  padding: EdgeInsets.all(50),
+                  child: Column(
+                    children: [
+                      CircularProgressIndicator(color: home2),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Please wait....",
+                        style: TextStyle(
+                          fontSize: 17,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
 
   Future<void> loadSharedPrefs() async {
     final name = await SharedPref().getParentAgentName();
@@ -106,6 +152,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
     final originId = await SharedPref().getSubAgentCode();
     final subAgentID = await SharedPref().getSubAgentId();
     final code = await SharedPref().getCorpCode();
+    final brCode = await SharedPref().getBranchCode();
     final email = await SharedPref().getEmail();
     final number = await SharedPref().getParentAgentMobNum();
     final tok = await SharedPref().getTokenValue();
@@ -118,6 +165,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
         agentId = id;
         agentOriginId = originId;
         corpCode = code;
+        branchCode = brCode;
         agentPhoneNumber = number;
         token = tok;
         subAgentCodeNew = sub_AgentCodeNew;
@@ -126,9 +174,18 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
     print("subagentId $subagentId");
     print("agentId $agentId");
     print("agentOriginId $agentOriginId");
+    showProgressDialog(context);
     final provider =
         Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
     await provider.getRdclDueList(agentOriginId!, "", "");
+    setState(() {
+      agentBranchCode = provider.rdclDueUnderAgentModel!.data[0].brCode;
+
+    });
+    if (mounted) {
+      Navigator.pop(context);
+    }
+
     final providerTwo =
         Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
     await providerTwo.getRdclDueList(
@@ -164,7 +221,9 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
         note: note,
         corpCode: corpCode,
         cardRefNum: "",
-        token: token, subagentBranchCode: subAgentCodeNew);
+        token: token,
+        subagentBranchCode: subAgentCodeNew,
+        branchCode: branchCode);
     cash.fold((err) {
       print("getCashTrans $err");
     }, (success) {
@@ -208,9 +267,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
       required String? phoneNumber,
       required String? entityId,
       required String? note,
-      required String? subAgentBranchCode
-
-      }) async {
+      required String? subAgentBranchCode}) async {
     print("--------------------TOKEN---------------------");
     print(token);
     print("---------------------AMOUNT--------------------");
@@ -238,7 +295,8 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
             agentId: agentId,
             note: "Payment For Agent $agentName",
             subAgentId: subagentId,
-            agentName: agentName, subAgentBranchCode: subAgentBranchCode);
+            agentName: agentName,
+            subAgentBranchCode: subAgentBranchCode);
     paymentSession.fold((error) {
       print(
           "---------------------------------ERROR PAYMENT---------------------------");
@@ -347,7 +405,8 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
     );
   }
 
-  Future<void> _search(String query) async {
+  ///currently the api is not used....
+  Future<void> _searchMethod(String query) async {
     final provider =
         Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
     setState(() => _isLoading = true);
@@ -356,13 +415,18 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
   }
 
   Future<void> _clearSearch() async {
-    final provider =
-        Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
     _searchController.clear();
-    setState(() => _isLoading = true);
-    await provider.getRdclDueList(agentOriginId!, "", "");
-    setState(() => _isLoading = false);
+    setState(() {});
   }
+
+  // Future<void> _clearSearch() async {
+  //   final provider =
+  //       Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
+  //   _searchController.clear();
+  //   setState(() => _isLoading = true);
+  //   await provider.getRdclDueList(agentOriginId!, "", "");
+  //   setState(() => _isLoading = false);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -410,8 +474,66 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                         _isSearchFocused = hasFocus;
                       });
                     },
-                    child: TextField(
+                    child:
+                        // TextField(
+                        //   controller: _searchController,
+                        //   decoration: InputDecoration(
+                        //     hintText: 'Search accounts...',
+                        //     hintStyle: TextStyle(
+                        //       color: Colors.grey[600],
+                        //       fontSize: 14,
+                        //     ),
+                        //     prefixIcon: AnimatedSwitcher(
+                        //       duration: const Duration(milliseconds: 300),
+                        //       child: _isSearchFocused
+                        //           ? const Icon(Icons.search, color: home2, size: 24)
+                        //           : Icon(
+                        //               Icons.search_rounded,
+                        //               color: home2.withOpacity(0.7),
+                        //               size: 24,
+                        //             ),
+                        //     ),
+                        //     suffixIcon: _searchController.text.isNotEmpty
+                        //         ? FadeTransition(
+                        //             opacity: _fadeAnimation,
+                        //             child: ScaleTransition(
+                        //               scale: _scaleAnimation,
+                        //               child: IconButton(
+                        //                 icon: const Icon(Icons.close, color: home2),
+                        //                 onPressed: _clearSearch,
+                        //               ),
+                        //             ),
+                        //           )
+                        //         : AnimatedSwitcher(
+                        //             duration: const Duration(milliseconds: 300),
+                        //             child: _isSearchFocused
+                        //                 ? IconButton(
+                        //                     icon: const Icon(Icons.tune_rounded,
+                        //                         color: home2),
+                        //                     onPressed: () {},
+                        //                   )
+                        //                 : const SizedBox.shrink(),
+                        //           ),
+                        //     border: InputBorder.none,
+                        //     contentPadding:
+                        //         const EdgeInsets.symmetric(vertical: 18),
+                        //   ),
+                        //   style: const TextStyle(
+                        //     color: Colors.black87,
+                        //     fontSize: 15,
+                        //     fontWeight: FontWeight.w500,
+                        //   ),
+                        //   onChanged: (value) async {
+                        //     _filterDues(provider.rdclDueUnderAgentModel!.data,value);
+                        //     // if (value.length == 8) {
+                        //     //   await _searchMethod(value);
+                        //     // }
+                        //   },
+                        // ),
+                        TextField(
                       controller: _searchController,
+                      focusNode: _searchFocusNode,
+                      // Add this focus node
                       decoration: InputDecoration(
                         hintText: 'Search accounts...',
                         hintStyle: TextStyle(
@@ -428,27 +550,94 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                   size: 24,
                                 ),
                         ),
-                        suffixIcon: _searchController.text.isNotEmpty
-                            ? FadeTransition(
-                                opacity: _fadeAnimation,
-                                child: ScaleTransition(
-                                  scale: _scaleAnimation,
-                                  child: IconButton(
-                                    icon: const Icon(Icons.close, color: home2),
-                                    onPressed: _clearSearch,
+                        suffixIcon: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: _searchController.text.isNotEmpty
+                              ? FadeTransition(
+                                  opacity: _fadeAnimation,
+                                  child: ScaleTransition(
+                                    scale: _scaleAnimation,
+                                    child: IconButton(
+                                      icon:
+                                          const Icon(Icons.close, color: home2),
+                                      onPressed: _clearSearch,
+                                    ),
                                   ),
-                                ),
-                              )
-                            : AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 300),
-                                child: _isSearchFocused
-                                    ? IconButton(
-                                        icon: const Icon(Icons.tune_rounded,
-                                            color: home2),
-                                        onPressed: () {},
-                                      )
-                                    : const SizedBox.shrink(),
-                              ),
+                                )
+                              : _isSearchFocused
+                                  ? IconButton(
+                                      key: _filterIconKey,
+                                      icon: const Icon(Icons.tune_rounded,
+                                          color: home2),
+                                      onPressed: () {
+                                        final RenderBox renderBox =
+                                            _filterIconKey.currentContext!
+                                                    .findRenderObject()
+                                                as RenderBox;
+                                        final Offset offset = renderBox
+                                            .localToGlobal(Offset.zero);
+                                        final Size size = renderBox.size;
+
+                                        showMenu<String>(
+                                          context: context,
+                                          position: RelativeRect.fromLTRB(
+                                            offset.dx,
+                                            offset.dy + size.height,
+                                            offset.dx + size.width,
+                                            offset.dy,
+                                          ),
+                                          items: [
+                                            PopupMenuItem<String>(
+                                              value: 'agent',
+                                              child: Text('Filter by Agent ID', style: TextStyle(
+                                                  color: selectedFilterType != "agentid"?Colors.black:home1),),
+                                            ),
+                                             PopupMenuItem<String>(
+                                              value: 'branch',
+                                              child:
+                                                  Text('Filter by Branch ID',style: TextStyle(
+                                                      color: selectedFilterType != "branchid"?Colors.black:home1)),
+                                            ),
+                                          ],
+                                        ).then((value) async {
+                                          if (value == 'agent') {
+                                            setState(() {
+                                              selectedFilterType = "agentid";
+                                            });
+
+                                            print("Filter by Agent ID");
+                                            showProgressDialog(context);
+                                            await provider.getRdclDueList(
+                                                agentOriginId!, "", "");
+                                            _filterDues(
+                                                provider.rdclDueUnderAgentModel!
+                                                    .data,
+                                                "");
+                                            Navigator.pop(context);
+                                          } else if (value == 'branch') {
+                                            setState(() {
+                                              selectedFilterType = "branchid";
+                                            });
+                                            print("Filter by Branch ID");
+                                              showProgressDialog(context);
+
+                                            await provider.getRdclDueList(
+                                                "",
+                                                agentBranchCode.toString(),
+                                                "");
+                                            _filterDues(
+                                                provider.rdclDueUnderAgentModel!
+                                                    .data,
+                                                "");
+                                            if(mounted){
+                                              Navigator.pop(context);
+                                            }
+                                          }
+                                        });
+                                      },
+                                    )
+                                  : const SizedBox.shrink(),
+                        ),
                         border: InputBorder.none,
                         contentPadding:
                             const EdgeInsets.symmetric(vertical: 18),
@@ -459,9 +648,13 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                         fontWeight: FontWeight.w500,
                       ),
                       onChanged: (value) async {
-                        if (value.length == 8) {
-                          await _search(value);
-                        }
+                        _filterDues(
+                            provider.rdclDueUnderAgentModel!.data, value);
+                      },
+                      onTap: () {
+                        setState(() {
+                          _isSearchFocused = true;
+                        });
                       },
                     ),
                   ),
@@ -478,15 +671,16 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
             child: Consumer<RdclDueUnderAgentProvider>(
               builder: (context, provider, child) {
                 final data = provider.rdclDueUnderAgentModel?.data ?? [];
+                final filteredData = _filterDues(data, _searchController.text);
 
                 if (provider.rdclDueUnderAgentModel == null) {
                   return buildShimmerList();
-                } else if (data.isEmpty) {
+                } else if (filteredData.isEmpty) {
                   return const Text("No data found");
                 }
 
                 final groupedData = <String, List<dynamic>>{};
-                for (var due in data) {
+                for (var due in filteredData) {
                   groupedData.putIfAbsent(due.accNo, () => []).add(due);
                 }
 
@@ -913,7 +1107,8 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                                                       .ellipsis,
                                                             ),
                                                             Text(
-                                                              "Paid Installments: ${provider.rdclDueUnderAgentModel?.data[index].paidInstallments}",
+                                                              // "Paid Installments: ${provider.rdclDueUnderAgentModel?.data[index].paidInstallments}",
+                                                              "Paid Installments: ${due.paidInstallments}",
                                                               overflow:
                                                                   TextOverflow
                                                                       .ellipsis,
@@ -1025,14 +1220,17 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                                                         ? getCashTrans(
                                                                             token:
                                                                                 token,
+                                                                            //customerName: provider.rdclDueUnderAgentModel?.data[index].name,
                                                                             customerName:
-                                                                                provider.rdclDueUnderAgentModel?.data[index].name,
+                                                                                due.name,
                                                                             custPhoneNumber:
                                                                                 "",
+                                                                            // custAcNumber: provider.rdclDueUnderAgentModel?.data[index].accNo,
                                                                             custAcNumber:
-                                                                                provider.rdclDueUnderAgentModel?.data[index].accNo,
+                                                                                due.accNo,
+                                                                            //custId: provider.rdclDueUnderAgentModel?.data[index].custId,
                                                                             custId:
-                                                                                provider.rdclDueUnderAgentModel?.data[index].custId,
+                                                                                due.custId,
                                                                             custEmail:
                                                                                 "",
                                                                             phoneNumber:
@@ -1047,14 +1245,17 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                                                         : getPaymentSessionId(
                                                                             token:
                                                                                 token,
+                                                                            // customerName: provider.rdclDueUnderAgentModel?.data[index].name,
                                                                             customerName:
-                                                                                provider.rdclDueUnderAgentModel?.data[index].name,
+                                                                                due.name,
                                                                             custPhoneNumber:
                                                                                 "",
+                                                                            //custAcNumber: provider.rdclDueUnderAgentModel?.data[index].accNo,
                                                                             custAcNumber:
-                                                                                provider.rdclDueUnderAgentModel?.data[index].accNo,
+                                                                                due.accNo,
+                                                                            // custId: provider.rdclDueUnderAgentModel?.data[index].custId,
                                                                             custId:
-                                                                                provider.rdclDueUnderAgentModel?.data[index].custId,
+                                                                                due.custId,
                                                                             custEmail:
                                                                                 "",
                                                                             phoneNumber:
@@ -1064,8 +1265,9 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                                                             note:
                                                                                 "Payment For Agent $agentName",
                                                                             amount:
-                                                                                controller.text, subAgentBranchCode: subAgentCodeNew,
-
+                                                                                controller.text,
+                                                                            subAgentBranchCode:
+                                                                                subAgentCodeNew,
                                                                           );
                                                               },
                                                             ),
@@ -1109,7 +1311,8 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
-                                            "Name: ${provider.rdclDueUnderAgentModel!.data[index].name}",
+                                            // "Name: ${provider.rdclDueUnderAgentModel!.data[index].name}",
+                                            "Name: ${due.name ?? ''}",
                                             style: TextStyle(
                                               fontSize: 13,
                                               color: grey[700],
@@ -1117,7 +1320,8 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
-                                            "Open Date: ${provider.rdclDueUnderAgentModel!.data[index].openDate}",
+                                            //"Open Date: ${provider.rdclDueUnderAgentModel!.data[index].openDate}",
+                                            "Open Date: ${due.openDate ?? ''}",
                                             style: TextStyle(
                                               fontSize: 13,
                                               color: grey[700],
@@ -1125,7 +1329,8 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                           ),
                                           const SizedBox(height: 2),
                                           Text(
-                                            "Paid Installemnts: ${provider.rdclDueUnderAgentModel!.data[index].paidInstallments}",
+                                            // "Paid Installemnts: ${provider.rdclDueUnderAgentModel!.data[index].paidInstallments}",
+                                            "Paid Installemnts: ${due.paidInstallments ?? ''}",
                                             style: TextStyle(
                                               fontSize: 13,
                                               color: grey[700],
@@ -1133,7 +1338,8 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                           ),
                                           const SizedBox(height: 2),
                                           Text(
-                                            "DueInstallments: ${provider.rdclDueUnderAgentModel!.data[index].dueInstallments}",
+                                            //"DueInstallments: ${provider.rdclDueUnderAgentModel!.data[index].dueInstallments}",
+                                            "DueInstallments: ${due.dueInstallments ?? ''}",
                                             style: TextStyle(
                                               fontSize: 13,
                                               color: grey[700],
@@ -1141,7 +1347,8 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                           ),
                                           const SizedBox(height: 2),
                                           Text(
-                                            "TotalInstallment: ${provider.rdclDueUnderAgentModel!.data[index].totalInstallment}",
+                                            // "TotalInstallment: ${provider.rdclDueUnderAgentModel!.data[index].totalInstallment}",
+                                            "TotalInstallment: ${due.totalInstallment ?? ''}",
                                             style: TextStyle(
                                               fontSize: 13,
                                               color: grey[700],

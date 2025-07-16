@@ -19,7 +19,12 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
     with TickerProviderStateMixin {
   String? agentId;
   String? corpCode;
+  String? branchCode;
+  String? agentBranchCode;
+  String? selectedFilterType;
   String? agentPhoneNumber;
+  final GlobalKey _filterIconKey = GlobalKey();
+  final FocusNode _searchFocusNode = FocusNode();
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
   late AnimationController _scaleController;
@@ -31,6 +36,11 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       loadSharedPrefs();
+    });
+    _searchFocusNode.addListener(() {
+      setState(() {
+        _isSearchFocused = _searchFocusNode.hasFocus;
+      });
     });
     _fadeController = AnimationController(
       vsync: this,
@@ -58,9 +68,41 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
     });
     super.initState();
   }
-
+  void showProgressDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Center(
+            child: SingleChildScrollView(
+              child: Dialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                child: const Padding(
+                  padding: EdgeInsets.all(50),
+                  child: Column(
+                    children: [
+                      CircularProgressIndicator(color: home2),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Please wait....",
+                        style: TextStyle(
+                          fontSize: 17,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
   @override
   void dispose() {
+    _searchFocusNode.dispose();
     _fadeController.dispose();
     _scaleController.dispose();
     _searchController.dispose();
@@ -70,19 +112,26 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
   Future<void> loadSharedPrefs() async {
     final id = await SharedPref().getSubAgentCode();
     final crpCd = await SharedPref().getCorpCode();
+    final brCode = await SharedPref().getBranchCode();
     final number = await SharedPref().getParentAgentMobNum();
     if (mounted) {
       setState(() {
         agentId = id;
         agentPhoneNumber = number;
         corpCode = crpCd;
+        branchCode = brCode;
       });
       print(
           "----------------------------------AGENT ORIGIN ID---------------------------");
       print(agentId);
+      print("branchCode = $branchCode");
       final rdclDueUnderAgentProvider =
           Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
       await rdclDueUnderAgentProvider.getRdclDueList(agentId!, "","");
+      setState(() {
+        agentBranchCode = rdclDueUnderAgentProvider.rdclDueUnderAgentModel!.data[0].brCode;
+
+      });
       final provider =
           Provider.of<RdclCustListProvider>(context, listen: false);
       //await provider.getRdclCustomerunderAgent(agentId!, "");
@@ -172,6 +221,8 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
 
   @override
   Widget build(BuildContext context) {
+    final provider =
+    Provider.of<RdclCustListProvider>(context, listen: false);
     return Scaffold(
         appBar: AppBar(
             backgroundColor: white,
@@ -209,7 +260,8 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
                     });
                   },
                   child: TextField(
-                    controller: _searchController,
+                    controller: _searchController, focusNode: _searchFocusNode,
+
                     decoration: InputDecoration(
                       hintText: 'Search customers...',
                       hintStyle: TextStyle(
@@ -246,15 +298,76 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
                           : AnimatedSwitcher(
                               duration: const Duration(milliseconds: 300),
                               child: _isSearchFocused
-                                  ? BounceTransition(
-                                      duration:
-                                          const Duration(milliseconds: 1000),
-                                      child: IconButton(
-                                        icon: const Icon(Icons.tune_rounded,
-                                            color: home2),
-                                        onPressed: () {},
+                                  ?
+                              IconButton(
+                                key: _filterIconKey,
+                                icon: const Icon(Icons.tune_rounded,
+                                    color: home2),
+                                onPressed: () {
+                                  final RenderBox renderBox =
+                                  _filterIconKey.currentContext!
+                                      .findRenderObject()
+                                  as RenderBox;
+                                  final Offset offset = renderBox
+                                      .localToGlobal(Offset.zero);
+                                  final Size size = renderBox.size;
+
+                                  showMenu<String>(
+                                    context: context,
+                                    position: RelativeRect.fromLTRB(
+                                      offset.dx,
+                                      offset.dy + size.height,
+                                      offset.dx + size.width,
+                                      offset.dy,
+                                    ),
+                                    items: [
+                                      PopupMenuItem<String>(
+                                        value: 'agent',
+                                        child: Text('Filter by Agent ID', style: TextStyle(
+                                            color: selectedFilterType != "agentid"?Colors.black:home1),),
                                       ),
-                                    )
+                                      PopupMenuItem<String>(
+                                        value: 'branch',
+                                        child:
+                                        Text('Filter by Branch ID',style: TextStyle(
+                                            color: selectedFilterType != "branchid"?Colors.black:home1)),
+                                      ),
+                                    ],
+                                  ).then((value) async {
+                                    if (value == 'agent') {
+                                      showProgressDialog(context);
+                                      setState(() {
+                                        selectedFilterType = "agentid";
+                                      });
+                                      await provider.getRdclCustomerunderAgent(
+                                          agentId, "");
+                                      print("Filter by Agent ID");
+
+
+                                      Navigator.pop(context);
+                                    } else if (value == 'branch') {
+                                      showProgressDialog(context);
+                                      await provider.getRdclCustomerunderAgent(
+                                          "", agentBranchCode);
+                                      setState(() {
+                                        selectedFilterType = "branchid";
+                                      });
+                                      print("Filter by Branch ID");
+                                      Navigator.pop(context);
+
+                                    }
+                                  });
+                                },
+                              )
+                              // BounceTransition(
+                              //         duration:
+                              //             const Duration(milliseconds: 1000),
+                              //         child: IconButton(
+                              //           icon: const Icon(Icons.tune_rounded,
+                              //               color: home2),
+                              //           onPressed: () {},
+                              //         ),
+                              //       )
                                   : const SizedBox.shrink(),
                             ),
                       border: InputBorder.none,
@@ -293,6 +406,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
                     );
                   }
 
+
                   return ListView.separated(
                     itemBuilder: (context, index) {
                       final customer = filteredCustomers[index];
@@ -311,7 +425,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
                                   custId: customer.custId ?? "CUSTID",
                                   custEmail: "",
                                   corpCode: corpCode.toString(),
-                                  indexValue: index,
+                                  indexValue: index, branchCode: branchCode.toString(),
                                 ),
                               ),
                             );

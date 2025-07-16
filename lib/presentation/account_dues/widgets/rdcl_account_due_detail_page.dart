@@ -903,6 +903,7 @@ class RdclAccountDueDetailsPage extends StatefulWidget {
   final String custPhoneNumber;
   final String custId;
   final String custEmail;
+  final String branchCode;
 
   const RdclAccountDueDetailsPage(
       {super.key,
@@ -912,7 +913,7 @@ class RdclAccountDueDetailsPage extends StatefulWidget {
       required this.custId,
       required this.custEmail,
       required this.corpCode,
-      required this.indexValue});
+      required this.indexValue, required this.branchCode});
 
   @override
   State<RdclAccountDueDetailsPage> createState() =>
@@ -1226,7 +1227,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
        note:  note,
        corpCode:  corpCode,
        cardRefNum:  "",
-       token:  token, subagentBranchCode: subAgentCodeNew);
+       token:  token, subagentBranchCode: subAgentCodeNew, branchCode: widget.branchCode);
     cash.fold((err) {
       print("getCashTrans $err");
     }, (success) {

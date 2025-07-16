@@ -178,6 +178,9 @@ class _MobileNumberVerificationPageState
                   SharedPref.shared.setCorpCode(
                     customer.response!.data!['CorpCode'].toString(),
                   );
+                  SharedPref.shared.setBranchCode(
+                    customer.response!.data!['BranchCode'].toString(),
+                  );
                   SharedPref.shared.setMpinValue(customer.mpin.toString());
                   print(
                       "customer.mpin.toString() = ${customer.mpin.toString()}");

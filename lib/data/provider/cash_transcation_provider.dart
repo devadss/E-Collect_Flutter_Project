@@ -25,6 +25,7 @@ class CashTranscationProvider with ChangeNotifier {
      required String? cardRefNum,
      required String? token,
      required String? subagentBranchCode,
+     required String? branchCode,
 
 
       }) {
@@ -45,6 +46,6 @@ class CashTranscationProvider with ChangeNotifier {
         corpCode: corpCode,
        cardRefNum:  cardRefNum,
        token:  token,
-    subagentBranchCode: subagentBranchCode);
+    subagentBranchCode: subagentBranchCode, branchCode: branchCode);
   }
 }

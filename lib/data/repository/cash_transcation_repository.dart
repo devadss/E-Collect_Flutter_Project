@@ -26,7 +26,8 @@ class CashTranscationRepository implements ICashTranscationRepository {
      required String? corpCode,
      required String? cardRefNum,
      required String? token,
-     required String? subagentBranchCode
+     required String? subagentBranchCode,
+     required String? branchCode
 
       }) async {
     final uri =
@@ -53,6 +54,7 @@ class CashTranscationRepository implements ICashTranscationRepository {
       "Amount": amount,
       "note": note,
       "CorpCode": corpCode,
+      "BranchCode": branchCode,
       "CardRefNum": cardRefNum
     };
     if (checkConnection) {

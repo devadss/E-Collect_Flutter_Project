@@ -212,6 +212,14 @@ class SharedPref {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.agentOriginId) ?? '';
   }
+  setBranchCode(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.branchCode, value);
+  }
+  getBranchCode() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.branchCode) ?? '';
+  }
   setCorpCode(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.corpCode, value);
