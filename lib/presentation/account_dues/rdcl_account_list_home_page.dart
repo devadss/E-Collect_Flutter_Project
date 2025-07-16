@@ -1,5 +1,6 @@
 import 'package:collection_qr_flutter/presentation/account_dues/widgets/rdcl_account_due_detail_page.dart';
 import 'package:flutter/material.dart';
+import 'package:pager/pager.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../core/colors.dart';
@@ -31,6 +32,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
   late Animation<double> _scaleAnimation;
   final TextEditingController _searchController = TextEditingController();
   bool _isSearchFocused = false;
+  int _currentPage = 1;
 
   @override
   void initState() {
@@ -107,6 +109,37 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
     _scaleController.dispose();
     _searchController.dispose();
     super.dispose();
+  }
+  Container pagerWidget() {
+    return Container(
+      decoration: BoxDecoration(
+        color: white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: home2.withOpacity(0.1),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+        border: Border.all(color: home1.withOpacity(0.5)),
+      ),
+      child: Pager(
+        pageChangeIconColor: home1,
+        currentPage: _currentPage,
+        totalPages: 20,
+        numberTextSelectedColor: Colors.white,
+        numberButtonSelectedColor: home1,
+        pagesView: 4,
+        currentItemsPerPage: 1,
+        onPageChanged: (page) {
+          setState(() {
+            print("page : $page");
+            _currentPage = page;
+          });
+        },
+      ),
+    );
   }
 
   Future<void> loadSharedPrefs() async {
@@ -313,23 +346,28 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
                                   final Size size = renderBox.size;
 
                                   showMenu<String>(
+                                    color: Colors.white,
+                                    shadowColor: home1,
+                                    requestFocus: true,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                    menuPadding: const EdgeInsets.all(10),
                                     context: context,
                                     position: RelativeRect.fromLTRB(
                                       offset.dx,
-                                      offset.dy + size.height,
+                                      offset.dy + size.height+10,
                                       offset.dx + size.width,
                                       offset.dy,
                                     ),
                                     items: [
                                       PopupMenuItem<String>(
                                         value: 'agent',
-                                        child: Text('Filter by Agent ID', style: TextStyle(
+                                        child: Text('Filter by Agent', style: TextStyle(
                                             color: selectedFilterType != "agentid"?Colors.black:home1),),
                                       ),
                                       PopupMenuItem<String>(
                                         value: 'branch',
                                         child:
-                                        Text('Filter by Branch ID',style: TextStyle(
+                                        Text('Filter by Branch',style: TextStyle(
                                             color: selectedFilterType != "branchid"?Colors.black:home1)),
                                       ),
                                     ],
@@ -523,6 +561,8 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
                 },
               ),
             ),
+            const SizedBox(height: 10,),
+            pagerWidget(),
           ],
         ));
   }
