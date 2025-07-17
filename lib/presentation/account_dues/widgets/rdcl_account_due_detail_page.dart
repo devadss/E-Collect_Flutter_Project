@@ -902,6 +902,7 @@ class RdclAccountDueDetailsPage extends StatefulWidget {
   final String custAcNumber;
   final String custPhoneNumber;
   final String custId;
+  final String custIdNew;
   final String custEmail;
   final String branchCode;
 
@@ -913,7 +914,7 @@ class RdclAccountDueDetailsPage extends StatefulWidget {
       required this.custId,
       required this.custEmail,
       required this.corpCode,
-      required this.indexValue, required this.branchCode});
+      required this.indexValue, required this.branchCode, required this.custIdNew});
 
   @override
   State<RdclAccountDueDetailsPage> createState() =>
@@ -1054,14 +1055,14 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
                               customerName: widget.custName,
                               customerPhone: widget.custPhoneNumber,
                               customerAccno: widget.custAcNumber,
-                              customerId: widget.custId,
+                              customerId: widget.custIdNew,
                               customerEmail: widget.custEmail,
                               corpCode: widget.corpCode,
                               cardRefNum: "",
                               token: token,
                               amount: amountController.text,
                               agentPhone: agentMobile,
-                              agentId: agentId,
+                              agentId: widget.custId,
                               note: "Payment For Agent $agentName",
                               subAgentId: subagentId,
                               agentName: agentName, subAgentBranchCode: subAgentCodeNew);
@@ -1365,7 +1366,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
        customerName:  customerName,
        customerPhone:  "",
        customerAccNo:  widget.custAcNumber,
-       customerId:  custId,
+       customerId:  widget.custIdNew,
        customerEmail:  "",
        amount:  amount,
        note:  note,

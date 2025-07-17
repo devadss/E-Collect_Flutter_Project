@@ -13,9 +13,9 @@ class CashTransactionHistoryRepository
   @override
   Future<Either<ErrorHandler, QrTranscationHistoryModel>>
       getCashTranscationHistory(String? dateFilterType, String? startDate,
-          String? endDate, String? source, String? subAgentId, String? corpCode) async {
+          String? endDate, String? source, String? subAgentId, String? corpCode,  String? agentOriginId) async {
     final url = Uri.parse(
-        "${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&subAgentId=$subAgentId&CorpCode=$corpCode");
+        "${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&subAgentId=$subAgentId&CorpCode=$corpCode&agentOrginId=$agentOriginId");
     bool checkConnection = await InternetConnectionChecker().hasConnection;
     if (checkConnection) {
       print(url);

@@ -57,7 +57,8 @@ class CashTranscationRepository implements ICashTranscationRepository {
       "BranchCode": branchCode,
       "CardRefNum": cardRefNum
     };
-    if (checkConnection) {
+    print("cash request body $body");
+    if (!checkConnection) {
       final response = await http.post(uri, body: json.encode(body), headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',

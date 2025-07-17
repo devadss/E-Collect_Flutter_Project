@@ -8,6 +8,7 @@ abstract class ICashTransactionHistoryRepository{
   getCashTranscationHistory(String? dateFilterType,String?
   startDate,String? endDate,String? source,
       String? subAgentId,
-      String? corpCode
+      String? corpCode,
+      String? agentOriginId
       );
 }

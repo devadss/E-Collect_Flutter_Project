@@ -19,6 +19,7 @@ class RdclAccountListHomePage extends StatefulWidget {
 class _AccountListHomePageState extends State<RdclAccountListHomePage>
     with TickerProviderStateMixin {
   String? agentId;
+  String? agentIdValue;
   String? corpCode;
   String? branchCode;
   String? agentBranchCode;
@@ -147,17 +148,20 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
     final crpCd = await SharedPref().getCorpCode();
     final brCode = await SharedPref().getBranchCode();
     final number = await SharedPref().getParentAgentMobNum();
+    final custId = await SharedPref().getAgentId();
     if (mounted) {
       setState(() {
         agentId = id;
         agentPhoneNumber = number;
         corpCode = crpCd;
         branchCode = brCode;
+        agentIdValue = custId;
       });
       print(
           "----------------------------------AGENT ORIGIN ID---------------------------");
       print(agentId);
       print("branchCode = $branchCode");
+      print("getSubAgentCode = $id");
       final rdclDueUnderAgentProvider =
           Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
       await rdclDueUnderAgentProvider.getRdclDueList(agentId!, "","");
@@ -460,10 +464,10 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
                                   custAcNumber: customer.rdclGlobalAccNo ??
                                       "RDCL GLOBAL ACC NO",
                                   custPhoneNumber: agentPhoneNumber!,
-                                  custId: customer.custId ?? "CUSTID",
+                                  custId: agentIdValue ?? "CUSTID",
                                   custEmail: "",
                                   corpCode: corpCode.toString(),
-                                  indexValue: index, branchCode: branchCode.toString(),
+                                  indexValue: index, branchCode: branchCode.toString(), custIdNew: customer.custId,
                                 ),
                               ),
                             );

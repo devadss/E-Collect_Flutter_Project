@@ -18,13 +18,14 @@ class CashTransactionHistoryProvider with ChangeNotifier {
     String? source,
     String? subAgentId,
     String? corpCode,
+    String? agentOriginId,
   ) async {
     printLog(
       "==================================QR TRANSACTION MODEL=================================",
     );
     printLog(qrTranscationHistoryModel);
     final result = await _qrTransactionHistoryRepository
-        .getCashTranscationHistory(dateFilterType, startDate, endDate, source,subAgentId,corpCode);
+        .getCashTranscationHistory(dateFilterType, startDate, endDate, source,subAgentId,corpCode,agentOriginId);
     result.fold(
       (error) {
         _errResponse = error.message;

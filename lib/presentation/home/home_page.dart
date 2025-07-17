@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:collection_qr_flutter/data/provider/link_transcation_history_provider.dart';
+import 'package:collection_qr_flutter/domain/model/all_trans_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:in_app_update/in_app_update.dart';
@@ -264,9 +265,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                         }
 
                         // Call providers
-                        await qrProvider.getQrTranscationHistory(period, from, to, 'COLLECTION', corpCode);
-                        await cashTransProvider.getCashTranscationHistory(period, from, to, 'COLLECTION_CASH', subAgentID, corpCode);
-                        await linkProvider.getLinkTransactionHistory(period, from, to, subAgentID!);
+                       await qrProvider.getQrTranscationHistory(period, from, to, 'COLLECTION', corpCode, agentOriginId);
+                       await cashTransProvider.getCashTranscationHistory(period, from, to, 'COLLECTION_CASH', subAgentID, corpCode, agentOriginId);
+                        await linkProvider.getLinkTransactionHistory(period, from, to, subAgentID!,corpCode!, agentOriginId!);
 
                         // ✅ Update parent state
                         setState(() {
@@ -669,7 +670,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     final formattedTdate = DateFormat('yyyy-MM-dd').format(toDate);
 
     await provider.getQrTranscationHistory(
-        "THIS_MONTH", formattedFdate, formattedTdate, "COLLECTION", corpCode);
+    "THIS_MONTH", formattedFdate, formattedTdate, "COLLECTION", corpCode, agentOriginId);
+
     final linkProvider = Provider.of<LinkTransactionHistoryProvider>(
       context,
       listen: false,
@@ -679,9 +681,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       listen: false,
     );
     await linkProvider.getLinkTransactionHistory(
-        "THIS_MONTH", formattedFdate, formattedTdate, subAgentID!);
-    cashTransProvider.getCashTranscationHistory("THIS_MONTH", formattedFdate,
-        formattedTdate, "COLLECTION_CASH", subAgentID!, corpCode);
+        "THIS_MONTH", formattedFdate, formattedTdate, subAgentID!,corpCode!, agentOriginId!);
+    await cashTransProvider.getCashTranscationHistory("THIS_MONTH", formattedFdate,
+       formattedTdate, "COLLECTION_CASH", subAgentID!, corpCode, agentOriginId);
+
     // fetchBalance();
     fetchTransaction();
     fetchCollection();
@@ -1055,11 +1058,13 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     final formattedTdate = DateFormat('yyyy-MM-dd').format(toDate);
 
     await qrProvider.getQrTranscationHistory(
-        "THIS_MONTH", formattedFdate, formattedTdate, "COLLECTION", corpCode);
+        "THIS_MONTH", formattedFdate, formattedTdate, "COLLECTION", corpCode, agentOriginId);
+
     await cashTransProvider.getCashTranscationHistory(
-        "THIS_MONTH", formattedFdate, formattedTdate, "COLLECTION_CASH", subAgentID!, corpCode);
+        "THIS_MONTH", formattedFdate, formattedTdate, "COLLECTION_CASH", subAgentID!, corpCode, agentOriginId);
+
     await linkProvider.getLinkTransactionHistory(
-        "THIS_MONTH", formattedFdate, formattedTdate, subAgentID!);
+        "THIS_MONTH", formattedFdate, formattedTdate, subAgentID!,corpCode!, agentOriginId!);
 
     setState(() {
       _isFilterApplied = false;
@@ -1155,7 +1160,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           children: [
             _buildAnimatedTabItem(0, Icons.qr_code, "QR Code"),
             _buildAnimatedTabItem(1, Icons.monetization_on, "Cash"),
-            _buildAnimatedTabItem(2, Icons.link, "Link"),
+            _buildAnimatedTabItem(2, Icons.link, "All"),
           ],
         ),
       ),
@@ -1212,6 +1217,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               return _buildCashTransactionContent(cashTranProvider);
             case 2:
               return _buildLinkTransactionContent(linkProvider);
+
             default:
               return const SizedBox();
           }
@@ -1251,7 +1257,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       return _buildLoadingList();
     }
     return _buildTransactionList(
-      transactions: cashProvider.qrTranscationHistoryModel!.data!,
+      transactions:
+
+      cashProvider.qrTranscationHistoryModel!.data!,
       icon: Icons.monetization_on,
       iconColor: Colors.orange,
       getAmount: (t) => t.orderAmount ?? 0,
@@ -1259,12 +1267,14 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
 
+
+
   Widget _buildLinkTransactionContent(LinkTransactionHistoryProvider linkProvider) {
     if (linkProvider.erResposne != null) {
       return _buildEmptyState(
         icon: Icons.link,
-        title: "No Link Transactions",
-        message: "Your payment link transactions will appear here",
+        title: "No Transactions",
+        message: "Your payment transactions will appear here",
       );
     } else if (linkProvider.linkTranscationHistoryModel == null) {
       return _buildLoadingList();
@@ -1273,8 +1283,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       transactions: linkProvider.linkTranscationHistoryModel!.data!,
       icon: Icons.link,
       iconColor: Colors.blue,
-      getAmount: (t) => t.linkAmount ?? 0,
-      getStatus: (t) => t.linkStatus.toString().replaceAll("OrderStatus.", ""),
+      getAmount: (t) => t.orderAmount ?? 0,
+      getStatus: (t) => t.orderStatus.toString(),
     );
   }
 
@@ -1462,7 +1472,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   String _getTransactionTitle(dynamic transaction) {
     if (transaction is QrTransaction) {
       return transaction.customerName.toString();
-    } else if (transaction is LinkTransactions) {
+    }
+    if (transaction is AllQrTransaction) {
+      return transaction.customerName .toString();
+    }
+
+    else if (transaction is LinkTransactions) {
       return transaction.customerName.toString().replaceAll("CustomerName.", "");
     }
     return "";
@@ -1716,7 +1731,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
     if (linkProvider.linkTranscationHistoryModel != null) {
       total += linkProvider.linkTranscationHistoryModel!.data!
-          .fold(0, (sum, item) => sum + (item.linkAmount ?? 0));
+          .fold(0, (sum, item) => sum + (item.orderAmount ?? 0));
     }
 
     return total;

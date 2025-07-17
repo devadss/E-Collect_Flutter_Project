@@ -17,13 +17,14 @@ class QRTransactionHistoryProvider with ChangeNotifier {
     String? endDate,
     String? source,
     String? corpCode,
+    String? agentOriginId,
   ) async {
     printLog(
       "==================================QR TRANSACTION MODEL=================================",
     );
     printLog(qrTranscationHistoryModel);
     final result = await _qrTransactionHistoryRepository
-        .getQrTranscationHistory(dateFilterType, startDate, endDate, source,corpCode);
+        .getQrTranscationHistory(dateFilterType, startDate, endDate, source,corpCode,agentOriginId);
     result.fold(
       (error) {
         _errResponse = error.message;

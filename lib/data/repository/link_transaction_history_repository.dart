@@ -7,15 +7,18 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import '../../core/constants.dart';
 import '../../core/general.dart';
 import '../../domain/interface/link_transaction_history_interface.dart';
+import '../../domain/model/all_trans_data.dart';
 import '../../domain/model/link_transaction_history_model.dart';
+import '../../domain/model/qr_transaction_history_model.dart';
 import '../service/error_handler.dart';
 
 class LinkTransactionHistoryRepository implements ILinkTransactionHistoryRepository{
   @override
-  Future<Either<ErrorHandler, LinkTranscationHistoryModel>> getLinkTransactionHistory(String filterType, String startDate, String endDate, String subAgentId) async{
-   final url = Uri.parse("${baseUrl}api/Cashfree/GetPaymentLinksQrTransactions?filterType=$filterType&startDate=$startDate&endDate=$endDate&subAgentId=$subAgentId");
+  Future<Either<ErrorHandler, AllTranscationHistoryModel>> getLinkTransactionHistory(String filterType, String startDate, String endDate, String subAgentId,String corpCode,String agentOrginId) async{
+  // final url = Uri.parse("${baseUrl}api/Cashfree/GetPaymentLinksQrTransactions?filterType=$filterType&startDate=$startDate&endDate=$endDate&subAgentId=$subAgentId");
+    final url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$filterType&startDate=$startDate&endDate=$endDate&Source=ALL&CorpCode=$corpCode&agentOrginId=$agentOrginId");
 
-  printLog("URL = ${"${baseUrl}api/Cashfree/GetPaymentLinksQrTransactions?filterType=$filterType&startDate=$startDate&endDate=$endDate&subAgentId=$subAgentId"}");
+  printLog("URL = ${"${baseUrl}api/GetMerchantOrders?dateFilterType=$filterType&startDate=$startDate&endDate=$endDate&Source=ALL&CorpCode=$corpCode&agentOrginId=$agentOrginId"}");
    bool checkConnection = await InternetConnectionChecker().hasConnection;
    if(checkConnection){
     final response = await http.get(url);
@@ -25,7 +28,7 @@ class LinkTransactionHistoryRepository implements ILinkTransactionHistoryReposit
       printLog("--------------------------------RESPONSE BODY LINK TRANSCATIONS---------------------------------");
       printLog(response.body);
       try{
-        return Right(LinkTranscationHistoryModel.fromJson(jsonDecode(response.body)));
+        return Right(AllTranscationHistoryModel.fromJson(jsonDecode(response.body)));
       }catch(e){
         return Left(DataParsingException(e));
       }
