@@ -14,17 +14,23 @@ class RdclCustListRep implements RdclCustomerListInterface {
 
   @override
   Future<Either<String, RdclCustomerListModel>> getRdclCustomerunderAgent(
-      String? agentID, String? branchID) async {
+      String? agentID, String? branchID, int pgNo, int pgSize) async {
     print("Inside RdclCustListRep");
     final vendorUrl = await loadVendorUrl();
     final uri = Uri.parse(vendorUrl);
     final data = await http.post(
       uri,
-      body: jsonEncode({"agent_id": agentID, "branch_id": branchID}),
+      body: jsonEncode({
+        "agent_id": agentID,
+        "branch_id": branchID,
+        "PageNumber": pgNo,
+        "PageSize": pgSize
+      }),
       headers: {'Content-Type': 'application/json'},
     );
     print("vendorUrl $vendorUrl");
-    print("Body ${{"agent_id": agentID, "branch_id": branchID}}");
+    print("Body ${{"agent_id": agentID, "branch_id": branchID, "PageNumber": pgNo,
+      "PageSize": pgSize}}");
     print(data.body);
     if (data.statusCode == 200) {
       return Right(RdclCustomerListModel.fromJson(jsonDecode(data.body)));

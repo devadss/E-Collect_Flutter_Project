@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 abstract class RdclCustomerListInterface{
   Future<Either<String, RdclCustomerListModel>>getRdclCustomerunderAgent(
       String? agentID,
-      String? branchID
+      String? branchID,
+      int pgNo, int pgSize
       );
 }

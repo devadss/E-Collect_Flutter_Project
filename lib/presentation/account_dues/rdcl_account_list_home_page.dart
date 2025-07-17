@@ -175,7 +175,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
       print(
           "bRanch code : ${rdclDueUnderAgentProvider.rdclDueUnderAgentModel!.data[0].brCode}");
       await provider.getRdclCustomerunderAgent(
-          "", rdclDueUnderAgentProvider.rdclDueUnderAgentModel!.data[0].brCode);
+          "", rdclDueUnderAgentProvider.rdclDueUnderAgentModel!.data[0].brCode, _currentPage, 1);
     }
   }
 
@@ -382,7 +382,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
                                         selectedFilterType = "agentid";
                                       });
                                       await provider.getRdclCustomerunderAgent(
-                                          agentId, "");
+                                          agentId, "",_currentPage,1);
                                       print("Filter by Agent ID");
 
 
@@ -390,7 +390,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
                                     } else if (value == 'branch') {
                                       showProgressDialog(context);
                                       await provider.getRdclCustomerunderAgent(
-                                          "", agentBranchCode);
+                                          "", agentBranchCode,_currentPage,1);
                                       setState(() {
                                         selectedFilterType = "branchid";
                                       });

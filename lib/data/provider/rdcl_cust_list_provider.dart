@@ -14,9 +14,9 @@ class RdclCustListProvider with ChangeNotifier {
   RdclCustomerListModel? get rdclCustomerListModel => _rdclCustomerListModel;
 
   Future<Either<String, RdclCustomerListModel>> getRdclCustomerunderAgent(
-      String? agentID, String? branchID) async {
+      String? agentID, String? branchID,int pgNo, int pgSize) async {
     final data =
-        await _rdclCustListRep.getRdclCustomerunderAgent(agentID, branchID);
+        await _rdclCustListRep.getRdclCustomerunderAgent(agentID, branchID,pgNo, pgSize);
     data.fold((err) {}, (success) {
       _rdclCustomerListModel = success;
     });
