@@ -5,7 +5,6 @@ import 'package:collection_qr_flutter/presentation/dues/widgets/new_qr_code_page
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lottie/lottie.dart';
 import 'package:pager/pager.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -1392,7 +1391,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
             ),
           ),
           const SizedBox(height: 10,),
-          pagerWidget(),
+         // pagerWidget(),
           
           /*      Expanded(
             child: Consumer<RdclDueUnderAgentProvider>(

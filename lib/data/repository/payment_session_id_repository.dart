@@ -63,7 +63,7 @@ class CreatePaymentSessionIdRepository
       // "SubAgentId":subAgentID
     print("Body = $body");
     bool checkConnection = await InternetConnectionChecker().hasConnection;
-    if (!checkConnection) {
+    if (checkConnection) {
       final response = await http.post(
           url,
           body: json.encode(body),

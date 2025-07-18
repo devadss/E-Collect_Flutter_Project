@@ -17,7 +17,8 @@ class RdclCustListRep implements RdclCustomerListInterface {
       String? agentID, String? branchID, int pgNo, int pgSize) async {
     print("Inside RdclCustListRep");
     final vendorUrl = await loadVendorUrl();
-    final uri = Uri.parse(vendorUrl);
+    final uri = Uri.parse(vendorUrl); //This is the live one
+   // final uri = Uri.parse("https://doorstepfapmcomscs.digicob.in/getRdclCustomerunderAgentList"); // For checking purpose we used this
     final data = await http.post(
       uri,
       body: jsonEncode({
