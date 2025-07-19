@@ -150,7 +150,6 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
   Future<void> loadSharedPrefs() async {
     final name = await SharedPref().getParentAgentName();
     final id = await SharedPref().getAgentId();
-
     final originId = await SharedPref().getSubAgentCode();
     final subAgentID = await SharedPref().getSubAgentId();
     final code = await SharedPref().getCorpCode();
@@ -177,11 +176,8 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
     print("agentId $agentId");
     print("agentOriginId $agentOriginId");
     showProgressDialog(context);
-    final provider =
-        Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
-    await provider.getRdclDueList(agentOriginId!, "", "");
     setState(() {
-      agentBranchCode = provider.rdclDueUnderAgentModel!.data[0].brCode;
+      agentBranchCode = subAgentCodeNew;
 
     });
     if (mounted) {
@@ -191,7 +187,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
     final providerTwo =
         Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
     await providerTwo.getRdclDueList(
-        "", provider.rdclDueUnderAgentModel!.data[0].brCode, "");
+        "", agentBranchCode!, "");
   }
 
   Future<void> getCashTrans(

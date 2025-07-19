@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../core/colors.dart';
 import '../../data/provider/rdcl_cust_list_provider.dart';
-import '../../data/provider/rdcl_due_under_agent_provider.dart';
 import '../../data/storage/shared_pref_helper.dart';
 import '../dues/rdcl_due_home_page.dart';
 
@@ -19,6 +18,7 @@ class RdclAccountListHomePage extends StatefulWidget {
 class _AccountListHomePageState extends State<RdclAccountListHomePage>
     with TickerProviderStateMixin {
   String? agentId;
+  String? branchid;
   String? agentIdValue;
   String? corpCode;
   String? branchCode;
@@ -34,9 +34,9 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
   final TextEditingController _searchController = TextEditingController();
   bool _isSearchFocused = false;
   int _currentPage = 1;
-  bool _isAtBottom = false;
-  //bool _isDraggingUpward = false;
-  final bool _isLoading = false;
+  final ScrollController _scrollController = ScrollController();
+  double totalListCount = 0;
+  double? totalListCountNew;
 
 
   @override
@@ -77,52 +77,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
     super.initState();
   }
 
-  // Future<void> _loadMoreOnScrollRelease() async {
-  //   _isLoading = true;
-  //   setState(() {
-  //     _currentPage++;
-  //   }); // to show loading spinner if needed
-  //
-  //
-  //
-  //   final provider = Provider.of<RdclCustListProvider>(context, listen: false);
-  //   await provider.getRdclCustomerunderAgent(
-  //       "", agentBranchCode, _currentPage, 10);
-  //
-  //   // 🚨 IMPORTANT: filteredCustomers must reflect the new data added
-  //   // Ensure the provider updates the underlying list
-  //
-  //   _isLoading = false;
-  //   setState(() {}); // to rebuild with new content
-  // }
 
-
-  // Future<void> _onScroll() async {
-  //   final provider = Provider.of<RdclCustListProvider>(context, listen: false);
-  //
-  //   if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent &&
-  //       !_scrollController.position.outOfRange) {
-  //     print("Reached the end of the list");
-  //
-  //     setState(() {
-  //       _currentPage++;
-  //     });
-  //
-  //     await provider.getRdclCustomerunderAgent(
-  //         "", agentBranchCode, _currentPage, 10);
-  //
-  //     // 👇 After data is loaded, scroll to the top
-  //     WidgetsBinding.instance.addPostFrameCallback((_) {
-  //       if (_scrollController.hasClients) {
-  //         _scrollController.animateTo(
-  //           0, // Top of the list
-  //           duration: const Duration(milliseconds: 500),
-  //           curve: Curves.easeInOut,
-  //         );
-  //       }
-  //     });
-  //   }
-  // }
 
   void showProgressDialog(BuildContext context) {
     showDialog(
@@ -167,7 +122,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
     super.dispose();
   }
 
-  Container pagerWidget() {
+  Container pagerWidget(int totPage) {
     final provider = Provider.of<RdclCustListProvider>(context, listen: false);
     return Container(
       decoration: BoxDecoration(
@@ -187,7 +142,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
         child: Pager(
           pageChangeIconColor: home1,
           currentPage: _currentPage,
-          totalPages: 20,
+          totalPages: totPage,
           numberTextSelectedColor: Colors.white,
           numberButtonSelectedColor: home1,
           pagesView: 4,
@@ -198,7 +153,15 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
               _currentPage = page;
             });
             await provider.getRdclCustomerunderAgent(
-                "", agentBranchCode, _currentPage, 10);
+                "", agentBranchCode, _currentPage, 50);
+
+
+            // Optional: Scroll to top if you want user to see the beginning of the new data
+            _scrollController.animateTo(
+              0,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
           },
         ),
       ),
@@ -209,38 +172,41 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
     final id = await SharedPref().getSubAgentCode();
     final crpCd = await SharedPref().getCorpCode();
     final brCode = await SharedPref().getBranchCode();
+    final branchID = await SharedPref().getSubAgentCodeNew();
     final number = await SharedPref().getParentAgentMobNum();
     final custId = await SharedPref().getAgentId();
     if (mounted) {
       setState(() {
+        branchid = branchID;
         agentId = id;
         agentPhoneNumber = number;
         corpCode = crpCd;
         branchCode = brCode;
         agentIdValue = custId;
       });
-      print(
-          "----------------------------------AGENT ORIGIN ID---------------------------");
-      print(agentId);
-      print("branchCode = $branchCode");
-      print("getSubAgentCode = $id");
-      final rdclDueUnderAgentProvider =
-          Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
-      await rdclDueUnderAgentProvider.getRdclDueList(agentId!, "", "");
+
       setState(() {
-        agentBranchCode =
-            rdclDueUnderAgentProvider.rdclDueUnderAgentModel!.data[0].brCode;
+        agentBranchCode = branchid;
       });
       final provider =
           Provider.of<RdclCustListProvider>(context, listen: false);
-      //await provider.getRdclCustomerunderAgent(agentId!, "");
-      print(
-          "bRanch code : ${rdclDueUnderAgentProvider.rdclDueUnderAgentModel!.data[0].brCode}");
+
       await provider.getRdclCustomerunderAgent(
-          "",
-          rdclDueUnderAgentProvider.rdclDueUnderAgentModel!.data[0].brCode,
-          _currentPage,
-          10);
+          "", agentBranchCode, _currentPage, 50);
+      setState(() {
+        totalListCount =
+            provider.rdclCustomerListModel!.customerList.totalCount.toDouble();
+      });
+      if (provider.rdclCustomerListModel?.customerList.totalCount != null) {
+        var result = totalListCount / 50.0;
+        result % 2 == 0
+            ? totalListCountNew = result
+            : totalListCountNew = result + 1;
+      }
+
+      print("totalListCount = $totalListCount");
+
+      print("totalListCount = ${totalListCountNew}");
     }
   }
 
@@ -511,7 +477,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
               child: Consumer<RdclCustListProvider>(
                 builder: (context, provider, child) {
                   final allCustomers =
-                      provider.rdclCustomerListModel?.data ?? [];
+                      provider.rdclCustomerListModel?.customerList.data ?? [];
                   final filteredCustomers =
                       _filterCustomers(allCustomers, _searchController.text);
 
@@ -528,148 +494,122 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
                     );
                   }
 
-                  return NotificationListener<ScrollNotification>(
-                    onNotification: (ScrollNotification scrollInfo) {
-                      final currentOffset = scrollInfo.metrics.pixels;
-                      final maxExtent = scrollInfo.metrics.maxScrollExtent;
-
-                      // Check if at bottom
-                      if (currentOffset >= maxExtent - 5) {
-                        _isAtBottom = true;
-                        print(
-                            "✅ At bottom: offset=$currentOffset, max=$maxExtent");
-                      } else {
-                        _isAtBottom = false;
-                      }
-
-                      // Detect upward drag beyond bottom using Overscroll
-                      if (scrollInfo is OverscrollNotification &&
-                          scrollInfo.overscroll > 0 &&
-                          _isAtBottom &&
-                          !_isLoading) {
-                        print(
-                            "⬆️ Overscroll upward drag detected: ${scrollInfo.overscroll}");
-                       // _loadMoreOnScrollRelease();
-                      }
-
-                      return false;
-                    },
-                    child: ListView.separated(
-                      itemBuilder: (context, index) {
-                        final customer = filteredCustomers[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      RdclAccountDueDetailsPage(
-                                    custName: customer.custName,
-                                    custAcNumber: customer.rdclGlobalAccNo ??
-                                        "RDCL GLOBAL ACC NO",
-                                    custPhoneNumber: agentPhoneNumber!,
-                                    custId: agentIdValue ?? "CUSTID",
-                                    custEmail: "",
-                                    corpCode: corpCode.toString(),
-                                    indexValue: index,
-                                    branchCode: branchCode.toString(),
-                                    custIdNew: customer.custId,
-                                  ),
+                  return ListView.separated(
+                    controller: _scrollController,
+                    itemBuilder: (context, index) {
+                      final customer = filteredCustomers[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    RdclAccountDueDetailsPage(
+                                  custName: customer.custName,
+                                  custAcNumber: customer.rdclGlobalAccNo ??
+                                      "RDCL GLOBAL ACC NO",
+                                  custPhoneNumber: agentPhoneNumber!,
+                                  custId: agentIdValue ?? "CUSTID",
+                                  custEmail: "",
+                                  corpCode: corpCode.toString(),
+                                  indexValue: index,
+                                  branchCode: branchCode.toString(),
+                                  custIdNew: customer.custId,
                                 ),
-                              );
-                            },
-                            child: Container(
-                              height: MediaQuery.of(context).size.height * 0.15,
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: white,
-                                border: Border.all(color: home1, width: 1.2),
                               ),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 10),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      customer.custName ?? "CUST NAME",
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 17,
-                                        color: black,
-                                      ),
+                            );
+                          },
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.15,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: white,
+                              border: Border.all(color: home1, width: 1.2),
+                            ),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    customer.custName ?? "CUST NAME",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 17,
+                                      color: black,
                                     ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Account Number : ${customer.rdclGlobalAccNo ?? "ACC No"}",
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 14,
-                                            color: black87,
-                                          ),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Account Number : ${customer.rdclGlobalAccNo ?? "ACC No"}",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 14,
+                                          color: black87,
                                         ),
-                                        const Spacer(),
-                                        Container(
-                                          height: 30,
-                                          width: 120,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                            border: Border.all(
-                                                color: home1, width: 1),
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 5),
-                                            child: Row(
-                                              children: [
-                                                Image.asset(
-                                                  "assets/images/money.png",
+                                      ),
+                                      const Spacer(),
+                                      Container(
+                                        height: 30,
+                                        width: 120,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                          border: Border.all(
+                                              color: home1, width: 1),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 5),
+                                          child: Row(
+                                            children: [
+                                              Image.asset(
+                                                "assets/images/money.png",
+                                                color: home2,
+                                                scale: 25,
+                                              ),
+                                              const SizedBox(width: 5),
+                                              const Text(
+                                                "View details",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: 12,
                                                   color: home2,
-                                                  scale: 25,
                                                 ),
-                                                const SizedBox(width: 5),
-                                                const Text(
-                                                  "View details",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w700,
-                                                    fontSize: 12,
-                                                    color: home2,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                    Text(
-                                      "Scheme Name : ${customer.schName}",
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 14,
-                                        color: black87,
                                       ),
+                                    ],
+                                  ),
+                                  Text(
+                                    "Scheme Name : ${customer.schName}",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14,
+                                      color: black87,
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return const SizedBox(height: 10);
-                      },
-                      itemCount: filteredCustomers.length,
-                    ),
+                        ),
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return const SizedBox(height: 10);
+                    },
+                    itemCount: filteredCustomers.length,
                   );
                 },
               ),
@@ -677,7 +617,9 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
             const SizedBox(
               height: 10,
             ),
-           // pagerWidget(),
+            totalListCountNew != null
+                ? pagerWidget(totalListCountNew!.toInt())
+                : pagerWidget(3),
           ],
         ));
   }
