@@ -193,20 +193,21 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
 
       await provider.getRdclCustomerunderAgent(
           "", agentBranchCode, _currentPage, 50);
-      setState(() {
-        totalListCount =
-            provider.rdclCustomerListModel!.customerList.totalCount.toDouble();
-      });
+      totalListCount = provider.rdclCustomerListModel!.customerList.totalCount.toDouble();
+
       if (provider.rdclCustomerListModel?.customerList.totalCount != null) {
-        var result = totalListCount / 50.0;
-        result % 2 == 0
-            ? totalListCountNew = result
-            : totalListCountNew = result + 1;
+        setState(() {
+          var result = totalListCount / 50.0;
+          result % 2 == 0
+              ? totalListCountNew = result
+              : totalListCountNew = result + 1;
+        });
+
       }
 
       print("totalListCount = $totalListCount");
 
-      print("totalListCount = ${totalListCountNew}");
+      print("totalListCount = $totalListCountNew");
     }
   }
 

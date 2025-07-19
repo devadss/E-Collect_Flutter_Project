@@ -754,102 +754,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   }
 
 
-  // Widget _buildTotalCollectionCard() {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-  //     child: Card(
-  //       elevation: 4,
-  //       shape: RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.circular(16),
-  //       ),
-  //       child: Padding(
-  //         padding: const EdgeInsets.all(16),
-  //         child: Row(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           children: [
-  //             Column(
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               children: [
-  //                 Text(
-  //                   "Total Collection",
-  //                   style: TextStyle(
-  //                     fontSize: 14,
-  //                     color: Colors.grey[600],
-  //                   ),
-  //                 ),
-  //                 const SizedBox(height: 8),
-  //                 Text(
-  //                   "₹${calculateTotalAmount().toStringAsFixed(2)}",
-  //                   style: const TextStyle(
-  //                     fontSize: 22,
-  //                     fontWeight: FontWeight.bold,
-  //                     color: home1,
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //             Row(
-  //               children: [
-  //                 if (_isFilterApplied)
-  //                   Padding(
-  //                     padding: const EdgeInsets.only(right: 8),
-  //                     child: InkWell(
-  //                       onTap: _clearFilters,
-  //                       borderRadius: BorderRadius.circular(12),
-  //                       child: Container(
-  //                         padding: const EdgeInsets.all(12),
-  //                         decoration: BoxDecoration(
-  //                           color: Colors.red.withOpacity(0.1),
-  //                           borderRadius: BorderRadius.circular(12),
-  //                         ),
-  //                         child: const Row(
-  //                           children: [
-  //                             Icon(Icons.clear, color: Colors.red, size: 20),
-  //                             SizedBox(width: 8),
-  //                             Text(
-  //                               "Clear Filters",
-  //                               style: TextStyle(
-  //                                 color: Colors.red,
-  //                                 fontWeight: FontWeight.w600,
-  //                               ),
-  //                             ),
-  //                           ],
-  //                         ),
-  //                       ),
-  //                     ),
-  //                   ),
-  //                 InkWell(
-  //                   onTap: showDateRangeFilter,
-  //                   borderRadius: BorderRadius.circular(12),
-  //                   child: Container(
-  //                     padding: const EdgeInsets.all(12),
-  //                     decoration: BoxDecoration(
-  //                       color: home1.withOpacity(0.1),
-  //                       borderRadius: BorderRadius.circular(12),
-  //                     ),
-  //                     child: const Row(
-  //                       children: [
-  //                         Icon(Icons.filter_alt_rounded, color: home1, size: 20),
-  //                         SizedBox(width: 8),
-  //                         Text(
-  //                           "Filter",
-  //                           style: TextStyle(
-  //                             color: home1,
-  //                             fontWeight: FontWeight.w600,
-  //                           ),
-  //                         ),
-  //                       ],
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Future<void> _clearFilters() async {
     final qrProvider = context.read<QRTransactionHistoryProvider>();
@@ -1283,171 +1187,173 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
 
-  Widget _buildQRTransactionList(
-      QrTranscationHistoryModel? qrTransactions, String? error) {
-    if (qrTransactions == null && error == "") {
-      return const Center(child: CircularProgressIndicator());
-    } else if (qrTransactions == null && error == "ERROR") {
-      return _buildEmptyState(
-        icon: Icons.qr_code,
-        title: "No QR Transactions",
-        message: "Your payment Qr transactions will appear here",
-      );
-    }
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.8,
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        itemCount: qrTransactions?.data!.length,
-        itemBuilder: (context, index) {
-          final transaction = qrTransactions!.data![index];
-          return _buildQRTransactionItem(transaction);
-        },
-      ),
-    );
-  }
+  // Widget _buildQRTransactionList(
+  //     QrTranscationHistoryModel? qrTransactions, String? error)
+  // {
+  //   if (qrTransactions == null && error == "") {
+  //     return const Center(child: CircularProgressIndicator());
+  //   } else if (qrTransactions == null && error == "ERROR") {
+  //     return _buildEmptyState(
+  //       icon: Icons.qr_code,
+  //       title: "No QR Transactions",
+  //       message: "Your payment Qr transactions will appear here",
+  //     );
+  //   }
+  //   return SizedBox(
+  //     height: MediaQuery.of(context).size.height * 0.8,
+  //     child: ListView.builder(
+  //       padding: const EdgeInsets.symmetric(vertical: 8),
+  //       itemCount: qrTransactions?.data!.length,
+  //       itemBuilder: (context, index) {
+  //         final transaction = qrTransactions!.data![index];
+  //         return _buildQRTransactionItem(transaction);
+  //       },
+  //     ),
+  //   );
+  // }
+  //
+  // Widget _buildCashTransactionList(
+  //     QrTranscationHistoryModel? qrTransactions, String? error)
+  // {
+  //   if (qrTransactions == null && error == "") {
+  //     return const Center(child: CircularProgressIndicator());
+  //   } else if (qrTransactions == null && error == "ERROR") {
+  //     return _buildEmptyState(
+  //       icon: Icons.monetization_on_outlined,
+  //       title: "No Cash Transactions",
+  //       message: "Your payment Cash transactions will appear here",
+  //     );
+  //   }
+  //   return SizedBox(
+  //     height: MediaQuery.of(context).size.height * 0.8,
+  //     child: ListView.builder(
+  //       padding: const EdgeInsets.symmetric(vertical: 8),
+  //       itemCount: qrTransactions?.data!.length,
+  //       itemBuilder: (context, index) {
+  //         final transaction = qrTransactions!.data![index];
+  //         return _buildQRTransactionItem(transaction);
+  //       },
+  //     ),
+  //   );
+  // }
 
-  Widget _buildCashTransactionList(
-      QrTranscationHistoryModel? qrTransactions, String? error) {
-    if (qrTransactions == null && error == "") {
-      return const Center(child: CircularProgressIndicator());
-    } else if (qrTransactions == null && error == "ERROR") {
-      return _buildEmptyState(
-        icon: Icons.monetization_on_outlined,
-        title: "No Cash Transactions",
-        message: "Your payment Cash transactions will appear here",
-      );
-    }
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.8,
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        itemCount: qrTransactions?.data!.length,
-        itemBuilder: (context, index) {
-          final transaction = qrTransactions!.data![index];
-          return _buildQRTransactionItem(transaction);
-        },
-      ),
-    );
-  }
 
 
-
-  Widget _buildQRTransactionItem(QrTransaction transaction) {
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: home1, width: 1),
-          boxShadow: [
-            BoxShadow(
-                blurRadius: 10,
-                spreadRadius: 0,
-                offset: const Offset(0, 2),
-                color: Colors.black.withOpacity(0.25))
-          ]),
-      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-      child: ListTile(
-        leading: const Icon(Icons.qr_code, color: Colors.pink),
-        title: Text(
-          // transaction.customerName.toString().replaceAll("CustomerName.", ""),
-          transaction.customerName.toString(),
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        subtitle: Text(
-          DateFormat('MMM dd, yyyy - hh:mm a')
-              .format(transaction.createdAt ?? DateTime.now()),
-        ),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "₹${transaction.orderAmount}",
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.pink,
-              ),
-            ),
-            Text(
-              transaction.orderStatus.toString(),
-              // transaction.orderStatus
-              //   .toString()
-              //   .replaceAll("OrderStatus.", ""),
-              style: const TextStyle(
-                fontSize: 12,
-                color: green,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
-        ),
-        onTap: () {
-          // CURRENTLY TRANSACTION DETAIL PAGE IS COMMENTED.......
-          // Navigator.push(context, MaterialPageRoute(builder: (context)=>
-          //  TransactionDetailsPage(
-          //    amountValue: transaction.orderAmount.toString(),
-          //    custName: transaction.customerName,
-          //    orderid: transaction.orderId,
-          //    tranStatus:transaction.orderStatus,
-          //    brCode: transaction.branchCode.toString(),
-          //    corpName: transaction.corpName.toString(),
-          //  )));
-          // Navigate to transaction details
-        },
-      ),
-    );
-  }
-
-  Widget _buildLinkTransactionItem(LinkTransactions transaction) {
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: home1, width: 1),
-          boxShadow: [
-            BoxShadow(
-                blurRadius: 10,
-                spreadRadius: 0,
-                offset: const Offset(0, 2),
-                color: Colors.black.withOpacity(0.25))
-          ]),
-      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-      child: ListTile(
-        leading: const Icon(Icons.link, color: Colors.blue),
-        title: Text(
-          transaction.customerName!.toString().replaceAll("CustomerName.", ""),
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        subtitle: Text(
-          DateFormat('MMM dd, yyyy - hh:mm a')
-              .format(transaction.createdAt ?? DateTime.now()),
-        ),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "₹${transaction.linkAmount}",
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.pink,
-              ),
-            ),
-            Text(
-              transaction.linkStatus!.toString().replaceAll("OrderStatus.", ""),
-              style: const TextStyle(
-                fontSize: 12,
-                color: green,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
-        ),
-        onTap: () {
-          // Navigate to transaction details
-        },
-      ),
-    );
-  }
+  // Widget _buildQRTransactionItem(QrTransaction transaction) {
+  //   return Container(
+  //     decoration: BoxDecoration(
+  //         color: Colors.white,
+  //         borderRadius: BorderRadius.circular(10),
+  //         border: Border.all(color: home1, width: 1),
+  //         boxShadow: [
+  //           BoxShadow(
+  //               blurRadius: 10,
+  //               spreadRadius: 0,
+  //               offset: const Offset(0, 2),
+  //               color: Colors.black.withOpacity(0.25))
+  //         ]),
+  //     margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+  //     child: ListTile(
+  //       leading: const Icon(Icons.qr_code, color: Colors.pink),
+  //       title: Text(
+  //         // transaction.customerName.toString().replaceAll("CustomerName.", ""),
+  //         transaction.customerName.toString(),
+  //         style: const TextStyle(fontWeight: FontWeight.bold),
+  //       ),
+  //       subtitle: Text(
+  //         DateFormat('MMM dd, yyyy - hh:mm a')
+  //             .format(transaction.createdAt ?? DateTime.now()),
+  //       ),
+  //       trailing: Column(
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         children: [
+  //           Text(
+  //             "₹${transaction.orderAmount}",
+  //             style: const TextStyle(
+  //               fontWeight: FontWeight.bold,
+  //               color: Colors.pink,
+  //             ),
+  //           ),
+  //           Text(
+  //             transaction.orderStatus.toString(),
+  //             // transaction.orderStatus
+  //             //   .toString()
+  //             //   .replaceAll("OrderStatus.", ""),
+  //             style: const TextStyle(
+  //               fontSize: 12,
+  //               color: green,
+  //               fontWeight: FontWeight.w700,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //       onTap: () {
+  //         // CURRENTLY TRANSACTION DETAIL PAGE IS COMMENTED.......
+  //         // Navigator.push(context, MaterialPageRoute(builder: (context)=>
+  //         //  TransactionDetailsPage(
+  //         //    amountValue: transaction.orderAmount.toString(),
+  //         //    custName: transaction.customerName,
+  //         //    orderid: transaction.orderId,
+  //         //    tranStatus:transaction.orderStatus,
+  //         //    brCode: transaction.branchCode.toString(),
+  //         //    corpName: transaction.corpName.toString(),
+  //         //  )));
+  //         // Navigate to transaction details
+  //       },
+  //     ),
+  //   );
+  // }
+  //
+  // Widget _buildLinkTransactionItem(LinkTransactions transaction) {
+  //   return Container(
+  //     decoration: BoxDecoration(
+  //         color: Colors.white,
+  //         borderRadius: BorderRadius.circular(10),
+  //         border: Border.all(color: home1, width: 1),
+  //         boxShadow: [
+  //           BoxShadow(
+  //               blurRadius: 10,
+  //               spreadRadius: 0,
+  //               offset: const Offset(0, 2),
+  //               color: Colors.black.withOpacity(0.25))
+  //         ]),
+  //     margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+  //     child: ListTile(
+  //       leading: const Icon(Icons.link, color: Colors.blue),
+  //       title: Text(
+  //         transaction.customerName!.toString().replaceAll("CustomerName.", ""),
+  //         style: const TextStyle(fontWeight: FontWeight.bold),
+  //       ),
+  //       subtitle: Text(
+  //         DateFormat('MMM dd, yyyy - hh:mm a')
+  //             .format(transaction.createdAt ?? DateTime.now()),
+  //       ),
+  //       trailing: Column(
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         children: [
+  //           Text(
+  //             "₹${transaction.linkAmount}",
+  //             style: const TextStyle(
+  //               fontWeight: FontWeight.bold,
+  //               color: Colors.pink,
+  //             ),
+  //           ),
+  //           Text(
+  //             transaction.linkStatus!.toString().replaceAll("OrderStatus.", ""),
+  //             style: const TextStyle(
+  //               fontSize: 12,
+  //               color: green,
+  //               fontWeight: FontWeight.w700,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //       onTap: () {
+  //         // Navigate to transaction details
+  //       },
+  //     ),
+  //   );
+  // }
 
   double calculateTotalAmount() {
     double total = 0;
