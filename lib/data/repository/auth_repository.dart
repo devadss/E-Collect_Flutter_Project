@@ -29,9 +29,9 @@ class AuthRepository implements AuthInterface {
           },
         );
 
-        print("mobnum = ${mobnum}");
-        print("token = ${token}");
-        print("MPIN = ${mpin}");
+        print("mobnum = $mobnum");
+        print("token = $token");
+        print("MPIN = $mpin");
         print("response = ${response.body}");
 
         if (response.statusCode == 200) {

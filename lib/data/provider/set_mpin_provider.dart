@@ -6,7 +6,7 @@ import '../repository/set_mpin_repository.dart';
 
 
 class SetMpinProvider with ChangeNotifier{
-  SetMpinRepository _mpinRepository;
+  final SetMpinRepository _mpinRepository;
 
   SetMpinProvider(this._mpinRepository);
 

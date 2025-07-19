@@ -8,8 +8,6 @@ import '../../core/constants.dart';
 import '../../core/general.dart';
 import '../../domain/interface/link_transaction_history_interface.dart';
 import '../../domain/model/all_trans_data.dart';
-import '../../domain/model/link_transaction_history_model.dart';
-import '../../domain/model/qr_transaction_history_model.dart';
 import '../service/error_handler.dart';
 
 class LinkTransactionHistoryRepository implements ILinkTransactionHistoryRepository{

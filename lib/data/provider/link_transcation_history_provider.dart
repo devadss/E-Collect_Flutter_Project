@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/general.dart';
 import '../../domain/model/all_trans_data.dart';
-import '../../domain/model/link_transaction_history_model.dart';
-import '../../domain/model/qr_transaction_history_model.dart';
 import '../repository/link_transaction_history_repository.dart';
 
 class LinkTransactionHistoryProvider with ChangeNotifier{

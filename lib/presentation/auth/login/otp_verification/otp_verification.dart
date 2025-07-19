@@ -10,7 +10,6 @@ import '../../../../data/provider/otp_verification_provider.dart';
 import '../../../../data/provider/token_request_provider.dart';
 import '../../../../data/storage/shared_pref_helper.dart';
 import '../../authetication_page/google_pin_code_page.dart';
-import '../../otp_verification.dart';
 
 class OtpRequestVerificationPage extends StatefulWidget {
   final String subAgentmobNum;

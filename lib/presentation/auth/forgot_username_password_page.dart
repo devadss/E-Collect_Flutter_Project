@@ -284,7 +284,7 @@ class _ForgotUsernamePasswordPageState
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: home1!, width: 2),
+          borderSide: BorderSide(color: home1, width: 2),
         ),
         contentPadding: const EdgeInsets.symmetric(vertical: 16),
       ),
