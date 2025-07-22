@@ -11,6 +11,9 @@ class QRTransactionHistoryProvider with ChangeNotifier {
   QrTranscationHistoryModel? _qrTranscationHistoryModel;
   QrTranscationHistoryModel? get qrTranscationHistoryModel =>
       _qrTranscationHistoryModel;
+
+  bool? _showProgressDialog;
+  bool? get showProgressDialog  => _showProgressDialog;
   Future<void> getQrTranscationHistory(
     String? dateFilterType,
     String? startDate,
@@ -22,23 +25,30 @@ class QRTransactionHistoryProvider with ChangeNotifier {
     printLog(
       "==================================QR TRANSACTION MODEL=================================",
     );
+
     printLog(qrTranscationHistoryModel);
     final result = await _qrTransactionHistoryRepository
         .getQrTranscationHistory(dateFilterType, startDate, endDate, source,corpCode,agentOriginId);
+
     result.fold(
       (error) {
         _errResponse = error.message;
         _qrTranscationHistoryModel = null;
         printLog("-------------Error QR Transcation-------------");
         printLog(error);
+        _showProgressDialog = false;
+        notifyListeners();
       },
       (data) {
         _qrTranscationHistoryModel = data;
         _errResponse = null;
+        _showProgressDialog = false;
         printLog("-------------------DATA QR TRANS-----------------");
         printLog(data);
         notifyListeners();
       },
+
     );
+    notifyListeners();
   }
 }

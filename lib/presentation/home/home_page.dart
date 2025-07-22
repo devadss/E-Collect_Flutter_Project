@@ -228,7 +228,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                         minimumSize: const Size.fromHeight(48),
                       ),
                       onPressed: () async {
-                        Navigator.pop(context);
+                      //  Navigator.pop(context);
 
                         // Variables
                         late String period;
@@ -264,11 +264,19 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                             to = DateFormat('yyyy-MM-dd').format(toDate!);
                             break;
                         }
-
+showProgressDialog(context);
                         // Call providers
                         await qrProvider.getQrTranscationHistory(period, from, to, 'COLLECTION', corpCode, agentOriginId);
+                        if(qrProvider.showProgressDialog == false
+                        ){
+                          if(mounted){
+                            Navigator?.pop(context);
+                            Navigator?.pop(context);
+                          }
+                        }
                         await cashTransProvider.getCashTranscationHistory(period, from, to, 'COLLECTION_CASH', subAgentID, corpCode, agentOriginId);
                         await linkProvider.getLinkTransactionHistory(period, from, to, subAgentID!,corpCode!, agentOriginId!);
+
 
                         // ✅ Update parent state
                         setState(() {
@@ -308,13 +316,45 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
     await provider.getTransactions(token.toString());
   }
-
+  void showProgressDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Center(
+            child: SingleChildScrollView(
+              child: Dialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                child: const Padding(
+                  padding: EdgeInsets.all(50),
+                  child: Column(
+                    children: [
+                      CircularProgressIndicator(color: home2),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Please wait....",
+                        style: TextStyle(
+                          fontSize: 17,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
   String formatTimestamp(DateTime? timestamp) {
     if (timestamp == null) return "Invalid Date";
     return DateFormat('MMM dd, yyyy • hh:mm a').format(timestamp);
   }
 
   Future<void> loadSharedPrefs(BuildContext context) async {
+
     final name = await SharedPref().getSubAgentName();
     final entId = await SharedPref().getAgentId();
     final tok = await SharedPref().getTokenValue();
@@ -333,6 +373,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         subAgentID = subAgID;
         corpCode = crpCode;
       });
+      showProgressDialog(context);
     }
     final provider =
     Provider.of<QRTransactionHistoryProvider>(context, listen: false);
@@ -346,6 +387,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
     await provider.getQrTranscationHistory(
         "TODAY", formattedFdate, formattedTdate, "COLLECTION", corpCode, agentOriginId);
+
+    if(provider.showProgressDialog == false){
+      if(mounted){
+        Navigator.pop(context);
+      }
+    }
 
     final linkProvider = Provider.of<LinkTransactionHistoryProvider>(
       context,
@@ -756,6 +803,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
 
   Future<void> _clearFilters() async {
+    showProgressDialog(context);
     final qrProvider = context.read<QRTransactionHistoryProvider>();
     final cashTransProvider = context.read<CashTransactionHistoryProvider>();
     final linkProvider = context.read<LinkTransactionHistoryProvider>();
@@ -775,7 +823,13 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
     await linkProvider.getLinkTransactionHistory(
         "TODAY", formattedFdate, formattedTdate, subAgentID!,corpCode!, agentOriginId!);
+    if(qrProvider.showProgressDialog == false
+    ){
+      if(mounted){
+        Navigator?.pop(context);
 
+      }
+    }
     setState(() {
       _isFilterApplied = false;
       _currentFilterPeriod = 'TODAY';
