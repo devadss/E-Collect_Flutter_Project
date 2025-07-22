@@ -49,8 +49,12 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
   final TextEditingController _searchController = TextEditingController();
   bool _isSearchFocused = false;
   final FocusNode _searchFocusNode = FocusNode();
-  bool _isLoading = false;
+  final bool _isLoading = false;
   int _currentPage = 1;
+  final ScrollController _scrollController = ScrollController();
+  double totalListCount = 0;
+  double? totalListCountNew;
+  int itemPerPage = 50;
 
   @override
   void initState() {
@@ -178,16 +182,29 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
     showProgressDialog(context);
     setState(() {
       agentBranchCode = subAgentCodeNew;
-
     });
-    if (mounted) {
-      Navigator.pop(context);
-    }
 
     final providerTwo =
         Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
     await providerTwo.getRdclDueList(
-        "", agentBranchCode!, "");
+        "", agentBranchCode!, "", _currentPage, itemPerPage);
+    totalListCount = double.parse(
+        providerTwo.rdclDueUnderAgentModel!.data[0].totalCount.toString());
+    if (totalListCount > 1) {
+      if (mounted) {
+        Navigator.pop(context);
+      }
+    }
+    setState(() {
+      var result = totalListCount / itemPerPage.toDouble();
+      result % 2 == 0
+          ? totalListCountNew = result
+          : totalListCountNew = result + 1;
+    });
+
+    print("totalListCount = $totalListCount");
+
+    print("totalListCount = $totalListCountNew");
   }
 
   Future<void> getCashTrans(
@@ -403,28 +420,13 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
     );
   }
 
-  ///currently the api is not used....
-  Future<void> _searchMethod(String query) async {
-    final provider =
-        Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
-    setState(() => _isLoading = true);
-    await provider.getRdclDueList("", "", query);
-    setState(() => _isLoading = false);
-  }
+
 
   Future<void> _clearSearch() async {
     _searchController.clear();
     setState(() {});
   }
 
-  // Future<void> _clearSearch() async {
-  //   final provider =
-  //       Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
-  //   _searchController.clear();
-  //   setState(() => _isLoading = true);
-  //   await provider.getRdclDueList(agentOriginId!, "", "");
-  //   setState(() => _isLoading = false);
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -580,26 +582,38 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                           color: Colors.white,
                                           shadowColor: home1,
                                           requestFocus: true,
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
                                           menuPadding: const EdgeInsets.all(10),
                                           context: context,
                                           position: RelativeRect.fromLTRB(
                                             offset.dx,
-                                            offset.dy + size.height+10,
+                                            offset.dy + size.height + 10,
                                             offset.dx + size.width,
                                             offset.dy,
                                           ),
                                           items: [
                                             PopupMenuItem<String>(
                                               value: 'agent',
-                                              child: Text('Filter by Agent', style: TextStyle(
-                                                  color: selectedFilterType != "agentid"?Colors.black:home1),),
+                                              child: Text(
+                                                'Filter by Agent',
+                                                style: TextStyle(
+                                                    color: selectedFilterType !=
+                                                            "agentid"
+                                                        ? Colors.black
+                                                        : home1),
+                                              ),
                                             ),
-                                             PopupMenuItem<String>(
+                                            PopupMenuItem<String>(
                                               value: 'branch',
-                                              child:
-                                                  Text('Filter by Branch',style: TextStyle(
-                                                      color: selectedFilterType != "branchid"?Colors.black:home1)),
+                                              child: Text('Filter by Branch',
+                                                  style: TextStyle(
+                                                      color:
+                                                          selectedFilterType !=
+                                                                  "branchid"
+                                                              ? Colors.black
+                                                              : home1)),
                                             ),
                                           ],
                                         ).then((value) async {
@@ -611,7 +625,11 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                             print("Filter by Agent ID");
                                             showProgressDialog(context);
                                             await provider.getRdclDueList(
-                                                agentOriginId!, "", "");
+                                                agentOriginId!,
+                                                "",
+                                                "",
+                                                _currentPage,
+                                                itemPerPage);
                                             _filterDues(
                                                 provider.rdclDueUnderAgentModel!
                                                     .data,
@@ -622,17 +640,19 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                               selectedFilterType = "branchid";
                                             });
                                             print("Filter by Branch ID");
-                                              showProgressDialog(context);
+                                            showProgressDialog(context);
 
                                             await provider.getRdclDueList(
                                                 "",
                                                 agentBranchCode.toString(),
-                                                "");
+                                                "",
+                                                _currentPage,
+                                                itemPerPage);
                                             _filterDues(
                                                 provider.rdclDueUnderAgentModel!
                                                     .data,
                                                 "");
-                                            if(mounted){
+                                            if (mounted) {
                                               Navigator.pop(context);
                                             }
                                           }
@@ -671,8 +691,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
             ),
           ),
           Expanded(
-            child: 
-            Consumer<RdclDueUnderAgentProvider>(
+            child: Consumer<RdclDueUnderAgentProvider>(
               builder: (context, provider, child) {
                 final data = provider.rdclDueUnderAgentModel?.data ?? [];
                 final filteredData = _filterDues(data, _searchController.text);
@@ -689,6 +708,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                 }
 
                 return ListView.separated(
+                  controller: _scrollController,
                   padding:
                       const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                   itemCount: groupedData.keys.length,
@@ -840,7 +860,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                             );
 
                                             String selectedMethod =
-                                               // "Link"; // Default selection
+                                                // "Link"; // Default selection
                                                 "Cash"; // Default selection
 
                                             showModalBottomSheet(
@@ -904,16 +924,16 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                                                     ),
                                                                   ),
                                                                   child:
-                                                                  // selectedMethod == "Link"
-                                                                  //     ? Image.asset(
-                                                                  //         "assets/icons/web-link.png",
-                                                                  //         scale:
-                                                                  //             12,
-                                                                  //         color:
-                                                                  //             home2,
-                                                                  //       )
-                                                          //            :
-                                                          selectedMethod ==
+                                                                      // selectedMethod == "Link"
+                                                                      //     ? Image.asset(
+                                                                      //         "assets/icons/web-link.png",
+                                                                      //         scale:
+                                                                      //             12,
+                                                                      //         color:
+                                                                      //             home2,
+                                                                      //       )
+                                                                      //            :
+                                                                      selectedMethod ==
                                                                               "QR Code"
                                                                           ? Image
                                                                               .asset(
@@ -1223,67 +1243,70 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                                                     : selectedMethod ==
                                                                             "Cash"
                                                                         ?
-                                                             //       print("Selecetd cash")
-                                                                paymentConfirmation(context,
-                                                                    due.name,
-                                                                    due.accNo,
-                                                                    due.custId,
-                                                                    controller.text
-                                                                )
-                                                                // getCashTrans(
-                                                                //             token:
-                                                                //                 token,
-                                                                //             //customerName: provider.rdclDueUnderAgentModel?.data[index].name,
-                                                                //             customerName:
-                                                                //                 due.name,
-                                                                //             custPhoneNumber:
-                                                                //                 "",
-                                                                //             // custAcNumber: provider.rdclDueUnderAgentModel?.data[index].accNo,
-                                                                //             custAcNumber:
-                                                                //                 due.accNo,
-                                                                //             //custId: provider.rdclDueUnderAgentModel?.data[index].custId,
-                                                                //             custId:
-                                                                //                 due.custId,
-                                                                //             custEmail:
-                                                                //                 "",
-                                                                //             phoneNumber:
-                                                                //                 "$agentPhoneNumber",
-                                                                //             entityId:
-                                                                //                 agentId,
-                                                                //             note:
-                                                                //                 "Payment For Agent $agentName",
-                                                                //             amount:
-                                                                //                 controller.text,
-                                                                //           )
-                                                                        :
-                                                                print("Selecetd QR");
-                                                                    getPaymentSessionId(
-                                                                            token:
-                                                                                token,
-                                                                            // customerName: provider.rdclDueUnderAgentModel?.data[index].name,
-                                                                            customerName:
-                                                                                due.name,
-                                                                            custPhoneNumber:
-                                                                                "",
-                                                                            //custAcNumber: provider.rdclDueUnderAgentModel?.data[index].accNo,
-                                                                            custAcNumber:
-                                                                                due.accNo,
-                                                                            // custId: provider.rdclDueUnderAgentModel?.data[index].custId,
-                                                                            custId:
-                                                                                due.custId,
-                                                                            custEmail:
-                                                                                "",
-                                                                            phoneNumber:
-                                                                                "$agentPhoneNumber",
-                                                                            entityId:
-                                                                                agentId,
-                                                                            note:
-                                                                                "Payment For Agent $agentName",
-                                                                            amount:
-                                                                                controller.text,
-                                                                            subAgentBranchCode:
-                                                                                subAgentCodeNew,
-                                                                          );
+                                                                        //       print("Selecetd cash")
+                                                                        paymentConfirmation(
+                                                                            context,
+                                                                            due
+                                                                                .name,
+                                                                            due
+                                                                                .accNo,
+                                                                            due
+                                                                                .custId,
+                                                                            controller
+                                                                                .text)
+                                                                        // getCashTrans(
+                                                                        //             token:
+                                                                        //                 token,
+                                                                        //             //customerName: provider.rdclDueUnderAgentModel?.data[index].name,
+                                                                        //             customerName:
+                                                                        //                 due.name,
+                                                                        //             custPhoneNumber:
+                                                                        //                 "",
+                                                                        //             // custAcNumber: provider.rdclDueUnderAgentModel?.data[index].accNo,
+                                                                        //             custAcNumber:
+                                                                        //                 due.accNo,
+                                                                        //             //custId: provider.rdclDueUnderAgentModel?.data[index].custId,
+                                                                        //             custId:
+                                                                        //                 due.custId,
+                                                                        //             custEmail:
+                                                                        //                 "",
+                                                                        //             phoneNumber:
+                                                                        //                 "$agentPhoneNumber",
+                                                                        //             entityId:
+                                                                        //                 agentId,
+                                                                        //             note:
+                                                                        //                 "Payment For Agent $agentName",
+                                                                        //             amount:
+                                                                        //                 controller.text,
+                                                                        //           )
+                                                                        : print(
+                                                                            "Selecetd QR");
+                                                                getPaymentSessionId(
+                                                                  token: token,
+                                                                  // customerName: provider.rdclDueUnderAgentModel?.data[index].name,
+                                                                  customerName:
+                                                                      due.name,
+                                                                  custPhoneNumber:
+                                                                      "",
+                                                                  //custAcNumber: provider.rdclDueUnderAgentModel?.data[index].accNo,
+                                                                  custAcNumber:
+                                                                      due.accNo,
+                                                                  // custId: provider.rdclDueUnderAgentModel?.data[index].custId,
+                                                                  custId: due
+                                                                      .custId,
+                                                                  custEmail: "",
+                                                                  phoneNumber:
+                                                                      "$agentPhoneNumber",
+                                                                  entityId:
+                                                                      agentId,
+                                                                  note:
+                                                                      "Payment For Agent $agentName",
+                                                                  amount:
+                                                                      controller
+                                                                          .text,
+                                                                  subAgentBranchCode:
+                                                                      subAgentCodeNew,
+                                                                );
                                                               },
                                                             ),
                                                           ],
@@ -1382,14 +1405,434 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                     );
                   },
                 );
-        
               },
             ),
           ),
-          const SizedBox(height: 10,),
-         // pagerWidget(),
-          
-          /*      Expanded(
+          const SizedBox(
+            height: 10,
+          ),
+          totalListCountNew != null
+              ? pagerWidget(totalListCountNew!.toInt())
+              : pagerWidget(3),
+
+
+        ],
+      ),
+    );
+  }
+
+  Container pagerWidget(int totPage) {
+    final provider =
+        Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
+    return Container(
+      decoration: BoxDecoration(
+        color: white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: home2.withOpacity(0.1),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+        border: Border.all(color: home1.withOpacity(0.5)),
+      ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Pager(
+          pageChangeIconColor: home1,
+          currentPage: _currentPage,
+          totalPages: totPage,
+          numberTextSelectedColor: Colors.white,
+          numberButtonSelectedColor: home1,
+          pagesView: 4,
+          currentItemsPerPage: 1,
+          onPageChanged: (page) async {
+            showProgressDialog(context);
+            setState(() {
+              print("page : $page");
+              _currentPage = page;
+            });
+            await provider.getRdclDueList(
+                "", agentBranchCode!, "", _currentPage, itemPerPage);
+            if (provider.showDialog == false) {
+              if (mounted) {
+                Navigator.pop(context);
+              }
+            }
+
+            // Optional: Scroll to top if you want user to see the beginning of the new data
+            _scrollController.animateTo(
+              0,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Future<void> sendLinkFunction(
+      RDCLDueAccount custDetails, String amount) async {
+    if (agentName == null ||
+        agentId == null ||
+        agentOriginId == null ||
+        token == null) {
+      print("One or more required fields are null.");
+      return; // or handle the error appropriately
+    }
+
+    final send = await PaymentLinkRepository().getPaymentLink(
+        agentName: agentName!,
+        agentId: agentId!,
+        agentOriginId: agentOriginId!,
+        agentPhone: agentPhoneNumber!,
+        agentEmail: agentEmail!,
+        customerEmail: "",
+        customerPhone: agentPhoneNumber!,
+        customerAccountNumber: custDetails.accNo,
+        customerId: custDetails.custId,
+        linkAmount: num.parse(amount),
+        note: "Payment for Order #1234",
+        corpCode: corpCode!,
+        cardRefNum: "",
+        token: token!,
+        subAgentId: subagentId!,
+        customerName: custDetails.name);
+    send.fold(
+      (error) {
+        print("-------------------ERROR---------------------");
+        print(error);
+      },
+      (sendLink) {
+        if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
+          Share.share("Here is your payment link: ${sendLink.linkUrl}");
+        } else {
+          print("Payment link is empty or null");
+        }
+      },
+    );
+  }
+
+  Future<void> paymentConfirmation(
+    BuildContext context,
+    String name,
+    String accNo,
+    String custId,
+    String amt,
+  ) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.all(25),
+            decoration: BoxDecoration(
+              color: white,
+              borderRadius: BorderRadius.circular(25),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 20,
+                  spreadRadius: 5,
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Animated icon
+                TweenAnimationBuilder(
+                  duration: const Duration(milliseconds: 500),
+                  tween: Tween<double>(begin: 0, end: 1),
+                  builder: (context, value, child) {
+                    return Transform.scale(scale: value, child: child);
+                  },
+                  child: Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.redAccent.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    // child: Lottie.asset("assets/animations/logout.json"),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                Text(
+                  "Payment Confirmation",
+                  style: GoogleFonts.poppins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey[800],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "Do you wish to proceed with the payment ?",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    color: Colors.grey[600],
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 25),
+                Row(
+                  children: [
+                    // Cancel button
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          side: const BorderSide(color: home1),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          backgroundColor: white,
+                        ),
+                        child: Text(
+                          "No",
+                          style: GoogleFonts.poppins(
+                            color: home1,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 15),
+
+                    // Logout button
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          getCashTrans(
+                            token: token,
+                            customerName: name,
+                            custPhoneNumber: "",
+                            custAcNumber: accNo,
+                            custId: custId,
+                            custEmail: "",
+                            phoneNumber: "$agentPhoneNumber",
+                            entityId: agentId,
+                            note: "Payment For Agent $agentName",
+                            amount: amt,
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.redAccent,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 2,
+                        ),
+                        child: Text(
+                          "Yes",
+                          style: GoogleFonts.poppins(
+                            color: white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class CustomSliderButton extends StatefulWidget {
+  final Future<void> Function() onConfirmed;
+  final String label;
+  final Color backgroundColor;
+  final Color buttonColor;
+  final String token;
+
+  const CustomSliderButton({
+    super.key,
+    required this.onConfirmed,
+    required this.label,
+    required this.backgroundColor,
+    required this.buttonColor,
+    required this.token,
+  });
+
+  @override
+  State<CustomSliderButton> createState() => _CustomSliderButtonState();
+}
+
+class _CustomSliderButtonState extends State<CustomSliderButton> {
+  double _dragPosition = 0.0;
+  bool _isConfirmed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width - 40;
+
+    return Container(
+      width: width,
+      height: 70,
+      decoration: BoxDecoration(
+        color: widget.backgroundColor,
+        borderRadius: BorderRadius.circular(35),
+        boxShadow: const [
+          BoxShadow(color: Colors.black26, blurRadius: 8, offset: Offset(0, 4)),
+        ],
+      ),
+      child: Stack(
+        alignment: Alignment.centerLeft,
+        children: [
+          Center(
+            child: Shimmer.fromColors(
+              baseColor: Colors.white,
+              highlightColor: widget.buttonColor.withOpacity(0.25),
+              child: Text(
+                widget.label,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 12,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            left: _dragPosition,
+            child: GestureDetector(
+              onHorizontalDragUpdate: (details) {
+                setState(() {
+                  _dragPosition += details.delta.dx;
+                  _dragPosition = _dragPosition.clamp(0.0, width - 70);
+                });
+              },
+              onHorizontalDragEnd: (_) async {
+                if (_dragPosition > (width - 70) * 0.5) {
+                  setState(() {
+                    _isConfirmed = true;
+                    _dragPosition = width - 70;
+                  });
+
+                  await widget.onConfirmed();
+
+                  setState(() {
+                    _dragPosition = 0.0;
+                    _isConfirmed = false;
+                  });
+                } else {
+                  setState(() {
+                    _dragPosition = 0.0;
+                  });
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(left: 5),
+                child: Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: widget.buttonColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: AnimatedSwitcher(
+                    duration: const Duration(seconds: 1),
+                    transitionBuilder: (child, animation) => RotationTransition(
+                      turns: Tween(
+                        begin: 0.75,
+                        end: 1.0,
+                      ).animate(animation),
+                      child: child,
+                    ),
+                    child: Image.asset(
+                      "assets/icons/arrow.png",
+                      key: const ValueKey('arrow-icon'),
+                      scale: 20,
+                      color: home2,
+                      fit: BoxFit.scaleDown,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ShakeTransition extends StatelessWidget {
+  final Widget child;
+  final Duration duration;
+  final double offset;
+
+  const ShakeTransition({
+    super.key,
+    required this.child,
+    this.duration = const Duration(milliseconds: 1000),
+    this.offset = 10,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 1.0, end: 0.0),
+      duration: duration,
+      curve: Curves.elasticOut,
+      builder: (context, value, child) {
+        return Transform.translate(
+          offset: Offset(
+            value * offset * math.sin(value * math.pi * 2),
+            0,
+          ),
+          child: child,
+        );
+      },
+      child: child,
+    );
+  }
+}
+
+class BounceTransition extends StatelessWidget {
+  final Widget child;
+  final Duration duration;
+
+  const BounceTransition({
+    super.key,
+    required this.child,
+    this.duration = const Duration(milliseconds: 1000),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.0, end: 1.0),
+      duration: duration,
+      curve: Curves.elasticOut,
+      builder: (context, value, child) {
+        return Transform.scale(
+          scale: value,
+          child: child,
+        );
+      },
+      child: child,
+    );
+  }
+}
+
+/*      Expanded(
             child: Consumer<RdclDueUnderAgentProvider>(
               builder: (context, provider, child) {
                 final allData = provider.rdclDueUnderAgentModel?.data ?? [];
@@ -2085,398 +2528,20 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
               },
             ),
           ),*/
-        ],
-      ),
-    );
-  }
+///currently the api is not used....
+// Future<void> _searchMethod(String query) async {
+//   final provider =
+//       Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
+//   setState(() => _isLoading = true);
+//   await provider.getRdclDueList("", "", query);
+//   setState(() => _isLoading = false);
+// }
 
-  Container pagerWidget() {
-    return Container(
-          decoration: BoxDecoration(
-            color: white,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                color: home2.withOpacity(0.1),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
-              ),
-            ],
-            border: Border.all(color: home1.withOpacity(0.5)),
-          ),
-          child: Pager(
-            pageChangeIconColor: home1,
-            currentPage: _currentPage,
-            totalPages: 20,
-            numberTextSelectedColor: Colors.white,
-            numberButtonSelectedColor: home1,
-            pagesView: 4,
-            currentItemsPerPage: 1,
-            onPageChanged: (page) {
-              setState(() {
-                print("page : $page");
-                _currentPage = page;
-              });
-            },
-          ),
-        );
-  }
-
-  Future<void> sendLinkFunction(
-      RDCLDueAccount custDetails, String amount) async {
-    if (agentName == null ||
-        agentId == null ||
-        agentOriginId == null ||
-        token == null) {
-      print("One or more required fields are null.");
-      return; // or handle the error appropriately
-    }
-
-    final send = await PaymentLinkRepository().getPaymentLink(
-        agentName: agentName!,
-        agentId: agentId!,
-        agentOriginId: agentOriginId!,
-        agentPhone: agentPhoneNumber!,
-        agentEmail: agentEmail!,
-        customerEmail: "",
-        customerPhone: agentPhoneNumber!,
-        customerAccountNumber: custDetails.accNo,
-        customerId: custDetails.custId,
-        linkAmount: num.parse(amount),
-        note: "Payment for Order #1234",
-        corpCode: corpCode!,
-        cardRefNum: "",
-        token: token!,
-        subAgentId: subagentId!,
-        customerName: custDetails.name);
-    send.fold(
-      (error) {
-        print("-------------------ERROR---------------------");
-        print(error);
-      },
-      (sendLink) {
-        if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
-          Share.share("Here is your payment link: ${sendLink.linkUrl}");
-        } else {
-          print("Payment link is empty or null");
-        }
-      },
-    );
-  }
-  Future<void> paymentConfirmation(BuildContext context,
-      String name ,
-      String accNo ,
-      String custId ,
-      String amt ,
-      )
-  {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25),
-          ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          child: Container(
-            padding: const EdgeInsets.all(25),
-            decoration: BoxDecoration(
-              color: white,
-              borderRadius: BorderRadius.circular(25),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  blurRadius: 20,
-                  spreadRadius: 5,
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Animated icon
-                TweenAnimationBuilder(
-                  duration: const Duration(milliseconds: 500),
-                  tween: Tween<double>(begin: 0, end: 1),
-                  builder: (context, value, child) {
-                    return Transform.scale(scale: value, child: child);
-                  },
-                  child: Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: Colors.redAccent.withOpacity(0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    // child: Lottie.asset("assets/animations/logout.json"),
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                Text(
-                  "Payment Confirmation",
-                  style: GoogleFonts.poppins(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey[800],
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "Do you wish to proceed with the payment ?",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
-                    color: Colors.grey[600],
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 25),
-                Row(
-                  children: [
-                    // Cancel button
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => Navigator.pop(context),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          side: const BorderSide(color: home1),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          backgroundColor: white,
-                        ),
-                        child: Text(
-                          "No",
-                          style: GoogleFonts.poppins(
-                            color: home1,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 15),
-
-                    // Logout button
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: ()  {
-                          getCashTrans(
-                            token: token,
-                            customerName: name,
-                            custPhoneNumber: "",
-                            custAcNumber: accNo,
-                            custId: custId,
-                            custEmail: "",
-                            phoneNumber: "$agentPhoneNumber",
-                            entityId: agentId,
-                            note: "Payment For Agent $agentName",
-                            amount: amt,
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.redAccent,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 2,
-                        ),
-                        child: Text(
-                          "Yes",
-                          style: GoogleFonts.poppins(
-                            color: white,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-
-class CustomSliderButton extends StatefulWidget {
-  final Future<void> Function() onConfirmed;
-  final String label;
-  final Color backgroundColor;
-  final Color buttonColor;
-  final String token;
-
-  const CustomSliderButton({
-    super.key,
-    required this.onConfirmed,
-    required this.label,
-    required this.backgroundColor,
-    required this.buttonColor,
-    required this.token,
-  });
-
-  @override
-  State<CustomSliderButton> createState() => _CustomSliderButtonState();
-}
-
-class _CustomSliderButtonState extends State<CustomSliderButton> {
-  double _dragPosition = 0.0;
-  bool _isConfirmed = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width - 40;
-
-    return Container(
-      width: width,
-      height: 70,
-      decoration: BoxDecoration(
-        color: widget.backgroundColor,
-        borderRadius: BorderRadius.circular(35),
-        boxShadow: const [
-          BoxShadow(color: Colors.black26, blurRadius: 8, offset: Offset(0, 4)),
-        ],
-      ),
-      child: Stack(
-        alignment: Alignment.centerLeft,
-        children: [
-          Center(
-            child: Shimmer.fromColors(
-              baseColor: Colors.white,
-              highlightColor: widget.buttonColor.withOpacity(0.25),
-              child: Text(
-                widget.label,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 12,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            left: _dragPosition,
-            child: GestureDetector(
-              onHorizontalDragUpdate: (details) {
-                setState(() {
-                  _dragPosition += details.delta.dx;
-                  _dragPosition = _dragPosition.clamp(0.0, width - 70);
-                });
-              },
-              onHorizontalDragEnd: (_) async {
-                if (_dragPosition > (width - 70) * 0.5) {
-                  setState(() {
-                    _isConfirmed = true;
-                    _dragPosition = width - 70;
-                  });
-
-                  await widget.onConfirmed();
-
-                  setState(() {
-                    _dragPosition = 0.0;
-                    _isConfirmed = false;
-                  });
-                } else {
-                  setState(() {
-                    _dragPosition = 0.0;
-                  });
-                }
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(left: 5),
-                child: Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: widget.buttonColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: AnimatedSwitcher(
-                    duration: const Duration(seconds: 1),
-                    transitionBuilder: (child, animation) => RotationTransition(
-                      turns: Tween(
-                        begin: 0.75,
-                        end: 1.0,
-                      ).animate(animation),
-                      child: child,
-                    ),
-                    child: Image.asset(
-                      "assets/icons/arrow.png",
-                      key: const ValueKey('arrow-icon'),
-                      scale: 20,
-                      color: home2,
-                      fit: BoxFit.scaleDown,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ShakeTransition extends StatelessWidget {
-  final Widget child;
-  final Duration duration;
-  final double offset;
-
-  const ShakeTransition({
-    super.key,
-    required this.child,
-    this.duration = const Duration(milliseconds: 1000),
-    this.offset = 10,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 1.0, end: 0.0),
-      duration: duration,
-      curve: Curves.elasticOut,
-      builder: (context, value, child) {
-        return Transform.translate(
-          offset: Offset(
-            value * offset * math.sin(value * math.pi * 2),
-            0,
-          ),
-          child: child,
-        );
-      },
-      child: child,
-    );
-  }
-}
-
-class BounceTransition extends StatelessWidget {
-  final Widget child;
-  final Duration duration;
-
-  const BounceTransition({
-    super.key,
-    required this.child,
-    this.duration = const Duration(milliseconds: 1000),
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0.0, end: 1.0),
-      duration: duration,
-      curve: Curves.elasticOut,
-      builder: (context, value, child) {
-        return Transform.scale(
-          scale: value,
-          child: child,
-        );
-      },
-      child: child,
-    );
-  }
-}
+// Future<void> _clearSearch() async {
+//   final provider =
+//       Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
+//   _searchController.clear();
+//   setState(() => _isLoading = true);
+//   await provider.getRdclDueList(agentOriginId!, "", "");
+//   setState(() => _isLoading = false);
+// }

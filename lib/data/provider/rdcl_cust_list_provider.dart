@@ -12,13 +12,20 @@ class RdclCustListProvider with ChangeNotifier {
   RdclCustomerListModel? _rdclCustomerListModel;
 
   RdclCustomerListModel? get rdclCustomerListModel => _rdclCustomerListModel;
+  bool? _showDialog;
+  bool? get showDialog => _showDialog;
 
   Future<Either<String, RdclCustomerListModel>> getRdclCustomerunderAgent(
       String? agentID, String? branchID,int pgNo, int pgSize) async {
     final data =
         await _rdclCustListRep.getRdclCustomerunderAgent(agentID, branchID,pgNo, pgSize);
-    data.fold((err) {}, (success) {
+    _showDialog = true;
+    notifyListeners();
+    data.fold((err) {
+      _showDialog = false;
+    }, (success) {
       _rdclCustomerListModel = success;
+      _showDialog = false;
     });
     notifyListeners();
     return data;

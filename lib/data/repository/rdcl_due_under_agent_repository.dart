@@ -13,11 +13,12 @@ class RdclDueUnderAgentRepo implements RdclDueUnderAgentModelInterface{
 
   @override
   Future<Either<String, RdclDueUnderAgentModel>> getRdclDueList(String agentId,
-      String branchCode, String accNo) async {
+      String branchCode, String accNo, int pageNo, int pageSize) async {
     print("inside getRdclDueList");
     final vendorUrl = await loadVendorUrl();
     print("vendorUrl = $vendorUrl");
-   final uri = Uri.parse("$vendorUrl?agent_id=$agentId&br_code=$branchCode&acc_no=$accNo");
+   //final uri = Uri.parse("$vendorUrl?agent_id=$agentId&br_code=$branchCode&acc_no=$accNo");
+   final uri = Uri.parse("https://doorstepfapmcomscs.digicob.in/GetRdclDuesListunderAgent?agent_id=$agentId&br_code=$branchCode&acc_no=$accNo&PageNumber=$pageNo&PageSize=$pageSize");
     print("uri = $uri");
    final request = await  http.get(uri);
    print(request.statusCode);

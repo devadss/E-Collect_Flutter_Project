@@ -37,6 +37,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
   final ScrollController _scrollController = ScrollController();
   double totalListCount = 0;
   double? totalListCountNew;
+  int itemPerPage = 50;
 
 
   @override
@@ -148,14 +149,19 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
           pagesView: 4,
           currentItemsPerPage: 1,
           onPageChanged: (page) async {
+            showProgressDialog(context);
             setState(() {
               print("page : $page");
               _currentPage = page;
             });
             await provider.getRdclCustomerunderAgent(
-                "", agentBranchCode, _currentPage, 50);
+                "", agentBranchCode, _currentPage, itemPerPage);
 
-
+            if(provider.showDialog == false){
+              if(mounted){
+                Navigator.pop(context);
+              }
+            }
             // Optional: Scroll to top if you want user to see the beginning of the new data
             _scrollController.animateTo(
               0,
@@ -176,6 +182,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
     final number = await SharedPref().getParentAgentMobNum();
     final custId = await SharedPref().getAgentId();
     if (mounted) {
+      showProgressDialog(context);
       setState(() {
         branchid = branchID;
         agentId = id;
@@ -192,12 +199,16 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
           Provider.of<RdclCustListProvider>(context, listen: false);
 
       await provider.getRdclCustomerunderAgent(
-          "", agentBranchCode, _currentPage, 50);
+          "", agentBranchCode, _currentPage, itemPerPage);
       totalListCount = provider.rdclCustomerListModel!.customerList.totalCount.toDouble();
-
+if(provider.showDialog == false){
+  if(mounted){
+    Navigator.pop(context);
+  }
+}
       if (provider.rdclCustomerListModel?.customerList.totalCount != null) {
         setState(() {
-          var result = totalListCount / 50.0;
+          var result = totalListCount / itemPerPage.toDouble();
           result % 2 == 0
               ? totalListCountNew = result
               : totalListCountNew = result + 1;
@@ -427,7 +438,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
                                                     agentId,
                                                     "",
                                                     _currentPage,
-                                                    1);
+                                                itemPerPage);
                                             print("Filter by Agent ID");
 
                                             Navigator.pop(context);
@@ -438,7 +449,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
                                                     "",
                                                     agentBranchCode,
                                                     _currentPage,
-                                                    1);
+                                                itemPerPage);
                                             setState(() {
                                               selectedFilterType = "branchid";
                                             });
@@ -518,6 +529,8 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
                                   indexValue: index,
                                   branchCode: branchCode.toString(),
                                   custIdNew: customer.custId,
+                                      pageNo: _currentPage,
+                                      pageSize: itemPerPage,
                                 ),
                               ),
                             );

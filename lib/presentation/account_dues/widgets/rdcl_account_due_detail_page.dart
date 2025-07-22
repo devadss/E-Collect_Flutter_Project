@@ -905,6 +905,8 @@ class RdclAccountDueDetailsPage extends StatefulWidget {
   final String custIdNew;
   final String custEmail;
   final String branchCode;
+  final int pageNo;
+  final int pageSize;
 
   const RdclAccountDueDetailsPage(
       {super.key,
@@ -914,7 +916,7 @@ class RdclAccountDueDetailsPage extends StatefulWidget {
       required this.custId,
       required this.custEmail,
       required this.corpCode,
-      required this.indexValue, required this.branchCode, required this.custIdNew});
+      required this.indexValue, required this.branchCode, required this.custIdNew, required this.pageNo, required this.pageSize});
 
   @override
   State<RdclAccountDueDetailsPage> createState() =>
@@ -1413,6 +1415,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
     print(
         "--------------------------------DATE TIME--------------------------");
     print(_dateTime);
+    print("Index value = ${widget.indexValue}");
 
     super.initState();
   }
@@ -1446,7 +1449,8 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
     }
     final provider =
         Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
-    await provider.getRdclDueList(agentId!, "", "");
+    //await provider.getRdclDueList(agentId!, "", "", widget.pageNo, widget.pageSize);
+    await provider.getRdclDueList("", sub_AgentCodeNew, "", widget.pageNo, widget.pageSize);
 
   }
 
@@ -1566,7 +1570,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
         // itemCount: provider.rdclDueUnderAgentModel!.data.length,
         itemCount: 1,
         itemBuilder: (_, index) {
-          final due = provider.rdclDueUnderAgentModel?.data[widget.indexValue!];
+          final due = provider.rdclDueUnderAgentModel?.data[widget.indexValue!.toInt()];
           return Card(
             elevation: 0,
             margin: const EdgeInsets.only(bottom: 12),
