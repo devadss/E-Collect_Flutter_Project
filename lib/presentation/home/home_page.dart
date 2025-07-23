@@ -270,8 +270,8 @@ showProgressDialog(context);
                         if(qrProvider.showProgressDialog == false
                         ){
                           if(mounted){
-                            Navigator?.pop(context);
-                            Navigator?.pop(context);
+                            Navigator.pop(context);
+                            Navigator.pop(context);
                           }
                         }
                         await cashTransProvider.getCashTranscationHistory(period, from, to, 'COLLECTION_CASH', subAgentID, corpCode, agentOriginId);
