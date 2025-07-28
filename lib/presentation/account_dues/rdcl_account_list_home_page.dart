@@ -166,6 +166,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
           pagesView: 4,
           currentItemsPerPage: 1,
           onPageChanged: (page) async {
+            _searchController.clear();
             showProgressDialog(context);
             setState(() {
               print("page : $page");

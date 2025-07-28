@@ -1469,6 +1469,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
           pagesView: 4,
           currentItemsPerPage: 1,
           onPageChanged: (page) async {
+            _searchController.clear();
             showProgressDialog(context);
             setState(() {
               print("page : $page");
