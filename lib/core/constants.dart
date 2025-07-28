@@ -7,6 +7,9 @@ import 'package:flutter/services.dart';
 const String baseUrl = "https://adsspay.aanvinsolutions.com:8444/";///LIVE
 //const String baseUrl = "https://adsspayweb.digicob.in/"; //TEST
 //*******************************************************************
+//const String dopBaseUrl = "https://devops.mydop.in/api/fetch/vendor/urls/"; //UAT
+const String dopBaseUrl = "https://mydop.in/api/fetch/vendor/urls/"; //LIVE
+
 
 const String port = ":8444/";
 const String agentIdLive = "ADSS20231011";

@@ -5,6 +5,8 @@ import 'package:collection_qr_flutter/domain/model/collection_base_url_model.dar
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 
+import '../../core/constants.dart';
+
 class CollectionBaseUrlRepo implements CollectionBaseUrlInterface{
   @override
   Future<Either<String, CollectionBaseUrlModel>> getCollectionUrl(
@@ -13,7 +15,7 @@ class CollectionBaseUrlRepo implements CollectionBaseUrlInterface{
     parentMobNum!.startsWith("+91")?
   parentMobNum.replaceAll("+91", ""):parentMobNum;
 print("parentMobNum $parentMobNum");
-   final uri = Uri.parse("https://devops.mydop.in/api/fetch/vendor/urls/$parentMobNum");
+   final uri = Uri.parse("$dopBaseUrl$parentMobNum");
    final request = await http.get(uri);
    print("CollectionBaseUrlRepo : $uri");
    print("CollectionBaseUrlRepo Body:${request.body}");
