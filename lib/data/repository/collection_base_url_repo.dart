@@ -7,24 +7,22 @@ import 'package:http/http.dart' as http;
 
 import '../../core/constants.dart';
 
-class CollectionBaseUrlRepo implements CollectionBaseUrlInterface{
+class CollectionBaseUrlRepo implements CollectionBaseUrlInterface {
   @override
   Future<Either<String, CollectionBaseUrlModel>> getCollectionUrl(
-      String? parentMobNum
-      ) async {
-    parentMobNum!.startsWith("+91")?
-  parentMobNum.replaceAll("+91", ""):parentMobNum;
-print("parentMobNum $parentMobNum");
-   final uri = Uri.parse("$dopBaseUrl$parentMobNum");
-   final request = await http.get(uri);
-   print("CollectionBaseUrlRepo : $uri");
-   print("CollectionBaseUrlRepo Body:${request.body}");
-   if(request.statusCode == 200){
-     return Right(CollectionBaseUrlModel.fromJson(jsonDecode(request.body)));
-   }else{
-     return Left(request.body);
-   }
-
+      String? parentMobNum) async {
+    parentMobNum!.startsWith("+91")
+        ? parentMobNum.replaceAll("+91", "")
+        : parentMobNum;
+    print("parentMobNum $parentMobNum");
+    final uri = Uri.parse("$dopBaseUrl$parentMobNum");
+    final request = await http.get(uri);
+    print("CollectionBaseUrlRepo : $uri");
+    print("CollectionBaseUrlRepo Body:${request.body}");
+    if (request.statusCode == 200) {
+      return Right(CollectionBaseUrlModel.fromJson(jsonDecode(request.body)));
+    } else {
+      return Left(request.body);
+    }
   }
-  
 }

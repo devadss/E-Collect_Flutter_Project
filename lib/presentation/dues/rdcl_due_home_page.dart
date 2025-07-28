@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collection_qr_flutter/data/provider/cash_transcation_provider.dart';
 import 'package:collection_qr_flutter/data/provider/rdcl_due_under_agent_provider.dart';
 import 'package:collection_qr_flutter/domain/model/due_model/rdcl_due_under_agent_model.dart';
@@ -41,6 +43,8 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
   final GlobalKey _filterIconKey = GlobalKey();
   String? agentBranchCode;
   String? subAgentCodeNew;
+  Timer? _debounce; // Declare this at the class level
+
   String? paymentSessionId;
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
@@ -88,9 +92,16 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
         _scaleController.reverse();
       }
 
-      // Trigger UI rebuild when the search text changes (add this line)
-      setState(() {});
+      // Debounce the API call
+      if (_debounce?.isActive ?? false) _debounce!.cancel();
+      _debounce = Timer(const Duration(milliseconds: 500), () {
+        final searchText = _searchController.text.trim();
+        if (searchText.isNotEmpty) {
+          doSearchByApi(searchText);
+        }
+      });
     });
+
   }
 
   @override
@@ -100,6 +111,16 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
     _scaleController.dispose();
     _searchController.dispose();
     super.dispose();
+  }
+  //THE SEARCH IS DONE IF THE CUSTOMER IS NOT FOUND IN THE CURRENT LANDING PAGE...
+  Future<void> doSearchByApi(String custNameSearch) async {
+    print("Inside doSearchByApi");
+    //showProgressDialog(context);
+    final providerTwo =
+    Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
+    await providerTwo.getRdclDueList(
+        "", agentBranchCode!, "", 0, 0,custNameSearch);
+
   }
 
   List<dynamic> _filterDues(List<dynamic> allDues, String query) {
@@ -187,7 +208,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
     final providerTwo =
         Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
     await providerTwo.getRdclDueList(
-        "", agentBranchCode!, "", _currentPage, itemPerPage);
+        "", agentBranchCode!, "", _currentPage, itemPerPage,"");
     totalListCount = double.parse(
         providerTwo.rdclDueUnderAgentModel!.data[0].totalCount.toString());
     if (totalListCount > 1) {
@@ -629,10 +650,9 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                                 "",
                                                 "",
                                                 _currentPage,
-                                                itemPerPage);
+                                                itemPerPage,"");
                                             _filterDues(
-                                                provider.rdclDueUnderAgentModel!
-                                                    .data,
+                                                provider.rdclDueUnderAgentModel!.data,
                                                 "");
                                             Navigator.pop(context);
                                           } else if (value == 'branch') {
@@ -647,7 +667,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                                 agentBranchCode.toString(),
                                                 "",
                                                 _currentPage,
-                                                itemPerPage);
+                                                itemPerPage,"");
                                             _filterDues(
                                                 provider.rdclDueUnderAgentModel!
                                                     .data,
@@ -700,6 +720,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                   return buildShimmerList();
                 } else if (filteredData.isEmpty) {
                   return const Text("No data found");
+                // doSearchByApi(_searchController.text);
                 }
 
                 final groupedData = <String, List<dynamic>>{};
@@ -1454,7 +1475,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
               _currentPage = page;
             });
             await provider.getRdclDueList(
-                "", agentBranchCode!, "", _currentPage, itemPerPage);
+                "", agentBranchCode!, "", _currentPage, itemPerPage,"");
             if (provider.showDialog == false) {
               if (mounted) {
                 Navigator.pop(context);

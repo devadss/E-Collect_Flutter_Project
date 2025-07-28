@@ -7,7 +7,8 @@ abstract class RdclDueUnderAgentModelInterface{
       String branchCode,
       String accNo,
       int pageNo,
-      int pageSize
+      int pageSize,
+      String custName
 
       );
 }

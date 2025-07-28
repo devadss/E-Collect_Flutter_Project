@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collection_qr_flutter/presentation/account_dues/widgets/rdcl_account_due_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:pager/pager.dart';
@@ -38,7 +40,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
   double totalListCount = 0;
   double? totalListCountNew;
   int itemPerPage = 50;
-
+  Timer? _debounce; // Declare this at the class level
 
   @override
   void initState() {
@@ -74,11 +76,27 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
         _fadeController.reverse();
         _scaleController.reverse();
       }
+
+      // Debounce the API call
+      if (_debounce?.isActive ?? false) _debounce!.cancel();
+      _debounce = Timer(const Duration(milliseconds: 500), () {
+        final searchText = _searchController.text.trim();
+        if (searchText.isNotEmpty) {
+          apiNameSearch(searchText);
+        }
+      });
     });
+    // _searchController.addListener(() {
+    //   if (_searchController.text.isNotEmpty) {
+    //     _fadeController.forward();
+    //     _scaleController.forward();
+    //   } else {
+    //     _fadeController.reverse();
+    //     _scaleController.reverse();
+    //   }
+    // });
     super.initState();
   }
-
-
 
   void showProgressDialog(BuildContext context) {
     showDialog(
@@ -119,7 +137,6 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
     _fadeController.dispose();
     _scaleController.dispose();
     _searchController.dispose();
-
     super.dispose();
   }
 
@@ -155,10 +172,10 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
               _currentPage = page;
             });
             await provider.getRdclCustomerunderAgent(
-                "", agentBranchCode, _currentPage, itemPerPage);
+                "", agentBranchCode, _currentPage, itemPerPage, "");
 
-            if(provider.showDialog == false){
-              if(mounted){
+            if (provider.showDialog == false) {
+              if (mounted) {
                 Navigator.pop(context);
               }
             }
@@ -199,13 +216,14 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
           Provider.of<RdclCustListProvider>(context, listen: false);
 
       await provider.getRdclCustomerunderAgent(
-          "", agentBranchCode, _currentPage, itemPerPage);
-      totalListCount = provider.rdclCustomerListModel!.customerList.totalCount.toDouble();
-if(provider.showDialog == false){
-  if(mounted){
-    Navigator.pop(context);
-  }
-}
+          "", agentBranchCode, _currentPage, itemPerPage, "");
+      totalListCount =
+          provider.rdclCustomerListModel!.customerList.totalCount.toDouble();
+      if (provider.showDialog == false) {
+        if (mounted) {
+          Navigator.pop(context);
+        }
+      }
       if (provider.rdclCustomerListModel?.customerList.totalCount != null) {
         setState(() {
           var result = totalListCount / itemPerPage.toDouble();
@@ -213,7 +231,6 @@ if(provider.showDialog == false){
               ? totalListCountNew = result
               : totalListCountNew = result + 1;
         });
-
       }
 
       print("totalListCount = $totalListCount");
@@ -232,6 +249,15 @@ if(provider.showDialog == false){
       return accNo.contains(query.toLowerCase()) ||
           name.contains(query.toLowerCase());
     }).toList();
+  }
+
+  //THE SEARCH IS DONE IF THE CUSTOMER IS NOT FOUND IN THE CURRENT LANDING PAGE...
+  Future<void> apiNameSearch(String nameToSearch) async {
+    print("Inside apiNameSearch");
+    final provider = Provider.of<RdclCustListProvider>(context, listen: false);
+
+    await provider.getRdclCustomerunderAgent(
+        "", agentBranchCode, 0, 0, nameToSearch);
   }
 
   Widget buildShimmerText(
@@ -438,7 +464,8 @@ if(provider.showDialog == false){
                                                     agentId,
                                                     "",
                                                     _currentPage,
-                                                itemPerPage);
+                                                    itemPerPage,
+                                                    "");
                                             print("Filter by Agent ID");
 
                                             Navigator.pop(context);
@@ -449,7 +476,8 @@ if(provider.showDialog == false){
                                                     "",
                                                     agentBranchCode,
                                                     _currentPage,
-                                                itemPerPage);
+                                                    itemPerPage,
+                                                    "");
                                             setState(() {
                                               selectedFilterType = "branchid";
                                             });
@@ -496,6 +524,7 @@ if(provider.showDialog == false){
                   if (provider.rdclCustomerListModel == null) {
                     return buildShimmerList();
                   } else if (filteredCustomers.isEmpty) {
+                    //apiNameSearch(_searchController.text);
                     return Center(
                       child: Text(
                         _searchController.text.isEmpty
@@ -517,8 +546,7 @@ if(provider.showDialog == false){
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    RdclAccountDueDetailsPage(
+                                builder: (context) => RdclAccountDueDetailsPage(
                                   custName: customer.custName,
                                   custAcNumber: customer.rdclGlobalAccNo ??
                                       "RDCL GLOBAL ACC NO",
@@ -529,8 +557,8 @@ if(provider.showDialog == false){
                                   indexValue: index,
                                   branchCode: branchCode.toString(),
                                   custIdNew: customer.custId,
-                                      pageNo: _currentPage,
-                                      pageSize: itemPerPage,
+                                  pageNo: _currentPage,
+                                  pageSize: itemPerPage,
                                 ),
                               ),
                             );
