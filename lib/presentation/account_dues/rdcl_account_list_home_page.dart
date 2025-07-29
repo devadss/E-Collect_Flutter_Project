@@ -79,22 +79,21 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
 
       // Debounce the API call
       if (_debounce?.isActive ?? false) _debounce!.cancel();
-      _debounce = Timer(const Duration(milliseconds: 500), () {
+      _debounce = Timer(const Duration(milliseconds: 700), () async {
         final searchText = _searchController.text.trim();
+
         if (searchText.isNotEmpty) {
+          print("searchText $searchText");
           apiNameSearch(searchText);
+        }else{
+          final provider =
+          Provider.of<RdclCustListProvider>(context, listen: false);
+          await provider.getRdclCustomerunderAgent(
+              "", agentBranchCode, _currentPage, itemPerPage, "");
         }
       });
     });
-    // _searchController.addListener(() {
-    //   if (_searchController.text.isNotEmpty) {
-    //     _fadeController.forward();
-    //     _scaleController.forward();
-    //   } else {
-    //     _fadeController.reverse();
-    //     _scaleController.reverse();
-    //   }
-    // });
+
     super.initState();
   }
 
@@ -259,6 +258,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
 
     await provider.getRdclCustomerunderAgent(
         "", agentBranchCode, 0, 0, nameToSearch);
+
   }
 
   Widget buildShimmerText(
