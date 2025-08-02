@@ -93,99 +93,101 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         showDialog(context: context, builder: (context) => exitAlert(context));
         return false;
       },
-      child: Scaffold(
-        backgroundColor: white,
-        body: _getSelectedPage(_selectedIndex),
-        bottomNavigationBar: Container(
-          height: 80,
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 20,
-                spreadRadius: 2,
-              ),
-            ],
-          ),
-          child: Stack(
-            children: [
-              // Background floating pill
-              AnimatedPositioned(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeOutQuad,
-                left: _indicatorPosition,
-                bottom: 20,
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: home2,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: home2.withOpacity(0.4),
-                        blurRadius: 12,
-                        spreadRadius: 2,
-                      ),
-                    ],
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: white,
+          body: _getSelectedPage(_selectedIndex),
+          bottomNavigationBar: Container(
+            height: 80,
+            decoration: BoxDecoration(
+              color: Colors.transparent,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 20,
+                  spreadRadius: 2,
+                ),
+              ],
+            ),
+            child: Stack(
+              children: [
+                // Background floating pill
+                AnimatedPositioned(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOutQuad,
+                  left: _indicatorPosition,
+                  bottom: 20,
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: home2,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: home2.withOpacity(0.4),
+                          blurRadius: 12,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              // Navigation items
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: white,
-                    borderRadius: BorderRadius.circular(30),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 15,
-                        spreadRadius: 1,
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      _buildNavItem(
-                        key: _tabKeys[0],
-                        index: 0,
-                        icon: Icons.home_outlined,
-                        activeIcon: Icons.home,
-                        label: 'Home',
-                      ),
-                      _buildNavItem(
-                        key: _tabKeys[1],
-                        index: 1,
-                        icon: Icons.receipt_long_outlined,
-                        activeIcon: Icons.receipt_long,
-                        label: 'Dues',
-                      ),
-                      _buildNavItem(
-                        key: _tabKeys[2],
-                        index: 2,
-                        icon: Icons.list_alt_outlined,
-                        activeIcon: Icons.list_alt,
-                        label:
-                        userTPYE?.contains("RDCL") == true?
-                        "Cust List":'Accounts',
-                      ),
-                      _buildNavItem(
-                        key: _tabKeys[3],
-                        index: 3,
-                        icon: Icons.person_outline,
-                        activeIcon: Icons.person,
-                        label: 'Profile',
-                      ),
-                    ],
+                // Navigation items
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: white,
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 15,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildNavItem(
+                          key: _tabKeys[0],
+                          index: 0,
+                          icon: Icons.home_outlined,
+                          activeIcon: Icons.home,
+                          label: 'Home',
+                        ),
+                        _buildNavItem(
+                          key: _tabKeys[1],
+                          index: 1,
+                          icon: Icons.receipt_long_outlined,
+                          activeIcon: Icons.receipt_long,
+                          label: 'Dues',
+                        ),
+                        _buildNavItem(
+                          key: _tabKeys[2],
+                          index: 2,
+                          icon: Icons.list_alt_outlined,
+                          activeIcon: Icons.list_alt,
+                          label:
+                          userTPYE?.contains("RDCL") == true?
+                          "Cust List":'Accounts',
+                        ),
+                        _buildNavItem(
+                          key: _tabKeys[3],
+                          index: 3,
+                          icon: Icons.person_outline,
+                          activeIcon: Icons.person,
+                          label: 'Profile',
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -226,12 +228,15 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
-                label,
-                style: GoogleFonts.poppins(
-                  fontSize: 10,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                  color: isSelected ? home2 : Colors.grey[600],
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  label,
+                  style: GoogleFonts.poppins(
+                    fontSize: 10,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                    color: isSelected ? home2 : Colors.grey[600],
+                  ),
                 ),
               ),
             ],

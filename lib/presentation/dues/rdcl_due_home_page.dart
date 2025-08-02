@@ -459,12 +459,15 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
         automaticallyImplyLeading: false,
         backgroundColor: white,
         centerTitle: true,
-        title: const Text(
-          "RDCL Due List",
-          style: TextStyle(
-            fontSize: 23,
-            color: home2,
-            fontWeight: FontWeight.w700,
+        title: const FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            "RDCL Due List",
+            style: TextStyle(
+              fontSize: 23,
+              color: home2,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
       ),
@@ -980,18 +983,21 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                                                         CrossAxisAlignment
                                                                             .start,
                                                                     children: [
-                                                                      Text(
-                                                                        "Collect Payment Using",
-                                                                        overflow:
-                                                                            TextOverflow.ellipsis,
-                                                                        style: GoogleFonts
-                                                                            .inter(
-                                                                          fontWeight:
-                                                                              FontWeight.w500,
-                                                                          color:
-                                                                              black87,
-                                                                          fontSize:
-                                                                              15,
+                                                                      FittedBox(
+                                                                        fit:BoxFit.scaleDown,
+                                                                        child: Text(
+                                                                          "Collect Payment Using",
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          style: GoogleFonts
+                                                                              .inter(
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                            color:
+                                                                                black87,
+                                                                            fontSize:
+                                                                                15,
+                                                                          ),
                                                                         ),
                                                                       ),
                                                                       Text(
@@ -1109,25 +1115,28 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                                                       ),
                                                                     );
                                                                   },
-                                                                  child: Text(
-                                                                    "Change Method >",
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    style: GoogleFonts
-                                                                        .inter(
-                                                                      decoration:
-                                                                          TextDecoration
-                                                                              .underline,
-                                                                      decorationColor:
-                                                                          home2,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w800,
-                                                                      color:
-                                                                          home2,
-                                                                      fontSize:
-                                                                          12,
+                                                                  child: FittedBox(
+                                                                    fit: BoxFit.scaleDown,
+                                                                    child: Text(
+                                                                      "Change Method >",
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      style: GoogleFonts
+                                                                          .inter(
+                                                                        decoration:
+                                                                            TextDecoration
+                                                                                .underline,
+                                                                        decorationColor:
+                                                                            home2,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w800,
+                                                                        color:
+                                                                            home2,
+                                                                        fontSize:
+                                                                            12,
+                                                                      ),
                                                                     ),
                                                                   ),
                                                                 ),
@@ -1136,14 +1145,17 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                                             const SizedBox(
                                                               height: 15,
                                                             ),
-                                                            const Text(
-                                                              "Installment Details",
-                                                              style: TextStyle(
-                                                                fontSize: 18,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color: home2,
+                                                            const FittedBox(
+                                                              fit: BoxFit.scaleDown,
+                                                              child:  Text(
+                                                                "Installment Details",
+                                                                style: TextStyle(
+                                                                  fontSize: 18,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: home2,
+                                                                ),
                                                               ),
                                                             ),
                                                             const SizedBox(
@@ -1722,12 +1734,15 @@ class _CustomSliderButtonState extends State<CustomSliderButton> {
             child: Shimmer.fromColors(
               baseColor: Colors.white,
               highlightColor: widget.buttonColor.withOpacity(0.25),
-              child: Text(
-                widget.label,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 12,
-                  color: Colors.white,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  widget.label,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 12,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),

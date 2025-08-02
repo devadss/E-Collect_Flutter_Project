@@ -333,10 +333,13 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
             backgroundColor: white,
             automaticallyImplyLeading: false,
             centerTitle: true,
-            title: const Text(
-              "Customer List",
-              style: TextStyle(
-                  fontWeight: FontWeight.w700, fontSize: 23, color: home2),
+            title: const FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                "Customer List",
+                style: TextStyle(
+                    fontWeight: FontWeight.w700, fontSize: 23, color: home2),
+              ),
             )),
         backgroundColor: white,
         body: Column(
@@ -579,27 +582,35 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    customer.custName ?? "CUST NAME",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 17,
-                                      color: black,
+                                  FittedBox(
+                                    fit:BoxFit.scaleDown,
+                                    child: Text(
+                                      customer.custName ?? "CUST NAME",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 17,
+                                        color: black,
+                                      ),
                                     ),
                                   ),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        "Account Number : ${customer.rdclGlobalAccNo ?? "ACC No"}",
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 14,
-                                          color: black87,
+                                      Expanded(
+                                        child: Text(
+                                          "Account Number : ${customer.rdclGlobalAccNo ?? "ACC No"}",
+                                          overflow: TextOverflow.ellipsis, // Optional: adds "..."
+                                          softWrap: false,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 12,
+                                            color: black87,
+                                          ),
                                         ),
                                       ),
-                                      const Spacer(),
+                                      //const Spacer(),
+                                      const SizedBox(width: 8), // add spacing if needed
                                       Container(
                                         height: 30,
                                         width: 120,
@@ -620,12 +631,19 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
                                                 scale: 25,
                                               ),
                                               const SizedBox(width: 5),
-                                              const Text(
-                                                "View details",
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w700,
-                                                  fontSize: 12,
-                                                  color: home2,
+                                              Expanded(
+                                                child: FittedBox(
+                                                  fit: BoxFit.scaleDown,
+                                                  child: Text(
+                                                    "View details",
+                                                    overflow: TextOverflow.ellipsis, // Optional: adds "..."
+                                                    softWrap: false,
+                                                    style: TextStyle(
+                                                      fontWeight: FontWeight.w700,
+                                                      fontSize: 12,
+                                                      color: home2,
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
                                             ],
@@ -634,12 +652,15 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
                                       ),
                                     ],
                                   ),
-                                  Text(
-                                    "Scheme Name : ${customer.schName}",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 14,
-                                      color: black87,
+                                  FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      "Scheme Name : ${customer.schName}",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 12,
+                                        color: black87,
+                                      ),
                                     ),
                                   ),
                                 ],

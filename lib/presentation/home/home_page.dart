@@ -562,40 +562,45 @@ showProgressDialog(context);
           end: Alignment.bottomRight,
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Hello,",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: white.withOpacity(0.9),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Hello,",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: white.withOpacity(0.9),
+                    ),
+                  ).animate().fadeIn(duration: 300.ms).slideX(begin: -0.1),
+                  const SizedBox(height: 4),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      userName?.replaceFirst(
+                        userName![0],
+                        userName![0].toUpperCase(),
+                      ) ??
+                          "",
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                        color: white,
+                      ),
+                    ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.1),
                   ),
-                ).animate().fadeIn(duration: 300.ms).slideX(begin: -0.1),
-                const SizedBox(height: 4),
-                Text(
-                  userName?.replaceFirst(
-                    userName![0],
-                    userName![0].toUpperCase(),
-                  ) ??
-                      "",
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: white,
-                  ),
-                ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.1),
-              ],
+                ],
+              ),
             ),
-          ),
-          _buildAnimatedBannerCarousel(size),
-        ],
+            _buildAnimatedBannerCarousel(size),
+          ],
+        ),
       ),
     );
   }
@@ -707,11 +712,14 @@ showProgressDialog(context);
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    "Total Collection",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                const  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child:  Text(
+                      "Total Collection",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   Container(
@@ -720,14 +728,17 @@ showProgressDialog(context);
                       color: home1.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Text(
-                      _selectedTabIndex == 0 ? 'All Transactions'
-                          : _selectedTabIndex == 1 ? 'QR Code'
-                          : 'Cash',
-                      style: const TextStyle(
-                        color: home1,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 12,
+                    child: FittedBox(
+                     fit: BoxFit.scaleDown,
+                      child: Text(
+                        _selectedTabIndex == 0 ? 'All Transactions'
+                            : _selectedTabIndex == 1 ? 'QR Code'
+                            : 'Cash',
+                        style: const TextStyle(
+                          color: home1,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                        ),
                       ),
                     ),
                   ),
@@ -736,23 +747,28 @@ showProgressDialog(context);
 
               // Second Row: Amount and Filter Info
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "₹${calculateTotalAmount().toStringAsFixed(2)}",
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: home1,
+                  Expanded(
+                    child: Text(
+                      "₹${calculateTotalAmount().toStringAsFixed(2)}",
+
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: home1,
+                      ),
                     ),
                   ),
                   Text(
                     getFilterDisplayText(),
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
                     style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600
+                      fontSize: 12,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],
@@ -1143,24 +1159,30 @@ showProgressDialog(context);
             color: Colors.grey[300],
           ).animate().shake(duration: 600.ms),
           const SizedBox(height: 16),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[700],
-            ),
-          ).animate().fadeIn(duration: 300.ms),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[700],
+              ),
+            ).animate().fadeIn(duration: 300.ms),
+          ),
           const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 40),
-            child: Text(
-              message,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.grey[500],
-              ),
-            ).animate().fadeIn(duration: 400.ms),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                message,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.grey[500],
+                ),
+              ).animate().fadeIn(duration: 400.ms),
+            ),
           ),
         ],
       ),
