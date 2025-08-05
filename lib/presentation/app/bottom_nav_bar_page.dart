@@ -93,11 +93,11 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         showDialog(context: context, builder: (context) => exitAlert(context));
         return false;
       },
-      child: SafeArea(
-        child: Scaffold(
-          backgroundColor: white,
-          body: _getSelectedPage(_selectedIndex),
-          bottomNavigationBar: Container(
+      child: Scaffold(
+        backgroundColor: white,
+        body: _getSelectedPage(_selectedIndex),
+        bottomNavigationBar: SafeArea(
+          child: Container(
             height: 80,
             decoration: BoxDecoration(
               color: Colors.transparent,
