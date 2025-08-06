@@ -8,7 +8,7 @@ import '../account_dues/account_list_home_page.dart';
 import '../account_dues/rdcl_account_list_home_page.dart';
 import '../dues/dues_home_page.dart';
 import '../home/home_page.dart';
-import '../profile/profile_home_page.dart';
+import '../loan/loan_home_page.dart';
 
 class BottomNavScreen extends StatefulWidget {
   const BottomNavScreen({super.key});
@@ -54,7 +54,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
             ? const RdclAccountListHomePage()
             : const AccountListHomePage();
       case 3:
-        return const ProfileHomePage();
+      //  return const ProfileHomePage();
+        return const LoanHomePage();
       default:
         return const HomePage();
     }

@@ -265,59 +265,61 @@ class _SplashScreenState extends State<SplashScreen> {
 
           // Main Content
           Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Animated QR Code SVG
-                Hero(
-                  tag: 'splash-logo',
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    child: SvgPicture.asset(
-                      "assets/svg/QR Code-bro.svg",
-                      fit: BoxFit.contain,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Animated QR Code SVG
+                  Hero(
+                    tag: 'splash-logo',
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      child: SvgPicture.asset(
+                        "assets/svg/QR Code-bro.svg",
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
-                ),
-
-                const SizedBox(height: 40),
-
-                // App Name with Typing Animation
-                _TypingText(
-                  text: "QR Collection",
-                  style: GoogleFonts.poppins(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: white,
+              
+                  const SizedBox(height: 40),
+              
+                  // App Name with Typing Animation
+                  _TypingText(
+                    text: "QR Collection",
+                    style: GoogleFonts.poppins(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: white,
+                    ),
+                    onComplete: _onAnimationsComplete,
                   ),
-                  onComplete: _onAnimationsComplete,
-                ),
-
-                const SizedBox(height: 10),
-
-                // Subtitle with Fade Animation
-                _FadeInText(
-                  text: "Scan. Collect. Secure.",
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    color: black,
-                    letterSpacing: 1.2,
+              
+                  const SizedBox(height: 10),
+              
+                  // Subtitle with Fade Animation
+                  _FadeInText(
+                    text: "Scan. Collect. Secure.",
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      color: black,
+                      letterSpacing: 1.2,
+                    ),
+                    onComplete: _onAnimationsComplete,
                   ),
-                  onComplete: _onAnimationsComplete,
-                ),
-
-                const SizedBox(height: 30),
-
-                // Loading Indicator
-                const SizedBox(
-                  width: 30,
-                  height: 30,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(home2),
+              
+                  const SizedBox(height: 30),
+              
+                  // Loading Indicator
+                  const SizedBox(
+                    width: 30,
+                    height: 30,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(home2),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
