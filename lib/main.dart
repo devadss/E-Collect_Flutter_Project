@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:collection_qr_flutter/data/provider/link_transcation_history_provider.dart';
+import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 
 import '../../data/provider/agent_customer_details_provider.dart';
 import '../../data/provider/agent_transaction_provider.dart';
@@ -71,6 +72,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  requestLocationPermission();
   try {
     if (Firebase.apps.isEmpty) {
       await Firebase.initializeApp(
@@ -135,7 +137,12 @@ void main() async {
 
   ], child: const MyApp()));
 }
-
+Future<void> requestOverlayPermission() async {
+  final isGranted = await FlutterOverlayWindow.isPermissionGranted();
+  if (!isGranted) {
+    await FlutterOverlayWindow.requestPermission();
+  }
+}
 Future<void> requestLocationPermission() async {
   // Check if location permission is denied and request it if necessary
   await Permission.locationWhenInUse.isDenied.then((value) {

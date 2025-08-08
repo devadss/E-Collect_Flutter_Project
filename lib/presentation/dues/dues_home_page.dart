@@ -70,7 +70,6 @@ class _DuesHomePageState extends State<DuesHomePage> {
       String? custAcNumber,
       String? custId,
       String? custEmail,
-
       String? amount,String?
       phoneNumber,String?
       entityId,String? note)async{
@@ -734,9 +733,8 @@ class _DuesHomePageState extends State<DuesHomePage> {
                                                                     provider.agentModel?.duesList1?.data?[index].accNo,
                                                                     provider.agentModel?.duesList1?.data?[index].custId,
                                                                     provider.agentModel?.duesList1?.data?[index].email,
-
-
                                                                     controller.text, "$agentPhoneNumber", agentId, "Payment For Agent $agentName");
+
                                                                     // : Navigator.push(
                                                                     //   context,
                                                                     //   MaterialPageRoute(

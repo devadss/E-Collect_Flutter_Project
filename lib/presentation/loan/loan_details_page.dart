@@ -10,12 +10,12 @@ class LoanDetailsPage extends StatefulWidget {
   final num loanAmount;
   const LoanDetailsPage(
       {super.key,
-      required this.customerName,
-      required this.loanNumber,
-      required this.emiAmount,
-      required this.loanTerm,
-      required this.loanStatus,
-      required this.loanAmount});
+        required this.customerName,
+        required this.loanNumber,
+        required this.emiAmount,
+        required this.loanTerm,
+        required this.loanStatus,
+        required this.loanAmount});
 
   @override
   State<LoanDetailsPage> createState() => _LoanDetailsPageState();
@@ -95,8 +95,8 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
         automaticallyImplyLeading: true,
         backgroundColor: Colors.white,
         elevation: 0,
-        iconTheme:const IconThemeData(color: home2),
-        titleTextStyle:const TextStyle(
+        iconTheme: const IconThemeData(color: home2),
+        titleTextStyle: const TextStyle(
           color: home2,
           fontSize: 20,
           fontWeight: FontWeight.bold,
@@ -117,83 +117,162 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                       begin: const Offset(0, 0.2),
                       end: Offset.zero,
                     ).animate(_animationController),
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
+                    child: Card(
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
                       ),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 30,
-                            backgroundColor: home1.withOpacity(0.2),
-                            child: const Icon(
-                              Icons.person,
-                              size: 30,
-                              color: home1,
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  widget.customerName,
-                                  style:const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: home2,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Loan #${widget.loanNumber.replaceAll("LOAN-", "")}',
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: widget.loanStatus == 'Active'
-                                  ? Colors.green.withOpacity(0.1)
-                                  : Colors.orange.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: widget.loanStatus == 'Active'
-                                    ? Colors.green
-                                    : Colors.orange,
-                                width: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 30,
+                              backgroundColor: home1.withOpacity(0.2),
+                              child:const Icon(
+                                Icons.person,
+                                size: 30,
+                                color: home1,
                               ),
                             ),
-                            child: Text(
-                              widget.loanStatus,
-                              style: TextStyle(
-                                color: widget.loanStatus == 'Active'
-                                    ? Colors.green
-                                    : Colors.orange,
-                                fontWeight: FontWeight.bold,
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget.customerName,
+                                    style:const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: home2,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Loan #${widget.loanNumber.replaceAll("LOAN-", "")}',
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
-                        ],
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: widget.loanStatus == 'Active'
+                                    ? Colors.green.withOpacity(0.1)
+                                    : Colors.orange.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: widget.loanStatus == 'Active'
+                                      ? Colors.green
+                                      : Colors.orange,
+                                  width: 1,
+                                ),
+                              ),
+                              child: Text(
+                                widget.loanStatus,
+                                style: TextStyle(
+                                  color: widget.loanStatus == 'Active'
+                                      ? Colors.green
+                                      : Colors.orange,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
+                // FadeTransition(
+                //   opacity: _fadeAnimation,
+                //   child: SlideTransition(
+                //     position: Tween<Offset>(
+                //       begin: const Offset(0, 0.2),
+                //       end: Offset.zero,
+                //     ).animate(_animationController),
+                //     child: Container(
+                //       padding: const EdgeInsets.all(16),
+                //       decoration: BoxDecoration(
+                //         color: Colors.white,
+                //         borderRadius: BorderRadius.circular(16),
+                //         boxShadow: [
+                //           BoxShadow(
+                //             color: Colors.black.withOpacity(0.05),
+                //             blurRadius: 10,
+                //             offset: const Offset(0, 5),
+                //           ),
+                //         ],
+                //       ),
+                //       child: Row(
+                //         children: [
+                //           CircleAvatar(
+                //             radius: 30,
+                //             backgroundColor: home1.withOpacity(0.2),
+                //             child: Icon(
+                //               Icons.person,
+                //               size: 30,
+                //               color: home1,
+                //             ),
+                //           ),
+                //           const SizedBox(width: 16),
+                //           Expanded(
+                //             child: Column(
+                //               crossAxisAlignment: CrossAxisAlignment.start,
+                //               children: [
+                //                 Text(
+                //                   widget.customerName,
+                //                   style: TextStyle(
+                //                     fontSize: 18,
+                //                     fontWeight: FontWeight.bold,
+                //                     color: home2,
+                //                   ),
+                //                 ),
+                //                 const SizedBox(height: 4),
+                //                 Text(
+                //                   'Loan #${widget.loanNumber.replaceAll("LOAN-", "")}',
+                //                   style: const TextStyle(
+                //                     color: Colors.grey,
+                //                   ),
+                //                 ),
+                //               ],
+                //             ),
+                //           ),
+                //           Container(
+                //             padding: const EdgeInsets.symmetric(
+                //                 horizontal: 12, vertical: 6),
+                //             decoration: BoxDecoration(
+                //               color: widget.loanStatus == 'Active'
+                //                   ? Colors.green.withOpacity(0.1)
+                //                   : Colors.orange.withOpacity(0.1),
+                //               borderRadius: BorderRadius.circular(20),
+                //               border: Border.all(
+                //                 color: widget.loanStatus == 'Active'
+                //                     ? Colors.green
+                //                     : Colors.orange,
+                //                 width: 1,
+                //               ),
+                //             ),
+                //             child: Text(
+                //               widget.loanStatus,
+                //               style: TextStyle(
+                //                 color: widget.loanStatus == 'Active'
+                //                     ? Colors.green
+                //                     : Colors.orange,
+                //                 fontWeight: FontWeight.bold,
+                //               ),
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
 
                 const SizedBox(height: 20),
 
@@ -229,7 +308,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
 
                 const SizedBox(height: 20),
 
-                // Loan details section
+                // Loan details
                 FadeTransition(
                   opacity: _fadeAnimation,
                   child: SlideTransition(
@@ -237,62 +316,120 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                       begin: const Offset(0, 0.4),
                       end: Offset.zero,
                     ).animate(_animationController),
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
+                    child: Card(
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                         const Text(
-                            'Loan Details',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: home2,
+                      margin: EdgeInsets.zero, // To match previous container width behavior
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const  Text(
+                              'Loan Details',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: home2,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 12),
-                          _buildDetailItem(
-                            Icons.percent,
-                            'Interest Rate',
-                            '${loanDetails['interestRate']}%',
-                          ),
-                          _buildDetailItem(
-                            Icons.calendar_today,
-                            'Loan Term',
-                            '${widget.loanTerm} days',
-                          ),
-                          _buildDetailItem(
-                            Icons.payment,
-                            'Monthly Payment',
-                            '₹${widget.emiAmount}',
-                          ),
-                          _buildDetailItem(
-                            Icons.date_range,
-                            'Start Date',
-                            loanDetails['startDate'],
-                          ),
-                          _buildDetailItem(
-                            Icons.event_available,
-                            'End Date',
-                            loanDetails['endDate'],
-                          ),
-                        ],
+                            const SizedBox(height: 12),
+                            _buildDetailItem(
+                              Icons.percent,
+                              'Interest Rate',
+                              '${loanDetails['interestRate']}%',
+                            ),
+                            _buildDetailItem(
+                              Icons.calendar_today,
+                              'Loan Term',
+                              '${widget.loanTerm} days',
+                            ),
+                            _buildDetailItem(
+                              Icons.payment,
+                              'Monthly Payment',
+                              '₹${widget.emiAmount}',
+                            ),
+                            _buildDetailItem(
+                              Icons.date_range,
+                              'Start Date',
+                              loanDetails['startDate'],
+                            ),
+                            _buildDetailItem(
+                              Icons.event_available,
+                              'End Date',
+                              loanDetails['endDate'],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
+                // FadeTransition(
+                //   opacity: _fadeAnimation,
+                //   child: SlideTransition(
+                //     position: Tween<Offset>(
+                //       begin: const Offset(0, 0.4),
+                //       end: Offset.zero,
+                //     ).animate(_animationController),
+                //     child: Container(
+                //       width: double.infinity,
+                //       padding: const EdgeInsets.all(16),
+                //       decoration: BoxDecoration(
+                //         color: Colors.white,
+                //         borderRadius: BorderRadius.circular(16),
+                //         boxShadow: [
+                //           BoxShadow(
+                //             color: Colors.black.withOpacity(0.05),
+                //             blurRadius: 10,
+                //             offset: const Offset(0, 5),
+                //           ),
+                //         ],
+                //       ),
+                //       child: Column(
+                //         crossAxisAlignment: CrossAxisAlignment.start,
+                //         children: [
+                //           Text(
+                //             'Loan Details',
+                //             style: TextStyle(
+                //               fontSize: 18,
+                //               fontWeight: FontWeight.bold,
+                //               color: home2,
+                //             ),
+                //           ),
+                //           const SizedBox(height: 12),
+                //           _buildDetailItem(
+                //             Icons.percent,
+                //             'Interest Rate',
+                //             '${loanDetails['interestRate']}%',
+                //           ),
+                //           _buildDetailItem(
+                //             Icons.calendar_today,
+                //             'Loan Term',
+                //             '${widget.loanTerm} days',
+                //           ),
+                //           _buildDetailItem(
+                //             Icons.payment,
+                //             'Monthly Payment',
+                //             '₹${widget.emiAmount}',
+                //           ),
+                //           _buildDetailItem(
+                //             Icons.date_range,
+                //             'Start Date',
+                //             loanDetails['startDate'],
+                //           ),
+                //           _buildDetailItem(
+                //             Icons.event_available,
+                //             'End Date',
+                //             loanDetails['endDate'],
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
 
                 const SizedBox(height: 20),
 
@@ -304,47 +441,90 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                       begin: const Offset(0, 0.5),
                       end: Offset.zero,
                     ).animate(_animationController),
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
+                    child: Card(
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Payment Information',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: home2,
+                      margin: EdgeInsets.zero, // Ensures full width
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const  Text(
+                              'Payment Information',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: home2,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 12),
-                          _buildDetailItem(
-                            Icons.history,
-                            'Last Payment',
-                            loanDetails['lastPaymentDate'],
-                          ),
-                          _buildDetailItem(
-                            Icons.next_plan,
-                            'Next Payment Due',
-                            loanDetails['nextPaymentDue'],
-                          ),
-                        ],
+                            const SizedBox(height: 12),
+                            _buildDetailItem(
+                              Icons.history,
+                              'Last Payment',
+                              loanDetails['lastPaymentDate'],
+                            ),
+                            _buildDetailItem(
+                              Icons.next_plan,
+                              'Next Payment Due',
+                              loanDetails['nextPaymentDue'],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
+                // FadeTransition(
+                //   opacity: _fadeAnimation,
+                //   child: SlideTransition(
+                //     position: Tween<Offset>(
+                //       begin: const Offset(0, 0.5),
+                //       end: Offset.zero,
+                //     ).animate(_animationController),
+                //     child: Container(
+                //       width: double.infinity,
+                //       padding: const EdgeInsets.all(16),
+                //       decoration: BoxDecoration(
+                //         color: Colors.white,
+                //         borderRadius: BorderRadius.circular(16),
+                //         boxShadow: [
+                //           BoxShadow(
+                //             color: Colors.black.withOpacity(0.05),
+                //             blurRadius: 10,
+                //             offset: const Offset(0, 5),
+                //           ),
+                //         ],
+                //       ),
+                //       child: Column(
+                //         crossAxisAlignment: CrossAxisAlignment.start,
+                //         children: [
+                //           Text(
+                //             'Payment Information',
+                //             style: TextStyle(
+                //               fontSize: 18,
+                //               fontWeight: FontWeight.bold,
+                //               color: home2,
+                //             ),
+                //           ),
+                //           const SizedBox(height: 12),
+                //           _buildDetailItem(
+                //             Icons.history,
+                //             'Last Payment',
+                //             loanDetails['lastPaymentDate'],
+                //           ),
+                //           _buildDetailItem(
+                //             Icons.next_plan,
+                //             'Next Payment Due',
+                //             loanDetails['nextPaymentDue'],
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
 
                 const SizedBox(height: 24),
 
@@ -390,12 +570,12 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              side: const BorderSide(color: home1),
+                              side:const BorderSide(color: home1),
                             ),
                             onPressed: () {
                               // Handle view schedule action
                             },
-                            child: const Text(
+                            child:const Text(
                               'View Payment Schedule',
                               style: TextStyle(
                                 color: home1,
@@ -417,25 +597,17 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
   }
 
   Widget _buildSummaryCard(String title, String value, IconData icon) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
                 Container(
                   padding: const EdgeInsets.all(8),
@@ -451,8 +623,6 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: false,
                   title,
                   style: const TextStyle(
                     color: Colors.grey,
@@ -461,19 +631,71 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: home2,
+            const SizedBox(height: 8),
+            Text(
+              value,
+              style:const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: home2,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
+    // return Container(
+    //   padding: const EdgeInsets.all(16),
+    //   decoration: BoxDecoration(
+    //     color: Colors.white,
+    //     borderRadius: BorderRadius.circular(16),
+    //     boxShadow: [
+    //       BoxShadow(
+    //         color: Colors.black.withOpacity(0.05),
+    //         blurRadius: 10,
+    //         offset: const Offset(0, 5),
+    //       ),
+    //     ],
+    //   ),
+    //   child: Column(
+    //     crossAxisAlignment: CrossAxisAlignment.start,
+    //     children: [
+    //       Row(
+    //         children: [
+    //           Container(
+    //             padding: const EdgeInsets.all(8),
+    //             decoration: BoxDecoration(
+    //               color: home1.withOpacity(0.1),
+    //               shape: BoxShape.circle,
+    //             ),
+    //             child: Icon(
+    //               icon,
+    //               size: 20,
+    //               color: home1,
+    //             ),
+    //           ),
+    //           const SizedBox(width: 8),
+    //           Text(
+    //             title,
+    //             style: const TextStyle(
+    //               color: Colors.grey,
+    //               fontSize: 14,
+    //             ),
+    //           ),
+    //         ],
+    //       ),
+    //       const SizedBox(height: 8),
+    //       Text(
+    //         value,
+    //         style: TextStyle(
+    //           fontSize: 20,
+    //           fontWeight: FontWeight.bold,
+    //           color: home2,
+    //         ),
+    //       ),
+    //     ],
+    //   ),
+    // );
   }
 
   Widget _buildDetailItem(IconData icon, String label, String value) {
@@ -497,7 +719,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
           ),
           Text(
             value,
-            style:const  TextStyle(
+            style:const TextStyle(
               fontWeight: FontWeight.w500,
               color: home2,
             ),

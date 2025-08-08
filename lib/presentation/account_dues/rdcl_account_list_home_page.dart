@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:collection_qr_flutter/presentation/account_dues/widgets/rdcl_account_due_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:pager/pager.dart';
@@ -631,7 +630,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
                                                 scale: 25,
                                               ),
                                               const SizedBox(width: 5),
-                                              Expanded(
+                                              const Expanded(
                                                 child: FittedBox(
                                                   fit: BoxFit.scaleDown,
                                                   child: Text(

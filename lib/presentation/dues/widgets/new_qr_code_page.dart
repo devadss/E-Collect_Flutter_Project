@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -109,6 +110,17 @@ class _NewQrCodePageState extends State<NewQrCodePage>
     );
   }
 //9745228327
+  void showOverlay(String? text) async {
+    await FlutterOverlayWindow.showOverlay(
+      alignment: OverlayAlignment.center,
+      flag: OverlayFlag.defaultFlag,
+      visibility: NotificationVisibility.visibilityPrivate,
+      enableDrag: true,
+      overlayTitle: "Wallet Load Successful 🎉",
+      overlayContent: text,
+    );
+  }
+
   void _listenForFirebaseMessages() {
     print("_listenForFirebaseMessages");
     _firebaseMessageSubscription?.cancel(); // ✅ Ensure only one listener
@@ -126,6 +138,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
           if (mounted) {
             print("✅ Showing Success Message");
             _showSuccessMessage(notificationBody);
+            showOverlay(notificationBody);
           }
         }
       } else {
