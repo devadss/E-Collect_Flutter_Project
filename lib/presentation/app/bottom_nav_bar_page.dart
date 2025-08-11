@@ -1,5 +1,6 @@
 import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
 import 'package:collection_qr_flutter/presentation/dues/rdcl_due_home_page.dart';
+import 'package:collection_qr_flutter/presentation/groups/group_homepage/group_homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/colors.dart';
@@ -7,8 +8,10 @@ import '../../core/constants.dart';
 import '../account_dues/account_list_home_page.dart';
 import '../account_dues/rdcl_account_list_home_page.dart';
 import '../dues/dues_home_page.dart';
+import '../groups/group_homepage/groups_home_page.dart';
 import '../home/home_page.dart';
 import '../loan/loan_home_page.dart';
+import '../profile/profile_home_page.dart';
 
 class BottomNavScreen extends StatefulWidget {
   const BottomNavScreen({super.key});
@@ -21,7 +24,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   int _selectedIndex = 0;
   String? userTPYE;
   double _indicatorPosition = 0.0;
-  final List<GlobalKey> _tabKeys = List.generate(4, (index) => GlobalKey());
+  final List<GlobalKey> _tabKeys = List.generate(5, (index) => GlobalKey());
 
   @override
   void initState() {
@@ -54,8 +57,11 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
             ? const RdclAccountListHomePage()
             : const AccountListHomePage();
       case 3:
-      //  return const ProfileHomePage();
-        return const LoanHomePage();
+       // return const GroupHomepage();
+        return const GroupsHomePage();
+      case 4:
+        return const ProfileHomePage();
+      //  return const LoanHomePage();
       default:
         return const HomePage();
     }
@@ -179,6 +185,13 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                         _buildNavItem(
                           key: _tabKeys[3],
                           index: 3,
+                          icon: Icons.group_add_outlined,
+                          activeIcon: Icons.group_add,
+                          label: 'Groups',
+                        ),
+                        _buildNavItem(
+                          key: _tabKeys[4],
+                          index: 4,
                           icon: Icons.person_outline,
                           activeIcon: Icons.person,
                           label: 'Profile',
