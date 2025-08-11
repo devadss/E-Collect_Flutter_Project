@@ -42,10 +42,10 @@ class _MobileNumberVerificationPageState
 
   @override
   void initState() {
-
     super.initState();
     checkForUpdate();
   }
+
   void checkForUpdate() async {
     try {
       AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
@@ -56,7 +56,6 @@ class _MobileNumberVerificationPageState
       print("Update check failed: $e");
     }
   }
-
 
   Future<void> validateMobile(String value) async {
     String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
@@ -78,12 +77,15 @@ class _MobileNumberVerificationPageState
             parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);
 
         if (vendorBaseUrlProvider.collectionBaseUrlModel != null) {
-          SharedPref.shared.setCustomerUnderAgentUrl(
-              vendorBaseUrlProvider.collectionBaseUrlModel!.getCustomerUrl.toString());
-          SharedPref.shared.setDueListUrl(
-              vendorBaseUrlProvider.collectionBaseUrlModel!.getDueListUrl .toString());
-          SharedPref.shared.setUserType(
-              vendorBaseUrlProvider.collectionBaseUrlModel!.userType .toString());
+          SharedPref.shared.setCustomerUnderAgentUrl(vendorBaseUrlProvider
+              .collectionBaseUrlModel!.getCustomerUrl
+              .toString());
+          SharedPref.shared.setDueListUrl(vendorBaseUrlProvider
+              .collectionBaseUrlModel!.getDueListUrl
+              .toString());
+          SharedPref.shared.setUserType(vendorBaseUrlProvider
+              .collectionBaseUrlModel!.userType
+              .toString());
         }
 
         print(parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);
@@ -195,7 +197,7 @@ class _MobileNumberVerificationPageState
                             .parentAgentCredentialModel!.b.userName,
                         password: parentAgentCredentialProvider
                             .parentAgentCredentialModel!.b.mobPassword,
-                        tokenStatus: customer.status.toString(),
+                        tokenStatus: customer.status.toString(), loggedInUserType: 'AGENT',
                       ),
                     ),
                   );
@@ -217,6 +219,99 @@ class _MobileNumberVerificationPageState
           /*       EasyLoading.showToast(parentAgentCredentialProvider
               .parentAgentCredentialFailResponse!.message);*/
         }
+      }else{
+        print("Not an agent");
+        final custRegisterProvider = Provider.of<CustRegisterProvider>(
+          context,
+          listen: false,
+        );
+        final response = await custRegisterProvider.checkRegCust(int.parse(
+           _mobileNumberController.text
+                .replaceAll("+91", "")));
+        response.fold(
+              (error) {
+            Navigator.pop(context);
+            print("Error: ${error.message}");
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  "Error: ${error.message}",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 17,
+                  ),
+                ),
+                backgroundColor: Colors.red,
+              ),
+            );
+          },
+              (customer) async {
+            Navigator.pop(context);
+            // if (customer.response!.data!['Customer_type'] != null ||
+            //     customer.response!.data!['Customer_type']?.isNotEmpty ==
+            //         true) {
+            //   print("Phase 1");
+            //   if (customer.response!.data!['Customer_type'] !=
+            //       "COLLECTION_AGENT") {
+            //     print("Phase 2");
+
+                // SharedPref.shared.setAgentOriginId(
+                //   customer.response!.data!['AgentOrginId'].toString(),
+                // );
+                SharedPref.shared.setEmail(
+                  customer.response!.data!['emailId'].toString(),
+                );
+                SharedPref.shared.setCorpCode(
+                  customer.response!.data!['CorpCode'].toString(),
+                );
+                SharedPref.shared.setBranchCode(
+                  customer.response!.data!['BranchCode'].toString(),
+                );
+                SharedPref.shared.setMpinValue(customer.mpin.toString());
+                print(
+                    "customer.mpin.toString() = ${customer.mpin.toString()}");
+
+                final parentAgentCredentialProvider =
+                Provider.of<ParentAgentCredentialProvider>(context, listen: false);
+
+                await parentAgentCredentialProvider.fetchParentAgentCredentials(
+                    _mobileNumberController.text
+                        .replaceAll("+91", ""));
+                if (parentAgentCredentialProvider.parentAgentCredentialModel != null) {
+                  SharedPref.shared.setParentAgentName(
+                      parentAgentCredentialProvider
+                          .parentAgentCredentialModel!.b.userName);
+                  SharedPref.shared.setParentAgentPassword(
+                      parentAgentCredentialProvider
+                          .parentAgentCredentialModel!.b.mobPassword);
+                  SharedPref.shared.setAgentName(parentAgentCredentialProvider
+                      .parentAgentCredentialModel!.b.userName);
+                }
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OtpRequestVerificationPage(
+                      subAgentmobNum: _mobileNumberController.text,
+                      parentAgentMobNum:_mobileNumberController.text,
+                      userName: parentAgentCredentialProvider
+                          .parentAgentCredentialModel!.b.userName,
+                      password: parentAgentCredentialProvider
+                          .parentAgentCredentialModel!.b.mobPassword,
+                      tokenStatus: customer.status.toString(), loggedInUserType: 'NOT_AN_AGENT',
+                    ),
+                  ),
+                );
+              // } else {
+              //   print("Not a valid collection agent");
+              //   showInSnackBar("Not a valid collection agent");
+              // }
+            // } else {
+            //   print("Not a valid collection agent");
+            //   showInSnackBar("Not a valid collection agent");
+            // }
+          },
+        );
       }
     }
   }

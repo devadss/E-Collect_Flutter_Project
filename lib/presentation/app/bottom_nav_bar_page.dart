@@ -1,5 +1,6 @@
 import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
 import 'package:collection_qr_flutter/presentation/dues/rdcl_due_home_page.dart';
+import 'package:collection_qr_flutter/presentation/firebase/home/home_page.dart';
 import 'package:collection_qr_flutter/presentation/groups/group_homepage/group_homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,6 +24,7 @@ class BottomNavScreen extends StatefulWidget {
 class _BottomNavScreenState extends State<BottomNavScreen> {
   int _selectedIndex = 0;
   String? userTPYE;
+  String? loggedInUserTPYE;
   double _indicatorPosition = 0.0;
   final List<GlobalKey> _tabKeys = List.generate(5, (index) => GlobalKey());
 
@@ -38,9 +40,11 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   Future<void> getSharedData() async {
     await SharedPref.shared.setLogin(true);
     var userType = await SharedPref.shared.getUserType();
+    var loggedInUserType = await SharedPref.shared.getLoggedInUserType();
     setState(() {
       print("getUserType value = $userType");
       userTPYE = userType;
+      loggedInUserTPYE = loggedInUserType;
     });
   }
 
@@ -57,11 +61,20 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
             ? const RdclAccountListHomePage()
             : const AccountListHomePage();
       case 3:
-       // return const GroupHomepage();
-        return const GroupsHomePage();
-      case 4:
         return const ProfileHomePage();
-      //  return const LoanHomePage();
+      default:
+        return const HomePage();
+    }
+  }
+
+  Widget _getNonAgentSelectedPage(int index) {
+    switch (index) {
+      case 0:
+        return const FeeHomePage();
+      case 1:
+        return const GroupsHomePage();
+      case 2:
+        return const ProfileHomePage();
       default:
         return const HomePage();
     }
@@ -102,7 +115,10 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       },
       child: Scaffold(
         backgroundColor: white,
-        body: _getSelectedPage(_selectedIndex),
+        body:  
+        loggedInUserTPYE == "AGENT"?
+        _getSelectedPage(_selectedIndex):
+        _getNonAgentSelectedPage(_selectedIndex),
         bottomNavigationBar: SafeArea(
           child: Container(
             height: 80,
@@ -156,7 +172,10 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                         ),
                       ],
                     ),
-                    child: Row(
+                    child:
+                    loggedInUserTPYE == "AGENT"?
+
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         _buildNavItem(
@@ -185,13 +204,33 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                         _buildNavItem(
                           key: _tabKeys[3],
                           index: 3,
+                          icon: Icons.person_outline,
+                          activeIcon: Icons.person,
+                          label: 'Profile',
+                        ),
+                      ],
+                    ):
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildNavItem(
+                          key: _tabKeys[0],
+                          index: 0,
+                          icon: Icons.home_outlined,
+                          activeIcon: Icons.home,
+                          label: 'Home',
+                        ),
+
+                        _buildNavItem(
+                          key: _tabKeys[1],
+                          index: 1,
                           icon: Icons.group_add_outlined,
                           activeIcon: Icons.group_add,
                           label: 'Groups',
                         ),
                         _buildNavItem(
-                          key: _tabKeys[4],
-                          index: 4,
+                          key: _tabKeys[2],
+                          index: 2,
                           icon: Icons.person_outline,
                           activeIcon: Icons.person,
                           label: 'Profile',

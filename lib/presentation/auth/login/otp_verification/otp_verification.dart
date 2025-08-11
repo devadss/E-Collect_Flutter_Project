@@ -17,7 +17,9 @@ class OtpRequestVerificationPage extends StatefulWidget {
   final String userName;
   final String password;
   final String tokenStatus;
-  const OtpRequestVerificationPage({super.key, required this.parentAgentMobNum, required this.userName, required this.password, required this.tokenStatus, required this.subAgentmobNum});
+  final String loggedInUserType;
+
+  const OtpRequestVerificationPage({super.key, required this.parentAgentMobNum, required this.userName, required this.password, required this.tokenStatus, required this.subAgentmobNum, required this.loggedInUserType});
 
   @override
   State<OtpRequestVerificationPage> createState() => _OtpRequestVerificationPageState();
@@ -86,6 +88,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
         Navigator.pop(context);
         await SharedPref.shared.setTokenValue(data.toString());
         await SharedPref.shared.setLogin(true);
+        await SharedPref.shared.setLoggedInUserType(widget.loggedInUserType);
         Navigator.push(
             context,
             MaterialPageRoute(

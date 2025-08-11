@@ -92,6 +92,17 @@ class SharedPref {
     return prefs.getString(SharedPrefKeys.parent_username) ?? '';
   }
 
+  setLoggedInUserType(String value)async{
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.loggedInUserType, value) ?? '';
+  }
+
+  getLoggedInUserType()async{
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.loggedInUserType) ?? '';
+
+  }
+
   setParentAgentPassword(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.parent_agent_password, value);

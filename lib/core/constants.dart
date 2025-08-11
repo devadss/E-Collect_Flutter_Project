@@ -122,6 +122,7 @@ class SharedPrefKeys {
   static const String fullName = "FULL_NAME";
   static const String fcm_token = "FCM_TOKEN";
   static const String phoneNumber = "PHONE_NUMBER";
+  static const String loggedInUserType = "LOGGED_IN_USER_TYPE";
   static const String corpCode = "CORP_CODE";
   static const String branchCode = "BRANCH_CODE";
   static const String email = "EMAIL_ID";
