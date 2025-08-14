@@ -11,9 +11,9 @@ import '../account_dues/rdcl_account_list_home_page.dart';
 import '../dues/dues_home_page.dart';
 import '../groups/group_homepage/all_groups_page.dart';
 import '../groups/homepage/group_home_page.dart';
+import '../groups/min_kyc/request_otp/min_kyc_page.dart';
 import '../home/home_page.dart';
 import '../loan/loan_home_page.dart';
-import '../min_kyc/min_kyc_page.dart';
 import '../profile/profile_home_page.dart';
 
 class BottomNavScreen extends StatefulWidget {

@@ -11,6 +11,8 @@ import '../../data/provider/cust_register_provider.dart';
 import '../../data/provider/parent_agent_detail_provider/parent_agent_detil_provider.dart';
 import '../../data/provider/parent_agent_detail_provider/parent_credential_provider/parent_credential_provider.dart';
 import '../../data/storage/shared_pref_helper.dart';
+import '../groups/bnk_account_details/bank_accout_detail_page.dart';
+import '../groups/min_kyc/request_otp/min_kyc_page.dart';
 import 'login/otp_verification/otp_verification.dart';
 
 class MobileNumberVerificationPage extends StatefulWidget {
@@ -214,80 +216,82 @@ class _MobileNumberVerificationPageState
               .parentAgentCredentialFailResponse!.message);
         }
       }else{
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> const BankAccoutDetailPage()));
+       // Navigator.push(context, MaterialPageRoute(builder: (context)=> const AadhaarOtpRequest()));
         print("Not an agent");
-        final custRegisterProvider = Provider.of<CustRegisterProvider>(
-          context,
-          listen: false,
-        );
-        final response = await custRegisterProvider.checkRegCust(int.parse(
-           _mobileNumberController.text
-                .replaceAll("+91", "")));
-        response.fold(
-              (error) {
-            Navigator.pop(context);
-            print("Error: ${error.message}");
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  "Error: ${error.message}",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 17,
-                  ),
-                ),
-                backgroundColor: Colors.red,
-              ),
-            );
-          },
-              (customer) async {
-            Navigator.pop(context);
-
-                SharedPref.shared.setEmail(
-                  customer.response!.data!['emailId'].toString(),
-                );
-                SharedPref.shared.setCorpCode(
-                  customer.response!.data!['CorpCode'].toString(),
-                );
-                SharedPref.shared.setBranchCode(
-                  customer.response!.data!['BranchCode'].toString(),
-                );
-                SharedPref.shared.setMpinValue(customer.mpin.toString());
-                print(
-                    "customer.mpin.toString() = ${customer.mpin.toString()}");
-
-                final parentAgentCredentialProvider =
-                Provider.of<ParentAgentCredentialProvider>(context, listen: false);
-
-                await parentAgentCredentialProvider.fetchParentAgentCredentials(
-                    _mobileNumberController.text
-                        .replaceAll("+91", ""));
-                if (parentAgentCredentialProvider.parentAgentCredentialModel != null) {
-                  SharedPref.shared.setParentAgentName(
-                      parentAgentCredentialProvider
-                          .parentAgentCredentialModel!.b.userName);
-                  SharedPref.shared.setParentAgentPassword(
-                      parentAgentCredentialProvider
-                          .parentAgentCredentialModel!.b.mobPassword);
-                  SharedPref.shared.setAgentName(parentAgentCredentialProvider
-                      .parentAgentCredentialModel!.b.userName);
-                }
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => OtpRequestVerificationPage(
-                      subAgentmobNum: _mobileNumberController.text,
-                      parentAgentMobNum:_mobileNumberController.text,
-                      userName: parentAgentCredentialProvider
-                          .parentAgentCredentialModel!.b.userName,
-                      password: parentAgentCredentialProvider
-                          .parentAgentCredentialModel!.b.mobPassword,
-                      tokenStatus: customer.status.toString(), loggedInUserType: 'NOT_AN_AGENT',
-                    ),
-                  ),
-                );
-          },
-        );
+        // final custRegisterProvider = Provider.of<CustRegisterProvider>(
+        //   context,
+        //   listen: false,
+        // );
+        // final response = await custRegisterProvider.checkRegCust(int.parse(
+        //    _mobileNumberController.text
+        //         .replaceAll("+91", "")));
+        // response.fold(
+        //       (error) {
+        //     Navigator.pop(context);
+        //     print("Error: ${error.message}");
+        //     ScaffoldMessenger.of(context).showSnackBar(
+        //       SnackBar(
+        //         content: Text(
+        //           "Error: ${error.message}",
+        //           style: const TextStyle(
+        //             color: Colors.white,
+        //             fontWeight: FontWeight.w700,
+        //             fontSize: 17,
+        //           ),
+        //         ),
+        //         backgroundColor: Colors.red,
+        //       ),
+        //     );
+        //   },
+        //       (customer) async {
+        //     Navigator.pop(context);
+        //
+        //         SharedPref.shared.setEmail(
+        //           customer.response!.data!['emailId'].toString(),
+        //         );
+        //         SharedPref.shared.setCorpCode(
+        //           customer.response!.data!['CorpCode'].toString(),
+        //         );
+        //         SharedPref.shared.setBranchCode(
+        //           customer.response!.data!['BranchCode'].toString(),
+        //         );
+        //         SharedPref.shared.setMpinValue(customer.mpin.toString());
+        //         print(
+        //             "customer.mpin.toString() = ${customer.mpin.toString()}");
+        //
+        //         final parentAgentCredentialProvider =
+        //         Provider.of<ParentAgentCredentialProvider>(context, listen: false);
+        //
+        //         await parentAgentCredentialProvider.fetchParentAgentCredentials(
+        //             _mobileNumberController.text
+        //                 .replaceAll("+91", ""));
+        //         if (parentAgentCredentialProvider.parentAgentCredentialModel != null) {
+        //           SharedPref.shared.setParentAgentName(
+        //               parentAgentCredentialProvider
+        //                   .parentAgentCredentialModel!.b.userName);
+        //           SharedPref.shared.setParentAgentPassword(
+        //               parentAgentCredentialProvider
+        //                   .parentAgentCredentialModel!.b.mobPassword);
+        //           SharedPref.shared.setAgentName(parentAgentCredentialProvider
+        //               .parentAgentCredentialModel!.b.userName);
+        //         }
+        //         Navigator.push(
+        //           context,
+        //           MaterialPageRoute(
+        //             builder: (context) => OtpRequestVerificationPage(
+        //               subAgentmobNum: _mobileNumberController.text,
+        //               parentAgentMobNum:_mobileNumberController.text,
+        //               userName: parentAgentCredentialProvider
+        //                   .parentAgentCredentialModel!.b.userName,
+        //               password: parentAgentCredentialProvider
+        //                   .parentAgentCredentialModel!.b.mobPassword,
+        //               tokenStatus: customer.status.toString(), loggedInUserType: 'NOT_AN_AGENT',
+        //             ),
+        //           ),
+        //         );
+        //   },
+        // );
       }
     }
   }

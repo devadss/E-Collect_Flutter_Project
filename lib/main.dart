@@ -24,6 +24,7 @@ import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'data/provider/aadhaar_otp_request_provider.dart';
 import 'data/provider/auth_provider.dart';
 import 'data/provider/cash_transcation_history_provider.dart';
 import 'data/provider/cash_transcation_provider.dart';
@@ -41,7 +42,9 @@ import 'data/provider/set_mpin_provider.dart';
 import 'data/provider/token_expiry_provider.dart';
 import 'data/provider/token_request_provider.dart';
 import 'data/provider/transaction_provider.dart';
+import 'data/provider/verify_aadhaar_detail_provider.dart';
 import 'data/repository/TransactionRepository.dart';
+import 'data/repository/aadhaar_otp_request_repository.dart';
 import 'data/repository/auth_repository.dart';
 import 'data/repository/cash_transcation_history_repository.dart';
 import 'data/repository/cash_transcation_repository.dart';
@@ -59,6 +62,7 @@ import 'data/repository/rdcl_due_under_agent_repository.dart';
 import 'data/repository/set_mpin_repository.dart';
 import 'data/repository/token _repository.dart';
 import 'data/repository/token_request_repository.dart';
+import 'data/repository/verify_aadhaar_detail_repository.dart';
 import 'data/service/notification_service/firebase_notification_services.dart';
 import 'firebase_options.dart';
 import 'data/provider/cust_register_provider.dart';
@@ -134,6 +138,8 @@ void main() async {
     ChangeNotifierProvider(create: (_) => ParentDetailAgentProvider(ParentAgentDetailRepository())),
     ChangeNotifierProvider(create: (_) => ParentAgentCredentialProvider(ParentAgentCredentialRepository())),
     ChangeNotifierProvider(create: (_) => GetLoanProvider(GetLoanRepository())),
+    ChangeNotifierProvider(create: (_) => AadhaarOtpRequestProvider(AadhaarOtpRequestRepository())),
+    ChangeNotifierProvider(create: (_) => VerifyAadhaarDetailProvider(VerifyAadhaarDetailRepository())),
 
   ], child: const MyApp()));
 }

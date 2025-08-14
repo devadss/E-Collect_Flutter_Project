@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import '../../core/alerts.dart';
+import '../../../../core/alerts.dart';
+import '../../../../data/provider/aadhaar_otp_request_provider.dart';
+import '../aadhar_otp_verification/aadhaar_otp_verifiaction_page.dart';
 
 class AadhaarOtpRequest extends StatefulWidget {
   const AadhaarOtpRequest({super.key});
@@ -41,39 +43,39 @@ class _AadhaarOtpRequestState extends State<AadhaarOtpRequest> with SingleTicker
     super.dispose();
   }
 
-  // Future<void> requestAadhaarOtp() async {
-  //   final arp = Provider.of<AadhaarOtpRequestProvider>(context, listen: false);
-  //   await arp.verifyAadhaarNumber(aadhaarController.text);
-  //
-  //   if (arp.aadhaarOtpRequestFailModel != null) {
-  //     setState(() => isLoading = false);
-  //     showToast(
-  //       message: arp.aadhaarOtpRequestFailModel!.message.toString(),
-  //       color: Colors.red,
-  //     );
-  //   } else if (arp.aadhaarDetailOtpRequestModel != null) {
-  //     setState(() => isLoading = false);
-  //     if (arp.aadhaarDetailOtpRequestModel!.message == "OTP sent successfully") {
-  //       Navigator.push(
-  //         context,
-  //         PageRouteBuilder(
-  //           transitionDuration: const Duration(milliseconds: 500),
-  //           pageBuilder: (context, animation, secondaryAnimation) => AadhaarOtpVerificationPage(
-  //             aadhaarNumber: aadhaarController.text,
-  //           ),
-  //           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-  //             return FadeTransition(
-  //               opacity: animation,
-  //               child: child,
-  //             );
-  //           },
-  //         ),
-  //       );
-  //     }
-  //   } else {
-  //     setState(() => isLoading = false);
-  //   }
-  // }
+  Future<void> requestAadhaarOtp() async {
+    final arp = Provider.of<AadhaarOtpRequestProvider>(context, listen: false);
+    await arp.verifyAadhaarNumber(aadhaarController.text);
+
+    if (arp.aadhaarOtpRequestFailModel != null) {
+      setState(() => isLoading = false);
+      showToast(
+        message: arp.aadhaarOtpRequestFailModel!.message.toString(),
+        color: Colors.red,
+      );
+    } else if (arp.aadhaarDetailOtpRequestModel != null) {
+      setState(() => isLoading = false);
+      if (arp.aadhaarDetailOtpRequestModel!.message == "OTP sent successfully") {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            transitionDuration: const Duration(milliseconds: 500),
+            pageBuilder: (context, animation, secondaryAnimation) => AadhaarOtpVerificationPage(
+              aadhaarNumber: aadhaarController.text,
+            ),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+          ),
+        );
+      }
+    } else {
+      setState(() => isLoading = false);
+    }
+  }
 
   void validateFields() {
     if (aadhaarController.text.isEmpty) {
@@ -87,7 +89,7 @@ class _AadhaarOtpRequestState extends State<AadhaarOtpRequest> with SingleTicker
     }
 
     setState(() => isLoading = true);
-    //requestAadhaarOtp();
+       requestAadhaarOtp();
   }
 
   @override
