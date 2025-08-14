@@ -114,6 +114,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/card_agent.png
+    - assets/images/india.png
     - assets/images/mobile_number.png
     - assets/images/reset-password.png
     - assets/images/salary_17531132.png

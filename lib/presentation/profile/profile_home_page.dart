@@ -456,6 +456,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
     await SharedPref.shared.setCorpCode("");
     await SharedPref.shared.setCardRefNum("");
     await SharedPref.shared.setEmail("");
+    await SharedPref.shared.setLoggedInUserType("");
 
 
     Navigator.pushAndRemoveUntil(

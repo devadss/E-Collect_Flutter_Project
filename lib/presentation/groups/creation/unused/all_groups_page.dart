@@ -1,0 +1,259 @@
+// import 'package:flutter/material.dart';
+// import 'package:collection_qr_flutter/core/colors.dart';
+//
+// import '../group_homepage/detail_page/group_detail_page.dart';
+// import 'create_group_page.dart';
+//
+// class AllGroupsPage extends StatefulWidget {
+//   const AllGroupsPage({super.key});
+//
+//   @override
+//   State<AllGroupsPage> createState() => _AllGroupsPageState();
+// }
+//
+// class _AllGroupsPageState extends State<AllGroupsPage> {
+//   bool _isSearching = false;
+//   final TextEditingController _searchController = TextEditingController();
+//   final List<Map<String, dynamic>> _groups = [
+//     {
+//       "name": "Premium Members",
+//       "members": 42,
+//       "lastPayment": "2 hours ago",
+//       "icon": Icons.star,
+//       "color": Colors.amber
+//     },
+//     {
+//       "name": "Morning Session",
+//       "members": 28,
+//       "lastPayment": "1 day ago",
+//       "icon": Icons.wb_sunny,
+//       "color": Colors.orange
+//     },
+//     {
+//       "name": "Evening Session",
+//       "members": 35,
+//       "lastPayment": "Today",
+//       "icon": Icons.nights_stay,
+//       "color": Colors.indigo
+//     },
+//     {
+//       "name": "Personal Training",
+//       "members": 15,
+//       "lastPayment": "3 days ago",
+//       "icon": Icons.person,
+//       "color": Colors.purple
+//     },
+//     {
+//       "name": "Yoga Class",
+//       "members": 22,
+//       "lastPayment": "Yesterday",
+//       "icon": Icons.self_improvement,
+//       "color": Colors.teal
+//     },
+//     {
+//       "name": "Weight Loss Program",
+//       "members": 18,
+//       "lastPayment": "4 days ago",
+//       "icon": Icons.monitor_weight,
+//       "color": Colors.green
+//     },
+//     {
+//       "name": "Bodybuilding Team",
+//       "members": 25,
+//       "lastPayment": "Today",
+//       "icon": Icons.fitness_center,
+//       "color": Colors.red
+//     }
+//   ];
+//   List<Map<String, dynamic>> _filteredGroups = [];
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _filteredGroups = List.from(_groups);
+//     _searchController.addListener(_filterGroups);
+//   }
+//
+//   void _filterGroups() {
+//     setState(() {
+//       _filteredGroups = _groups
+//           .where((group) => group['name']
+//               .toLowerCase()
+//               .contains(_searchController.text.toLowerCase()))
+//           .toList();
+//     });
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       floatingActionButton: FloatingActionButton(
+//         backgroundColor: home1,
+//         onPressed: () {
+//           Navigator.push(
+//             context,
+//             MaterialPageRoute(
+//               builder: (_) => const CreateGroupPage(),
+//               fullscreenDialog: true,
+//             ),
+//           );
+//         },
+//         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+//         child: const Icon(Icons.add, color: white, size: 28),
+//       ),
+//       body: NestedScrollView(
+//         headerSliverBuilder: (_, __) => [
+//           SliverAppBar(
+//             centerTitle: true,
+//             automaticallyImplyLeading: false,
+//             floating: true,
+//             pinned: true,
+//             snap: true,
+//             backgroundColor: Colors.transparent,
+//             elevation: 0,
+//             flexibleSpace: Container(
+//               decoration: BoxDecoration(
+//                 gradient: LinearGradient(
+//                   colors: [home1, home2.withOpacity(0.9)],
+//                   begin: Alignment.topLeft,
+//                   end: Alignment.bottomRight,
+//                 ),
+//               ),
+//             ),
+//             title: AnimatedSwitcher(
+//               duration: const Duration(milliseconds: 300),
+//               child: _isSearching
+//                   ? const SizedBox()
+//                   : const Text(
+//                       "Groups",
+//                       style: TextStyle(
+//                           color: white,
+//                           fontWeight: FontWeight.bold,
+//                           fontSize: 22),
+//                     ),
+//             ),
+//             actions: [
+//               IconButton(
+//                 icon: Icon(_isSearching ? Icons.close : Icons.search,
+//                     color: white),
+//                 onPressed: () {
+//                   setState(() {
+//                     _isSearching = !_isSearching;
+//                     if (!_isSearching) _searchController.clear();
+//                   });
+//                 },
+//               ),
+//             ],
+//             bottom: _isSearching
+//                 ? PreferredSize(
+//                     preferredSize: const Size.fromHeight(60),
+//                     child: Padding(
+//                       padding: const EdgeInsets.symmetric(
+//                           horizontal: 16, vertical: 8),
+//                       child: Container(
+//                         decoration: BoxDecoration(
+//                           color: Colors.white,
+//                           borderRadius: BorderRadius.circular(14),
+//                         ),
+//                         child: TextField(
+//                           controller: _searchController,
+//                           autofocus: true,
+//                           decoration: const InputDecoration(
+//                             contentPadding: EdgeInsets.symmetric(vertical: 15),
+//                             hintText: "Search groups...",
+//                             border: InputBorder.none,
+//                             prefixIcon: Icon(Icons.search, color: Colors.grey),
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                   )
+//                 : null,
+//           ),
+//         ],
+//         body: _filteredGroups.isEmpty
+//             ? _buildEmptyState()
+//             : ListView.builder(
+//                 padding:
+//                     const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+//                 itemCount: _filteredGroups.length,
+//                 itemBuilder: (context, index) {
+//                   final group = _filteredGroups[index];
+//                   return TweenAnimationBuilder(
+//                     tween: Tween<double>(begin: 0, end: 1),
+//                     duration: Duration(milliseconds: 300 + (index * 80)),
+//                     builder: (context, value, child) {
+//                       return Transform.scale(
+//                         scale: value,
+//                         child: Opacity(opacity: value, child: child),
+//                       );
+//                     },
+//                     child: Card(
+//                       shape: RoundedRectangleBorder(
+//                           borderRadius: BorderRadius.circular(16)),
+//                       elevation: 4,
+//                       shadowColor: group['color'].withOpacity(0.3),
+//                       child: ListTile(
+//                         onTap: () {
+//                           Navigator.push(
+//                               context,
+//                               MaterialPageRoute(
+//                                   builder: (context) => GroupDetailPage()));
+//                         },
+//                         contentPadding: const EdgeInsets.all(16),
+//                         leading: CircleAvatar(
+//                           radius: 26,
+//                           backgroundColor: group['color'].withOpacity(0.15),
+//                           child: Icon(group['icon'],
+//                               color: group['color'], size: 26),
+//                         ),
+//                         title: Text(
+//                           group['name'],
+//                           style: const TextStyle(
+//                               fontSize: 16, fontWeight: FontWeight.w600),
+//                         ),
+//                         subtitle: Text(
+//                           "${group['members']} members • Last payment ${group['lastPayment']}",
+//                           style: TextStyle(
+//                               fontSize: 13, color: Colors.grey.shade600),
+//                         ),
+//                         trailing: Icon(Icons.chevron_right,
+//                             color: Colors.grey.shade400),
+//                       ),
+//                     ),
+//                   );
+//                 },
+//               ),
+//       ),
+//     );
+//   }
+//
+//   Widget _buildEmptyState() {
+//     return Center(
+//       child: Column(
+//         mainAxisAlignment: MainAxisAlignment.center,
+//         children: [
+//           Icon(Icons.group_off, size: 72, color: home1.withOpacity(0.3)),
+//           const SizedBox(height: 20),
+//           Text(
+//             _searchController.text.isEmpty
+//                 ? "No groups created yet"
+//                 : "No matching groups found",
+//             style: TextStyle(
+//                 fontSize: 18, color: home1.withOpacity(0.6), height: 1.4),
+//             textAlign: TextAlign.center,
+//           ),
+//           if (_searchController.text.isNotEmpty)
+//             Padding(
+//               padding: const EdgeInsets.only(top: 8),
+//               child: TextButton(
+//                 onPressed: () => _searchController.clear(),
+//                 style: TextButton.styleFrom(foregroundColor: home1),
+//                 child: const Text("Clear search"),
+//               ),
+//             )
+//         ],
+//       ),
+//     );
+//   }
+// }

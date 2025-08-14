@@ -1,7 +1,7 @@
 import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
 import 'package:collection_qr_flutter/presentation/dues/rdcl_due_home_page.dart';
-import 'package:collection_qr_flutter/presentation/firebase/home/home_page.dart';
-import 'package:collection_qr_flutter/presentation/groups/group_homepage/group_homepage.dart';
+import 'package:collection_qr_flutter/presentation/groups/homepage/unused/home_page.dart';
+import 'package:collection_qr_flutter/presentation/groups/group_homepage/unusedcode/group_homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/colors.dart';
@@ -9,9 +9,11 @@ import '../../core/constants.dart';
 import '../account_dues/account_list_home_page.dart';
 import '../account_dues/rdcl_account_list_home_page.dart';
 import '../dues/dues_home_page.dart';
-import '../groups/group_homepage/groups_home_page.dart';
+import '../groups/group_homepage/all_groups_page.dart';
+import '../groups/homepage/group_home_page.dart';
 import '../home/home_page.dart';
 import '../loan/loan_home_page.dart';
+import '../min_kyc/min_kyc_page.dart';
 import '../profile/profile_home_page.dart';
 
 class BottomNavScreen extends StatefulWidget {
@@ -24,6 +26,7 @@ class BottomNavScreen extends StatefulWidget {
 class _BottomNavScreenState extends State<BottomNavScreen> {
   int _selectedIndex = 0;
   String? userTPYE;
+  //int _currentIndex = 0;
   String? loggedInUserTPYE;
   double _indicatorPosition = 0.0;
   final List<GlobalKey> _tabKeys = List.generate(5, (index) => GlobalKey());
@@ -70,11 +73,13 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   Widget _getNonAgentSelectedPage(int index) {
     switch (index) {
       case 0:
-        return const FeeHomePage();
+       // return const FeeHomePage();
+        return const GroupHomePage();
       case 1:
-        return const GroupsHomePage();
+        return const AllGroupsPage();
       case 2:
-        return const ProfileHomePage();
+     //   return const ProfileHomePage();
+        return const AadhaarOtpRequest();
       default:
         return const HomePage();
     }
@@ -213,6 +218,10 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
+
+                        // _buildGroupNavItem(0, Icons.home_rounded, Icons.home_outlined),
+                        // _buildGroupNavItem(1, Icons.groups, Icons.groups_outlined),
+                        // _buildGroupNavItem(2, Icons.person_rounded, Icons.person_outline),
                         _buildNavItem(
                           key: _tabKeys[0],
                           index: 0,
@@ -242,6 +251,35 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+
+  Widget _buildGroupNavItem(int index, IconData activeIcon, IconData inactiveIcon) {
+    bool isActive = _selectedIndex == index;
+    return GestureDetector(
+      onTap: () => setState(() => _selectedIndex = index),
+      child: AnimatedContainer(
+        height: 53,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: isActive ? home1.withOpacity(0.2) : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Icon(
+              isActive ? activeIcon : inactiveIcon,
+              color: isActive ? home1 : Colors.grey[600],
+              size: 24,
+            ),
+            const SizedBox(height: 4),
+          ],
         ),
       ),
     );
