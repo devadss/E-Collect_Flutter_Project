@@ -14,17 +14,17 @@ class _BankAccoutDetailPageState extends State<BankAccoutDetailPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _panNoController = TextEditingController();
   final TextEditingController _bnkAccController = TextEditingController();
-  final TextEditingController _confirmBnkAccController = TextEditingController();
+  final TextEditingController _confirmBnkAccController =
+      TextEditingController();
   final TextEditingController _ifscController = TextEditingController();
   final _panFocusNode = FocusNode();
   final _bnkAccFocusNode = FocusNode();
   final _confirmBnkAccFocusNode = FocusNode();
   final _ifscFocusNode = FocusNode();
-   AutovalidateMode _panAutoValidateMode = AutovalidateMode.disabled;
-   AutovalidateMode _confirmBnkAccAutoValidateMode = AutovalidateMode.disabled;
-   AutovalidateMode _bnkAccAutoValidateMode = AutovalidateMode.disabled;
-   AutovalidateMode _ifscAutoValidateMode = AutovalidateMode.disabled;
-
+  AutovalidateMode _panAutoValidateMode = AutovalidateMode.disabled;
+  AutovalidateMode _confirmBnkAccAutoValidateMode = AutovalidateMode.disabled;
+  AutovalidateMode _bnkAccAutoValidateMode = AutovalidateMode.disabled;
+  AutovalidateMode _ifscAutoValidateMode = AutovalidateMode.disabled;
 
   @override
   void initState() {
@@ -63,6 +63,17 @@ class _BankAccoutDetailPageState extends State<BankAccoutDetailPage> {
       }
     });
   }
+
+  bool isValidPan(String pan) {
+    final panRegex = RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]$');
+    return panRegex.hasMatch(pan);
+  }
+
+  bool isValidIFSC(String ifsc) {
+    final ifscRegex = RegExp(r'^[A-Z]{4}0[A-Z0-9]{6}$');
+    return ifscRegex.hasMatch(ifsc);
+  }
+
   @override
   void dispose() {
     _panNoController.dispose();
@@ -92,12 +103,13 @@ class _BankAccoutDetailPageState extends State<BankAccoutDetailPage> {
         padding: const EdgeInsets.all(16.0),
         child: Card(
           elevation: 4,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Form(
               key: _formKey,
-               child:  Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildLabel("PAN Number"),
@@ -111,34 +123,34 @@ class _BankAccoutDetailPageState extends State<BankAccoutDetailPage> {
                     autoValidateMode: _panAutoValidateMode,
                   ),
                   const SizedBox(height: 16),
-
                   _buildLabel("Bank Account Number"),
                   const SizedBox(height: 8),
                   _buildTextField(
                     hint: "Enter bank account number",
-                    icon: Icons.account_balance_wallet, contrlr: _bnkAccController,
+                    icon: Icons.account_balance_wallet,
+                    contrlr: _bnkAccController,
                     fieldName: 'bnk_no',
                     focusNode: _bnkAccFocusNode,
                     autoValidateMode: _bnkAccAutoValidateMode,
                   ),
                   const SizedBox(height: 16),
-
                   _buildLabel("Confirm Account Number"),
                   const SizedBox(height: 8),
                   _buildTextField(
                     hint: "Re-enter account number",
-                    icon: Icons.repeat, contrlr: _confirmBnkAccController,
+                    icon: Icons.repeat,
+                    contrlr: _confirmBnkAccController,
                     fieldName: 're_bnk_no',
                     focusNode: _confirmBnkAccFocusNode,
                     autoValidateMode: _confirmBnkAccAutoValidateMode,
                   ),
                   const SizedBox(height: 16),
-
                   _buildLabel("IFSC Code"),
                   const SizedBox(height: 8),
                   _buildTextField(
                     hint: "Enter IFSC code",
-                    icon: Icons.qr_code, contrlr: _ifscController,
+                    icon: Icons.qr_code,
+                    contrlr: _ifscController,
                     fieldName: 'ifsc',
                     focusNode: _ifscFocusNode,
                     autoValidateMode: _ifscAutoValidateMode,
@@ -162,10 +174,18 @@ class _BankAccoutDetailPageState extends State<BankAccoutDetailPage> {
             ),
           ),
           onPressed: () {
-            if(_formKey.currentState!.validate()){
-
+            if(_bnkAccController.text != _confirmBnkAccController.text){
+              showToast(message: "Account no mis-match", color: Colors.red);
             }else{
-              showToast(message: "Empty fields not allowed", color: Colors.red);            }
+              if (_formKey.currentState!.validate()) {
+              } else {
+                print("_bnkAccController : ${_bnkAccController.text}");
+                print("_confirmBnkAccController : ${_confirmBnkAccController.text}");
+
+                showToast(message: "Empty fields not allowed", color: Colors.red);
+              }
+            }
+
 
             // Add your validation logic here
           },
@@ -198,6 +218,17 @@ class _BankAccoutDetailPageState extends State<BankAccoutDetailPage> {
     AutovalidateMode autoValidateMode = AutovalidateMode.disabled,
   }) {
     return TextFormField(
+      keyboardType: fieldName == "bnk_no"
+          ? TextInputType.number
+          : fieldName == "re_bnk_no"
+              ? TextInputType.number
+              : TextInputType.text,
+      textCapitalization: TextCapitalization.characters,
+      maxLength: fieldName == "pan"
+          ? 10
+          : fieldName == "ifsc"
+              ? 11
+              : 18,
       controller: contrlr,
       focusNode: focusNode,
       autovalidateMode: autoValidateMode,
@@ -213,10 +244,22 @@ class _BankAccoutDetailPageState extends State<BankAccoutDetailPage> {
             case 'ifsc':
               return "IFSC code is required";
           }
+        } else {
+          switch (fieldName) {
+            case "pan":
+              if (isValidPan(value) == false) {
+                return "Invalid pan";
+              }
+            case "ifsc":
+              if (isValidIFSC(value) == false) {
+                return "Invalid Ifsc";
+              }
+          }
         }
         return null;
       },
       decoration: InputDecoration(
+        counterText: '',
         hintText: hint,
         prefixIcon: Icon(icon, color: home1),
         filled: true,
@@ -229,7 +272,8 @@ class _BankAccoutDetailPageState extends State<BankAccoutDetailPage> {
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: home1, width: 1.5),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
     );
   }

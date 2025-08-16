@@ -1,18 +1,24 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import '../../../../core/alerts.dart';
+import '../../../../core/constants.dart';
 import '../../../../data/provider/aadhaar_otp_request_provider.dart';
 
 import '../../../../data/provider/verify_aadhaar_detail_provider.dart';
 import '../../../../data/storage/shared_pref_helper.dart';
+import '../min_kyc_screen.dart';
 import '../otp_notifier.dart';
 
 class AadhaarOtpVerificationPage extends StatefulWidget {
   final String aadhaarNumber;
+  final String mobNum;
 
-  const AadhaarOtpVerificationPage({super.key, required this.aadhaarNumber});
+  const AadhaarOtpVerificationPage({super.key, required this.aadhaarNumber, required this.mobNum});
 
   @override
   State<AadhaarOtpVerificationPage> createState() =>
@@ -52,7 +58,8 @@ class _AadhaarOtpVerificationPageState extends State<AadhaarOtpVerificationPage>
     startTimer();
     loadSharedPref();
 
-    final vap = Provider.of<VerifyAadhaarDetailProvider>(context, listen: false);
+    final vap =
+        Provider.of<VerifyAadhaarDetailProvider>(context, listen: false);
     vap.resetState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -101,13 +108,15 @@ class _AadhaarOtpVerificationPageState extends State<AadhaarOtpVerificationPage>
   }
 
   void verifyOtp() {
-    String otp = otpState.controllers.map((controller) => controller.text).join();
+    String otp =
+        otpState.controllers.map((controller) => controller.text).join();
     if (otp.isEmpty) {
       showToast(message: "Please enter the 6-digit OTP", color: Colors.red);
       return;
     }
     if (otp.length != 6) {
-      showToast(message: "Please enter complete 6-digit OTP", color: Colors.red);
+      showToast(
+          message: "Please enter complete 6-digit OTP", color: Colors.red);
       return;
     }
 
@@ -117,13 +126,16 @@ class _AadhaarOtpVerificationPageState extends State<AadhaarOtpVerificationPage>
 
   Future<void> validateOtp(String otp) async {
     final arp = Provider.of<AadhaarOtpRequestProvider>(context, listen: false);
-    final vap = Provider.of<VerifyAadhaarDetailProvider>(context, listen: false);
+    final vap =
+        Provider.of<VerifyAadhaarDetailProvider>(context, listen: false);
 
     await vap.getAadhaarDetails(
       otp,
       arp.aadhaarDetailOtpRequestModel!.refId.toString(),
-      corpCode!,
-      getCustId!,
+      "",
+      // corpCode!,
+      //getCustId!,
+      "",
     );
 
     if (vap.aadhaarOtpRequestFailModel != null) {
@@ -137,36 +149,75 @@ class _AadhaarOtpVerificationPageState extends State<AadhaarOtpVerificationPage>
       for (final controller in otpState.controllers) {
         controller.clear();
       }
-      // Navigator.push(
-      //   context,
-      //   PageRouteBuilder(
-      //     transitionDuration: const Duration(milliseconds: 500),
-      //     pageBuilder: (context, animation, secondaryAnimation) =>
-      //         AadharVerificationPage(
-      //           mobileNum: phoneNo.toString(),
-      //           tokenValue: token.toString(),
-      //           aadhaarNumber: widget.aadhaarNumber,
-      //           fullName: vap.verifyAadhaarDetailsModel!.name.toString(),
-      //           dob: vap.verifyAadhaarDetailsModel!.dob.toString(),
-      //           gender: vap.verifyAadhaarDetailsModel!.gender.toString(),
-      //           address: vap.verifyAadhaarDetailsModel!.address.toString(),
-      //           fatherName: vap.verifyAadhaarDetailsModel!.careOf
-      //               .toString()
-      //               .replaceAll("S/O:", ""),
-      //         ),
-      //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      //       return FadeTransition(
-      //         opacity: animation,
-      //         child: child,
-      //       );
-      //     },
-      //   ),
-      // );
+      Navigator.push(
+        context,
+        PageRouteBuilder(
+          transitionDuration: const Duration(milliseconds: 500),
+          pageBuilder: (context, animation, secondaryAnimation) => MinKycScreen(
+            mobileNum: widget.mobNum,
+            tokenValue: token.toString(),
+            aadhaarNumber: widget.aadhaarNumber,
+            fullName: vap.verifyAadhaarDetailsModel!.name.toString(),
+            dob: vap.verifyAadhaarDetailsModel!.dob.toString(),
+            gender: vap.verifyAadhaarDetailsModel!.gender.toString(),
+            address: vap.verifyAadhaarDetailsModel!.address.toString(),
+            fatherName: vap.verifyAadhaarDetailsModel!.careOf
+                .toString()
+                .replaceAll("S/O:", ""),
+            houseName:
+                vap.verifyAadhaarDetailsModel!.splitAddress!.house.toString(),
+            street:
+                vap.verifyAadhaarDetailsModel!.splitAddress!.street.toString(),
+            state:
+                vap.verifyAadhaarDetailsModel!.splitAddress!.state.toString(),
+            pincode:
+                vap.verifyAadhaarDetailsModel!.splitAddress!.pincode.toString(),
+            city: vap.verifyAadhaarDetailsModel!.splitAddress!.dist.toString(),
+            area:
+                vap.verifyAadhaarDetailsModel!.splitAddress!.subdist.toString(),
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+        ),
+      );
     } else {
       setState(() => isLoading = false);
     }
   }
+  Future<void> kycOtpRequest() async {
+    EasyLoading.show(status: "Please wait...");
+    const url = '${baseUrl}api/GenerateOtp';
+    final data = {
+      'entityId': "",
+      'mobileNumber': '+91${widget.mobNum}'
+    };
 
+    print("kycOtpRequest = $data");
+    final response = await http.post(
+      Uri.parse(url),
+      body: json.encode(data),
+      headers: {'Content-Type': 'application/json'},
+    );
+    print("response = ${response.body}");
+    print("kycOtpRequest = ${response.statusCode}");
+    if (response.statusCode == 200) {
+      EasyLoading.dismiss();
+      print("kycOtpRequest = $response");
+      EasyLoading.showToast('OTP Requested',
+          toastPosition: EasyLoadingToastPosition.center);
+    }
+    if (response.statusCode == 401) {
+      EasyLoading.dismiss();
+      if (response.body.contains("Mobile Number Already Registered")) {
+        EasyLoading.showToast('Mobile Number Already Registered',
+            toastPosition: EasyLoadingToastPosition.bottom);
+      }
+    }
+  }
   Future<void> requestAadhaarOtp() async {
     final arp = Provider.of<AadhaarOtpRequestProvider>(context, listen: false);
     await arp.verifyAadhaarNumber(widget.aadhaarNumber);
@@ -179,7 +230,8 @@ class _AadhaarOtpVerificationPageState extends State<AadhaarOtpVerificationPage>
       );
     } else if (arp.aadhaarDetailOtpRequestModel != null) {
       setState(() => isLoading = false);
-      if (arp.aadhaarDetailOtpRequestModel!.message == "OTP sent successfully") {
+      if (arp.aadhaarDetailOtpRequestModel!.message ==
+          "OTP sent successfully") {
         startTimer();
       }
     } else {
@@ -244,7 +296,7 @@ class _AadhaarOtpVerificationPageState extends State<AadhaarOtpVerificationPage>
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: List.generate(
                   6,
-                      (index) => AnimatedContainer(
+                  (index) => AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     width: 50,
                     height: 60,
@@ -273,10 +325,13 @@ class _AadhaarOtpVerificationPageState extends State<AadhaarOtpVerificationPage>
                           contentPadding: EdgeInsets.zero,
                         ),
                         onChanged: (value) {
-                          if (value.isNotEmpty && index < otpState.controllers.length - 1) {
-                            FocusScope.of(context).requestFocus(otpState.focusNodes[index + 1]);
+                          if (value.isNotEmpty &&
+                              index < otpState.controllers.length - 1) {
+                            FocusScope.of(context)
+                                .requestFocus(otpState.focusNodes[index + 1]);
                           } else if (value.isEmpty && index > 0) {
-                            FocusScope.of(context).requestFocus(otpState.focusNodes[index - 1]);
+                            FocusScope.of(context)
+                                .requestFocus(otpState.focusNodes[index - 1]);
                           }
                           setState(() {});
                         },
@@ -295,36 +350,36 @@ class _AadhaarOtpVerificationPageState extends State<AadhaarOtpVerificationPage>
               children: [
                 _canResend
                     ? Row(
-                  children: [
-                    Text(
-                      "Didn't receive code? ",
-                      style: GoogleFonts.inter(
-                        color: Colors.grey[600],
-                        fontSize: 14,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        requestAadhaarOtp();
-                      },
-                      child: Text(
-                        "Resend OTP",
+                        children: [
+                          Text(
+                            "Didn't receive code? ",
+                            style: GoogleFonts.inter(
+                              color: Colors.grey[600],
+                              fontSize: 14,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              requestAadhaarOtp();
+                            },
+                            child: Text(
+                              "Resend OTP",
+                              style: GoogleFonts.inter(
+                                color: const Color(0xFFEA307B),
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Text(
+                        "Resend OTP in $_start seconds",
                         style: GoogleFonts.inter(
-                          color: const Color(0xFFEA307B),
+                          color: Colors.grey[600],
                           fontSize: 14,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                  ],
-                )
-                    : Text(
-                  "Resend OTP in $_start seconds",
-                  style: GoogleFonts.inter(
-                    color: Colors.grey[600],
-                    fontSize: 14,
-                  ),
-                ),
               ],
             ),
 
@@ -358,22 +413,23 @@ class _AadhaarOtpVerificationPageState extends State<AadhaarOtpVerificationPage>
                     child: Center(
                       child: isLoading
                           ? const SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation(Colors.white),
-                        ),
-                      )
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor:
+                                    AlwaysStoppedAnimation(Colors.white),
+                              ),
+                            )
                           : Text(
-                        "VERIFY OTP",
-                        style: GoogleFonts.inter(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1,
-                        ),
-                      ),
+                              "VERIFY OTP",
+                              style: GoogleFonts.inter(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1,
+                              ),
+                            ),
                     ),
                   ),
                 ),

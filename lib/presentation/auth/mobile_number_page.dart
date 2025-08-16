@@ -216,8 +216,8 @@ class _MobileNumberVerificationPageState
               .parentAgentCredentialFailResponse!.message);
         }
       }else{
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> const BankAccoutDetailPage()));
-       // Navigator.push(context, MaterialPageRoute(builder: (context)=> const AadhaarOtpRequest()));
+       // Navigator.push(context, MaterialPageRoute(builder: (context)=> const BankAccoutDetailPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> AadhaarOtpRequest(mobNum: _mobileNumberController.text)));
         print("Not an agent");
         // final custRegisterProvider = Provider.of<CustRegisterProvider>(
         //   context,

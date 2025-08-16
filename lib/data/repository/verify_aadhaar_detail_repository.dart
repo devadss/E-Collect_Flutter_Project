@@ -16,7 +16,11 @@ class VerifyAadhaarDetailRepository implements VerifyAadhaarDetailInterface {
     final uri = Uri.parse("${baseUrl}api/verifyAadhaarOtp");
     final request = await http.post(
       uri,
-      body: jsonEncode({"Otp": otp, "RefId": refId, "VendorCode": vendorCode, "Cust_id":custId}),
+      body: jsonEncode({"Otp": otp, "RefId": refId,
+
+        "VendorCode": "CLTADSS",
+
+        "Cust_id":custId}),
       headers: {'Content-Type': 'application/json'},
     );
     print("RefId : $refId");

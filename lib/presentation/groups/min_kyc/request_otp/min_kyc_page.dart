@@ -7,7 +7,8 @@ import '../../../../data/provider/aadhaar_otp_request_provider.dart';
 import '../aadhar_otp_verification/aadhaar_otp_verifiaction_page.dart';
 
 class AadhaarOtpRequest extends StatefulWidget {
-  const AadhaarOtpRequest({super.key});
+final String? mobNum;
+  const AadhaarOtpRequest(  {super.key, this.mobNum});
 
   @override
   State<AadhaarOtpRequest> createState() => _AadhaarOtpRequestState();
@@ -60,7 +61,8 @@ class _AadhaarOtpRequestState extends State<AadhaarOtpRequest> with SingleTicker
           context,
           PageRouteBuilder(
             transitionDuration: const Duration(milliseconds: 500),
-            pageBuilder: (context, animation, secondaryAnimation) => AadhaarOtpVerificationPage(
+            pageBuilder: (context, animation, secondaryAnimation) => AadhaarOtpVerificationPage(mobNum:
+              widget.mobNum!,
               aadhaarNumber: aadhaarController.text,
             ),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
