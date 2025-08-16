@@ -93,25 +93,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
             context,
             MaterialPageRoute(
                 builder: (context) => const GooglePinCodePage()));
-        // if (widget.tokenStatus == "MPIN_N") {
-        // /*  Navigator.push(
-        //       context,
-        //       MaterialPageRoute(
-        //           builder: (context) => OtpVerification(
-        //             mobNum: widget.subAgentmobNum,
-        //           )));*/
-        //   SharedPref.shared.setLogin(true);
-        //   Navigator.push(
-        //       context,
-        //       MaterialPageRoute(
-        //           builder: (context) => const GooglePinCodePage()));
-        // } else {
-        //   SharedPref.shared.setLogin(true);
-        //   Navigator.push(
-        //       context,
-        //       MaterialPageRoute(
-        //           builder: (context) => const GooglePinCodePage()));
-        // }
+
       },
     );
   }
@@ -145,11 +127,23 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
             );
             Navigator.pop(context);
           },
-          (data) {
+          (data) async {
             Navigator.pop(context);
             if (data.message == "OTP Verified") {
               SharedPref.shared.setLogin(true);
-              tokenGeneration();
+              if(
+              widget.loggedInUserType == "NOT_AN_AGENT"){
+                await SharedPref.shared.setTokenValue(data.toString());
+                await SharedPref.shared.setLogin(true);
+                await SharedPref.shared.setLoggedInUserType(widget.loggedInUserType);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const GooglePinCodePage()));
+              }else{
+                tokenGeneration();
+              }
+
            //    if (widget.tokenStatus == "MPIN_N") {
            //      Navigator.push(
            //          context,

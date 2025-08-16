@@ -1270,19 +1270,12 @@ class _MinKycScreenState extends State<MinKycScreen>
           ///GETTING THE TOKEN VALUE.......
          // checkIfRegistered();
            saveUserData(generatedEntityId!);
-          // EasyLoading.showToast("MIN KYC COMPLETED SUCCESS",
-          //     toastPosition: EasyLoadingToastPosition.bottom);
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (context) => const MobileNumberVerification()));
           showToast(message: "MIN KYC COMPLETED SUCCESS", color: Colors.green);
 
         }
 
         if (responses.contains('Invalid OTP')) {
-        //  EasyLoading.showToast('Invalid OTP');
-          // saveUserData(generatedEntityID);
+
           showToast(message: "Invalid OTP", color: Colors.red);
 
         }
@@ -1292,8 +1285,7 @@ class _MinKycScreenState extends State<MinKycScreen>
         }
 
         if (response.body.contains('Valid kits not found')) {
-          // EasyLoading.showToast("Valid kits not found",
-          //     toastPosition: EasyLoadingToastPosition.bottom);
+
           showToast(message: "Valid kits not found", color: Colors.red);
         }
         print('KYC $responses');
@@ -1449,7 +1441,7 @@ class _MinKycScreenState extends State<MinKycScreen>
                   size: 80,
                 ),
                 const SizedBox(height: 20),
-                Text(
+                const Text(
                   "KYC Submitted!",
                   style: TextStyle(
                     fontSize: 22,

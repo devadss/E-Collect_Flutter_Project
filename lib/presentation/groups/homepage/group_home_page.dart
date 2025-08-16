@@ -1,6 +1,8 @@
-
+import 'package:collection_qr_flutter/presentation/groups/bnk_account_details/bank_accout_detail_page.dart';
+import 'package:collection_qr_flutter/presentation/groups/bnk_account_details/bank_details_screen.dart';
 import 'package:flutter/material.dart';
 import '../../../core/colors.dart';
+import '../../../data/storage/shared_pref_helper.dart';
 import '../group_homepage/detail_page/group_detail_page.dart';
 
 class GroupHomePage extends StatefulWidget {
@@ -11,8 +13,8 @@ class GroupHomePage extends StatefulWidget {
 }
 
 class _GroupHomePageState extends State<GroupHomePage> {
-  // Sample data
-  final String userName = "Indhuleka";
+  String? userName;
+
   int _selectedMonthIndex = DateTime.now().month - 1;
   final List<String> months = [
     'Jan',
@@ -157,6 +159,13 @@ class _GroupHomePageState extends State<GroupHomePage> {
     );
   }
 
+  Future<void> loadSharedPrefs() async {
+    final name = await SharedPref().getAgentName();
+    setState(() {
+      userName = name;
+    });
+  }
+
   Future<Object?> _showLogoutConfirmation(BuildContext context) async {
     return showGeneralDialog(
       context: context,
@@ -223,7 +232,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
                           ],
                         ),
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.logout_rounded,
                         size: 36,
                         color: home1,
@@ -235,7 +244,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
               const SizedBox(height: 20),
 
               // Title
-              Text(
+              const Text(
                 'Confirm Logout',
                 style: TextStyle(
                   fontSize: 22,
@@ -346,10 +355,10 @@ class _GroupHomePageState extends State<GroupHomePage> {
               ),
 
               // Settings title
-              Row(
+              const Row(
                 children: [
                   Icon(Icons.settings_rounded, color: home1, size: 24),
-                  const SizedBox(width: 12),
+                   SizedBox(width: 12),
                   Text(
                     'Settings',
                     style: TextStyle(
@@ -364,13 +373,16 @@ class _GroupHomePageState extends State<GroupHomePage> {
 
               // Settings options
               _buildSettingsOption(
-                icon: Icons.palette_rounded,
-                title: 'App Theme',
-                subtitle: 'Change color scheme',
+                icon: Icons.account_balance_sharp,
+                title: 'Bank Details',
+                subtitle: 'Edit your Bank Details',
                 onTap: () {
                   // Implement theme change
                   Navigator.pop(context);
-                  _showThemeSelector(context);
+                  //_showThemeSelector(context);
+                 Navigator.push(context, MaterialPageRoute(builder: (context)=> BankDetailsScreen(
+                   status:"EDIT"
+                 )));
                 },
               ),
 
@@ -408,7 +420,8 @@ class _GroupHomePageState extends State<GroupHomePage> {
                 width: double.infinity,
                 child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: home2,
+                    backgroundColor: home1,
+                    foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     side: BorderSide(color: Colors.grey.shade300),
                     shape: RoundedRectangleBorder(
@@ -445,7 +458,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
       ),
       title: Text(
         title,
-        style: TextStyle(
+        style:const  TextStyle(
           fontWeight: FontWeight.w600,
           color: home2,
         ),
@@ -468,7 +481,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(
+          title: const Text(
             'Select Theme',
             style: TextStyle(color: home2),
           ),
@@ -483,7 +496,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text(
+              child: const Text(
                 'Cancel',
                 style: TextStyle(color: home2),
               ),
@@ -492,6 +505,12 @@ class _GroupHomePageState extends State<GroupHomePage> {
         );
       },
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadSharedPrefs();
   }
 
   Widget _buildThemeOption(String name, Color primary, Color secondary) {
@@ -523,13 +542,14 @@ class _GroupHomePageState extends State<GroupHomePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: home2),
+        iconTheme: const IconThemeData(color: home2),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout, color: home2),
+            icon: const Icon(Icons.logout, color: home2),
             onPressed: () {
               _showLogoutConfirmation(context);
             },
@@ -546,7 +566,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
               elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
-                side: BorderSide(color: home1, width: 1),
+                side: const BorderSide(color: home1, width: 1),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -559,7 +579,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
                         color: home1.withOpacity(0.1),
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(Icons.person, size: 30, color: home1),
+                      child: const Icon(Icons.person, size: 30, color: home1),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
@@ -574,8 +594,8 @@ class _GroupHomePageState extends State<GroupHomePage> {
                             ),
                           ),
                           Text(
-                            userName,
-                            style: TextStyle(
+                            userName.toString(),
+                            style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w700,
                               color: home2,
@@ -588,7 +608,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
                       onPressed: () {
                         _showSettingsDialog(context);
                       },
-                      icon: Icon(Icons.settings, color: home1),
+                      icon: const Icon(Icons.settings, color: home1),
                     ),
                   ],
                 ),
@@ -601,13 +621,13 @@ class _GroupHomePageState extends State<GroupHomePage> {
               elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
-                side: BorderSide(color: home1, width: 1),
+                side:const BorderSide(color: home1, width: 1),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(12),
                 child: Column(
                   children: [
-                    Text(
+                    const Text(
                       "Select Month",
                       style: TextStyle(
                         fontSize: 14,
@@ -662,7 +682,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
             // Monthly Financial Summary
             Text(
               "${months[_selectedMonthIndex]} $currentYear Financials",
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
                 color: home2,
@@ -706,7 +726,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
             const SizedBox(height: 20),
 
             // Financial Overview
-            Text(
+            const Text(
               "Cumulative Overview",
               style: TextStyle(
                 fontSize: 18,
@@ -719,7 +739,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
               elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
-                side: BorderSide(color: home1, width: 1),
+                side: const BorderSide(color: home1, width: 1),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -737,7 +757,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
                         ),
                         Text(
                           "₹$totalCollected",
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                             color: home1,
@@ -766,7 +786,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
                         ),
                         Text(
                           "₹$totalDue",
-                          style: TextStyle(
+                          style:const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                             color: Colors.orange,
@@ -786,7 +806,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
               children: [
                 Text(
                   "Your Groups (${groups.length})",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                     color: home2,
@@ -832,7 +852,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: home1, width: 1),
+        side: const BorderSide(color: home1, width: 1),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -859,7 +879,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
             const SizedBox(height: 4),
             Text(
               value,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
                 color: home2,
@@ -881,7 +901,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: home1,width: 1),
+        border: Border.all(color: home1, width: 1),
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.all(16),
@@ -894,7 +914,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
           ),
           child: Stack(
             children: [
-              Center(
+              const Center(
                 child: Icon(Icons.group, size: 24, color: home1),
               ),
               if (isNewGroup)
@@ -903,11 +923,11 @@ class _GroupHomePageState extends State<GroupHomePage> {
                   top: 0,
                   child: Container(
                     padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
+                    decoration:const BoxDecoration(
                       color: Colors.green,
                       shape: BoxShape.circle,
                     ),
-                    child: Text(
+                    child: const Text(
                       "N",
                       style: TextStyle(
                         color: Colors.white,
@@ -922,7 +942,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
         ),
         title: Text(
           name,
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.w600,
             color: home2,
           ),
@@ -943,7 +963,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
               children: [
                 Text(
                   "₹${collected.toStringAsFixed(0)}",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 12,
                     color: home1,
                     fontWeight: FontWeight.w600,
@@ -958,7 +978,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
                 ),
                 Text(
                   "₹${due.toStringAsFixed(0)} due",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 12,
                     color: Colors.orange,
                   ),

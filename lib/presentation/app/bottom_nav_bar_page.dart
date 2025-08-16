@@ -1,5 +1,6 @@
 import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
 import 'package:collection_qr_flutter/presentation/dues/rdcl_due_home_page.dart';
+import 'package:collection_qr_flutter/presentation/groups/bnk_account_details/bank_accout_detail_page.dart';
 import 'package:collection_qr_flutter/presentation/groups/homepage/unused/home_page.dart';
 import 'package:collection_qr_flutter/presentation/groups/group_homepage/unusedcode/group_homepage.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import '../../core/constants.dart';
 import '../account_dues/account_list_home_page.dart';
 import '../account_dues/rdcl_account_list_home_page.dart';
 import '../dues/dues_home_page.dart';
+import '../groups/bnk_account_details/bank_details_screen.dart';
 import '../groups/group_homepage/all_groups_page.dart';
 import '../groups/homepage/group_home_page.dart';
 import '../groups/min_kyc/request_otp/min_kyc_page.dart';
@@ -78,8 +80,9 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       case 1:
         return const AllGroupsPage();
       case 2:
-     //   return const ProfileHomePage();
-        return const AadhaarOtpRequest();
+       /// return const ProfileHomePage();
+       // return const BankAccoutDetailPage();
+        return const BankDetailsScreen();
       default:
         return const HomePage();
     }

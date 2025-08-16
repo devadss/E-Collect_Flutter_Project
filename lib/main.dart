@@ -31,6 +31,8 @@ import 'data/provider/cash_transcation_provider.dart';
 import 'data/provider/collection_base_url_provider.dart';
 import 'data/provider/fetch_account_balance_provider.dart';
 import 'data/provider/get_loan_provider.dart';
+import 'data/provider/group/bank_account_update_provider.dart';
+import 'data/provider/group/bank_detail_provider.dart';
 import 'data/provider/otp_request_provider.dart';
 import 'data/provider/otp_verification_provider.dart';
 import 'data/provider/parent_agent_detail_provider/parent_agent_detil_provider.dart';
@@ -51,6 +53,8 @@ import 'data/repository/cash_transcation_repository.dart';
 import 'data/repository/collection_base_url_repo.dart';
 import 'data/repository/create_order_repository.dart';
 import 'data/repository/get_loan_repository.dart';
+import 'data/repository/group/bank_account_update_repository.dart';
+import 'data/repository/group/bank_detail_repository.dart';
 import 'data/repository/link_transaction_history_repository.dart';
 import 'data/repository/otp_request_repository.dart';
 import 'data/repository/otp_verification_repository.dart';
@@ -140,6 +144,8 @@ void main() async {
     ChangeNotifierProvider(create: (_) => GetLoanProvider(GetLoanRepository())),
     ChangeNotifierProvider(create: (_) => AadhaarOtpRequestProvider(AadhaarOtpRequestRepository())),
     ChangeNotifierProvider(create: (_) => VerifyAadhaarDetailProvider(VerifyAadhaarDetailRepository())),
+    ChangeNotifierProvider(create: (_) => BankDetailProvider(BankAccountRepository())),
+    ChangeNotifierProvider(create: (_) => BankAccountUpdateProvider(BankAccountUpdateRepository())),
 
   ], child: const MyApp()));
 }

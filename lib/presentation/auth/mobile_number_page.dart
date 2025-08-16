@@ -216,82 +216,61 @@ class _MobileNumberVerificationPageState
               .parentAgentCredentialFailResponse!.message);
         }
       }else{
-       // Navigator.push(context, MaterialPageRoute(builder: (context)=> const BankAccoutDetailPage()));
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> AadhaarOtpRequest(mobNum: _mobileNumberController.text)));
         print("Not an agent");
-        // final custRegisterProvider = Provider.of<CustRegisterProvider>(
-        //   context,
-        //   listen: false,
-        // );
-        // final response = await custRegisterProvider.checkRegCust(int.parse(
-        //    _mobileNumberController.text
-        //         .replaceAll("+91", "")));
-        // response.fold(
-        //       (error) {
-        //     Navigator.pop(context);
-        //     print("Error: ${error.message}");
-        //     ScaffoldMessenger.of(context).showSnackBar(
-        //       SnackBar(
-        //         content: Text(
-        //           "Error: ${error.message}",
-        //           style: const TextStyle(
-        //             color: Colors.white,
-        //             fontWeight: FontWeight.w700,
-        //             fontSize: 17,
-        //           ),
-        //         ),
-        //         backgroundColor: Colors.red,
-        //       ),
-        //     );
-        //   },
-        //       (customer) async {
-        //     Navigator.pop(context);
-        //
-        //         SharedPref.shared.setEmail(
-        //           customer.response!.data!['emailId'].toString(),
-        //         );
-        //         SharedPref.shared.setCorpCode(
-        //           customer.response!.data!['CorpCode'].toString(),
-        //         );
-        //         SharedPref.shared.setBranchCode(
-        //           customer.response!.data!['BranchCode'].toString(),
-        //         );
-        //         SharedPref.shared.setMpinValue(customer.mpin.toString());
-        //         print(
-        //             "customer.mpin.toString() = ${customer.mpin.toString()}");
-        //
-        //         final parentAgentCredentialProvider =
-        //         Provider.of<ParentAgentCredentialProvider>(context, listen: false);
-        //
-        //         await parentAgentCredentialProvider.fetchParentAgentCredentials(
-        //             _mobileNumberController.text
-        //                 .replaceAll("+91", ""));
-        //         if (parentAgentCredentialProvider.parentAgentCredentialModel != null) {
-        //           SharedPref.shared.setParentAgentName(
-        //               parentAgentCredentialProvider
-        //                   .parentAgentCredentialModel!.b.userName);
-        //           SharedPref.shared.setParentAgentPassword(
-        //               parentAgentCredentialProvider
-        //                   .parentAgentCredentialModel!.b.mobPassword);
-        //           SharedPref.shared.setAgentName(parentAgentCredentialProvider
-        //               .parentAgentCredentialModel!.b.userName);
-        //         }
-        //         Navigator.push(
-        //           context,
-        //           MaterialPageRoute(
-        //             builder: (context) => OtpRequestVerificationPage(
-        //               subAgentmobNum: _mobileNumberController.text,
-        //               parentAgentMobNum:_mobileNumberController.text,
-        //               userName: parentAgentCredentialProvider
-        //                   .parentAgentCredentialModel!.b.userName,
-        //               password: parentAgentCredentialProvider
-        //                   .parentAgentCredentialModel!.b.mobPassword,
-        //               tokenStatus: customer.status.toString(), loggedInUserType: 'NOT_AN_AGENT',
-        //             ),
-        //           ),
-        //         );
-        //   },
-        // );
+        final custRegisterProvider = Provider.of<CustRegisterProvider>(
+          context,
+          listen: false,
+        );
+        final response = await custRegisterProvider.checkRegCust(int.parse(
+           _mobileNumberController.text
+                .replaceAll("+91", "")));
+        response.fold(
+              (error) {
+            Navigator.pop(context);
+            print("Error: ${error.message}");
+            Navigator.push(context, MaterialPageRoute(builder: (context)=> AadhaarOtpRequest(mobNum: _mobileNumberController.text)));
+
+          },
+              (customer) async {
+            Navigator.pop(context);
+            if (customer.response!.data!['CustId'] != null ||
+                customer.response!.data!['CustId']?.isNotEmpty ==
+                    true) {
+              SharedPref.shared.setEmail(
+                customer.response!.data!['emailId'].toString(),
+              );
+              SharedPref.shared.setCorpCode(
+                customer.response!.data!['CorpCode'].toString(),
+              );
+              SharedPref.shared.setBranchCode(
+                customer.response!.data!['BranchCode'].toString(),
+              );
+              SharedPref.shared.setSubAgentMobNum (
+                customer.response!.data!['contactNo'].toString(),
+              );
+              SharedPref.shared.setAgentName(
+                customer.response!.data!['firstName'].toString(),
+              );
+              SharedPref.shared.setMpinValue(customer.mpin.toString());
+              print(
+                  "customer.mpin.toString() = ${customer.mpin.toString()}");
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OtpRequestVerificationPage(
+                    subAgentmobNum: _mobileNumberController.text,
+                    parentAgentMobNum:_mobileNumberController.text,
+                    userName: "",
+                    password: "",
+                    tokenStatus: customer.status.toString(), loggedInUserType: 'NOT_AN_AGENT',
+                  ),
+                ),
+              );
+            }
+
+          }
+        );
       }
     }
   }
