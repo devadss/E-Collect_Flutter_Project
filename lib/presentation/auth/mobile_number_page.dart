@@ -239,6 +239,9 @@ class _MobileNumberVerificationPageState
               SharedPref.shared.setEmail(
                 customer.response!.data!['emailId'].toString(),
               );
+              SharedPref.shared.setCustId(
+                customer.response!.data!['CustId'].toString(),
+              );
               SharedPref.shared.setCorpCode(
                 customer.response!.data!['CorpCode'].toString(),
               );

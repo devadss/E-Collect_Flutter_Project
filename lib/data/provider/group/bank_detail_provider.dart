@@ -17,7 +17,7 @@ class BankDetailProvider with ChangeNotifier {
   String? get bnkError => _bnkError;
 
   Future<Either<String, BankDetailSubmitApiResponse>> submitBankDetails(
-      int userID,
+      String userID,
       String accountHolderName,
       String accountNumber,
       String ifsc,

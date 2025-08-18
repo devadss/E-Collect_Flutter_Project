@@ -3,7 +3,7 @@ import 'package:dartz/dartz.dart';
 
 abstract class BankAccountInterface {
   Future<Either<String, BankDetailSubmitApiResponse>> submitBankDetails(
-    int userID,
+      String userID,
     String accountHolderName,
     String accountNumber,
     String ifsc,

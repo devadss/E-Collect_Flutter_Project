@@ -126,6 +126,7 @@ class SharedPrefKeys {
   static const String corpCode = "CORP_CODE";
   static const String branchCode = "BRANCH_CODE";
   static const String email = "EMAIL_ID";
+  static const String custid = "CUST_ID";
   static const String mpin = "MPIN";
   static const String mpin_value = "MPIN_VALUE";
   static const String mpin_status = "MPIN_STATUS";

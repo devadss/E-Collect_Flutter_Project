@@ -380,7 +380,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
                   // Implement theme change
                   Navigator.pop(context);
                   //_showThemeSelector(context);
-                 Navigator.push(context, MaterialPageRoute(builder: (context)=> BankDetailsScreen(
+                 Navigator.push(context, MaterialPageRoute(builder: (context)=> const BankDetailsScreen(
                    status:"EDIT"
                  )));
                 },
@@ -594,7 +594,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
                             ),
                           ),
                           Text(
-                            userName.toString(),
+                            userName ?? "",
                             style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w700,

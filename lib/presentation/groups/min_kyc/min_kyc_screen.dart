@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:collection_qr_flutter/core/alerts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as http;
 import '../../../core/colors.dart';
 import '../../../core/constants.dart';
@@ -146,6 +145,7 @@ class _MinKycScreenState extends State<MinKycScreen>
     _firstNameController.text = firstName ?? "";
     _middleNameController.text = middleName ?? "";
     _lastNameController.text = lastName ?? "";
+    _aadharNumberController.text = widget.aadhaarNumber;
     widget.gender == "M"
         ? _selectedTile = "Mr"
         : widget.gender == "F"

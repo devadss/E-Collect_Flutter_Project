@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 class BankAccountRepository implements BankAccountInterface {
   @override
   Future<Either<String, BankDetailSubmitApiResponse>> submitBankDetails(
-      int userID,
+      String userID,
       String accountHolderName,
       String accountNumber,
       String ifsc,
@@ -26,11 +26,20 @@ class BankAccountRepository implements BankAccountInterface {
         "ifsc": ifsc,
         "CorpCode": "MOBWER",
         "BranchCode": "MOBWER",
-        "EntityId": "MOBWER"
+        "EntityId": userID
       }),
       headers: {'Content-Type': 'application/json'},
     );
-
+print({
+  "userId": userID,
+  "accountHolderName": accountHolderName,
+  "accountNumber": accountNumber,
+  "ifsc": ifsc,
+  "CorpCode": "MOBWER",
+  "BranchCode": "MOBWER",
+  "EntityId": userID
+});
+print(request.body);
     if (request.statusCode == 200) {
       return Right(BankDetailSubmitApiResponse.fromJson(jsonDecode(request.body)));
     } else {

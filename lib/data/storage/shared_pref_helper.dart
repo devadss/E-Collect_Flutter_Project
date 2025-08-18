@@ -213,7 +213,14 @@ class SharedPref {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.email) ?? '';
   }
-
+  setCustId(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.custid, value);
+  }
+  getCustId() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.custid) ?? '';
+  }
   setAgentOriginId(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.agentOriginId, value);

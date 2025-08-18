@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:provider/provider.dart';
 import '../../../data/provider/group/bank_account_update_provider.dart';
+import '../../../data/storage/shared_pref_helper.dart';
 
 class BankDetailsScreen extends StatefulWidget {
   final String? status;
@@ -27,7 +28,7 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
   final TextEditingController _ifscCodeController = TextEditingController();
 
   // Bank data with logos and IFSC prefixes
-  final List<Map<String, dynamic>> _banks = [
+/*  final List<Map<String, dynamic>> _banks = [
     {
       'name': 'State Bank of India',
       'logo': 'assets/bank_logo/sbi.png',
@@ -71,10 +72,11 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
       'logo': 'assets/bank_logos/indusind.png',
       'code': 'INDB'
     }
-  ];
+  ];*/
 
   Map<String, dynamic>? _selectedBank;
   bool _isSubmitting = false;
+  String? _custId;
 
   @override
   void dispose() {
@@ -84,7 +86,14 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
     _ifscCodeController.dispose();
     super.dispose();
   }
+  void loadSharedData() async {
+    String custid = await SharedPref.shared.getCustId();
 
+    setState(() {
+      _custId =  custid;
+
+    });
+  }
   Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -96,13 +105,13 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
       final bankDetailSubmitProvider =
           Provider.of<BankDetailProvider>(context, listen: false);
       await bankDetailSubmitProvider.submitBankDetails(
-          2,
+          _custId.toString(),
           _panNumberController.text,
           _accountNumberController.text,
           _ifscCodeController.text,
           "MOBWER",
           "MOBWER",
-          "MOBWER");
+          _custId.toString());
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -125,40 +134,38 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    if(widget.status == "EDIT"){
+    loadSharedData();
+    if (widget.status == "EDIT") {
       getBankDetail();
 
     }
   }
 
-
   Future<void> getBankDetail() async {
     final bankAccountUpdateProvider =
-    Provider.of<BankAccountUpdateProvider>(context, listen: false);
-    await bankAccountUpdateProvider.getBankAccountDetails(2);
+        Provider.of<BankAccountUpdateProvider>(context, listen: false);
+    await bankAccountUpdateProvider.getBankAccountDetails(int.parse(_custId.toString()));
     setState(() {
-      if(bankAccountUpdateProvider.bankAccountUpdateResponse !=null){
+      if (bankAccountUpdateProvider.bankAccountUpdateResponse != null) {
         statusType = "EDIT";
-        _panNumberController.text= bankAccountUpdateProvider.bankAccountUpdateResponse!.data[0].accountHolderName.toString();
-        _accountNumberController.text= bankAccountUpdateProvider.bankAccountUpdateResponse!.data[0].accountNumber.toString();
-        _confirmAccountNumberController.text= bankAccountUpdateProvider.bankAccountUpdateResponse!.data[0].accountNumber.toString();
-        _ifscCodeController.text= bankAccountUpdateProvider.bankAccountUpdateResponse!.data[0].ifsc.toString();
-      }else{
+        _panNumberController.text = bankAccountUpdateProvider
+            .bankAccountUpdateResponse!.data[0].accountHolderName
+            .toString();
+        _accountNumberController.text = bankAccountUpdateProvider
+            .bankAccountUpdateResponse!.data[0].accountNumber
+            .toString();
+        _confirmAccountNumberController.text = bankAccountUpdateProvider
+            .bankAccountUpdateResponse!.data[0].accountNumber
+            .toString();
+        _ifscCodeController.text = bankAccountUpdateProvider
+            .bankAccountUpdateResponse!.data[0].ifsc
+            .toString();
+      } else {
         statusType = "";
       }
-
     });
-
-
   }
 
-  void _updateIfscCode() {
-    if (_selectedBank != null && _ifscCodeController.text.isEmpty) {
-      setState(() {
-        _ifscCodeController.text = '${_selectedBank!['code']}0XXXXXX';
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -167,10 +174,7 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          icon:const Icon(Icons.arrow_back, color: home2),
-          onPressed: () => Navigator.pop(context),
-        ),
+        automaticallyImplyLeading:widget.status =="EDIT"? true: false,
         centerTitle: true,
         title: const Text(
           "Bank Details",
@@ -428,3 +432,10 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
     );
   }
 }
+// void _updateIfscCode() {
+//   if (_selectedBank != null && _ifscCodeController.text.isEmpty) {
+//     setState(() {
+//       _ifscCodeController.text = '${_selectedBank!['code']}0XXXXXX';
+//     });
+//   }
+// }
