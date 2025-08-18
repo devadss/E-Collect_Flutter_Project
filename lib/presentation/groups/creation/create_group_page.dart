@@ -771,73 +771,73 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
               onTap: () => _pickDate(context, groupDeactivationDateController),
             ),
             const SizedBox(height: 24),
-            _buildSectionTitle("Group Members"),
-            const SizedBox(height: 16),
+           // _buildSectionTitle("Group Members"),
+           // const SizedBox(height: 16),
 
-            if (selectedMembers.isEmpty)
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: _pickContact,
-                  icon: const Icon(Icons.person_add_alt_1, color: white, size: 20),
-                  label: const Text("Add Members", style: TextStyle(color: white)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: home1,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 0,
-                  ),
-                ),
-              ),
-
-            if (selectedMembers.isNotEmpty) _buildActionButtons(),
-
-            if (isSearching) ...[
-              const SizedBox(height: 16),
-              TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: "Search members...",
-                  prefixIcon: Icon(Icons.search, color: home1),
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.clear, color: home1),
-                    onPressed: () {
-                      _searchController.clear();
-                      setState(() {
-                        filteredMembers = List.from(selectedMembers);
-                      });
-                    },
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
-            ],
-
-            const SizedBox(height: 16),
-            if (isSearching)
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: filteredMembers.length,
-                itemBuilder: (context, index) {
-                  return _buildStaticMemberTile(filteredMembers[index], index);
-                },
-              )
-            else
-              AnimatedList(
-                key: _listKey,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                initialItemCount: selectedMembers.length,
-                itemBuilder: (context, index, animation) {
-                  return _buildMemberTile(selectedMembers[index], index, animation);
-                },
-              ),
-            const SizedBox(height: 32),
+            // if (selectedMembers.isEmpty)
+            //   SizedBox(
+            //     width: double.infinity,
+            //     child: ElevatedButton.icon(
+            //       onPressed: _pickContact,
+            //       icon: const Icon(Icons.person_add_alt_1, color: white, size: 20),
+            //       label: const Text("Add Members", style: TextStyle(color: white)),
+            //       style: ElevatedButton.styleFrom(
+            //         backgroundColor: home1,
+            //         padding: const EdgeInsets.symmetric(vertical: 14),
+            //         shape: RoundedRectangleBorder(
+            //           borderRadius: BorderRadius.circular(12),
+            //         ),
+            //         elevation: 0,
+            //       ),
+            //     ),
+            //   ),
+            //
+            // if (selectedMembers.isNotEmpty) _buildActionButtons(),
+            //
+            // if (isSearching) ...[
+            //   const SizedBox(height: 16),
+            //   TextField(
+            //     controller: _searchController,
+            //     decoration: InputDecoration(
+            //       hintText: "Search members...",
+            //       prefixIcon: Icon(Icons.search, color: home1),
+            //       suffixIcon: IconButton(
+            //         icon: Icon(Icons.clear, color: home1),
+            //         onPressed: () {
+            //           _searchController.clear();
+            //           setState(() {
+            //             filteredMembers = List.from(selectedMembers);
+            //           });
+            //         },
+            //       ),
+            //       border: OutlineInputBorder(
+            //         borderRadius: BorderRadius.circular(12),
+            //       ),
+            //     ),
+            //   ),
+            // ],
+            //
+            // const SizedBox(height: 16),
+            // if (isSearching)
+            //   ListView.builder(
+            //     shrinkWrap: true,
+            //     physics: const NeverScrollableScrollPhysics(),
+            //     itemCount: filteredMembers.length,
+            //     itemBuilder: (context, index) {
+            //       return _buildStaticMemberTile(filteredMembers[index], index);
+            //     },
+            //   )
+            // else
+            //   AnimatedList(
+            //     key: _listKey,
+            //     shrinkWrap: true,
+            //     physics: const NeverScrollableScrollPhysics(),
+            //     initialItemCount: selectedMembers.length,
+            //     itemBuilder: (context, index, animation) {
+            //       return _buildMemberTile(selectedMembers[index], index, animation);
+            //     },
+            //   ),
+            // const SizedBox(height: 32),
             SizedBox(
               width: double.infinity,
               height: 52,
@@ -934,7 +934,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w600,
         color: home2,

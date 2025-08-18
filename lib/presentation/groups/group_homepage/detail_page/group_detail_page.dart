@@ -1,16 +1,23 @@
 import 'package:collection_qr_flutter/data/provider/group/member_list/member_list_provider.dart';
 import 'package:collection_qr_flutter/domain/model/group/members_listing/members_listing_model.dart';
 import 'package:collection_qr_flutter/presentation/groups/bnk_account_details/bank_accout_detail_page.dart';
+import 'package:collection_qr_flutter/presentation/groups/member/member_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/colors.dart';
+import '../../../../data/provider/group/delete_member/delete_member_provider.dart';
 
 class GroupDetailPage extends StatefulWidget {
   final String amount;
   final String dueDate;
   final String groupName;
   final int groupId;
-  const GroupDetailPage({super.key, required this.amount, required this.dueDate, required this.groupId, required this.groupName});
+
+  const GroupDetailPage({super.key,
+    required this.amount,
+    required this.dueDate,
+    required this.groupId,
+    required this.groupName});
 
   @override
   State<GroupDetailPage> createState() => _GroupDetailPageState();
@@ -28,124 +35,27 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
   final double growthRate = 11.36; // percentage
 
   // Group details
- // final String groupName = "Morning Batch";
+  // final String groupName = "Morning Batch";
   final String createdDate = "15 March 2024";
   final String meetingSchedule = "Mon, Wed, Fri at 9:00 AM";
   final int totalMeetings = 72;
   final String location = "Main Yoga Hall";
-  List<Member>members=[];
+  List<Member> members = [];
+
   @override
   void initState() {
     super.initState();
-getMembers();
-
+    getMembers();
   }
 
   Future<void> getMembers() async {
-    var memberProvider = Provider.of<MemberListProvider>(context , listen :false);
-   await memberProvider.getMemberByGroup(widget.groupId);
-    members = memberProvider.memberListResponse!.data ;
+    var memberProvider =
+    Provider.of<MemberListProvider>(context, listen: false);
+    await memberProvider.getMemberByGroup(widget.groupId);
+    setState(() {
+      members = memberProvider.memberListResponse!.data;
+    });
   }
-
-  // Members data with more details
-/*  final List<Map<String, dynamic>> members = [
-    {
-      "name": "John Doe",
-      "amount": 500,
-      "nextDate": "01/09/25",
-      "joined": "10/01/24",
-      "attendance": "90%",
-      "status": "active"
-    },
-    {
-      "name": "Jane Smith",
-      "amount": 750,
-      "nextDate": "05/09/25",
-      "joined": "12/02/24",
-      "attendance": "88%",
-      "status": "active"
-    },
-    {
-      "name": "Robert Johnson",
-      "amount": 600,
-      "nextDate": "03/09/25",
-      "joined": "05/03/24",
-      "attendance": "85%",
-      "status": "inactive"
-    },
-    {
-      "name": "Emily Davis",
-      "amount": 450,
-      "nextDate": "02/09/25",
-      "joined": "15/04/24",
-      "attendance": "95%",
-      "status": "active"
-    },
-    {
-      "name": "Indhuleka",
-      "amount": 500,
-      "nextDate": "01/09/25",
-      "joined": "10/04/24",
-      "attendance": "92%",
-      "status": "active"
-    },
-    {
-      "name": "M Test",
-      "amount": 550,
-      "nextDate": "07/09/25",
-      "joined": "15/05/24",
-      "attendance": "85%",
-      "status": "active"
-    },
-    {
-      "name": "Nidhin Thomas",
-      "amount": 800,
-      "nextDate": "04/09/25",
-      "joined": "22/03/24",
-      "attendance": "78%",
-      "status": "active"
-    },
-    {
-      "name": "Parvathi",
-      "amount": 650,
-      "nextDate": "06/09/25",
-      "joined": "05/06/24",
-      "attendance": "95%",
-      "status": "active"
-    },
-    {
-      "name": "Arjun Menon",
-      "amount": 900,
-      "nextDate": "10/09/25",
-      "joined": "08/07/24",
-      "attendance": "82%",
-      "status": "inactive"
-    },
-    {
-      "name": "Priya Ramesh",
-      "amount": 700,
-      "nextDate": "12/09/25",
-      "joined": "18/07/24",
-      "attendance": "89%",
-      "status": "active"
-    },
-    {
-      "name": "Vishnu Varma",
-      "amount": 480,
-      "nextDate": "08/09/25",
-      "joined": "25/08/24",
-      "attendance": "87%",
-      "status": "active"
-    },
-    {
-      "name": "Sneha Krishnan",
-      "amount": 1000,
-      "nextDate": "15/09/25",
-      "joined": "30/08/24",
-      "attendance": "93%",
-      "status": "active"
-    }
-  ];*/
 
   // Monthly collection data for chart
   final List<Map<String, dynamic>> monthlyData = [
@@ -168,7 +78,7 @@ getMembers();
         backgroundColor: white,
         elevation: 0.5,
         iconTheme: IconThemeData(color: home2),
-        title: Text(
+        title: const Text(
           "Group Details",
           style: TextStyle(
               color: home2, fontSize: 20, fontWeight: FontWeight.w700),
@@ -204,8 +114,13 @@ getMembers();
                         setState(() {
                           isActive = val;
                         });
-                        isActive == true?
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=> BankAccoutDetailPage())):"";
+                        isActive == true
+                            ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                const BankAccoutDetailPage()))
+                            : "";
                       },
                     ),
                   ),
@@ -229,8 +144,8 @@ getMembers();
                 child: _selectedTab == 0
                     ? _buildOverviewTab()
                     : _selectedTab == 1
-                        ? _buildMembersTab()
-                        : _buildAnalyticsTab()),
+                    ? _buildMembersTab()
+                    : _buildAnalyticsTab()),
           ),
         ],
       ),
@@ -290,6 +205,7 @@ getMembers();
       ),
     );
   }
+
   Widget _buildOverviewTab() {
     if (!isActive) {
       return Padding(
@@ -298,7 +214,8 @@ getMembers();
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.pause_circle_outline, size: 64, color: Colors.grey),
+              const Icon(
+                  Icons.pause_circle_outline, size: 64, color: Colors.grey),
               const SizedBox(height: 16),
               Text(
                 "Group is Inactive",
@@ -413,15 +330,15 @@ getMembers();
                     ],
                   ),
                   const SizedBox(height: 16),
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                       // if (corpCode != null)
-                       //   _buildDetailItem(Icons.domain, "Corp Code", "corpCode"),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // if (corpCode != null)
+                      //   _buildDetailItem(Icons.domain, "Corp Code", "corpCode"),
                       //  if (branchCode != null)
-                       //   _buildDetailItem(Icons.location_city, "Branch", "branchCode"),
-                      ],
-                    ),
+                      //   _buildDetailItem(Icons.location_city, "Branch", "branchCode"),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -663,6 +580,8 @@ getMembers();
   }*/
 
   Widget _buildMembersTab() {
+    var deleteMember =
+    Provider.of<DeleteMemberProvider>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -693,7 +612,16 @@ getMembers();
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (conPage) =>
+                                MemberPage(
+                                    groupId: widget.groupId,
+                                    amount: double.parse(widget.amount),
+                                    dueDate: widget.dueDate, status: '', memberName: '', memberNumber: '', contactId: 0,)));
+                  },
                   icon: const Icon(Icons.person_add, color: Colors.white),
                 ),
               ),
@@ -701,7 +629,7 @@ getMembers();
           ),
           const SizedBox(height: 16),
 
-          // Members List
+
           ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -709,78 +637,159 @@ getMembers();
             separatorBuilder: (context, index) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
               final member = members[index];
-              return Card(
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+              return Dismissible(
+                // key: Key(member.id), // Use a unique key per member (use member ID or unique string)
+                key: Key(index.toString()),
+                // Use a unique key per member (use member ID or unique string)
+                direction: DismissDirection.endToStart,
+                // Swipe from right to left to delete
+                background: Container(
+                  color: Colors.red,
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: const Icon(Icons.delete, color: Colors.white),
                 ),
-                color: Colors.white,
-                child: ListTile(
-                  contentPadding: const EdgeInsets.all(12),
-                  leading: CircleAvatar(
-                    backgroundColor: home1.withOpacity(0.1),
-                    child: Text(
-                      member.memberName[0],
-                      style: const TextStyle(
-                        color: home1,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  title: Text(
-                    member.memberName,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: home2,
-                    ),
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 4),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            Icon(Icons.calendar_today,
-                                size: 12, color: home2.withOpacity(0.6)),
-                            const SizedBox(width: 4),
-                            Text(
-                              overflow: TextOverflow.ellipsis,
-                              "Joined ${member.dueDate}",
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: home2.withOpacity(0.6),
-                              ),
+                confirmDismiss: (direction) async {
+                  // Optional: Show a confirmation dialog before deleting
+                  return await showDialog(
+                    context: context,
+                    builder: (context) =>
+                        AlertDialog(
+                          title: const Text('Confirm delete'),
+                          content: const Text(
+                              'Are you sure you want to delete this member?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop(false);
+                                await deleteMember.deleteMember(
+                                    member.memberId);
+                                if (!context.mounted)
+                                  return; // Check if widget is still active
+                                if (deleteMember.deleteMemberResponse!.status ==
+                                    true) {
+                                  setState(() {
+                                    getMembers(); // This will now trigger a rebuild
+                                  });
+                                }
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(deleteMember
+                                          .deleteMemberResponse!.message)),
+                                );
+                              },
+                              child: const Text('Delete'),
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                  );
+                },
+                onDismissed: (direction) async {
+                  // Call your API to delete the member here
+                  //     bool success = await deleteMemberApi(member.id);
+                  bool success = true;
+
+                  if (success) {
+                    setState(() {
+                      members.removeAt(index);
+                    });
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('${member.memberName} deleted')),
+                    );
+                  } else {
+                    // If delete failed, show an error and maybe undo the dismissal
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content:
+                          Text('Failed to delete ${member.memberName}')),
+                    );
+                    // Optionally, you can re-insert the item or refresh the list
+                  }
+                },
+                child: Card(
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  trailing: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        "₹${member.amount}",
+                  color: Colors.white,
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(12),
+                    leading: CircleAvatar(
+                      backgroundColor: home1.withOpacity(0.1),
+                      child: Text(
+                        member.memberName[0],
                         style: const TextStyle(
-                          fontWeight: FontWeight.bold,
                           color: home1,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(
-                        member.dueDate.timeZoneName,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: home2.withOpacity(0.6),
-                        ),
+                    ),
+                    title: Text(
+                      member.memberName,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: home2,
                       ),
-                    ],
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 4),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              Icon(Icons.calendar_today,
+                                  size: 12, color: home2.withOpacity(0.6)),
+                              const SizedBox(width: 4),
+                              Text(
+                                "Joined ${member.dueDate}",
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: home2.withOpacity(0.6),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    trailing: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          "₹${member.amount}",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: home1,
+                          ),
+                        ),
+                        Text(
+                          member.dueDate.timeZoneName,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: home2.withOpacity(0.6),
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (
+                          context) =>
+                          MemberPage(groupId: widget.groupId,
+                            amount: member.amount,
+                            dueDate: member.dueDate.toString(), status: 'EDIT', memberName: member.memberName,
+                            memberNumber: member.mobileNumber, contactId: member.memberId,)));
+                      // Navigate to member details
+                    },
                   ),
-                  onTap: () {
-                    // Navigate to member details
-                  },
                 ),
               );
             },
@@ -964,8 +973,8 @@ getMembers();
     );
   }
 
-  Widget _buildStatCard(
-      String title, String value, Color color, IconData icon) {
+  Widget _buildStatCard(String title, String value, Color color,
+      IconData icon) {
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -1052,8 +1061,8 @@ getMembers();
     );
   }
 
-  Widget _buildMetricCard(
-      String title, String value, IconData icon, Color color) {
+  Widget _buildMetricCard(String title, String value, IconData icon,
+      Color color) {
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
