@@ -1006,7 +1006,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
         ),
         onTap: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const GroupDetailPage()));
+              MaterialPageRoute(builder: (context) => const GroupDetailPage(amount: '', dueDate: '', groupId: 0, groupName: '',)));
         },
       ),
     );

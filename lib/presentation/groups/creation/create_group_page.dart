@@ -4,6 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
+
+import '../../../data/provider/group/create_group/create_group_provider.dart';
+import '../../../data/storage/shared_pref_helper.dart';
 
 class CreateGroupPage extends StatefulWidget {
   const CreateGroupPage({super.key});
@@ -27,10 +31,11 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   List<Map<String, dynamic>> selectedMembers = [];
   List<Map<String, dynamic>> filteredMembers = [];
   bool isSearching = false;
-
+  String? _corpCode;
   @override
   void initState() {
     super.initState();
+    loadSharedData();
     filteredMembers = List.from(selectedMembers);
     _searchController.addListener(_filterMembers);
   }
@@ -60,7 +65,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
+            colorScheme: const ColorScheme.light(
               primary: home1,
               onPrimary: white,
               onSurface: home2,
@@ -78,7 +83,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 
     if (pickedDate != null) {
       String formattedDate =
-          "${pickedDate.day.toString().padLeft(2, '0')}/${pickedDate.month.toString().padLeft(2, '0')}/${pickedDate.year}";
+         // "${pickedDate.day.toString().padLeft(2, '0')}/${pickedDate.month.toString().padLeft(2, '0')}/${pickedDate.year}";
+          "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
       setState(() {
         controller.text = formattedDate;
       });
@@ -675,6 +681,21 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     );
   }
 
+  Future<void> createGroup() async {
+    var createGroup = Provider.of<CreateGroupProvider>(context , listen : false);
+    await createGroup.createGroup(groupNameController.text,
+        double.parse(amountController.text.toString()),
+    feeCollectionStartDateController.text, _corpCode!, _corpCode!);
+  }
+  void loadSharedData() async {
+    String custid = await SharedPref.shared.getCustId();
+    String corpCode = await SharedPref.shared.getCorpCode();
+
+    setState(() {
+
+      _corpCode = corpCode;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -683,7 +704,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         backgroundColor: white,
         elevation: 0,
         centerTitle: true,
-        title: Text(
+        title: const Text(
           "Create a Group",
           style: TextStyle(
               color: home2, fontWeight: FontWeight.w700, fontSize: 22),
@@ -746,7 +767,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
               hintText: "Select deactivation date",
               controller: groupDeactivationDateController,
               keyboardType: TextInputType.none,
-              icon: Icon(Icons.calendar_today, color: home1),
+              icon: const Icon(Icons.calendar_today, color: home1),
               onTap: () => _pickDate(context, groupDeactivationDateController),
             ),
             const SizedBox(height: 24),
@@ -758,8 +779,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                 width: double.infinity,
                 child: ElevatedButton.icon(
                   onPressed: _pickContact,
-                  icon: Icon(Icons.person_add_alt_1, color: white, size: 20),
-                  label: Text("Add Members", style: TextStyle(color: white)),
+                  icon: const Icon(Icons.person_add_alt_1, color: white, size: 20),
+                  label: const Text("Add Members", style: TextStyle(color: white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: home1,
                     padding: const EdgeInsets.symmetric(vertical: 14),
@@ -829,9 +850,10 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                   elevation: 0,
                 ),
                 onPressed: () {
+                  createGroup();
                   // Handle create group logic
                 },
-                child: Text(
+                child: const Text(
                   "Create Group",
                   style: TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold, color: white),

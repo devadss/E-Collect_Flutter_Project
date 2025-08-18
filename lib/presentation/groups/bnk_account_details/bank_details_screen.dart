@@ -77,6 +77,7 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
   Map<String, dynamic>? _selectedBank;
   bool _isSubmitting = false;
   String? _custId;
+  String? _corpCode;
 
   @override
   void dispose() {
@@ -88,10 +89,11 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
   }
   void loadSharedData() async {
     String custid = await SharedPref.shared.getCustId();
+    String corpCode = await SharedPref.shared.getCorpCode();
 
     setState(() {
       _custId =  custid;
-
+      _corpCode = corpCode;
     });
   }
   Future<void> _submitForm() async {
@@ -109,8 +111,8 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
           _panNumberController.text,
           _accountNumberController.text,
           _ifscCodeController.text,
-          "MOBWER",
-          "MOBWER",
+          _corpCode.toString(),
+          _corpCode.toString(),
           _custId.toString());
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

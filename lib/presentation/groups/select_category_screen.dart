@@ -2,6 +2,8 @@ import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:collection_qr_flutter/presentation/groups/bnk_account_details/bank_accout_detail_page.dart';
 import 'package:flutter/material.dart';
 
+import 'bnk_account_details/bank_details_screen.dart';
+
 class SelectCategoryScreen extends StatefulWidget {
   const SelectCategoryScreen({super.key});
 
@@ -236,7 +238,9 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                   elevation: 0,
                 ),
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> const BankAccoutDetailPage()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=> const  BankDetailsScreen(
+                      status:""
+                  )));
                  // Navigator.pop(context, _selectedCategory);
                 },
                 child: const Text(

@@ -33,6 +33,10 @@ import 'data/provider/fetch_account_balance_provider.dart';
 import 'data/provider/get_loan_provider.dart';
 import 'data/provider/group/bank_account_update_provider.dart';
 import 'data/provider/group/bank_detail_provider.dart';
+import 'data/provider/group/create_group/create_group_provider.dart';
+import 'data/provider/group/create_member/create_member_provider.dart';
+import 'data/provider/group/group_list/group_list_preovider.dart';
+import 'data/provider/group/member_list/member_list_provider.dart';
 import 'data/provider/otp_request_provider.dart';
 import 'data/provider/otp_verification_provider.dart';
 import 'data/provider/parent_agent_detail_provider/parent_agent_detil_provider.dart';
@@ -55,6 +59,10 @@ import 'data/repository/create_order_repository.dart';
 import 'data/repository/get_loan_repository.dart';
 import 'data/repository/group/bank_account_update_repository.dart';
 import 'data/repository/group/bank_detail_repository.dart';
+import 'data/repository/group/create_group/create_group_repository.dart';
+import 'data/repository/group/create_member/create_member_repository.dart';
+import 'data/repository/group/group_list/group_list_repository.dart';
+import 'data/repository/group/member_list/member_list_repository.dart';
 import 'data/repository/link_transaction_history_repository.dart';
 import 'data/repository/otp_request_repository.dart';
 import 'data/repository/otp_verification_repository.dart';
@@ -146,6 +154,10 @@ void main() async {
     ChangeNotifierProvider(create: (_) => VerifyAadhaarDetailProvider(VerifyAadhaarDetailRepository())),
     ChangeNotifierProvider(create: (_) => BankDetailProvider(BankAccountRepository())),
     ChangeNotifierProvider(create: (_) => BankAccountUpdateProvider(BankAccountUpdateRepository())),
+    ChangeNotifierProvider(create: (_) => GroupListProvider(GroupListRepository())),
+    ChangeNotifierProvider(create: (_) => MemberListProvider(MemberListRepository())),
+    ChangeNotifierProvider(create: (_) => CreateGroupProvider(CreateGroupRepository())),
+    ChangeNotifierProvider(create: (_) => CreateMemberProvider(CreateMemberRepository())),
 
   ], child: const MyApp()));
 }

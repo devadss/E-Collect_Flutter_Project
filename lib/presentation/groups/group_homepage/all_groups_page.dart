@@ -1,5 +1,11 @@
+import 'dart:core';
+
 import 'package:flutter/material.dart';
 import 'package:collection_qr_flutter/core/colors.dart';
+import 'package:provider/provider.dart';
+import '../../../data/provider/group/group_list/group_list_preovider.dart';
+import '../../../data/storage/shared_pref_helper.dart';
+import '../../../domain/model/group/group_listing/group_list_model.dart';
 import '../creation/create_group_page.dart';
 import '../group_homepage/detail_page/group_detail_page.dart';
 
@@ -12,76 +18,106 @@ class AllGroupsPage extends StatefulWidget {
 
 class _AllGroupsPageState extends State<AllGroupsPage> {
   bool _isSearching = false;
+  String? _corpCode;
   final TextEditingController _searchController = TextEditingController();
-  final List<Map<String, dynamic>> _groups = [
-    {
-      "name": "Premium Members",
-      "members": 42,
-      "lastPayment": "2 hours ago",
-      "icon": Icons.star,
-      "color": Colors.amber
-    },
-    {
-      "name": "Morning Session",
-      "members": 28,
-      "lastPayment": "1 day ago",
-      "icon": Icons.wb_sunny,
-      "color": Colors.orange
-    },
-    {
-      "name": "Evening Session",
-      "members": 35,
-      "lastPayment": "Today",
-      "icon": Icons.nights_stay,
-      "color": Colors.indigo
-    },
-    {
-      "name": "Personal Training",
-      "members": 15,
-      "lastPayment": "3 days ago",
-      "icon": Icons.person,
-      "color": Colors.purple
-    },
-    {
-      "name": "Yoga Class",
-      "members": 22,
-      "lastPayment": "Yesterday",
-      "icon": Icons.self_improvement,
-      "color": Colors.teal
-    },
-    {
-      "name": "Weight Loss Program",
-      "members": 18,
-      "lastPayment": "4 days ago",
-      "icon": Icons.monitor_weight,
-      "color": Colors.green
-    },
-    {
-      "name": "Bodybuilding Team",
-      "members": 25,
-      "lastPayment": "Today",
-      "icon": Icons.fitness_center,
-      "color": Colors.red
-    }
+   List<Group> _groups = [
+    // {
+    //   "name": "Premium Members",
+    //   "members": 42,
+    //   "lastPayment": "2 hours ago",
+    //   "icon": Icons.star,
+    //   "color": Colors.amber
+    // },
+    // {
+    //   "name": "Morning Session",
+    //   "members": 28,
+    //   "lastPayment": "1 day ago",
+    //   "icon": Icons.wb_sunny,
+    //   "color": Colors.orange
+    // },
+    // {
+    //   "name": "Evening Session",
+    //   "members": 35,
+    //   "lastPayment": "Today",
+    //   "icon": Icons.nights_stay,
+    //   "color": Colors.indigo
+    // },
+    // {
+    //   "name": "Personal Training",
+    //   "members": 15,
+    //   "lastPayment": "3 days ago",
+    //   "icon": Icons.person,
+    //   "color": Colors.purple
+    // },
+    // {
+    //   "name": "Yoga Class",
+    //   "members": 22,
+    //   "lastPayment": "Yesterday",
+    //   "icon": Icons.self_improvement,
+    //   "color": Colors.teal
+    // },
+    // {
+    //   "name": "Weight Loss Program",
+    //   "members": 18,
+    //   "lastPayment": "4 days ago",
+    //   "icon": Icons.monitor_weight,
+    //   "color": Colors.green
+    // },
+    // {
+    //   "name": "Bodybuilding Team",
+    //   "members": 25,
+    //   "lastPayment": "Today",
+    //   "icon": Icons.fitness_center,
+    //   "color": Colors.red
+    // }
   ];
-  List<Map<String, dynamic>> _filteredGroups = [];
-
+  List<Group> _filteredGroups = [];
+  void loadSharedData() async {
+    //String custid = await SharedPref.shared.getCustId();
+    String corpCode = await SharedPref.shared.getCorpCode();
+print("loadSharedData");
+    setState(() {
+      _corpCode = corpCode;
+    });
+    getGroups();
+    _searchController.addListener(_filterGroups);
+  }
   @override
   void initState() {
     super.initState();
-    _filteredGroups = List.from(_groups);
-    _searchController.addListener(_filterGroups);
-  }
+    loadSharedData();
 
-  void _filterGroups() {
+
+  }
+  Future<void> getGroups() async {
+    print("getGroups");
+    final groupProvider = Provider.of<GroupListProvider>(context, listen: false);
+    await groupProvider.listGroupUnderUser();
+
+    final List<Group> fetchedGroups = groupProvider.groupListResponse?.data ?? [];
+
+    // Filter groups by corpCode
+    final List<Group> filtered = fetchedGroups
+       // .where((group) => group.corpCode != null && group.corpCode == "MOBWER")
+        .where((group) => group.corpCode != null && group.corpCode == _corpCode)
+        .toList();
+
     setState(() {
-      _filteredGroups = _groups
-          .where((group) => group['name']
-              .toLowerCase()
-              .contains(_searchController.text.toLowerCase()))
-          .toList();
+      _groups = filtered;
+      _filteredGroups = filtered;
     });
   }
+
+
+
+void _filterGroups() {
+  final query = _searchController.text.toLowerCase();
+  setState(() {
+    _filteredGroups = _groups
+        .where((group) => group.groupName.toLowerCase().contains(query))
+        .toList();
+  });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -176,53 +212,59 @@ class _AllGroupsPageState extends State<AllGroupsPage> {
                 padding:
                     const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                 itemCount: _filteredGroups.length,
-                itemBuilder: (context, index) {
-                  final group = _filteredGroups[index];
-                  return TweenAnimationBuilder(
-                    tween: Tween<double>(begin: 0, end: 1),
-                    duration: Duration(milliseconds: 300 + (index * 80)),
-                    builder: (context, value, child) {
-                      return Transform.scale(
-                        scale: value,
-                        child: Opacity(opacity: value, child: child),
-                      );
-                    },
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16)),
-                      elevation: 4,
-                      shadowColor: group['color'].withOpacity(0.3),
-                      child: ListTile(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => GroupDetailPage()));
-                        },
-                        contentPadding: const EdgeInsets.all(16),
-                        leading: CircleAvatar(
-                          radius: 26,
-                          backgroundColor: group['color'].withOpacity(0.15),
-                          child: Icon(group['icon'],
-                              color: group['color'], size: 26),
-                        ),
-                        title: Text(
-                          group['name'],
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w600),
-                        ),
-                        subtitle: Text(
-                          "${group['members']} members • Last payment ${group['lastPayment']}",
-                          style: TextStyle(
-                              fontSize: 13, color: Colors.grey.shade600),
-                        ),
-                        trailing: Icon(Icons.chevron_right,
-                            color: Colors.grey.shade400),
+
+          itemBuilder: (context, index) {
+            final group = _filteredGroups[index];
+            final color = Colors.primaries[index % Colors.primaries.length];
+            const icon = Icons.group; // you can customize this if needed
+
+            return TweenAnimationBuilder(
+              tween: Tween<double>(begin: 0, end: 1),
+              duration: Duration(milliseconds: 300 + (index * 80)),
+              builder: (context, value, child) {
+                return Transform.scale(
+                  scale: value,
+                  child: Opacity(opacity: value, child: child),
+                );
+              },
+              child: Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
+                elevation: 4,
+                shadowColor: color.withOpacity(0.3),
+                child: ListTile(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => GroupDetailPage(amount: group.defaultAmount.toStringAsFixed(0), dueDate: group.defaultDueDate.toLocal().toString().split(' ')[0], groupId: group.groupId, groupName: group.groupName,),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                  contentPadding: const EdgeInsets.all(16),
+                  leading: CircleAvatar(
+                    radius: 26,
+                    backgroundColor: color.withOpacity(0.15),
+                    child: Icon(icon, color: color, size: 26),
+                  ),
+                  title: Text(
+                    group.groupName,
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
+                  subtitle: Text(
+                    "Amount: ₹${group.defaultAmount.toStringAsFixed(0)} • Due: ${group.defaultDueDate.toLocal().toString().split(' ')[0]}",
+                    style: TextStyle(
+                        fontSize: 13, color: Colors.grey.shade600),
+                  ),
+                  trailing: Icon(Icons.chevron_right,
+                      color: Colors.grey.shade400),
+                ),
               ),
+            );
+          },
+
+        ),
       ),
     );
   }

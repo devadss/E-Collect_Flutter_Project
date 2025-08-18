@@ -1,16 +1,23 @@
+import 'package:collection_qr_flutter/data/provider/group/member_list/member_list_provider.dart';
+import 'package:collection_qr_flutter/domain/model/group/members_listing/members_listing_model.dart';
 import 'package:collection_qr_flutter/presentation/groups/bnk_account_details/bank_accout_detail_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../../core/colors.dart';
 
 class GroupDetailPage extends StatefulWidget {
-  const GroupDetailPage({super.key});
+  final String amount;
+  final String dueDate;
+  final String groupName;
+  final int groupId;
+  const GroupDetailPage({super.key, required this.amount, required this.dueDate, required this.groupId, required this.groupName});
 
   @override
   State<GroupDetailPage> createState() => _GroupDetailPageState();
 }
 
 class _GroupDetailPageState extends State<GroupDetailPage> {
-  bool isActive = false;
+  bool isActive = true;
   int _selectedTab = 0;
 
   // Expanded financial data
@@ -21,14 +28,27 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
   final double growthRate = 11.36; // percentage
 
   // Group details
-  final String groupName = "Morning Batch";
+ // final String groupName = "Morning Batch";
   final String createdDate = "15 March 2024";
   final String meetingSchedule = "Mon, Wed, Fri at 9:00 AM";
   final int totalMeetings = 72;
   final String location = "Main Yoga Hall";
+  List<Member>members=[];
+  @override
+  void initState() {
+    super.initState();
+getMembers();
+
+  }
+
+  Future<void> getMembers() async {
+    var memberProvider = Provider.of<MemberListProvider>(context , listen :false);
+   await memberProvider.getMemberByGroup(widget.groupId);
+    members = memberProvider.memberListResponse!.data ;
+  }
 
   // Members data with more details
-  final List<Map<String, dynamic>> members = [
+/*  final List<Map<String, dynamic>> members = [
     {
       "name": "John Doe",
       "amount": 500,
@@ -125,7 +145,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
       "attendance": "93%",
       "status": "active"
     }
-  ];
+  ];*/
 
   // Monthly collection data for chart
   final List<Map<String, dynamic>> monthlyData = [
@@ -270,8 +290,148 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
       ),
     );
   }
-
   Widget _buildOverviewTab() {
+    if (!isActive) {
+      return Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.pause_circle_outline, size: 64, color: Colors.grey),
+              const SizedBox(height: 16),
+              Text(
+                "Group is Inactive",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[600],
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                "Activate the group to start collecting payments",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey[500],
+                ),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: home1,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 12,
+                  ),
+                ),
+                onPressed: () {
+                  setState(() {
+                    isActive = true;
+                  });
+                },
+                child: const Text(
+                  "Activate Group",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Group Info Card
+          Card(
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundColor: home1.withOpacity(0.1),
+                        child: Icon(Icons.group, size: 30, color: home1),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.groupName,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: home2,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              "Created on $createdDate",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: home2.withOpacity(0.6),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  const Divider(height: 1),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildDetailItem(
+                        Icons.currency_rupee,
+                        "Default Amount",
+                        "₹${widget.amount}",
+                      ),
+                      _buildDetailItem(
+                        Icons.date_range,
+                        "Due Date",
+                        widget.dueDate,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                       // if (corpCode != null)
+                       //   _buildDetailItem(Icons.domain, "Corp Code", "corpCode"),
+                      //  if (branchCode != null)
+                       //   _buildDetailItem(Icons.location_city, "Branch", "branchCode"),
+                      ],
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+/*  Widget _buildOverviewTab() {
     if (!isActive) {
       return Padding(
         padding: const EdgeInsets.all(32.0),
@@ -383,25 +543,28 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                   const SizedBox(height: 16),
                   const Divider(height: 1),
                   const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildDetailItem(
-                        Icons.calendar_today,
-                        "Schedule",
-                        meetingSchedule,
-                      ),
-                      _buildDetailItem(
-                        Icons.meeting_room,
-                        "Location",
-                        location,
-                      ),
-                      _buildDetailItem(
-                        Icons.event_available,
-                        "Total Sessions",
-                        "$totalMeetings",
-                      ),
-                    ],
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildDetailItem(
+                          Icons.calendar_today,
+                          "Schedule",
+                          meetingSchedule,
+                        ),
+                        _buildDetailItem(
+                          Icons.meeting_room,
+                          "Location",
+                          location,
+                        ),
+                        _buildDetailItem(
+                          Icons.event_available,
+                          "Total Sessions",
+                          "$totalMeetings",
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -497,7 +660,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
         ],
       ),
     );
-  }
+  }*/
 
   Widget _buildMembersTab() {
     return Padding(
@@ -511,7 +674,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                 child: TextField(
                   decoration: InputDecoration(
                     hintText: "Search members...",
-                    prefixIcon: Icon(Icons.search, color: home2),
+                    prefixIcon: const Icon(Icons.search, color: home2),
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
@@ -557,16 +720,16 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                   leading: CircleAvatar(
                     backgroundColor: home1.withOpacity(0.1),
                     child: Text(
-                      member['name'][0],
-                      style: TextStyle(
+                      member.memberName[0],
+                      style: const TextStyle(
                         color: home1,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                   title: Text(
-                    member['name'],
-                    style: TextStyle(
+                    member.memberName,
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       color: home2,
                     ),
@@ -575,19 +738,23 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Icon(Icons.calendar_today,
-                              size: 12, color: home2.withOpacity(0.6)),
-                          const SizedBox(width: 4),
-                          Text(
-                            "Joined ${member['joined']}",
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: home2.withOpacity(0.6),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            Icon(Icons.calendar_today,
+                                size: 12, color: home2.withOpacity(0.6)),
+                            const SizedBox(width: 4),
+                            Text(
+                              overflow: TextOverflow.ellipsis,
+                              "Joined ${member.dueDate}",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: home2.withOpacity(0.6),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -596,14 +763,14 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        "₹${member['amount']}",
-                        style: TextStyle(
+                        "₹${member.amount}",
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: home1,
                         ),
                       ),
                       Text(
-                        member['nextDate'],
+                        member.dueDate.timeZoneName,
                         style: TextStyle(
                           fontSize: 12,
                           color: home2.withOpacity(0.6),

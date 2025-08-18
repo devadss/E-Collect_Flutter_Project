@@ -1,5 +1,6 @@
-import 'package:collection_qr_flutter/domain/model/group/bank_update_model.dart';
 import 'package:dartz/dartz.dart';
+
+import '../../model/group/bank_account/bank_update_model.dart';
 
 abstract class BankAccountUpdateInterface{
   Future<Either<String, BankAccountUpdateResponse>> getBankAccountDetails(

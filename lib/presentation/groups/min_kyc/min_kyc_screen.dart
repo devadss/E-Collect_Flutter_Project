@@ -4,8 +4,11 @@ import 'package:collection_qr_flutter/core/alerts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import '../../../core/colors.dart';
 import '../../../core/constants.dart';
+import '../../../data/provider/cust_register_provider.dart';
+import '../../../data/storage/shared_pref_helper.dart';
 import '../select_category_screen.dart';
 
 class MinKycScreen extends StatefulWidget {
@@ -59,6 +62,7 @@ class _MinKycScreenState extends State<MinKycScreen>
   bool _isSubmitting = false;
   double _progressValue = 0.7;
   String? generatedEntityId;
+  String? generatedCorpCode;
 
   // Animation controllers
   late AnimationController _titleAnimationController;
@@ -139,6 +143,7 @@ class _MinKycScreenState extends State<MinKycScreen>
     super.initState();
     Map<String, String?> nameParts = splitName(widget.fullName);
     generatedEntityId = generateEntityId();
+    generatedCorpCode = generateCorpCode().toString();
     String? firstName = nameParts['first'];
     String? middleName = nameParts['middle'];
     String? lastName = nameParts['last'];
@@ -202,12 +207,29 @@ class _MinKycScreenState extends State<MinKycScreen>
     final random = Random();
     String randomNumber = '';
     // Generate each digit of the random number
-    for (int i = 0; i < 10; i++) {
+    //for (int i = 0; i < 10; i++) { Use this after User id max length isseu fix in the api side
+    for (int i = 0; i < 9; i++) {
       randomNumber +=
           random.nextInt(10).toString(); // Generate a random digit (0-9)
     }
     return randomNumber;
   }
+
+  //**************************************************
+  String generateCorpCode() {
+    final random = Random();
+    String randomNumber = '';
+    // Generate each digit of the random number
+    for (int i = 0; i < 6; i++) {
+      randomNumber +=
+          random.nextInt(10).toString(); // Generate a random digit (0-9)
+    }
+    return randomNumber;
+  }
+
+  //****************************************************************
+
+
   Future<void> kycOtpRequest() async {
 
    // EasyLoading.show(status: "Please wait...");
@@ -1126,6 +1148,45 @@ class _MinKycScreenState extends State<MinKycScreen>
     print(response.body);
     if (response.statusCode == 200) {
      // checkIfRegistered();
+      final custRegisterProvider = Provider.of<CustRegisterProvider>(
+        context,
+        listen: false,
+      );
+      final response = await custRegisterProvider.checkRegCust(int.parse(
+          _phoneNumberController.text
+              .replaceAll("+91", "")));
+      response.fold(
+              (error) {
+            print("Error: ${error.message}");
+
+          },
+              (customer) async {
+
+              SharedPref.shared.setEmail(
+                customer.response!.data!['emailId'].toString(),
+              );
+              SharedPref.shared.setCustId(
+                customer.response!.data!['CustId'].toString(),
+              );
+              SharedPref.shared.setCorpCode(
+                customer.response!.data!['CorpCode'].toString(),
+              );
+              SharedPref.shared.setBranchCode(
+                customer.response!.data!['BranchCode'].toString(),
+              );
+              SharedPref.shared.setSubAgentMobNum (
+                customer.response!.data!['contactNo'].toString(),
+              );
+              SharedPref.shared.setAgentName(
+                customer.response!.data!['firstName'].toString(),
+              );
+              SharedPref.shared.setMpinValue(customer.mpin.toString());
+
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> const SelectCategoryScreen()));
+
+          }
+      );
+
     }
   }
   void showProgressDialog(BuildContext context) {
@@ -1218,8 +1279,10 @@ class _MinKycScreenState extends State<MinKycScreen>
     };
 
     Map<String, dynamic> minKycPostData = {
-      'CorpCode': 'MOBM2P',
-      'BranchCode': 'MOBM2P',
+     // 'CorpCode': 'MOBM2P',
+      'CorpCode': generatedCorpCode,
+      //'BranchCode': 'MOBM2P',
+      'BranchCode': generatedCorpCode,
       'addressInfo': [addressInfo],
       'entityId': generatedEntityId,
       'channelName': 'MIN_KYC',
