@@ -1,0 +1,101 @@
+import 'dart:convert';
+
+import 'package:collection_qr_flutter/core/constants.dart';
+import 'package:collection_qr_flutter/domain/interface/group/group_creation/create_group_with_member_interface.dart';
+import 'package:collection_qr_flutter/domain/model/group/group_creation/group_with_member.dart';
+import 'package:dartz/dartz.dart';
+import 'package:http/http.dart' as http;
+
+class CreateGroupWithMemberRepository implements CreateGroupWithMemberInterface {
+  @override
+  Future<Either<String, CreateGroupWithMemberResponse>> createGroupWitMember(
+      Map<String, dynamic> payload,
+      ) async {
+    //final uri = Uri.parse("${baseUrl}api/dsdsd");
+    final uri = Uri.parse("${baseUrl}api/CreateGroupWithMembers");
+
+
+    try {
+      final response = await http.post(
+        uri,
+        body: jsonEncode(payload),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      print("Payload Sent: $payload");
+      print("Response: ${response.body}");
+
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = CreateGroupWithMemberResponse.fromJson(jsonDecode(response.body));
+        return Right(data);
+      } else {
+        final error = jsonDecode(response.body);
+        return Left(error.toString());
+      }
+    } catch (e) {
+      return Left("Exception: ${e.toString()}");
+    }
+  }
+}
+
+// class CreateGroupWithMemberRepository
+//     implements CreateGroupWithMemberInterface {
+//   @override
+//   Future<Either<String, CreateGroupWithMemberResponse>> createGroupWitMember(
+//       String groupName,
+//       String corpCode,
+//       double defaultAmount,
+//       String defaultDueDate,
+//       String entityId,
+//       String memberName,
+//       String mobileNumber,
+//       double amount,
+//       String dueDate,
+//       String feeCollectionStartDate) async {
+//     //final uri = Uri.parse("${baseUrl}api/CreateGroupWithMembers");
+//     final uri = Uri.parse("${baseUrl}api/dsdsd");
+//     final request = await http.post(
+//       uri,
+//       body: jsonEncode({
+//         "groupName": groupName,
+//         "corpCode": corpCode,
+//         "defaultAmount": defaultAmount,
+//         "defaultDueDate": defaultDueDate,
+//         "members": [
+//           {
+//             "entityId": entityId,
+//             "memberName": memberName,
+//             "mobileNumber": mobileNumber,
+//             "amount": amount,
+//             "dueDate": dueDate,
+//             "feeCollectionStartDate": feeCollectionStartDate
+//           }
+//         ]
+//       }),
+//       headers: {'Content-Type': 'application/json'},
+//     );
+// print({
+//   "groupName": groupName,
+//   "corpCode": corpCode,
+//   "defaultAmount": defaultAmount,
+//   "defaultDueDate": defaultDueDate,
+//   "members": [
+//     {
+//       "entityId": entityId,
+//       "memberName": memberName,
+//       "mobileNumber": mobileNumber,
+//       "amount": amount,
+//       "dueDate": dueDate,
+//       "feeCollectionStartDate": feeCollectionStartDate
+//     }
+//   ]
+// });
+//     if (request.statusCode == 200) {
+//       return Right(
+//           CreateGroupWithMemberResponse.fromJson(jsonDecode(request.body)));
+//     } else {
+//       return Left(jsonDecode(request.body));
+//     }
+//   }
+// }

@@ -7,6 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/provider/group/create_group/create_group_provider.dart';
+import '../../../data/provider/group/create_group/create_group_with_member_provider.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 
 class CreateGroupPage extends StatefulWidget {
@@ -20,11 +21,11 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   final TextEditingController groupNameController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
   final TextEditingController feeCollectionDayController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController feeCollectionStartDateController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController groupDeactivationDateController =
-  TextEditingController();
+      TextEditingController();
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
   final TextEditingController _searchController = TextEditingController();
 
@@ -32,6 +33,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   List<Map<String, dynamic>> filteredMembers = [];
   bool isSearching = false;
   String? _corpCode;
+  String? _entityId;
+
   @override
   void initState() {
     super.initState();
@@ -83,50 +86,52 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 
     if (pickedDate != null) {
       String formattedDate =
-         // "${pickedDate.day.toString().padLeft(2, '0')}/${pickedDate.month.toString().padLeft(2, '0')}/${pickedDate.year}";
+          // "${pickedDate.day.toString().padLeft(2, '0')}/${pickedDate.month.toString().padLeft(2, '0')}/${pickedDate.year}";
           "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
       setState(() {
         controller.text = formattedDate;
       });
     }
   }
-
   Future<void> _pickContact() async {
     PermissionStatus status = await Permission.contacts.status;
     if (!status.isGranted) {
       status = await Permission.contacts.request();
     }
 
-    if (status.isGranted) {
-      if (await FlutterContacts.requestPermission()) {
-        final contact = await FlutterContacts.openExternalPick();
-        if (contact != null) {
-          bool isDuplicate = selectedMembers
-              .any((member) => member["name"] == contact.displayName);
+    if (status.isGranted && await FlutterContacts.requestPermission()) {
+      final contact = await FlutterContacts.openExternalPick();
+      if (contact != null) {
+        final fullContact = await FlutterContacts.getContact(contact.id);
+        if (fullContact != null && fullContact.phones.isNotEmpty) {
+          setState(() {
+            for (var phone in fullContact.phones) {
+              final cleanNumber = phone.number.replaceAll(RegExp(r'\s+'), '');
 
-          if (isDuplicate) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("${contact.displayName} is already in the group"),
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                backgroundColor: Colors.orange.shade600,
-                duration: const Duration(seconds: 2),
-              ),
-            );
-          } else {
-            setState(() {
-              selectedMembers.add({
-                "name": contact.displayName,
-                "amountController": TextEditingController(),
-                "contactId": contact.id,
-              });
-              filteredMembers = List.from(selectedMembers);
-              _listKey.currentState?.insertItem(selectedMembers.length - 1);
-            });
-          }
+              // Optional: prevent exact duplicates
+              bool exists = selectedMembers.any((member) =>
+              member["name"] == fullContact.displayName &&
+                  member["mobileNumber"] == cleanNumber);
+
+              if (!exists) {
+                selectedMembers.add({
+                  "name": fullContact.displayName,
+                  "mobileNumber": cleanNumber,
+                  "amountController": TextEditingController(),
+                  "contactId": fullContact.id,
+                });
+                _listKey.currentState?.insertItem(selectedMembers.length - 1);
+              }
+            }
+            filteredMembers = List.from(selectedMembers);
+          });
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("No phone numbers found for ${contact.displayName}"),
+              backgroundColor: Colors.orange,
+            ),
+          );
         }
       }
     } else if (status.isPermanentlyDenied) {
@@ -135,15 +140,112 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text("Contacts permission is required to add members."),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          backgroundColor: home1,
+          backgroundColor: Colors.red,
         ),
       );
     }
   }
+
+  // Future<void> _pickContact() async {
+  //   PermissionStatus status = await Permission.contacts.status;
+  //   if (!status.isGranted) {
+  //     status = await Permission.contacts.request();
+  //   }
+  //
+  //   if (status.isGranted) {
+  //     if (await FlutterContacts.requestPermission()) {
+  //       final contact = await FlutterContacts.openExternalPick();
+  //
+  //       // if (contact != null) {
+  //       //   bool isDuplicate = selectedMembers
+  //       //       .any((member) => member["name"] == contact.displayName);
+  //       //
+  //       //   if (isDuplicate) {
+  //       //     ScaffoldMessenger.of(context).showSnackBar(
+  //       //       SnackBar(
+  //       //         content: Text("${contact.displayName} is already in the group"),
+  //       //         behavior: SnackBarBehavior.floating,
+  //       //         shape: RoundedRectangleBorder(
+  //       //           borderRadius: BorderRadius.circular(10),
+  //       //         ),
+  //       //         backgroundColor: Colors.orange.shade600,
+  //       //         duration: const Duration(seconds: 2),
+  //       //       ),
+  //       //     );
+  //       //   } else {
+  //       //     setState(() {
+  //       //       selectedMembers.add({
+  //       //         "name": contact.displayName,
+  //       //         "amountController": TextEditingController(),
+  //       //         "contactId": contact.id,
+  //       //       });
+  //       //       filteredMembers = List.from(selectedMembers);
+  //       //       _listKey.currentState?.insertItem(selectedMembers.length - 1);
+  //       //     });
+  //       //   }
+  //       // }
+  //       if (contact != null) {
+  //         final fullContact = await FlutterContacts.getContact(
+  //             contact.id); // fetch full details
+  //
+  //         if (fullContact != null) {
+  //           final phoneNumbers = fullContact.phones;
+  //           String? mobileNumber;
+  //
+  //           // Optional: Try to pick the mobile number specifically
+  //           if (phoneNumbers.isNotEmpty) {
+  //             mobileNumber =
+  //                 phoneNumbers.first.number; // You can refine this logic
+  //           }
+  //
+  //           bool isDuplicate = selectedMembers.any((member) =>
+  //               member["name"] == fullContact.displayName &&
+  //               member["mobileNumber"] == mobileNumber);
+  //
+  //           if (isDuplicate) {
+  //             ScaffoldMessenger.of(context).showSnackBar(
+  //               SnackBar(
+  //                 content: Text(
+  //                     "${fullContact.displayName} is already in the group"),
+  //                 behavior: SnackBarBehavior.floating,
+  //                 shape: RoundedRectangleBorder(
+  //                   borderRadius: BorderRadius.circular(10),
+  //                 ),
+  //                 backgroundColor: Colors.orange.shade600,
+  //                 duration: const Duration(seconds: 2),
+  //               ),
+  //             );
+  //           } else {
+  //             setState(() {
+  //               selectedMembers.add({
+  //                 "name": fullContact.displayName,
+  //                 "mobileNumber": mobileNumber ?? "",
+  //                 "amountController": TextEditingController(),
+  //                 "contactId": fullContact.id,
+  //               });
+  //               filteredMembers = List.from(selectedMembers);
+  //               _listKey.currentState?.insertItem(selectedMembers.length - 1);
+  //             });
+  //           }
+  //         }
+  //       }
+  //     }
+  //   } else if (status.isPermanentlyDenied) {
+  //     _showPermissionDialog();
+  //   } else {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content:
+  //             const Text("Contacts permission is required to add members."),
+  //         behavior: SnackBarBehavior.floating,
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(10),
+  //         ),
+  //         backgroundColor: home1,
+  //       ),
+  //     );
+  //   }
+  // }
 
   void _showPermissionDialog() {
     showDialog(
@@ -216,7 +318,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     filteredMembers = List.from(selectedMembers);
     _listKey.currentState?.removeItem(
       index,
-          (context, animation) => _buildMemberTile(removedItem, index, animation),
+      (context, animation) => _buildMemberTile(removedItem, index, animation),
       duration: const Duration(milliseconds: 300),
     );
   }
@@ -389,14 +491,15 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                     ),
                     onChanged: (value) {
                       if (value.isNotEmpty) {
-                        final num = int.tryParse(value.replaceAll(',', '')) ?? 0;
+                        final num =
+                            int.tryParse(value.replaceAll(',', '')) ?? 0;
                         member["amountController"].text =
                             NumberFormat('#,##0').format(num);
                         member["amountController"].selection =
                             TextSelection.fromPosition(
-                              TextPosition(
-                                  offset: member["amountController"].text.length),
-                            );
+                          TextPosition(
+                              offset: member["amountController"].text.length),
+                        );
                       }
                     },
                   ),
@@ -553,9 +656,9 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                         NumberFormat('#,##0').format(num);
                     member["amountController"].selection =
                         TextSelection.fromPosition(
-                          TextPosition(
-                              offset: member["amountController"].text.length),
-                        );
+                      TextPosition(
+                          offset: member["amountController"].text.length),
+                    );
                   }
                 },
               ),
@@ -564,8 +667,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
             GestureDetector(
               onTap: () {
                 // Find the index in selectedMembers
-                int selectedIndex = selectedMembers.indexWhere(
-                        (m) => m["contactId"] == member["contactId"]);
+                int selectedIndex = selectedMembers
+                    .indexWhere((m) => m["contactId"] == member["contactId"]);
                 if (selectedIndex != -1) {
                   _removeMember(selectedIndex);
                 }
@@ -634,7 +737,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                           trailing: SizedBox(
                             width: 100,
                             child: TextField(
-                              controller: filteredMembers[index]["amountController"],
+                              controller: filteredMembers[index]
+                                  ["amountController"],
                               keyboardType: TextInputType.number,
                               inputFormatters: [
                                 FilteringTextInputFormatter.digitsOnly,
@@ -642,7 +746,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                                 NumberInputFormatter(),
                               ],
                               decoration: InputDecoration(
-                                prefixIcon: Icon(Icons.currency_rupee, size: 18),
+                                prefixIcon:
+                                    Icon(Icons.currency_rupee, size: 18),
                               ),
                             ),
                           ),
@@ -661,7 +766,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                         setState(() {});
                         Navigator.pop(context);
                       },
-                      child: const Text("Save", style: TextStyle(color: Colors.white)),
+                      child: const Text("Save",
+                          style: TextStyle(color: Colors.white)),
                     ),
                   ],
                 ),
@@ -681,21 +787,119 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     );
   }
 
-  Future<void> createGroup() async {
-    var createGroup = Provider.of<CreateGroupProvider>(context , listen : false);
-    await createGroup.createGroup(groupNameController.text,
-        double.parse(amountController.text.toString()),
-    feeCollectionStartDateController.text, _corpCode!, _corpCode!);
+  // Future<void> createGroup() async {
+  //   var createGroup =
+  //       Provider.of<CreateGroupWithMemberProvider>(context, listen: false);
+  //   for (var member in selectedMembers) {
+  //     final name = member["name"];
+  //     final amountText = member["amountController"].text.replaceAll(',', '');
+  //     double amount = amountText.isEmpty ? double.parse(amountController.text.toString()) : amountText;
+  //     final rawPhone = member["mobileNumber"] ?? "";
+  //     final phone = rawPhone.replaceAll(RegExp(r'\s+'), '');
+  //
+  //     await createGroup.createGroupWitMember(
+  //         groupNameController.text,
+  //         _corpCode!,
+  //         double.parse(amountController.text.toString()),
+  //         feeCollectionDayController.text,
+  //         _entityId!,
+  //         name,
+  //         phone,
+  //         amount,
+  //         feeCollectionDayController.text,
+  //         feeCollectionStartDateController.text);
+  //   }
+  // }
+  void showProgressDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Center(
+            child: SingleChildScrollView(
+              child: Dialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                child: const Padding(
+                  padding: EdgeInsets.all(50),
+                  child: Column(
+                    children: [
+                      CircularProgressIndicator(color: home2),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Please wait....",
+                        style: TextStyle(
+                          fontSize: 17,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
   }
+  Future<void> createGroup() async {
+    showProgressDialog(context);
+    var createGroupProvider =
+    Provider.of<CreateGroupWithMemberProvider>(context, listen: false);
+
+    List<Map<String, dynamic>> members = [];
+
+    for (var member in selectedMembers) {
+      final name = member["name"] ?? "Unnamed";
+      final rawPhone = member["mobileNumber"] ?? "";
+      final phone = rawPhone.replaceAll(RegExp(r'\s+'), '');
+
+      final amountText = member["amountController"]?.text.replaceAll(',', '') ?? "";
+      final amount = amountText.isEmpty
+          ? double.tryParse(amountController.text) ?? 0.0
+          : double.tryParse(amountText) ?? 0.0;
+
+      members.add({
+        "entityId": _entityId ?? "",
+        "memberName": name,
+        "mobileNumber": phone,
+        "amount": amount,
+        "dueDate": feeCollectionDayController.text,
+        "feeCollectionStartDate": feeCollectionStartDateController.text,
+      });
+    }
+
+    final payload = {
+      "groupName": groupNameController.text,
+      "corpCode": _corpCode ?? "",
+      "defaultAmount": double.tryParse(amountController.text) ?? 0.0,
+      "defaultDueDate": feeCollectionDayController.text,
+      "members": members,
+    };
+
+    // Send the full group creation request once
+    await createGroupProvider.createGroupWitMember(payload);
+
+    if(createGroupProvider.createGroupWithMemberResponse!.status == true){
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(content: Text(createGroupProvider.createGroupWithMemberResponse!.message)),
+      );
+    }else{
+      Navigator.pop(context);
+    }
+  }
+
   void loadSharedData() async {
     String custid = await SharedPref.shared.getCustId();
     String corpCode = await SharedPref.shared.getCorpCode();
 
     setState(() {
-
+      _entityId = custid;
       _corpCode = corpCode;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -757,7 +961,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
               hintText: "Select start date",
               controller: feeCollectionStartDateController,
               keyboardType: TextInputType.none,
-              icon: Icon(Icons.date_range, color: home1),
+              icon: const Icon(Icons.date_range, color: home1),
               onTap: () => _pickDate(context, feeCollectionStartDateController),
               isRequired: true,
             ),
@@ -771,73 +975,72 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
               onTap: () => _pickDate(context, groupDeactivationDateController),
             ),
             const SizedBox(height: 24),
-           // _buildSectionTitle("Group Members"),
-           // const SizedBox(height: 16),
-
-            // if (selectedMembers.isEmpty)
-            //   SizedBox(
-            //     width: double.infinity,
-            //     child: ElevatedButton.icon(
-            //       onPressed: _pickContact,
-            //       icon: const Icon(Icons.person_add_alt_1, color: white, size: 20),
-            //       label: const Text("Add Members", style: TextStyle(color: white)),
-            //       style: ElevatedButton.styleFrom(
-            //         backgroundColor: home1,
-            //         padding: const EdgeInsets.symmetric(vertical: 14),
-            //         shape: RoundedRectangleBorder(
-            //           borderRadius: BorderRadius.circular(12),
-            //         ),
-            //         elevation: 0,
-            //       ),
-            //     ),
-            //   ),
-            //
-            // if (selectedMembers.isNotEmpty) _buildActionButtons(),
-            //
-            // if (isSearching) ...[
-            //   const SizedBox(height: 16),
-            //   TextField(
-            //     controller: _searchController,
-            //     decoration: InputDecoration(
-            //       hintText: "Search members...",
-            //       prefixIcon: Icon(Icons.search, color: home1),
-            //       suffixIcon: IconButton(
-            //         icon: Icon(Icons.clear, color: home1),
-            //         onPressed: () {
-            //           _searchController.clear();
-            //           setState(() {
-            //             filteredMembers = List.from(selectedMembers);
-            //           });
-            //         },
-            //       ),
-            //       border: OutlineInputBorder(
-            //         borderRadius: BorderRadius.circular(12),
-            //       ),
-            //     ),
-            //   ),
-            // ],
-            //
-            // const SizedBox(height: 16),
-            // if (isSearching)
-            //   ListView.builder(
-            //     shrinkWrap: true,
-            //     physics: const NeverScrollableScrollPhysics(),
-            //     itemCount: filteredMembers.length,
-            //     itemBuilder: (context, index) {
-            //       return _buildStaticMemberTile(filteredMembers[index], index);
-            //     },
-            //   )
-            // else
-            //   AnimatedList(
-            //     key: _listKey,
-            //     shrinkWrap: true,
-            //     physics: const NeverScrollableScrollPhysics(),
-            //     initialItemCount: selectedMembers.length,
-            //     itemBuilder: (context, index, animation) {
-            //       return _buildMemberTile(selectedMembers[index], index, animation);
-            //     },
-            //   ),
-            // const SizedBox(height: 32),
+            _buildSectionTitle("Group Members"),
+            const SizedBox(height: 16),
+            if (selectedMembers.isEmpty)
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: _pickContact,
+                  icon: const Icon(Icons.person_add_alt_1,
+                      color: white, size: 20),
+                  label:
+                      const Text("Add Members", style: TextStyle(color: white)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: home1,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 0,
+                  ),
+                ),
+              ),
+            if (selectedMembers.isNotEmpty) _buildActionButtons(),
+            if (isSearching) ...[
+              const SizedBox(height: 16),
+              TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: "Search members...",
+                  prefixIcon: Icon(Icons.search, color: home1),
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.clear, color: home1),
+                    onPressed: () {
+                      _searchController.clear();
+                      setState(() {
+                        filteredMembers = List.from(selectedMembers);
+                      });
+                    },
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ],
+            const SizedBox(height: 16),
+            if (isSearching)
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: filteredMembers.length,
+                itemBuilder: (context, index) {
+                  return _buildStaticMemberTile(filteredMembers[index], index);
+                },
+              )
+            else
+              AnimatedList(
+                key: _listKey,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                initialItemCount: selectedMembers.length,
+                itemBuilder: (context, index, animation) {
+                  return _buildMemberTile(
+                      selectedMembers[index], index, animation);
+                },
+              ),
+            const SizedBox(height: 32),
             SizedBox(
               width: double.infinity,
               height: 52,
@@ -869,13 +1072,13 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 
   Widget _buildTextField(
       {required String hintText,
-        required TextEditingController controller,
-        required TextInputType keyboardType,
-        int maxLines = 1,
-        Icon? icon,
-        VoidCallback? onTap,
-        bool isRequired = false,
-        required String title}) {
+      required TextEditingController controller,
+      required TextInputType keyboardType,
+      int maxLines = 1,
+      Icon? icon,
+      VoidCallback? onTap,
+      bool isRequired = false,
+      required String title}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -916,7 +1119,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
             filled: true,
             fillColor: white,
             contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(color: home1.withOpacity(0.2), width: 1),

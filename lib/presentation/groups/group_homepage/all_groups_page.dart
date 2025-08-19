@@ -79,9 +79,46 @@ print("loadSharedData");
     setState(() {
       _corpCode = corpCode;
     });
+    showProgressDialog(context);
     getGroups();
     _searchController.addListener(_filterGroups);
   }
+
+  void showProgressDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Center(
+            child: SingleChildScrollView(
+              child: Dialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                child: const Padding(
+                  padding: EdgeInsets.all(50),
+                  child: Column(
+                    children: [
+                      CircularProgressIndicator(
+                        color: deepTeal,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Please wait....",
+                        style: TextStyle(
+                          fontSize: 17,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -93,7 +130,11 @@ print("loadSharedData");
     print("getGroups");
     final groupProvider = Provider.of<GroupListProvider>(context, listen: false);
     await groupProvider.listGroupUnderUser();
-
+if(groupProvider.groupListResponse!= null){
+  Navigator.pop(context);
+}else{
+  Navigator.pop(context);
+}
     final List<Group> fetchedGroups = groupProvider.groupListResponse?.data ?? [];
 
     // Filter groups by corpCode
