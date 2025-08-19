@@ -1,8 +1,11 @@
 import 'package:collection_qr_flutter/presentation/groups/bnk_account_details/bank_accout_detail_page.dart';
 import 'package:collection_qr_flutter/presentation/groups/bnk_account_details/bank_details_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../core/colors.dart';
+import '../../../data/provider/group/group_list/group_list_preovider.dart';
 import '../../../data/storage/shared_pref_helper.dart';
+import '../../../domain/model/group/group_listing/group_list_model.dart';
 import '../group_homepage/detail_page/group_detail_page.dart';
 
 class GroupHomePage extends StatefulWidget {
@@ -14,6 +17,10 @@ class GroupHomePage extends StatefulWidget {
 
 class _GroupHomePageState extends State<GroupHomePage> {
   String? userName;
+  String? _corpCode;
+  final TextEditingController _searchController = TextEditingController();
+  List<Group> _filteredGroups = [];
+  List<Group> _groups = [];
 
   int _selectedMonthIndex = DateTime.now().month - 1;
   final List<String> months = [
@@ -86,66 +93,75 @@ class _GroupHomePageState extends State<GroupHomePage> {
 
   // All groups data with creation dates
   final List<Map<String, dynamic>> allGroups = [
-    {
-      "name": "Morning Yoga",
-      "members": 12,
-      "collected": 24500,
-      "due": 5500,
-      "status": "active",
-      "created": DateTime(2024, 1, 15), // Jan
-    },
-    {
-      "name": "Evening Batch",
-      "members": 8,
-      "collected": 18000,
-      "due": 4000,
-      "status": "active",
-      "created": DateTime(2024, 3, 10), // Mar
-    },
-    {
-      "name": "Weekend Special",
-      "members": 15,
-      "collected": 37500,
-      "due": 7500,
-      "status": "active",
-      "created": DateTime(2024, 3, 25), // Mar
-    },
-    {
-      "name": "Senior Citizens",
-      "members": 7,
-      "collected": 15000,
-      "due": 3000,
-      "status": "inactive",
-      "created": DateTime(2024, 5, 5), // May
-    },
-    {
-      "name": "Kids Yoga",
-      "members": 10,
-      "collected": 20000,
-      "due": 5000,
-      "status": "active",
-      "created": DateTime(2024, 7, 1), // Jul
-    },
-    {
-      "name": "Advanced Class",
-      "members": 6,
-      "collected": 30000,
-      "due": 6000,
-      "status": "active",
-      "created": DateTime(2024, 8, 10), // Aug (current month)
-    },
+    // {
+    //   "name": "Morning Yoga",
+    //   "members": 12,
+    //   "collected": 24500,
+    //   "due": 5500,
+    //   "status": "active",
+    //   "created": DateTime(2024, 1, 15), // Jan
+    // },
+    // {
+    //   "name": "Evening Batch",
+    //   "members": 8,
+    //   "collected": 18000,
+    //   "due": 4000,
+    //   "status": "active",
+    //   "created": DateTime(2024, 3, 10), // Mar
+    // },
+    // {
+    //   "name": "Weekend Special",
+    //   "members": 15,
+    //   "collected": 37500,
+    //   "due": 7500,
+    //   "status": "active",
+    //   "created": DateTime(2024, 3, 25), // Mar
+    // },
+    // {
+    //   "name": "Senior Citizens",
+    //   "members": 7,
+    //   "collected": 15000,
+    //   "due": 3000,
+    //   "status": "inactive",
+    //   "created": DateTime(2024, 5, 5), // May
+    // },
+    // {
+    //   "name": "Kids Yoga",
+    //   "members": 10,
+    //   "collected": 20000,
+    //   "due": 5000,
+    //   "status": "active",
+    //   "created": DateTime(2024, 7, 1), // Jul
+    // },
+    // {
+    //   "name": "Advanced Class",
+    //   "members": 6,
+    //   "collected": 30000,
+    //   "due": 6000,
+    //   "status": "active",
+    //   "created": DateTime(2024, 8, 10), // Aug (current month)
+    // },
   ];
 
-  // Get filtered groups based on selected month
-  List<Map<String, dynamic>> get filteredGroups {
-    if (_selectedMonthIndex == DateTime.now().month - 1) {
-      return allGroups;
-    }
-    return allGroups.where((group) {
-      return group["created"]
-          .isBefore(DateTime(currentYear, _selectedMonthIndex + 2, 1));
-    }).toList();
+  void _filterGroups() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      _filteredGroups = _groups
+          .where((group) => group.groupName.toLowerCase().contains(query))
+          .toList();
+    });
   }
+
+  // Get filtered groups based on selected month
+  // List<Map<String, dynamic>> get filteredGroups {
+  //   if (_selectedMonthIndex == DateTime.now().month - 1) {
+  //     return allGroups;
+  //   }
+  //   return allGroups.where((group) {
+  //     return group["created"]
+  //         .isBefore(DateTime(currentYear, _selectedMonthIndex + 2, 1));
+  //   }).toList();
+  // }
 
   // Get current month data
   Map<String, dynamic> get currentMonthData {
@@ -159,11 +175,79 @@ class _GroupHomePageState extends State<GroupHomePage> {
     );
   }
 
-  Future<void> loadSharedPrefs() async {
+  void loadSharedData() async {
+    //String custid = await SharedPref.shared.getCustId();
+    String corpCode = await SharedPref.shared.getCorpCode();
     final name = await SharedPref().getAgentName();
     setState(() {
       userName = name;
+      _corpCode = corpCode;
     });
+    print("loadSharedData");
+    setState(() {});
+    showProgressDialog(context);
+    getGroups();
+    _searchController.addListener(_filterGroups);
+  }
+
+  Future<void> getGroups() async {
+    print("getGroups");
+    final groupProvider =
+        Provider.of<GroupListProvider>(context, listen: false);
+    await groupProvider.listGroupUnderUser();
+    if (groupProvider.groupListResponse != null) {
+      Navigator.pop(context);
+    } else {
+      Navigator.pop(context);
+    }
+    final List<Group> fetchedGroups =
+        groupProvider.groupListResponse?.data ?? [];
+
+    // Filter groups by corpCode
+    final List<Group> filtered = fetchedGroups
+        // .where((group) => group.corpCode != null && group.corpCode == "MOBWER")
+        .where((group) => group.corpCode != null && group.corpCode == _corpCode)
+        .toList();
+
+    setState(() {
+      _groups = filtered;
+      _filteredGroups = filtered;
+    });
+  }
+
+  void showProgressDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Center(
+            child: SingleChildScrollView(
+              child: Dialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                child: const Padding(
+                  padding: EdgeInsets.all(50),
+                  child: Column(
+                    children: [
+                      CircularProgressIndicator(
+                        color: deepTeal,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Please wait....",
+                        style: TextStyle(
+                          fontSize: 17,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
   }
 
   Future<Object?> _showLogoutConfirmation(BuildContext context) async {
@@ -358,7 +442,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
               const Row(
                 children: [
                   Icon(Icons.settings_rounded, color: home1, size: 24),
-                   SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Text(
                     'Settings',
                     style: TextStyle(
@@ -380,9 +464,11 @@ class _GroupHomePageState extends State<GroupHomePage> {
                   // Implement theme change
                   Navigator.pop(context);
                   //_showThemeSelector(context);
-                 Navigator.push(context, MaterialPageRoute(builder: (context)=> const BankDetailsScreen(
-                   status:"EDIT"
-                 )));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const BankDetailsScreen(status: "EDIT")));
                 },
               ),
 
@@ -458,7 +544,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
       ),
       title: Text(
         title,
-        style:const  TextStyle(
+        style: const TextStyle(
           fontWeight: FontWeight.w600,
           color: home2,
         ),
@@ -510,7 +596,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
   @override
   void initState() {
     super.initState();
-    loadSharedPrefs();
+    loadSharedData();
   }
 
   Widget _buildThemeOption(String name, Color primary, Color secondary) {
@@ -533,11 +619,11 @@ class _GroupHomePageState extends State<GroupHomePage> {
   @override
   Widget build(BuildContext context) {
     final monthData = currentMonthData;
-    final groups = filteredGroups;
-    final totalCollected =
-        groups.fold<num>(0, (sum, group) => sum + (group["collected"] as num));
-    final totalDue =
-        groups.fold<num>(0, (sum, group) => sum + (group["due"] as num));
+    final groups = _filteredGroups;
+    final totalCollected = 100;
+    //groups.fold<num>(0, (sum, group) => sum + (group.["collected"] as num));
+    final totalDue = 50;
+    //   groups.fold<num>(0, (sum, group) => sum + (group["due"] as num));
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -617,66 +703,66 @@ class _GroupHomePageState extends State<GroupHomePage> {
             const SizedBox(height: 20),
 
             // Month Selector
-            Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-                side:const BorderSide(color: home1, width: 1),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  children: [
-                    const Text(
-                      "Select Month",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: home2,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: List.generate(months.length, (index) {
-                          final isSelected = index == _selectedMonthIndex;
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _selectedMonthIndex = index;
-                              });
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 4),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                color: isSelected ? home1 : Colors.transparent,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color:
-                                      isSelected ? home1 : Colors.grey.shade300,
-                                ),
-                              ),
-                              child: Text(
-                                months[index],
-                                style: TextStyle(
-                                  color: isSelected ? Colors.white : home2,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          );
-                        }),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            // Card(
+            //   elevation: 0,
+            //   shape: RoundedRectangleBorder(
+            //     borderRadius: BorderRadius.circular(16),
+            //     side: const BorderSide(color: home1, width: 1),
+            //   ),
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(12),
+            //     child: Column(
+            //       children: [
+            //         const Text(
+            //           "Select Month",
+            //           style: TextStyle(
+            //             fontSize: 14,
+            //             fontWeight: FontWeight.w600,
+            //             color: home2,
+            //           ),
+            //         ),
+            //         const SizedBox(height: 8),
+            //         SingleChildScrollView(
+            //           scrollDirection: Axis.horizontal,
+            //           child: Row(
+            //             children: List.generate(months.length, (index) {
+            //               final isSelected = index == _selectedMonthIndex;
+            //               return GestureDetector(
+            //                 onTap: () {
+            //                   setState(() {
+            //                     _selectedMonthIndex = index;
+            //                   });
+            //                 },
+            //                 child: Container(
+            //                   margin: const EdgeInsets.symmetric(horizontal: 4),
+            //                   padding: const EdgeInsets.symmetric(
+            //                     horizontal: 16,
+            //                     vertical: 8,
+            //                   ),
+            //                   decoration: BoxDecoration(
+            //                     color: isSelected ? home1 : Colors.transparent,
+            //                     borderRadius: BorderRadius.circular(20),
+            //                     border: Border.all(
+            //                       color:
+            //                           isSelected ? home1 : Colors.grey.shade300,
+            //                     ),
+            //                   ),
+            //                   child: Text(
+            //                     months[index],
+            //                     style: TextStyle(
+            //                       color: isSelected ? Colors.white : home2,
+            //                       fontWeight: FontWeight.w500,
+            //                     ),
+            //                   ),
+            //                 ),
+            //               );
+            //             }),
+            //           ),
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
             const SizedBox(height: 20),
 
             // Monthly Financial Summary
@@ -698,25 +784,25 @@ class _GroupHomePageState extends State<GroupHomePage> {
               mainAxisSpacing: 12,
               children: [
                 _buildStatCard(
-                  "Collected",
+                  "Total Collected",
                   "₹${monthData["collected"]}",
                   home1,
-                  Icons.trending_up,
+                  Icons.arrow_downward,
                 ),
                 _buildStatCard(
                   "Pending Dues",
                   "₹${monthData["due"]}",
                   Colors.orange,
-                  Icons.trending_down,
+                  Icons.arrow_upward,
                 ),
                 _buildStatCard(
-                  "New Groups",
-                  "${monthData["newGroups"]}",
+                  "Active Groups",
+                  "10",
                   Colors.green,
                   Icons.group_add,
                 ),
                 _buildStatCard(
-                  "Active Groups",
+                  "Active Members",
                   "${groups.length}",
                   home2,
                   Icons.groups,
@@ -786,7 +872,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
                         ),
                         Text(
                           "₹$totalDue",
-                          style:const TextStyle(
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                             color: Colors.orange,
@@ -805,7 +891,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Your Groups (${groups.length})",
+                  "Your Groups (${_groups.length})",
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
@@ -827,17 +913,16 @@ class _GroupHomePageState extends State<GroupHomePage> {
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: groups.length,
+              itemCount: _groups.length,
               itemBuilder: (context, index) {
                 final group = groups[index];
                 return _buildGroupCard(
-                  group["name"] as String,
-                  group["members"] as int,
-                  group["collected"] as num,
-                  group["due"] as num,
-                  group["status"] as String,
-                  group["created"] as DateTime,
-                );
+                    group.groupName,
+                    group.groupId,
+                    group.defaultAmount,
+                    group.defaultDueDate,
+                    "active",
+                    group.defaultDueDate);
               },
             ),
           ],
@@ -891,7 +976,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
     );
   }
 
-  Widget _buildGroupCard(String name, int members, num collected, num due,
+  Widget _buildGroupCard(String name, int members, num collected, DateTime due,
       String status, DateTime created) {
     final isNewGroup =
         created.month - 1 == _selectedMonthIndex && created.year == currentYear;
@@ -923,12 +1008,12 @@ class _GroupHomePageState extends State<GroupHomePage> {
                   top: 0,
                   child: Container(
                     padding: const EdgeInsets.all(4),
-                    decoration:const BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Colors.green,
                       shape: BoxShape.circle,
                     ),
-                    child: const Text(
-                      "N",
+                    child: Text(
+                      name[0],
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 10,
@@ -952,7 +1037,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
           children: [
             const SizedBox(height: 4),
             Text(
-              "$members members • Created ${_formatDate(created)}",
+              "Created at ${_formatDate(created)}",
               style: TextStyle(
                 fontSize: 12,
                 color: home2.withOpacity(0.6),
@@ -962,28 +1047,21 @@ class _GroupHomePageState extends State<GroupHomePage> {
             Row(
               children: [
                 Text(
-                  "₹${collected.toStringAsFixed(0)}",
+                  "Amount : ₹${collected.toStringAsFixed(0)}",
                   style: const TextStyle(
                     fontSize: 12,
                     color: home1,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                Text(
-                  " / ",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: home2.withOpacity(0.3),
-                  ),
-                ),
-                Text(
-                  "₹${due.toStringAsFixed(0)} due",
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.orange,
-                  ),
-                ),
               ],
+            ),
+            Text(
+              "Due Date : ${due.year}-${due.month}-${due.day}",
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.orange,
+              ),
             ),
           ],
         ),
@@ -1005,8 +1083,15 @@ class _GroupHomePageState extends State<GroupHomePage> {
           ),
         ),
         onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const GroupDetailPage(amount: '', dueDate: '', groupId: 0, groupName: '',)));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const GroupDetailPage(
+                        amount: '',
+                        dueDate: '',
+                        groupId: 0,
+                        groupName: '',
+                      )));
         },
       ),
     );

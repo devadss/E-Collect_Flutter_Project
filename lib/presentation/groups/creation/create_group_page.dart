@@ -5,13 +5,21 @@ import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-
-import '../../../data/provider/group/create_group/create_group_provider.dart';
 import '../../../data/provider/group/create_group/create_group_with_member_provider.dart';
+import '../../../data/provider/group/update_group/group_update_repository.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 
 class CreateGroupPage extends StatefulWidget {
-  const CreateGroupPage({super.key});
+  final String groupName;
+  final String amount;
+  final String dueDate;
+  final int groupId;
+
+  const CreateGroupPage(
+      {super.key,
+      required this.groupName,
+      required this.amount,
+      required this.dueDate, required this.groupId});
 
   @override
   State<CreateGroupPage> createState() => _CreateGroupPageState();
@@ -38,6 +46,11 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   @override
   void initState() {
     super.initState();
+    if (widget.groupName.isNotEmpty) {
+      groupNameController.text = widget.groupName;
+      amountController.text = widget.amount;
+      feeCollectionDayController.text = widget.dueDate;
+    }
     loadSharedData();
     filteredMembers = List.from(selectedMembers);
     _searchController.addListener(_filterMembers);
@@ -56,6 +69,13 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         return member["name"].toLowerCase().contains(query);
       }).toList();
     });
+  }
+
+  Future<void> updateGroup() async {
+    var updateGroup = Provider.of<GroupUpdateProvider>(context, listen:false);
+    await updateGroup.updateGroup(widget.groupId);
+
+
   }
 
   Future<void> _pickDate(
@@ -93,6 +113,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       });
     }
   }
+
   Future<void> _pickContact() async {
     PermissionStatus status = await Permission.contacts.status;
     if (!status.isGranted) {
@@ -110,7 +131,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 
               // Optional: prevent exact duplicates
               bool exists = selectedMembers.any((member) =>
-              member["name"] == fullContact.displayName &&
+                  member["name"] == fullContact.displayName &&
                   member["mobileNumber"] == cleanNumber);
 
               if (!exists) {
@@ -128,7 +149,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text("No phone numbers found for ${contact.displayName}"),
+              content:
+                  Text("No phone numbers found for ${contact.displayName}"),
               backgroundColor: Colors.orange,
             ),
           );
@@ -138,8 +160,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       _showPermissionDialog();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text("Contacts permission is required to add members."),
+        const SnackBar(
+          content: Text("Contacts permission is required to add members."),
           backgroundColor: Colors.red,
         ),
       );
@@ -810,6 +832,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   //         feeCollectionStartDateController.text);
   //   }
   // }
+
   void showProgressDialog(BuildContext context) {
     showDialog(
         context: context,
@@ -842,51 +865,72 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
           );
         });
   }
+
   Future<void> createGroup() async {
-    showProgressDialog(context);
-    var createGroupProvider =
-    Provider.of<CreateGroupWithMemberProvider>(context, listen: false);
+    if (groupNameController.text.isNotEmpty &&
+        amountController.text.isNotEmpty &&
+        feeCollectionStartDateController.text.isNotEmpty &&
+        feeCollectionDayController.text.isNotEmpty &&
+        groupDeactivationDateController.text.isNotEmpty) {
+      showProgressDialog(context);
+      var createGroupProvider =
+          Provider.of<CreateGroupWithMemberProvider>(context, listen: false);
+      List<Map<String, dynamic>> members = [];
 
-    List<Map<String, dynamic>> members = [];
+      for (var member in selectedMembers) {
+        final name = member["name"] ?? "Unnamed";
+        final rawPhone = member["mobileNumber"] ?? "";
+        final phone = rawPhone.replaceAll(RegExp(r'\s+'), '');
 
-    for (var member in selectedMembers) {
-      final name = member["name"] ?? "Unnamed";
-      final rawPhone = member["mobileNumber"] ?? "";
-      final phone = rawPhone.replaceAll(RegExp(r'\s+'), '');
+        final amountText =
+            member["amountController"]?.text.replaceAll(',', '') ?? "";
+        final amount = amountText.isEmpty
+            ? double.tryParse(amountController.text) ?? 0.0
+            : double.tryParse(amountText) ?? 0.0;
 
-      final amountText = member["amountController"]?.text.replaceAll(',', '') ?? "";
-      final amount = amountText.isEmpty
-          ? double.tryParse(amountController.text) ?? 0.0
-          : double.tryParse(amountText) ?? 0.0;
+        members.add({
+          "entityId": _entityId ?? "",
+          "memberName": name,
+          "mobileNumber": phone,
+          "amount": amount,
+          "dueDate": feeCollectionDayController.text,
+          "feeCollectionStartDate": feeCollectionStartDateController.text,
+        });
+      }
 
-      members.add({
-        "entityId": _entityId ?? "",
-        "memberName": name,
-        "mobileNumber": phone,
-        "amount": amount,
-        "dueDate": feeCollectionDayController.text,
-        "feeCollectionStartDate": feeCollectionStartDateController.text,
-      });
-    }
+      final payload = {
+        "groupName": groupNameController.text,
+        "corpCode": _corpCode ?? "",
+        "defaultAmount": double.tryParse(amountController.text) ?? 0.0,
+        "defaultDueDate": feeCollectionDayController.text,
+        "members": members,
+      };
 
-    final payload = {
-      "groupName": groupNameController.text,
-      "corpCode": _corpCode ?? "",
-      "defaultAmount": double.tryParse(amountController.text) ?? 0.0,
-      "defaultDueDate": feeCollectionDayController.text,
-      "members": members,
-    };
+      // Send the full group creation request once
+      await createGroupProvider.createGroupWitMember(payload);
 
-    // Send the full group creation request once
-    await createGroupProvider.createGroupWitMember(payload);
-
-    if(createGroupProvider.createGroupWithMemberResponse!.status == true){
-      Navigator.pop(context);
+      if (createGroupProvider.createGroupWithMemberResponse!.status == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(
+                  createGroupProvider.createGroupWithMemberResponse!.message)),
+        );
+        Navigator.pop(
+          context,
+        );
+        Navigator.pop(context, "Reload");
+      } else {
+        Navigator.pop(
+          context,
+        );
+      }
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(content: Text(createGroupProvider.createGroupWithMemberResponse!.message)),
+        const SnackBar(
+          content: Text("Empty Fields Not Allowed"),
+          backgroundColor: Colors.red,
+        ),
       );
-    }else{
-      Navigator.pop(context);
     }
   }
 
@@ -908,9 +952,9 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         backgroundColor: white,
         elevation: 0,
         centerTitle: true,
-        title: const Text(
-          "Create a Group",
-          style: TextStyle(
+        title: Text(
+          widget.dueDate.isNotEmpty ? "Update Group" : "Create a Group",
+          style: const TextStyle(
               color: home2, fontWeight: FontWeight.w700, fontSize: 22),
         ),
         leading: IconButton(
@@ -975,9 +1019,11 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
               onTap: () => _pickDate(context, groupDeactivationDateController),
             ),
             const SizedBox(height: 24),
-            _buildSectionTitle("Group Members"),
+            widget.groupName.isEmpty
+                ? _buildSectionTitle("Group Members")
+                : SizedBox(),
             const SizedBox(height: 16),
-            if (selectedMembers.isEmpty)
+            if (selectedMembers.isEmpty && widget.groupName.isEmpty)
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
@@ -996,7 +1042,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                   ),
                 ),
               ),
-            if (selectedMembers.isNotEmpty) _buildActionButtons(),
+            if (selectedMembers.isNotEmpty && widget.groupName.isEmpty)
+              _buildActionButtons(),
             if (isSearching) ...[
               const SizedBox(height: 16),
               TextField(
@@ -1056,8 +1103,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                   createGroup();
                   // Handle create group logic
                 },
-                child: const Text(
-                  "Create Group",
+                child: Text(
+                  widget.dueDate.isNotEmpty ? "Update Group" : "Create Group",
                   style: TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold, color: white),
                 ),

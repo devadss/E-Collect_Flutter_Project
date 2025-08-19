@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/colors.dart';
 import '../../../../data/provider/group/delete_member/delete_member_provider.dart';
+import '../../creation/create_group_page.dart';
 
 class GroupDetailPage extends StatefulWidget {
   final String amount;
@@ -51,12 +52,21 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
   }
 
   Future<void> getMembers() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showProgressDialog(context);
+    });
     var memberProvider =
         Provider.of<MemberListProvider>(context, listen: false);
     await memberProvider.getMemberByGroup(widget.groupId);
     setState(() {
       members = memberProvider.memberListResponse!.data;
     });
+    if(memberProvider.memberListResponse != null){
+      Navigator.pop(context);
+    }else{
+      Navigator.pop(context);
+
+    }
   }
 
   Future<void> deleteGroup() async {
@@ -68,7 +78,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
         SnackBar(
             content: Text(deleteGroupProvider.deleteGroupResponse!.message)),
       );
-      Navigator.pop(context);
+      Navigator.pop(context, "Reload");
     }
   }
 
@@ -91,24 +101,26 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Edit Group'),
-        content: const Text('Group editing functionality will go here'),
+        content: const Text('Are you sure you want to edit'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: const Text('No'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Save'),
+            child: const Text('Yes'),
           ),
         ],
       ),
     );
 
     if (result == true) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Group updated successfully')),
-      );
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>CreateGroupPage(groupName: widget.groupName,
+        amount: widget.amount, dueDate: widget.dueDate, groupId: widget.groupId,)));
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   const SnackBar(content: Text('Group updated successfully')),
+      // );
     }
   }
 
@@ -123,8 +135,6 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
           TextButton(
             onPressed: () {
               Navigator.pop(context, false);
-
-
             },
             child: const Text('Cancel'),
           ),
@@ -218,9 +228,9 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
             color: Colors.white,
             child: Row(
               children: [
-                _buildTabButton(0, "Overview"),
-                _buildTabButton(1, "Members"),
-                _buildTabButton(2, "Analytics"),
+                //_buildTabButton(0, "Overview"),
+              //  _buildTabButton(1, "Members"),
+               // _buildTabButton(2, "Analytics"),
               ],
             ),
           ),
@@ -360,7 +370,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
             ),
             color: Colors.white,
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(5),
               child: Column(
                 children: [
                   Row(
@@ -415,6 +425,8 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                     ],
                   ),
                   const SizedBox(height: 16),
+                  Divider(color: Colors.grey,),
+                  _buildMembersTab(),
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -424,6 +436,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                       //   _buildDetailItem(Icons.location_city, "Branch", "branchCode"),
                     ],
                   ),
+
                 ],
               ),
             ),
@@ -435,6 +448,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
 
 /*  Widget _buildOverviewTab() {
     if (!isActive) {
+
       return Padding(
         padding: const EdgeInsets.all(32.0),
         child: Center(
@@ -663,12 +677,46 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
       ),
     );
   }*/
+  void showProgressDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Center(
+            child: SingleChildScrollView(
+              child: Dialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                child: const Padding(
+                  padding: EdgeInsets.all(50),
+                  child: Column(
+                    children: [
+                      CircularProgressIndicator(
+                        color: deepTeal,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Please wait....",
+                        style: TextStyle(
+                          fontSize: 17,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
 
   Widget _buildMembersTab() {
     var deleteMember =
         Provider.of<DeleteMemberProvider>(context, listen: false);
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(10),
       child: Column(
         children: [
           // Search and Add Member
@@ -680,7 +728,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                     hintText: "Search members...",
                     prefixIcon: const Icon(Icons.search, color: home2),
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: Colors.grey.shade100,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
@@ -697,8 +745,8 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: IconButton(
-                  onPressed: () {
-                    Navigator.push(
+                  onPressed: () async {
+                    final result = await Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (conPage) => MemberPage(
@@ -710,6 +758,9 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                                   memberNumber: '',
                                   contactId: 0,
                                 )));
+                    if (result == "Reload") {
+                      getMembers();
+                    }
                   },
                   icon: const Icon(Icons.person_add, color: Colors.white),
                 ),
@@ -754,19 +805,20 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                           onPressed: () async {
                             Navigator.of(context).pop(false);
                             await deleteMember.deleteMember(member.memberId);
-                            if (!context.mounted)
-                              return; // Check if widget is still active
+                            // if (!context.mounted) {
+                            //   return; // Check if widget is still active
+                            // }
                             if (deleteMember.deleteMemberResponse!.status ==
                                 true) {
-                              setState(() {
-                                getMembers(); // This will now trigger a rebuild
-                              });
+                              await getMembers(); // This will now trigger a rebuild
+
+                              setState(() {});
                             }
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content: Text(deleteMember
-                                      .deleteMemberResponse!.message)),
-                            );
+                            // ScaffoldMessenger.of(context).showSnackBar(
+                            //   SnackBar(
+                            //       content: Text(deleteMember
+                            //           .deleteMemberResponse!.message)),
+                            // );
                           },
                           child: const Text('Delete'),
                         ),

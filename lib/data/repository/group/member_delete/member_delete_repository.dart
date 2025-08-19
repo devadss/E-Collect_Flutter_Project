@@ -13,6 +13,7 @@ class MemberDeleteRepository implements MemberDeleteInterface {
   Future<Either<String, DeleteMemberResponse>> deleteMember(int memberId) async {
     final uri = Uri.parse("${baseUrl}api/DeleteMember/$memberId");
     final request = await http.delete(uri);
+    print(request.body);
     if (request.statusCode == 200) {
       return Right(DeleteMemberResponse.fromJson(jsonDecode(request.body)));
     } else {

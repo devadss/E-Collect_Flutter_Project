@@ -70,6 +70,7 @@ class _MemberPageState extends State<MemberPage> {
 
   }
   Future<void> addMember() async {
+    showProgressDialog(context);
     var addMember = Provider.of<CreateMemberProvider>(context, listen: false);
     for (var member in selectedMembers) {
       final name = member["name"];
@@ -92,10 +93,14 @@ class _MemberPageState extends State<MemberPage> {
 
     }
     if(addMember.createMemberResponse!.status==true){
+
       ScaffoldMessenger.of(context).showSnackBar(
          SnackBar(content: Text(addMember.createMemberResponse!.message)),
       );
+
       _removeAllMembers();
+     Navigator.pop(context, "Reload");
+
     }
 
   }
@@ -114,6 +119,7 @@ class _MemberPageState extends State<MemberPage> {
     filteredMembers.clear();
 
     setState(() {});
+    Navigator.pop(context);
   }
 
 
@@ -136,6 +142,40 @@ class _MemberPageState extends State<MemberPage> {
           _buildMemberTile(removedItem, index, animation),
       duration: const Duration(milliseconds: 300),
     );
+  }
+  void showProgressDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Center(
+            child: SingleChildScrollView(
+              child: Dialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                child: const Padding(
+                  padding: EdgeInsets.all(50),
+                  child: Column(
+                    children: [
+                      CircularProgressIndicator(
+                        color: deepTeal,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Please wait....",
+                        style: TextStyle(
+                          fontSize: 17,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
   }
 
   void _showPermissionDialog() {

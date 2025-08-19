@@ -243,9 +243,9 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                         _buildNavItem(
                           key: _tabKeys[2],
                           index: 2,
-                          icon: Icons.person_outline,
-                          activeIcon: Icons.person,
-                          label: 'Profile',
+                          icon: Icons.history_toggle_off,
+                          activeIcon: Icons.history,
+                          label: 'History',
                         ),
                       ],
                     ),

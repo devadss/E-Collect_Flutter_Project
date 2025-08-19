@@ -20,62 +20,15 @@ class _AllGroupsPageState extends State<AllGroupsPage> {
   bool _isSearching = false;
   String? _corpCode;
   final TextEditingController _searchController = TextEditingController();
-   List<Group> _groups = [
-    // {
-    //   "name": "Premium Members",
-    //   "members": 42,
-    //   "lastPayment": "2 hours ago",
-    //   "icon": Icons.star,
-    //   "color": Colors.amber
-    // },
-    // {
-    //   "name": "Morning Session",
-    //   "members": 28,
-    //   "lastPayment": "1 day ago",
-    //   "icon": Icons.wb_sunny,
-    //   "color": Colors.orange
-    // },
-    // {
-    //   "name": "Evening Session",
-    //   "members": 35,
-    //   "lastPayment": "Today",
-    //   "icon": Icons.nights_stay,
-    //   "color": Colors.indigo
-    // },
-    // {
-    //   "name": "Personal Training",
-    //   "members": 15,
-    //   "lastPayment": "3 days ago",
-    //   "icon": Icons.person,
-    //   "color": Colors.purple
-    // },
-    // {
-    //   "name": "Yoga Class",
-    //   "members": 22,
-    //   "lastPayment": "Yesterday",
-    //   "icon": Icons.self_improvement,
-    //   "color": Colors.teal
-    // },
-    // {
-    //   "name": "Weight Loss Program",
-    //   "members": 18,
-    //   "lastPayment": "4 days ago",
-    //   "icon": Icons.monitor_weight,
-    //   "color": Colors.green
-    // },
-    // {
-    //   "name": "Bodybuilding Team",
-    //   "members": 25,
-    //   "lastPayment": "Today",
-    //   "icon": Icons.fitness_center,
-    //   "color": Colors.red
-    // }
+  List<Group> _groups = [
+
   ];
   List<Group> _filteredGroups = [];
+
   void loadSharedData() async {
     //String custid = await SharedPref.shared.getCustId();
     String corpCode = await SharedPref.shared.getCorpCode();
-print("loadSharedData");
+    print("loadSharedData");
     setState(() {
       _corpCode = corpCode;
     });
@@ -123,23 +76,24 @@ print("loadSharedData");
   void initState() {
     super.initState();
     loadSharedData();
-
-
   }
+
   Future<void> getGroups() async {
     print("getGroups");
-    final groupProvider = Provider.of<GroupListProvider>(context, listen: false);
+    final groupProvider =
+        Provider.of<GroupListProvider>(context, listen: false);
     await groupProvider.listGroupUnderUser();
-if(groupProvider.groupListResponse!= null){
-  Navigator.pop(context);
-}else{
-  Navigator.pop(context);
-}
-    final List<Group> fetchedGroups = groupProvider.groupListResponse?.data ?? [];
+    if (groupProvider.groupListResponse != null) {
+      Navigator.pop(context);
+    } else {
+      Navigator.pop(context);
+    }
+    final List<Group> fetchedGroups =
+        groupProvider.groupListResponse?.data ?? [];
 
     // Filter groups by corpCode
     final List<Group> filtered = fetchedGroups
-       // .where((group) => group.corpCode != null && group.corpCode == "MOBWER")
+        // .where((group) => group.corpCode != null && group.corpCode == "MOBWER")
         .where((group) => group.corpCode != null && group.corpCode == _corpCode)
         .toList();
 
@@ -149,30 +103,31 @@ if(groupProvider.groupListResponse!= null){
     });
   }
 
-
-
-void _filterGroups() {
-  final query = _searchController.text.toLowerCase();
-  setState(() {
-    _filteredGroups = _groups
-        .where((group) => group.groupName.toLowerCase().contains(query))
-        .toList();
-  });
-}
+  void _filterGroups() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      _filteredGroups = _groups
+          .where((group) => group.groupName.toLowerCase().contains(query))
+          .toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: home1,
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          final result = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => const CreateGroupPage(),
+              builder: (_) => const CreateGroupPage(groupName: '', amount: '', dueDate: '', groupId: 0,),
               fullscreenDialog: true,
             ),
           );
+          if (result == "Reload") {
+            loadSharedData();
+          }
         },
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: const Icon(Icons.add, color: white, size: 28),
@@ -253,59 +208,69 @@ void _filterGroups() {
                 padding:
                     const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                 itemCount: _filteredGroups.length,
+                itemBuilder: (context, index) {
+                  final group = _filteredGroups[index];
+                  final color =
+                      Colors.primaries[index % Colors.primaries.length];
+                  const icon = Icons.group; // you can customize this if needed
 
-          itemBuilder: (context, index) {
-            final group = _filteredGroups[index];
-            final color = Colors.primaries[index % Colors.primaries.length];
-            const icon = Icons.group; // you can customize this if needed
-
-            return TweenAnimationBuilder(
-              tween: Tween<double>(begin: 0, end: 1),
-              duration: Duration(milliseconds: 300 + (index * 80)),
-              builder: (context, value, child) {
-                return Transform.scale(
-                  scale: value,
-                  child: Opacity(opacity: value, child: child),
-                );
-              },
-              child: Card(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
-                elevation: 4,
-                shadowColor: color.withOpacity(0.3),
-                child: ListTile(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => GroupDetailPage(amount: group.defaultAmount.toStringAsFixed(0), dueDate: group.defaultDueDate.toLocal().toString().split(' ')[0], groupId: group.groupId, groupName: group.groupName,),
+                  return TweenAnimationBuilder(
+                    tween: Tween<double>(begin: 0, end: 1),
+                    duration: Duration(milliseconds: 300 + (index * 80)),
+                    builder: (context, value, child) {
+                      return Transform.scale(
+                        scale: value,
+                        child: Opacity(opacity: value, child: child),
+                      );
+                    },
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16)),
+                      elevation: 4,
+                      shadowColor: color.withOpacity(0.3),
+                      child: ListTile(
+                        onTap: () async {
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => GroupDetailPage(
+                                amount: group.defaultAmount.toStringAsFixed(0),
+                                dueDate: group.defaultDueDate
+                                    .toLocal()
+                                    .toString()
+                                    .split(' ')[0],
+                                groupId: group.groupId,
+                                groupName: group.groupName,
+                              ),
+                            ),
+                          );
+                          if (result == "Reload") {
+                            loadSharedData();
+                          }
+                        },
+                        contentPadding: const EdgeInsets.all(16),
+                        leading: CircleAvatar(
+                          radius: 26,
+                          backgroundColor: color.withOpacity(0.15),
+                          child: Icon(icon, color: color, size: 26),
+                        ),
+                        title: Text(
+                          group.groupName,
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w600),
+                        ),
+                        subtitle: Text(
+                          "Amount: ₹${group.defaultAmount.toStringAsFixed(0)} • Due: ${group.defaultDueDate.toLocal().toString().split(' ')[0]}",
+                          style: TextStyle(
+                              fontSize: 13, color: Colors.grey.shade600),
+                        ),
+                        trailing: Icon(Icons.chevron_right,
+                            color: Colors.grey.shade400),
                       ),
-                    );
-                  },
-                  contentPadding: const EdgeInsets.all(16),
-                  leading: CircleAvatar(
-                    radius: 26,
-                    backgroundColor: color.withOpacity(0.15),
-                    child: Icon(icon, color: color, size: 26),
-                  ),
-                  title: Text(
-                    group.groupName,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                  subtitle: Text(
-                    "Amount: ₹${group.defaultAmount.toStringAsFixed(0)} • Due: ${group.defaultDueDate.toLocal().toString().split(' ')[0]}",
-                    style: TextStyle(
-                        fontSize: 13, color: Colors.grey.shade600),
-                  ),
-                  trailing: Icon(Icons.chevron_right,
-                      color: Colors.grey.shade400),
-                ),
+                    ),
+                  );
+                },
               ),
-            );
-          },
-
-        ),
       ),
     );
   }
