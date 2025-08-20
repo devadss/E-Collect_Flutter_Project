@@ -12,8 +12,17 @@ class GroupUpdateProvider with ChangeNotifier {
 
   GroupUpdateResponse? get groupUpdateResponse => _groupUpdateResponse;
 
-  Future<Either<String, GroupUpdateResponse>> updateGroup(int groupId) async {
-    final data = await _groupUpdateRepository.updateGroup(groupId);
+  Future<Either<String, GroupUpdateResponse>> updateGroup(
+    int groupId,
+    String groupName,
+    double defaultAmount,
+    String defaultDueDate,
+    String corpCode,
+    String branchCode,
+  ) async {
+    final data = await _groupUpdateRepository.updateGroup(groupId,
+        groupName, defaultAmount, defaultDueDate, corpCode,branchCode
+    );
     data.fold((err) {}, (success) {
       _groupUpdateResponse = success;
     });

@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/colors.dart';
 import '../../../data/provider/group/group_list/group_list_preovider.dart';
+import '../../../data/provider/group/member_list/member_list_provider.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../../domain/model/group/group_listing/group_list_model.dart';
+import '../../../domain/model/group/members_listing/members_listing_model.dart';
 import '../group_homepage/detail_page/group_detail_page.dart';
 
 class GroupHomePage extends StatefulWidget {
@@ -21,8 +23,11 @@ class _GroupHomePageState extends State<GroupHomePage> {
   final TextEditingController _searchController = TextEditingController();
   List<Group> _filteredGroups = [];
   List<Group> _groups = [];
+  bool _isExpanded = false;
+  List<Member> members = [];
+  int avilableMembers=0;
 
-  int _selectedMonthIndex = DateTime.now().month - 1;
+  final int _selectedMonthIndex = DateTime.now().month - 1;
   final List<String> months = [
     'Jan',
     'Feb',
@@ -213,6 +218,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
       _groups = filtered;
       _filteredGroups = filtered;
     });
+    getMembers();
   }
 
   void showProgressDialog(BuildContext context) {
@@ -561,7 +567,18 @@ class _GroupHomePageState extends State<GroupHomePage> {
       onTap: onTap,
     );
   }
+  Future<void> getMembers() async {
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   showProgressDialog(context);
+    // });
+    var memberProvider =
+    Provider.of<MemberListProvider>(context, listen: false);
+    await memberProvider.getMemberByGroup(_groups[0].groupId);
+    setState(() {
+      avilableMembers = memberProvider.memberListResponse!.data.length;
+    });
 
+  }
   Future<void> _showThemeSelector(BuildContext context) async {
     return showDialog(
       context: context,
@@ -615,7 +632,71 @@ class _GroupHomePageState extends State<GroupHomePage> {
       },
     );
   }
+  Widget _buildExpandedContent() {
+    return Card(
+      color: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10),
+        side: const BorderSide(color: home1, ),
+      ),
+      elevation: 1,
+      margin: const EdgeInsets.only(top: 20),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            const TextField(
+              decoration: InputDecoration(
+                counterText: "",
+                prefixIcon: Icon(Icons.phone_iphone, color: home1),
+                labelText: 'Enter customer mobile number',
+                border: OutlineInputBorder(),
+              ),
+              maxLength: 10,
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 16),
+            const TextField(
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.auto_mode_outlined, color: home1),
+                labelText: 'Enter Amount',
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 16),
+            const TextField(
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.note_alt_outlined, color: home1),
+                labelText: 'Enter a note',
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.text,
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  // Handle send action
+                },
+                icon: const Icon(Icons.send),
+                label: const Text('Send Link'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: home1,
 
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     final monthData = currentMonthData;
@@ -797,13 +878,13 @@ class _GroupHomePageState extends State<GroupHomePage> {
                 ),
                 _buildStatCard(
                   "Active Groups",
-                  "10",
+                  _groups.length.toString(),
                   Colors.green,
                   Icons.group_add,
                 ),
                 _buildStatCard(
                   "Active Members",
-                  "${groups.length}",
+                  "${avilableMembers}",
                   home2,
                   Icons.groups,
                 ),
@@ -903,7 +984,8 @@ class _GroupHomePageState extends State<GroupHomePage> {
                   style: TextButton.styleFrom(
                     foregroundColor: home1,
                   ),
-                  child: const Text("View All"),
+                 // child: const Text("View All"),
+                  child: const Text(""),
                 ),
               ],
             ),
@@ -922,9 +1004,53 @@ class _GroupHomePageState extends State<GroupHomePage> {
                     group.defaultAmount,
                     group.defaultDueDate,
                     "active",
-                    group.defaultDueDate);
+                    group.createdDate,
+
+                );
               },
             ),
+
+            Column(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _isExpanded = !_isExpanded;
+                    });
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: home1.withOpacity(0.1)
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Send Payment Link',
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                          ),
+                          Icon(_isExpanded ? Icons.expand_less : Icons.expand_more),
+
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                AnimatedCrossFade(
+                  duration: const Duration(milliseconds: 300),
+                  crossFadeState: _isExpanded
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
+                  firstChild: _buildExpandedContent(),
+                  secondChild: const SizedBox.shrink(),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10,),
           ],
         ),
       ),
@@ -976,7 +1102,8 @@ class _GroupHomePageState extends State<GroupHomePage> {
     );
   }
 
-  Widget _buildGroupCard(String name, int members, num collected, DateTime due,
+  Widget _buildGroupCard(String name,
+      int members, num collected, DateTime due,
       String status, DateTime created) {
     final isNewGroup =
         created.month - 1 == _selectedMonthIndex && created.year == currentYear;
@@ -1014,7 +1141,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
                     ),
                     child: Text(
                       name[0],
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
@@ -1057,10 +1184,10 @@ class _GroupHomePageState extends State<GroupHomePage> {
               ],
             ),
             Text(
-              "Due Date : ${due.year}-${due.month}-${due.day}",
+              "Due Date : ${_formatDate(due)}",
               style: const TextStyle(
                 fontSize: 12,
-                color: Colors.orange,
+                color: home2,
               ),
             ),
           ],
@@ -1086,11 +1213,11 @@ class _GroupHomePageState extends State<GroupHomePage> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => const GroupDetailPage(
-                        amount: '',
-                        dueDate: '',
-                        groupId: 0,
-                        groupName: '',
+                  builder: (context) =>  GroupDetailPage(
+                        amount: collected.toString(),
+                        dueDate: "${due.day}-${due.month}-${due.year}",
+                        groupId:members,
+                        groupName: name,
                       )));
         },
       ),

@@ -8,9 +8,24 @@ import 'package:http/http.dart' as http;
 
 class GroupUpdateRepository implements GroupUpdateInterface {
   @override
-  Future<Either<String, GroupUpdateResponse>> updateGroup(int groupId) async {
+  Future<Either<String, GroupUpdateResponse>> updateGroup(
+    int groupId,
+    String groupName,
+    double defaultAmount,
+    String defaultDueDate,
+    String corpCode,
+    String branchCode,
+  ) async {
     final uri = Uri.parse("${baseUrl}api/UpdateGroup/$groupId");
-    final request = await http.put(uri);
+    final request = await http.put(uri,
+        body: jsonEncode({
+          "groupName": groupName,
+          "defaultAmount": defaultAmount,
+          "defaultDueDate": defaultDueDate,
+          "CorpCode": corpCode,
+          "BranchCode": branchCode
+        }),
+        headers: {'Content-Type': 'application/json'});
     if (request.statusCode == 200) {
       return Right(GroupUpdateResponse.fromJson(jsonDecode(request.body)));
     } else {

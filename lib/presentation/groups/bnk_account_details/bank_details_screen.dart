@@ -27,52 +27,7 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
       TextEditingController();
   final TextEditingController _ifscCodeController = TextEditingController();
 
-  // Bank data with logos and IFSC prefixes
-/*  final List<Map<String, dynamic>> _banks = [
-    {
-      'name': 'State Bank of India',
-      'logo': 'assets/bank_logo/sbi.png',
-      // Replace with your actual asset paths
-      'code': 'SBIN'
-    },
-    {'name': 'HDFC Bank', 'logo': 'assets/bank_logo/hdfc.png', 'code': 'HDFC'},
-    {
-      'name': 'ICICI Bank',
-      'logo': 'assets/bank_logo/icici.png',
-      'code': 'ICIC'
-    },
-    {'name': 'Axis Bank', 'logo': 'assets/bank_logos/axis.png', 'code': 'UTIB'},
-    {
-      'name': 'Kotak Mahindra Bank',
-      'logo': 'assets/bank_logos/kotak.png',
-      'code': 'KKBK'
-    },
-    {
-      'name': 'Punjab National Bank',
-      'logo': 'assets/bank_logos/pnb.png',
-      'code': 'PUNB'
-    },
-    {
-      'name': 'Bank of Baroda',
-      'logo': 'assets/bank_logos/bob.png',
-      'code': 'BARB'
-    },
-    {
-      'name': 'Canara Bank',
-      'logo': 'assets/bank_logos/canara.png',
-      'code': 'CNRB'
-    },
-    {
-      'name': 'Union Bank of India',
-      'logo': 'assets/bank_logos/union.png',
-      'code': 'UBIN'
-    },
-    {
-      'name': 'IndusInd Bank',
-      'logo': 'assets/bank_logos/indusind.png',
-      'code': 'INDB'
-    }
-  ];*/
+
 
   Map<String, dynamic>? _selectedBank;
   bool _isSubmitting = false;

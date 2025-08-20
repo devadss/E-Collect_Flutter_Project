@@ -73,8 +73,19 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 
   Future<void> updateGroup() async {
     var updateGroup = Provider.of<GroupUpdateProvider>(context, listen:false);
-    await updateGroup.updateGroup(widget.groupId);
-
+    await updateGroup.updateGroup(widget.groupId, widget.groupName, double.parse(widget.amount),widget.dueDate,_corpCode!, _corpCode!);
+    if(updateGroup.groupUpdateResponse!.status == true){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content:
+          Text(updateGroup.groupUpdateResponse!.message),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Navigator.pop(context);
+    }else{
+      Navigator.pop(context);
+    }
 
   }
 
@@ -1100,6 +1111,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                   elevation: 0,
                 ),
                 onPressed: () {
+                  widget.groupName.isNotEmpty?
+                  updateGroup():
                   createGroup();
                   // Handle create group logic
                 },

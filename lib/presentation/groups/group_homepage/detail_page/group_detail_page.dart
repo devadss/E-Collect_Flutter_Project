@@ -159,7 +159,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
         centerTitle: true,
         backgroundColor: white,
         elevation: 0.5,
-        iconTheme: IconThemeData(color: home2),
+        iconTheme:const IconThemeData(color: home2),
         title: const Text(
           "Group Details",
           style: TextStyle(
@@ -170,11 +170,11 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.edit, color: home2),
+            icon: const Icon(Icons.edit, color: home2),
             onPressed: _editGroup,
           ),
           IconButton(
-            icon: Icon(Icons.delete, color: Colors.red),
+            icon: const Icon(Icons.delete, color: Colors.red),
             onPressed: _deleteGroup,
           ),
         ],
@@ -226,7 +226,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
           // Tab Bar
           Container(
             color: Colors.white,
-            child: Row(
+            child: const Row(
               children: [
                 //_buildTabButton(0, "Overview"),
               //  _buildTabButton(1, "Members"),
@@ -378,7 +378,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                       CircleAvatar(
                         radius: 30,
                         backgroundColor: home1.withOpacity(0.1),
-                        child: Icon(Icons.group, size: 30, color: home1),
+                        child: const Icon(Icons.group, size: 30, color: home1),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
@@ -425,7 +425,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  Divider(color: Colors.grey,),
+                  const Divider(color: Colors.grey,),
                   _buildMembersTab(),
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -964,7 +964,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                 const  Text(
                     "Monthly Collection",
                     style: TextStyle(
                       fontSize: 16,
@@ -1011,7 +1011,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
           const SizedBox(height: 16),
 
           // Performance Metrics
-          Text(
+          const Text(
             "Performance Metrics",
             style: TextStyle(
               fontSize: 16,
@@ -1066,7 +1066,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.pause_circle_outline, size: 64, color: Colors.grey),
+           const  Icon(Icons.pause_circle_outline, size: 64, color: Colors.grey),
             const SizedBox(height: 16),
             Text(
               "Group is Inactive",
@@ -1106,7 +1106,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
         const SizedBox(height: 4),
         Text(
           value,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w600,
             color: home2,
@@ -1175,7 +1175,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
             color: home1.withOpacity(0.1),
             shape: BoxShape.circle,
           ),
-          child: Icon(Icons.notifications_none, size: 20, color: home1),
+          child:const Icon(Icons.notifications_none, size: 20, color: home1),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -1184,7 +1184,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
             children: [
               Text(
                 title,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                   color: home2,
@@ -1229,7 +1229,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
             const SizedBox(height: 12),
             Text(
               value,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
                 color: home2,
