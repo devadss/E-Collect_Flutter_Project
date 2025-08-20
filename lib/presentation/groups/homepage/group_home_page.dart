@@ -1,6 +1,7 @@
 import 'package:collection_qr_flutter/presentation/groups/bnk_account_details/bank_accout_detail_page.dart';
 import 'package:collection_qr_flutter/presentation/groups/bnk_account_details/bank_details_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../../core/colors.dart';
 import '../../../data/provider/group/group_list/group_list_preovider.dart';
@@ -1215,7 +1216,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
               MaterialPageRoute(
                   builder: (context) =>  GroupDetailPage(
                         amount: collected.toString(),
-                        dueDate: "${due.day}-${due.month}-${due.year}",
+                        dueDate:DateFormat('yyyy-MM-dd').format(due) ,
                         groupId:members,
                         groupName: name,
                       )));

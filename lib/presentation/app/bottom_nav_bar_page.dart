@@ -17,6 +17,7 @@ import '../groups/min_kyc/request_otp/min_kyc_page.dart';
 import '../home/home_page.dart';
 import '../loan/loan_home_page.dart';
 import '../profile/profile_home_page.dart';
+import '../trancstion/payment_link_home_page.dart';
 
 class BottomNavScreen extends StatefulWidget {
   const BottomNavScreen({super.key});
@@ -81,8 +82,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         return const AllGroupsPage();
       case 2:
        /// return const ProfileHomePage();
-       // return const BankAccoutDetailPage();
-        return const BankDetailsScreen();
+//        return const BankDetailsScreen();
+       return const PaymentLinkHomePage();
       default:
         return const HomePage();
     }
