@@ -20,6 +20,7 @@ import '../../../data/storage/shared_pref_helper.dart';
 import '../../../domain/model/cash_deposit_model.dart';
 import '../../app/bottom_nav_bar_page.dart';
 import '../../profile/widgets/recipect_page.dart';
+
 class NewQrCodePage extends StatefulWidget {
   final String paymentSessionId;
   final String amount;
@@ -27,6 +28,7 @@ class NewQrCodePage extends StatefulWidget {
   final String custName;
   final String custPhone;
   final String custId;
+
   const NewQrCodePage({
     super.key,
     required this.paymentSessionId,
@@ -70,6 +72,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
   String? bankName;
+  String? subagentPhoneNumber;
 
   String _getBankNameFromCorpCode(String corpCode) {
     // Map corpcode to bank name
@@ -206,8 +209,8 @@ class _NewQrCodePageState extends State<NewQrCodePage>
     _firebaseMessageSubscription?.cancel(); // ✅ Ensure only one listener
 
     _firebaseMessageSubscription = FirebaseMessaging.onMessage.listen((
-        RemoteMessage message,
-        ) {
+      RemoteMessage message,
+    ) {
       if (message.notification != null) {
         final String? notificationTitle = message.notification?.title;
         final String? notificationBody = message.notification?.body;
@@ -232,8 +235,8 @@ class _NewQrCodePageState extends State<NewQrCodePage>
 
     // ✅ Handle terminated app notification taps
     FirebaseMessaging.instance.getInitialMessage().then((
-        RemoteMessage? message,
-        ) {
+      RemoteMessage? message,
+    ) {
       if (message != null) {
         print("📱 App Launched via Notification: ${message.data}");
       }
@@ -247,7 +250,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
         return AlertDialog(
           backgroundColor: Colors.white,
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           title: const Center(
             child: Text(
               "⚠️ WARNING",
@@ -319,7 +322,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
       builder: (context) {
         return Dialog(
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
           elevation: 0,
           backgroundColor: Colors.transparent,
           child: Container(
@@ -400,15 +403,17 @@ class _NewQrCodePageState extends State<NewQrCodePage>
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ReceiptPage(
-                                    amount: widget.amount,
-                                    bankName: bankName ?? "XYZ BANK",
-                                    agentName: agentName ?? "Name",
-                                    agentPhone:
-                                    agentPhoneNumber ?? "agentPhone",
-                                    custName: widget.custName,
-                                    custPhone: widget.custPhone,
-                                    custId: widget.custId, txnId: "", txnType: "QR",
-                                  )));
+                                        amount: widget.amount,
+                                        bankName: bankName ?? "XYZ BANK",
+                                        agentName: agentName ?? "Name",
+                                        agentPhone:
+                                            agentPhoneNumber ?? "agentPhone",
+                                        custName: widget.custName,
+                                        custPhone: widget.custPhone,
+                                        custId: widget.custId,
+                                        txnId: "",
+                                        txnType: "QR",
+                                      )));
                         },
                         child: const Text(
                           "Show Receipt",
@@ -420,7 +425,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
                       ),
                     ),
 
-                  const  SizedBox(width: 10),
+                    const SizedBox(width: 10),
 
                     // OK Button
                     Expanded(
@@ -618,7 +623,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
   Future<void> generateQr(
       String amount, String paymentSessionId, String token) async {
     final generateQr =
-    await NewQrCodeRepository().getQrCode(paymentSessionId, token);
+        await NewQrCodeRepository().getQrCode(paymentSessionId, token);
     generateQr.fold((error) {
       print("---------------------ERROR---------------");
       print(error);
@@ -679,12 +684,16 @@ class _NewQrCodePageState extends State<NewQrCodePage>
     final code = await SharedPref().getCorpCode();
     final email = await SharedPref().getEmail();
     final number = await SharedPref().getSubAgentMobNum();
+    final subagentNum = await SharedPref().getSubAgentMobNum();
+
 
     if (mounted) {
       setState(() {
         agentName = name;
         agentEmail = email;
         agentId = id;
+        subagentPhoneNumber = subagentNum;
+
         agentOriginId = originId;
         corpCode = code;
         agentPhoneNumber = number;
@@ -696,7 +705,6 @@ class _NewQrCodePageState extends State<NewQrCodePage>
     printLog(corpCode);
     printLog("------------------------------Agent Number-------------------");
     printLog(agentPhoneNumber);
-
 
     generateQr(widget.amount, widget.paymentSessionId, widget.token);
   }
@@ -887,20 +895,20 @@ class _NewQrCodePageState extends State<NewQrCodePage>
                 ),
                 child: qrCodeImageBytes == null
                     ? const SizedBox(
-                  width: 200,
-                  height: 200,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      color: deepTeal,
-                      strokeWidth: 3,
-                    ),
-                  ),
-                )
+                        width: 200,
+                        height: 200,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: deepTeal,
+                            strokeWidth: 3,
+                          ),
+                        ),
+                      )
                     : Image.memory(
-                  qrCodeImageBytes!,
-                  width: 240,
-                  height: 240,
-                ),
+                        qrCodeImageBytes!,
+                        width: 240,
+                        height: 240,
+                      ),
               ),
             ),
             const SizedBox(height: 24),
@@ -1027,7 +1035,8 @@ class _NewQrCodePageState extends State<NewQrCodePage>
           ),
           const SizedBox(height: 8),
           LinearProgressIndicator(
-            value: _start / 180, // 3 minutes = 180 seconds
+            value: _start / 180,
+            // 3 minutes = 180 seconds
             backgroundColor: Colors.grey[200],
             valueColor: const AlwaysStoppedAnimation<Color>(home2),
             minHeight: 6,

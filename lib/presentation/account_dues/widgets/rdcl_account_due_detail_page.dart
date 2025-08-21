@@ -946,6 +946,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
   String? paymentSessionId;
   String orderID = "";
   String? subAgentCodeNew;
+  String? subagentPhoneNumber;
 
   void updateTotalAmount() {
     final provider =
@@ -1088,7 +1089,8 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
                           builder: (context) => NewQrCodePage(
                             paymentSessionId: paymentSessionId!,
                             amount: amountController.text ?? "",
-                            token: token!,custName: customerName ?? "custName",
+                            token: token!,
+                            custName: customerName ?? "custName",
                             custPhone: widget.custPhoneNumber,
                             custId: widget.custId,
                           ),
@@ -1487,10 +1489,9 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
           amount: success.amount.toString(),
           bankName: _getBankNameFromCorpCode(corpCode!)?? "XYZ BANK",
           agentName: agentName ?? "Name",
-          agentPhone:
-          phoneNumber ?? "agentPhone",
+          agentPhone:subagentPhoneNumber.toString()?? "agentPhone",
           custName: customerName!,
-          custPhone: "",
+          custPhone: phoneNumber.toString(),
           custId: custId!, txnId: success.transactionId.toString(), txnType: "CASH",
           )))},
                 child: const Text("OK"),
@@ -1525,10 +1526,13 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
     final corp = await SharedPref().getCorpCode();
     final tok = await SharedPref.shared.getTokenValue();
     final sub_AgentCodeNew = await SharedPref().getSubAgentCodeNew();
+    final subagentNum = await SharedPref().getSubAgentMobNum();
 
     // Trigger rebuild after fetching the userName
     if (mounted) {
       setState(() {
+        subagentPhoneNumber = subagentNum;
+
         agentName = name;
         subagentId = subAgentId;
         agentMobile = phone;

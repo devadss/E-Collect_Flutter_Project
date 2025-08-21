@@ -377,7 +377,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                     bankName: _getBankNameFromCorpCode(corpCode!)?? "XYZ BANK",
                     agentName: agentName ?? "Name",
                     agentPhone:
-                    subagentPhoneNumber ?? "agentPhone",
+                    agentPhoneNumber ?? "agentPhone",
                     custName: customerName!,
                     custPhone: custPhoneNumber!,
                     custId: custId!, txnId: success.transactionId.toString(), txnType: "CASH",
