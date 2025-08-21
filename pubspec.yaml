@@ -55,8 +55,8 @@ dependencies:
   pointycastle: ^3.7.4
   permission_handler: ^11.4.0
   image_picker: ^1.1.2
-  firebase_core: ^2.24.2
-  firebase_messaging: ^14.7.9
+  firebase_core: ^4.0.0
+  firebase_messaging: ^16.0.0
   pdf: ^3.11.3
   in_app_update: ^4.1.1
   share_plus: ^7.2.2
