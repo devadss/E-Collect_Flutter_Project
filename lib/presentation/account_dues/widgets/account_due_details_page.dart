@@ -583,7 +583,9 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
                             NewQrCodePage(
                               paymentSessionId: paymentSessionId!,
                               amount: amountController.text ?? "",
-                              token: token!,
+                              token: token!,custName: customerName ?? "custName",
+                              custPhone: widget.custPhoneNumber,
+                              custId: widget.custId,
                             ),
                       ),
                     );

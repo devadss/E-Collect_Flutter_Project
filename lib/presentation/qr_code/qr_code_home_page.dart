@@ -322,16 +322,20 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
       final result = await Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => GeneratedQrCodePage(
+              builder: (context) =>
+                 // GeneratedQrCodePage(
+              NewQrCodePage(
                 amount: amountController.text,
-                userName: name!,
-                email: email.toString(),
-                phoneNumber: phoneNumber!,
-                entityId: entityId!,
+                custName: name!,
+                //email: email.toString(),
+                custPhone: phoneNumber!,
+                custId: entityId!,
                 token: tokenValue!,
-                sessionID: paymentSessionId,
-                orderId: orderID, accountNumber: widget.accountNumber,
-                agentId: widget.agentId,)
+                paymentSessionId: paymentSessionId,
+                //orderId: orderID,
+                //accountNumber: widget.accountNumber,
+             //   agentId: widget.agentId,
+              )
           ));
       if (result == "fetch_balance") {
         // goBack();

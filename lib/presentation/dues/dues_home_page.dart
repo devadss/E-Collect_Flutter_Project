@@ -130,7 +130,9 @@ class _DuesHomePageState extends State<DuesHomePage> {
                     (context) => NewQrCodePage(
                   paymentSessionId: paymentSessionId!,
                   amount: amount ?? "",
-                  token: token!,
+                  token: token!, custName: customerName ?? "custName",
+                      custPhone: custPhoneNumber ?? "custNumber",
+                      custId: custId ?? "CustId",
                 ),
               ),
             );

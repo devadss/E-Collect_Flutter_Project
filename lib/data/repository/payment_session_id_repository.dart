@@ -62,6 +62,7 @@ class CreatePaymentSessionIdRepository
       // "Note": note,
       // "SubAgentId":subAgentID
     print("Body = $body");
+
     bool checkConnection = await InternetConnectionChecker().hasConnection;
     if (checkConnection) {
       final response = await http.post(
@@ -73,6 +74,7 @@ class CreatePaymentSessionIdRepository
           }
       );
       print("Body = ${response.body}");
+      print("status = ${response.statusCode}");
       if (response.statusCode == 200 || response.statusCode == 201) {
         try {
           return Right(

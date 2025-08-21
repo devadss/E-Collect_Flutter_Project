@@ -16,6 +16,7 @@ import '../../data/repository/payment_link_repository.dart';
 import '../../data/repository/payment_session_id_repository.dart';
 import '../../data/storage/shared_pref_helper.dart';
 import '../../domain/model/account_list_model.dart';
+import '../profile/widgets/recipect_page.dart';
 
 class RdclDuesHomePage extends StatefulWidget {
   const RdclDuesHomePage({super.key});
@@ -35,6 +36,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
   String? subagentId;
   RdclCustomerListModel? _rdclCustomerListModel;
   String? agentPhoneNumber;
+  String? subagentPhoneNumber;
   String? agentName;
   String? agentEmail;
   String? corpCode;
@@ -106,7 +108,85 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
       });
     });
   }
+  String _getBankNameFromCorpCode(String corpCode) {
+    // Map corpcode to bank name
+    final Map<String, String> corpCodeToBankName = {
+      "BNKKRMR": "KURUMATHUR SERVICE CO OPERATIVE BANK LTD",
+      "BNKPDVR": "PIDAVOOR SCB",
+      "BNKKNPRM": "Kannapuram SCB",
+      "BNKTRK": "Thrikkakkara SCB",
+      "BNKKVRY": "KOOVERY SERVICE CO OPERATIVE BANK LTD",
+      "BNKKPM": "Kaipamangalam SCB",
+      "BNKKPMF": "Kaipamangalam Fisherman SCB",
+      "BNKPRK": "Peringottukara SCB",
+      "BNKPYPL": "POOYAPALLY SCB",
+      "BNKVLMK": "VELIMUKKU SCB",
+      "BNKPLKL": "PALLICKAL SCB",
+      "BNKCRKT": "CHERUKALATHUR SCB",
+      "BNKCLNR": "CHELANNUR SERVICE CO OPERATIVE BANK",
+      "BNKPPNS": "Pappinissery Rural Bank",
+      "BNKELYR": "ELAYAVOOR SERVICE CO OPERATIVE BANK LTD",
+      "BNKKTM": "KOTTAYAM SERVICE CO OPERATIVE BANK LTD",
+      "BNKAVN": "Avinissery SCB",
+      "BNKDMDM": "DHARMADAM SERVICE CO OPERATIVE BANK LTD",
+      "BNKPTVM": "PATTUVAM SERVICE CO OPERATIVE BANK",
+      "BNKKUTGM": "KUTTUMUGHAM SERVICE CO OPERATIVE BANK LTD",
+      "BNKERKT": "ERAMAM KUTTUR SERVICE CO OPERATIVE BANK LTD",
+      "BNKKDKD": "KODAKKAD SERVICE CO OPERATIVE BANK LTD",
+      "BNKPMP": "PMP SERVICE CO OPERATIVE BANK",
+      "BNKSKMB": "SRI KAMBILAYA MUTUAL NIDHI LIMITED",
+      "BNKTSSCB": "Thuravoor South SCB",
+      "BNKVBGR": "VIBGYOR NIDHI LIMITED",
+      "BNKPPL": "PERUMPILLY SCB",
+      "BNKKTRM": "KAITHARAM SCB",
+      "BNKKZPL": "KUZHUPPILLY SCB",
+      "BNKNABL": "NAYARAMBALAM SCB",
+      "BNKELR": "ELOOR SCB",
+      "BNKERYD": "ERIYAD SCB",
+      "BNKPYVR": "PAYYAVOOR SCB",
+      "BNKVDKRA": "VADAKKEKKARA SCB",
+      "BNKPRVR": "PARAVUR SCB",
+      "BNKVLLR": "Velloor Service Co Operative Bank",
+      "BNKMANK": "Manakunnam SCB",
+      "BNKAZKD": "AZHIKODE SCB",
+      "BNKTHRNL": "Thirunaloor SCB",
+      "BNKVDYR": "VADAYAR",
+      "BNKKDKPL": "KADAKKARAPALLY SCB",
+      "BNKUCMSA": "URBAN CARE MULTI STATE AGRO CSL",
+      "BNKKKYR": "KOKKAYAR SCB",
+      "BNKMFF": "MILK FARMERS AND FISHERIES",
+      "BNKCORDL": "Cordial Gramin Development Foundation",
+      "BNKCHLVR": "CHELAVUR SCB",
+      "BNKVRND": "VARANAD SCB",
+      "BNKVBGRK": "VIBGYOR NIDHI LIMITED KOOTTILANGADI",
+      "BNKKNKRA": "KUNNUKARA SCB",
+      "BNKEDVNKD": "EDAVANAKKAD",
+      "BNKKRDM": "KARTHEDOM SCB",
+      "BNKAROOR": "AROOR SCB",
+      "BNKGMSA": "Gramin Multi State Agro Co Operative Society Ltd",
+      "BNKICCSL": "Indian Cooperative Credit Society Limited",
+      "BNKNNDR": "Neendoor scb",
+      "BNKCOB": "Co operative bhavan",
+      "BNKCHMG": "Chathamangalam SCB",
+      "BNKCXTX": "COXTAX",
+      "BNKORNTL": "ORIENTAL AGRO MULTISTATE CO OP SOCIETY",
+      "BNKTSRA": "Thushara Nidhi",
+      "BNKPRTR": "PURATHUR SCB",
+      "BNKCLBT": "CLUB T",
+      "BNKPNP": "Pearls N Petals",
+      "BNKVLKD": "Vellarkkad SCB",
+      "BNKMDS": "Medi Soft",
+      "BNKPLSCB": "Pulakode service cooperative Bank",
+      "BNKMNCHL": "MEENACHIL SCB",
+      "BNKOMSRY": "Omassery SCB",
+      "BNKPTKL": "Pothukal SCB",
+      "BNKFPMC": "FAPMCO MSCS",
+      "BNKMULKD": "Mullakkodi Co-operative Bank",
+    };
 
+    // Return the bank name if found, otherwise return a default value
+    return corpCodeToBankName[corpCode] ?? "Unknown Bank";
+  }
   @override
   void dispose() {
     _fadeController.dispose();
@@ -186,11 +266,13 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
     final number = await SharedPref().getParentAgentMobNum();
     final tok = await SharedPref().getTokenValue();
     final sub_AgentCodeNew = await SharedPref().getSubAgentCodeNew();
+    final subagentNum = await SharedPref().getSubAgentMobNum();
     if (mounted) {
       setState(() {
         subagentId = subAgentID;
         agentName = name;
         agentEmail = email;
+        subagentPhoneNumber = subagentNum;
         agentId = id;
         agentOriginId = originId;
         corpCode = code;
@@ -285,7 +367,21 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(context),
+
+                onPressed: () => {Navigator.pop(context),
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ReceiptPage(
+                    amount: success.amount.toString(),
+                    bankName: _getBankNameFromCorpCode(corpCode!)?? "XYZ BANK",
+                    agentName: agentName ?? "Name",
+                    agentPhone:
+                    subagentPhoneNumber ?? "agentPhone",
+                    custName: customerName!,
+                    custPhone: custPhoneNumber!,
+                    custId: custId!, txnId: success.transactionId.toString(), txnType: "CASH",
+                  )))},
                 child: const Text("OK"),
               ),
             ],
@@ -307,6 +403,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
       required String? entityId,
       required String? note,
       required String? subAgentBranchCode}) async {
+    print("--------------------INSIDE getPaymentSessionId---------------------");
     print("--------------------TOKEN---------------------");
     print(token);
     print("---------------------AMOUNT--------------------");
@@ -356,6 +453,9 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
               paymentSessionId: paymentSessionId!,
               amount: amount ?? "",
               token: token!,
+              custName: customerName ?? "custName",
+              custPhone: custPhoneNumber ?? "custNumber",
+              custId: custId ?? "CustId",
             ),
           ),
         );
@@ -826,6 +926,9 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                             final dueIndex = entry.key;
                             final due = entry.value;
 
+                              print("due values : ${due}");
+
+
                             _checkboxStates.putIfAbsent(accNo, () => {});
                             _checkboxStates[accNo]!.putIfAbsent(
                               dueIndex,
@@ -1087,6 +1190,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                                                               ),
                                                                               trailing: const Icon(Icons.chevron_right),
                                                                               onTap: () {
+                                                                                print("selected method = $selectedMethod");
                                                                                 setModalState(() => selectedMethod = "QR Code");
                                                                                 Navigator.pop(ctx);
                                                                               },
@@ -1105,6 +1209,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                                                               ),
                                                                               trailing: const Icon(Icons.chevron_right),
                                                                               onTap: () {
+                                                                                print("selected method = $selectedMethod");
                                                                                 setModalState(() => selectedMethod = "Cash");
                                                                                 Navigator.pop(ctx);
                                                                               },
@@ -1266,20 +1371,56 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                                                   home2,
                                                               buttonColor:
                                                                   Colors.white,
-                                                              onConfirmed:
+                                                                onConfirmed: () async {
+                                                                  if (selectedMethod == "Cash") {
+                                                                    bool confirmed = await paymentConfirmation(
+                                                                      context,
+                                                                      due.name,
+                                                                      due.accNo,
+                                                                      due.custId,
+
+                                                                      controller.text,
+                                                                    );
+
+                                                                    if (!confirmed) {
+                                                                      // User cancelled the confirmation
+                                                                      return;
+                                                                    }
+                                                                  } else {
+                                                                    print("Selected QR");
+                                                                    // ✅ This runs only after confirmation (or if non-cash method)
+                                                                    getPaymentSessionId(
+                                                                      token: token,
+                                                                      customerName: due.name,
+                                                                      custPhoneNumber: "",
+                                                                      custAcNumber: due.accNo,
+                                                                      custId: due.custId,
+                                                                      custEmail: "",
+                                                                      phoneNumber: "$agentPhoneNumber",
+                                                                      entityId: agentId,
+                                                                      note: "Payment For Agent $agentName",
+                                                                      amount: controller.text,
+                                                                      subAgentBranchCode: subAgentCodeNew,
+                                                                    );
+                                                                  }
+
+
+                                                                }
+
+                                                              /*  onConfirmed:
                                                                   () async {
-                                                                // final editedAmount = num.tryParse(controller.text.trim()) ?? 0;
+                                                                // selectedMethod ==
+                                                                //         "Link"
+                                                                //     ? sendLinkFunction(
+                                                                //         provider.rdclDueUnderAgentModel!.data[
+                                                                //             index],
+                                                                //         controller
+                                                                //             .text)
+                                                                //     :
+
                                                                 selectedMethod ==
-                                                                        "Link"
-                                                                    ? sendLinkFunction(
-                                                                        provider.rdclDueUnderAgentModel!.data[
-                                                                            index],
-                                                                        controller
-                                                                            .text)
-                                                                    : selectedMethod ==
                                                                             "Cash"
                                                                         ?
-                                                                        //       print("Selecetd cash")
                                                                         paymentConfirmation(
                                                                             context,
                                                                             due
@@ -1343,7 +1484,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                                                   subAgentBranchCode:
                                                                       subAgentCodeNew,
                                                                 );
-                                                              },
+                                                              },*/
                                                             ),
                                                           ],
                                                         ),
@@ -1549,16 +1690,16 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
       },
     );
   }
-
-  Future<void> paymentConfirmation(
-    BuildContext context,
-    String name,
-    String accNo,
-    String custId,
-    String amt,
-  ) {
-    return showDialog(
+  Future<bool> paymentConfirmation(
+      BuildContext context,
+      String name,
+      String accNo,
+      String custId,
+      String amt,
+      ) async {
+    return await showDialog<bool>(
       context: context,
+      barrierDismissible: false, // Prevent closing by tapping outside
       builder: (BuildContext context) {
         return Dialog(
           shape: RoundedRectangleBorder(
@@ -1596,7 +1737,6 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                       color: Colors.redAccent.withOpacity(0.1),
                       shape: BoxShape.circle,
                     ),
-                    // child: Lottie.asset("assets/animations/logout.json"),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -1611,7 +1751,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  "Do you wish to proceed with the payment ?",
+                  "Do you wish to proceed with the payment?",
                   textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
                     color: Colors.grey[600],
@@ -1624,7 +1764,9 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                     // Cancel button
                     Expanded(
                       child: OutlinedButton(
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () {
+                          Navigator.pop(context, false); // 🚫 User said NO
+                        },
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           side: const BorderSide(color: home1),
@@ -1644,7 +1786,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                     ),
                     const SizedBox(width: 15),
 
-                    // Logout button
+                    // Confirm button
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
@@ -1660,6 +1802,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                             note: "Payment For Agent $agentName",
                             amount: amt,
                           );
+                          Navigator.pop(context, true); // ✅ User confirmed
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.redAccent,
@@ -1685,9 +1828,148 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
           ),
         );
       },
-    );
-  }
-}
+    ).then((value) => value ?? false); // default to false if dismissed
+  }}
+
+//   Future<void> paymentConfirmation(
+//     BuildContext context,
+//     String name,
+//     String accNo,
+//     String custId,
+//     String amt,
+//   ) {
+//     return showDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return Dialog(
+//           shape: RoundedRectangleBorder(
+//             borderRadius: BorderRadius.circular(25),
+//           ),
+//           elevation: 0,
+//           backgroundColor: Colors.transparent,
+//           child: Container(
+//             padding: const EdgeInsets.all(25),
+//             decoration: BoxDecoration(
+//               color: white,
+//               borderRadius: BorderRadius.circular(25),
+//               boxShadow: [
+//                 BoxShadow(
+//                   color: Colors.black.withOpacity(0.2),
+//                   blurRadius: 20,
+//                   spreadRadius: 5,
+//                 ),
+//               ],
+//             ),
+//             child: Column(
+//               mainAxisSize: MainAxisSize.min,
+//               children: [
+//                 // Animated icon
+//                 TweenAnimationBuilder(
+//                   duration: const Duration(milliseconds: 500),
+//                   tween: Tween<double>(begin: 0, end: 1),
+//                   builder: (context, value, child) {
+//                     return Transform.scale(scale: value, child: child);
+//                   },
+//                   child: Container(
+//                     width: 80,
+//                     height: 80,
+//                     decoration: BoxDecoration(
+//                       color: Colors.redAccent.withOpacity(0.1),
+//                       shape: BoxShape.circle,
+//                     ),
+//                     // child: Lottie.asset("assets/animations/logout.json"),
+//                   ),
+//                 ),
+//                 const SizedBox(height: 20),
+//
+//                 Text(
+//                   "Payment Confirmation",
+//                   style: GoogleFonts.poppins(
+//                     fontSize: 20,
+//                     fontWeight: FontWeight.w600,
+//                     color: Colors.grey[800],
+//                   ),
+//                 ),
+//                 const SizedBox(height: 10),
+//                 Text(
+//                   "Do you wish to proceed with the payment ?",
+//                   textAlign: TextAlign.center,
+//                   style: GoogleFonts.poppins(
+//                     color: Colors.grey[600],
+//                     fontSize: 14,
+//                   ),
+//                 ),
+//                 const SizedBox(height: 25),
+//                 Row(
+//                   children: [
+//                     // Cancel button
+//                     Expanded(
+//                       child: OutlinedButton(
+//                         onPressed: () =>{},
+//                             //Navigator.pop(context),
+//                         style: OutlinedButton.styleFrom(
+//                           padding: const EdgeInsets.symmetric(vertical: 14),
+//                           side: const BorderSide(color: home1),
+//                           shape: RoundedRectangleBorder(
+//                             borderRadius: BorderRadius.circular(12),
+//                           ),
+//                           backgroundColor: white,
+//                         ),
+//                         child: Text(
+//                           "No",
+//                           style: GoogleFonts.poppins(
+//                             color: home1,
+//                             fontWeight: FontWeight.w500,
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                     const SizedBox(width: 15),
+//
+//                     // Logout button
+//                     Expanded(
+//                       child: ElevatedButton(
+//                         onPressed: () {
+//                           getCashTrans(
+//                             token: token,
+//                             customerName: name,
+//                             custPhoneNumber: "",
+//                             custAcNumber: accNo,
+//                             custId: custId,
+//                             custEmail: "",
+//                             phoneNumber: "$agentPhoneNumber",
+//                             entityId: agentId,
+//                             note: "Payment For Agent $agentName",
+//                             amount: amt,
+//                           );
+//                         },
+//                         style: ElevatedButton.styleFrom(
+//                           backgroundColor: Colors.redAccent,
+//                           padding: const EdgeInsets.symmetric(vertical: 14),
+//                           shape: RoundedRectangleBorder(
+//                             borderRadius: BorderRadius.circular(12),
+//                           ),
+//                           elevation: 2,
+//                         ),
+//                         child: Text(
+//                           "Yes",
+//                           style: GoogleFonts.poppins(
+//                             color: white,
+//                             fontWeight: FontWeight.w500,
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ],
+//             ),
+//           ),
+//         );
+//       },
+//     );
+//   }
+// }
 
 class CustomSliderButton extends StatefulWidget {
   final Future<void> Function() onConfirmed;
