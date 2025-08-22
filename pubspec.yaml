@@ -31,44 +31,85 @@ dependencies:
   fluttertoast: ^8.2.12
   url_launcher: ^6.3.1
   provider: ^6.1.2
-  http: ^1.4.0
+  http: ^1.3.0
   pager: ^0.0.6
   dartz: ^0.10.1
-  fpdart: ^1.1.1
   flutter_animate: ^4.5.2
   qr_flutter: ^4.1.0
   internet_connection_checker: ^1.0.0+1
   animated_notch_bottom_bar: ^1.0.3
   google_fonts: ^6.2.1
   pie_chart: ^5.4.0
-  local_auth: ^2.3.0
+  local_auth: ^2.2.0
   shimmer: ^3.0.0
   flutter_riverpod: ^2.6.1
   path_provider: ^2.1.5
-  flutter_local_notifications: ^17.2.3
+  flutter_local_notifications: ^19.4.0
   flutter_easyloading: ^3.0.5
   shared_preferences: ^2.5.2
   image: ^4.1.7
-  intl: ^0.18.0
-  print_bluetooth_thermal: ^1.1.6
+  intl: ^0.20.2
   encrypt: ^5.0.3
   pointycastle: ^3.7.4
-  permission_handler: ^11.4.0
+  permission_handler: ^12.0.1
   image_picker: ^1.1.2
   firebase_core: ^4.0.0
   firebase_messaging: ^16.0.0
-  pdf: ^3.11.3
+  pdf: ^3.11.0
   in_app_update: ^4.1.1
-  share_plus: ^7.2.2
+  share_plus: ^11.0.0
   screenshot: ^3.0.0
   carousel_slider: ^5.0.0
   flutter_screenutil: ^5.9.3
   flutter_svg: ^2.1.0
   lottie: ^3.3.1
   vibration: ^3.1.3
-  flutter_overlay_window: ^0.5.0
+  fpdart: ^1.1.1
   flutter_contacts: ^1.1.9+2
-  #http: ^1.3.0
+  loading_animation_widget: ^1.3.0
+  print_bluetooth_thermal: ^1.1.6
+  flutter_overlay_window: ^0.5.0
+#  fluttertoast: ^8.2.12
+#  url_launcher: ^6.3.1
+#  provider: ^6.1.2
+#  http: ^1.4.0
+#  pager: ^0.0.6
+#  dartz: ^0.10.1
+#  fpdart: ^1.1.1
+#  flutter_animate: ^4.5.2
+#  qr_flutter: ^4.1.0
+#  internet_connection_checker: ^1.0.0+1
+#  animated_notch_bottom_bar: ^1.0.3
+#  google_fonts: ^6.2.1
+#  pie_chart: ^5.4.0
+#  local_auth: ^2.3.0
+#  shimmer: ^3.0.0
+#  flutter_riverpod: ^2.6.1
+#  path_provider: ^2.1.5
+#  flutter_local_notifications: ^17.2.3
+#  flutter_easyloading: ^3.0.5
+#  shared_preferences: ^2.5.2
+#  image: ^4.1.7
+#  intl: ^0.18.0
+#  print_bluetooth_thermal: ^1.1.6
+#  encrypt: ^5.0.3
+#  pointycastle: ^3.7.4
+#  permission_handler: ^11.4.0
+#  image_picker: ^1.1.2
+#  firebase_core: ^4.0.0
+#  firebase_messaging: ^16.0.0
+#  pdf: ^3.11.3
+#  in_app_update: ^4.1.1
+#  share_plus: ^7.2.2
+#  screenshot: ^3.0.0
+#  carousel_slider: ^5.0.0
+#  flutter_screenutil: ^5.9.3
+#  flutter_svg: ^2.1.0
+#  lottie: ^3.3.1
+#  vibration: ^3.1.3
+#  flutter_overlay_window: ^0.5.0
+#  flutter_contacts: ^1.1.9+2
+#  #http: ^1.3.0
   #local_auth: ^2.2.0
  # flutter_libserialport: ^0.5.0
  # usb_serial: ^0.3.0

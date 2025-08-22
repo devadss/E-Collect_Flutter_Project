@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import '../../../core/colors.dart';
 
 class PaymentLinkHomePage extends StatefulWidget {
@@ -164,7 +163,7 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage> {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: home1,
@@ -178,7 +177,7 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage> {
             ),
             child: Text(
               count.toString(),
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
                 color: home1,
@@ -284,7 +283,7 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage> {
                 if (!isReceived)
                   TextButton(
                     onPressed: () => _sendPaymentReminder(payment),
-                    child: Text(
+                    child: const Text(
                       'Remind',
                       style: TextStyle(
                         fontSize: 12,
@@ -314,9 +313,9 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage> {
       backgroundColor: Colors.transparent,
       builder: (context) {
         return Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.white,
-            borderRadius: const BorderRadius.only(
+            borderRadius: BorderRadius.only(
               topLeft: Radius.circular(20),
               topRight: Radius.circular(20),
             ),
@@ -324,7 +323,7 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage> {
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-          child: NewPaymentLinkForm(
+          child: const NewPaymentLinkForm(
             home1: home1,
             secondaryColor: home2,
           ),
@@ -345,7 +344,7 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
+              const Text(
                 'Send Payment Links',
                 style: TextStyle(
                   fontSize: 18,
@@ -403,51 +402,169 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage> {
     showDialog(
       context: context,
       builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.all(20),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 30,
+                spreadRadius: 0,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Payment Details',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: home1,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                payment.name,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 16),
-              _buildDetailRow('Amount', '\$${payment.amount.toStringAsFixed(2)}'),
-              _buildDetailRow('Date', DateFormat('MMM dd, yyyy').format(payment.date)),
-              _buildDetailRow(
-                'Status',
-                payment.isPaid ? 'Paid' : 'Pending',
-                payment.isPaid ? successColor : Colors.red,
-              ),
-              const SizedBox(height: 24),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: home1,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+              // Header with gradient
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [home1, home2],
                   ),
-                  child: const Text('Close'),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(24),
+                    topRight: Radius.circular(24),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    // Status indicator with icon
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        payment.isPaid ? Icons.check_circle : Icons.pending,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      payment.isPaid ? 'Payment Received' : 'Payment Pending',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      payment.name,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+
+              // Content area
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    // Amount with large display
+                    Text(
+                      '\$${payment.amount.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 36,
+                        fontWeight: FontWeight.w800,
+                        color: home1,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Details in cards
+                    _buildDetailCard(
+                      icon: Icons.calendar_today,
+                      title: 'Date',
+                      value: DateFormat('MMM dd, yyyy').format(payment.date),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildDetailCard(
+                      icon: Icons.account_circle,
+                      title: 'Recipient',
+                      value: payment.name,
+                    ),
+                    const SizedBox(height: 12),
+                    _buildDetailCard(
+                      icon: payment.isPaid ? Icons.verified : Icons.pending_actions,
+                      title: 'Status',
+                      value: payment.isPaid ? 'Paid' : 'Pending',
+                      valueColor: payment.isPaid ? successColor : warningColor,
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Action buttons - Conditional based on payment status
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () => Navigator.pop(context),
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              side: BorderSide(color: home1.withOpacity(0.3)),
+                            ),
+                            child: const Text(
+                              'Close',
+                              style: TextStyle(
+                                color: home1,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              if (payment.isPaid) {
+                                _sharePaymentDetails(payment);
+                              } else {
+                                _sendPaymentReminder(payment);
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: payment.isPaid ? home1 : warningColor,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 0,
+                            ),
+                            child: Text(
+                              payment.isPaid ? 'Share' : 'Remind',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -456,6 +573,137 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage> {
       ),
     );
   }
+
+  Widget _buildDetailCard({
+    required IconData icon,
+    required String title,
+    required String value,
+    Color? valueColor,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.grey[100]!,
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: home1.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              color: home1,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: valueColor ?? Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _sharePaymentDetails(Payment payment) {
+    // Implementation for sharing payment details
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Sharing payment details for ${payment.name}'),
+        backgroundColor: home1,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
+  }
+
+  // void _showPaymentDetails(Payment payment) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) => Dialog(
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.circular(16),
+  //       ),
+  //       child: Padding(
+  //         padding: const EdgeInsets.all(16.0),
+  //         child: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           children: [
+  //             const Text(
+  //               'Payment Details',
+  //               style: TextStyle(
+  //                 fontSize: 18,
+  //                 fontWeight: FontWeight.bold,
+  //                 color: home1,
+  //               ),
+  //             ),
+  //             const SizedBox(height: 8),
+  //             Text(
+  //               payment.name,
+  //               style: const TextStyle(
+  //                 fontSize: 16,
+  //                 fontWeight: FontWeight.w600,
+  //               ),
+  //             ),
+  //             const SizedBox(height: 16),
+  //             _buildDetailRow('Amount', '\$${payment.amount.toStringAsFixed(2)}'),
+  //             _buildDetailRow('Date', DateFormat('MMM dd, yyyy').format(payment.date)),
+  //             _buildDetailRow(
+  //               'Status',
+  //               payment.isPaid ? 'Paid' : 'Pending',
+  //               payment.isPaid ? successColor : Colors.red,
+  //             ),
+  //             const SizedBox(height: 24),
+  //             Center(
+  //               child: ElevatedButton(
+  //                 onPressed: () => Navigator.pop(context),
+  //                 style: ElevatedButton.styleFrom(
+  //                   foregroundColor: Colors.white,
+  //                   backgroundColor: home1,
+  //                   shape: RoundedRectangleBorder(
+  //                     borderRadius: BorderRadius.circular(12),
+  //                   ),
+  //                 ),
+  //                 child: const Text('Close'),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildDetailRow(String label, String value, [Color? valueColor]) {
     return Padding(

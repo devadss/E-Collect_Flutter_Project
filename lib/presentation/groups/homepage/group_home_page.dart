@@ -633,71 +633,401 @@ class _GroupHomePageState extends State<GroupHomePage> {
       },
     );
   }
+
   Widget _buildExpandedContent() {
     return Card(
-      color: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10),
-        side: const BorderSide(color: home1, ),
+      color: Colors.white.withOpacity(0.8),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+        side: BorderSide(color: home1)
       ),
-      elevation: 1,
+      elevation: 0,
       margin: const EdgeInsets.only(top: 20),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            const TextField(
-              decoration: InputDecoration(
-                counterText: "",
-                prefixIcon: Icon(Icons.phone_iphone, color: home1),
-                labelText: 'Enter customer mobile number',
-                border: OutlineInputBorder(),
-              ),
-              maxLength: 10,
-              keyboardType: TextInputType.number,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: Colors.white.withOpacity(0.3)),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.white.withOpacity(0.9),
+              Colors.white.withOpacity(0.7),
+            ],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
             ),
-            const SizedBox(height: 16),
-            const TextField(
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.auto_mode_outlined, color: home1),
-                labelText: 'Enter Amount',
-                border: OutlineInputBorder(),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header with clean typography
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: home1.withOpacity(0.08),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.payment, color: home1, size: 22),
+                  ),
+                  const SizedBox(width: 16),
+                  const Text(
+                    'Create Payment Link',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                      letterSpacing: -0.3,
+                    ),
+                  ),
+                ],
               ),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 16),
-            const TextField(
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.note_alt_outlined, color: home1),
-                labelText: 'Enter a note',
-                border: OutlineInputBorder(),
+              const SizedBox(height: 12),
+              Text(
+                'Fill in the details to generate a payment link',
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
-              keyboardType: TextInputType.text,
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  // Handle send action
-                },
-                icon: const Icon(Icons.send),
-                label: const Text('Send Link'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: home1,
+              const SizedBox(height: 36),
 
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+              // Clean input fields
+              _buildMinimalTextField(
+                icon: Icons.phone_iphone,
+                label: 'Mobile Number',
+                keyboardType: TextInputType.phone,
+                maxLength: 10,
+              ),
+              const SizedBox(height: 16),
+
+              _buildMinimalTextField(
+                icon: Icons.currency_rupee,
+                label: 'Amount',
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+              ),
+              const SizedBox(height: 16),
+
+              _buildMinimalTextField(
+                icon: Icons.note_alt_outlined,
+                label: 'Note (optional)',
+                keyboardType: TextInputType.text,
+                maxLines: 2,
+              ),
+              const SizedBox(height: 32),
+
+              // Modern button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: home1,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 0,
+                    shadowColor: Colors.transparent,
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.rocket_launch, size: 18),
+                      SizedBox(width: 10),
+                      Text(
+                        'Generate Payment Link',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ),
-          ],
+
+              const SizedBox(height: 24),
+              Center(
+                child: Text(
+                  'Secure • Instant • No fees',
+                  style: TextStyle(
+                    color: Colors.grey[500],
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+
+  Widget _buildMinimalTextField({
+    required IconData icon,
+    required String label,
+    required TextInputType keyboardType,
+    int maxLength = 0,
+    int maxLines = 1,
+  }) {
+    return TextField(
+      decoration: InputDecoration(
+        prefixIcon: Icon(icon, color: home1, size: 20),
+        labelText: label,
+        labelStyle: TextStyle(
+          color: Colors.grey[600],
+          fontSize: 14,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: home1, width: 1.5),
+        ),
+        filled: true,
+        fillColor: Colors.grey[50],
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      ),
+      style: const TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w500,
+        color: Colors.black87,
+      ),
+      keyboardType: keyboardType,
+      maxLength: maxLength > 0 ? maxLength : null,
+      maxLines: maxLines,
+    );
+  }
+
+
+//   Widget _buildExpandedContent() {
+//     return Card(
+//       color: Colors.white,
+//       shape: RoundedRectangleBorder(
+//         borderRadius: BorderRadius.circular(20),
+//         side: BorderSide(color: home1),
+//       ),
+//       elevation: 8,
+//       margin: const EdgeInsets.only(top: 20),
+//       shadowColor: home1.withOpacity(0.2),
+//       child: Padding(
+//         padding: const EdgeInsets.all(28),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             // Header with modern styling
+//             Row(
+//               children: [
+//                 Container(
+//                   padding: const EdgeInsets.all(10),
+//                   decoration: BoxDecoration(
+//                     color: home1.withOpacity(0.1),
+//                     shape: BoxShape.circle,
+//                   ),
+//                   child: Icon(Icons.payment, color: home1, size: 24),
+//                 ),
+//                 const SizedBox(width: 16),
+//                 const Text(
+//                   'Create Payment Link',
+//                   style: TextStyle(
+//                     fontSize: 20,
+//                     fontWeight: FontWeight.w700,
+//                     color: Colors.black87,
+//                     letterSpacing: -0.5,
+//                   ),
+//                 ),
+//               ],
+//             ),
+//             const SizedBox(height: 8),
+//             Text(
+//               'Fill in the details to generate a payment link',
+//               style: TextStyle(
+//                 color: Colors.grey[600],
+//                 fontSize: 14,
+//               ),
+//             ),
+//             const SizedBox(height: 32),
+//
+//             // Modern Input Fields with floating labels
+//             _buildModernTextField(
+//               icon: Icons.phone_iphone,
+//               label: 'Mobile Number',
+//               keyboardType: TextInputType.phone,
+//               maxLength: 10,
+//               isFirst: true,
+//             ),
+//             const SizedBox(height: 20),
+//
+//             _buildModernTextField(
+//               icon: Icons.currency_rupee,
+//               label: 'Amount',
+//               keyboardType: TextInputType.numberWithOptions(decimal: true),
+//             ),
+//             const SizedBox(height: 20),
+//
+//             _buildModernTextField(
+//               icon: Icons.note_alt_outlined,
+//               label: 'Note (optional)',
+//               keyboardType: TextInputType.text,
+//               maxLines: 2,
+//               isLast: true,
+//             ),
+//             const SizedBox(height: 32),
+//
+//             // Modern Button with gradient
+//             Container(
+//               decoration: BoxDecoration(
+//                 gradient: LinearGradient(
+//                   colors: [home1, _darkenColor(home1, 0.2)],
+//                   begin: Alignment.topLeft,
+//                   end: Alignment.bottomRight,
+//                 ),
+//                 borderRadius: BorderRadius.circular(14),
+//                 boxShadow: [
+//                   BoxShadow(
+//                     color: home1.withOpacity(0.4),
+//                     blurRadius: 10,
+//                     offset: const Offset(0, 4),
+//                   ),
+//                 ],
+//               ),
+//               child: ElevatedButton(
+//                 onPressed: () {
+//                   // Handle send action
+//                 },
+//                 style: ElevatedButton.styleFrom(
+//                   backgroundColor: Colors.transparent,
+//                   foregroundColor: Colors.white,
+//                   shadowColor: Colors.transparent,
+//                   padding: const EdgeInsets.symmetric(vertical: 20),
+//                   shape: RoundedRectangleBorder(
+//                     borderRadius: BorderRadius.circular(14),
+//                   ),
+//                   elevation: 0,
+//                 ),
+//                 child: const Row(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   children: [
+//                     Icon(Icons.rocket_launch, size: 20),
+//                     SizedBox(width: 12),
+//                     Text(
+//                       'Generate Payment Link',
+//                       style: TextStyle(
+//                         fontSize: 16,
+//                         fontWeight: FontWeight.w600,
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//
+//             // Footer with additional info
+//             const SizedBox(height: 24),
+//             Center(
+//               child: Wrap(
+//                 crossAxisAlignment: WrapCrossAlignment.center,
+//                 children: [
+//                   Icon(Icons.security, size: 16, color: Colors.grey[500]),
+//                   const SizedBox(width: 8),
+//                   Text(
+//                     'Secure • Instant • No fees',
+//                     style: TextStyle(
+//                       color: Colors.grey[600],
+//                       fontSize: 12,
+//                       fontWeight: FontWeight.w500,
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+//
+// // Helper method to create modern text fields
+//   Widget _buildModernTextField({
+//     required IconData icon,
+//     required String label,
+//     required TextInputType keyboardType,
+//     int maxLength = 0,
+//     int maxLines = 1,
+//     bool isFirst = false,
+//     bool isLast = false,
+//   }) {
+//     return Container(
+//       decoration: BoxDecoration(
+//         color: Colors.grey[50],
+//         borderRadius: _getBorderRadius(isFirst, isLast),
+//         border: Border.all(color: home1, width: 1.5),
+//       ),
+//       child: Padding(
+//         padding: const EdgeInsets.symmetric(horizontal: 16),
+//         child: Row(
+//           children: [
+//             Icon(icon, color: home1, size: 20),
+//             const SizedBox(width: 12),
+//             Expanded(
+//               child: TextField(
+//                 decoration: InputDecoration(
+//                   border: InputBorder.none,
+//                   labelText: label,
+//                   labelStyle: TextStyle(
+//                     color: Colors.grey[600],
+//                     fontWeight: FontWeight.w500,
+//                   ),
+//                   counterText: "",
+//                   floatingLabelBehavior: FloatingLabelBehavior.never,
+//                 ),
+//                 style: const TextStyle(
+//                   fontSize: 16,
+//                   fontWeight: FontWeight.w500,
+//                   color: Colors.black87,
+//                 ),
+//                 keyboardType: keyboardType,
+//                 maxLength: maxLength > 0 ? maxLength : null,
+//                 maxLines: maxLines,
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+//
+// // Helper method for border radius
+//   BorderRadius _getBorderRadius(bool isFirst, bool isLast) {
+//     if (isFirst) {
+//       return const BorderRadius.vertical(top: Radius.circular(12));
+//     } else if (isLast) {
+//       return const BorderRadius.vertical(bottom: Radius.circular(12));
+//     }
+//     return BorderRadius.zero;
+//   }
+//
+// // Helper method to darken color for gradient
+//   Color _darkenColor(Color color, double factor) {
+//     final hsl = HSLColor.fromColor(color);
+//     final hslDark = hsl.withLightness((hsl.lightness - factor).clamp(0.0, 1.0));
+//     return hslDark.toColor();
+//   }
   @override
   Widget build(BuildContext context) {
     final monthData = currentMonthData;
@@ -1092,7 +1422,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
             Text(
               value,
               style: const TextStyle(
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.w700,
                 color: home2,
               ),
