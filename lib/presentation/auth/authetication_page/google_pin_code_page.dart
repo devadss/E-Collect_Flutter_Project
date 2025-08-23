@@ -22,6 +22,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   String pin = "";
   String custID = "";
   String token = "";
+  bool authenticated = false;
   String mpin = "";
   String fcmToken = "";
   String contactNum = ""; // contains +91
@@ -58,7 +59,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
     _authenticateWithBiometrics();
   }
   Future<void> _authenticateWithBiometrics() async {
-    bool authenticated = false;
+
 
     try {
       final canCheckBiometrics = await auth.canCheckBiometrics;
@@ -76,7 +77,10 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
           stickyAuth: false,
         ),
       );
+      validateMpinFingerAuth();
     } on PlatformException catch (e) {
+      authenticated = true;
+      validateMpinFingerAuth();
       print('PlatformException during biometric auth: ${e.code} - ${e.message}');
       return;
     } on Exception catch (e) {
@@ -89,7 +93,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       return;
     }
 
-    validateMpinFingerAuth();
+   // validateMpinFingerAuth();
   }
 
 
@@ -190,10 +194,21 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
 
   Future<void> validateMpinFingerAuth() async {
     print("validateMpinFingerAuth");
-    if (fcmToken.isNotEmpty) {
+    if (fcmToken.isNotEmpty && authenticated== true) {
       Navigator.push(context, MaterialPageRoute(builder: (context) => const BottomNavScreen()));
-    } else {
+    }
+    else if(fcmToken.isEmpty && authenticated== true){
       await  saveFcmToken(custID, context, "GPIN", token, subAgentContactNum, mpin);
+
+    }
+    else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content:
+          Text("Authentication Error", style: TextStyle(color: Colors.white),),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
 
 

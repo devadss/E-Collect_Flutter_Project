@@ -13,6 +13,8 @@ class BankAccountUpdateRepository implements BankAccountUpdateInterface{
 
     final uri = Uri.parse("${baseUrl}api/GetAccountByUser/$id");
     final request = await http.get(uri);
+    print("api/GetAccountByUser/$id");
+    print(request.body);
     if(request.statusCode == 200){
       return Right(BankAccountUpdateResponse.fromJson(jsonDecode(request.body)));
     }else{

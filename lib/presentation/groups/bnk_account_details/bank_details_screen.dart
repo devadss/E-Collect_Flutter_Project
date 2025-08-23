@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:provider/provider.dart';
 import '../../../data/provider/group/bank_account_update_provider.dart';
+import '../../../data/provider/group/update_group_provider.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 
 class BankDetailsScreen extends StatefulWidget {
@@ -27,12 +28,12 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
       TextEditingController();
   final TextEditingController _ifscCodeController = TextEditingController();
 
-
-
   Map<String, dynamic>? _selectedBank;
   bool _isSubmitting = false;
   String? _custId;
   String? _corpCode;
+  String? groupId;
+  String? userId;
 
   @override
   void dispose() {
@@ -42,15 +43,20 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
     _ifscCodeController.dispose();
     super.dispose();
   }
+
   void loadSharedData() async {
     String custid = await SharedPref.shared.getCustId();
     String corpCode = await SharedPref.shared.getCorpCode();
 
     setState(() {
-      _custId =  custid;
+      _custId = custid;
       _corpCode = corpCode;
     });
+    if (widget.status == "EDIT") {
+      getBankDetail();
+    }
   }
+
   Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -61,6 +67,20 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
     if (mounted) {
       final bankDetailSubmitProvider =
           Provider.of<BankDetailProvider>(context, listen: false);
+      final bankDetailUpdateProvider =
+      Provider.of<UpdateGroupProvider>(context, listen: false);
+      statusType == "EDIT"?
+
+
+      await bankDetailUpdateProvider.updateBankDetails(
+          int.parse(groupId!),
+          userId!,
+          _panNumberController.text,
+          _accountNumberController.text,
+          _ifscCodeController.text,
+          _corpCode!,
+          _corpCode!,
+          _custId!):
       await bankDetailSubmitProvider.submitBankDetails(
           _custId.toString(),
           _panNumberController.text,
@@ -72,6 +92,18 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
+              "${bankDetailUpdateProvider.groupUpdateResponse?.message.toString()}"),
+          backgroundColor: home2,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
               "${bankDetailSubmitProvider.bankAccountModel?.message.toString()}"),
           backgroundColor: home2,
           behavior: SnackBarBehavior.floating,
@@ -79,6 +111,7 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
+
       );
       _panNumberController.clear();
       _accountNumberController.clear();
@@ -92,16 +125,14 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
   void initState() {
     super.initState();
     loadSharedData();
-    if (widget.status == "EDIT") {
-      getBankDetail();
-
-    }
   }
 
   Future<void> getBankDetail() async {
     final bankAccountUpdateProvider =
         Provider.of<BankAccountUpdateProvider>(context, listen: false);
-    await bankAccountUpdateProvider.getBankAccountDetails(int.parse(_custId.toString()));
+    print("cust id passed = ${_custId}");
+    await bankAccountUpdateProvider
+        .getBankAccountDetails(int.parse(_custId.toString()));
     setState(() {
       if (bankAccountUpdateProvider.bankAccountUpdateResponse != null) {
         statusType = "EDIT";
@@ -117,12 +148,17 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
         _ifscCodeController.text = bankAccountUpdateProvider
             .bankAccountUpdateResponse!.data[0].ifsc
             .toString();
+        userId= bankAccountUpdateProvider.bankAccountUpdateResponse!.data[0].userId.toString();
+
+        setState(() {
+          groupId = bankAccountUpdateProvider
+              .bankAccountUpdateResponse!.data[0].accountId.toString();
+        });
       } else {
         statusType = "";
       }
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +167,7 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        automaticallyImplyLeading:widget.status =="EDIT"? true: false,
+        automaticallyImplyLeading: widget.status == "EDIT" ? true : false,
         centerTitle: true,
         title: const Text(
           "Bank Details",

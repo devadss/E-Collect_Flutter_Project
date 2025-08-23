@@ -28,7 +28,7 @@ class BankAccountUpdateResponse {
 
 class Account {
   final int accountId;
-  final int userId;
+  final String userId;
   final String accountHolderName;
   final String accountNumber;
   final String ifsc;

@@ -1,3 +1,4 @@
+import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -121,7 +122,9 @@ class _AadhaarOtpRequestState extends State<AadhaarOtpRequest> with SingleTicker
 
             // Title with gradient text
             ShaderMask(
+
               shaderCallback: (bounds) => const LinearGradient(
+               // colors: [Color(0xFFEA307B), Color(0xFF470952)],
                 colors: [Color(0xFFEA307B), Color(0xFF470952)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -230,11 +233,12 @@ class _AadhaarOtpRequestState extends State<AadhaarOtpRequest> with SingleTicker
                 height: 55,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFFEA307B), Color(0xFF470952)],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
+                  color: home1,
+                  // gradient: const LinearGradient(
+                  //   colors: [Color(0xFFEA307B), Color(0xFF470952)],
+                  //   begin: Alignment.topCenter,
+                  //   end: Alignment.bottomCenter,
+                  // ),
                   boxShadow: [
                     BoxShadow(
                       color: const Color(0xFFEA307B).withOpacity(0.3),

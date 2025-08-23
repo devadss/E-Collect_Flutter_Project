@@ -475,10 +475,9 @@ class _GroupHomePageState extends State<GroupHomePage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              const BankDetailsScreen(status: "EDIT")));
+                              const BankDetailsScreen(status: "EDIT", )));
                 },
               ),
-
               _buildSettingsOption(
                 icon: Icons.notifications_rounded,
                 title: 'Notifications',

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -392,11 +393,12 @@ class _AadhaarOtpVerificationPageState extends State<AadhaarOtpVerificationPage>
                 height: 55,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFFEA307B), Color(0xFF470952)],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
+                  color: home1,
+                  // gradient: const LinearGradient(
+                  //   colors: [Color(0xFFEA307B), Color(0xFF470952)],
+                  //   begin: Alignment.topCenter,
+                  //   end: Alignment.bottomCenter,
+                  // ),
                   boxShadow: [
                     BoxShadow(
                       color: const Color(0xFFEA307B).withOpacity(0.3),
