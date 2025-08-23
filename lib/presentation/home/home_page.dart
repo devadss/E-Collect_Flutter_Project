@@ -17,6 +17,7 @@ import '../../data/provider/qr_transcation_history_provider.dart';
 import '../../data/repository/cust_reg_repository.dart';
 import '../../domain/model/link_transaction_history_model.dart';
 import '../../domain/model/qr_transaction_history_model.dart';
+import '../trancstion/transction_history_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -1064,6 +1065,11 @@ class _HomePageState extends State<HomePage>
       iconColor: Colors.pink,
       getAmount: (t) => t.orderAmount ?? 0,
       getStatus: (t) => t.orderStatus.toString(),
+      getOrderId: (t) => t.orderId.toString(),
+      getCustName: (t) => t.customerName.toString(),
+      getCustId: (t) => t.customerId.toString(),
+      getCustPhone: (t) => t.customerPhone.toString(),
+      getTnxType: (t)=> t.source.toString(),
     );
   }
 
@@ -1084,6 +1090,11 @@ class _HomePageState extends State<HomePage>
       iconColor: Colors.orange,
       getAmount: (t) => t.orderAmount ?? 0,
       getStatus: (t) => t.orderStatus.toString(),
+      getOrderId: (t) => t.orderId.toString(),
+      getCustName: (t) => t.customerName.toString(),
+      getCustId: (t) => t.customerId.toString(),
+      getCustPhone: (t) => t.customerPhone.toString(),
+      getTnxType: (t)=> t.source.toString(),
     );
   }
 
@@ -1104,6 +1115,11 @@ class _HomePageState extends State<HomePage>
       iconColor: Colors.blue,
       getAmount: (t) => t.orderAmount ?? 0,
       getStatus: (t) => t.orderStatus.toString(),
+      getOrderId: (t) => t.orderId.toString(),
+      getCustName: (t) => t.customerName.toString(),
+      getCustId: (t) => t.customerId.toString(),
+      getCustPhone: (t) => t.customerPhone.toString(),
+      getTnxType: (t)=> t.source.toString(),
     );
   }
 
@@ -1113,6 +1129,11 @@ class _HomePageState extends State<HomePage>
     required Color iconColor,
     required double Function(T) getAmount,
     required String Function(T) getStatus,
+    required String Function(T) getOrderId,
+    required String Function(T) getCustName,
+    required String Function(T) getCustId,
+    required String Function(T) getCustPhone,
+    required String Function(T) getTnxType
   }) {
     return Column(
       children: transactions.asMap().entries.map((entry) {
@@ -1126,6 +1147,13 @@ class _HomePageState extends State<HomePage>
           date: _getTransactionDate(transaction),
           amount: getAmount(transaction),
           status: getStatus(transaction),
+            agentPhone: mobNum ?? "agentPhone",
+            customerName: getCustName(transaction),
+            agentName: userName ?? "agent name",
+            customerId: getCustId(transaction),
+            transferId: getOrderId(transaction),
+            customerNumber: getCustPhone(transaction),
+            tnxType: getTnxType(transaction)
         ).animate(delay: (100 * index).ms);
       }).toList(),
     );
@@ -1138,6 +1166,13 @@ class _HomePageState extends State<HomePage>
     required DateTime date,
     required double amount,
     required String status,
+    required String transferId,
+    required String agentName,
+    required String agentPhone,
+    required String customerName,
+    required String customerId,
+    required String customerNumber,
+    required String tnxType,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -1149,9 +1184,24 @@ class _HomePageState extends State<HomePage>
         ),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          onTap: () {
-            // Handle transaction tap
-          },
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => TransactionHistoryPage(
+                        paymentStatus: status,
+                        amount: amount,
+                        transferId : transferId,
+                        agentName: agentName,
+                        agentPhone :agentPhone,
+                        customerName : customerName,
+                        customerId :customerId,
+                        customerNumber :customerNumber,
+                        corpCode: corpCode ?? "",
+                        tnxType: tnxType,
+                        //agentTransaction: agentPaymentTransctionModel
+                      )));
+            },
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
