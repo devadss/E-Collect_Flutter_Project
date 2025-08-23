@@ -12,7 +12,7 @@ class GroupListRepository implements GroupListInterface{
   Future<Either<String, GroupListResponse>> listGroupUnderUser() async {
    final uri = Uri.parse("${baseUrl}api/GetAllGroups");
    final request = await http.get(uri);
-   print(request.body);
+   print("GroupListRepository = ${request.body}");
    if(request.statusCode == 200){
      return Right(GroupListResponse.fromJson(jsonDecode(request.body)));
    }else{

@@ -25,7 +25,8 @@ class QRTransactionHistoryProvider with ChangeNotifier {
     printLog(
       "==================================QR TRANSACTION MODEL=================================",
     );
-
+    _showProgressDialog = true; // ✅ Add this line!
+notifyListeners();
     printLog(qrTranscationHistoryModel);
     final result = await _qrTransactionHistoryRepository
         .getQrTranscationHistory(dateFilterType, startDate, endDate, source,corpCode,agentOriginId);

@@ -1,42 +1,49 @@
 import 'dart:convert';
-import 'package:collection_qr_flutter/core/constants.dart';
-import 'package:collection_qr_flutter/data/service/error_handler.dart';
-import 'package:collection_qr_flutter/domain/interface/group/update_account_interface.dart';
-import 'package:collection_qr_flutter/domain/model/group/default_model/default_model.dart';
-import 'package:fpdart/src/either.dart';
-import 'package:http/http.dart' as http;
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 
-class UpdateBankAccountDetailsRepository implements IUpdateBankAccountDetailsRepository{
+import 'package:collection_qr_flutter/core/constants.dart';
+import 'package:collection_qr_flutter/domain/model/group/update_group/group_update_model.dart';
+import 'package:http/http.dart' as http;
+import 'package:dartz/dartz.dart';
+
+import '../../../domain/interface/group/account_update_interface.dart';
+
+class UpdateBankAccountRepository implements BankAccountUpdateInterface {
   @override
-  Future<Either<ErrorHandler, DefaultModel>> updateBankAccountDetails(String? accountId,String? userId, String? accountHolderName, String? accountNumber, String? ifsc, String? corpCode, String? branchCode, String? entityId) async{
-    final url =Uri.parse("${baseUrl}api/UpdateAccount/$accountId");
-    final body ={
-      "userId": userId,
-      "accountHolderName": accountHolderName,
-      "accountNumber": accountNumber,
-      "ifsc": ifsc,
-      "CorpCode": corpCode,
-      "BranchCode": branchCode,
-      "EntityId": entityId
-    };
-    bool checkConnection = await InternetConnectionChecker().hasConnection;
-    if(checkConnection){
-      final response = await http.put(
-        url,
-        body: json.encode(body),
-      );
-      if(response.statusCode == 200 || response.statusCode == 201){
-        try{
-          return Right(DefaultModel.fromJson(jsonDecode(response.body)));
-        }catch(e){
-          return Left(DataParsingException(e));
-        }
-      }else{
-        return Left(FetchDataError("Failed To Fetch Data"));
-      }
-    }else{
-      return Left(FetchDataError("No Internet Connection"));
+  Future<Either<String, GroupUpdateResponse>> updateBankDetails(
+      int groupId,
+      String userId,
+      String accountHolderName,
+      String accountNumber,
+      String ifsc,
+      String corpCode,
+      String branchCode,
+      String entityId) async {
+    final uri = Uri.parse("${baseUrl}api/UpdateAccount/$groupId");
+    final request = await http.put(uri,
+        body: jsonEncode({
+          "userId": userId,
+          "accountHolderName": accountHolderName,
+          "accountNumber": accountNumber,
+          "ifsc": ifsc,
+          "CorpCode": corpCode,
+          "BranchCode": branchCode,
+          "EntityId": entityId
+        }),
+      headers: {'Content-Type': 'application/json'},);
+print({"groupId":groupId,
+  "userId": userId,
+  "accountHolderName": accountHolderName,
+  "accountNumber": accountNumber,
+  "ifsc": ifsc,
+  "CorpCode": corpCode,
+  "BranchCode": branchCode,
+  "EntityId": entityId
+});
+print("response :${request.body}");
+    if (request.statusCode == 200) {
+      return Right(GroupUpdateResponse.fromJson(jsonDecode(request.body)));
+    } else {
+      return Left(jsonDecode(request.body));
     }
   }
 }

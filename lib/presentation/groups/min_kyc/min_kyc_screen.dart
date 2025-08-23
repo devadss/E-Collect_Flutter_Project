@@ -175,9 +175,11 @@ class _MinKycScreenState extends State<MinKycScreen>
     _permanentStateNameController.text = widget.state;
     _permanentPinCodeController.text = widget.pincode;
     _permanentAreaNameController.text = widget.area;
+    _phoneNumberController.text = widget.mobileNum;
     _phoneNumberController.addListener(_checkPhoneNumberLength);
     _selectedDocument = "AADHAAR";
     _documentNumberController.text = widget.aadhaarNumber;
+    _showRequestOtpButton = _phoneNumberController.text.isNotEmpty;
 
     // Initialize animations
     _titleAnimationController = AnimationController(
@@ -207,8 +209,8 @@ class _MinKycScreenState extends State<MinKycScreen>
     final random = Random();
     String randomNumber = '';
     // Generate each digit of the random number
-    //for (int i = 0; i < 10; i++) { Use this after User id max length isseu fix in the api side
-    for (int i = 0; i < 9; i++) {
+    for (int i = 0; i < 10; i++) {
+    //for (int i = 0; i < 9; i++) {
       randomNumber +=
           random.nextInt(10).toString(); // Generate a random digit (0-9)
     }
@@ -809,6 +811,7 @@ class _MinKycScreenState extends State<MinKycScreen>
           _buildOtpVerificationField(),
         ] else if (_showRequestOtpButton && !_isOtpSent) ...[
           const SizedBox(height: 16),
+
           _buildRequestOtpButton(),
         ],
       ],
@@ -921,7 +924,7 @@ class _MinKycScreenState extends State<MinKycScreen>
           children: [
             TextButton(
               onPressed: () => _resendOtp(),
-              child: Text(
+              child: const Text(
                 "Resend OTP",
                 style: TextStyle(
                   color: home1,
@@ -1067,7 +1070,28 @@ class _MinKycScreenState extends State<MinKycScreen>
               : () {
                   if (_formKey.currentState?.validate() ?? false) {
                     if (_isChecked) {
-                      kycSubmitData();
+                    //  kycSubmitData();
+                      if(_selectedMaritalstatus?.isNotEmpty == true &&
+                          _otpController.text.isNotEmpty
+                      ){
+                        print("calling kkyc submit data");
+                        kycSubmitData();
+
+                      }else{
+                        print("select martial status");
+                        _otpController.text.isEmpty?
+                        _showAnimatedSnackBar(
+                          "Otp is required",
+                          icon: Icons.warning_amber_rounded,
+                          color: Colors.red,
+                        ):
+                        _showAnimatedSnackBar(
+                          "Select Marital status",
+                          icon: Icons.warning_amber_rounded,
+                          color: Colors.red,
+                        )
+                        ;
+                      }
 
                     } else {
                       _showAnimatedSnackBar(
@@ -1132,10 +1156,10 @@ class _MinKycScreenState extends State<MinKycScreen>
       'Locality': 'RANDOMLOCALITY',
       'UserName':"name",
       'Status': 'active',
-      'Password': "123456",
+      'Password': "${_firstNameController.text}@${textControllerYYYY.text}",
       'BusinessType': 'B',
       'UpdateTime': '',
-      'MobPassword': "123456",
+      'MobPassword': "${_firstNameController.text}@${textControllerYYYY.text}",
     };
     print(data);
     final response = await http.post(
@@ -1396,7 +1420,7 @@ class _MinKycScreenState extends State<MinKycScreen>
             color: Colors.grey[600],
             fontSize: 14,
           ),
-          floatingLabelStyle: TextStyle(
+          floatingLabelStyle:const TextStyle(
             color: home1,
             fontWeight: FontWeight.w600,
           ),

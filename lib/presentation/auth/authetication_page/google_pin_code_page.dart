@@ -22,6 +22,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   String pin = "";
   String custID = "";
   String token = "";
+  bool authenticated = false;
   String mpin = "";
   String fcmToken = "";
   String contactNum = ""; // contains +91
@@ -57,8 +58,48 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
     print("fcmTok $fcmTok");
     _authenticateWithBiometrics();
   }
+
   Future<void> _authenticateWithBiometrics() async {
-    bool authenticated = false;
+    try {
+      final canCheckBiometrics = await auth.canCheckBiometrics;
+      final isDeviceSupported = await auth.isDeviceSupported();
+
+      if (!canCheckBiometrics && !isDeviceSupported) {
+        print('No biometric or device auth support');
+        return;
+      }
+
+      authenticated = await auth.authenticate(
+        localizedReason: 'Please authenticate to proceed',
+        options: const AuthenticationOptions(
+          biometricOnly: false,
+          stickyAuth: false,
+        ),
+      );
+
+      if (!mounted) return; // ✅ check before using context
+      await validateMpinFingerAuth();
+
+    } on PlatformException catch (e) {
+      authenticated = true;
+      if (!mounted) return; // ✅ check before using context
+      await validateMpinFingerAuth();
+      print('PlatformException during biometric auth: ${e.code} - ${e.message}');
+      return;
+    } catch (e) {
+      print('Exception during biometric authentication: $e');
+      return;
+    }
+
+    if (!authenticated) {
+      print('Authentication canceled by user.');
+      return;
+    }
+  }
+
+/*
+  Future<void> _authenticateWithBiometrics() async {
+
 
     try {
       final canCheckBiometrics = await auth.canCheckBiometrics;
@@ -76,7 +117,10 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
           stickyAuth: false,
         ),
       );
+      validateMpinFingerAuth();
     } on PlatformException catch (e) {
+      authenticated = true;
+      validateMpinFingerAuth();
       print('PlatformException during biometric auth: ${e.code} - ${e.message}');
       return;
     } on Exception catch (e) {
@@ -89,8 +133,9 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       return;
     }
 
-    validateMpinFingerAuth();
+   // validateMpinFingerAuth();
   }
+*/
 
 
   void showProgressDialog(BuildContext context) {
@@ -190,15 +235,55 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
 
   Future<void> validateMpinFingerAuth() async {
     print("validateMpinFingerAuth");
-    if (fcmToken.isNotEmpty) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const BottomNavScreen()));
+
+    if (!mounted) return; // ✅ very important before using context
+
+    if (fcmToken.isNotEmpty && authenticated == true) {
+      Navigator.push(context, MaterialPageRoute(
+        builder: (context) => const BottomNavScreen(),
+      ));
+    } else if (fcmToken.isEmpty && authenticated == true) {
+      await saveFcmToken(custID, context, "GPIN", token, subAgentContactNum, mpin);
     } else {
+      if (!mounted) return; // ✅ re-check before using context again
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Authentication Error",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+
+    print("MPIN = $mpin");
+  }
+
+/*
+  Future<void> validateMpinFingerAuth() async {
+    print("validateMpinFingerAuth");
+    if (fcmToken.isNotEmpty && authenticated== true) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const BottomNavScreen()));
+    }
+    else if(fcmToken.isEmpty && authenticated== true){
       await  saveFcmToken(custID, context, "GPIN", token, subAgentContactNum, mpin);
+
+    }
+    else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content:
+          Text("Authentication Error", style: TextStyle(color: Colors.white),),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
 
 
       print("MPIN = $mpin");
   }
+*/
 
 
   String? encryptString(

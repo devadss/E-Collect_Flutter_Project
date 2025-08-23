@@ -10,7 +10,7 @@ import '../../../data/storage/shared_pref_helper.dart';
 import '../../../domain/model/agent_customer_details_model.dart' as agent;
 import '../../../domain/model/due_list_model.dart';
 import '../../qr_code/qr_code_home_page.dart';
-
+///THIS PAGE IS CURRENTLY NOT USED....
 class CollectionHomePage extends StatefulWidget {
   const CollectionHomePage({super.key});
 

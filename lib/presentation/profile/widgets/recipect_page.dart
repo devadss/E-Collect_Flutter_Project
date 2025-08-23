@@ -656,6 +656,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
       bytes.addAll("Agent Phone:      ${widget.agentPhone}\n".codeUnits);
       bytes.addAll("-----------------------------\n".codeUnits);
 
+
       // Print QR Code
       bytes.addAll([0x1B, 0x61, 0x01]); // Center alignment
 

@@ -41,6 +41,7 @@ import 'data/provider/group/group_delte/group_delete_provider.dart';
 import 'data/provider/group/group_list/group_list_preovider.dart';
 import 'data/provider/group/member_list/member_list_provider.dart';
 import 'data/provider/group/update_group/group_update_repository.dart';
+import 'data/provider/group/update_group_provider.dart';
 import 'data/provider/otp_request_provider.dart';
 import 'data/provider/otp_verification_provider.dart';
 import 'data/provider/parent_agent_detail_provider/parent_agent_detil_provider.dart';
@@ -71,6 +72,7 @@ import 'data/repository/group/group_list/group_list_repository.dart';
 import 'data/repository/group/group_update/group_update_repository.dart';
 import 'data/repository/group/member_delete/member_delete_repository.dart';
 import 'data/repository/group/member_list/member_list_repository.dart';
+import 'data/repository/group/update_account_repository.dart';
 import 'data/repository/link_transaction_history_repository.dart';
 import 'data/repository/otp_request_repository.dart';
 import 'data/repository/otp_verification_repository.dart';
@@ -170,6 +172,7 @@ void main() async {
     ChangeNotifierProvider(create: (_) => GroupDeleteProvider(DeleteGroupRepository())),
     ChangeNotifierProvider(create: (_) => CreateGroupWithMemberProvider(CreateGroupWithMemberRepository())),
     ChangeNotifierProvider(create: (_) => GroupUpdateProvider(GroupUpdateRepository())),
+    ChangeNotifierProvider(create: (_) => UpdateGroupProvider(UpdateBankAccountRepository())),
 
   ], child: const MyApp()));
 }
