@@ -282,12 +282,7 @@ class _HomePageState extends State<HomePage>
                         // Call providers
                         await qrProvider.getQrTranscationHistory(period, from,
                             to, 'COLLECTION', corpCode, agentOriginId);
-                        if (qrProvider.showProgressDialog == false) {
-                          if (mounted) {
-                            Navigator.of(context, rootNavigator: true).pop();
-                            Navigator.of(context, rootNavigator: true).pop();
-                          }
-                        }
+
                         await cashTransProvider.getCashTranscationHistory(
                             period,
                             from,
@@ -306,6 +301,12 @@ class _HomePageState extends State<HomePage>
                           _currentFromDate = from;
                           _currentToDate = to;
                         });
+                        if (qrProvider.showProgressDialog == false) {
+                          if (mounted) {
+                            Navigator.of(context, rootNavigator: true).pop();
+                            Navigator.of(context, rootNavigator: true).pop();
+                          }
+                        }
                       },
                       child:
                           Text(selectedIndex == 4 ? 'Apply Filter' : 'Apply'),
@@ -418,20 +419,32 @@ class _HomePageState extends State<HomePage>
         agentOriginId,
       );
 
+     // showProgressDialog(context);
+
       final linkProvider =
-          Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
+      Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
       final cashProvider =
-          Provider.of<CashTransactionHistoryProvider>(context, listen: false);
+      Provider.of<CashTransactionHistoryProvider>(context, listen: false);
 
       await linkProvider.getLinkTransactionHistory(
           "TODAY", fromDate, toDate, subAgID!, crpCode!, agentOrgID!);
-      await cashProvider.getCashTranscationHistory("TODAY", fromDate, toDate,
-          "COLLECTION_CASH", subAgID, crpCode, agentOrgID);
+      await cashProvider.getCashTranscationHistory(
+          "TODAY",
+          fromDate,
+          toDate,
+          "COLLECTION_CASH",
+          subAgID,
+          crpCode,
+          agentOrgID);
 
       // Final tasks
       fetchTransaction();
       fetchCollection();
+      //if (provider.showProgressDialog == false) {
+       // Navigator.pop(context);
+     // }
     } finally {
+      //Navigator.pop(context);
 
       // Always dismiss the dialog, even on error
        // if (mounted) Navigator.pop(context);

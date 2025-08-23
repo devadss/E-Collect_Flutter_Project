@@ -124,10 +124,11 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       },
       child: Scaffold(
         backgroundColor: white,
-        body:  
-        loggedInUserTPYE == "AGENT"?
+        body:
+        loggedInUserTPYE == "AGENT" && loggedInUserTPYE?.isNotEmpty == true?
         _getSelectedPage(_selectedIndex):
-        _getNonAgentSelectedPage(_selectedIndex),
+        loggedInUserTPYE?.isNotEmpty == true?
+        _getNonAgentSelectedPage(_selectedIndex):const SizedBox.shrink(),
         bottomNavigationBar: SafeArea(
           child: Container(
             height: 80,

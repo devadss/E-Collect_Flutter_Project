@@ -1,4 +1,6 @@
 // Production
+import 'dart:io';
+
 import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -75,7 +77,9 @@ AlertDialog exitAlert(BuildContext context){
                   )
               ),
               onPressed: (){
-                SystemNavigator.pop();
+               // Navigator.pop(context);
+               // SystemNavigator.pop();
+                exit(0);
               }, child: const Text("YES")),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
