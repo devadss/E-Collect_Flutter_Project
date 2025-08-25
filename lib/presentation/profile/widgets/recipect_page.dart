@@ -256,9 +256,11 @@
 // }
 
 
+import 'package:flutter/services.dart' show rootBundle;
 
 import 'dart:async';
 import 'dart:convert';
+import 'package:pdf/widgets.dart' as pw;
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -758,7 +760,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
         backgroundColor: white,
         elevation: 0,
         centerTitle: true,
-        title: Text(
+        title: const Text(
           "Transaction Receipt",
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -766,7 +768,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
           ),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: home2),
+          icon:const Icon(Icons.arrow_back, color: home2),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -779,7 +781,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                 children: [
                   // Connection status indicator
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding:const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
                       color: _isConnected ? Colors.green[100] : Colors.orange[100],
                       borderRadius: BorderRadius.circular(20),
@@ -811,7 +813,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                     children: [
                       Text(
                         widget.bankName,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                           color: home2,
@@ -946,12 +948,12 @@ class _ReceiptPageState extends State<ReceiptPage> {
                           onPressed: _printReceipt,
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),
-                            side: BorderSide(color: home1),
+                            side: const BorderSide(color: home1),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          child: Text(
+                          child:const Text(
                             "PRINT",
                             style: TextStyle(
                               color: home1,
@@ -961,28 +963,29 @@ class _ReceiptPageState extends State<ReceiptPage> {
                         ),
                       ),
                       const SizedBox(width: 16),
-                      Expanded(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: home2,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            elevation: 0,
-                          ),
-                          onPressed: () {
-                            // Download functionality
-                          },
-                          child: Text(
-                            "DOWNLOAD",
-                            style: TextStyle(
-                              color: white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
+                      // Expanded(
+                      //   child: ElevatedButton(
+                      //     style: ElevatedButton.styleFrom(
+                      //       backgroundColor: home2,
+                      //       padding: const EdgeInsets.symmetric(vertical: 16),
+                      //       shape: RoundedRectangleBorder(
+                      //         borderRadius: BorderRadius.circular(8),
+                      //       ),
+                      //       elevation: 0,
+                      //     ),
+                      //     onPressed: () {
+                      //
+                      //       // Download functionality
+                      //     },
+                      //     child:const Text(
+                      //       "DOWNLOAD",
+                      //       style: TextStyle(
+                      //         color: white,
+                      //         fontWeight: FontWeight.bold,
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ],

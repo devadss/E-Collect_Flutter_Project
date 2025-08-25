@@ -51,10 +51,7 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@mipmap/adsspay_logo_notification"/>
-        <service android:name="dev.flutter.plugins.flutter_overlay_window.OverlayService"
-            android:exported="false"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-        </service>
+
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
 
     </application>

@@ -969,7 +969,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
               color: home2, fontWeight: FontWeight.w700, fontSize: 22),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: home2),
+          icon: const Icon(Icons.arrow_back, color: home2),
           onPressed: () => Navigator.pop(context),
         ),
       ),

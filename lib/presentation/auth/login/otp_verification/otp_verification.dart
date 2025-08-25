@@ -129,7 +129,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
           },
           (data) async {
             Navigator.pop(context);
-            if (data.message == "OTP Verified") {
+            if (data.message == "OTP Verified"|| data.message == "OTP Verified (Play Store)") {
               SharedPref.shared.setLogin(true);
               if(
               widget.loggedInUserType == "NOT_AN_AGENT"){

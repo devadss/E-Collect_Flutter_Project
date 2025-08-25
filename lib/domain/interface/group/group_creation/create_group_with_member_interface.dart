@@ -1,10 +1,12 @@
+import 'package:collection_qr_flutter/data/service/error_handler.dart';
 import 'package:collection_qr_flutter/domain/model/group/group_creation/group_with_member.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class CreateGroupWithMemberInterface {
-  Future<Either<String, CreateGroupWithMemberResponse>> createGroupWitMember(
-      Map<String, dynamic> payload,
-      );
+  Future<Either<ErrorHandler, CreateGroupWithMemberResponse>>
+      createGroupWitMember(
+    Map<String, dynamic> payload,
+  );
 }
 
 // abstract class CreateGroupWithMemberInterface{

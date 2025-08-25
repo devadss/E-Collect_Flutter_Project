@@ -45,6 +45,11 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
   final String location = "Main Yoga Hall";
   List<Member> members = [];
 
+  List<Member> allMembers = []; // Complete list
+  List<Member> filteredMembers = []; // Filtered list shown in UI
+  TextEditingController searchController = TextEditingController();
+
+
   @override
   void initState() {
     super.initState();
@@ -61,11 +66,12 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
     setState(() {
       members = memberProvider.memberListResponse!.data;
     });
-    if(memberProvider.memberListResponse != null){
-      Navigator.pop(context);
-    }else{
-      Navigator.pop(context);
+    filteredMembers = List.from(members); // Clone the list
 
+    if (memberProvider.memberListResponse != null) {
+      Navigator.pop(context);
+    } else {
+      Navigator.pop(context);
     }
   }
 
@@ -116,8 +122,15 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
     );
 
     if (result == true) {
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>CreateGroupPage(groupName: widget.groupName,
-        amount: widget.amount, dueDate: widget.dueDate, groupId: widget.groupId,)));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => CreateGroupPage(
+                    groupName: widget.groupName,
+                    amount: widget.amount,
+                    dueDate: widget.dueDate,
+                    groupId: widget.groupId,
+                  )));
       // ScaffoldMessenger.of(context).showSnackBar(
       //   const SnackBar(content: Text('Group updated successfully')),
       // );
@@ -159,7 +172,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
         centerTitle: true,
         backgroundColor: white,
         elevation: 0.5,
-        iconTheme:const IconThemeData(color: home2),
+        iconTheme: const IconThemeData(color: home2),
         title: const Text(
           "Group Details",
           style: TextStyle(
@@ -229,8 +242,8 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
             child: const Row(
               children: [
                 //_buildTabButton(0, "Overview"),
-              //  _buildTabButton(1, "Members"),
-               // _buildTabButton(2, "Analytics"),
+                //  _buildTabButton(1, "Members"),
+                // _buildTabButton(2, "Analytics"),
               ],
             ),
           ),
@@ -425,7 +438,9 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  const Divider(color: Colors.grey,),
+                  const Divider(
+                    color: Colors.grey,
+                  ),
                   _buildMembersTab(),
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -436,7 +451,6 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                       //   _buildDetailItem(Icons.location_city, "Branch", "branchCode"),
                     ],
                   ),
-
                 ],
               ),
             ),
@@ -964,7 +978,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                 const  Text(
+                  const Text(
                     "Monthly Collection",
                     style: TextStyle(
                       fontSize: 16,
@@ -1066,7 +1080,8 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-           const  Icon(Icons.pause_circle_outline, size: 64, color: Colors.grey),
+            const Icon(Icons.pause_circle_outline,
+                size: 64, color: Colors.grey),
             const SizedBox(height: 16),
             Text(
               "Group is Inactive",
@@ -1175,7 +1190,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
             color: home1.withOpacity(0.1),
             shape: BoxShape.circle,
           ),
-          child:const Icon(Icons.notifications_none, size: 20, color: home1),
+          child: const Icon(Icons.notifications_none, size: 20, color: home1),
         ),
         const SizedBox(width: 12),
         Expanded(
