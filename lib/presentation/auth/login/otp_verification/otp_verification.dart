@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/colors.dart';
 import '../../../../core/general.dart';
+import 'package:pointycastle/export.dart' as pc;
+
 import '../../../../data/provider/otp_request_provider.dart';
 import '../../../../data/provider/otp_verification_provider.dart';
 import '../../../../data/provider/token_request_provider.dart';
@@ -33,6 +37,8 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
   int _start = 120;
   Timer? _timer;
   bool _canPop = false;
+  String secretKey = "770A8A65DA156D24EE2A093277530142";
+  String initialVector = "1234567890123456";
 
   // Color palette
   final Color primaryPink = const Color(0xFFEA307B);
@@ -41,14 +47,46 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
   final Color white = Colors.white;
   final Color black = Colors.black;
   final Color grey = Colors.grey;
+  String? encryptString(
+      String textToEncrypt, String? secretKey, String? initialVector) {
+    if (textToEncrypt.isEmpty || secretKey == null || initialVector == null) {
+      return null;
+    }
 
+    try {
+      final secretKeyBytes = Uint8List.fromList(secretKey.codeUnits);
+      final iv = Uint8List.fromList(initialVector.codeUnits);
+      final key = pc.KeyParameter(secretKeyBytes);
+      final params = pc.ParametersWithIV(key, iv);
+      final cipher = pc.CBCBlockCipher(pc.AESFastEngine());
+      cipher.init(true, params);
 
-  Future<void> tokenGeneration() async {
+      final textBytes = Uint8List.fromList(textToEncrypt.codeUnits);
+      final paddedText = padPKCS7(textBytes);
+
+      final encryptedBytes = cipher.process(paddedText);
+
+      return base64.encode(encryptedBytes);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Uint8List padPKCS7(Uint8List input) {
+    final padLength = 16 - (input.length % 16);
+    final output = Uint8List(input.length + padLength)..setAll(0, input);
+    for (var i = input.length; i < output.length; i++) {
+      output[i] = padLength;
+    }
+    return output;
+  }
+  Future<void> tokenGeneration(String password) async {
     showProgressDialog(context);
     final tokenRequestProvider = Provider.of<TokenRequestProvider>(context, listen: false);
     final response = await tokenRequestProvider.requestToken(
         widget.userName,
-        widget.password,
+        password,
+      //  encryptString("adsspay@321", secretKey, initialVector)!,
         widget.parentAgentMobNum.replaceAll("+91", ""),
         "Mob");
     response.fold(
@@ -133,15 +171,16 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
               SharedPref.shared.setLogin(true);
               if(
               widget.loggedInUserType == "NOT_AN_AGENT"){
-                await SharedPref.shared.setTokenValue(data.toString());
-                await SharedPref.shared.setLogin(true);
-                await SharedPref.shared.setLoggedInUserType(widget.loggedInUserType);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const GooglePinCodePage()));
+                tokenGeneration(encryptString(widget.password, secretKey, initialVector)!);
+                // await SharedPref.shared.setTokenValue(data.toString());
+                // await SharedPref.shared.setLogin(true);
+                // await SharedPref.shared.setLoggedInUserType(widget.loggedInUserType);
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => const GooglePinCodePage()));
               }else{
-                tokenGeneration();
+                tokenGeneration(widget.password);
               }
 
            //    if (widget.tokenStatus == "MPIN_N") {

@@ -1003,7 +1003,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
                     group.groupId,
                     group.defaultAmount,
                     group.defaultDueDate,
-                    "active",
+                   group.status.toString(),
                     group.createdDate,
 
                 );
@@ -1203,9 +1203,9 @@ class _GroupHomePageState extends State<GroupHomePage> {
             borderRadius: BorderRadius.circular(16),
           ),
           child: Text(
-            status == "active" ? "Active" : "Inactive",
+            status == "Active" ? "Active" : "Inactive",
             style: TextStyle(
-              color: status == "active" ? Colors.green : Colors.grey,
+              color: status == "Active" ? Colors.green : Colors.grey,
               fontWeight: FontWeight.w600,
               fontSize: 12,
             ),

@@ -257,16 +257,20 @@ class _MobileNumberVerificationPageState
               SharedPref.shared.setMpinValue(customer.mpin.toString());
               print(
                   "customer.mpin.toString() = ${customer.mpin.toString()}");
-
+              Map<String, String?> nameParts = splitName(customer.response!.data!['firstName'].toString());
+              List<String> parts = customer.response!.data!['date'].toString().split('-');
+              String year = parts[0];
+              String? firstName = nameParts['first'];
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => OtpRequestVerificationPage(
                     subAgentmobNum: _mobileNumberController.text,
                     parentAgentMobNum:_mobileNumberController.text,
-                    userName: "",
-                    password: "",
-                    tokenStatus: customer.status.toString(), loggedInUserType: 'NOT_AN_AGENT',
+                    userName: firstName!,
+                    password: "$firstName@$year",
+                    tokenStatus: customer.status.toString(),
+                    loggedInUserType: 'NOT_AN_AGENT',
                   ),
                 ),
               );
@@ -277,7 +281,34 @@ class _MobileNumberVerificationPageState
       }
     }
   }
+  Map<String, String?> splitName(String fullName) {
+    List<String> parts = fullName.trim().split(RegExp(r'\s+'));
 
+    String? first;
+    String? middle;
+    String? last;
+
+    if (parts.isEmpty) {
+      return {'first': null, 'middle': null, 'last': null};
+    }
+
+    if (parts.length == 1) {
+      first = parts[0];
+    } else if (parts.length == 2) {
+      first = parts[0];
+      last = parts[1];
+    } else {
+      first = parts[0];
+      last = parts.last;
+      middle = parts.sublist(1, parts.length - 1).join(' ');
+    }
+
+    return {
+      'first': first,
+      'middle': middle,
+      'last': last,
+    };
+  }
   void showInSnackBar(String value) {
     var snackBar = SnackBar(
       content: Text(
