@@ -20,7 +20,7 @@ class AgentTransactionRepository implements IAgentTransactionRepository{
      },);
      if(response.statusCode == 200 || response.statusCode == 201){
        try{
-         print("------------------------BODY-------------------------");
+         print("------------------------BODY AGENT PAYMENT TRANSCATION MODEL-------------------------");
          print(response.body);
          return Right(AgentPaymentTransctionModel.fromJson(jsonDecode(response.body)));
        }catch(e){

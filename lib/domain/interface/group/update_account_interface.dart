@@ -4,7 +4,7 @@ import 'package:fpdart/fpdart.dart';
 
 abstract class IUpdateBankAccountDetailsRepository {
   Future<Either<ErrorHandler, DefaultModel>> updateBankAccountDetails(
-      String? accountId,
+      int? accountId,
       String? userId,
       String? accountHolderName,
       String? accountNumber,

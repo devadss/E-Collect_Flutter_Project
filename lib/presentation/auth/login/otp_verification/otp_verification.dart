@@ -19,13 +19,22 @@ class OtpRequestVerificationPage extends StatefulWidget {
   final String tokenStatus;
   final String loggedInUserType;
 
-  const OtpRequestVerificationPage({super.key, required this.parentAgentMobNum, required this.userName, required this.password, required this.tokenStatus, required this.subAgentmobNum, required this.loggedInUserType});
+  const OtpRequestVerificationPage(
+      {super.key,
+      required this.parentAgentMobNum,
+      required this.userName,
+      required this.password,
+      required this.tokenStatus,
+      required this.subAgentmobNum,
+      required this.loggedInUserType});
 
   @override
-  State<OtpRequestVerificationPage> createState() => _OtpRequestVerificationPageState();
+  State<OtpRequestVerificationPage> createState() =>
+      _OtpRequestVerificationPageState();
 }
 
-class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage> {
+class _OtpRequestVerificationPageState
+    extends State<OtpRequestVerificationPage> {
   final List<TextEditingController> _controllers = List.generate(
     4,
     (_) => TextEditingController(),
@@ -42,17 +51,16 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
   final Color black = Colors.black;
   final Color grey = Colors.grey;
 
-
   Future<void> tokenGeneration() async {
+    print("-------------------------mobile---------------------");
+    print(widget.parentAgentMobNum);
     showProgressDialog(context);
-    final tokenRequestProvider = Provider.of<TokenRequestProvider>(context, listen: false);
-    final response = await tokenRequestProvider.requestToken(
-        widget.userName,
-        widget.password,
-        widget.parentAgentMobNum.replaceAll("+91", ""),
-        "Mob");
+    final tokenRequestProvider =
+        Provider.of<TokenRequestProvider>(context, listen: false);
+    final response = await tokenRequestProvider.requestToken(widget.userName,
+        widget.password, widget.parentAgentMobNum.replaceAll("+91", ""), "Mob");
     response.fold(
-          (error) {
+      (error) {
         Navigator.pop(context);
         print("Inside tokenGeneration error");
         if (error == "User not found") {
@@ -73,7 +81,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
             SnackBar(
               content: Text(
                 "Error: $error",
-                style:const TextStyle(
+                style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
                     fontSize: 17),
@@ -83,17 +91,14 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
           );
         }
       },
-          (data) async {
-            print("Inside tokenGeneration data");
+      (data) async {
+        print("Inside tokenGeneration data");
         Navigator.pop(context);
         await SharedPref.shared.setTokenValue(data.toString());
         await SharedPref.shared.setLogin(true);
         await SharedPref.shared.setLoggedInUserType(widget.loggedInUserType);
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const GooglePinCodePage()));
-
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const GooglePinCodePage()));
       },
     );
   }
@@ -131,35 +136,35 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
             Navigator.pop(context);
             if (data.message == "OTP Verified") {
               SharedPref.shared.setLogin(true);
-              if(
-              widget.loggedInUserType == "NOT_AN_AGENT"){
+              if (widget.loggedInUserType == "NOT_AN_AGENT") {
                 await SharedPref.shared.setTokenValue(data.toString());
                 await SharedPref.shared.setLogin(true);
-                await SharedPref.shared.setLoggedInUserType(widget.loggedInUserType);
+                await SharedPref.shared
+                    .setLoggedInUserType(widget.loggedInUserType);
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const GooglePinCodePage()));
-              }else{
+              } else {
                 tokenGeneration();
               }
 
-           //    if (widget.tokenStatus == "MPIN_N") {
-           //      Navigator.push(
-           //          context,
-           //          MaterialPageRoute(
-           //              builder: (context) => const GooglePinCodePage()));
-           // /*     Navigator.push(
-           //          context,
-           //          MaterialPageRoute(
-           //              builder: (context) => OtpVerification(
-           //                mobNum: widget.subAgentmobNum,
-           //              )));*/
-           //    } else {
-           //      SharedPref.shared.setLogin(true);
-           //      tokenGeneration();
-           //
-           //    }
+              //    if (widget.tokenStatus == "MPIN_N") {
+              //      Navigator.push(
+              //          context,
+              //          MaterialPageRoute(
+              //              builder: (context) => const GooglePinCodePage()));
+              // /*     Navigator.push(
+              //          context,
+              //          MaterialPageRoute(
+              //              builder: (context) => OtpVerification(
+              //                mobNum: widget.subAgentmobNum,
+              //              )));*/
+              //    } else {
+              //      SharedPref.shared.setLogin(true);
+              //      tokenGeneration();
+              //
+              //    }
             }
             print("Otp request stst : ${data.message}");
           },
@@ -207,7 +212,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
           SnackBar(
             content: Text(
               "Error: $error",
-              style:const TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w700,
                 fontSize: 17,
@@ -259,11 +264,11 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
                 borderRadius: BorderRadius.circular(10),
               ),
               child: const Padding(
-                padding:  EdgeInsets.all(50),
+                padding: EdgeInsets.all(50),
                 child: Column(
                   children: [
-                     CircularProgressIndicator(color: home2),
-                     SizedBox(height: 10),
+                    CircularProgressIndicator(color: home2),
+                    SizedBox(height: 10),
                     Text("Please wait....", style: TextStyle(fontSize: 17)),
                   ],
                 ),
@@ -401,27 +406,26 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
                   // Resend Code
                   Center(
                     child: GestureDetector(
-                      onTap:
-                          _start == 0
-                              ? () {
-                            otpRequest();
-                                setState(() {
-                                  _start = 120;
-                                });
-                                _timer = Timer.periodic(
-                                  const Duration(seconds: 1),
-                                  (timer) {
-                                    if (_start == 0) {
-                                      timer.cancel();
-                                    } else {
-                                      setState(() {
-                                        _start--;
-                                      });
-                                    }
-                                  },
-                                );
-                              }
-                              : null,
+                      onTap: _start == 0
+                          ? () {
+                              otpRequest();
+                              setState(() {
+                                _start = 120;
+                              });
+                              _timer = Timer.periodic(
+                                const Duration(seconds: 1),
+                                (timer) {
+                                  if (_start == 0) {
+                                    timer.cancel();
+                                  } else {
+                                    setState(() {
+                                      _start--;
+                                    });
+                                  }
+                                },
+                              );
+                            }
+                          : null,
                       child: RichText(
                         text: TextSpan(
                           text: "Didn't receive code? ",
@@ -430,10 +434,9 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
                           ),
                           children: [
                             TextSpan(
-                              text:
-                                  _start == 0
-                                      ? 'Resend now'
-                                      : 'Resend in $_start sec',
+                              text: _start == 0
+                                  ? 'Resend now'
+                                  : 'Resend in $_start sec',
                               style: GoogleFonts.poppins(
                                 color: _start == 0 ? primaryPink : grey,
                                 fontWeight: FontWeight.w600,
@@ -452,14 +455,12 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-
-                        String otp =
-                            _controllers
-                                .map((controller) => controller.text)
-                                .join();
+                        String otp = _controllers
+                            .map((controller) => controller.text)
+                            .join();
                         if (otp.length == 4) {
                           verifyOtp();
-                        }else{
+                        } else {
                           EasyLoading.showToast("Enter a valid OTP");
                         }
                       },

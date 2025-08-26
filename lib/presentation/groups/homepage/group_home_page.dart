@@ -9,6 +9,7 @@ import '../../../data/provider/group/member_list/member_list_provider.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../../domain/model/group/group_listing/group_list_model.dart';
 import '../../../domain/model/group/members_listing/members_listing_model.dart';
+import '../../auth/mobile_number_page.dart';
 import '../group_homepage/detail_page/group_detail_page.dart';
 
 class GroupHomePage extends StatefulWidget {
@@ -27,6 +28,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
   bool _isExpanded = false;
   List<Member> members = [];
   int avilableMembers=0;
+  String? token;
 
   final int _selectedMonthIndex = DateTime.now().month - 1;
   final List<String> months = [
@@ -185,11 +187,14 @@ class _GroupHomePageState extends State<GroupHomePage> {
     //String custid = await SharedPref.shared.getCustId();
     String corpCode = await SharedPref.shared.getCorpCode();
     final name = await SharedPref().getAgentName();
+    token = await SharedPref().getTokenValue();
     setState(() {
       userName = name;
       _corpCode = corpCode;
     });
     print("loadSharedData");
+    print("----------------------------token data groups------------------------");
+    print(token);
     setState(() {});
     showProgressDialog(context);
     getGroups();
@@ -410,7 +415,31 @@ class _GroupHomePageState extends State<GroupHomePage> {
     );
   }
 
-  void _performLogout(BuildContext context) {}
+  void _performLogout(BuildContext context) async {
+    // Clear all saved values
+    await SharedPref.shared.setEmail("");
+    await SharedPref.shared.setCustId("");
+    await SharedPref.shared.setCorpCode("");
+    await SharedPref.shared.setBranchCode("");
+    await SharedPref.shared.setSubAgentMobNum("");
+    await SharedPref.shared.setAgentName("");
+    await SharedPref.shared.setMpinValue("");
+    await SharedPref.shared.setTokenValue("");
+    await SharedPref.shared.setLogin(false);
+    await SharedPref.shared.setLoggedInUserType("");
+
+    // Navigate to MobileNumberVerificationPage and remove all previous routes
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => MobileNumberVerificationPage()),
+          (Route<dynamic> route) => false,
+    );
+  }
+
+
+  // void _performLogout(BuildContext context) {
+  //
+  // }
 
   Future<void> _showSettingsDialog(BuildContext context) async {
     return showModalBottomSheet(
@@ -1003,7 +1032,8 @@ class _GroupHomePageState extends State<GroupHomePage> {
                     group.groupId,
                     group.defaultAmount,
                     group.defaultDueDate,
-                    "active",
+                    group.status == "Active"
+                  ? "Active" : group.status == null ? "Active" : "InActive",
                     group.createdDate,
 
                 );
@@ -1203,9 +1233,9 @@ class _GroupHomePageState extends State<GroupHomePage> {
             borderRadius: BorderRadius.circular(16),
           ),
           child: Text(
-            status == "active" ? "Active" : "Inactive",
+            status == "Active" ? "Active" : "Inactive",
             style: TextStyle(
-              color: status == "active" ? Colors.green : Colors.grey,
+              color: status == "Active" ? Colors.green : Colors.amber,
               fontWeight: FontWeight.w600,
               fontSize: 12,
             ),

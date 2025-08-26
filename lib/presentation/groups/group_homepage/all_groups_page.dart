@@ -331,105 +331,94 @@ class _AllGroupsPageState extends State<AllGroupsPage> {
   List<Group> _groups = [];
   List<Group> _filteredGroups = [];
 
-  // Function to get emoji based on group name
-  String _getGroupEmoji(String groupName) {
+  // Map of group names to icons and colors
+  Map<String, Map<String, dynamic>> groupIconMap = {
+    "premium members": {"icon": Icons.star, "color": Colors.amber},
+    "morning session": {"icon": Icons.wb_sunny, "color": Colors.orange},
+    "evening session": {"icon": Icons.nights_stay, "color": Colors.indigo},
+    "personal training": {"icon": Icons.person, "color": Colors.purple},
+    "yoga class": {"icon": Icons.self_improvement, "color": Colors.teal},
+    "weight loss program": {
+      "icon": Icons.monitor_weight,
+      "color": Colors.green
+    },
+    "bodybuilding team": {"icon": Icons.fitness_center, "color": Colors.red},
+
+    // --- Finance & Membership ---
+    "gym monthly fees": {"icon": Icons.attach_money, "color": Colors.green},
+    "annual membership": {"icon": Icons.calendar_month, "color": Colors.blue},
+    "installment plan": {"icon": Icons.payments, "color": Colors.orange},
+    "student discount": {"icon": Icons.school, "color": Colors.indigo},
+    "family package": {
+      "icon": Icons.family_restroom,
+      "color": Colors.pinkAccent
+    },
+
+    // --- Tuition & Education ---
+    "tuition - class 10": {"icon": Icons.menu_book, "color": Colors.deepPurple},
+    "tuition - class 12": {"icon": Icons.book, "color": Colors.blueAccent},
+    "coaching center": {"icon": Icons.school, "color": Colors.brown},
+    "language class": {"icon": Icons.translate, "color": Colors.teal},
+    "computer training": {"icon": Icons.computer, "color": Colors.blueGrey},
+    "coding bootcamp": {"icon": Icons.code, "color": Colors.deepOrange},
+    "drawing class": {"icon": Icons.brush, "color": Colors.purpleAccent},
+    "dance academy": {"icon": Icons.music_video, "color": Colors.redAccent},
+    "music class": {"icon": Icons.music_note, "color": Colors.orange},
+    "guitar lessons": {"icon": Icons.queue_music, "color": Colors.green},
+    "piano lessons": {"icon": Icons.piano, "color": Colors.indigo},
+    "art workshop": {"icon": Icons.color_lens, "color": Colors.pink},
+
+    // --- Fitness & Lifestyle ---
+    "fitness 4 life": {"icon": Icons.favorite, "color": Colors.red},
+    "wellness hub": {"icon": Icons.spa, "color": Colors.teal},
+    "active seniors": {"icon": Icons.elderly, "color": Colors.brown},
+    "kids zone": {"icon": Icons.child_friendly, "color": Colors.lightBlue},
+    "ladies special batch": {"icon": Icons.woman, "color": Colors.pinkAccent},
+    "gents training": {"icon": Icons.man, "color": Colors.indigoAccent},
+    "outdoor bootcamp": {"icon": Icons.landscape, "color": Colors.green},
+    "indoor batch": {"icon": Icons.home, "color": Colors.blueGrey},
+
+    // --- Sports & Extra ---
+    "football practice": {"icon": Icons.sports_soccer, "color": Colors.green},
+    "cricket lovers": {"icon": Icons.sports_cricket, "color": Colors.blue},
+    "basketball crew": {
+      "icon": Icons.sports_basketball,
+      "color": Colors.deepOrange
+    },
+    "swimming club": {"icon": Icons.pool, "color": Colors.cyan},
+    "badminton group": {"icon": Icons.sports_tennis, "color": Colors.amber},
+    "chess academy": {"icon": Icons.extension, "color": Colors.grey},
+
+    // --- Special & Community ---
+    "festive offers": {"icon": Icons.celebration, "color": Colors.deepOrange},
+    "birthday batch": {"icon": Icons.cake, "color": Colors.pinkAccent},
+    "holiday camp": {"icon": Icons.beach_access, "color": Colors.teal},
+    "community club": {"icon": Icons.groups, "color": Colors.blue},
+    "trainer's hub": {"icon": Icons.support, "color": Colors.purple},
+    "exclusive circle": {"icon": Icons.lock, "color": Colors.black},
+  };
+
+  // Function to get icon and color based on group name
+  Map<String, dynamic> _getGroupIconAndColor(String groupName) {
     final name = groupName.toLowerCase();
 
-    if (name.contains('family') || name.contains('fam')) {
-      return '👨‍👩‍👧‍👦';
-    } else if (name.contains('friend') || name.contains('buddy') || name.contains('pal')) {
-      return '👥';
-    } else if (name.contains('work') || name.contains('office') || name.contains('colleague') || name.contains('job')) {
-      return '💼';
-    } else if (name.contains('travel') || name.contains('trip') || name.contains('vacation')) {
-      return '✈️';
-    } else if (name.contains('sport') || name.contains('game') || name.contains('fitness')) {
-      return '⚽';
-    } else if (name.contains('food') || name.contains('dinner') || name.contains('lunch') || name.contains('restaurant')) {
-      return '🍕';
-    } else if (name.contains('event') || name.contains('party') || name.contains('celebration')) {
-      return '🎉';
-    } else if (name.contains('education') || name.contains('study') || name.contains('school') || name.contains('college')) {
-      return '🎓';
-    } else if (name.contains('health') || name.contains('medical') || name.contains('hospital')) {
-      return '🏥';
-    } else if (name.contains('shopping') || name.contains('store') || name.contains('market')) {
-      return '🛒';
-    } else if (name.contains('car') || name.contains('vehicle') || name.contains('auto')) {
-      return '🚗';
-    } else if (name.contains('home') || name.contains('house') || name.contains('apartment')) {
-      return '🏠';
-    } else if (name.contains('gift') || name.contains('present')) {
-      return '🎁';
-    } else if (name.contains('movie') || name.contains('film') || name.contains('cinema')) {
-      return '🎬';
-    } else if (name.contains('music')) {
-      return '🎵';
-    } else if (name.contains('book') || name.contains('read') || name.contains('library')) {
-      return '📚';
-    } else if (name.contains('saving') || name.contains('save') || name.contains('money')) {
-      return '💰';
-    } else if (name.contains('tech') || name.contains('computer') || name.contains('it')) {
-      return '💻';
-    } else if (name.contains('art') || name.contains('design') || name.contains('creative')) {
-      return '🎨';
-    } else if (name.contains('nature') || name.contains('environment') || name.contains('green')) {
-      return '🌳';
-    } else if (name.contains('pet') || name.contains('dog') || name.contains('cat')) {
-      return '🐾';
-    } else if (name.contains('baby') || name.contains('child') || name.contains('kid')) {
-      return '👶';
-    } else if (name.contains('wedding') || name.contains('marriage')) {
-      return '💒';
-    } else if (name.contains('holiday') || name.contains('festival')) {
-      return '🎄';
-    } else {
-      return '👥'; // Default emoji
+    // Check for exact matches first
+    if (groupIconMap.containsKey(name)) {
+      return groupIconMap[name]!;
     }
-  }
 
-  // Function to get color based on group name
-  Color _getGroupColor(String groupName) {
-    final name = groupName.toLowerCase();
-
-    if (name.contains('family')) {
-      return Colors.deepPurple;
-    } else if (name.contains('friend')) {
-      return Colors.blue;
-    } else if (name.contains('work')) {
-      return Colors.indigo;
-    } else if (name.contains('travel')) {
-      return Colors.teal;
-    } else if (name.contains('sport')) {
-      return Colors.green;
-    } else if (name.contains('food')) {
-      return Colors.orange;
-    } else if (name.contains('event')) {
-      return Colors.pink;
-    } else if (name.contains('education')) {
-      return Colors.blueGrey;
-    } else if (name.contains('health')) {
-      return Colors.red;
-    } else if (name.contains('shopping')) {
-      return Colors.purple;
-    } else if (name.contains('car')) {
-      return Colors.deepOrange;
-    } else if (name.contains('home')) {
-      return Colors.brown;
-    } else if (name.contains('gift')) {
-      return Colors.cyan;
-    } else if (name.contains('movie')) {
-      return Colors.amber;
-    } else if (name.contains('music')) {
-      return Colors.lightBlue;
-    } else if (name.contains('book')) {
-      return Colors.lightGreen;
-    } else if (name.contains('saving')) {
-      return Colors.lime;
-    } else {
-      final index = name.length % Colors.primaries.length;
-      return Colors.primaries[index]; // Default color based on name length
+    // Check for partial matches
+    for (var key in groupIconMap.keys) {
+      if (name.contains(key)) {
+        return groupIconMap[key]!;
+      }
     }
+
+    // Default values if no match found
+    return {
+      "icon": Icons.group,
+      "color": Colors.primaries[name.length % Colors.primaries.length]
+    };
   }
 
   void loadSharedData() async {
@@ -615,8 +604,8 @@ class _AllGroupsPageState extends State<AllGroupsPage> {
           itemCount: _filteredGroups.length,
           itemBuilder: (context, index) {
             final group = _filteredGroups[index];
-            final emoji = _getGroupEmoji(group.groupName);
-            final color = _getGroupColor(group.groupName);
+            final iconData = _getGroupIconAndColor(group.groupName)["icon"] as IconData;
+            final color = _getGroupIconAndColor(group.groupName)["color"] as Color;
 
             return TweenAnimationBuilder(
               tween: Tween<double>(begin: 0, end: 1),
@@ -656,10 +645,7 @@ class _AllGroupsPageState extends State<AllGroupsPage> {
                   leading: CircleAvatar(
                     radius: 26,
                     backgroundColor: color.withOpacity(0.15),
-                    child: Text(
-                      emoji,
-                      style: const TextStyle(fontSize: 24),
-                    ),
+                    child: Icon(iconData, color: color, size: 26),
                   ),
                   title: Text(
                     group.groupName,

@@ -35,6 +35,7 @@ class Group {
   final DateTime defaultDueDate;
   final DateTime createdDate;
   final DateTime? updatedDate;
+  final String? status;
 
   Group({
     required this.groupId,
@@ -45,6 +46,7 @@ class Group {
     required this.defaultDueDate,
     required this.createdDate,
     this.updatedDate,
+    required this.status
   });
 
   factory Group.fromJson(Map<String, dynamic> json) {
@@ -58,6 +60,7 @@ class Group {
       createdDate: DateTime.parse(json['CreatedDate']),
       updatedDate:
       json['UpdatedDate'] != null ? DateTime.parse(json['UpdatedDate']) : null,
+      status: json['Status']
     );
   }
 
@@ -71,6 +74,7 @@ class Group {
       'DefaultDueDate': defaultDueDate.toIso8601String(),
       'CreatedDate': createdDate.toIso8601String(),
       'UpdatedDate': updatedDate?.toIso8601String(),
+      'Status':status
     };
   }
 }

@@ -1,5 +1,7 @@
 import 'dart:developer';
+import 'package:collection_qr_flutter/data/provider/group/group_status/group_status_provider.dart';
 import 'package:collection_qr_flutter/data/provider/link_transcation_history_provider.dart';
+import 'package:collection_qr_flutter/data/repository/group/group_status/group_status_repository.dart';
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 
 import '../../data/provider/agent_customer_details_provider.dart';
@@ -173,6 +175,7 @@ void main() async {
     ChangeNotifierProvider(create: (_) => CreateGroupWithMemberProvider(CreateGroupWithMemberRepository())),
     ChangeNotifierProvider(create: (_) => GroupUpdateProvider(GroupUpdateRepository())),
     ChangeNotifierProvider(create: (_) => UpdateGroupProvider(UpdateBankAccountRepository())),
+    ChangeNotifierProvider(create: (_) => GroupStatusProvider(GroupStatusRepository())),
 
   ], child: const MyApp()));
 }
