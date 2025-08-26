@@ -1113,9 +1113,11 @@ class _GroupHomePageState extends State<GroupHomePage> {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color:status == "Active"? Colors.white: Colors.grey.withOpacity(0.2),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: home1, width: 1),
+        border: Border.all(color:
+        status == "Active"?
+        home1:Colors.grey.withOpacity(0.2), width: 1),
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.all(16),
@@ -1123,13 +1125,13 @@ class _GroupHomePageState extends State<GroupHomePage> {
           width: 50,
           height: 50,
           decoration: BoxDecoration(
-            color: home1.withOpacity(0.1),
+            color: status =="Active"?home1.withOpacity(0.1):home2.withOpacity(0.1),
             shape: BoxShape.circle,
           ),
           child: Stack(
             children: [
-              const Center(
-                child: Icon(Icons.group, size: 24, color: home1),
+               Center(
+                child: Icon(Icons.group, size: 24, color:status =="Active"? home1:home2),
               ),
               if (isNewGroup)
                 Positioned(
@@ -1137,8 +1139,8 @@ class _GroupHomePageState extends State<GroupHomePage> {
                   top: 0,
                   child: Container(
                     padding: const EdgeInsets.all(4),
-                    decoration: const BoxDecoration(
-                      color: Colors.green,
+                    decoration:  BoxDecoration(
+                      color: status == "Active"?Colors.green:home2,
                       shape: BoxShape.circle,
                     ),
                     child: Text(
@@ -1197,7 +1199,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
         trailing: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: status == "active"
+            color: status == "Active"
                 ? Colors.green.withOpacity(0.1)
                 : Colors.grey.withOpacity(0.1),
             borderRadius: BorderRadius.circular(16),

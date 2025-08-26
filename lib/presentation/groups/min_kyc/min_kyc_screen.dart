@@ -299,7 +299,7 @@ class _MinKycScreenState extends State<MinKycScreen>
           opacity: _titleAnimation,
           child: ScaleTransition(
             scale: _titleAnimation,
-            child: Text(
+            child: const Text(
               "MIN KYC",
               style: TextStyle(
                 fontWeight: FontWeight.w800,
@@ -400,7 +400,7 @@ class _MinKycScreenState extends State<MinKycScreen>
         return LinearProgressIndicator(
           value: value,
           backgroundColor: Colors.grey[200],
-          valueColor: AlwaysStoppedAnimation<Color>(home1),
+          valueColor: const AlwaysStoppedAnimation<Color>(home1),
           minHeight: 4,
           borderRadius: BorderRadius.circular(2),
         );
@@ -641,7 +641,7 @@ class _MinKycScreenState extends State<MinKycScreen>
               ),
             ),
             IconButton(
-              icon: Icon(Icons.calendar_today, color: home1),
+              icon:const Icon(Icons.calendar_today, color: home1),
               onPressed: () => _selectDate(context),
             ),
           ],
@@ -659,7 +659,7 @@ class _MinKycScreenState extends State<MinKycScreen>
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
+            colorScheme:const ColorScheme.light(
               primary: home1, // Header background color
               onPrimary: Colors.white, // Header text color
               onSurface: Colors.black, // Body text color
@@ -1038,7 +1038,7 @@ class _MinKycScreenState extends State<MinKycScreen>
               color: Colors.grey[800],
               fontWeight: FontWeight.w500,
             ),
-            children: [
+            children: const [
               TextSpan(
                 text: "Terms and Conditions",
                 style: TextStyle(
@@ -1472,7 +1472,7 @@ class _MinKycScreenState extends State<MinKycScreen>
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: home1!, width: 1.5),
+            borderSide:const BorderSide(color: home1, width: 1.5),
           ),
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 16),

@@ -205,13 +205,12 @@ class _AllGroupsPageState extends State<AllGroupsPage> {
         body: _filteredGroups.isEmpty
             ? _buildEmptyState()
             : ListView.builder(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                 itemCount: _filteredGroups.length,
                 itemBuilder: (context, index) {
                   final group = _filteredGroups[index];
-                  final color =
-                      Colors.primaries[index % Colors.primaries.length];
+                  final color = _filteredGroups[index].status == "Active"?
+                      Colors.primaries[index % Colors.primaries.length]:Colors.grey;
                   const icon = Icons.group; // you can customize this if needed
 
                   return TweenAnimationBuilder(
@@ -224,9 +223,10 @@ class _AllGroupsPageState extends State<AllGroupsPage> {
                       );
                     },
                     child: Card(
+
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16)),
-                      elevation: 4,
+                      elevation: _filteredGroups[index].status == "Active"?4:0,
                       shadowColor: color.withOpacity(0.3),
                       child: ListTile(
                         onTap: () async {

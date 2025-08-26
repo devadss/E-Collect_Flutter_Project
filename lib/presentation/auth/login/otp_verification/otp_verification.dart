@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import '../../../../core/colors.dart';
 import '../../../../core/general.dart';
 import 'package:pointycastle/export.dart' as pc;
-
 import '../../../../data/provider/otp_request_provider.dart';
 import '../../../../data/provider/otp_verification_provider.dart';
 import '../../../../data/provider/token_request_provider.dart';
@@ -94,6 +93,8 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
         Navigator.pop(context);
         print("Inside tokenGeneration error");
         if (error == "User not found") {
+          Navigator.pop(context);
+
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text(
@@ -107,6 +108,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
             ),
           );
         } else {
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -171,14 +173,14 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
               SharedPref.shared.setLogin(true);
               if(
               widget.loggedInUserType == "NOT_AN_AGENT"){
-                tokenGeneration(encryptString(widget.password, secretKey, initialVector)!);
-                // await SharedPref.shared.setTokenValue(data.toString());
-                // await SharedPref.shared.setLogin(true);
-                // await SharedPref.shared.setLoggedInUserType(widget.loggedInUserType);
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) => const GooglePinCodePage()));
+               // tokenGeneration(encryptString(widget.password, secretKey, initialVector)!);
+                await SharedPref.shared.setTokenValue(data.toString());
+                await SharedPref.shared.setLogin(true);
+                await SharedPref.shared.setLoggedInUserType(widget.loggedInUserType);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const GooglePinCodePage()));
               }else{
                 tokenGeneration(widget.password);
               }
