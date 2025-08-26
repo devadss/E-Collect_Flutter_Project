@@ -92,7 +92,7 @@ class _MemberPageState extends State<MemberPage> {
 
 
     }
-    if(addMember.createMemberResponse!.status==true){
+    if(addMember.createMemberResponse?.status==true){
 
       ScaffoldMessenger.of(context).showSnackBar(
          SnackBar(content: Text(addMember.createMemberResponse!.message)),
@@ -101,6 +101,11 @@ class _MemberPageState extends State<MemberPage> {
       _removeAllMembers();
      Navigator.pop(context, "Reload");
 
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(addMember.err.toString()))
+      );
+      Navigator.pop(context, "Reload");
     }
 
   }

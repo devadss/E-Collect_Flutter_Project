@@ -44,10 +44,11 @@ print({
   "BranchCode": branchCode,
   "EntityId": entityId
 });
+print(request.body);
     if (request.statusCode == 200) {
       return Right(CreateMemberResponse.fromJson(jsonDecode(request.body)));
     } else {
-      return Left(jsonDecode(request.body));
+      return Left(request.body);
     }
   }
 }

@@ -12,7 +12,9 @@ import '../../../domain/model/group/members_listing/members_listing_model.dart';
 import '../group_homepage/detail_page/group_detail_page.dart';
 
 class GroupHomePage extends StatefulWidget {
-  const GroupHomePage({super.key});
+  final VoidCallback? onRefresh;
+
+  const GroupHomePage({super.key, this.onRefresh});
 
   @override
   State<GroupHomePage> createState() => _GroupHomePageState();
@@ -574,6 +576,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
     var memberProvider =
     Provider.of<MemberListProvider>(context, listen: false);
     await memberProvider.getMemberByGroup(_groups[0].groupId);
+
     setState(() {
       avilableMembers = memberProvider.memberListResponse!.data.length;
     });
@@ -1213,16 +1216,18 @@ class _GroupHomePageState extends State<GroupHomePage> {
             ),
           ),
         ),
-        onTap: () {
-          Navigator.push(
+        onTap: () async {
+        final result = await  Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) =>  GroupDetailPage(
                         amount: collected.toString(),
                         dueDate:DateFormat('yyyy-MM-dd').format(due) ,
                         groupId:members,
-                        groupName: name,
+                        groupName: name, groupStatus: status,
                       )));
+        result == "Refresh"?
+        loadSharedData():"";
         },
       ),
     );

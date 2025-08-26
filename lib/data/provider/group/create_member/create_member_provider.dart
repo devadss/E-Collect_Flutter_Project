@@ -12,6 +12,9 @@ class CreateMemberProvider with ChangeNotifier {
 
   CreateMemberResponse? get createMemberResponse => _createMemberResponse;
 
+  String? _err;
+  String? get err => _err;
+
   Future<Either<String, CreateMemberResponse>> createMember(
       int groupId,
       String memberName,
@@ -32,7 +35,9 @@ class CreateMemberProvider with ChangeNotifier {
         corpCode,
         branchCode,
         entityId);
-    data.fold((err) {}, (success) {
+    data.fold((err) {
+      _err = err;
+    }, (success) {
       _createMemberResponse = success;
     });
     notifyListeners();

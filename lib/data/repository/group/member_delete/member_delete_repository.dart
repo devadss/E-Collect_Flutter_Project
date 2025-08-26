@@ -17,7 +17,7 @@ class MemberDeleteRepository implements MemberDeleteInterface {
     if (request.statusCode == 200) {
       return Right(DeleteMemberResponse.fromJson(jsonDecode(request.body)));
     } else {
-      return Left(jsonDecode(request.body));
+      return Left(request.body);
     }
   }
 }

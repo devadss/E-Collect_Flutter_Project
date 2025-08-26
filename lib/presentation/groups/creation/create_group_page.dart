@@ -73,8 +73,9 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 
   Future<void> updateGroup() async {
     var updateGroup = Provider.of<GroupUpdateProvider>(context, listen:false);
-    await updateGroup.updateGroup(widget.groupId, widget.groupName, double.parse(widget.amount),widget.dueDate,_corpCode!, _corpCode!);
-    if(updateGroup.groupUpdateResponse!.status == true){
+    await updateGroup.updateGroup(widget.groupId, groupNameController.text,
+        double.parse(amountController.text),feeCollectionDayController.text,_corpCode!, _corpCode!);
+    if(updateGroup.groupUpdateResponse?.status == true){
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content:
@@ -82,9 +83,9 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
           backgroundColor: Colors.green,
         ),
       );
-      Navigator.pop(context);
+      Navigator.pop(context, "Refresh");
     }else{
-      Navigator.pop(context);
+      Navigator.pop(context, "Refresh");
     }
 
   }

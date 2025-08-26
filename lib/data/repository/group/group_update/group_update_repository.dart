@@ -26,6 +26,14 @@ class GroupUpdateRepository implements GroupUpdateInterface {
           "BranchCode": branchCode
         }),
         headers: {'Content-Type': 'application/json'});
+    print({"groupId":groupId,
+      "groupName": groupName,
+      "defaultAmount": defaultAmount,
+      "defaultDueDate": defaultDueDate,
+      "CorpCode": corpCode,
+      "BranchCode": branchCode
+    });
+    print(request.body);
     if (request.statusCode == 200) {
       return Right(GroupUpdateResponse.fromJson(jsonDecode(request.body)));
     } else {
