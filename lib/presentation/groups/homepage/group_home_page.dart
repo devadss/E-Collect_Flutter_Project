@@ -101,54 +101,6 @@ class _GroupHomePageState extends State<GroupHomePage> {
 
   // All groups data with creation dates
   final List<Map<String, dynamic>> allGroups = [
-    // {
-    //   "name": "Morning Yoga",
-    //   "members": 12,
-    //   "collected": 24500,
-    //   "due": 5500,
-    //   "status": "active",
-    //   "created": DateTime(2024, 1, 15), // Jan
-    // },
-    // {
-    //   "name": "Evening Batch",
-    //   "members": 8,
-    //   "collected": 18000,
-    //   "due": 4000,
-    //   "status": "active",
-    //   "created": DateTime(2024, 3, 10), // Mar
-    // },
-    // {
-    //   "name": "Weekend Special",
-    //   "members": 15,
-    //   "collected": 37500,
-    //   "due": 7500,
-    //   "status": "active",
-    //   "created": DateTime(2024, 3, 25), // Mar
-    // },
-    // {
-    //   "name": "Senior Citizens",
-    //   "members": 7,
-    //   "collected": 15000,
-    //   "due": 3000,
-    //   "status": "inactive",
-    //   "created": DateTime(2024, 5, 5), // May
-    // },
-    // {
-    //   "name": "Kids Yoga",
-    //   "members": 10,
-    //   "collected": 20000,
-    //   "due": 5000,
-    //   "status": "active",
-    //   "created": DateTime(2024, 7, 1), // Jul
-    // },
-    // {
-    //   "name": "Advanced Class",
-    //   "members": 6,
-    //   "collected": 30000,
-    //   "due": 6000,
-    //   "status": "active",
-    //   "created": DateTime(2024, 8, 10), // Aug (current month)
-    // },
   ];
 
   void _filterGroups() {
@@ -160,16 +112,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
     });
   }
 
-  // Get filtered groups based on selected month
-  // List<Map<String, dynamic>> get filteredGroups {
-  //   if (_selectedMonthIndex == DateTime.now().month - 1) {
-  //     return allGroups;
-  //   }
-  //   return allGroups.where((group) {
-  //     return group["created"]
-  //         .isBefore(DateTime(currentYear, _selectedMonthIndex + 2, 1));
-  //   }).toList();
-  // }
+
 
   // Get current month data
   Map<String, dynamic> get currentMonthData {
@@ -582,36 +525,6 @@ class _GroupHomePageState extends State<GroupHomePage> {
     });
 
   }
-  Future<void> _showThemeSelector(BuildContext context) async {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text(
-            'Select Theme',
-            style: TextStyle(color: home2),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildThemeOption('Default', home1, home2),
-              _buildThemeOption('Dark', Colors.grey[900]!, Colors.white),
-              _buildThemeOption('Blue', Colors.blue, Colors.white),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text(
-                'Cancel',
-                style: TextStyle(color: home2),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   void initState() {
@@ -731,7 +644,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'Create Payment Link',
                         style: TextStyle(
                           fontSize: 18,
@@ -793,7 +706,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
                 decoration: InputDecoration(
                   prefixIcon: Container(
                     padding: const EdgeInsets.all(14),
-                    child: Icon(Icons.note_alt_outlined, color: home1, size: 22),
+                    child: const Icon(Icons.note_alt_outlined, color: home1, size: 22),
                   ),
                   labelText: 'Note (optional)',
                   labelStyle: TextStyle(
@@ -825,7 +738,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                gradient: LinearGradient(
+                gradient: const LinearGradient(
                   colors: [home1, home2],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -848,11 +761,11 @@ class _GroupHomePageState extends State<GroupHomePage> {
                   borderRadius: BorderRadius.circular(20),
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 32),
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.bolt, color: Colors.white, size: 22),
-                        const SizedBox(width: 12),
+                        Icon(Icons.bolt, color: Colors.white, size: 22),
+                        SizedBox(width: 12),
                         Text(
                           'Generate Payment Link',
                           style: TextStyle(
@@ -900,71 +813,6 @@ class _GroupHomePageState extends State<GroupHomePage> {
       ),
     );
   }
-/*  Widget _buildExpandedContent() {
-    return Card(
-      color: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10),
-        side: const BorderSide(color: home1, ),
-      ),
-      elevation: 1,
-      margin: const EdgeInsets.only(top: 20),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            const TextField(
-              decoration: InputDecoration(
-                counterText: "",
-                prefixIcon: Icon(Icons.phone_iphone, color: home1),
-                labelText: 'Enter customer mobile number',
-                border: OutlineInputBorder(),
-              ),
-              maxLength: 10,
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 16),
-            const TextField(
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.auto_mode_outlined, color: home1),
-                labelText: 'Enter Amount',
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 16),
-            const TextField(
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.note_alt_outlined, color: home1),
-                labelText: 'Enter a note',
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.text,
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  // Handle send action
-                },
-                icon: const Icon(Icons.send),
-                label: const Text('Send Link'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: home1,
-
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }*/
   @override
   Widget build(BuildContext context) {
     final monthData = currentMonthData;
@@ -1051,67 +899,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
             ),
             const SizedBox(height: 20),
 
-            // Month Selector
-            // Card(
-            //   elevation: 0,
-            //   shape: RoundedRectangleBorder(
-            //     borderRadius: BorderRadius.circular(16),
-            //     side: const BorderSide(color: home1, width: 1),
-            //   ),
-            //   child: Padding(
-            //     padding: const EdgeInsets.all(12),
-            //     child: Column(
-            //       children: [
-            //         const Text(
-            //           "Select Month",
-            //           style: TextStyle(
-            //             fontSize: 14,
-            //             fontWeight: FontWeight.w600,
-            //             color: home2,
-            //           ),
-            //         ),
-            //         const SizedBox(height: 8),
-            //         SingleChildScrollView(
-            //           scrollDirection: Axis.horizontal,
-            //           child: Row(
-            //             children: List.generate(months.length, (index) {
-            //               final isSelected = index == _selectedMonthIndex;
-            //               return GestureDetector(
-            //                 onTap: () {
-            //                   setState(() {
-            //                     _selectedMonthIndex = index;
-            //                   });
-            //                 },
-            //                 child: Container(
-            //                   margin: const EdgeInsets.symmetric(horizontal: 4),
-            //                   padding: const EdgeInsets.symmetric(
-            //                     horizontal: 16,
-            //                     vertical: 8,
-            //                   ),
-            //                   decoration: BoxDecoration(
-            //                     color: isSelected ? home1 : Colors.transparent,
-            //                     borderRadius: BorderRadius.circular(20),
-            //                     border: Border.all(
-            //                       color:
-            //                           isSelected ? home1 : Colors.grey.shade300,
-            //                     ),
-            //                   ),
-            //                   child: Text(
-            //                     months[index],
-            //                     style: TextStyle(
-            //                       color: isSelected ? Colors.white : home2,
-            //                       fontWeight: FontWeight.w500,
-            //                     ),
-            //                   ),
-            //                 ),
-            //               );
-            //             }),
-            //           ),
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
+
             const SizedBox(height: 20),
 
             // Monthly Financial Summary
@@ -1152,7 +940,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
                 ),
                 _buildStatCard(
                   "Active Members",
-                  "${avilableMembers}",
+                  "$avilableMembers",
                   home2,
                   Icons.groups,
                 ),
@@ -1192,7 +980,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
                         ),
                         const Text(
                           "₹$totalCollected",
-                          style: const TextStyle(
+                          style:  TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                             color: home1,
@@ -1221,7 +1009,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
                         ),
                        const Text(
                           "₹$totalDue",
-                          style: const TextStyle(
+                          style:  TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                             color: Colors.orange,
@@ -1502,3 +1290,172 @@ class _GroupHomePageState extends State<GroupHomePage> {
     return "${months[date.month - 1]} ${date.day}, ${date.year}";
   }
 }
+/*
+  Future<void> _showThemeSelector(BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text(
+            'Select Theme',
+            style: TextStyle(color: home2),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildThemeOption('Default', home1, home2),
+              _buildThemeOption('Dark', Colors.grey[900]!, Colors.white),
+              _buildThemeOption('Blue', Colors.blue, Colors.white),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: home2),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+*/
+
+// Month Selector
+// Card(
+//   elevation: 0,
+//   shape: RoundedRectangleBorder(
+//     borderRadius: BorderRadius.circular(16),
+//     side: const BorderSide(color: home1, width: 1),
+//   ),
+//   child: Padding(
+//     padding: const EdgeInsets.all(12),
+//     child: Column(
+//       children: [
+//         const Text(
+//           "Select Month",
+//           style: TextStyle(
+//             fontSize: 14,
+//             fontWeight: FontWeight.w600,
+//             color: home2,
+//           ),
+//         ),
+//         const SizedBox(height: 8),
+//         SingleChildScrollView(
+//           scrollDirection: Axis.horizontal,
+//           child: Row(
+//             children: List.generate(months.length, (index) {
+//               final isSelected = index == _selectedMonthIndex;
+//               return GestureDetector(
+//                 onTap: () {
+//                   setState(() {
+//                     _selectedMonthIndex = index;
+//                   });
+//                 },
+//                 child: Container(
+//                   margin: const EdgeInsets.symmetric(horizontal: 4),
+//                   padding: const EdgeInsets.symmetric(
+//                     horizontal: 16,
+//                     vertical: 8,
+//                   ),
+//                   decoration: BoxDecoration(
+//                     color: isSelected ? home1 : Colors.transparent,
+//                     borderRadius: BorderRadius.circular(20),
+//                     border: Border.all(
+//                       color:
+//                           isSelected ? home1 : Colors.grey.shade300,
+//                     ),
+//                   ),
+//                   child: Text(
+//                     months[index],
+//                     style: TextStyle(
+//                       color: isSelected ? Colors.white : home2,
+//                       fontWeight: FontWeight.w500,
+//                     ),
+//                   ),
+//                 ),
+//               );
+//             }),
+//           ),
+//         ),
+//       ],
+//     ),
+//   ),
+// ),
+// Get filtered groups based on selected month
+// List<Map<String, dynamic>> get filteredGroups {
+//   if (_selectedMonthIndex == DateTime.now().month - 1) {
+//     return allGroups;
+//   }
+//   return allGroups.where((group) {
+//     return group["created"]
+//         .isBefore(DateTime(currentYear, _selectedMonthIndex + 2, 1));
+//   }).toList();
+// }
+/*  Widget _buildExpandedContent() {
+    return Card(
+      color: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10),
+        side: const BorderSide(color: home1, ),
+      ),
+      elevation: 1,
+      margin: const EdgeInsets.only(top: 20),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            const TextField(
+              decoration: InputDecoration(
+                counterText: "",
+                prefixIcon: Icon(Icons.phone_iphone, color: home1),
+                labelText: 'Enter customer mobile number',
+                border: OutlineInputBorder(),
+              ),
+              maxLength: 10,
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 16),
+            const TextField(
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.auto_mode_outlined, color: home1),
+                labelText: 'Enter Amount',
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 16),
+            const TextField(
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.note_alt_outlined, color: home1),
+                labelText: 'Enter a note',
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.text,
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  // Handle send action
+                },
+                icon: const Icon(Icons.send),
+                label: const Text('Send Link'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: home1,
+
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }*/

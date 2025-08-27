@@ -1,5 +1,4 @@
 import 'dart:core';
-
 import 'package:flutter/material.dart';
 import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:provider/provider.dart';
@@ -20,9 +19,7 @@ class _AllGroupsPageState extends State<AllGroupsPage> {
   bool _isSearching = false;
   String? _corpCode;
   final TextEditingController _searchController = TextEditingController();
-  List<Group> _groups = [
-
-  ];
+  List<Group> _groups = [];
   List<Group> _filteredGroups = [];
 
   void loadSharedData() async {
@@ -121,7 +118,12 @@ class _AllGroupsPageState extends State<AllGroupsPage> {
           final result = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => const CreateGroupPage(groupName: '', amount: '', dueDate: '', groupId: 0,),
+              builder: (_) => const CreateGroupPage(
+                groupName: '',
+                amount: '',
+                dueDate: '',
+                groupId: 0,
+              ),
               fullscreenDialog: true,
             ),
           );
@@ -205,12 +207,14 @@ class _AllGroupsPageState extends State<AllGroupsPage> {
         body: _filteredGroups.isEmpty
             ? _buildEmptyState()
             : ListView.builder(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                 itemCount: _filteredGroups.length,
                 itemBuilder: (context, index) {
                   final group = _filteredGroups[index];
-                  final color = _filteredGroups[index].status == "Active"?
-                      Colors.primaries[index % Colors.primaries.length]:Colors.grey;
+                  final color = _filteredGroups[index].status == "Active"
+                      ? Colors.primaries[index % Colors.primaries.length]
+                      : Colors.grey;
                   const icon = Icons.group; // you can customize this if needed
 
                   return TweenAnimationBuilder(
@@ -223,10 +227,10 @@ class _AllGroupsPageState extends State<AllGroupsPage> {
                       );
                     },
                     child: Card(
-
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16)),
-                      elevation: _filteredGroups[index].status == "Active"?4:0,
+                      elevation:
+                          _filteredGroups[index].status == "Active" ? 4 : 0,
                       shadowColor: color.withOpacity(0.3),
                       child: ListTile(
                         onTap: () async {

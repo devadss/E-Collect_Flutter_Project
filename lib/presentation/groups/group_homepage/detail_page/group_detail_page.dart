@@ -1,7 +1,6 @@
 import 'package:collection_qr_flutter/data/provider/group/group_delte/group_delete_provider.dart';
 import 'package:collection_qr_flutter/data/provider/group/member_list/member_list_provider.dart';
 import 'package:collection_qr_flutter/domain/model/group/members_listing/members_listing_model.dart';
-import 'package:collection_qr_flutter/presentation/groups/bnk_account_details/bank_accout_detail_page.dart';
 import 'package:collection_qr_flutter/presentation/groups/member/member_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -1056,7 +1055,8 @@ class GroupDetailPage extends StatefulWidget {
 }
 
 class _GroupDetailPageState extends State<GroupDetailPage> {
-  bool? isActive ;
+  bool? isActive;
+
   int _selectedTab = 0;
 
   // Expanded financial data
@@ -1076,27 +1076,26 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
   @override
   void initState() {
     super.initState();
-    widget.groupStatus == "Active"?
-    isActive = true:isActive = false;
+    widget.groupStatus == "Active" ? isActive = true : isActive = false;
     getMembers();
 
     final statusProvider =
         Provider.of<GroupStatusProvider>(context, listen: false);
     print("currentGroupStatus ${statusProvider.currentGroupStatus}");
-    if(statusProvider.currentGroupStatus!= null && statusProvider.currentGroupStatus.isNotEmpty){
+    if (statusProvider.currentGroupStatus != null &&
+        statusProvider.currentGroupStatus.isNotEmpty) {
       if (!statusProvider.currentGroupStatus.containsKey(widget.groupId)) {
         if (widget.groupStatus == "Active") {
           // Trust widget data and set it without API call
           //  statusProvider.updateGroupStatus(widget.groupId, true);
         } else {
           // If widget says not active, optionally fetch real status from API
-          if(statusProvider.currentGroupStatus!= null && statusProvider.currentGroupStatus.isNotEmpty){
-          //  _loadGroupStatus();
-
+          if (statusProvider.currentGroupStatus != null &&
+              statusProvider.currentGroupStatus.isNotEmpty) {
+            //  _loadGroupStatus();
           }
         }
       }
-
     }
   }
 
@@ -1751,19 +1750,12 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('${member.memberName} deleted')),
                     );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content:
-                              Text('Failed to delete ${member.memberName}')),
-                    );
-                  }
+                  } else {}
                 },
                 child: Card(
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                      borderRadius: BorderRadiusGeometry.circular(12)),
                   color: Colors.white,
                   child: ListTile(
                     contentPadding: const EdgeInsets.all(12),

@@ -739,7 +739,7 @@ class _MemberPageState extends State<MemberPage> {
           tooltip: isSearching ? "Close Search" : "Search Members",
         ),
         IconButton(
-          icon: Icon(Icons.edit, color: home1, size: 28),
+          icon: const Icon(Icons.edit, color: home1, size: 28),
           onPressed: () {
             if (filteredMembers.isNotEmpty) {
               showDialog(

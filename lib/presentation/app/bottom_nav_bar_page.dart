@@ -1,8 +1,5 @@
 import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
 import 'package:collection_qr_flutter/presentation/dues/rdcl_due_home_page.dart';
-import 'package:collection_qr_flutter/presentation/groups/bnk_account_details/bank_accout_detail_page.dart';
-import 'package:collection_qr_flutter/presentation/groups/homepage/unused/home_page.dart';
-import 'package:collection_qr_flutter/presentation/groups/group_homepage/unusedcode/group_homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/colors.dart';
@@ -10,12 +7,9 @@ import '../../core/constants.dart';
 import '../account_dues/account_list_home_page.dart';
 import '../account_dues/rdcl_account_list_home_page.dart';
 import '../dues/dues_home_page.dart';
-import '../groups/bnk_account_details/bank_details_screen.dart';
 import '../groups/group_homepage/all_groups_page.dart';
 import '../groups/homepage/group_home_page.dart';
-import '../groups/min_kyc/request_otp/min_kyc_page.dart';
 import '../home/home_page.dart';
-import '../loan/loan_home_page.dart';
 import '../profile/profile_home_page.dart';
 import '../trancstion/payment_link_home_page.dart';
 
@@ -262,33 +256,6 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   }
 
 
-  Widget _buildGroupNavItem(int index, IconData activeIcon, IconData inactiveIcon) {
-    bool isActive = _selectedIndex == index;
-    return GestureDetector(
-      onTap: () => setState(() => _selectedIndex = index),
-      child: AnimatedContainer(
-        height: 53,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: isActive ? home1.withOpacity(0.2) : Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Icon(
-              isActive ? activeIcon : inactiveIcon,
-              color: isActive ? home1 : Colors.grey[600],
-              size: 24,
-            ),
-            const SizedBox(height: 4),
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _buildNavItem({
     required GlobalKey key,
@@ -342,3 +309,33 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     );
   }
 }
+
+/*
+  Widget _buildGroupNavItem(int index, IconData activeIcon, IconData inactiveIcon) {
+    bool isActive = _selectedIndex == index;
+    return GestureDetector(
+      onTap: () => setState(() => _selectedIndex = index),
+      child: AnimatedContainer(
+        height: 53,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: isActive ? home1.withOpacity(0.2) : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Icon(
+              isActive ? activeIcon : inactiveIcon,
+              color: isActive ? home1 : Colors.grey[600],
+              size: 24,
+            ),
+            const SizedBox(height: 4),
+          ],
+        ),
+      ),
+    );
+  }
+*/

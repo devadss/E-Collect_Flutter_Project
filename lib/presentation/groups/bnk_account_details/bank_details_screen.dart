@@ -198,46 +198,6 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
               ),
               const SizedBox(height: 24),
 
-              // Bank Selection with Logo
-              //   _buildLabel('Select Your Bank'),
-              //  const SizedBox(height: 8),
-              // Container(
-              //   decoration: BoxDecoration(
-              //     color: Colors.grey[50],
-              //     borderRadius: BorderRadius.circular(12),
-              //     border: Border.all(color: Colors.grey[200]!),
-              //   ),
-              //   padding: const EdgeInsets.symmetric(horizontal: 16),
-              //   child: DropdownButtonFormField<Map<String, dynamic>>(
-              //     value: _selectedBank,
-              //     decoration: const InputDecoration(border: InputBorder.none),
-              //     icon: Icon(Icons.arrow_drop_down, color: home2),
-              //     style: TextStyle(color: home2, fontSize: 16),
-              //     hint: Text('Select bank', style: TextStyle(color: Colors.grey[500])),
-              //     items: _banks.map((bank) => DropdownMenuItem(
-              //       value: bank,
-              //       child: Row(
-              //         children: [
-              //           // Display bank logo
-              //           CircleAvatar(
-              //             radius: 12,
-              //             backgroundImage: AssetImage(bank['logo']),
-              //           ),
-              //           const SizedBox(width: 12),
-              //           Text(bank['name'], style: TextStyle(color: home2)),
-              //         ],
-              //       ),
-              //     )).toList(),
-              //     onChanged: (value) {
-              //       setState(() {
-              //         _selectedBank = value;
-              //         _ifscCodeController.clear();
-              //       });
-              //       _updateIfscCode();
-              //     },
-              //     validator: (value) => value == null ? 'Please select your bank' : null,
-              //   ),
-              // ),
               const SizedBox(height: 20),
 
               // PAN Card Field with Icon
@@ -296,17 +256,7 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
                 label: 'IFSC Code',
                 hint: 'ABCD0123456',
                 icon: Icons.code,
-                // readOnly: _selectedBank == null,
-                // onTap: _selectedBank == null
-                //     ? () {
-                //         ScaffoldMessenger.of(context).showSnackBar(
-                //           SnackBar(
-                //             content: const Text('Please select bank first'),
-                //             backgroundColor: home2,
-                //           ),
-                //         );
-                //       }
-                //     : null,
+
                 validator: (value) {
                   if (value == null || value.isEmpty) return 'Required';
                   if (!RegExp(r'^[A-Z]{4}0[A-Z0-9]{6}$')
@@ -425,6 +375,59 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
     );
   }
 }
+
+// readOnly: _selectedBank == null,
+// onTap: _selectedBank == null
+//     ? () {
+//         ScaffoldMessenger.of(context).showSnackBar(
+//           SnackBar(
+//             content: const Text('Please select bank first'),
+//             backgroundColor: home2,
+//           ),
+//         );
+//       }
+//     : null,
+// Bank Selection with Logo
+//   _buildLabel('Select Your Bank'),
+//  const SizedBox(height: 8),
+// Container(
+//   decoration: BoxDecoration(
+//     color: Colors.grey[50],
+//     borderRadius: BorderRadius.circular(12),
+//     border: Border.all(color: Colors.grey[200]!),
+//   ),
+//   padding: const EdgeInsets.symmetric(horizontal: 16),
+//   child: DropdownButtonFormField<Map<String, dynamic>>(
+//     value: _selectedBank,
+//     decoration: const InputDecoration(border: InputBorder.none),
+//     icon: Icon(Icons.arrow_drop_down, color: home2),
+//     style: TextStyle(color: home2, fontSize: 16),
+//     hint: Text('Select bank', style: TextStyle(color: Colors.grey[500])),
+//     items: _banks.map((bank) => DropdownMenuItem(
+//       value: bank,
+//       child: Row(
+//         children: [
+//           // Display bank logo
+//           CircleAvatar(
+//             radius: 12,
+//             backgroundImage: AssetImage(bank['logo']),
+//           ),
+//           const SizedBox(width: 12),
+//           Text(bank['name'], style: TextStyle(color: home2)),
+//         ],
+//       ),
+//     )).toList(),
+//     onChanged: (value) {
+//       setState(() {
+//         _selectedBank = value;
+//         _ifscCodeController.clear();
+//       });
+//       _updateIfscCode();
+//     },
+//     validator: (value) => value == null ? 'Please select your bank' : null,
+//   ),
+// ),
+
 // void _updateIfscCode() {
 //   if (_selectedBank != null && _ifscCodeController.text.isEmpty) {
 //     setState(() {
