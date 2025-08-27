@@ -1047,7 +1047,8 @@ class GroupDetailPage extends StatefulWidget {
     required this.amount,
     required this.dueDate,
     required this.groupId,
-    required this.groupName, required this.groupStatus,
+    required this.groupName,
+    required this.groupStatus,
   });
 
   @override
@@ -1055,7 +1056,7 @@ class GroupDetailPage extends StatefulWidget {
 }
 
 class _GroupDetailPageState extends State<GroupDetailPage> {
-  bool isActive = true;
+  bool? isActive ;
   int _selectedTab = 0;
 
   // Expanded financial data
@@ -1075,34 +1076,43 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
   @override
   void initState() {
     super.initState();
+    widget.groupStatus == "Active"?
+    isActive = true:isActive = false;
     getMembers();
 
-    final statusProvider = Provider.of<GroupStatusProvider>(context, listen: false);
-print("currentGroupStatus ${statusProvider.currentGroupStatus}");
-    if (!statusProvider.currentGroupStatus.containsKey(widget.groupId)) {
-      if (widget.groupStatus == "Active") {
-        // Trust widget data and set it without API call
-      //  statusProvider.updateGroupStatus(widget.groupId, true);
-      } else {
-        // If widget says not active, optionally fetch real status from API
-        _loadGroupStatus();
+    final statusProvider =
+        Provider.of<GroupStatusProvider>(context, listen: false);
+    print("currentGroupStatus ${statusProvider.currentGroupStatus}");
+    if(statusProvider.currentGroupStatus!= null && statusProvider.currentGroupStatus.isNotEmpty){
+      if (!statusProvider.currentGroupStatus.containsKey(widget.groupId)) {
+        if (widget.groupStatus == "Active") {
+          // Trust widget data and set it without API call
+          //  statusProvider.updateGroupStatus(widget.groupId, true);
+        } else {
+          // If widget says not active, optionally fetch real status from API
+          if(statusProvider.currentGroupStatus!= null && statusProvider.currentGroupStatus.isNotEmpty){
+            _loadGroupStatus();
+
+          }
+        }
       }
+
     }
   }
 
-
   Future<void> _loadGroupStatus() async {
-    final statusProvider = Provider.of<GroupStatusProvider>(context, listen: false);
+    final statusProvider =
+        Provider.of<GroupStatusProvider>(context, listen: false);
 
     // Only fetch if we don't already have the status
     if (!statusProvider.currentGroupStatus.containsKey(widget.groupId)) {
       final result = await statusProvider.getGroupStatus(widget.groupId);
 
       result.match(
-            (error) {
+        (error) {
           // Handle error, maybe keep default isActive value
         },
-            (success) {
+        (success) {
           bool apiStatus = (success.currentStatus?.toLowerCase() == "active");
           statusProvider.updateGroupStatus(widget.groupId, apiStatus);
         },
@@ -1114,7 +1124,8 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showProgressDialog(context);
     });
-    var memberProvider = Provider.of<MemberListProvider>(context, listen: false);
+    var memberProvider =
+        Provider.of<MemberListProvider>(context, listen: false);
     await memberProvider.getMemberByGroup(widget.groupId);
     setState(() {
       members = memberProvider.memberListResponse!.data;
@@ -1127,11 +1138,13 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
   }
 
   Future<void> deleteGroup() async {
-    var deleteGroupProvider = Provider.of<GroupDeleteProvider>(context, listen: false);
+    var deleteGroupProvider =
+        Provider.of<GroupDeleteProvider>(context, listen: false);
     await deleteGroupProvider.deleteGroup(widget.groupId);
     if (deleteGroupProvider.deleteGroupResponse!.status == true) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(deleteGroupProvider.deleteGroupResponse!.message)),
+        SnackBar(
+            content: Text(deleteGroupProvider.deleteGroupResponse!.message)),
       );
       Navigator.pop(context, "Reload");
     }
@@ -1169,7 +1182,7 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
     );
 
     if (result == true) {
-    final data = await  Navigator.push(
+      final data = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => CreateGroupPage(
@@ -1180,23 +1193,24 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
           ),
         ),
       );
-    if(data == "Refresh"){
-    getMembers();
+      if (data == "Refresh") {
+        getMembers();
 
-    final statusProvider = Provider.of<GroupStatusProvider>(context, listen: false);
+        final statusProvider =
+            Provider.of<GroupStatusProvider>(context, listen: false);
 
-    if (!statusProvider.currentGroupStatus.containsKey(widget.groupId)) {
-      if (widget.groupStatus == "Active") {
-        // Trust widget data and set it without API call
-        statusProvider.updateGroupStatus(widget.groupId, true);
-      } else {
-        // If widget says not active, optionally fetch real status from API
-        _loadGroupStatus();
+        if (!statusProvider.currentGroupStatus.containsKey(widget.groupId)) {
+          if (widget.groupStatus == "Active") {
+            // Trust widget data and set it without API call
+            statusProvider.updateGroupStatus(widget.groupId, true);
+          } else {
+            // If widget says not active, optionally fetch real status from API
+            _loadGroupStatus();
+          }
+        }
+        setState(() {});
       }
     }
-    setState(() {
-    });
-    }}
   }
 
   Future<void> _deleteGroup() async {
@@ -1229,7 +1243,7 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: ()async {
+      onWillPop: () async {
         Navigator.pop(context, "Refresh");
         return false;
       },
@@ -1273,8 +1287,10 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
                     Consumer<GroupStatusProvider>(
                       builder: (context, statusProvider, child) {
                         // Get the actual status from provider if available
-                        bool currentStatus = statusProvider.currentGroupStatus[widget.groupId] ?? isActive;
-      
+                        bool currentStatus =
+                            statusProvider.currentGroupStatus[widget.groupId] ??
+                                isActive!;
+
                         return Text(
                           currentStatus ? "Active" : "Inactive",
                           style: TextStyle(
@@ -1289,8 +1305,10 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
                     Consumer<GroupStatusProvider>(
                       builder: (context, statusProvider, child) {
                         // Get the actual status from provider if available
-                        bool currentStatus = statusProvider.currentGroupStatus[widget.groupId] ?? isActive;
-      
+                        bool currentStatus =
+                            statusProvider.currentGroupStatus[widget.groupId] ??
+                                isActive!;
+
                         return Transform.scale(
                           scale: 0.8,
                           child: Switch(
@@ -1300,28 +1318,33 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
                             inactiveTrackColor: Colors.grey[300],
                             onChanged: (val) async {
                               // Update UI optimistically
-                              statusProvider.updateGroupStatus(widget.groupId, val);
-      
+                              statusProvider.updateGroupStatus(
+                                  widget.groupId, val);
+
                               // Call API through provider
-                              final result = await statusProvider.getGroupStatus(widget.groupId);
-      
+                              final result = await statusProvider
+                                  .getGroupStatus(widget.groupId);
+
                               result.match(
-                                    (error) {
+                                (error) {
                                   // Revert on failure
-                                  statusProvider.updateGroupStatus(widget.groupId, !val);
+                                  statusProvider.updateGroupStatus(
+                                      widget.groupId, !val);
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(error.message ?? "Something went wrong")),
+                                    SnackBar(
+                                        content: Text(error.message ??
+                                            "Something went wrong")),
                                   );
                                 },
-                                    (success) async {
+                                (success) async {
                                   // Update based on API response
-                                  bool apiStatus = (success.currentStatus?.toLowerCase() == "active");
-                                  statusProvider.updateGroupStatus(widget.groupId, apiStatus);
-      
+                                  bool apiStatus =
+                                      (success.currentStatus?.toLowerCase() ==
+                                          "active");
+                                  statusProvider.updateGroupStatus(
+                                      widget.groupId, apiStatus);
                                 },
                               );
-      
-      
                             },
                           ),
                         );
@@ -1347,8 +1370,8 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
                 child: _selectedTab == 0
                     ? _buildOverviewTab()
                     : _selectedTab == 1
-                    ? _buildMembersTab()
-                    : _buildAnalyticsTab(),
+                        ? _buildMembersTab()
+                        : _buildAnalyticsTab(),
               ),
             ),
           ],
@@ -1415,7 +1438,8 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
   Widget _buildOverviewTab() {
     return Consumer<GroupStatusProvider>(
       builder: (context, statusProvider, child) {
-        bool currentStatus = statusProvider.currentGroupStatus[widget.groupId] ?? isActive;
+        bool currentStatus =
+            statusProvider.currentGroupStatus[widget.groupId] ?? isActive!;
 
         if (!currentStatus) {
           return Padding(
@@ -1424,7 +1448,8 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.pause_circle_outline, size: 64, color: Colors.grey),
+                  const Icon(Icons.pause_circle_outline,
+                      size: 64, color: Colors.grey),
                   const SizedBox(height: 16),
                   Text(
                     "Group is Inactive",
@@ -1456,18 +1481,26 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
                       ),
                     ),
                     onPressed: () async {
-                      final statusProvider = Provider.of<GroupStatusProvider>(context, listen: false);
-                      final result = await statusProvider.getGroupStatus(widget.groupId);
+                      final statusProvider = Provider.of<GroupStatusProvider>(
+                          context,
+                          listen: false);
+                      final result =
+                          await statusProvider.getGroupStatus(widget.groupId);
 
                       result.match(
-                            (error) {
+                        (error) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(error.message ?? "Failed to activate group")),
+                            SnackBar(
+                                content: Text(error.message ??
+                                    "Failed to activate group")),
                           );
                         },
-                            (success) {
-                          bool apiStatus = (success.currentStatus?.toLowerCase() == "active");
-                          statusProvider.updateGroupStatus(widget.groupId, apiStatus);
+                        (success) {
+                          bool apiStatus =
+                              (success.currentStatus?.toLowerCase() ==
+                                  "active");
+                          statusProvider.updateGroupStatus(
+                              widget.groupId, apiStatus);
                         },
                       );
                     },
@@ -1503,7 +1536,8 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
                           CircleAvatar(
                             radius: 30,
                             backgroundColor: home1.withOpacity(0.1),
-                            child: const Icon(Icons.group, size: 30, color: home1),
+                            child:
+                                const Icon(Icons.group, size: 30, color: home1),
                           ),
                           const SizedBox(width: 16),
                           Expanded(
@@ -1575,7 +1609,8 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
         return Center(
           child: SingleChildScrollView(
             child: Dialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
               child: const Padding(
                 padding: EdgeInsets.all(50),
                 child: Column(
@@ -1603,7 +1638,8 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
   }
 
   Widget _buildMembersTab() {
-    var deleteMember = Provider.of<DeleteMemberProvider>(context, listen: false);
+    var deleteMember =
+        Provider.of<DeleteMemberProvider>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -1622,7 +1658,8 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
                   ),
                 ),
               ),
@@ -1679,7 +1716,8 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
                     context: context,
                     builder: (context) => AlertDialog(
                       title: const Text('Confirm delete'),
-                      content: const Text('Are you sure you want to delete this member?'),
+                      content: const Text(
+                          'Are you sure you want to delete this member?'),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.of(context).pop(false),
@@ -1689,10 +1727,11 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
                           onPressed: () async {
                             Navigator.of(context).pop(false);
                             await deleteMember.deleteMember(member.memberId);
-                            if (deleteMember.deleteMemberResponse?.status == true) {
+                            if (deleteMember.deleteMemberResponse?.status ==
+                                true) {
                               await getMembers();
                               setState(() {});
-                            }else{
+                            } else {
                               await getMembers();
                               setState(() {});
                             }
@@ -1714,7 +1753,9 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Failed to delete ${member.memberName}')),
+                      SnackBar(
+                          content:
+                              Text('Failed to delete ${member.memberName}')),
                     );
                   }
                 },
@@ -1751,7 +1792,8 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
                           scrollDirection: Axis.horizontal,
                           child: Row(
                             children: [
-                              Icon(Icons.calendar_today, size: 12, color: home2.withOpacity(0.6)),
+                              Icon(Icons.calendar_today,
+                                  size: 12, color: home2.withOpacity(0.6)),
                               const SizedBox(width: 4),
                               Text(
                                 "Joined ${member.dueDate}",
@@ -1815,7 +1857,8 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
   Widget _buildAnalyticsTab() {
     return Consumer<GroupStatusProvider>(
       builder: (context, statusProvider, child) {
-        bool currentStatus = statusProvider.currentGroupStatus[widget.groupId] ?? isActive;
+        bool currentStatus =
+            statusProvider.currentGroupStatus[widget.groupId] ?? isActive!;
 
         if (!currentStatus) {
           return _buildInactiveMessage();
@@ -1940,7 +1983,8 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.pause_circle_outline, size: 64, color: Colors.grey),
+            const Icon(Icons.pause_circle_outline,
+                size: 64, color: Colors.grey),
             const SizedBox(height: 16),
             Text(
               "Group is Inactive",
@@ -1991,7 +2035,8 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
     );
   }
 
-  Widget _buildStatCard(String title, String value, Color color, IconData icon) {
+  Widget _buildStatCard(
+      String title, String value, Color color, IconData icon) {
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -2078,7 +2123,8 @@ print("currentGroupStatus ${statusProvider.currentGroupStatus}");
     );
   }
 
-  Widget _buildMetricCard(String title, String value, IconData icon, Color color) {
+  Widget _buildMetricCard(
+      String title, String value, IconData icon, Color color) {
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(

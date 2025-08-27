@@ -199,7 +199,7 @@ class _MemberPageState extends State<MemberPage> {
                   Icon(Icons.error_outline, size: 48,
                       color: Colors.red.shade400),
                   const SizedBox(height: 16),
-                  Text(
+                 const  Text(
                     "Permission Required",
                     style: TextStyle(
                       fontSize: 20,
@@ -219,7 +219,7 @@ class _MemberPageState extends State<MemberPage> {
                     children: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: Text(
+                        child:const Text(
                           "Cancel",
                           style: TextStyle(color: home2),
                         ),
@@ -294,7 +294,7 @@ class _MemberPageState extends State<MemberPage> {
                   child: Center(
                     child: Text(
                       member["name"].substring(0, 1).toUpperCase(),
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: white,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -309,7 +309,7 @@ class _MemberPageState extends State<MemberPage> {
                     children: [
                       Text(
                         member["name"],
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           color: home2,
@@ -347,13 +347,13 @@ class _MemberPageState extends State<MemberPage> {
                       LengthLimitingTextInputFormatter(5),
                       NumberInputFormatter(),
                     ],
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: home2,
                       fontWeight: FontWeight.w600,
                     ),
                     decoration: InputDecoration(
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.only(left: 8, right: 4),
+                      prefixIcon: const Padding(
+                        padding:  EdgeInsets.only(left: 8, right: 4),
                         child: Icon(
                           Icons.currency_rupee,
                           size: 18,
@@ -437,7 +437,7 @@ class _MemberPageState extends State<MemberPage> {
           const SizedBox(height: 4),
           Text(
             label,
-            style: TextStyle(
+            style:const TextStyle(
               fontSize: 12,
               color: home2,
               fontWeight: FontWeight.w500,
@@ -766,7 +766,7 @@ class _MemberPageState extends State<MemberPage> {
                                     LengthLimitingTextInputFormatter(5),
                                     NumberInputFormatter(),
                                   ],
-                                  decoration: InputDecoration(
+                                  decoration:const InputDecoration(
                                     prefixIcon:
                                     Icon(Icons.currency_rupee, size: 18),
                                   ),
@@ -779,7 +779,7 @@ class _MemberPageState extends State<MemberPage> {
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context),
-                          child: Text("Cancel", style: TextStyle(color: home2)),
+                          child:const Text("Cancel", style: TextStyle(color: home2)),
                         ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(

@@ -635,7 +635,272 @@ class _GroupHomePageState extends State<GroupHomePage> {
       },
     );
   }
+
+  Widget _buildGlassField({
+    required IconData icon,
+    required String label,
+    required TextInputType keyboardType,
+    int? maxLength,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        gradient: LinearGradient(
+          colors: [Colors.white.withOpacity(0.9), Colors.white.withOpacity(0.7)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        border: Border.all(
+          color: home1.withOpacity(0.1),
+          width: 1.2,
+        ),
+      ),
+      child: TextField(
+        decoration: InputDecoration(
+          counterText: maxLength != null ? "" : null,
+          prefixIcon: Container(
+            padding: const EdgeInsets.all(14),
+            child: Icon(icon, color: home1, size: 22),
+          ),
+          labelText: label,
+          labelStyle: TextStyle(
+            color: Colors.grey.shade600,
+            fontWeight: FontWeight.w500,
+            fontSize: 14,
+          ),
+          border: InputBorder.none,
+          filled: false,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 18,
+          ),
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
+        ),
+        maxLength: maxLength,
+        keyboardType: keyboardType,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
   Widget _buildExpandedContent() {
+    return Container(
+      margin: const EdgeInsets.only(top: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: home1.withOpacity(0.08),
+            blurRadius: 30,
+            spreadRadius: 3,
+            offset: const Offset(0, 12),
+          ),
+        ],
+        border: Border.all(
+          color: home1,
+          width: 1.2,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(28),
+        child: Column(
+          children: [
+            // Header with Icon
+            Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [home1, home1.withOpacity(0.7)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.link, color: Colors.white, size: 24),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Create Payment Link',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: home1,
+                        ),
+                      ),
+                      Text(
+                        'Send secure payment requests instantly',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey.shade600,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 28),
+
+            // Mobile Number Field - Glassmorphism Style
+            _buildGlassField(
+              icon: Icons.phone_iphone,
+              label: 'Mobile Number',
+              keyboardType: TextInputType.number,
+              maxLength: 10,
+            ),
+
+            const SizedBox(height: 20),
+
+            // Amount Field - Glassmorphism Style
+            _buildGlassField(
+              icon: Icons.currency_rupee,
+              label: 'Amount',
+              keyboardType: TextInputType.number,
+            ),
+
+            const SizedBox(height: 20),
+
+            // Note Field - Glassmorphism Style
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                gradient: LinearGradient(
+                  colors: [Colors.white.withOpacity(0.9), Colors.white.withOpacity(0.7)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                border: Border.all(
+                  color: home1.withOpacity(0.1),
+                  width: 1.2,
+                ),
+              ),
+              child: TextField(
+                maxLines: 3,
+                decoration: InputDecoration(
+                  prefixIcon: Container(
+                    padding: const EdgeInsets.all(14),
+                    child: Icon(Icons.note_alt_outlined, color: home1, size: 22),
+                  ),
+                  labelText: 'Note (optional)',
+                  labelStyle: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  ),
+                  alignLabelWithHint: true,
+                  border: InputBorder.none,
+                  filled: false,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 18,
+                  ),
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                ),
+                keyboardType: TextInputType.text,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 32),
+
+            // Send Button - Floating Action Style
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                gradient: LinearGradient(
+                  colors: [home1, home2],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: home1.withOpacity(0.4),
+                    blurRadius: 20,
+                    spreadRadius: 3,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    // Handle send action
+                  },
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 32),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.bolt, color: Colors.white, size: 22),
+                        const SizedBox(width: 12),
+                        Text(
+                          'Generate Payment Link',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // Security Badge
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.green.shade50,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.green.shade100),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.verified, color: Colors.green.shade600, size: 16),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Secure & Encrypted',
+                    style: TextStyle(
+                      color: Colors.green.shade700,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+/*  Widget _buildExpandedContent() {
     return Card(
       color: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10),
@@ -699,14 +964,14 @@ class _GroupHomePageState extends State<GroupHomePage> {
         ),
       ),
     );
-  }
+  }*/
   @override
   Widget build(BuildContext context) {
     final monthData = currentMonthData;
     final groups = _filteredGroups;
-    final totalCollected = 100;
+    const totalCollected = 100;
     //groups.fold<num>(0, (sum, group) => sum + (group.["collected"] as num));
-    final totalDue = 50;
+    const totalDue = 50;
     //   groups.fold<num>(0, (sum, group) => sum + (group["due"] as num));
 
     return Scaffold(
@@ -925,7 +1190,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
                             color: home2.withOpacity(0.7),
                           ),
                         ),
-                        Text(
+                        const Text(
                           "₹$totalCollected",
                           style: const TextStyle(
                             fontSize: 16,
@@ -954,7 +1219,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
                             color: home2.withOpacity(0.7),
                           ),
                         ),
-                        Text(
+                       const Text(
                           "₹$totalDue",
                           style: const TextStyle(
                             fontSize: 16,
