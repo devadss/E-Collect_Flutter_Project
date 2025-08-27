@@ -1091,7 +1091,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
         } else {
           // If widget says not active, optionally fetch real status from API
           if(statusProvider.currentGroupStatus!= null && statusProvider.currentGroupStatus.isNotEmpty){
-            _loadGroupStatus();
+          //  _loadGroupStatus();
 
           }
         }
