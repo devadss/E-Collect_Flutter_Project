@@ -548,22 +548,22 @@ class _MemberPageState extends State<MemberPage> {
               });
             },
           ),
-          _actionIcon(
-            icon: Icons.edit,
-            label: "Edit",
-            onTap: () {
-              if (filteredMembers.isNotEmpty) {
-                _showEditAmountsDialog();
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text("No members to edit"),
-                    backgroundColor: Colors.orange.shade600,
-                  ),
-                );
-              }
-            },
-          ),
+          // _actionIcon(
+          //   icon: Icons.edit,
+          //   label: "Edit",
+          //   onTap: () {
+          //     if (filteredMembers.isNotEmpty) {
+          //       _showEditAmountsDialog();
+          //     } else {
+          //       ScaffoldMessenger.of(context).showSnackBar(
+          //         SnackBar(
+          //           content: const Text("No members to edit"),
+          //           backgroundColor: Colors.orange.shade600,
+          //         ),
+          //       );
+          //     }
+          //   },
+          // ),
         ],
       ),
     );
@@ -574,7 +574,7 @@ class _MemberPageState extends State<MemberPage> {
       context: context,
       builder: (context) =>
           AlertDialog(
-            title: const Text("Edit Amounts"),
+            title: const Text("Edit Member"),
             content: SizedBox(
               width: double.maxFinite,
               child: ListView.builder(
@@ -583,36 +583,108 @@ class _MemberPageState extends State<MemberPage> {
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Row(
+                    child: Column(
                       children: [
-                        Expanded(
-                          child: Text(
-                            filteredMembers[index]["name"],
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
+                        Row(
+                          children: [
+                            const Expanded(
+                              child: Text(
+                                "Name",
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                             ),
-                          ),
+                            const SizedBox(width: 5),
+                            SizedBox(
+                              width: 220,
+                              child: TextField(
+                                controller: filteredMembers[index]["amountController"],
+                                keyboardType: TextInputType.name,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.singleLineFormatter,
+                                  LengthLimitingTextInputFormatter(5),
+                                  NumberInputFormatter(),
+                                ],
+                                decoration:  InputDecoration(hintText: filteredMembers[index]["name"],
+                                  prefixIcon: Icon(Icons.person, size: 18),
+                                  contentPadding:
+                                 const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                  isDense: true,
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 12),
-                        SizedBox(
-                          width: 100,
-                          child: TextField(
-                            controller: filteredMembers[index]["amountController"],
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(5),
-                              NumberInputFormatter(),
-                            ],
-                            decoration: const InputDecoration(
-                              prefixIcon: Icon(Icons.currency_rupee, size: 18),
-                              contentPadding:
-                              EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                              isDense: true,
-                              border: OutlineInputBorder(),
+                       const SizedBox(height: 5,),
+                        Row(
+                          children: [
+                            const Expanded(
+                              child: Text(
+                                "Number",
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                             ),
-                          ),
+                            const SizedBox(width: 5),
+                            SizedBox(
+                              width: 220,
+                              child: TextField(
+                                controller: filteredMembers[index]["amountController"],
+                                keyboardType: TextInputType.name,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.singleLineFormatter,
+                                  LengthLimitingTextInputFormatter(5),
+                                  NumberInputFormatter(),
+                                ],
+                                decoration:  InputDecoration(hintText: filteredMembers[index]["phone"],
+                                  prefixIcon: Icon(Icons.phone_iphone, size: 18),
+                                  contentPadding:
+                                  EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                  isDense: true,
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 5,),
+                        Row(
+                          children: [
+                            const Expanded(
+                              child: Text(
+                                "Amount",
+                                style:  TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                            SizedBox(
+                              width: 220,
+                              child: TextField(
+                                controller: _searchController,
+                                keyboardType: TextInputType.name,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.singleLineFormatter,
+                                  LengthLimitingTextInputFormatter(5),
+                                  NumberInputFormatter(),
+                                ],
+                                decoration:  InputDecoration(hintText: widget.amount.toString(),
+                                  prefixIcon: Icon(Icons.currency_rupee, size: 18),
+                                  contentPadding:
+                                  EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                  isDense: true,
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -700,9 +772,10 @@ class _MemberPageState extends State<MemberPage> {
               // Handle create group logic
               addMember();
             },
-            child: const Text(
+            child:  Text(
+              widget.status == "EDIT"?"Update Member":
               "Add Member",
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: white,
@@ -739,7 +812,7 @@ class _MemberPageState extends State<MemberPage> {
           tooltip: isSearching ? "Close Search" : "Search Members",
         ),
         IconButton(
-          icon: const Icon(Icons.edit, color: home1, size: 28),
+          icon:  const Icon(Icons.edit, color: home1, size: 28),
           onPressed: () {
             if (filteredMembers.isNotEmpty) {
               showDialog(

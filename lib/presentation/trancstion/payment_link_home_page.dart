@@ -1,4 +1,1194 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/animation.dart';
+import 'package:lottie/lottie.dart';
+import '../../core/colors.dart';
+
+const Color successColor = Color(0xFF00B894);
+const Color warningColor = amber;
+const Color backgroundColor = white;
+const Color cardColor = Color(0xFFFFFFFF);
+const Color textPrimary = Color(0xFF2D3436);
+const Color textSecondary = Color(0xFF636E72);
+
+class PaymentLinkHomePage extends StatefulWidget {
+  const PaymentLinkHomePage({super.key});
+
+  @override
+  State<PaymentLinkHomePage> createState() => _PaymentLinkHomePageState();
+}
+
+class _PaymentLinkHomePageState extends State<PaymentLinkHomePage>
+    with TickerProviderStateMixin {
+  late AnimationController _scaleController;
+  late Animation<double> _scaleAnimation;
+  late AnimationController _fadeController;
+  final ScrollController _scrollController = ScrollController();
+  double _scrollOffset = 0.0;
+
+  final List<Payment> receivedPayments = [
+    Payment('John Doe', 150.00,
+        DateTime.now().subtract(const Duration(days: 2)), true),
+    Payment('Jane Smith', 200.00,
+        DateTime.now().subtract(const Duration(days: 5)), true),
+    Payment('Group A', 350.00,
+        DateTime.now().subtract(const Duration(days: 10)), true),
+    Payment('Mike Johnson', 100.00,
+        DateTime.now().subtract(const Duration(days: 15)), true),
+  ];
+
+  final List<Payment> duePayments = [
+    Payment('Sarah Williams', 180.00,
+        DateTime.now().add(const Duration(days: 5)), false),
+    Payment(
+        'Group B', 420.00, DateTime.now().add(const Duration(days: 7)), false),
+    Payment('David Brown', 90.00, DateTime.now().add(const Duration(days: 3)),
+        false),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    _scaleController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+    _scaleAnimation = CurvedAnimation(
+      parent: _scaleController,
+      curve: Curves.elasticOut,
+    );
+
+    _fadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    );
+
+    Future.delayed(const Duration(milliseconds: 300), () {
+      _scaleController.forward();
+      _fadeController.forward();
+    });
+
+    _scrollController.addListener(() {
+      setState(() {
+        _scrollOffset = _scrollController.offset;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _scaleController.dispose();
+    _fadeController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double totalReceived =
+    receivedPayments.fold(0, (sum, payment) => sum + payment.amount);
+    double totalDue =
+    duePayments.fold(0, (sum, payment) => sum + payment.amount);
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.transparent,
+        systemNavigationBarColor: backgroundColor,
+      ),
+      child: Scaffold(
+        backgroundColor: backgroundColor,
+        appBar: _buildAppBar(),
+        body: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            SliverToBoxAdapter(
+              child: _buildWelcomeHeader(),
+            ),
+            SliverToBoxAdapter(
+              child: _buildSummaryCards(totalReceived, totalDue),
+            ),
+            SliverToBoxAdapter(child: const SizedBox(height: 32)),
+            SliverToBoxAdapter(
+              child: _buildSectionHeader(
+                  'Received Payments', receivedPayments.length),
+            ),
+            SliverToBoxAdapter(child: const SizedBox(height: 16)),
+            SliverToBoxAdapter(
+              child: _buildPaymentsList(receivedPayments, true),
+            ),
+            SliverToBoxAdapter(child: const SizedBox(height: 32)),
+            SliverToBoxAdapter(
+              child: _buildSectionHeader('Due Payments', duePayments.length),
+            ),
+            SliverToBoxAdapter(child: const SizedBox(height: 16)),
+            SliverToBoxAdapter(
+              child: _buildPaymentsList(duePayments, false),
+            ),
+            const SliverToBoxAdapter(child: SizedBox(height: 100)),
+          ],
+        ),
+        floatingActionButton: _buildAnimatedFAB(),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      automaticallyImplyLeading: false,
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
+      title: const Text('Payment Links',
+          style: TextStyle(
+              fontWeight: FontWeight.w800,
+              color: textPrimary,
+              fontSize: 24,
+              letterSpacing: -0.5)),
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      centerTitle: true,
+      actions: [
+        IconButton(
+          icon: Badge(
+            backgroundColor: home1,
+            smallSize: 8,
+            child:
+             Icon(Iconsax.notification, color: textPrimary, size: 24),
+          ),
+          onPressed: () {},
+        ),
+      ],
+    );
+  }
+
+  Widget _buildWelcomeHeader() {
+    return Transform.translate(
+      offset: Offset(0, _scrollOffset * 0.4),
+      child: Opacity(
+        opacity: (1 - _scrollOffset / 150).clamp(0.4, 1.0),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              FadeTransition(
+                opacity: _fadeController,
+                child: const Text(
+                  'Welcome back, Alex!',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: textSecondary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4),
+              FadeTransition(
+                opacity: _fadeController,
+                child: const Text(
+                  'Manage your payment links seamlessly',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: textSecondary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSummaryCards(double totalReceived, double totalDue) {
+    return ScaleTransition(
+      scale: _scaleAnimation,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Row(
+          children: [
+            Expanded(
+                child: _buildSummaryCard(
+                  'Received',
+                  totalReceived,
+                  successColor,
+                  Iconsax.tick_circle,
+                  const [Color(0xFF00B894), Color(0xFF00C6A7)],
+                )),
+            const SizedBox(width: 16),
+            Expanded(
+                child: _buildSummaryCard(
+                  'Due',
+                  totalDue,
+                  warningColor,
+                  Iconsax.clock,
+                  const [Color(0xFFFDCB6E), Color(0xFFFFD180)],
+                )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSummaryCard(String title, double amount, Color color,
+      IconData icon, List<Color> gradientColors) {
+    return TweenAnimationBuilder<double>(
+      duration: const Duration(milliseconds: 1000),
+      tween: Tween(begin: 0.0, end: 1.0),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, child) {
+        return Transform.translate(
+          offset: Offset(0, (1 - value) * 50),
+          child: Opacity(
+            opacity: value,
+            child: child,
+          ),
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: gradientColors,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: color.withOpacity(0.3),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Icon(icon, color: Colors.white, size: 24),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white70,
+                ),
+              ),
+              const SizedBox(height: 8),
+              TweenAnimationBuilder<double>(
+                duration: const Duration(milliseconds: 1500),
+                tween: Tween(begin: 0.0, end: amount),
+                builder: (context, value, child) {
+                  return Text(
+                    '\$${value.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                      letterSpacing: -0.5,
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title, int count) {
+    return SlideTransition(
+      position: Tween<Offset>(
+        begin: const Offset(-0.5, 0.0),
+        end: Offset.zero,
+      ).animate(CurvedAnimation(
+        parent: _fadeController,
+        curve: Curves.easeOutCubic,
+      )),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: textPrimary,
+                letterSpacing: -0.3,
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [home1.withOpacity(0.8), home2],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Text(
+                count.toString(),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPaymentsList(List<Payment> payments, bool isReceived) {
+    if (payments.isEmpty) {
+      return TweenAnimationBuilder<double>(
+        duration: const Duration(milliseconds: 800),
+        tween: Tween(begin: 0.0, end: 1.0),
+        builder: (context, value, child) {
+          return Opacity(
+            opacity: value,
+            child: Transform.scale(
+              scale: value,
+              child: child,
+            ),
+          );
+        },
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.all(40),
+          decoration: BoxDecoration(
+            color: cardColor,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              Lottie.asset(
+                'assets/animations/empty.json',
+                width: 120,
+                height: 120,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'No payments found',
+                style: TextStyle(
+                  color: textSecondary,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return TweenAnimationBuilder<double>(
+      duration: const Duration(milliseconds: 800),
+      tween: Tween(begin: 0.0, end: 1.0),
+      builder: (context, value, child) {
+        return Opacity(
+          opacity: value,
+          child: Transform.scale(
+            scale: value,
+            child: child,
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 24),
+        decoration: BoxDecoration(
+          color: cardColor,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: black),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(24),
+          child: ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: payments.length,
+            separatorBuilder: (context, index) => Divider(
+              height: 1,
+              indent: 20,
+              endIndent: 20,
+              color: black87,
+            ),
+            itemBuilder: (context, index) {
+              return AnimatedPaymentListItem(
+                payment: payments[index],
+                isReceived: isReceived,
+                index: index,
+                onTap: () => _showPaymentDetails(payments[index]),
+                onRemind: () => _sendPaymentReminder(payments[index]),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAnimatedFAB() {
+    return TweenAnimationBuilder<double>(
+      duration: const Duration(milliseconds: 1000),
+      tween: Tween(begin: 0.0, end: 1.0),
+      curve: Curves.elasticOut,
+      builder: (context, value, child) {
+        return Transform.scale(
+          scale: value,
+          child: Transform.translate(
+            offset: Offset(0, (1 - value) * 100),
+            child: child,
+          ),
+        );
+      },
+      child: FloatingActionButton(
+        onPressed: _createNewPaymentLink,
+        backgroundColor: home1,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: const Icon(Iconsax.add, color: Colors.white, size: 28),
+        elevation: 8,
+      ),
+    );
+  }
+
+  void _createNewPaymentLink() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeOutCubic,
+          decoration: const BoxDecoration(
+            color: cardColor,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(32),
+              topRight: Radius.circular(32),
+            ),
+          ),
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: const NewPaymentLinkForm(
+            home1: home1,
+            home2: home2,
+          ),
+        );
+      },
+    );
+  }
+
+  void _sendPaymentReminder(Payment payment) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Reminder sent to ${payment.name}'),
+        backgroundColor: successColor,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
+  }
+
+  void _showPaymentDetails(Payment payment) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.all(24),
+        child: AnimatedPaymentDetailsDialog(payment: payment),
+      ),
+    );
+  }
+}
+
+class AnimatedPaymentListItem extends StatefulWidget {
+  final Payment payment;
+  final bool isReceived;
+  final int index;
+  final VoidCallback onTap;
+  final VoidCallback onRemind;
+
+  const AnimatedPaymentListItem({
+    super.key,
+    required this.payment,
+    required this.isReceived,
+    required this.index,
+    required this.onTap,
+    required this.onRemind,
+  });
+
+  @override
+  State<AnimatedPaymentListItem> createState() =>
+      _AnimatedPaymentListItemState();
+}
+
+class _AnimatedPaymentListItemState extends State<AnimatedPaymentListItem>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 600 + (widget.index * 150)),
+    );
+
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutCubic,
+    );
+
+    _scaleAnimation = Tween<double>(begin: 0.95, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeOut,
+      ),
+    );
+
+    Future.delayed(Duration(milliseconds: widget.index * 150), () {
+      if (mounted) {
+        _controller.forward();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaleTransition(
+      scale: _scaleAnimation,
+      child: FadeTransition(
+        opacity: _animation,
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0.5, 0.0),
+            end: Offset.zero,
+          ).animate(_animation),
+          child: InkWell(
+            onTap: widget.onTap,
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: Row(
+                children: [
+                  Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: widget.isReceived
+                            ? [
+                          successColor.withOpacity(0.2),
+                          successColor.withOpacity(0.1)
+                        ]
+                            : [
+                          warningColor.withOpacity(0.2),
+                          warningColor.withOpacity(0.1)
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: widget.isReceived
+                            ? successColor.withOpacity(0.3)
+                            : warningColor.withOpacity(0.3),
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        widget.payment.name[0],
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                          color:
+                          widget.isReceived ? successColor : warningColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.payment.name,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                            color: textPrimary,
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          DateFormat('MMM dd, yyyy')
+                              .format(widget.payment.date),
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: textSecondary.withOpacity(0.7),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        '\$${widget.payment.amount.toStringAsFixed(2)}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                          color:
+                          widget.isReceived ? successColor : warningColor,
+                          letterSpacing: -0.3,
+                        ),
+                      ),
+                      if (!widget.isReceived)
+                        TextButton(
+                          onPressed: widget.onRemind,
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            minimumSize: Size.zero,
+                          ),
+                          child: const Text(
+                            'Remind',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: home1,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Keep Payment and NewPaymentLinkForm classes as before, but update NewPaymentLinkForm with modern styling
+
+class AnimatedPaymentDetailsDialog extends StatefulWidget {
+  final Payment payment;
+
+  const AnimatedPaymentDetailsDialog({super.key, required this.payment});
+
+  @override
+  State<AnimatedPaymentDetailsDialog> createState() =>
+      _AnimatedPaymentDetailsDialogState();
+}
+
+class _AnimatedPaymentDetailsDialogState
+    extends State<AnimatedPaymentDetailsDialog>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    _scaleAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.elasticOut,
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    );
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaleTransition(
+      scale: _scaleAnimation,
+      child: FadeTransition(
+        opacity: _fadeAnimation,
+        child: Container(
+          decoration: BoxDecoration(
+            color: cardColor,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 30,
+                spreadRadius: 0,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header with gradient
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [home1, home2],
+                  ),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(24),
+                    topRight: Radius.circular(24),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    // Status indicator with icon
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        widget.payment.isPaid
+                            ? Icons.check_circle_rounded
+                            : Icons.pending_rounded,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      widget.payment.isPaid
+                          ? 'Payment Received'
+                          : 'Payment Pending',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      widget.payment.name,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+
+              // Content area
+              Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  children: [
+                    // Amount with large display
+                    Text(
+                      '\$${widget.payment.amount.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 36,
+                        fontWeight: FontWeight.w800,
+                        color: home1,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Details in cards
+                    _buildDetailCard(
+                      icon: Icons.calendar_today_rounded,
+                      title: 'Date',
+                      value: DateFormat('MMM dd, yyyy')
+                          .format(widget.payment.date),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildDetailCard(
+                      icon: Icons.account_circle_rounded,
+                      title: 'Recipient',
+                      value: widget.payment.name,
+                    ),
+                    const SizedBox(height: 12),
+                    _buildDetailCard(
+                      icon: widget.payment.isPaid
+                          ? Icons.verified_rounded
+                          : Icons.pending_actions_rounded,
+                      title: 'Status',
+                      value: widget.payment.isPaid ? 'Paid' : 'Pending',
+                      valueColor:
+                      widget.payment.isPaid ? successColor : warningColor,
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Action buttons - Conditional based on payment status
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () => Navigator.pop(context),
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              side: BorderSide(color: home1.withOpacity(0.3)),
+                            ),
+                            child: const Text(
+                              'Close',
+                              style: TextStyle(
+                                color: home1,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              if (widget.payment.isPaid) {
+                                // Share functionality
+                              } else {
+                                // Remind functionality
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                              widget.payment.isPaid ? home1 : warningColor,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 0,
+                            ),
+                            child: Text(
+                              widget.payment.isPaid ? 'Share' : 'Remind',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetailCard({
+    required IconData icon,
+    required String title,
+    required String value,
+    Color? valueColor,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.grey[100]!,
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: home1.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              color: home1,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: valueColor ?? textPrimary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Payment {
+  final String name;
+  final double amount;
+  final DateTime date;
+  final bool isPaid;
+
+  Payment(this.name, this.amount, this.date, this.isPaid);
+}
+
+class NewPaymentLinkForm extends StatefulWidget {
+  final Color home1;
+  final Color home2;
+
+  const NewPaymentLinkForm({
+    super.key,
+    required this.home1,
+    required this.home2,
+  });
+
+  @override
+  State<NewPaymentLinkForm> createState() => _NewPaymentLinkFormState();
+}
+
+class _NewPaymentLinkFormState extends State<NewPaymentLinkForm> {
+  final _formKey = GlobalKey<FormState>();
+  final _amountController = TextEditingController();
+  String _selectedRecipientType = 'Member';
+  String? _selectedRecipient;
+
+  @override
+  void dispose() {
+    _amountController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Create New Payment Link',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: widget.home1,
+              ),
+            ),
+            const SizedBox(height: 24),
+            DropdownButtonFormField<String>(
+              value: _selectedRecipientType,
+              items: const [
+                DropdownMenuItem(value: 'Member', child: Text('Member')),
+                DropdownMenuItem(value: 'Group', child: Text('Group')),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  _selectedRecipientType = value!;
+                  _selectedRecipient = null;
+                });
+              },
+              decoration: InputDecoration(
+                labelText: 'Recipient Type',
+                labelStyle: TextStyle(color: widget.home1),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: widget.home1),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: widget.home1),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            DropdownButtonFormField<String>(
+              value: _selectedRecipient,
+              hint: const Text('Select Recipient'),
+              items: _selectedRecipientType == 'Member'
+                  ? ['John Doe', 'Jane Smith', 'Mike Johnson']
+                  .map((name) => DropdownMenuItem(
+                value: name,
+                child: Text(name),
+              ))
+                  .toList()
+                  : ['Group A', 'Group B', 'Group C']
+                  .map((name) => DropdownMenuItem(
+                value: name,
+                child: Text(name),
+              ))
+                  .toList(),
+              onChanged: (value) {
+                setState(() {
+                  _selectedRecipient = value;
+                });
+              },
+              decoration: InputDecoration(
+                labelText: 'Recipient',
+                labelStyle: TextStyle(color: widget.home1),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: widget.home1),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: widget.home1),
+                ),
+              ),
+              validator: (value) =>
+              value == null ? 'Please select a recipient' : null,
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _amountController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Amount',
+                labelStyle: TextStyle(color: widget.home1),
+                prefixText: '\$ ',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: widget.home1),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: widget.home1),
+                ),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter an amount';
+                }
+                if (double.tryParse(value) == null) {
+                  return 'Please enter a valid number';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content:
+                        const Text('Payment link created successfully'),
+                        backgroundColor: widget.home1,
+                      ),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: widget.home1,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text(
+                  'Create Payment Link',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: white, fontSize: 15),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+/*
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/colors.dart';
@@ -657,4 +1847,4 @@ class _NewPaymentLinkFormState extends State<NewPaymentLinkForm> {
       ),
     );
   }
-}
+}*/

@@ -1,4 +1,3 @@
-import 'package:collection_qr_flutter/presentation/groups/bnk_account_details/bank_accout_detail_page.dart';
 import 'package:collection_qr_flutter/presentation/groups/bnk_account_details/bank_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -760,7 +759,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
                   },
                   borderRadius: BorderRadius.circular(20),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 32),
+                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
