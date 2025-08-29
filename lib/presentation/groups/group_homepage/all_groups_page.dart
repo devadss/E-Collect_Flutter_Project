@@ -245,7 +245,7 @@ class _AllGroupsPageState extends State<AllGroupsPage> {
                                     .split(' ')[0],
                                 groupId: group.groupId,
                                 groupName: group.groupName,
-                                groupStatus: group.status!,
+                                groupStatus: group.status.toString(),
                               ),
                             ),
                           );

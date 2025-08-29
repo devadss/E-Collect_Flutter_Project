@@ -52,11 +52,24 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
   @override
   void initState() {
     super.initState();
+    print("groupStatus ${widget.groupStatus}");
+
     widget.groupStatus == "Active" ? isActive = true : isActive = false;
     getMembers();
+    updateStatus();
 
+
+  }
+
+  Future<void> updateStatus() async {
     final statusProvider =
-        Provider.of<GroupStatusProvider>(context, listen: false);
+    Provider.of<GroupStatusProvider>(context, listen: false);
+    if(widget.groupStatus == "null"){
+      await statusProvider.getGroupStatus(widget.groupId);
+      setState(() {
+
+      });
+    }
     print("currentGroupStatus ${statusProvider.currentGroupStatus}");
     if (statusProvider.currentGroupStatus != null &&
         statusProvider.currentGroupStatus.isNotEmpty) {
@@ -121,7 +134,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
         SnackBar(
             content: Text(deleteGroupProvider.deleteGroupResponse!.message)),
       );
-      Navigator.pop(context, "Reload");
+      Navigator.pop(context, "Refresh");
     }
   }
 
@@ -169,20 +182,8 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
         ),
       );
       if (data == "Refresh") {
-        getMembers();
+        Navigator.pop(context, "Refresh");
 
-        final statusProvider =
-            Provider.of<GroupStatusProvider>(context, listen: false);
-
-        if (!statusProvider.currentGroupStatus.containsKey(widget.groupId)) {
-          if (widget.groupStatus == "Active") {
-            // Trust widget data and set it without API call
-            statusProvider.updateGroupStatus(widget.groupId, true);
-          } else {
-            // If widget says not active, optionally fetch real status from API
-            _loadGroupStatus();
-          }
-        }
         setState(() {});
       }
     }
@@ -355,60 +356,6 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
     );
   }
 
-  Widget _buildTabButton(int index, String title) {
-    bool isSelected = _selectedTab == index;
-    return Expanded(
-      child: Container(
-        height: 60, // defined space
-        margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-        decoration: BoxDecoration(
-          color: isSelected ? home1.withOpacity(0.08) : Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 6,
-              offset: const Offset(0, 3),
-            ),
-          ],
-          border: Border.all(color: black),
-        ),
-        child: InkWell(
-          onTap: () {
-            setState(() {
-              _selectedTab = index;
-            });
-          },
-          borderRadius: BorderRadius.circular(12),
-          splashColor: home1.withOpacity(0.1),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 14,
-                  letterSpacing: 0.2,
-                  color: isSelected ? home1 : Colors.grey[600],
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 6),
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
-                height: 3,
-                width: isSelected ? 28 : 0,
-                decoration: BoxDecoration(
-                  color: isSelected ? home1 : Colors.transparent,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget _buildOverviewTab() {
     return Consumer<GroupStatusProvider>(
@@ -1012,93 +959,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
     );
   }
 
-  Widget _buildStatCard(
-      String title, String value, Color color, IconData icon) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      color: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: home2.withOpacity(0.6),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: color.withOpacity(0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(icon, size: 16, color: color),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: color,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
-  Widget _buildActivityItem(String title, String time) {
-    return Row(
-      children: [
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: home1.withOpacity(0.1),
-            shape: BoxShape.circle,
-          ),
-          child: const Icon(Icons.notifications_none, size: 20, color: home1),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: home2,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                time,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: home2.withOpacity(0.6),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
 
   Widget _buildMetricCard(
       String title, String value, IconData icon, Color color) {
@@ -1144,7 +1005,163 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
     );
   }
 }
+// getMembers();
+//updateStatus();
+/*   final statusProvider =
+            Provider.of<GroupStatusProvider>(context, listen: false);
+        if (!statusProvider.currentGroupStatus.containsKey(widget.groupId)) {
+          if (widget.groupStatus == "Active") {
+            // Trust widget data and set it without API call
+            statusProvider.updateGroupStatus(widget.groupId, true);
+          } else {
+            // If widget says not active, optionally fetch real status from API
+            _loadGroupStatus();
+          }
+        }*/
+/*
+  Widget _buildTabButton(int index, String title) {
+    bool isSelected = _selectedTab == index;
+    return Expanded(
+      child: Container(
+        height: 60, // defined space
+        margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+        decoration: BoxDecoration(
+          color: isSelected ? home1.withOpacity(0.08) : Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 6,
+              offset: const Offset(0, 3),
+            ),
+          ],
+          border: Border.all(color: black),
+        ),
+        child: InkWell(
+          onTap: () {
+            setState(() {
+              _selectedTab = index;
+            });
+          },
+          borderRadius: BorderRadius.circular(12),
+          splashColor: home1.withOpacity(0.1),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 14,
+                  letterSpacing: 0.2,
+                  color: isSelected ? home1 : Colors.grey[600],
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 6),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                height: 3,
+                width: isSelected ? 28 : 0,
+                decoration: BoxDecoration(
+                  color: isSelected ? home1 : Colors.transparent,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+*/
 
+/* Widget _buildStatCard(
+      String title, String value, Color color, IconData icon) {
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: home2.withOpacity(0.6),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(icon, size: 16, color: color),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: color,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }*/
+
+/*  Widget _buildActivityItem(String title, String time) {
+    return Row(
+      children: [
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: home1.withOpacity(0.1),
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(Icons.notifications_none, size: 20, color: home1),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: home2,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                time,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: home2.withOpacity(0.6),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }*/
 /*class GroupDetailPage extends StatefulWidget {
   final String amount;
   final String dueDate;
