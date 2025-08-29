@@ -1,266 +1,6 @@
-// import 'dart:ui' as ui;
-// import 'package:flutter/material.dart';
-// import 'package:flutter/rendering.dart';
-// import 'package:flutter/services.dart';
-// import 'package:collection_qr_flutter/core/colors.dart';
-//
-// class ReceiptPage extends StatefulWidget {
-//   final String amount;
-//   const ReceiptPage({super.key, required this.amount});
-//
-//   @override
-//   State<ReceiptPage> createState() => _ReceiptPageState();
-// }
-//
-// class _ReceiptPageState extends State<ReceiptPage> {
-//   // Add the POS Printer class
-//   static const _printerChannel = MethodChannel('mypos/bridge');
-//   final GlobalKey _globalKey = GlobalKey(); // For capturing widget image
-//   Future<void> _printReceipt() async {
-//     try {
-//       RenderRepaintBoundary boundary =
-//       _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-//       ui.Image image = await boundary.toImage(pixelRatio: 3.0);
-//       ByteData? byteData =
-//       await image.toByteData(format: ui.ImageByteFormat.png);
-//       Uint8List pngBytes = byteData!.buffer.asUint8List();
-//
-//       await _printerChannel.invokeMethod('printImage', pngBytes);
-//     } on PlatformException catch (e) {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         SnackBar(
-//           content: Text('Failed to print receipt: ${e.message}'),
-//           backgroundColor: Colors.red,
-//         ),
-//       );
-//     }
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: white,
-//       appBar: AppBar(
-//         backgroundColor: white,
-//         elevation: 0,
-//         centerTitle: true,
-//         title: Text(
-//           "Transaction Receipt",
-//           style: TextStyle(
-//             fontWeight: FontWeight.bold,
-//             color: home2,
-//           ),
-//         ),
-//         leading: IconButton(
-//           icon: Icon(Icons.arrow_back, color: home2),
-//           onPressed: () => Navigator.pop(context),
-//         ),
-//       ),
-//       body: RepaintBoundary(
-//         key: _globalKey,
-//         child: SingleChildScrollView(
-//           child: Padding(
-//             padding: const EdgeInsets.all(20.0),
-//             child: Column(
-//               children: [
-//                 // Bank Header with gradient
-//                 Column(
-//                   children: [
-//                     const Text(
-//                       "XYZ BANK",
-//                       style: TextStyle(
-//                         fontSize: 24,
-//                         fontWeight: FontWeight.bold,
-//                         color: home2,
-//                       ),
-//                     ),
-//                     const SizedBox(height: 8),
-//                     Text(
-//                       "Transaction Successful",
-//                       style: TextStyle(
-//                         fontSize: 16,
-//                         color: Colors.green[500],
-//                         fontWeight: FontWeight.w500,
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//
-//                 const SizedBox(height: 24),
-//
-//                 // QR Code Section
-//                 Container(
-//                   padding: const EdgeInsets.all(20),
-//                   decoration: BoxDecoration(
-//                     color: white,
-//                     borderRadius: BorderRadius.circular(12),
-//                     border: Border.all(color: home1.withOpacity(0.3)),
-//                     boxShadow: [
-//                       BoxShadow(
-//                         color: home2.withOpacity(0.1),
-//                         spreadRadius: 2,
-//                         blurRadius: 8,
-//                         offset: const Offset(0, 4),
-//                       ),
-//                     ],
-//                   ),
-//                   child: Column(
-//                     children: [
-//                       Container(
-//                         padding: const EdgeInsets.all(12),
-//                         decoration: BoxDecoration(
-//                           border: Border.all(color: home1),
-//                           borderRadius: BorderRadius.circular(8),
-//                         ),
-//                         child: Icon(
-//                           Icons.qr_code,
-//                           color: home1,
-//                           size: 120,
-//                         ),
-//                       ),
-//                       const SizedBox(height: 16),
-//                       Text(
-//                         "Scan to verify transaction",
-//                         style: TextStyle(
-//                           fontSize: 14,
-//                           color: home2.withOpacity(0.7),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//
-//                 const SizedBox(height: 24),
-//
-//                 // Transaction Details
-//                 Container(
-//                   width: double.infinity,
-//                   padding: const EdgeInsets.all(20),
-//                   decoration: BoxDecoration(
-//                     color: white,
-//                     borderRadius: BorderRadius.circular(12),
-//                     border: Border.all(color: home2.withOpacity(0.1)),
-//                     boxShadow: [
-//                       BoxShadow(
-//                         color: home2.withOpacity(0.05),
-//                         spreadRadius: 2,
-//                         blurRadius: 8,
-//                         offset: const Offset(0, 4),
-//                       ),
-//                     ],
-//                   ),
-//                   child: Column(
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: [
-//                       Text(
-//                         "Transaction Details",
-//                         style: TextStyle(
-//                           fontSize: 18,
-//                           fontWeight: FontWeight.bold,
-//                           color: home2,
-//                         ),
-//                       ),
-//                       const SizedBox(height: 16),
-//                       _buildDetailRow("Transaction ID:", "1234567890"),
-//                       Divider(height: 24, color: home2.withOpacity(0.1)),
-//                       _buildDetailRow("Date & Time:", "July 25, 2023 - 14:30"),
-//                       Divider(height: 24, color: home2.withOpacity(0.1)),
-//                       _buildDetailRow("Amount:", "Rs.${widget.amount}"),
-//                       Divider(height: 24, color: home2.withOpacity(0.1)),
-//                       _buildDetailRow("Recipient:", "John Doe"),
-//                       Divider(height: 24, color: home2.withOpacity(0.1)),
-//                       _buildDetailRow("Reference:", "Invoice #4567"),
-//                     ],
-//                   ),
-//                 ),
-//
-//                 const SizedBox(height: 24),
-//
-//                 // Action Buttons
-//                 Row(
-//                   children: [
-//                     Expanded(
-//                       child: OutlinedButton(
-//                         onPressed: _printReceipt,
-//                         style: OutlinedButton.styleFrom(
-//                           padding: const EdgeInsets.symmetric(vertical: 16),
-//                           side: BorderSide(color: home1),
-//                           shape: RoundedRectangleBorder(
-//                             borderRadius: BorderRadius.circular(8),
-//                           ),
-//                         ),
-//                         child: Text(
-//                           "PRINT",
-//                           style: TextStyle(
-//                             color: home1,
-//                             fontWeight: FontWeight.bold,
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                     const SizedBox(width: 16),
-//                     Expanded(
-//                       child: ElevatedButton(
-//                         style: ElevatedButton.styleFrom(
-//                           backgroundColor: home2,
-//                           padding: const EdgeInsets.symmetric(vertical: 16),
-//                           shape: RoundedRectangleBorder(
-//                             borderRadius: BorderRadius.circular(8),
-//                           ),
-//                           elevation: 0,
-//                         ),
-//                         onPressed: () {
-//                           // Download functionality
-//                         },
-//                         child: Text(
-//                           "DOWNLOAD",
-//                           style: TextStyle(
-//                             color: white,
-//                             fontWeight: FontWeight.bold,
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-//
-//   Widget _buildDetailRow(String label, String value) {
-//     return Row(
-//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//       children: [
-//         Text(
-//           label,
-//           style: TextStyle(
-//             color: home2.withOpacity(0.7),
-//             fontSize: 14,
-//           ),
-//         ),
-//         Text(
-//           value,
-//           style: TextStyle(
-//             fontWeight: FontWeight.w500,
-//             fontSize: 14,
-//             color: home2,
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }
-
-
-import 'package:flutter/services.dart' show rootBundle;
-
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 import 'dart:async';
-import 'dart:convert';
-import 'package:pdf/widgets.dart' as pw;
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -268,6 +8,8 @@ import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ReceiptPage extends StatefulWidget {
   final String amount;
@@ -282,13 +24,15 @@ class ReceiptPage extends StatefulWidget {
 
   const ReceiptPage(
       {super.key,
-        required this.amount,
-        required this.bankName,
-        required this.agentName,
-        required this.agentPhone,
-        required this.custName,
-        required this.custPhone,
-        required this.custId, required this.txnId, required this.txnType});
+      required this.amount,
+      required this.bankName,
+      required this.agentName,
+      required this.agentPhone,
+      required this.custName,
+      required this.custPhone,
+      required this.custId,
+      required this.txnId,
+      required this.txnType});
 
   @override
   State<ReceiptPage> createState() => _ReceiptPageState();
@@ -306,6 +50,9 @@ class _ReceiptPageState extends State<ReceiptPage> {
   bool _isFirstPrintAttempt = true;
   bool _isBackgroundScanComplete = false;
   String? _lastConnectedMac;
+  bool _isTakingSS = false;
+  bool _showFlash = false;
+  final ScreenshotController _screenshotController = ScreenshotController();
 
   @override
   void initState() {
@@ -334,14 +81,16 @@ class _ReceiptPageState extends State<ReceiptPage> {
     // Run in background without UI blocking
     try {
       // Check if Bluetooth is enabled
-      final bool isBluetoothEnabled = await PrintBluetoothThermal.bluetoothEnabled;
+      final bool isBluetoothEnabled =
+          await PrintBluetoothThermal.bluetoothEnabled;
       if (!isBluetoothEnabled) {
         print("Bluetooth is disabled");
         return;
       }
 
       // Get paired devices
-      final List<BluetoothInfo> result = await PrintBluetoothThermal.pairedBluetooths;
+      final List<BluetoothInfo> result =
+          await PrintBluetoothThermal.pairedBluetooths;
 
       setState(() {
         devices = result;
@@ -375,7 +124,8 @@ class _ReceiptPageState extends State<ReceiptPage> {
         setState(() {
           selectedMac = mac;
           _isConnected = true;
-          _connectionStatus = 'Connected to ${devices.firstWhere((d) => d.macAdress == mac).name}';
+          _connectionStatus =
+              'Connected to ${devices.firstWhere((d) => d.macAdress == mac).name}';
         });
       }
     } catch (e) {
@@ -398,6 +148,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
       print('Connection check error: $e');
     }
   }
+
   Future<bool> _requestBluetoothPermission() async {
     try {
       final statuses = await [
@@ -447,7 +198,8 @@ class _ReceiptPageState extends State<ReceiptPage> {
       _isLoading = true;
       _lastError = '';
     });
-    final List<BluetoothInfo> result = await PrintBluetoothThermal.pairedBluetooths;
+    final List<BluetoothInfo> result =
+        await PrintBluetoothThermal.pairedBluetooths;
 
     print("Found devices: ${result.length}");
     for (var d in result) {
@@ -456,7 +208,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
 
     try {
       final bool isBluetoothEnabled =
-      await PrintBluetoothThermal.bluetoothEnabled;
+          await PrintBluetoothThermal.bluetoothEnabled;
       if (!isBluetoothEnabled) {
         throw Exception(
             'Bluetooth is disabled. Please enable Bluetooth and try again.');
@@ -510,7 +262,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
           selectedMac = mac;
           _isConnected = true;
           _connectionStatus =
-          'Connected to ${devices.firstWhere((d) => d.macAdress == mac).name}';
+              'Connected to ${devices.firstWhere((d) => d.macAdress == mac).name}';
           _lastConnectedMac = mac;
         });
       } else {
@@ -537,7 +289,8 @@ class _ReceiptPageState extends State<ReceiptPage> {
     try {
       // Generate QR code data with all transaction details
 
-      final qrData = widget.custPhone.isNotEmpty?'''
+      final qrData = widget.custPhone.isNotEmpty
+          ? '''
       Transaction ID: ${widget.txnId}
       Amount: Rs.${widget.amount}
       Date: ${DateFormat('dd-MMM-yyyy').format(DateTime.now())}
@@ -548,7 +301,8 @@ class _ReceiptPageState extends State<ReceiptPage> {
       Agent: ${widget.agentName}
       Agent Phone: ${widget.agentPhone}
       Transaction Type: ${widget.txnType}
-      ''': '''
+      '''
+          : '''
       Transaction ID: ${widget.txnId}
       Amount: Rs.${widget.amount}
       Date: ${DateFormat('dd-MMM-yyyy').format(DateTime.now())}
@@ -647,17 +401,16 @@ class _ReceiptPageState extends State<ReceiptPage> {
       bytes.addAll("Txn Type:         ${widget.txnType}\n".codeUnits);
       bytes.addAll("Amount:           Rs.${widget.amount}\n".codeUnits);
       bytes.addAll("Status:           Success\n".codeUnits);
-      widget.txnId.isNotEmpty?
-      bytes.addAll("Txn ID:           ${widget.txnId}\n".codeUnits):
-      "";
+      widget.txnId.isNotEmpty
+          ? bytes.addAll("Txn ID:           ${widget.txnId}\n".codeUnits)
+          : "";
       bytes.addAll("Customer:         ${widget.custName}\n".codeUnits);
-      widget.custPhone.isNotEmpty?
-      bytes.addAll("Customer Phone:   ${widget.custPhone}\n".codeUnits):
-      "";
+      widget.custPhone.isNotEmpty
+          ? bytes.addAll("Customer Phone:   ${widget.custPhone}\n".codeUnits)
+          : "";
       bytes.addAll("Agent:            ${widget.agentName}\n".codeUnits);
       bytes.addAll("Agent Phone:      ${widget.agentPhone}\n".codeUnits);
       bytes.addAll("-----------------------------\n".codeUnits);
-
 
       // Print QR Code
       bytes.addAll([0x1B, 0x61, 0x01]); // Center alignment
@@ -707,40 +460,40 @@ class _ReceiptPageState extends State<ReceiptPage> {
           width: double.maxFinite,
           child: devices.isEmpty
               ? Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text("No printers found"),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _scanDevices();
-                },
-                child: const Text("Scan for Printers"),
-              ),
-            ],
-          )
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text("No printers found"),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _scanDevices();
+                      },
+                      child: const Text("Scan for Printers"),
+                    ),
+                  ],
+                )
               : ListView.builder(
-            shrinkWrap: true,
-            itemCount: devices.length,
-            itemBuilder: (context, index) {
-              final device = devices[index];
-              return ListTile(
-                title: Text(device.name ?? "Unknown Device"),
-                subtitle: Text(device.macAdress ?? "No MAC Address"),
-                trailing: Icon(
-                  Icons.print,
-                  color: selectedMac == device.macAdress
-                      ? Colors.blue
-                      : Colors.grey,
+                  shrinkWrap: true,
+                  itemCount: devices.length,
+                  itemBuilder: (context, index) {
+                    final device = devices[index];
+                    return ListTile(
+                      title: Text(device.name ?? "Unknown Device"),
+                      subtitle: Text(device.macAdress ?? "No MAC Address"),
+                      trailing: Icon(
+                        Icons.print,
+                        color: selectedMac == device.macAdress
+                            ? Colors.blue
+                            : Colors.grey,
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        _connectToPrinter(device.macAdress!);
+                      },
+                    );
+                  },
                 ),
-                onTap: () {
-                  Navigator.pop(context);
-                  _connectToPrinter(device.macAdress!);
-                },
-              );
-            },
-          ),
         ),
         actions: [
           TextButton(
@@ -752,254 +505,308 @@ class _ReceiptPageState extends State<ReceiptPage> {
     );
   }
 
+  // This function will be called by the button
+  Future<void> _takeScreenshotAndShare() async {
+    // 1. Hide sensitive data and prepare for capture
+    setState(() {
+      _isTakingSS = true;
+      // Don't touch _showFlash here yet
+    });
+
+    // Wait for UI to update and hide the sensitive data
+    await Future.delayed(const Duration(milliseconds: 20));
+
+    // 2. Show the flash animation
+    setState(() {
+      _showFlash = true;
+    });
+
+    // Wait a tiny bit for the flash to actually appear on screen
+    await Future.delayed(const Duration(milliseconds: 10));
+
+    // 3. Capture the screenshot (UI is now with hidden data + flash visible)
+    final Uint8List? imageBytes = await _screenshotController.capture();
+
+    // 4. Immediately hide the flash AND show the real data again
+    setState(() {
+      _showFlash = false; // <- This was missing!
+      _isTakingSS = false;
+    });
+
+    if (imageBytes == null) return;
+
+    // 5. Share the image
+    final tempDir = await getTemporaryDirectory();
+    final file = await File('${tempDir.path}/screenshot.png').create();
+    await file.writeAsBytes(imageBytes);
+    await Share.shareXFiles([XFile(file.path)]);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: white,
-      appBar: AppBar(
+    return Screenshot(
+      controller: _screenshotController,
+      child: Scaffold(
         backgroundColor: white,
-        elevation: 0,
-        centerTitle: true,
-        title: const Text(
-          "Transaction Receipt",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: home2,
+        appBar: AppBar(
+          backgroundColor: white,
+          elevation: 0,
+          centerTitle: true,
+          title: const Text(
+            "Transaction Receipt",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: home2,
+            ),
+          ),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: home2),
+            onPressed: () => Navigator.pop(context),
           ),
         ),
-        leading: IconButton(
-          icon:const Icon(Icons.arrow_back, color: home2),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                children: [
-                  // Connection status indicator
-                  Container(
-                    padding:const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: _isConnected ? Colors.green[100] : Colors.orange[100],
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          _isConnected ? Icons.check_circle : Icons.warning,
-                          color: _isConnected ? Colors.green : Colors.orange,
-                          size: 16,
-                        ),
-                        SizedBox(width: 8),
-                        Text(
-                          _connectionStatus,
-                          style: TextStyle(
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: [
+                    // Connection status indicator
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: _isConnected
+                            ? Colors.green[100]
+                            : Colors.orange[100],
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            _isConnected ? Icons.check_circle : Icons.warning,
                             color: _isConnected ? Colors.green : Colors.orange,
-                            fontSize: 12,
+                            size: 16,
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // Bank Header with gradient
-                  Column(
-                    children: [
-                      Text(
-                        widget.bankName,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: home2,
-                        ),
+                          SizedBox(width: 8),
+                          Text(
+                            _connectionStatus,
+                            style: TextStyle(
+                              color:
+                                  _isConnected ? Colors.green : Colors.orange,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        "Transaction Successful",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.green[500],
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // QR Code Section
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: home1.withOpacity(0.3)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: home2.withOpacity(0.1),
-                          spreadRadius: 2,
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
                     ),
-                    child: Column(
+
+                    const SizedBox(height: 16),
+
+                    // Bank Header with gradient
+                    Column(
                       children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: home1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: QrImageView(
-                            data: '''
-                            Transaction ID: 1234567890
-                            Amount: Rs.${widget.amount}
-                            Date: ${DateFormat('dd-MMM-yyyy').format(DateTime.now())}
-                            Bank: ${widget.bankName}
-                            Customer: ${widget.custName}
-                            Customer ID: ${widget.custId}
-                            Customer Phone: ${widget.custPhone}
-                            Agent: ${widget.agentName}
-                            Agent Phone: ${widget.agentPhone}
-                            ''',
-                            version: QrVersions.auto,
-                            size: 120,
-                            backgroundColor: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
                         Text(
-                          "Scan to verify transaction",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: home2.withOpacity(0.7),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Transaction Details
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: home2.withOpacity(0.1)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: home2.withOpacity(0.05),
-                          spreadRadius: 2,
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "Transaction Details",
-                          style: TextStyle(
-                            fontSize: 18,
+                          widget.bankName,
+                          style: const TextStyle(
+                            fontSize: 24,
                             fontWeight: FontWeight.bold,
                             color: home2,
                           ),
                         ),
-                        const SizedBox(height: 16),
-                        _buildDetailRow("Transaction ID:", widget.txnId),
-                        Divider(height: 24, color: home2.withOpacity(0.1)),
-                        _buildDetailRow(
-                            "Date & Time:", "${DateFormat('dd-MMM-yyyy').format(DateTime.now())} - ${DateFormat('hh:mm a').format(DateTime.now())}"),
-                        Divider(height: 24, color: home2.withOpacity(0.1)),
-                        _buildDetailRow("Amount:", "Rs.${widget.amount}"),
-                        Divider(height: 24, color: home2.withOpacity(0.1)),
-                        _buildDetailRow("Customer Name:", widget.custName),
-                        Divider(height: 24, color: home2.withOpacity(0.1)),
-
-                        _buildDetailRow("Agent Name:", widget.agentName),
-                        Divider(height: 24, color: home2.withOpacity(0.1)),
-                        _buildDetailRow("Agent Phone:", widget.agentPhone),
-                        widget.custPhone.isNotEmpty?
-                        _buildDetailRow("Customer Phone:", widget.custPhone):
-                        const SizedBox.shrink(),
-                        Divider(height: 24, color: home2.withOpacity(0.1)),
+                        const SizedBox(height: 8),
+                        Text(
+                          "Transaction Successful",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.green[500],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ],
                     ),
-                  ),
 
-                  const SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
-                  // Action Buttons
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: _printReceipt,
-                          style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            side: const BorderSide(color: home1),
-                            shape: RoundedRectangleBorder(
+                    // QR Code Section
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: home1.withOpacity(0.3)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: home2.withOpacity(0.1),
+                            spreadRadius: 2,
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: home1),
                               borderRadius: BorderRadius.circular(8),
                             ),
+                            child: QrImageView(
+                              data: '''
+                              Transaction ID: 1234567890
+                              Amount: Rs.${widget.amount}
+                              Date: ${DateFormat('dd-MMM-yyyy').format(DateTime.now())}
+                              Bank: ${widget.bankName}
+                              Customer: ${widget.custName}
+                              Customer ID: ${widget.custId}
+                              Customer Phone: ${widget.custPhone}
+                              Agent: ${widget.agentName}
+                              Agent Phone: ${widget.agentPhone}
+                              ''',
+                              version: QrVersions.auto,
+                              size: 120,
+                              backgroundColor: Colors.white,
+                            ),
                           ),
-                          child:const Text(
-                            "PRINT",
+                          const SizedBox(height: 16),
+                          Text(
+                            "Scan to verify transaction",
                             style: TextStyle(
-                              color: home1,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: home2.withOpacity(0.7),
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: home2,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            elevation: 0,
-                          ),
-                          onPressed: () {
+                    ),
 
-                            // Download functionality
-                          },
-                          child:const Text(
-                            "Share",
+                    const SizedBox(height: 24),
+
+                    // Transaction Details
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: home2.withOpacity(0.1)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: home2.withOpacity(0.05),
+                            spreadRadius: 2,
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Transaction Details",
                             style: TextStyle(
-                              color: white,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
+                              color: home2,
                             ),
                           ),
-                        ),
+                          const SizedBox(height: 16),
+                          _buildDetailRow("Transaction ID:", widget.txnId),
+                          Divider(height: 24, color: home2.withOpacity(0.1)),
+                          _buildDetailRow("Date & Time:",
+                              "${DateFormat('dd-MMM-yyyy').format(DateTime.now())} - ${DateFormat('hh:mm a').format(DateTime.now())}"),
+                          Divider(height: 24, color: home2.withOpacity(0.1)),
+                          _buildDetailRow("Amount:", "Rs.${widget.amount}"),
+                          Divider(height: 24, color: home2.withOpacity(0.1)),
+                          _buildDetailRow("Customer Name:", widget.custName),
+                          Divider(height: 24, color: home2.withOpacity(0.1)),
+                          _buildDetailRow("Agent Name:", widget.agentName),
+                          Divider(height: 24, color: home2.withOpacity(0.1)),
+                          _buildDetailRow("Agent Phone:", widget.agentPhone),
+                          widget.custPhone.isNotEmpty
+                              ? _buildDetailRow(
+                                  "Customer Phone:", widget.custPhone)
+                              : const SizedBox.shrink(),
+                          Divider(height: 24, color: home2.withOpacity(0.1)),
+                        ],
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Action Buttons
+                    if (_isTakingSS == false)
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: _printReceipt,
+                              style: OutlinedButton.styleFrom(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16),
+                                side: const BorderSide(color: home1),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: const Text(
+                                "PRINT",
+                                style: TextStyle(
+                                  color: home1,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: home2,
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                elevation: 0,
+                              ),
+                              onPressed: () {
+                                _takeScreenshotAndShare();
+                                // Download functionality
+                              },
+                              child: const Text(
+                                "Share",
+                                style: TextStyle(
+                                  color: white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
               ),
             ),
-          ),
-          if (_isLoading || _isConnecting)
-            Container(
-              color: Colors.black.withOpacity(0.5),
-              child: const Center(
-                child: CircularProgressIndicator(),
+            if (_isLoading || _isConnecting)
+              Container(
+                color: Colors.black.withOpacity(0.5),
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
               ),
-            ),
-        ],
+            // if (_showFlash)
+            //   IgnorePointer(
+            //     // Makes the flash layer non-interactive
+            //     child: Container(
+            //       color: Colors.white.withOpacity(0.9), // Bright white flash
+            //     ),
+            //   ),
+          ],
+        ),
       ),
     );
   }
@@ -1017,7 +824,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
         ),
         Text(
           value,
-          style: TextStyle(
+          style:const TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 14,
             color: home2,
