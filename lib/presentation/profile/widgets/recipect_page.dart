@@ -963,29 +963,29 @@ class _ReceiptPageState extends State<ReceiptPage> {
                         ),
                       ),
                       const SizedBox(width: 16),
-                      // Expanded(
-                      //   child: ElevatedButton(
-                      //     style: ElevatedButton.styleFrom(
-                      //       backgroundColor: home2,
-                      //       padding: const EdgeInsets.symmetric(vertical: 16),
-                      //       shape: RoundedRectangleBorder(
-                      //         borderRadius: BorderRadius.circular(8),
-                      //       ),
-                      //       elevation: 0,
-                      //     ),
-                      //     onPressed: () {
-                      //
-                      //       // Download functionality
-                      //     },
-                      //     child:const Text(
-                      //       "DOWNLOAD",
-                      //       style: TextStyle(
-                      //         color: white,
-                      //         fontWeight: FontWeight.bold,
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: home2,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            elevation: 0,
+                          ),
+                          onPressed: () {
+
+                            // Download functionality
+                          },
+                          child:const Text(
+                            "Share",
+                            style: TextStyle(
+                              color: white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ],

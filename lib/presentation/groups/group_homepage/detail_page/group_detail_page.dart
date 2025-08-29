@@ -33,7 +33,7 @@ class GroupDetailPage extends StatefulWidget {
 class _GroupDetailPageState extends State<GroupDetailPage> {
   bool? isActive;
 
-  int _selectedTab = 0;
+  final int _selectedTab = 0;
 
   // Expanded financial data
   final double collectedAmount = 24500;
