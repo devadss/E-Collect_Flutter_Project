@@ -70,7 +70,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
   Future<void> _initializePrinter() async {
     await _requestBluetoothPermission();
     // Start periodic connection check
-    _connectionTimer = Timer.periodic(Duration(seconds: 10), (timer) {
+    _connectionTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
       if (selectedMac != null && !_isConnecting) {
         _checkConnectionStatus();
       }
@@ -103,7 +103,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
         _lastConnectedMac = firstDevice.macAdress;
 
         // Try to connect in background
-        _backgroundConnectToPrinter(firstDevice.macAdress!);
+        _backgroundConnectToPrinter(firstDevice.macAdress);
       }
     } catch (e) {
       print('Background Bluetooth setup error: $e');
@@ -489,7 +489,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                       ),
                       onTap: () {
                         Navigator.pop(context);
-                        _connectToPrinter(device.macAdress!);
+                        _connectToPrinter(device.macAdress);
                       },
                     );
                   },
@@ -589,7 +589,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                             color: _isConnected ? Colors.green : Colors.orange,
                             size: 16,
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Text(
                             _connectionStatus,
                             style: TextStyle(

@@ -14,6 +14,7 @@ class MemberDeleteRepository implements MemberDeleteInterface {
     final uri = Uri.parse("${baseUrl}api/DeleteMember/$memberId");
     final request = await http.delete(uri);
     print(request.body);
+    print(uri);
     if (request.statusCode == 200) {
       return Right(DeleteMemberResponse.fromJson(jsonDecode(request.body)));
     } else {
