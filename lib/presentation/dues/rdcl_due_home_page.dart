@@ -1803,6 +1803,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                             amount: amt,
                           );
                           Navigator.pop(context, true); // ✅ User confirmed
+                          Navigator.pop(context, true); // ✅ User confirmed
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.redAccent,

@@ -33,21 +33,22 @@ class CreateMemberRepository implements CreateMemberInterface {
           "EntityId": entityId
         }),
         headers: {'Content-Type': 'application/json'});
-print({
-  "groupId": groupId,
-  "memberName": memberName,
-  "mobileNumber": mobileNumber,
-  "amount": amount,
-  "dueDate": dueDate,
-  "feeCollectionStartDate": feeCollectionStartDate,
-  "CorpCode": corpCode,
-  "BranchCode": branchCode,
-  "EntityId": entityId
-});
+    print({
+      "groupId": groupId,
+      "memberName": memberName,
+      "mobileNumber": mobileNumber,
+      "amount": amount,
+      "dueDate": dueDate,
+      "feeCollectionStartDate": feeCollectionStartDate,
+      "CorpCode": corpCode,
+      "BranchCode": branchCode,
+      "EntityId": entityId
+    });
+    print(request.body);
     if (request.statusCode == 200) {
       return Right(CreateMemberResponse.fromJson(jsonDecode(request.body)));
     } else {
-      return Left(jsonDecode(request.body));
+      return Left(request.body);
     }
   }
 }

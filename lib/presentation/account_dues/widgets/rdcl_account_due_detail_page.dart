@@ -917,7 +917,11 @@ class RdclAccountDueDetailsPage extends StatefulWidget {
       required this.custId,
       required this.custEmail,
       required this.corpCode,
-      required this.indexValue, required this.branchCode, required this.custIdNew, required this.pageNo, required this.pageSize});
+      required this.indexValue,
+      required this.branchCode,
+      required this.custIdNew,
+      required this.pageNo,
+      required this.pageSize});
 
   @override
   State<RdclAccountDueDetailsPage> createState() =>
@@ -1069,7 +1073,8 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
                               agentId: widget.custId,
                               note: "Payment For Agent $agentName",
                               subAgentId: subagentId,
-                              agentName: agentName, subAgentBranchCode: subAgentCodeNew);
+                              agentName: agentName,
+                              subAgentBranchCode: subAgentCodeNew);
                   paymentSession.fold((error) {
                     print(
                         "---------------------------------ERROR PAYMENT---------------------------");
@@ -1125,19 +1130,25 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
                 label: "Cash Payment",
                 onPressed: () {
                   Navigator.pop(context);
-                  paymentConfirmation(context , widget.custName,widget.custAcNumber, widget.custId,widget.custEmail,amountController.text);
-                //   getCashTrans(
-                //       token: token,
-                //       customerName: widget.custName,
-                //       custPhoneNumber: customerNumber,
-                //       custAcNumber: widget.custAcNumber,
-                //      // custId: custid,
-                //       custId: widget.custId,
-                //       custEmail: widget.custEmail,
-                //       amount: amountController.text,
-                //       phoneNumber: agentMobile,
-                //       entityId: agentId,
-                //       note: "");
+                  paymentConfirmation(
+                      context,
+                      widget.custName,
+                      widget.custAcNumber,
+                      widget.custId,
+                      widget.custEmail,
+                      amountController.text);
+                  //   getCashTrans(
+                  //       token: token,
+                  //       customerName: widget.custName,
+                  //       custPhoneNumber: customerNumber,
+                  //       custAcNumber: widget.custAcNumber,
+                  //      // custId: custid,
+                  //       custId: widget.custId,
+                  //       custEmail: widget.custEmail,
+                  //       amount: amountController.text,
+                  //       phoneNumber: agentMobile,
+                  //       entityId: agentId,
+                  //       note: "");
                 },
               ),
               const SizedBox(height: 20),
@@ -1148,14 +1159,14 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
     );
   }
 
-  Future<void> paymentConfirmation(BuildContext context,
-      String name ,
-      String accNo ,
-      String custId ,
-      String email ,
-      String amt ,
-      )
-  {
+  Future<void> paymentConfirmation(
+    BuildContext context,
+    String name,
+    String accNo,
+    String custId,
+    String email,
+    String amt,
+  ) {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1246,11 +1257,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
                     // Logout button
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: ()  {
-
-
-
-
+                        onPressed: () {
                           getCashTrans(
                             token: token,
                             customerName: name,
@@ -1263,6 +1270,8 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
                             note: "Payment For Agent $agentName",
                             amount: amt,
                           );
+                          Navigator.pop(context, true); // ✅ User confirmed
+                          Navigator.pop(context, true); // ✅ User confirmed
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.redAccent,
@@ -1349,6 +1358,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
       },
     );
   }
+
   String _getBankNameFromCorpCode(String corpCode) {
     // Map corpcode to bank name
     final Map<String, String> corpCodeToBankName = {
@@ -1428,6 +1438,40 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
     // Return the bank name if found, otherwise return a default value
     return corpCodeToBankName[corpCode] ?? "Unknown Bank";
   }
+
+  void showProgressDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Center(
+            child: SingleChildScrollView(
+              child: Dialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                child: const Padding(
+                  padding: EdgeInsets.all(50),
+                  child: Column(
+                    children: [
+                      CircularProgressIndicator(color: home2),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Please wait....",
+                        style: TextStyle(
+                          fontSize: 17,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
   Future<void> getCashTrans(
       {required String? token,
       required String? customerName,
@@ -1438,27 +1482,28 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
       required String? amount,
       required String? phoneNumber,
       required String? entityId,
-      required String? note}) async
-  {
+      required String? note}) async {
     final cashPaymentProvider =
         Provider.of<CashTranscationProvider>(context, listen: false);
     final cash = await cashPaymentProvider.getTranscations(
-       agentName:  agentName,
-       agentId:  custId,
-       agentOriginId:  agentOriginId,
-       agentPhone:  phoneNumber,
-       agentEmail:  agentEmail,
-       subAgentId:  subagentId,
-       customerName:  customerName,
-       customerPhone:  "",
-       customerAccNo:  widget.custAcNumber,
-       customerId:  widget.custIdNew,
-       customerEmail:  "",
-       amount:  amount,
-       note:  note,
-       corpCode:  corpCode,
-       cardRefNum:  "",
-       token:  token, subagentBranchCode: subAgentCodeNew, branchCode: widget.branchCode);
+        agentName: agentName,
+        agentId: custId,
+        agentOriginId: agentOriginId,
+        agentPhone: phoneNumber,
+        agentEmail: agentEmail,
+        subAgentId: subagentId,
+        customerName: customerName,
+        customerPhone: "",
+        customerAccNo: widget.custAcNumber,
+        customerId: widget.custIdNew,
+        customerEmail: "",
+        amount: amount,
+        note: note,
+        corpCode: corpCode,
+        cardRefNum: "",
+        token: token,
+        subagentBranchCode: subAgentCodeNew,
+        branchCode: widget.branchCode);
     cash.fold((err) {
       print("getCashTrans $err");
     }, (success) {
@@ -1481,19 +1526,25 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
             ),
             actions: [
               TextButton(
-                onPressed: () => {Navigator.pop(context),
-          Navigator.push(
-          context,
-          MaterialPageRoute(
-          builder: (context) => ReceiptPage(
-          amount: success.amount.toString(),
-          bankName: _getBankNameFromCorpCode(corpCode!)?? "XYZ BANK",
-          agentName: agentName ?? "Name",
-          agentPhone:subagentPhoneNumber.toString()?? "agentPhone",
-          custName: customerName!,
-          custPhone: phoneNumber.toString(),
-          custId: custId!, txnId: success.transactionId.toString(), txnType: "CASH",
-          )))},
+                onPressed: () => {
+                  Navigator.pop(context),
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ReceiptPage(
+                                amount: success.amount.toString(),
+                                bankName: _getBankNameFromCorpCode(corpCode!) ??
+                                    "XYZ BANK",
+                                agentName: agentName ?? "Name",
+                                agentPhone: subagentPhoneNumber.toString() ??
+                                    "agentPhone",
+                                custName: customerName!,
+                                custPhone: phoneNumber.toString(),
+                                custId: custId!,
+                                txnId: success.transactionId.toString(),
+                                txnType: "CASH",
+                              )))
+                },
                 child: const Text("OK"),
               ),
             ],
@@ -1547,8 +1598,8 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
     }
     final provider =
         Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
-    await provider.getRdclDueList("", sub_AgentCodeNew, "", widget.pageNo, widget.pageSize,"");
-
+    await provider.getRdclDueList(
+        "", sub_AgentCodeNew, "", widget.pageNo, widget.pageSize, "");
   }
 
   @override
@@ -1671,7 +1722,8 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
         // itemCount: provider.rdclDueUnderAgentModel!.data.length,
         itemCount: 1,
         itemBuilder: (_, index) {
-          final due = provider.rdclDueUnderAgentModel?.data[widget.indexValue!.toInt()];
+          final due =
+              provider.rdclDueUnderAgentModel?.data[widget.indexValue!.toInt()];
           return Card(
             elevation: 0,
             margin: const EdgeInsets.only(bottom: 12),
@@ -1893,14 +1945,14 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
                     onChanged: (value) {
                       int enteredAmount = int.tryParse(value) ?? 0;
                       int maxDueAmount = 0;
-          
+
                       final provider = Provider.of<RdclDueUnderAgentProvider>(
                           context,
                           listen: false);
                       for (var due in provider.rdclDueUnderAgentModel!.data) {
                         maxDueAmount += (due.dueAmount).toInt();
                       }
-          
+
                       if (enteredAmount > maxDueAmount) {
                         setState(() {
                           amountController.text = maxDueAmount.toString();

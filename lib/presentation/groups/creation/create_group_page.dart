@@ -16,10 +16,12 @@ class CreateGroupPage extends StatefulWidget {
   final int groupId;
 
   const CreateGroupPage(
-      {super.key,
+      {
+        super.key,
       required this.groupName,
       required this.amount,
-      required this.dueDate, required this.groupId});
+      required this.dueDate,
+      required this.groupId});
 
   @override
   State<CreateGroupPage> createState() => _CreateGroupPageState();
@@ -72,21 +74,25 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   }
 
   Future<void> updateGroup() async {
-    var updateGroup = Provider.of<GroupUpdateProvider>(context, listen:false);
-    await updateGroup.updateGroup(widget.groupId, widget.groupName, double.parse(widget.amount),widget.dueDate,_corpCode!, _corpCode!);
-    if(updateGroup.groupUpdateResponse!.status == true){
+    var updateGroup = Provider.of<GroupUpdateProvider>(context, listen: false);
+    await updateGroup.updateGroup(
+        widget.groupId,
+        groupNameController.text,
+        double.parse(amountController.text),
+        feeCollectionDayController.text,
+        _corpCode!,
+        _corpCode!);
+    if (updateGroup.groupUpdateResponse?.status == true) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content:
-          Text(updateGroup.groupUpdateResponse!.message),
+          content: Text(updateGroup.groupUpdateResponse!.message),
           backgroundColor: Colors.green,
         ),
       );
-      Navigator.pop(context);
-    }else{
-      Navigator.pop(context);
+      Navigator.pop(context, "Refresh");
+    } else {
+      Navigator.pop(context, "Refresh");
     }
-
   }
 
   Future<void> _pickDate(
@@ -179,106 +185,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     }
   }
 
-  // Future<void> _pickContact() async {
-  //   PermissionStatus status = await Permission.contacts.status;
-  //   if (!status.isGranted) {
-  //     status = await Permission.contacts.request();
-  //   }
-  //
-  //   if (status.isGranted) {
-  //     if (await FlutterContacts.requestPermission()) {
-  //       final contact = await FlutterContacts.openExternalPick();
-  //
-  //       // if (contact != null) {
-  //       //   bool isDuplicate = selectedMembers
-  //       //       .any((member) => member["name"] == contact.displayName);
-  //       //
-  //       //   if (isDuplicate) {
-  //       //     ScaffoldMessenger.of(context).showSnackBar(
-  //       //       SnackBar(
-  //       //         content: Text("${contact.displayName} is already in the group"),
-  //       //         behavior: SnackBarBehavior.floating,
-  //       //         shape: RoundedRectangleBorder(
-  //       //           borderRadius: BorderRadius.circular(10),
-  //       //         ),
-  //       //         backgroundColor: Colors.orange.shade600,
-  //       //         duration: const Duration(seconds: 2),
-  //       //       ),
-  //       //     );
-  //       //   } else {
-  //       //     setState(() {
-  //       //       selectedMembers.add({
-  //       //         "name": contact.displayName,
-  //       //         "amountController": TextEditingController(),
-  //       //         "contactId": contact.id,
-  //       //       });
-  //       //       filteredMembers = List.from(selectedMembers);
-  //       //       _listKey.currentState?.insertItem(selectedMembers.length - 1);
-  //       //     });
-  //       //   }
-  //       // }
-  //       if (contact != null) {
-  //         final fullContact = await FlutterContacts.getContact(
-  //             contact.id); // fetch full details
-  //
-  //         if (fullContact != null) {
-  //           final phoneNumbers = fullContact.phones;
-  //           String? mobileNumber;
-  //
-  //           // Optional: Try to pick the mobile number specifically
-  //           if (phoneNumbers.isNotEmpty) {
-  //             mobileNumber =
-  //                 phoneNumbers.first.number; // You can refine this logic
-  //           }
-  //
-  //           bool isDuplicate = selectedMembers.any((member) =>
-  //               member["name"] == fullContact.displayName &&
-  //               member["mobileNumber"] == mobileNumber);
-  //
-  //           if (isDuplicate) {
-  //             ScaffoldMessenger.of(context).showSnackBar(
-  //               SnackBar(
-  //                 content: Text(
-  //                     "${fullContact.displayName} is already in the group"),
-  //                 behavior: SnackBarBehavior.floating,
-  //                 shape: RoundedRectangleBorder(
-  //                   borderRadius: BorderRadius.circular(10),
-  //                 ),
-  //                 backgroundColor: Colors.orange.shade600,
-  //                 duration: const Duration(seconds: 2),
-  //               ),
-  //             );
-  //           } else {
-  //             setState(() {
-  //               selectedMembers.add({
-  //                 "name": fullContact.displayName,
-  //                 "mobileNumber": mobileNumber ?? "",
-  //                 "amountController": TextEditingController(),
-  //                 "contactId": fullContact.id,
-  //               });
-  //               filteredMembers = List.from(selectedMembers);
-  //               _listKey.currentState?.insertItem(selectedMembers.length - 1);
-  //             });
-  //           }
-  //         }
-  //       }
-  //     }
-  //   } else if (status.isPermanentlyDenied) {
-  //     _showPermissionDialog();
-  //   } else {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content:
-  //             const Text("Contacts permission is required to add members."),
-  //         behavior: SnackBarBehavior.floating,
-  //         shape: RoundedRectangleBorder(
-  //           borderRadius: BorderRadius.circular(10),
-  //         ),
-  //         backgroundColor: home1,
-  //       ),
-  //     );
-  //   }
-  // }
+
 
   void _showPermissionDialog() {
     showDialog(
@@ -294,7 +201,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
             children: [
               Icon(Icons.error_outline, size: 48, color: Colors.red.shade400),
               const SizedBox(height: 16),
-              Text(
+              const Text(
                 "Permission Required",
                 style: TextStyle(
                   fontSize: 20,
@@ -314,7 +221,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                 children: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: Text(
+                    child: const Text(
                       "Cancel",
                       style: TextStyle(color: home2),
                     ),
@@ -369,7 +276,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
             LengthLimitingTextInputFormatter(5),
             NumberInputFormatter(),
           ],
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             prefixIcon: Icon(Icons.currency_rupee, color: home1),
             hintText: "Enter new amount",
           ),
@@ -377,7 +284,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text("Cancel", style: TextStyle(color: home2)),
+            child: const Text("Cancel", style: TextStyle(color: home2)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: home1),
@@ -443,7 +350,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                   child: Center(
                     child: Text(
                       member["name"].substring(0, 1).toUpperCase(),
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: white,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -458,7 +365,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                     children: [
                       Text(
                         member["name"],
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           color: home2,
@@ -496,13 +403,13 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                       LengthLimitingTextInputFormatter(5),
                       NumberInputFormatter(),
                     ],
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: home2,
                       fontWeight: FontWeight.w600,
                     ),
                     decoration: InputDecoration(
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.only(left: 8, right: 4),
+                      prefixIcon: const Padding(
+                        padding: EdgeInsets.only(left: 8, right: 4),
                         child: Icon(
                           Icons.currency_rupee,
                           size: 18,
@@ -603,7 +510,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
               child: Center(
                 child: Text(
                   member["name"].substring(0, 1).toUpperCase(),
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: white,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -618,7 +525,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                 children: [
                   Text(
                     member["name"],
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: home2,
@@ -656,13 +563,13 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                   LengthLimitingTextInputFormatter(5),
                   NumberInputFormatter(),
                 ],
-                style: TextStyle(
+                style: const TextStyle(
                   color: home2,
                   fontWeight: FontWeight.w600,
                 ),
                 decoration: InputDecoration(
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.only(left: 8, right: 4),
+                  prefixIcon: const Padding(
+                    padding: EdgeInsets.only(left: 8, right: 4),
                     child: Icon(
                       Icons.currency_rupee,
                       size: 18,
@@ -733,7 +640,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         IconButton(
-          icon: Icon(Icons.person_add, color: home1, size: 28),
+          icon: const Icon(Icons.person_add, color: home1, size: 28),
           onPressed: _pickContact,
           tooltip: "Add Members",
         ),
@@ -752,7 +659,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
           tooltip: isSearching ? "Close Search" : "Search Members",
         ),
         IconButton(
-          icon: Icon(Icons.edit, color: home1, size: 28),
+          icon: const Icon(Icons.edit, color: home1, size: 28),
           onPressed: () {
             if (filteredMembers.isNotEmpty) {
               showDialog(
@@ -778,7 +685,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                                 LengthLimitingTextInputFormatter(5),
                                 NumberInputFormatter(),
                               ],
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 prefixIcon:
                                     Icon(Icons.currency_rupee, size: 18),
                               ),
@@ -791,7 +698,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: Text("Cancel", style: TextStyle(color: home2)),
+                      child:
+                          const Text("Cancel", style: TextStyle(color: home2)),
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(backgroundColor: home1),
@@ -820,29 +728,6 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     );
   }
 
-  // Future<void> createGroup() async {
-  //   var createGroup =
-  //       Provider.of<CreateGroupWithMemberProvider>(context, listen: false);
-  //   for (var member in selectedMembers) {
-  //     final name = member["name"];
-  //     final amountText = member["amountController"].text.replaceAll(',', '');
-  //     double amount = amountText.isEmpty ? double.parse(amountController.text.toString()) : amountText;
-  //     final rawPhone = member["mobileNumber"] ?? "";
-  //     final phone = rawPhone.replaceAll(RegExp(r'\s+'), '');
-  //
-  //     await createGroup.createGroupWitMember(
-  //         groupNameController.text,
-  //         _corpCode!,
-  //         double.parse(amountController.text.toString()),
-  //         feeCollectionDayController.text,
-  //         _entityId!,
-  //         name,
-  //         phone,
-  //         amount,
-  //         feeCollectionDayController.text,
-  //         feeCollectionStartDateController.text);
-  //   }
-  // }
 
   void showProgressDialog(BuildContext context) {
     showDialog(
@@ -970,7 +855,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
               color: home2, fontWeight: FontWeight.w700, fontSize: 22),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: home2),
+          icon: const Icon(Icons.arrow_back, color: home2),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -987,7 +872,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
               hintText: "Enter group name",
               controller: groupNameController,
               keyboardType: TextInputType.text,
-              icon: Icon(Icons.group, color: home1),
+              icon: const Icon(Icons.group, color: home1),
               isRequired: true,
             ),
             const SizedBox(height: 16),
@@ -996,7 +881,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
               hintText: "Enter amount",
               controller: amountController,
               keyboardType: TextInputType.number,
-              icon: Icon(Icons.currency_rupee_outlined, color: home1),
+              icon: const Icon(Icons.currency_rupee_outlined, color: home1),
               isRequired: true,
             ),
             const SizedBox(height: 24),
@@ -1007,7 +892,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
               hintText: "Select fee collection day",
               controller: feeCollectionDayController,
               keyboardType: TextInputType.none,
-              icon: Icon(Icons.calendar_month, color: home1),
+              icon: const Icon(Icons.calendar_month, color: home1),
               onTap: () => _pickDate(context, feeCollectionDayController),
               isRequired: true,
             ),
@@ -1033,7 +918,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
             const SizedBox(height: 24),
             widget.groupName.isEmpty
                 ? _buildSectionTitle("Group Members")
-                : SizedBox(),
+                : const SizedBox(),
             const SizedBox(height: 16),
             if (selectedMembers.isEmpty && widget.groupName.isEmpty)
               SizedBox(
@@ -1062,9 +947,9 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                 controller: _searchController,
                 decoration: InputDecoration(
                   hintText: "Search members...",
-                  prefixIcon: Icon(Icons.search, color: home1),
+                  prefixIcon: const Icon(Icons.search, color: home1),
                   suffixIcon: IconButton(
-                    icon: Icon(Icons.clear, color: home1),
+                    icon: const Icon(Icons.clear, color: home1),
                     onPressed: () {
                       _searchController.clear();
                       setState(() {
@@ -1112,14 +997,12 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                   elevation: 0,
                 ),
                 onPressed: () {
-                  widget.groupName.isNotEmpty?
-                  updateGroup():
-                  createGroup();
+                  widget.groupName.isNotEmpty ? updateGroup() : createGroup();
                   // Handle create group logic
                 },
                 child: Text(
                   widget.dueDate.isNotEmpty ? "Update Group" : "Create Group",
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold, color: white),
                 ),
               ),
@@ -1149,7 +1032,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
             children: [
               Text(
                 title,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 12,
                   color: home2,
                 ),
@@ -1171,7 +1054,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
           maxLines: maxLines,
           readOnly: onTap != null,
           onTap: onTap,
-          style: TextStyle(color: home2),
+          style: const TextStyle(color: home2),
           decoration: InputDecoration(
             prefixIcon: icon,
             prefixIconColor: home1,
@@ -1187,7 +1070,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: home1, width: 1.5),
+              borderSide: const BorderSide(color: home1, width: 1.5),
             ),
           ),
         ),
@@ -1224,3 +1107,128 @@ class NumberInputFormatter extends TextInputFormatter {
     );
   }
 }
+
+// Future<void> createGroup() async {
+//   var createGroup =
+//       Provider.of<CreateGroupWithMemberProvider>(context, listen: false);
+//   for (var member in selectedMembers) {
+//     final name = member["name"];
+//     final amountText = member["amountController"].text.replaceAll(',', '');
+//     double amount = amountText.isEmpty ? double.parse(amountController.text.toString()) : amountText;
+//     final rawPhone = member["mobileNumber"] ?? "";
+//     final phone = rawPhone.replaceAll(RegExp(r'\s+'), '');
+//
+//     await createGroup.createGroupWitMember(
+//         groupNameController.text,
+//         _corpCode!,
+//         double.parse(amountController.text.toString()),
+//         feeCollectionDayController.text,
+//         _entityId!,
+//         name,
+//         phone,
+//         amount,
+//         feeCollectionDayController.text,
+//         feeCollectionStartDateController.text);
+//   }
+// }
+
+// Future<void> _pickContact() async {
+//   PermissionStatus status = await Permission.contacts.status;
+//   if (!status.isGranted) {
+//     status = await Permission.contacts.request();
+//   }
+//
+//   if (status.isGranted) {
+//     if (await FlutterContacts.requestPermission()) {
+//       final contact = await FlutterContacts.openExternalPick();
+//
+//       // if (contact != null) {
+//       //   bool isDuplicate = selectedMembers
+//       //       .any((member) => member["name"] == contact.displayName);
+//       //
+//       //   if (isDuplicate) {
+//       //     ScaffoldMessenger.of(context).showSnackBar(
+//       //       SnackBar(
+//       //         content: Text("${contact.displayName} is already in the group"),
+//       //         behavior: SnackBarBehavior.floating,
+//       //         shape: RoundedRectangleBorder(
+//       //           borderRadius: BorderRadius.circular(10),
+//       //         ),
+//       //         backgroundColor: Colors.orange.shade600,
+//       //         duration: const Duration(seconds: 2),
+//       //       ),
+//       //     );
+//       //   } else {
+//       //     setState(() {
+//       //       selectedMembers.add({
+//       //         "name": contact.displayName,
+//       //         "amountController": TextEditingController(),
+//       //         "contactId": contact.id,
+//       //       });
+//       //       filteredMembers = List.from(selectedMembers);
+//       //       _listKey.currentState?.insertItem(selectedMembers.length - 1);
+//       //     });
+//       //   }
+//       // }
+//       if (contact != null) {
+//         final fullContact = await FlutterContacts.getContact(
+//             contact.id); // fetch full details
+//
+//         if (fullContact != null) {
+//           final phoneNumbers = fullContact.phones;
+//           String? mobileNumber;
+//
+//           // Optional: Try to pick the mobile number specifically
+//           if (phoneNumbers.isNotEmpty) {
+//             mobileNumber =
+//                 phoneNumbers.first.number; // You can refine this logic
+//           }
+//
+//           bool isDuplicate = selectedMembers.any((member) =>
+//               member["name"] == fullContact.displayName &&
+//               member["mobileNumber"] == mobileNumber);
+//
+//           if (isDuplicate) {
+//             ScaffoldMessenger.of(context).showSnackBar(
+//               SnackBar(
+//                 content: Text(
+//                     "${fullContact.displayName} is already in the group"),
+//                 behavior: SnackBarBehavior.floating,
+//                 shape: RoundedRectangleBorder(
+//                   borderRadius: BorderRadius.circular(10),
+//                 ),
+//                 backgroundColor: Colors.orange.shade600,
+//                 duration: const Duration(seconds: 2),
+//               ),
+//             );
+//           } else {
+//             setState(() {
+//               selectedMembers.add({
+//                 "name": fullContact.displayName,
+//                 "mobileNumber": mobileNumber ?? "",
+//                 "amountController": TextEditingController(),
+//                 "contactId": fullContact.id,
+//               });
+//               filteredMembers = List.from(selectedMembers);
+//               _listKey.currentState?.insertItem(selectedMembers.length - 1);
+//             });
+//           }
+//         }
+//       }
+//     }
+//   } else if (status.isPermanentlyDenied) {
+//     _showPermissionDialog();
+//   } else {
+//     ScaffoldMessenger.of(context).showSnackBar(
+//       SnackBar(
+//         content:
+//             const Text("Contacts permission is required to add members."),
+//         behavior: SnackBarBehavior.floating,
+//         shape: RoundedRectangleBorder(
+//           borderRadius: BorderRadius.circular(10),
+//         ),
+//         backgroundColor: home1,
+//       ),
+//     );
+//   }
+// }

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:pointycastle/export.dart' as pc;
+
 import '../../../core/colors.dart';
 import '../../../core/constants.dart';
 import '../../../data/provider/cust_register_provider.dart';
@@ -63,6 +65,8 @@ class _MinKycScreenState extends State<MinKycScreen>
   double _progressValue = 0.7;
   String? generatedEntityId;
   String? generatedCorpCode;
+  String secretKey = "770A8A65DA156D24EE2A093277530142";
+  String initialVector = "1234567890123456";
 
   // Animation controllers
   late AnimationController _titleAnimationController;
@@ -295,7 +299,7 @@ class _MinKycScreenState extends State<MinKycScreen>
           opacity: _titleAnimation,
           child: ScaleTransition(
             scale: _titleAnimation,
-            child: Text(
+            child: const Text(
               "MIN KYC",
               style: TextStyle(
                 fontWeight: FontWeight.w800,
@@ -396,7 +400,7 @@ class _MinKycScreenState extends State<MinKycScreen>
         return LinearProgressIndicator(
           value: value,
           backgroundColor: Colors.grey[200],
-          valueColor: AlwaysStoppedAnimation<Color>(home1),
+          valueColor: const AlwaysStoppedAnimation<Color>(home1),
           minHeight: 4,
           borderRadius: BorderRadius.circular(2),
         );
@@ -637,7 +641,7 @@ class _MinKycScreenState extends State<MinKycScreen>
               ),
             ),
             IconButton(
-              icon: Icon(Icons.calendar_today, color: home1),
+              icon:const Icon(Icons.calendar_today, color: home1),
               onPressed: () => _selectDate(context),
             ),
           ],
@@ -655,7 +659,7 @@ class _MinKycScreenState extends State<MinKycScreen>
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
+            colorScheme:const ColorScheme.light(
               primary: home1, // Header background color
               onPrimary: Colors.white, // Header text color
               onSurface: Colors.black, // Body text color
@@ -1034,7 +1038,7 @@ class _MinKycScreenState extends State<MinKycScreen>
               color: Colors.grey[800],
               fontWeight: FontWeight.w500,
             ),
-            children: [
+            children: const [
               TextSpan(
                 text: "Terms and Conditions",
                 style: TextStyle(
@@ -1143,7 +1147,38 @@ class _MinKycScreenState extends State<MinKycScreen>
     String visibleEnd = phoneNumber.substring(phoneNumber.length - 4);
     return '$visibleStart****$visibleEnd';
   }
+  String? encryptString(
+      String textToEncrypt, String? secretKey, String? initialVector) {
+    if (textToEncrypt.isEmpty || secretKey == null || initialVector == null) {
+      return null;
+    }
 
+    try {
+      final secretKeyBytes = Uint8List.fromList(secretKey.codeUnits);
+      final iv = Uint8List.fromList(initialVector.codeUnits);
+      final key = pc.KeyParameter(secretKeyBytes);
+      final params = pc.ParametersWithIV(key, iv);
+      final cipher = pc.CBCBlockCipher(pc.AESFastEngine());
+      cipher.init(true, params);
+
+      final textBytes = Uint8List.fromList(textToEncrypt.codeUnits);
+      final paddedText = padPKCS7(textBytes);
+
+      final encryptedBytes = cipher.process(paddedText);
+
+      return base64.encode(encryptedBytes);
+    } catch (e) {
+      return null;
+    }
+  }
+  Uint8List padPKCS7(Uint8List input) {
+    final padLength = 16 - (input.length % 16);
+    final output = Uint8List(input.length + padLength)..setAll(0, input);
+    for (var i = input.length; i < output.length; i++) {
+      output[i] = padLength;
+    }
+    return output;
+  }
     Future<void> saveUserData(String entityID) async {
     print("saveUserData $entityID");
     const url = '${baseUrl}api/BusinessLogin';
@@ -1156,10 +1191,10 @@ class _MinKycScreenState extends State<MinKycScreen>
       'Locality': 'RANDOMLOCALITY',
       'UserName':"name",
       'Status': 'active',
-      'Password': "${_firstNameController.text}@${textControllerYYYY.text}",
+      'Password':encryptString("${_firstNameController.text}@${textControllerYYYY.text}",secretKey , initialVector) ,
       'BusinessType': 'B',
       'UpdateTime': '',
-      'MobPassword': "${_firstNameController.text}@${textControllerYYYY.text}",
+      'MobPassword': encryptString("${_firstNameController.text}@${textControllerYYYY.text}",secretKey , initialVector),
     };
     print(data);
     final response = await http.post(
@@ -1437,7 +1472,7 @@ class _MinKycScreenState extends State<MinKycScreen>
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: home1!, width: 1.5),
+            borderSide:const BorderSide(color: home1, width: 1.5),
           ),
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 16),

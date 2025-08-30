@@ -45,6 +45,7 @@ class Group {
     required this.defaultAmount,
     required this.defaultDueDate,
     required this.createdDate,
+    required this.status,
     this.updatedDate,
     required this.status
   });
@@ -54,6 +55,7 @@ class Group {
       groupId: json['GroupId'],
       groupName: json['GroupName'],
       corpCode: json['CorpCode'],
+      status: json['Status'],
       branchCode: json['BranchCode'],
       defaultAmount: json['DefaultAmount'].toDouble(),
       defaultDueDate: DateTime.parse(json['DefaultDueDate']),
@@ -70,6 +72,7 @@ class Group {
       'GroupName': groupName,
       'CorpCode': corpCode,
       'BranchCode': branchCode,
+      'Status': status,
       'DefaultAmount': defaultAmount,
       'DefaultDueDate': defaultDueDate.toIso8601String(),
       'CreatedDate': createdDate.toIso8601String(),

@@ -92,7 +92,7 @@ class _MemberPageState extends State<MemberPage> {
 
 
     }
-    if(addMember.createMemberResponse!.status==true){
+    if(addMember.createMemberResponse?.status==true){
 
       ScaffoldMessenger.of(context).showSnackBar(
          SnackBar(content: Text(addMember.createMemberResponse!.message)),
@@ -101,6 +101,11 @@ class _MemberPageState extends State<MemberPage> {
       _removeAllMembers();
      Navigator.pop(context, "Reload");
 
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(addMember.err.toString()))
+      );
+      Navigator.pop(context, "Reload");
     }
 
   }
@@ -194,7 +199,7 @@ class _MemberPageState extends State<MemberPage> {
                   Icon(Icons.error_outline, size: 48,
                       color: Colors.red.shade400),
                   const SizedBox(height: 16),
-                  Text(
+                 const  Text(
                     "Permission Required",
                     style: TextStyle(
                       fontSize: 20,
@@ -214,7 +219,7 @@ class _MemberPageState extends State<MemberPage> {
                     children: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: Text(
+                        child:const Text(
                           "Cancel",
                           style: TextStyle(color: home2),
                         ),
@@ -289,7 +294,7 @@ class _MemberPageState extends State<MemberPage> {
                   child: Center(
                     child: Text(
                       member["name"].substring(0, 1).toUpperCase(),
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: white,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -304,7 +309,7 @@ class _MemberPageState extends State<MemberPage> {
                     children: [
                       Text(
                         member["name"],
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           color: home2,
@@ -342,13 +347,13 @@ class _MemberPageState extends State<MemberPage> {
                       LengthLimitingTextInputFormatter(5),
                       NumberInputFormatter(),
                     ],
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: home2,
                       fontWeight: FontWeight.w600,
                     ),
                     decoration: InputDecoration(
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.only(left: 8, right: 4),
+                      prefixIcon: const Padding(
+                        padding:  EdgeInsets.only(left: 8, right: 4),
                         child: Icon(
                           Icons.currency_rupee,
                           size: 18,
@@ -432,7 +437,7 @@ class _MemberPageState extends State<MemberPage> {
           const SizedBox(height: 4),
           Text(
             label,
-            style: TextStyle(
+            style:const TextStyle(
               fontSize: 12,
               color: home2,
               fontWeight: FontWeight.w500,
@@ -543,22 +548,22 @@ class _MemberPageState extends State<MemberPage> {
               });
             },
           ),
-          _actionIcon(
-            icon: Icons.edit,
-            label: "Edit",
-            onTap: () {
-              if (filteredMembers.isNotEmpty) {
-                _showEditAmountsDialog();
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text("No members to edit"),
-                    backgroundColor: Colors.orange.shade600,
-                  ),
-                );
-              }
-            },
-          ),
+          // _actionIcon(
+          //   icon: Icons.edit,
+          //   label: "Edit",
+          //   onTap: () {
+          //     if (filteredMembers.isNotEmpty) {
+          //       _showEditAmountsDialog();
+          //     } else {
+          //       ScaffoldMessenger.of(context).showSnackBar(
+          //         SnackBar(
+          //           content: const Text("No members to edit"),
+          //           backgroundColor: Colors.orange.shade600,
+          //         ),
+          //       );
+          //     }
+          //   },
+          // ),
         ],
       ),
     );
@@ -569,7 +574,7 @@ class _MemberPageState extends State<MemberPage> {
       context: context,
       builder: (context) =>
           AlertDialog(
-            title: const Text("Edit Amounts"),
+            title: const Text("Edit Member"),
             content: SizedBox(
               width: double.maxFinite,
               child: ListView.builder(
@@ -578,36 +583,108 @@ class _MemberPageState extends State<MemberPage> {
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Row(
+                    child: Column(
                       children: [
-                        Expanded(
-                          child: Text(
-                            filteredMembers[index]["name"],
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
+                        Row(
+                          children: [
+                            const Expanded(
+                              child: Text(
+                                "Name",
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                             ),
-                          ),
+                            const SizedBox(width: 5),
+                            SizedBox(
+                              width: 220,
+                              child: TextField(
+                                controller: filteredMembers[index]["amountController"],
+                                keyboardType: TextInputType.name,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.singleLineFormatter,
+                                  LengthLimitingTextInputFormatter(5),
+                                  NumberInputFormatter(),
+                                ],
+                                decoration:  InputDecoration(hintText: filteredMembers[index]["name"],
+                                  prefixIcon: Icon(Icons.person, size: 18),
+                                  contentPadding:
+                                 const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                  isDense: true,
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 12),
-                        SizedBox(
-                          width: 100,
-                          child: TextField(
-                            controller: filteredMembers[index]["amountController"],
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(5),
-                              NumberInputFormatter(),
-                            ],
-                            decoration: const InputDecoration(
-                              prefixIcon: Icon(Icons.currency_rupee, size: 18),
-                              contentPadding:
-                              EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                              isDense: true,
-                              border: OutlineInputBorder(),
+                       const SizedBox(height: 5,),
+                        Row(
+                          children: [
+                            const Expanded(
+                              child: Text(
+                                "Number",
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                             ),
-                          ),
+                            const SizedBox(width: 5),
+                            SizedBox(
+                              width: 220,
+                              child: TextField(
+                                controller: filteredMembers[index]["amountController"],
+                                keyboardType: TextInputType.name,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.singleLineFormatter,
+                                  LengthLimitingTextInputFormatter(5),
+                                  NumberInputFormatter(),
+                                ],
+                                decoration:  InputDecoration(hintText: filteredMembers[index]["phone"],
+                                  prefixIcon: Icon(Icons.phone_iphone, size: 18),
+                                  contentPadding:
+                                  EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                  isDense: true,
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 5,),
+                        Row(
+                          children: [
+                            const Expanded(
+                              child: Text(
+                                "Amount",
+                                style:  TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                            SizedBox(
+                              width: 220,
+                              child: TextField(
+                                controller: _searchController,
+                                keyboardType: TextInputType.name,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.singleLineFormatter,
+                                  LengthLimitingTextInputFormatter(5),
+                                  NumberInputFormatter(),
+                                ],
+                                decoration:  InputDecoration(hintText: widget.amount.toString(),
+                                  prefixIcon: Icon(Icons.currency_rupee, size: 18),
+                                  contentPadding:
+                                  EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                  isDense: true,
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -695,9 +772,10 @@ class _MemberPageState extends State<MemberPage> {
               // Handle create group logic
               addMember();
             },
-            child: const Text(
+            child:  Text(
+              widget.status == "EDIT"?"Update Member":
               "Add Member",
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: white,
@@ -734,7 +812,7 @@ class _MemberPageState extends State<MemberPage> {
           tooltip: isSearching ? "Close Search" : "Search Members",
         ),
         IconButton(
-          icon: Icon(Icons.edit, color: home1, size: 28),
+          icon:  const Icon(Icons.edit, color: home1, size: 28),
           onPressed: () {
             if (filteredMembers.isNotEmpty) {
               showDialog(
@@ -761,7 +839,7 @@ class _MemberPageState extends State<MemberPage> {
                                     LengthLimitingTextInputFormatter(5),
                                     NumberInputFormatter(),
                                   ],
-                                  decoration: InputDecoration(
+                                  decoration:const InputDecoration(
                                     prefixIcon:
                                     Icon(Icons.currency_rupee, size: 18),
                                   ),
@@ -774,7 +852,7 @@ class _MemberPageState extends State<MemberPage> {
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context),
-                          child: Text("Cancel", style: TextStyle(color: home2)),
+                          child:const Text("Cancel", style: TextStyle(color: home2)),
                         ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
