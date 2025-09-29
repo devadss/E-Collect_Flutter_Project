@@ -16,6 +16,7 @@ import '../../data/repository/payment_link_repository.dart';
 import '../../data/repository/payment_session_id_repository.dart';
 import '../../data/storage/shared_pref_helper.dart';
 import '../../domain/model/account_list_model.dart';
+import '../../domain/model/cash_transcation_model.dart';
 import '../profile/widgets/recipect_page.dart';
 
 class RdclDuesHomePage extends StatefulWidget {
@@ -358,43 +359,68 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
       print("getCashTrans $success");
       showDialog(
         context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text("Transaction Result"),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Status: ${success.status ?? 'N/A'}"),
-                const SizedBox(height: 8),
-                Text("Transaction ID: ${success.transactionId ?? 'N/A'}"),
-                const SizedBox(height: 8),
-                Text("Message: ${success.message ?? 'N/A'}"),
-              ],
-            ),
-            actions: [
-              TextButton(
-
-                onPressed: () => {Navigator.pop(context),
-          Navigator.push(
+        builder: (context) => TransactionSuccessDialog(
+          success: success,
+          onViewReceipt: () {
+            Navigator.pop(context);
+            Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => ReceiptPage(
-                    amount: success.amount.toString(),
-                    bankName: _getBankNameFromCorpCode(corpCode!)?? "XYZ BANK",
-                    agentName: agentName ?? "Name",
-                    agentPhone:
-                    agentPhoneNumber ?? "agentPhone",
-                    custName: customerName!,
-                    custPhone: custPhoneNumber!,
-                    custId: custId!, txnId: success.transactionId.toString(), txnType: "CASH",
-                  )))},
-                child: const Text("OK"),
+                builder: (context) => ReceiptPage(
+                  amount: success.amount.toString(),
+                  bankName: _getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
+                  agentName: agentName ?? "Name",
+                  agentPhone: agentPhoneNumber ?? "agentPhone",
+                  custName: customerName!,
+                  custPhone: custPhoneNumber!,
+                  custId: custId!,
+                  txnId: success.transactionId.toString(),
+                  txnType: "CASH",
+                ),
               ),
-            ],
-          );
-        },
+            );
+          },
+        ),
       );
+      // showDialog(
+      //   context: context,
+      //   builder: (context) {
+      //     return AlertDialog(
+      //       title: const Text("Transaction Result"),
+      //       content: Column(
+      //         mainAxisSize: MainAxisSize.min,
+      //         crossAxisAlignment: CrossAxisAlignment.start,
+      //         children: [
+      //           Text("Status: ${success.status ?? 'N/A'}"),
+      //           const SizedBox(height: 8),
+      //           Text("Transaction ID: ${success.transactionId ?? 'N/A'}"),
+      //           const SizedBox(height: 8),
+      //           Text("Message: ${success.message ?? 'N/A'}"),
+      //         ],
+      //       ),
+      //       actions: [
+      //         TextButton(
+      //
+      //           onPressed: () => {Navigator.pop(context),
+      //     Navigator.push(
+      //         context,
+      //         MaterialPageRoute(
+      //             builder: (context) => ReceiptPage(
+      //               amount: success.amount.toString(),
+      //               bankName: _getBankNameFromCorpCode(corpCode!)?? "XYZ BANK",
+      //               agentName: agentName ?? "Name",
+      //               agentPhone:
+      //               agentPhoneNumber ?? "agentPhone",
+      //               custName: customerName!,
+      //               custPhone: custPhoneNumber!,
+      //               custId: custId!, txnId: success.transactionId.toString(), txnType: "CASH",
+      //             )))},
+      //           child: const Text("OK"),
+      //         ),
+      //       ],
+      //     );
+      //   },
+      // );
     });
   }
 
@@ -2157,6 +2183,191 @@ class BounceTransition extends StatelessWidget {
       },
       child: child,
     );
+  }
+}
+
+
+class TransactionSuccessDialog extends StatelessWidget {
+  final CashTranscation success;
+  final VoidCallback onViewReceipt;
+
+  const TransactionSuccessDialog({
+    Key? key,
+    required this.success,
+    required this.onViewReceipt,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 8,
+      shadowColor: Colors.black.withOpacity(0.2),
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header with Icon
+            _buildHeader(context),
+            const SizedBox(height: 24),
+
+            // Transaction Details
+            _buildTransactionDetails(),
+            const SizedBox(height: 32),
+
+            // Action Buttons
+            _buildActionButtons(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.green.withOpacity(0.1),
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(
+            Icons.check_circle_rounded,
+            color: Colors.green,
+            size: 24,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            "Transaction Completed",
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: Colors.green,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTransactionDetails() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildDetailItem(
+          label: "Status",
+          value: success.status ?? 'N/A',
+          valueColor: _getStatusColor(success.status),
+        ),
+        const SizedBox(height: 12),
+        _buildDetailItem(
+          label: "Transaction ID",
+          value: success.transactionId ?? 'N/A',
+          isImportant: true,
+        ),
+        const SizedBox(height: 12),
+        _buildDetailItem(
+          label: "Message",
+          value: success.message ?? 'N/A',
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDetailItem({
+    required String label,
+    required String value,
+    Color? valueColor,
+    bool isImportant = false,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          label.toUpperCase(),
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey,
+            letterSpacing: 0.5,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: isImportant ? FontWeight.w600 : FontWeight.w400,
+            color: valueColor ?? Colors.black87,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActionButtons(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: OutlinedButton(
+            onPressed: () => Navigator.pop(context),
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Text(
+              "CLOSE",
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: ElevatedButton(
+            onPressed: onViewReceipt,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: home1,
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Text(
+              "VIEW RECEIPT",
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Color _getStatusColor(String? status) {
+    switch (status?.toLowerCase()) {
+      case 'success':
+        return Colors.green;
+      case 'pending':
+        return Colors.orange;
+      case 'failed':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
   }
 }
 
