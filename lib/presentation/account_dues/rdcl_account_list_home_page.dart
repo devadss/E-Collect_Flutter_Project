@@ -78,12 +78,13 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
 
       // Debounce the API call
       if (_debounce?.isActive ?? false) _debounce!.cancel();
-      _debounce = Timer(const Duration(milliseconds: 700), () async {
+      _debounce = Timer(const Duration(milliseconds: 900), () async {
         final searchText = _searchController.text.trim();
 
         if (searchText.isNotEmpty) {
           print("searchText $searchText");
-          apiNameSearch(searchText);
+          showProgressDialog(context);
+          await apiNameSearch(searchText);
         }else{
           final provider =
           Provider.of<RdclCustListProvider>(context, listen: false);
@@ -257,7 +258,9 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
 
     await provider.getRdclCustomerunderAgent(
         "", agentBranchCode, 0, 0, nameToSearch);
-
+if(provider.rdclCustomerListModel != null || provider.rdclCustomerListError != null){
+  Navigator.pop(context);
+}
   }
 
   Widget buildShimmerText(
@@ -524,15 +527,15 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
                   final filteredCustomers =
                       _filterCustomers(allCustomers, _searchController.text);
 
-                  if (provider.rdclCustomerListModel == null) {
+                  if (provider.rdclCustomerListModel == null && provider.rdclCustomerListModel != null) {
                     return buildShimmerList();
                   } else if (filteredCustomers.isEmpty) {
                     //apiNameSearch(_searchController.text);
                     return Center(
                       child: Text(
-                        _searchController.text.isEmpty
-                            ? "No customers found"
-                            : "No results found for '${_searchController.text}'",
+                       // _searchController.text.isEmpty
+                        //    ? "No customers found"
+                             "No results found for '${_searchController.text}'",
                         style: TextStyle(color: grey[600]),
                       ),
                     );

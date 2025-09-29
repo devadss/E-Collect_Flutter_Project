@@ -95,10 +95,11 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
 
       // Debounce the API call
       if (_debounce?.isActive ?? false) _debounce!.cancel();
-      _debounce = Timer(const Duration(milliseconds: 700), () async {
+      _debounce = Timer(const Duration(milliseconds: 900), () async {
         final searchText = _searchController.text.trim();
         if (searchText.isNotEmpty) {
-          doSearchByApi(searchText);
+          showProgressDialog(context);
+         await doSearchByApi(searchText);
         } else {
           final providerTwo =
               Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
@@ -204,6 +205,9 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
         Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
     await providerTwo.getRdclDueList(
         "", agentBranchCode!, "", 0, 0, custNameSearch);
+    if(providerTwo.rdclDueUnderAgentModel != null){
+      Navigator.pop(context);
+    }
   }
 
   List<dynamic> _filterDues(List<dynamic> allDues, String query) {
@@ -295,7 +299,10 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
     await providerTwo.getRdclDueList(
         "", agentBranchCode!, "", _currentPage, itemPerPage, "");
     totalListCount = double.parse(
-        providerTwo.rdclDueUnderAgentModel!.data[0].totalCount.toString());
+        providerTwo.rdclDueUnderAgentModel?.data[0].totalCount.toString()?? "");
+    if(providerTwo.rdclDueUnderAgentModel == null && providerTwo.rdclDueUnderAgentError != null){
+      showToast(message: providerTwo.rdclDueUnderAgentError.toString(), color: Colors.red);
+    }
     if (totalListCount > 1) {
       if (mounted) {
         Navigator.pop(context);
