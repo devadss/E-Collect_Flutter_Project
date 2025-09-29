@@ -147,7 +147,7 @@ class _MinKycScreenState extends State<MinKycScreen>
     super.initState();
     Map<String, String?> nameParts = splitName(widget.fullName);
     generatedEntityId = generateEntityId();
-    generatedCorpCode = generateCorpCode().toString();
+    generatedCorpCode = "BNK${generateCorpCode().toString()}";
     String? firstName = nameParts['first'];
     String? middleName = nameParts['middle'];
     String? lastName = nameParts['last'];
@@ -226,7 +226,7 @@ class _MinKycScreenState extends State<MinKycScreen>
     final random = Random();
     String randomNumber = '';
     // Generate each digit of the random number
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 4; i++) {
       randomNumber +=
           random.nextInt(10).toString(); // Generate a random digit (0-9)
     }
@@ -1240,8 +1240,8 @@ class _MinKycScreenState extends State<MinKycScreen>
                 customer.response!.data!['firstName'].toString(),
               );
               SharedPref.shared.setMpinValue(customer.mpin.toString());
-
-              Navigator.push(context, MaterialPageRoute(builder: (context)=> const SelectCategoryScreen()));
+              _submitForm();
+            //  Navigator.push(context, MaterialPageRoute(builder: (context)=> const SelectCategoryScreen()));
 
           }
       );
@@ -1299,7 +1299,8 @@ class _MinKycScreenState extends State<MinKycScreen>
     showProgressDialog(context);
 
    // EasyLoading.show(status: "Please wait...");
-    const url = '${baseUrl}api/PersonalizedRegister_V1';
+    //const url = '${baseUrl}api/PersonalizedRegister_V1';
+   const url = '${baseUrl}api/CollectionKyc';
    // const url = '';
 
     Map<String, dynamic> communicationInfo = {
@@ -1388,7 +1389,7 @@ class _MinKycScreenState extends State<MinKycScreen>
         var responses = response.body;
 
         if (responses.contains("kitNo")) {
-          _submitForm();
+
           ///GETTING THE TOKEN VALUE.......
          // checkIfRegistered();
            saveUserData(generatedEntityId!);

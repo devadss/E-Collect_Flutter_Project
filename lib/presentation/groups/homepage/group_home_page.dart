@@ -1,4 +1,5 @@
 import 'package:collection_qr_flutter/presentation/groups/bnk_account_details/bank_details_screen.dart';
+import 'package:collection_qr_flutter/presentation/groups/homepage/payment_link_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -129,11 +130,13 @@ class _GroupHomePageState extends State<GroupHomePage> {
     //String custid = await SharedPref.shared.getCustId();
     String corpCode = await SharedPref.shared.getCorpCode();
     final name = await SharedPref().getAgentName();
+    final token = await SharedPref().getTokenValue();
     setState(() {
       userName = name;
       _corpCode = corpCode;
     });
     print("loadSharedData");
+    print("token = ${token}");
     setState(() {});
     showProgressDialog(context);
     getGroups();
@@ -754,7 +757,16 @@ class _GroupHomePageState extends State<GroupHomePage> {
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: () {
+                  onTap: () async{
+                    // await paymentLinkProvider.getPaymentLink(agentName: agentName,
+                    //     agentId: agentId, agentOriginId: agentOriginId,
+                    //     agentPhone: agentPhone, agentEmail: agentEmail,
+                    //     customerName: customerName, customerPhone: customerPhone,
+                    //     customerAccountNumber: customerAccountNumber, customerEmail: customerEmail,
+                    //     customerId: customerId, linkAmount: linkAmount, note: note, corpCode: corpCode,
+                    //     cardRefNum: cardRefNum, token: token, subAgentId: subAgentId);
+                    final paymentLinkProvider = Provider.of<PaymentLinkProvider>(context , listen:false);
+
                     // Handle send action
                   },
                   borderRadius: BorderRadius.circular(20),

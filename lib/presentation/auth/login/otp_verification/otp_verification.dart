@@ -80,6 +80,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
     return output;
   }
   Future<void> tokenGeneration(String password) async {
+    print("Inside token gen");
     showProgressDialog(context);
     final tokenRequestProvider = Provider.of<TokenRequestProvider>(context, listen: false);
     final response = await tokenRequestProvider.requestToken(
@@ -125,6 +126,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
       },
           (data) async {
             print("Inside tokenGeneration data");
+            print("setTokenValue $data");
         Navigator.pop(context);
         await SharedPref.shared.setTokenValue(data.toString());
         await SharedPref.shared.setLogin(true);
@@ -174,9 +176,13 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
               if(
               widget.loggedInUserType == "NOT_AN_AGENT"){
                // tokenGeneration(encryptString(widget.password, secretKey, initialVector)!);
+                print("setTokenValue $data");
+               // tokenGeneration(widget.password);
+
                 await SharedPref.shared.setTokenValue(data.toString());
                 await SharedPref.shared.setLogin(true);
                 await SharedPref.shared.setLoggedInUserType(widget.loggedInUserType);
+
                 Navigator.push(
                     context,
                     MaterialPageRoute(

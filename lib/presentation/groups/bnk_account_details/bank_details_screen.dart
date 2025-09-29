@@ -1,4 +1,5 @@
 import 'package:collection_qr_flutter/data/provider/group/bank_detail_provider.dart';
+import 'package:collection_qr_flutter/presentation/auth/authetication_page/google_pin_code_page.dart';
 import 'package:flutter/material.dart';
 import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:provider/provider.dart';
@@ -118,6 +119,9 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
       _ifscCodeController.clear();
       _confirmAccountNumberController.clear();
       setState(() => _isSubmitting = false);
+      if(bankDetailSubmitProvider.bankAccountModel?.status == true){
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> const GooglePinCodePage()));
+      }
     }
   }
 
@@ -136,18 +140,10 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
     setState(() {
       if (bankAccountUpdateProvider.bankAccountUpdateResponse != null) {
         statusType = "EDIT";
-        _panNumberController.text = bankAccountUpdateProvider
-            .bankAccountUpdateResponse!.data[0].accountHolderName
-            .toString();
-        _accountNumberController.text = bankAccountUpdateProvider
-            .bankAccountUpdateResponse!.data[0].accountNumber
-            .toString();
-        _confirmAccountNumberController.text = bankAccountUpdateProvider
-            .bankAccountUpdateResponse!.data[0].accountNumber
-            .toString();
-        _ifscCodeController.text = bankAccountUpdateProvider
-            .bankAccountUpdateResponse!.data[0].ifsc
-            .toString();
+        _panNumberController.text = bankAccountUpdateProvider.bankAccountUpdateResponse!.data[0].accountHolderName.toString();
+        _accountNumberController.text = bankAccountUpdateProvider.bankAccountUpdateResponse!.data[0].accountNumber.toString();
+        _confirmAccountNumberController.text = bankAccountUpdateProvider.bankAccountUpdateResponse!.data[0].accountNumber.toString();
+        _ifscCodeController.text = bankAccountUpdateProvider.bankAccountUpdateResponse!.data[0].ifsc.toString();
         userId= bankAccountUpdateProvider.bankAccountUpdateResponse!.data[0].userId.toString();
 
         setState(() {

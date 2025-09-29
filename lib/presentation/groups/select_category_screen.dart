@@ -83,11 +83,11 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: home2),
+          icon: const Icon(Icons.arrow_back, color: home2),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
-        title: Text(
+        title: const Text(
           "Select Category",
           style: TextStyle(
             fontWeight: FontWeight.w700,
@@ -116,9 +116,9 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                 decoration: InputDecoration(
                   hintText: 'Search categories...',
                   hintStyle: TextStyle(color: Colors.grey[600]),
-                  prefixIcon: Icon(Icons.search, color: home2),
+                  prefixIcon: const Icon(Icons.search, color: home2),
                   border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 15),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 15),
                 ),
               ),
             ),
@@ -141,9 +141,9 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                     backgroundColor: home1.withOpacity(0.2),
                     label: Text(
                       _selectedCategory!,
-                      style: TextStyle(color: home2),
+                      style: const TextStyle(color: home2),
                     ),
-                    deleteIcon: Icon(Icons.close, size: 18, color: home2),
+                    deleteIcon: const Icon(Icons.close, size: 18, color: home2),
                     onDeleted: () {
                       setState(() {
                         _selectedCategory = null;
@@ -159,7 +159,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate:const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 15,
                   mainAxisSpacing: 15,
@@ -173,7 +173,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                   return GestureDetector(
                     onTap: () => _selectCategory(category['name']),
                     child: AnimatedContainer(
-                      duration: Duration(milliseconds: 200),
+                      duration: const Duration(milliseconds: 200),
                       decoration: BoxDecoration(
                         color: isSelected ? home2 : Colors.white,
                         borderRadius: BorderRadius.circular(15),
@@ -181,7 +181,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                           BoxShadow(
                             color: Colors.grey.withOpacity(0.1),
                             blurRadius: 10,
-                            offset: Offset(0, 4),
+                            offset: const Offset(0, 4),
                           ),
                         ],
                         border: Border.all(
@@ -194,9 +194,9 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                         children: [
                           Text(
                             category['icon'],
-                            style: TextStyle(fontSize: 30),
+                            style: const TextStyle(fontSize: 30),
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Text(
                             category['name'],
                             style: TextStyle(
@@ -207,8 +207,8 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                             textAlign: TextAlign.center,
                           ),
                           if (isSelected)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8),
+                           const Padding(
+                              padding:  EdgeInsets.only(top: 8),
                               child: Icon(
                                 Icons.check_circle,
                                 color: Colors.white,
@@ -231,7 +231,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: home1,
-                  minimumSize: Size(double.infinity, 55),
+                  minimumSize: const Size(double.infinity, 55),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -253,7 +253,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                 ),
               ),
             ),
-        ],
+          ],
       ),
     );
   }
