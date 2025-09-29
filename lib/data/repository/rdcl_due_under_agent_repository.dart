@@ -14,7 +14,7 @@ class RdclDueUnderAgentRepo implements RdclDueUnderAgentModelInterface{
   }
 
   @override
-  Future<Either<String, RdclDueUnderAgentModel>> getRdclDueList(String agentId,
+  Future<Either<String, RdclDueUnderAgentModel>>getRdclDueList(String agentId,
       String branchCode, String accNo, int pageNo, int pageSize,String custName) async {
     print("inside getRdclDueList");
     final vendorUrl = await loadVendorUrl();
