@@ -876,6 +876,7 @@
 
 import 'dart:io';
 import 'dart:math';
+import 'package:collection_qr_flutter/core/alerts.dart';
 import 'package:collection_qr_flutter/data/provider/rdcl_due_under_agent_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -1600,6 +1601,12 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
         Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
     await provider.getRdclDueList(
         "", sub_AgentCodeNew, "", widget.pageNo, widget.pageSize, "");
+    if (provider.rdclDueUnderAgentModel == null &&
+        provider.rdclDueUnderAgentError != null) {
+      showToast(
+          message: provider.rdclDueUnderAgentError.toString(),
+          color: Colors.red);
+    }
   }
 
   @override

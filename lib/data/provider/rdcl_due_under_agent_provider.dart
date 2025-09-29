@@ -9,8 +9,10 @@ class RdclDueUnderAgentProvider with ChangeNotifier {
   RdclDueUnderAgentProvider(this._rdclDueUnderAgentRepo);
 
   RdclDueUnderAgentModel? _rdclDueUnderAgentModel;
-
   RdclDueUnderAgentModel? get rdclDueUnderAgentModel => _rdclDueUnderAgentModel;
+
+  String? _rdclDueUnderAgentError;
+  String? get rdclDueUnderAgentError => _rdclDueUnderAgentError;
 
   bool? _showDialog;
   bool? get showDialog => _showDialog;
@@ -21,6 +23,7 @@ class RdclDueUnderAgentProvider with ChangeNotifier {
     _showDialog = true;
     notifyListeners();
     data.fold((err) {
+      _rdclDueUnderAgentError = err;
       _rdclDueUnderAgentModel = null;
       _showDialog = false;
     }, (success) {
