@@ -28,6 +28,7 @@ class RdclDueUnderAgentProvider with ChangeNotifier {
       _showDialog = false;
     }, (success) {
       _rdclDueUnderAgentModel = success;
+      _rdclDueUnderAgentError =  null;
       _showDialog = false;
     });
     notifyListeners();

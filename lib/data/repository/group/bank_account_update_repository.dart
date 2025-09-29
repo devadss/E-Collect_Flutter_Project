@@ -21,5 +21,5 @@ class BankAccountUpdateRepository implements BankAccountUpdateInterface{
       return Left(jsonDecode(request.body));
     }
   }
-  
+
 }

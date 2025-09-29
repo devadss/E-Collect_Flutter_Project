@@ -12,11 +12,9 @@ import '../storage/shared_pref_helper.dart';
 
 class AgentCustomerDetailsRepository
     implements IAgentCustomerDetailsRepository {
-
   Future<String> loadVendorUrl() async {
     //final liveUrl = await SharedPref().getVendorUrlLive();
     return await SharedPref().getCustomerUnderAgentUrl();
-
   }
 
   @override
@@ -24,17 +22,25 @@ class AgentCustomerDetailsRepository
       getAgentCustomerDetails(String agentId) async {
     final vendorUrl = await loadVendorUrl();
     final url =
-       // Uri.parse("https://doorstepmftctest.digicob.in/getCustomerlist");
-      //  Uri.parse("${vendorUrl}getCustomerlist");
+        // Uri.parse("https://doorstepmftctest.digicob.in/getCustomerlist");
+        //  Uri.parse("${vendorUrl}getCustomerlist");
         Uri.parse(vendorUrl);
+    print(
+        "--------------------------AGENT CUSTOMER DETAILS VENDOR URL------------------");
+    print(vendorUrl);
     print("loadVendorUrl = ${await loadVendorUrl()}");
+    print(
+        "--------------------------AGENT CUSTOMER DETAILS URL------------------");
+    print(url);
     bool checkConnection = await InternetConnectionChecker().hasConnection;
     final body = {"agent_id": agentId};
     if (checkConnection) {
       final response = await http.post(url, body: body);
-      printLog("------------------------STATUSCODE-------------------");
+      printLog(
+          "------------------------AGENT CUSTOMER DETAILS STATUSCODE-------------------");
       printLog(response.statusCode);
-      printLog("------------------------BODY--------------------------");
+      printLog(
+          "------------------------AGENT CUSTOMER DETAILS BODY--------------------------");
       printLog(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         try {

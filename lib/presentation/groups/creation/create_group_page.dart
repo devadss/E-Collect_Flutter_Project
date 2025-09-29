@@ -766,8 +766,9 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     if (groupNameController.text.isNotEmpty &&
         amountController.text.isNotEmpty &&
         feeCollectionStartDateController.text.isNotEmpty &&
-        feeCollectionDayController.text.isNotEmpty &&
-        groupDeactivationDateController.text.isNotEmpty) {
+        feeCollectionDayController.text.isNotEmpty
+        // && groupDeactivationDateController.text.isNotEmpty
+    ) {
       showProgressDialog(context);
       var createGroupProvider =
           Provider.of<CreateGroupWithMemberProvider>(context, listen: false);
