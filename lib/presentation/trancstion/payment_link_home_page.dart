@@ -907,7 +907,6 @@
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:intl/intl.dart';
@@ -999,9 +998,9 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage>
   @override
   Widget build(BuildContext context) {
     double totalReceived =
-    receivedPayments.fold(0, (sum, payment) => sum + payment.amount);
+        receivedPayments.fold(0, (sum, payment) => sum + payment.amount);
     double totalDue =
-    duePayments.fold(0, (sum, payment) => sum + payment.amount);
+        duePayments.fold(0, (sum, payment) => sum + payment.amount);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark.copyWith(
@@ -1063,8 +1062,7 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage>
           icon: Badge(
             backgroundColor: home1,
             smallSize: 8,
-            child:
-             Icon(Iconsax.notification, color: textPrimary, size: 24),
+            child: Icon(Iconsax.notification, color: textPrimary, size: 24),
           ),
           onPressed: () {},
         ),
@@ -1120,21 +1118,21 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage>
           children: [
             Expanded(
                 child: _buildSummaryCard(
-                  'Received',
-                  totalReceived,
-                  successColor,
-                  Iconsax.tick_circle,
-                  const [Color(0xFF00B894), Color(0xFF00C6A7)],
-                )),
+              'Received',
+              totalReceived,
+              successColor,
+              Iconsax.tick_circle,
+              const [Color(0xFF00B894), Color(0xFF00C6A7)],
+            )),
             const SizedBox(width: 16),
             Expanded(
                 child: _buildSummaryCard(
-                  'Due',
-                  totalDue,
-                  warningColor,
-                  Iconsax.clock,
-                  const [Color(0xFFFDCB6E), Color(0xFFFFD180)],
-                )),
+              'Due',
+              totalDue,
+              warningColor,
+              Iconsax.clock,
+              const [Color(0xFFFDCB6E), Color(0xFFFFD180)],
+            )),
           ],
         ),
       ),
@@ -1233,10 +1231,10 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage>
           children: [
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: textPrimary,
+                color: title == "Due Payments" ? errorColor : textPrimary,
                 letterSpacing: -0.3,
               ),
             ),
@@ -1530,13 +1528,13 @@ class _AnimatedPaymentListItemState extends State<AnimatedPaymentListItem>
                       gradient: LinearGradient(
                         colors: widget.isReceived
                             ? [
-                          successColor.withOpacity(0.2),
-                          successColor.withOpacity(0.1)
-                        ]
+                                successColor.withOpacity(0.2),
+                                successColor.withOpacity(0.1)
+                              ]
                             : [
-                          warningColor.withOpacity(0.2),
-                          warningColor.withOpacity(0.1)
-                        ],
+                                warningColor.withOpacity(0.2),
+                                warningColor.withOpacity(0.1)
+                              ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
@@ -1555,7 +1553,7 @@ class _AnimatedPaymentListItemState extends State<AnimatedPaymentListItem>
                           fontWeight: FontWeight.w700,
                           fontSize: 20,
                           color:
-                          widget.isReceived ? successColor : warningColor,
+                              widget.isReceived ? successColor : warningColor,
                         ),
                       ),
                     ),
@@ -1595,7 +1593,7 @@ class _AnimatedPaymentListItemState extends State<AnimatedPaymentListItem>
                           fontWeight: FontWeight.w700,
                           fontSize: 16,
                           color:
-                          widget.isReceived ? successColor : warningColor,
+                              widget.isReceived ? successColor : warningColor,
                           letterSpacing: -0.3,
                         ),
                       ),
@@ -1788,7 +1786,7 @@ class _AnimatedPaymentDetailsDialogState
                       title: 'Status',
                       value: widget.payment.isPaid ? 'Paid' : 'Pending',
                       valueColor:
-                      widget.payment.isPaid ? successColor : warningColor,
+                          widget.payment.isPaid ? successColor : warningColor,
                     ),
 
                     const SizedBox(height: 24),
@@ -1828,7 +1826,7 @@ class _AnimatedPaymentDetailsDialogState
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
-                              widget.payment.isPaid ? home1 : warningColor,
+                                  widget.payment.isPaid ? home1 : warningColor,
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -2000,17 +1998,17 @@ class _NewPaymentLinkFormState extends State<NewPaymentLinkForm> {
               hint: const Text('Select Recipient'),
               items: _selectedRecipientType == 'Member'
                   ? ['John Doe', 'Jane Smith', 'Mike Johnson']
-                  .map((name) => DropdownMenuItem(
-                value: name,
-                child: Text(name),
-              ))
-                  .toList()
+                      .map((name) => DropdownMenuItem(
+                            value: name,
+                            child: Text(name),
+                          ))
+                      .toList()
                   : ['Group A', 'Group B', 'Group C']
-                  .map((name) => DropdownMenuItem(
-                value: name,
-                child: Text(name),
-              ))
-                  .toList(),
+                      .map((name) => DropdownMenuItem(
+                            value: name,
+                            child: Text(name),
+                          ))
+                      .toList(),
               onChanged: (value) {
                 setState(() {
                   _selectedRecipient = value;
@@ -2029,7 +2027,7 @@ class _NewPaymentLinkFormState extends State<NewPaymentLinkForm> {
                 ),
               ),
               validator: (value) =>
-              value == null ? 'Please select a recipient' : null,
+                  value == null ? 'Please select a recipient' : null,
             ),
             const SizedBox(height: 16),
             TextFormField(
@@ -2068,7 +2066,7 @@ class _NewPaymentLinkFormState extends State<NewPaymentLinkForm> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content:
-                        const Text('Payment link created successfully'),
+                            const Text('Payment link created successfully'),
                         backgroundColor: widget.home1,
                       ),
                     );
@@ -2095,7 +2093,6 @@ class _NewPaymentLinkFormState extends State<NewPaymentLinkForm> {
     );
   }
 }
-
 
 /*
 import 'package:flutter/material.dart';

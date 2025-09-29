@@ -5,7 +5,7 @@ import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:flutter/material.dart';
 
 //******************************************************************
-//const String baseUrl = "https://adsspay.aanvinsolutions.com:8444/";///LIVE
+//const String baseUrl = "https://adsspay.aanvinsolutions.com:8444/"8905564553;///LIVE
 const String baseUrl = "https://adsspayweb.digicob.in/"; //TEST
 //*******************************************************************
 const String dopBaseUrl = "https://devops.mydop.in/api/fetch/vendor/urls/"; //UAT
@@ -48,54 +48,322 @@ class NotificationChannels {
 }
 
 
-AlertDialog exitAlert(BuildContext context){
+AlertDialog exitAlert(BuildContext context) {
   return AlertDialog(
-    icon: const Icon(Icons.warning_amber, color: home1,size: 30,),
-    alignment: Alignment.center,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(10))
-    ),
-    title:const Center(child:Text("Alert")) ,
     backgroundColor: Colors.white,
-    content: SizedBox(
-      height: 120,
-      child: Column(children: [
-        const Text("Are you sure you want to exit Collection Qr? ",
-        style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black,
-        fontSize: 15),),
-        const SizedBox(height: 30,),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-          ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: home1,
-                foregroundColor: Colors.white,
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10))
-                  )
-              ),
-              onPressed: (){
-               // Navigator.pop(context);
-               // SystemNavigator.pop();
-                exit(0);
-              }, child: const Text("YES")),
-            ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: homeColor,
-                    foregroundColor: Colors.white,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10))
-                  )
+    surfaceTintColor: Colors.transparent,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(20),
+      side: BorderSide(color: home1.withOpacity(0.2), width: 1.5),
+    ),
+    shadowColor: home1.withOpacity(0.3),
+    elevation: 25,
+    contentPadding: const EdgeInsets.all(0),
+    content: StatefulBuilder(
+      builder: (context, setState) {
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(28),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Animated Icon with Pulse Effect
+              TweenAnimationBuilder(
+                duration: const Duration(milliseconds: 800),
+                tween: Tween<double>(begin: 0, end: 1),
+                builder: (context, value, child) {
+                  return Transform.scale(
+                    scale: 0.8 + (value * 0.2),
+                    child: Opacity(
+                      opacity: value,
+                      child: child,
+                    ),
+                  );
+                },
+                child: Container(
+                  width: 70,
+                  height: 70,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [home1, home2],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: home1.withOpacity(0.4),
+                        blurRadius: 15,
+                        spreadRadius: 2,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.exit_to_app_rounded,
+                    color: Colors.white,
+                    size: 32,
+                  ),
                 ),
-                onPressed: (){
-                  Navigator.pop(context);
-                }, child: const Text("NO")),
-        ],)
-      ],),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Animated Title
+              TweenAnimationBuilder(
+                duration: const Duration(milliseconds: 600),
+                tween: Tween<double>(begin: 0, end: 1),
+                builder: (context, value, child) {
+                  return Opacity(
+                    opacity: value,
+                    child: Transform.translate(
+                      offset: Offset(0, 20 * (1 - value)),
+                      child: child,
+                    ),
+                  );
+                },
+                child: Text(
+                  "Exit Collection QR?",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: home1,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              // Animated Message
+              TweenAnimationBuilder(
+                duration: const Duration(milliseconds: 700),
+                tween: Tween<double>(begin: 0, end: 1),
+                builder: (context, value, child) {
+                  return Opacity(
+                    opacity: value,
+                    child: Transform.translate(
+                      offset: Offset(0, 15 * (1 - value)),
+                      child: child,
+                    ),
+                  );
+                },
+                child: Text(
+                  "Are you sure you want to exit the application?",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.grey.shade600,
+                    height: 1.4,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 28),
+
+              // Buttons Row with Staggered Animation
+              TweenAnimationBuilder(
+                duration: const Duration(milliseconds: 900),
+                tween: Tween<double>(begin: 0, end: 1),
+                builder: (context, value, child) {
+                  return Opacity(
+                    opacity: value,
+                    child: Transform.translate(
+                      offset: Offset(0, 30 * (1 - value)),
+                      child: child,
+                    ),
+                  );
+                },
+                child: Row(
+                  children: [
+                    // No Button with Hover Animation
+                    Expanded(
+                      child: MouseRegion(
+                        onEnter: (_) => setState(() {}),
+                        onExit: (_) => setState(() {}),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: home1.withOpacity(0.3),
+                              width: 1.5,
+                            ),
+                            color: Colors.transparent,
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () {
+                                // Scale down animation on tap
+                                Navigator.pop(context);
+                              },
+                              borderRadius: BorderRadius.circular(14),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                child: Center(
+                                  child: Text(
+                                    "STAY",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                      color: home1,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 16),
+
+                    // Yes Button with Hover and Pulse Animation
+                    Expanded(
+                      child: MouseRegion(
+                        onEnter: (_) => setState(() {}),
+                        onExit: (_) => setState(() {}),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                            gradient: LinearGradient(
+                              colors: [home1, home2],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: home1.withOpacity(0.4),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () {
+                                // Add exit animation before closing
+                                exit(0);
+                              },
+                              borderRadius: BorderRadius.circular(14),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                child: const Center(
+                                  child: Text(
+                                    "EXIT",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     ),
   );
 }
+
+// Optional: Add this function to show the dialog with animation
+Future<void> showExitDialog(BuildContext context) async {
+  showGeneralDialog(
+    context: context,
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return ScaleTransition(
+        scale: CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutBack,
+        ),
+        child: FadeTransition(
+          opacity: animation,
+          child: exitAlert(context),
+        ),
+      );
+    },
+    transitionDuration: const Duration(milliseconds: 400),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutBack,
+        ),
+        child: FadeTransition(
+          opacity: animation,
+          child: child,
+        ),
+      );
+    },
+  );
+}
+
+// AlertDialog exitAlert(BuildContext context){
+//   return AlertDialog(
+//     icon: const Icon(Icons.warning_amber, color: home1,size: 30,),
+//     alignment: Alignment.center,
+//     shape: const RoundedRectangleBorder(
+//       borderRadius: BorderRadius.all(Radius.circular(10))
+//     ),
+//     title:const Center(child:Text("Alert")) ,
+//     backgroundColor: Colors.white,
+//     content: SizedBox(
+//       height: 120,
+//       child: Column(children: [
+//         const Text("Are you sure you want to exit Collection Qr? ",
+//         style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black,
+//         fontSize: 15),),
+//         const SizedBox(height: 30,),
+//         Row(
+//           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//           children: [
+//           ElevatedButton(
+//               style: ElevatedButton.styleFrom(
+//                 backgroundColor: home1,
+//                 foregroundColor: Colors.white,
+//                   shape: const RoundedRectangleBorder(
+//                       borderRadius: BorderRadius.all(Radius.circular(10))
+//                   )
+//               ),
+//               onPressed: (){
+//                // Navigator.pop(context);
+//                // SystemNavigator.pop();
+//                 exit(0);
+//               }, child: const Text("YES")),
+//             ElevatedButton(
+//                 style: ElevatedButton.styleFrom(
+//                     backgroundColor: homeColor,
+//                     foregroundColor: Colors.white,
+//                   shape: const RoundedRectangleBorder(
+//                     borderRadius: BorderRadius.all(Radius.circular(10))
+//                   )
+//                 ),
+//                 onPressed: (){
+//                   Navigator.pop(context);
+//                 }, child: const Text("NO")),
+//         ],)
+//       ],),
+//     ),
+//   );
+// }
 
 class SharedPrefKeys {
   static const String guestCartCount = "GET_CART_COUNT";
