@@ -4,9 +4,9 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants.dart';
 import '../../data/provider/get_loan_provider.dart';
+import '../../data/storage/shared_pref_helper.dart';
 import '../../domain/model/loan_model.dart';
 import 'loan_details_page.dart';
-
 
 class LoanHomePage extends StatefulWidget {
   const LoanHomePage({super.key});
@@ -15,9 +15,9 @@ class LoanHomePage extends StatefulWidget {
   State<LoanHomePage> createState() => _LoanHomePageState();
 }
 
-
 class _LoanHomePageState extends State<LoanHomePage>
     with TickerProviderStateMixin {
+  String? agentId;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   bool _isLoading = true;
@@ -29,10 +29,29 @@ class _LoanHomePageState extends State<LoanHomePage>
   final Color _cardColor = Colors.white;
   final Color _textColor = const Color(0xFF2D3436);
 
+  Future<void> loadSharedPrefs() async {
+    final custID = await SharedPref().getSubAgentId();
+    setState(() {
+      agentId = custID;
+    });
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _animationController.forward();
+      final provider = Provider.of<GetLoanProvider>(context, listen: false);
+      provider.getLoans("", "", "", "", agentId, 1, 58).then((_) {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+            _filteredLoans = provider.collectionLoanModel?.data ?? [];
+          });
+        }
+      });
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-
+    loadSharedPrefs();
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -45,10 +64,10 @@ class _LoanHomePageState extends State<LoanHomePage>
       ),
     );
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    /* SchedulerBinding.instance.addPostFrameCallback((_) {
       _animationController.forward();
       final provider = Provider.of<GetLoanProvider>(context, listen: false);
-      provider.getLoans("", "", "", "", "", 1, 10).then((_) {
+      provider.getLoans("", "", "", "", agentId, 1, 58).then((_) {
         if (mounted) {
           setState(() {
             _isLoading = false;
@@ -56,7 +75,7 @@ class _LoanHomePageState extends State<LoanHomePage>
           });
         }
       });
-    });
+    });*/
 
     _searchController.addListener(() {
       _filterLoans(_searchController.text);
@@ -100,7 +119,7 @@ class _LoanHomePageState extends State<LoanHomePage>
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title:const Text(
+        title: const Text(
           "Loans",
           style: TextStyle(
             color: home2,
@@ -149,13 +168,13 @@ class _LoanHomePageState extends State<LoanHomePage>
             ),
           ),
 
-          SliverPadding(
+          /*   SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             sliver: SliverToBoxAdapter(
               child: _buildStatsOverview(loans),
             ),
           ),
-
+*/
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
             sliver: SliverToBoxAdapter(
@@ -172,27 +191,27 @@ class _LoanHomePageState extends State<LoanHomePage>
 
           _isLoading
               ? const SliverFillRemaining(
-              child: Center(child: CircularProgressIndicator(color: home1)))
+                  child: Center(child: CircularProgressIndicator(color: home1)))
               : _filteredLoans.isEmpty
-              ? SliverFillRemaining(
-            child: Center(
-              child: Text(
-                _searchController.text.isEmpty
-                    ? "No loans available"
-                    : "No results found",
-                style: TextStyle(color: Colors.grey[600]),
-              ),
-            ),
-          )
-              : SliverList(
-            delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                final loan = _filteredLoans[index];
-                return _buildLoanItem(loan, index);
-              },
-              childCount: _filteredLoans.length,
-            ),
-          ),
+                  ? SliverFillRemaining(
+                      child: Center(
+                        child: Text(
+                          _searchController.text.isEmpty
+                              ? "No loans available"
+                              : "No results found",
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
+                      ),
+                    )
+                  : SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final loan = _filteredLoans[index];
+                          return _buildLoanItem(loan, index);
+                        },
+                        childCount: _filteredLoans.length,
+                      ),
+                    ),
         ],
       ),
     );
@@ -215,15 +234,15 @@ class _LoanHomePageState extends State<LoanHomePage>
         controller: _searchController,
         decoration: InputDecoration(
           hintText: 'Search loans...',
-          prefixIcon:const Icon(Icons.search, color: home1),
+          prefixIcon: const Icon(Icons.search, color: home1),
           suffixIcon: _searchController.text.isNotEmpty
               ? IconButton(
-            icon: const Icon(Icons.clear, color: home1),
-            onPressed: () {
-              _searchController.clear();
-              _filterLoans('');
-            },
-          )
+                  icon: const Icon(Icons.clear, color: home1),
+                  onPressed: () {
+                    _searchController.clear();
+                    _filterLoans('');
+                  },
+                )
               : null,
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(vertical: 16),
@@ -237,16 +256,13 @@ class _LoanHomePageState extends State<LoanHomePage>
     final pendingCount = _countLoansByStatus(loans, "Pending");
     final closedCount = _countLoansByStatus(loans, "Closed");
     final totalAmount = loans.fold<double>(
-        0,
-            (sum, loan) => sum + (loan.outstandingAmount ?? 0)
-    );
+        0, (sum, loan) => sum + (loan.outstandingAmount ?? 0));
 
     return FadeTransition(
       opacity: _fadeAnimation,
       child: Card(
         elevation: 0,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         color: _cardColor,
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -275,7 +291,7 @@ class _LoanHomePageState extends State<LoanHomePage>
                   ),
                   Text(
                     "₹${totalAmount.toStringAsFixed(2)}",
-                    style:const TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: home1,
@@ -323,7 +339,8 @@ class _LoanHomePageState extends State<LoanHomePage>
 
   Widget _buildLoanItem(Datum loan, int index) {
     final statusColor = _getStatusColor(loan.status);
-    final formattedAmount = '₹${loan.outstandingAmount?.toStringAsFixed(2) ?? '0.00'}';
+    final formattedAmount =
+        '₹${loan.outstandingAmount?.toStringAsFixed(2) ?? '0.00'}';
     final formattedDate = loan.createdAt?.toString().substring(0, 10) ?? 'N/A';
 
     return FadeTransition(
@@ -341,16 +358,33 @@ class _LoanHomePageState extends State<LoanHomePage>
           child: InkWell(
             borderRadius: BorderRadius.circular(12),
             onTap: () {
+              var loanSchm = "";
+              if (loan.collectionFrequency?.toLowerCase().toString() ==
+                  "daily") {
+                loanSchm = "days";
+              } else if (loan.collectionFrequency?.toLowerCase().toString() ==
+                  "monthly") {
+                loanSchm = "months";
+              } else if (loan.collectionFrequency?.toLowerCase().toString() ==
+                  "weekly") {
+                loanSchm = "weeks";
+              }
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => LoanDetailsPage(
                     customerName: loan.customerName ?? "Name",
                     loanNumber: loan.loanNumber ?? "Loan Number",
-                    emiAmount: loan.emi ?? 0,
+                    emiAmount: loan.collectionAmount ?? 0,
                     loanTerm: loan.tenorDays ?? 0,
                     loanStatus: loan.status ?? "",
                     loanAmount: loan.outstandingAmount ?? 0,
+                    scheme: loan.scheme ?? "",
+                    paymentDate: loan.lastRepaymentDate.toString() ?? "",
+                    collectionFrequency: loanSchm,
+                    email: loan.customerEmail ?? "",
+                    customerPhoneNumber: loan.phoneNumber ?? "",
+                    custId: loan.loanId.toString() ?? "",
                   ),
                 ),
               );

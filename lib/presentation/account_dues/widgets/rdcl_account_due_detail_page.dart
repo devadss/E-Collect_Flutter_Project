@@ -1081,7 +1081,9 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
                     print(
                         "---------------------------------ERROR PAYMENT---------------------------");
                     print(error);
-                  }, (sessionId) async {
+                  },
+                          (sessionId)
+                  async {
                     paymentSessionId = sessionId.paymentSessionId ?? "";
                     if (paymentSessionId!.isNotEmpty &&
                         paymentSessionId != null &&

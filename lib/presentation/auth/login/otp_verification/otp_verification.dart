@@ -178,11 +178,9 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
                // tokenGeneration(encryptString(widget.password, secretKey, initialVector)!);
                 print("setTokenValue $data");
                // tokenGeneration(widget.password);
-
                 await SharedPref.shared.setTokenValue(data.toString());
                 await SharedPref.shared.setLogin(true);
                 await SharedPref.shared.setLoggedInUserType(widget.loggedInUserType);
-
                 Navigator.push(
                     context,
                     MaterialPageRoute(

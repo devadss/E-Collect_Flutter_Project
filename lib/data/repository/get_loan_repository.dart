@@ -19,9 +19,10 @@ class GetLoanRepository implements IGetLoanRepository {
       int? pageSize) async {
     bool checkConnection = await InternetConnectionChecker().hasConnection;
     final url = Uri.parse("${baseUrl}api/GetLoans?customerName=$customerName&accountNo=$accountNo&status=$status&scheme=$scheme&agent=$agent&page=$page&pageSize=$pageSize");
-
+print(url);
     if(checkConnection){
       final response = await http.get(url);
+      print("Loan response :=> ${response.body}");
       if(response.statusCode == 200 || response.statusCode == 201){
         try{
           return Right(CollectionLoanModel.fromJson(jsonDecode(response.body)));

@@ -1,5 +1,7 @@
 import 'dart:developer';
 import 'package:collection_qr_flutter/data/provider/link_transcation_history_provider.dart';
+import 'package:collection_qr_flutter/data/provider/whatsapp_share_provider.dart';
+import 'package:collection_qr_flutter/data/repository/whats_app_share_repository.dart';
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 
 import '../../data/provider/agent_customer_details_provider.dart';
@@ -173,6 +175,7 @@ void main() async {
     ChangeNotifierProvider(create: (_) => CreateGroupProvider(CreateGroupRepository())),
     ChangeNotifierProvider(create: (_) => CreateMemberProvider(CreateMemberRepository())),
     ChangeNotifierProvider(create: (_) => DeleteMemberProvider(MemberDeleteRepository())),
+    ChangeNotifierProvider(create: (_) => WhatsAppShareProvider(WhatsAppShareRepository())),
     ChangeNotifierProvider(create: (_) => GroupDeleteProvider(DeleteGroupRepository())),
     ChangeNotifierProvider(create: (_) => CreateGroupWithMemberProvider(CreateGroupWithMemberRepository())),
     ChangeNotifierProvider(create: (_) => GroupUpdateProvider(GroupUpdateRepository())),

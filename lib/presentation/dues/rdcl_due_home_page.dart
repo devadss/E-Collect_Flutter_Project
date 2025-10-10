@@ -331,7 +331,8 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
       required String? amount,
       required String? phoneNumber,
       required String? entityId,
-      required String? note}) async {
+      required String? note}) async
+  {
     final cashPaymentProvider =
         Provider.of<CashTranscationProvider>(context, listen: false);
     final cash = await cashPaymentProvider.getTranscations(
@@ -1863,7 +1864,8 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
         );
       },
     ).then((value) => value ?? false); // default to false if dismissed
-  }}
+  }
+}
 
 //   Future<void> paymentConfirmation(
 //     BuildContext context,

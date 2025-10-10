@@ -180,7 +180,7 @@ class _MobileNumberVerificationPageState
                       true) {
                 print("Phase 1");
                 if (customer.response!.data!['Customer_type'] ==
-                    "COLLECTION_AGENT") {
+                    "COLLECTION_AGENT"&& customer.response!.images!.integrationStaus=="Y") {
                   print("Phase 2");
                   SharedPref.shared.setEmail(
                     customer.response!.data!['emailId'].toString(),
@@ -210,7 +210,40 @@ class _MobileNumberVerificationPageState
                       ),
                     ),
                   );
-                } else {
+                }
+
+                else if(customer.response!.data!['Customer_type'] ==
+                    "COLLECTION_AGENT"&& customer.response!.images!.integrationStaus=="N") {
+                  print("Phase 2");
+                  SharedPref.shared.setEmail(
+                    customer.response!.data!['emailId'].toString(),
+                  );
+                  SharedPref.shared.setCorpCode(
+                    customer.response!.data!['CorpCode'].toString(),
+                  );
+                  SharedPref.shared.setBranchCode(
+                    customer.response!.data!['BranchCode'].toString(),
+                  );
+                  SharedPref.shared.setMpinValue(customer.mpin.toString());
+                  print(
+                      "customer.mpin.toString() = ${customer.mpin.toString()}");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OtpRequestVerificationPage(
+                        subAgentmobNum: _mobileNumberController.text,
+                        parentAgentMobNum: parentAgentCredentialProvider
+                            .parentAgentCredentialModel!.b.phoneNumber,
+                        userName: parentAgentCredentialProvider
+                            .parentAgentCredentialModel!.b.userName,
+                        password: parentAgentCredentialProvider
+                            .parentAgentCredentialModel!.b.mobPassword,
+                        tokenStatus: customer.status.toString(),
+                        loggedInUserType: 'AGENT_LOAN',
+                      ),
+                    ),
+                  );
+                }else{
                   print("Not a valid collection agent");
                   showInSnackBar("Not a valid collection agent");
                 }
