@@ -706,7 +706,6 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                   ),
 
                   const SizedBox(height: 20),
-
                   // Loan details
                   FadeTransition(
                     opacity: _fadeAnimation,
