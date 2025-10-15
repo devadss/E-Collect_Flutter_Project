@@ -245,6 +245,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../core/colors.dart';
+import '../../core/utils.dart';
 import '../profile/widgets/recipect_page.dart';
 
 class TransactionHistoryPage extends StatefulWidget {
@@ -288,6 +289,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
     });
   }
 
+/*
   String _getBankNameFromCorpCode(String corpCode) {
     // Map corpcode to bank name
     final Map<String, String> corpCodeToBankName = {
@@ -367,6 +369,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
     // Return the bank name if found, otherwise return a default value
     return corpCodeToBankName[corpCode] ?? "Unknown Bank";
   }
+*/
 
   @override
   Widget build(BuildContext context) {
@@ -505,7 +508,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                       onTap: (){
                         Navigator.push(context, MaterialPageRoute(builder: (context)=> ReceiptPage(
                           amount: "${widget.amount}",
-                          bankName: _getBankNameFromCorpCode(widget.corpCode),
+                          bankName: getBankNameFromCorpCode(widget.corpCode),
                           agentName: widget.agentName,
                           agentPhone: widget.agentPhone,
                           custName: widget.customerName,

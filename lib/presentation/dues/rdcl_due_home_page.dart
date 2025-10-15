@@ -12,6 +12,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../core/alerts.dart';
 import '../../core/colors.dart';
+import '../../core/utils.dart';
 import '../../data/repository/payment_link_repository.dart';
 import '../../data/repository/payment_session_id_repository.dart';
 import '../../data/storage/shared_pref_helper.dart';
@@ -110,6 +111,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
       });
     });
   }
+/*
   String _getBankNameFromCorpCode(String corpCode) {
     // Map corpcode to bank name
     final Map<String, String> corpCodeToBankName = {
@@ -189,6 +191,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
     // Return the bank name if found, otherwise return a default value
     return corpCodeToBankName[corpCode] ?? "Unknown Bank";
   }
+*/
   @override
   void dispose() {
     _fadeController.dispose();
@@ -369,7 +372,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
               MaterialPageRoute(
                 builder: (context) => ReceiptPage(
                   amount: success.amount.toString(),
-                  bankName: _getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
+                  bankName: getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
                   agentName: agentName ?? "Name",
                   agentPhone: agentPhoneNumber ?? "agentPhone",
                   custName: customerName!,

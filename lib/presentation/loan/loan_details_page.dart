@@ -11,6 +11,7 @@ import '../../data/storage/shared_pref_helper.dart';
 import '../account_dues/widgets/rdcl_account_due_detail_page.dart';
 import '../dues/widgets/new_qr_code_page.dart';
 import '../profile/widgets/recipect_page.dart';
+import 'package:collection_qr_flutter/core/utils.dart' as utl;
 
 class LoanDetailsPage extends StatefulWidget {
   final String customerName;
@@ -121,7 +122,20 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
   @override
   void dispose() {
     _animationController.dispose();
+    editAmountController.dispose();
+    editAmountController.removeListener(validateInput);
     super.dispose();
+  }
+
+  void validateInput() {
+    if (editAmountController.text.isEmpty) return;
+
+    final value = double.parse(editAmountController.text);
+    if (value != null && value > widget.loanAmount) {
+      editAmountController.text = widget.loanAmount.toString();
+      editAmountController.selection = TextSelection.fromPosition(
+          TextPosition(offset: editAmountController.text.length));
+    }
   }
 
   void showProgressDialog(BuildContext context) {
@@ -197,6 +211,12 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
           });
     } else {
       Navigator.pop(context);
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return linkShareAlert(
+                context, false, loanCashProvider.loanCollectionErr.toString());
+          });
     }
   }
 
@@ -247,7 +267,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
               MaterialPageRoute(
                 builder: (context) => ReceiptPage(
                   amount: success.amount.toString(),
-                  bankName: _getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
+                  bankName: utl.getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
                   agentName: agentName ?? "Name",
                   agentPhone: agentMobile ?? "agentPhone",
                   custName: customerName!,
@@ -261,10 +281,10 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
           },
         ),
       );
-
     });
   }
 
+/*
   String _getBankNameFromCorpCode(String corpCode) {
     // Map corpcode to bank name
     final Map<String, String> corpCodeToBankName = {
@@ -344,6 +364,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
     // Return the bank name if found, otherwise return a default value
     return corpCodeToBankName[corpCode] ?? "Unknown Bank";
   }
+*/
 
   Future<bool> paymentConfirmation(
     BuildContext context,
@@ -594,7 +615,6 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                     ),
                   ),
 
-
                   const SizedBox(height: 20),
 
                   // Loan summary cards in a row
@@ -689,7 +709,6 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                     ),
                   ),
 
-
                   const SizedBox(height: 20),
 
                   // Payment information section
@@ -736,7 +755,6 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                       ),
                     ),
                   ),
-
 
                   const SizedBox(height: 24),
 
@@ -802,6 +820,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                                   InkWell(
                                                     onTap: () {
                                                       Navigator.pop(context);
+                                                      editAmountController.text = widget.emiAmount.toString();
                                                     },
                                                     child: const Icon(
                                                       Icons.cancel_rounded,
@@ -818,6 +837,8 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                                       horizontal: 20,
                                                       vertical: 10),
                                               child: TextField(
+                                                keyboardType:
+                                                    TextInputType.number,
                                                 controller:
                                                     editAmountController,
                                                 decoration:
@@ -910,6 +931,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                                     InkWell(
                                                       onTap: () {
                                                         Navigator.pop(context);
+                                                        editAmountController.text = widget.emiAmount.toString();
                                                       },
                                                       child: const Icon(
                                                         Icons.cancel_rounded,
@@ -926,6 +948,8 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                                         horizontal: 20,
                                                         vertical: 10),
                                                 child: TextField(
+                                                  keyboardType:
+                                                      TextInputType.number,
                                                   controller:
                                                       editAmountController,
                                                   decoration:
@@ -1033,6 +1057,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                                   InkWell(
                                                     onTap: () {
                                                       Navigator.pop(context);
+                                                      editAmountController.text = widget.emiAmount.toString();
                                                     },
                                                     child: const Icon(
                                                       Icons.cancel_rounded,
@@ -1049,6 +1074,8 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                                       horizontal: 20,
                                                       vertical: 10),
                                               child: TextField(
+                                                keyboardType:
+                                                    TextInputType.number,
                                                 controller:
                                                     editAmountController,
                                                 decoration:
@@ -1137,6 +1164,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
       agentMobile = phone;
       subagentId = subAgentId;
     });
+    editAmountController.addListener(validateInput);
   }
 
   Future<void> sendLinkFunction() async {
@@ -1349,7 +1377,6 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
         ),
       ),
     );
-
   }
 
   Widget _buildDetailItem(IconData icon, String label, String value) {

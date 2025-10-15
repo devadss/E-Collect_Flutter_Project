@@ -14,6 +14,7 @@ import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../../../core/colors.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
+import '../../../core/utils.dart';
 import '../../../data/repository/new_qr_code_repository.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../../domain/model/cash_deposit_model.dart';
@@ -71,6 +72,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
   late Animation<double> _fadeAnimation;
   String? bankName;
 
+/*
   String _getBankNameFromCorpCode(String corpCode) {
     // Map corpcode to bank name
     final Map<String, String> corpCodeToBankName = {
@@ -150,6 +152,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
     // Return the bank name if found, otherwise return a default value
     return corpCodeToBankName[corpCode] ?? "Unknown Bank";
   }
+*/
 
   void cashDepositDialog(CashDepositModel? cashDepositModel) {
     print("INSIDE DEPOSIT CASH DIALOG");
@@ -420,7 +423,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
                       ),
                     ),
 
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
 
                     // OK Button
                     Expanded(
@@ -688,7 +691,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
         agentOriginId = originId;
         corpCode = code;
         agentPhoneNumber = number;
-        bankName = _getBankNameFromCorpCode(code ?? ""); // Set bank name here
+        bankName = getBankNameFromCorpCode(code ?? ""); // Set bank name here
       });
     }
 

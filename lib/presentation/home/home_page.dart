@@ -352,6 +352,7 @@ class _HomePageState extends State<HomePage>
   }
 
   void showProgressDialog(BuildContext context) {
+
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -433,7 +434,6 @@ class _HomePageState extends State<HomePage>
         "TODAY",
         fromDate,
         toDate,
-
         ///  "COLLECTION",
         userType,
         corpCode,
