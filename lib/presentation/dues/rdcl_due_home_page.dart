@@ -466,7 +466,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
             note: "Payment For Agent $agentName",
             subAgentId: subagentId,
             agentName: agentName,
-            subAgentBranchCode: subAgentBranchCode);
+            subAgentBranchCode: subAgentBranchCode, collectionType: 'RDCL');
     paymentSession.fold((error) {
       print(
           "---------------------------------ERROR PAYMENT---------------------------");

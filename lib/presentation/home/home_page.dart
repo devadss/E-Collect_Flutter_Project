@@ -33,7 +33,8 @@ class _HomePageState extends State<HomePage>
   String? entityId;
   String? token;
   String? fd;
-  String? td;
+  String? cashCollectionType;
+  String? userType;
   String? corpCode;
   String? agentOriginId;
   String? mobNum;
@@ -137,8 +138,9 @@ class _HomePageState extends State<HomePage>
                             firstDate: DateTime(2000),
                             lastDate: DateTime(2100),
                           );
-                          if (picked != null)
+                          if (picked != null) {
                             modalSetState(() => fromDate = picked);
+                          }
                         },
                       ),
                     ),
@@ -281,14 +283,21 @@ class _HomePageState extends State<HomePage>
                         }
                         showProgressDialog(context);
                         // Call providers
-                        await qrProvider.getQrTranscationHistory(period, from,
-                            to, 'COLLECTION', corpCode, agentOriginId);
+                        await qrProvider.getQrTranscationHistory(
+                            period,
+                            from,
+                            to,
+                            userType,
+                            //'COLLECTION',
+                            corpCode,
+                            agentOriginId);
 
                         await cashTransProvider.getCashTranscationHistory(
                             period,
                             from,
                             to,
-                            'COLLECTION_CASH',
+                            //'COLLECTION_CASH',
+                            cashCollectionType,
                             subAgentID,
                             corpCode,
                             agentOriginId);
@@ -388,9 +397,18 @@ class _HomePageState extends State<HomePage>
     final mobnum = await SharedPref().getParentAgentMobNum();
     final subAgID = await SharedPref().getSubAgentId();
     final crpCode = await SharedPref().getCorpCode();
+    var loggedInUserType = await SharedPref.shared.getLoggedInUserType();
 
     if (mounted) {
       setState(() {
+        loggedInUserType == "AGENT_LOAN"
+            ? userType = "LOAN_COLLECTION"
+            : userType = "COLLECTION";
+
+        loggedInUserType == "AGENT_LOAN"
+            ? cashCollectionType = "LOAN_COLLECTION_CASH"
+            : cashCollectionType = "LOAN_COLLECTION";
+
         userName = name;
         entityId = entId;
         token = tok;
@@ -415,17 +433,19 @@ class _HomePageState extends State<HomePage>
         "TODAY",
         fromDate,
         toDate,
-        "COLLECTION",
+
+        ///  "COLLECTION",
+        userType,
         corpCode,
         agentOriginId,
       );
 
-     // showProgressDialog(context);
+      // showProgressDialog(context);
 
       final linkProvider =
-      Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
+          Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
       final cashProvider =
-      Provider.of<CashTransactionHistoryProvider>(context, listen: false);
+          Provider.of<CashTransactionHistoryProvider>(context, listen: false);
 
       await linkProvider.getLinkTransactionHistory(
           "TODAY", fromDate, toDate, subAgID!, crpCode!, agentOrgID!);
@@ -433,7 +453,8 @@ class _HomePageState extends State<HomePage>
           "TODAY",
           fromDate,
           toDate,
-          "COLLECTION_CASH",
+          cashCollectionType,
+          // "COLLECTION_CASH",
           subAgID,
           crpCode,
           agentOrgID);
@@ -442,75 +463,17 @@ class _HomePageState extends State<HomePage>
       fetchTransaction();
       fetchCollection();
       //if (provider.showProgressDialog == false) {
-       // Navigator.pop(context);
-     // }
+      // Navigator.pop(context);
+      // }
     } finally {
       //Navigator.pop(context);
 
       // Always dismiss the dialog, even on error
-       // if (mounted) Navigator.pop(context);
+      // if (mounted) Navigator.pop(context);
     }
   }
 
-/*  Future<void> loadSharedPrefs(BuildContext context) async {
 
-    final name = await SharedPref().getSubAgentName();
-    final entId = await SharedPref().getAgentId();
-    final tok = await SharedPref().getTokenValue();
-    final agentOrgID = await SharedPref().getAgentOriginId();
-    final mobnum = await SharedPref().getParentAgentMobNum();
-    final subAgID = await SharedPref().getSubAgentId();
-    final crpCode = await SharedPref().getCorpCode();
-
-    if (mounted) {
-      setState(() {
-        userName = name;
-        entityId = entId;
-        token = tok;
-        agentOriginId = agentOrgID;
-        mobNum = mobnum;
-        subAgentID = subAgID;
-        corpCode = crpCode;
-      });
-      showProgressDialog(context);
-    }
-    final provider =
-    Provider.of<QRTransactionHistoryProvider>(context, listen: false);
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day); // midnight today
-
-    final fromDate = today.subtract(const Duration(days: 30));
-    final toDate = today;
-    final formattedFdate = DateFormat('yyyy-MM-dd').format(fromDate);
-    final formattedTdate = DateFormat('yyyy-MM-dd').format(toDate);
-
-    await provider.getQrTranscationHistory(
-        "TODAY", formattedFdate, formattedTdate, "COLLECTION", corpCode, agentOriginId);
-
-    if(provider.showProgressDialog == false){
-      if(mounted){
-        Navigator.pop(context);
-      }
-    }
-
-    final linkProvider = Provider.of<LinkTransactionHistoryProvider>(
-      context,
-      listen: false,
-    );
-    final cashTransProvider = Provider.of<CashTransactionHistoryProvider>(
-      context,
-      listen: false,
-    );
-    await linkProvider.getLinkTransactionHistory(
-        "TODAY", formattedFdate, formattedTdate, subAgentID!,corpCode!, agentOriginId!);
-    await cashTransProvider.getCashTranscationHistory("TODAY", formattedFdate,
-        formattedTdate, "COLLECTION_CASH", subAgentID!, corpCode, agentOriginId);
-
-    // fetchBalance();
-    fetchTransaction();
-    fetchCollection();
-    // fetchBannerImages();
-  }*/
 
   Future<void> fetchBannerImages() async {
     final images = await CustRegRepository().checkRegCust(int.parse(mobNum!));
@@ -934,14 +897,22 @@ class _HomePageState extends State<HomePage>
     final formattedFdate = DateFormat('yyyy-MM-dd').format(fromDate);
     final formattedTdate = DateFormat('yyyy-MM-dd').format(toDate);
 
-    await qrProvider.getQrTranscationHistory("TODAY", formattedFdate,
-        formattedTdate, "COLLECTION", corpCode, agentOriginId);
+    await qrProvider.getQrTranscationHistory(
+        "TODAY",
+        formattedFdate,
+        formattedTdate,
+
+        //"COLLECTION",
+        userType,
+        corpCode,
+        agentOriginId);
 
     await cashTransProvider.getCashTranscationHistory(
         "TODAY",
         formattedFdate,
         formattedTdate,
-        "COLLECTION_CASH",
+        //  "COLLECTION_CASH",
+        cashCollectionType,
         subAgentID!,
         corpCode,
         agentOriginId);
@@ -1069,7 +1040,7 @@ class _HomePageState extends State<HomePage>
       getCustName: (t) => t.customerName.toString(),
       getCustId: (t) => t.customerId.toString(),
       getCustPhone: (t) => t.customerPhone.toString(),
-      getTnxType: (t)=> t.source.toString(),
+      getTnxType: (t) => t.source.toString(),
     );
   }
 
@@ -1094,7 +1065,7 @@ class _HomePageState extends State<HomePage>
       getCustName: (t) => t.customerName.toString(),
       getCustId: (t) => t.customerId.toString(),
       getCustPhone: (t) => t.customerPhone.toString(),
-      getTnxType: (t)=> t.source.toString(),
+      getTnxType: (t) => t.source.toString(),
     );
   }
 
@@ -1119,42 +1090,41 @@ class _HomePageState extends State<HomePage>
       getCustName: (t) => t.customerName.toString(),
       getCustId: (t) => t.customerId.toString(),
       getCustPhone: (t) => t.customerPhone.toString(),
-      getTnxType: (t)=> t.source.toString(),
+      getTnxType: (t) => t.source.toString(),
     );
   }
 
-  Widget _buildTransactionList<T>({
-    required List<T> transactions,
-    required IconData icon,
-    required Color iconColor,
-    required double Function(T) getAmount,
-    required String Function(T) getStatus,
-    required String Function(T) getOrderId,
-    required String Function(T) getCustName,
-    required String Function(T) getCustId,
-    required String Function(T) getCustPhone,
-    required String Function(T) getTnxType
-  }) {
+  Widget _buildTransactionList<T>(
+      {required List<T> transactions,
+      required IconData icon,
+      required Color iconColor,
+      required double Function(T) getAmount,
+      required String Function(T) getStatus,
+      required String Function(T) getOrderId,
+      required String Function(T) getCustName,
+      required String Function(T) getCustId,
+      required String Function(T) getCustPhone,
+      required String Function(T) getTnxType}) {
     return Column(
       children: transactions.asMap().entries.map((entry) {
         final index = entry.key;
         final transaction = entry.value;
 
         return _buildAnimatedTransactionCard(
-          icon: icon,
-          iconColor: iconColor,
-          title: _getTransactionTitle(transaction),
-          date: _getTransactionDate(transaction),
-          amount: getAmount(transaction),
-          status: getStatus(transaction),
-            agentPhone: mobNum ?? "agentPhone",
-            customerName: getCustName(transaction),
-            agentName: userName ?? "agent name",
-            customerId: getCustId(transaction),
-            transferId: getOrderId(transaction),
-            customerNumber: getCustPhone(transaction),
-            tnxType: getTnxType(transaction)
-        ).animate(delay: (100 * index).ms);
+                icon: icon,
+                iconColor: iconColor,
+                title: _getTransactionTitle(transaction),
+                date: _getTransactionDate(transaction),
+                amount: getAmount(transaction),
+                status: getStatus(transaction),
+                agentPhone: mobNum ?? "agentPhone",
+                customerName: getCustName(transaction),
+                agentName: userName ?? "agent name",
+                customerId: getCustId(transaction),
+                transferId: getOrderId(transaction),
+                customerNumber: getCustPhone(transaction),
+                tnxType: getTnxType(transaction))
+            .animate(delay: (100 * index).ms);
       }).toList(),
     );
   }
@@ -1184,24 +1154,24 @@ class _HomePageState extends State<HomePage>
         ),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => TransactionHistoryPage(
-                        paymentStatus: status,
-                        amount: amount,
-                        transferId : transferId,
-                        agentName: agentName,
-                        agentPhone :agentPhone,
-                        customerName : customerName,
-                        customerId :customerId,
-                        customerNumber :customerNumber,
-                        corpCode: corpCode ?? "",
-                        tnxType: tnxType,
-                        //agentTransaction: agentPaymentTransctionModel
-                      )));
-            },
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => TransactionHistoryPage(
+                          paymentStatus: status,
+                          amount: amount,
+                          transferId: transferId,
+                          agentName: agentName,
+                          agentPhone: agentPhone,
+                          customerName: customerName,
+                          customerId: customerId,
+                          customerNumber: customerNumber,
+                          corpCode: corpCode ?? "",
+                          tnxType: tnxType,
+                          //agentTransaction: agentPaymentTransctionModel
+                        )));
+          },
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
@@ -1415,171 +1385,7 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  // Widget _buildQRTransactionList(
-  //     QrTranscationHistoryModel? qrTransactions, String? error)
-  // {
-  //   if (qrTransactions == null && error == "") {
-  //     return const Center(child: CircularProgressIndicator());
-  //   } else if (qrTransactions == null && error == "ERROR") {
-  //     return _buildEmptyState(
-  //       icon: Icons.qr_code,
-  //       title: "No QR Transactions",
-  //       message: "Your payment Qr transactions will appear here",
-  //     );
-  //   }
-  //   return SizedBox(
-  //     height: MediaQuery.of(context).size.height * 0.8,
-  //     child: ListView.builder(
-  //       padding: const EdgeInsets.symmetric(vertical: 8),
-  //       itemCount: qrTransactions?.data!.length,
-  //       itemBuilder: (context, index) {
-  //         final transaction = qrTransactions!.data![index];
-  //         return _buildQRTransactionItem(transaction);
-  //       },
-  //     ),
-  //   );
-  // }
-  //
-  // Widget _buildCashTransactionList(
-  //     QrTranscationHistoryModel? qrTransactions, String? error)
-  // {
-  //   if (qrTransactions == null && error == "") {
-  //     return const Center(child: CircularProgressIndicator());
-  //   } else if (qrTransactions == null && error == "ERROR") {
-  //     return _buildEmptyState(
-  //       icon: Icons.monetization_on_outlined,
-  //       title: "No Cash Transactions",
-  //       message: "Your payment Cash transactions will appear here",
-  //     );
-  //   }
-  //   return SizedBox(
-  //     height: MediaQuery.of(context).size.height * 0.8,
-  //     child: ListView.builder(
-  //       padding: const EdgeInsets.symmetric(vertical: 8),
-  //       itemCount: qrTransactions?.data!.length,
-  //       itemBuilder: (context, index) {
-  //         final transaction = qrTransactions!.data![index];
-  //         return _buildQRTransactionItem(transaction);
-  //       },
-  //     ),
-  //   );
-  // }
 
-  // Widget _buildQRTransactionItem(QrTransaction transaction) {
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //         color: Colors.white,
-  //         borderRadius: BorderRadius.circular(10),
-  //         border: Border.all(color: home1, width: 1),
-  //         boxShadow: [
-  //           BoxShadow(
-  //               blurRadius: 10,
-  //               spreadRadius: 0,
-  //               offset: const Offset(0, 2),
-  //               color: Colors.black.withOpacity(0.25))
-  //         ]),
-  //     margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-  //     child: ListTile(
-  //       leading: const Icon(Icons.qr_code, color: Colors.pink),
-  //       title: Text(
-  //         // transaction.customerName.toString().replaceAll("CustomerName.", ""),
-  //         transaction.customerName.toString(),
-  //         style: const TextStyle(fontWeight: FontWeight.bold),
-  //       ),
-  //       subtitle: Text(
-  //         DateFormat('MMM dd, yyyy - hh:mm a')
-  //             .format(transaction.createdAt ?? DateTime.now()),
-  //       ),
-  //       trailing: Column(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: [
-  //           Text(
-  //             "₹${transaction.orderAmount}",
-  //             style: const TextStyle(
-  //               fontWeight: FontWeight.bold,
-  //               color: Colors.pink,
-  //             ),
-  //           ),
-  //           Text(
-  //             transaction.orderStatus.toString(),
-  //             // transaction.orderStatus
-  //             //   .toString()
-  //             //   .replaceAll("OrderStatus.", ""),
-  //             style: const TextStyle(
-  //               fontSize: 12,
-  //               color: green,
-  //               fontWeight: FontWeight.w700,
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //       onTap: () {
-  //         // CURRENTLY TRANSACTION DETAIL PAGE IS COMMENTED.......
-  //         // Navigator.push(context, MaterialPageRoute(builder: (context)=>
-  //         //  TransactionDetailsPage(
-  //         //    amountValue: transaction.orderAmount.toString(),
-  //         //    custName: transaction.customerName,
-  //         //    orderid: transaction.orderId,
-  //         //    tranStatus:transaction.orderStatus,
-  //         //    brCode: transaction.branchCode.toString(),
-  //         //    corpName: transaction.corpName.toString(),
-  //         //  )));
-  //         // Navigate to transaction details
-  //       },
-  //     ),
-  //   );
-  // }
-  //
-  // Widget _buildLinkTransactionItem(LinkTransactions transaction) {
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //         color: Colors.white,
-  //         borderRadius: BorderRadius.circular(10),
-  //         border: Border.all(color: home1, width: 1),
-  //         boxShadow: [
-  //           BoxShadow(
-  //               blurRadius: 10,
-  //               spreadRadius: 0,
-  //               offset: const Offset(0, 2),
-  //               color: Colors.black.withOpacity(0.25))
-  //         ]),
-  //     margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-  //     child: ListTile(
-  //       leading: const Icon(Icons.link, color: Colors.blue),
-  //       title: Text(
-  //         transaction.customerName!.toString().replaceAll("CustomerName.", ""),
-  //         style: const TextStyle(fontWeight: FontWeight.bold),
-  //       ),
-  //       subtitle: Text(
-  //         DateFormat('MMM dd, yyyy - hh:mm a')
-  //             .format(transaction.createdAt ?? DateTime.now()),
-  //       ),
-  //       trailing: Column(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: [
-  //           Text(
-  //             "₹${transaction.linkAmount}",
-  //             style: const TextStyle(
-  //               fontWeight: FontWeight.bold,
-  //               color: Colors.pink,
-  //             ),
-  //           ),
-  //           Text(
-  //             transaction.linkStatus!.toString().replaceAll("OrderStatus.", ""),
-  //             style: const TextStyle(
-  //               fontSize: 12,
-  //               color: green,
-  //               fontWeight: FontWeight.w700,
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //       onTap: () {
-  //         // Navigate to transaction details
-  //       },
-  //     ),
-  //   );
-  // }
 
   double calculateTotalAmount() {
     double total = 0;
@@ -1644,3 +1450,227 @@ class _DatePickerButton extends StatelessWidget {
     );
   }
 }
+// Widget _buildQRTransactionList(
+//     QrTranscationHistoryModel? qrTransactions, String? error)
+// {
+//   if (qrTransactions == null && error == "") {
+//     return const Center(child: CircularProgressIndicator());
+//   } else if (qrTransactions == null && error == "ERROR") {
+//     return _buildEmptyState(
+//       icon: Icons.qr_code,
+//       title: "No QR Transactions",
+//       message: "Your payment Qr transactions will appear here",
+//     );
+//   }
+//   return SizedBox(
+//     height: MediaQuery.of(context).size.height * 0.8,
+//     child: ListView.builder(
+//       padding: const EdgeInsets.symmetric(vertical: 8),
+//       itemCount: qrTransactions?.data!.length,
+//       itemBuilder: (context, index) {
+//         final transaction = qrTransactions!.data![index];
+//         return _buildQRTransactionItem(transaction);
+//       },
+//     ),
+//   );
+// }
+//
+// Widget _buildCashTransactionList(
+//     QrTranscationHistoryModel? qrTransactions, String? error)
+// {
+//   if (qrTransactions == null && error == "") {
+//     return const Center(child: CircularProgressIndicator());
+//   } else if (qrTransactions == null && error == "ERROR") {
+//     return _buildEmptyState(
+//       icon: Icons.monetization_on_outlined,
+//       title: "No Cash Transactions",
+//       message: "Your payment Cash transactions will appear here",
+//     );
+//   }
+//   return SizedBox(
+//     height: MediaQuery.of(context).size.height * 0.8,
+//     child: ListView.builder(
+//       padding: const EdgeInsets.symmetric(vertical: 8),
+//       itemCount: qrTransactions?.data!.length,
+//       itemBuilder: (context, index) {
+//         final transaction = qrTransactions!.data![index];
+//         return _buildQRTransactionItem(transaction);
+//       },
+//     ),
+//   );
+// }
+
+// Widget _buildQRTransactionItem(QrTransaction transaction) {
+//   return Container(
+//     decoration: BoxDecoration(
+//         color: Colors.white,
+//         borderRadius: BorderRadius.circular(10),
+//         border: Border.all(color: home1, width: 1),
+//         boxShadow: [
+//           BoxShadow(
+//               blurRadius: 10,
+//               spreadRadius: 0,
+//               offset: const Offset(0, 2),
+//               color: Colors.black.withOpacity(0.25))
+//         ]),
+//     margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+//     child: ListTile(
+//       leading: const Icon(Icons.qr_code, color: Colors.pink),
+//       title: Text(
+//         // transaction.customerName.toString().replaceAll("CustomerName.", ""),
+//         transaction.customerName.toString(),
+//         style: const TextStyle(fontWeight: FontWeight.bold),
+//       ),
+//       subtitle: Text(
+//         DateFormat('MMM dd, yyyy - hh:mm a')
+//             .format(transaction.createdAt ?? DateTime.now()),
+//       ),
+//       trailing: Column(
+//         mainAxisAlignment: MainAxisAlignment.center,
+//         children: [
+//           Text(
+//             "₹${transaction.orderAmount}",
+//             style: const TextStyle(
+//               fontWeight: FontWeight.bold,
+//               color: Colors.pink,
+//             ),
+//           ),
+//           Text(
+//             transaction.orderStatus.toString(),
+//             // transaction.orderStatus
+//             //   .toString()
+//             //   .replaceAll("OrderStatus.", ""),
+//             style: const TextStyle(
+//               fontSize: 12,
+//               color: green,
+//               fontWeight: FontWeight.w700,
+//             ),
+//           ),
+//         ],
+//       ),
+//       onTap: () {
+//         // CURRENTLY TRANSACTION DETAIL PAGE IS COMMENTED.......
+//         // Navigator.push(context, MaterialPageRoute(builder: (context)=>
+//         //  TransactionDetailsPage(
+//         //    amountValue: transaction.orderAmount.toString(),
+//         //    custName: transaction.customerName,
+//         //    orderid: transaction.orderId,
+//         //    tranStatus:transaction.orderStatus,
+//         //    brCode: transaction.branchCode.toString(),
+//         //    corpName: transaction.corpName.toString(),
+//         //  )));
+//         // Navigate to transaction details
+//       },
+//     ),
+//   );
+// }
+//
+// Widget _buildLinkTransactionItem(LinkTransactions transaction) {
+//   return Container(
+//     decoration: BoxDecoration(
+//         color: Colors.white,
+//         borderRadius: BorderRadius.circular(10),
+//         border: Border.all(color: home1, width: 1),
+//         boxShadow: [
+//           BoxShadow(
+//               blurRadius: 10,
+//               spreadRadius: 0,
+//               offset: const Offset(0, 2),
+//               color: Colors.black.withOpacity(0.25))
+//         ]),
+//     margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+//     child: ListTile(
+//       leading: const Icon(Icons.link, color: Colors.blue),
+//       title: Text(
+//         transaction.customerName!.toString().replaceAll("CustomerName.", ""),
+//         style: const TextStyle(fontWeight: FontWeight.bold),
+//       ),
+//       subtitle: Text(
+//         DateFormat('MMM dd, yyyy - hh:mm a')
+//             .format(transaction.createdAt ?? DateTime.now()),
+//       ),
+//       trailing: Column(
+//         mainAxisAlignment: MainAxisAlignment.center,
+//         children: [
+//           Text(
+//             "₹${transaction.linkAmount}",
+//             style: const TextStyle(
+//               fontWeight: FontWeight.bold,
+//               color: Colors.pink,
+//             ),
+//           ),
+//           Text(
+//             transaction.linkStatus!.toString().replaceAll("OrderStatus.", ""),
+//             style: const TextStyle(
+//               fontSize: 12,
+//               color: green,
+//               fontWeight: FontWeight.w700,
+//             ),
+//           ),
+//         ],
+//       ),
+//       onTap: () {
+//         // Navigate to transaction details
+//       },
+//     ),
+//   );
+// }
+/*  Future<void> loadSharedPrefs(BuildContext context) async {
+
+    final name = await SharedPref().getSubAgentName();
+    final entId = await SharedPref().getAgentId();
+    final tok = await SharedPref().getTokenValue();
+    final agentOrgID = await SharedPref().getAgentOriginId();
+    final mobnum = await SharedPref().getParentAgentMobNum();
+    final subAgID = await SharedPref().getSubAgentId();
+    final crpCode = await SharedPref().getCorpCode();
+
+    if (mounted) {
+      setState(() {
+        userName = name;
+        entityId = entId;
+        token = tok;
+        agentOriginId = agentOrgID;
+        mobNum = mobnum;
+        subAgentID = subAgID;
+        corpCode = crpCode;
+      });
+      showProgressDialog(context);
+    }
+    final provider =
+    Provider.of<QRTransactionHistoryProvider>(context, listen: false);
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day); // midnight today
+
+    final fromDate = today.subtract(const Duration(days: 30));
+    final toDate = today;
+    final formattedFdate = DateFormat('yyyy-MM-dd').format(fromDate);
+    final formattedTdate = DateFormat('yyyy-MM-dd').format(toDate);
+
+    await provider.getQrTranscationHistory(
+        "TODAY", formattedFdate, formattedTdate, "COLLECTION", corpCode, agentOriginId);
+
+    if(provider.showProgressDialog == false){
+      if(mounted){
+        Navigator.pop(context);
+      }
+    }
+
+    final linkProvider = Provider.of<LinkTransactionHistoryProvider>(
+      context,
+      listen: false,
+    );
+    final cashTransProvider = Provider.of<CashTransactionHistoryProvider>(
+      context,
+      listen: false,
+    );
+    await linkProvider.getLinkTransactionHistory(
+        "TODAY", formattedFdate, formattedTdate, subAgentID!,corpCode!, agentOriginId!);
+    await cashTransProvider.getCashTranscationHistory("TODAY", formattedFdate,
+        formattedTdate, "COLLECTION_CASH", subAgentID!, corpCode, agentOriginId);
+
+    // fetchBalance();
+    fetchTransaction();
+    fetchCollection();
+    // fetchBannerImages();
+  }*/

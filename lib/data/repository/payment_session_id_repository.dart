@@ -29,11 +29,15 @@ class CreatePaymentSessionIdRepository
       required String? note,
       required String? corpCode,
       required String? cardRefNum,
-      required String? subAgentBranchCode
+      required String? subAgentBranchCode,
+      required String? collectionType,
 
   }) async {
+    String endPoint = "";
     //final url = Uri.parse("${baseUrl}api/Cashfree/MerchantOrderCreate");
-    final url = Uri.parse("${baseUrl}api/Cashfree/CollectiontOrderCreate");
+    collectionType == "LOAN"? endPoint = "LoanOrderCreate":
+        endPoint = "CollectiontOrderCreate";
+    final url = Uri.parse("${baseUrl}api/Cashfree/$endPoint");
     final body = {
       "agent_details": {
         "agent_name": agentName,
@@ -61,7 +65,8 @@ class CreatePaymentSessionIdRepository
       // "EntityId": entityId,
       // "Note": note,
       // "SubAgentId":subAgentID
-    print("Body = $body");
+    print("Body payment session= $body");
+    print("Body payment session= $endPoint");
 
     bool checkConnection = await InternetConnectionChecker().hasConnection;
     if (checkConnection) {

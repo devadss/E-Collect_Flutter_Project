@@ -1,4 +1,5 @@
 import 'package:collection_qr_flutter/core/colors.dart';
+import 'package:collection_qr_flutter/data/provider/loan_cash_coolection_provider.dart';
 import 'package:collection_qr_flutter/data/provider/whatsapp_share_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -86,7 +87,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
   void initState() {
     super.initState();
     loadSharedPrefs();
-    editAmountController.text = widget.emiAmount.toString() ;
+    editAmountController.text = widget.emiAmount.toString();
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1000),
@@ -156,6 +157,49 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
         });
   }
 
+  Future<void> loanCashCollection() async {
+    showProgressDialog(context);
+    final loanCashProvider =
+        Provider.of<LoanCashCollectionProvider>(context, listen: false);
+    await loanCashProvider.submitCashCollection(
+        agentName.toString(),
+        agentId.toString(),
+        agentOriginId.toString(),
+        agentMobile.toString(),
+        agentEmail.toString(),
+        int.parse(subagentId.toString()),
+        "",
+        subAgentCodeNew.toString(),
+        widget.customerName,
+        widget.customerPhoneNumber,
+        widget.loanNumber,
+        widget.custId,
+        "",
+        double.parse(editAmountController.text),
+        "",
+        corpCode.toString(),
+        branchCode.toString(),
+        "",
+        "MOB");
+    if (loanCashProvider.loanCashCollectionResponse != null) {
+      Navigator.pop(context);
+      print(loanCashProvider.loanCashCollectionResponse?.message.toString());
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return linkShareAlert(
+                context,
+                loanCashProvider.loanCashCollectionResponse!.status == "Y"
+                    ? true
+                    : false,
+                loanCashProvider.loanCashCollectionResponse!.message
+                    .toString());
+          });
+    } else {
+      Navigator.pop(context);
+    }
+  }
+
   Future<void> getCashTrans(
       {required String? token,
       required String? customerName,
@@ -217,45 +261,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
           },
         ),
       );
-      // showDialog(
-      //   context: context,
-      //   builder: (context) {
-      //     return AlertDialog(
-      //       title: const Text("Transaction Result"),
-      //       content: Column(
-      //         mainAxisSize: MainAxisSize.min,
-      //         crossAxisAlignment: CrossAxisAlignment.start,
-      //         children: [
-      //           Text("Status: ${success.status ?? 'N/A'}"),
-      //           const SizedBox(height: 8),
-      //           Text("Transaction ID: ${success.transactionId ?? 'N/A'}"),
-      //           const SizedBox(height: 8),
-      //           Text("Message: ${success.message ?? 'N/A'}"),
-      //         ],
-      //       ),
-      //       actions: [
-      //         TextButton(
-      //
-      //           onPressed: () => {Navigator.pop(context),
-      //     Navigator.push(
-      //         context,
-      //         MaterialPageRoute(
-      //             builder: (context) => ReceiptPage(
-      //               amount: success.amount.toString(),
-      //               bankName: _getBankNameFromCorpCode(corpCode!)?? "XYZ BANK",
-      //               agentName: agentName ?? "Name",
-      //               agentPhone:
-      //               agentPhoneNumber ?? "agentPhone",
-      //               custName: customerName!,
-      //               custPhone: custPhoneNumber!,
-      //               custId: custId!, txnId: success.transactionId.toString(), txnType: "CASH",
-      //             )))},
-      //           child: const Text("OK"),
-      //         ),
-      //       ],
-      //     );
-      //   },
-      // );
+
     });
   }
 
@@ -587,90 +593,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                       ),
                     ),
                   ),
-                  // FadeTransition(
-                  //   opacity: _fadeAnimation,
-                  //   child: SlideTransition(
-                  //     position: Tween<Offset>(
-                  //       begin: const Offset(0, 0.2),
-                  //       end: Offset.zero,
-                  //     ).animate(_animationController),
-                  //     child: Container(
-                  //       padding: const EdgeInsets.all(16),
-                  //       decoration: BoxDecoration(
-                  //         color: Colors.white,
-                  //         borderRadius: BorderRadius.circular(16),
-                  //         boxShadow: [
-                  //           BoxShadow(
-                  //             color: Colors.black.withOpacity(0.05),
-                  //             blurRadius: 10,
-                  //             offset: const Offset(0, 5),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //       child: Row(
-                  //         children: [
-                  //           CircleAvatar(
-                  //             radius: 30,
-                  //             backgroundColor: home1.withOpacity(0.2),
-                  //             child: Icon(
-                  //               Icons.person,
-                  //               size: 30,
-                  //               color: home1,
-                  //             ),
-                  //           ),
-                  //           const SizedBox(width: 16),
-                  //           Expanded(
-                  //             child: Column(
-                  //               crossAxisAlignment: CrossAxisAlignment.start,
-                  //               children: [
-                  //                 Text(
-                  //                   widget.customerName,
-                  //                   style: TextStyle(
-                  //                     fontSize: 18,
-                  //                     fontWeight: FontWeight.bold,
-                  //                     color: home2,
-                  //                   ),
-                  //                 ),
-                  //                 const SizedBox(height: 4),
-                  //                 Text(
-                  //                   'Loan #${widget.loanNumber.replaceAll("LOAN-", "")}',
-                  //                   style: const TextStyle(
-                  //                     color: Colors.grey,
-                  //                   ),
-                  //                 ),
-                  //               ],
-                  //             ),
-                  //           ),
-                  //           Container(
-                  //             padding: const EdgeInsets.symmetric(
-                  //                 horizontal: 12, vertical: 6),
-                  //             decoration: BoxDecoration(
-                  //               color: widget.loanStatus == 'Active'
-                  //                   ? Colors.green.withOpacity(0.1)
-                  //                   : Colors.orange.withOpacity(0.1),
-                  //               borderRadius: BorderRadius.circular(20),
-                  //               border: Border.all(
-                  //                 color: widget.loanStatus == 'Active'
-                  //                     ? Colors.green
-                  //                     : Colors.orange,
-                  //                 width: 1,
-                  //               ),
-                  //             ),
-                  //             child: Text(
-                  //               widget.loanStatus,
-                  //               style: TextStyle(
-                  //                 color: widget.loanStatus == 'Active'
-                  //                     ? Colors.green
-                  //                     : Colors.orange,
-                  //                 fontWeight: FontWeight.bold,
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
+
 
                   const SizedBox(height: 20),
 
@@ -765,69 +688,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                       ),
                     ),
                   ),
-                  // FadeTransition(
-                  //   opacity: _fadeAnimation,
-                  //   child: SlideTransition(
-                  //     position: Tween<Offset>(
-                  //       begin: const Offset(0, 0.4),
-                  //       end: Offset.zero,
-                  //     ).animate(_animationController),
-                  //     child: Container(
-                  //       width: double.infinity,
-                  //       padding: const EdgeInsets.all(16),
-                  //       decoration: BoxDecoration(
-                  //         color: Colors.white,
-                  //         borderRadius: BorderRadius.circular(16),
-                  //         boxShadow: [
-                  //           BoxShadow(
-                  //             color: Colors.black.withOpacity(0.05),
-                  //             blurRadius: 10,
-                  //             offset: const Offset(0, 5),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //       child: Column(
-                  //         crossAxisAlignment: CrossAxisAlignment.start,
-                  //         children: [
-                  //           Text(
-                  //             'Loan Details',
-                  //             style: TextStyle(
-                  //               fontSize: 18,
-                  //               fontWeight: FontWeight.bold,
-                  //               color: home2,
-                  //             ),
-                  //           ),
-                  //           const SizedBox(height: 12),
-                  //           _buildDetailItem(
-                  //             Icons.percent,
-                  //             'Interest Rate',
-                  //             '${loanDetails['interestRate']}%',
-                  //           ),
-                  //           _buildDetailItem(
-                  //             Icons.calendar_today,
-                  //             'Loan Term',
-                  //             '${widget.loanTerm} days',
-                  //           ),
-                  //           _buildDetailItem(
-                  //             Icons.payment,
-                  //             'Monthly Payment',
-                  //             '₹${widget.emiAmount}',
-                  //           ),
-                  //           _buildDetailItem(
-                  //             Icons.date_range,
-                  //             'Start Date',
-                  //             loanDetails['startDate'],
-                  //           ),
-                  //           _buildDetailItem(
-                  //             Icons.event_available,
-                  //             'End Date',
-                  //             loanDetails['endDate'],
-                  //           ),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
+
 
                   const SizedBox(height: 20),
 
@@ -875,54 +736,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                       ),
                     ),
                   ),
-                  // FadeTransition(
-                  //   opacity: _fadeAnimation,
-                  //   child: SlideTransition(
-                  //     position: Tween<Offset>(
-                  //       begin: const Offset(0, 0.5),
-                  //       end: Offset.zero,
-                  //     ).animate(_animationController),
-                  //     child: Container(
-                  //       width: double.infinity,
-                  //       padding: const EdgeInsets.all(16),
-                  //       decoration: BoxDecoration(
-                  //         color: Colors.white,
-                  //         borderRadius: BorderRadius.circular(16),
-                  //         boxShadow: [
-                  //           BoxShadow(
-                  //             color: Colors.black.withOpacity(0.05),
-                  //             blurRadius: 10,
-                  //             offset: const Offset(0, 5),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //       child: Column(
-                  //         crossAxisAlignment: CrossAxisAlignment.start,
-                  //         children: [
-                  //           Text(
-                  //             'Payment Information',
-                  //             style: TextStyle(
-                  //               fontSize: 18,
-                  //               fontWeight: FontWeight.bold,
-                  //               color: home2,
-                  //             ),
-                  //           ),
-                  //           const SizedBox(height: 12),
-                  //           _buildDetailItem(
-                  //             Icons.history,
-                  //             'Last Payment',
-                  //             loanDetails['lastPaymentDate'],
-                  //           ),
-                  //           _buildDetailItem(
-                  //             Icons.next_plan,
-                  //             'Next Payment Due',
-                  //             loanDetails['nextPaymentDue'],
-                  //           ),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
+
 
                   const SizedBox(height: 24),
 
@@ -949,7 +763,97 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                 elevation: 0,
                               ),
                               onPressed: () {
-                                generateQrPaymentSession();
+                                showModalBottomSheet(
+                                  isScrollControlled: true, // Already set
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Padding(
+                                      padding: EdgeInsets.only(
+                                        bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom, // <-- important
+                                      ),
+                                      child: SizedBox(
+                                        height: 200,
+                                        // You can make it dynamic if needed
+                                        width: double.infinity,
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  const Spacer(flex: 1),
+                                                  const Text(
+                                                    "QR Amount",
+                                                    style: TextStyle(
+                                                        color: home1,
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w700),
+                                                  ),
+                                                  const Spacer(flex: 1),
+                                                  InkWell(
+                                                    onTap: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Icon(
+                                                      Icons.cancel_rounded,
+                                                      size: 30,
+                                                      color: home2,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 10),
+                                              child: TextField(
+                                                controller:
+                                                    editAmountController,
+                                                decoration:
+                                                    const InputDecoration(
+                                                        prefixIcon: Icon(
+                                                          Icons.currency_rupee,
+                                                          color: home1,
+                                                        ),
+                                                        border: OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            10))),
+                                                        labelText:
+                                                            "Enter collection amount"),
+                                              ),
+                                            ),
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  //Navigator.pop(context);
+                                                  generateQrPaymentSession();
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                    backgroundColor: home1,
+                                                    foregroundColor:
+                                                        Colors.white),
+                                                child: const Text("Submit"))
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                                // paymentConfirmation(context, agentName!,
+                                //     widget.loanNumber, widget.custId, "1");
 
                                 // Handle make payment action
                               },
@@ -984,7 +888,8 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                           child: Column(
                                             children: [
                                               Padding(
-                                                padding: const EdgeInsets.all(8.0),
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
                                                 child: Row(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.center,
@@ -1003,7 +908,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                                     ),
                                                     const Spacer(flex: 1),
                                                     InkWell(
-                                                      onTap: (){
+                                                      onTap: () {
                                                         Navigator.pop(context);
                                                       },
                                                       child: const Icon(
@@ -1040,7 +945,10 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                                 ),
                                               ),
                                               ElevatedButton(
-                                                  onPressed: () {},
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                    loanCashCollection();
+                                                  },
                                                   style:
                                                       ElevatedButton.styleFrom(
                                                           backgroundColor:
@@ -1086,8 +994,95 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                 side: const BorderSide(color: home1),
                               ),
                               onPressed: () {
-                                showProgressDialog(context);
-                                sendLinkFunction();
+                                showModalBottomSheet(
+                                  isScrollControlled: true, // Already set
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Padding(
+                                      padding: EdgeInsets.only(
+                                        bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom, // <-- important
+                                      ),
+                                      child: SizedBox(
+                                        height: 200,
+                                        // You can make it dynamic if needed
+                                        width: double.infinity,
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  const Spacer(flex: 1),
+                                                  const Text(
+                                                    "Payment Link Amount",
+                                                    style: TextStyle(
+                                                        color: home1,
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w700),
+                                                  ),
+                                                  const Spacer(flex: 1),
+                                                  InkWell(
+                                                    onTap: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Icon(
+                                                      Icons.cancel_rounded,
+                                                      size: 30,
+                                                      color: home2,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 10),
+                                              child: TextField(
+                                                controller:
+                                                    editAmountController,
+                                                decoration:
+                                                    const InputDecoration(
+                                                        prefixIcon: Icon(
+                                                          Icons.currency_rupee,
+                                                          color: home1,
+                                                        ),
+                                                        border: OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            10))),
+                                                        labelText:
+                                                            "Enter collection amount"),
+                                              ),
+                                            ),
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  showProgressDialog(context);
+                                                  sendLinkFunction();
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                    backgroundColor: home1,
+                                                    foregroundColor:
+                                                        Colors.white),
+                                                child: const Text("Submit"))
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
 
                                 // Handle view schedule action
                               },
@@ -1156,7 +1151,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
         customerAccountNumber: widget.loanNumber,
         customerEmail: "",
         customerId: widget.custId,
-        linkAmount: 1,
+        linkAmount: int.parse(editAmountController.text),
         note: "Payment for Order #12345",
         corpCode: corpCode!,
         cardRefNum: "",
@@ -1177,7 +1172,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
               "7909103947",
               widget.customerName,
               widget.loanNumber,
-              "1",
+              editAmountController.text,
               sendLink.linkUrl.toString());
           if (whatsAppProvider.whatsAppResponse != null) {
             Navigator.pop(context);
@@ -1260,13 +1255,14 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
             corpCode: corpCode,
             cardRefNum: "",
             token: token,
-            amount: "1",
+            amount: editAmountController.text,
             agentPhone: agentMobile,
             agentId: widget.custId,
             note: "Payment For Agent ${widget.scheme}",
             subAgentId: subagentId,
             agentName: agentName,
-            subAgentBranchCode: subAgentCodeNew);
+            subAgentBranchCode: subAgentCodeNew,
+            collectionType: 'LOAN');
     paymentSession.fold((error) {
       print(
           "---------------------------------ERROR PAYMENT---------------------------");
@@ -1285,7 +1281,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
           MaterialPageRoute(
             builder: (context) => NewQrCodePage(
               paymentSessionId: paymentSessionId!,
-              amount: "1" ?? "",
+              amount: editAmountController.text ?? "",
               token: token!,
               custName: widget.customerName ?? "custName",
               custPhone: widget.customerPhoneNumber,
@@ -1353,58 +1349,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
         ),
       ),
     );
-    // return Container(
-    //   padding: const EdgeInsets.all(16),
-    //   decoration: BoxDecoration(
-    //     color: Colors.white,
-    //     borderRadius: BorderRadius.circular(16),
-    //     boxShadow: [
-    //       BoxShadow(
-    //         color: Colors.black.withOpacity(0.05),
-    //         blurRadius: 10,
-    //         offset: const Offset(0, 5),
-    //       ),
-    //     ],
-    //   ),
-    //   child: Column(
-    //     crossAxisAlignment: CrossAxisAlignment.start,
-    //     children: [
-    //       Row(
-    //         children: [
-    //           Container(
-    //             padding: const EdgeInsets.all(8),
-    //             decoration: BoxDecoration(
-    //               color: home1.withOpacity(0.1),
-    //               shape: BoxShape.circle,
-    //             ),
-    //             child: Icon(
-    //               icon,
-    //               size: 20,
-    //               color: home1,
-    //             ),
-    //           ),
-    //           const SizedBox(width: 8),
-    //           Text(
-    //             title,
-    //             style: const TextStyle(
-    //               color: Colors.grey,
-    //               fontSize: 14,
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //       const SizedBox(height: 8),
-    //       Text(
-    //         value,
-    //         style: TextStyle(
-    //           fontSize: 20,
-    //           fontWeight: FontWeight.bold,
-    //           color: home2,
-    //         ),
-    //       ),
-    //     ],
-    //   ),
-    // );
+
   }
 
   Widget _buildDetailItem(IconData icon, String label, String value) {
@@ -1438,3 +1383,289 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
     );
   }
 }
+// showDialog(
+//   context: context,
+//   builder: (context) {
+//     return AlertDialog(
+//       title: const Text("Transaction Result"),
+//       content: Column(
+//         mainAxisSize: MainAxisSize.min,
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Text("Status: ${success.status ?? 'N/A'}"),
+//           const SizedBox(height: 8),
+//           Text("Transaction ID: ${success.transactionId ?? 'N/A'}"),
+//           const SizedBox(height: 8),
+//           Text("Message: ${success.message ?? 'N/A'}"),
+//         ],
+//       ),
+//       actions: [
+//         TextButton(
+//
+//           onPressed: () => {Navigator.pop(context),
+//     Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//             builder: (context) => ReceiptPage(
+//               amount: success.amount.toString(),
+//               bankName: _getBankNameFromCorpCode(corpCode!)?? "XYZ BANK",
+//               agentName: agentName ?? "Name",
+//               agentPhone:
+//               agentPhoneNumber ?? "agentPhone",
+//               custName: customerName!,
+//               custPhone: custPhoneNumber!,
+//               custId: custId!, txnId: success.transactionId.toString(), txnType: "CASH",
+//             )))},
+//           child: const Text("OK"),
+//         ),
+//       ],
+//     );
+//   },
+// );
+// return Container(
+//   padding: const EdgeInsets.all(16),
+//   decoration: BoxDecoration(
+//     color: Colors.white,
+//     borderRadius: BorderRadius.circular(16),
+//     boxShadow: [
+//       BoxShadow(
+//         color: Colors.black.withOpacity(0.05),
+//         blurRadius: 10,
+//         offset: const Offset(0, 5),
+//       ),
+//     ],
+//   ),
+//   child: Column(
+//     crossAxisAlignment: CrossAxisAlignment.start,
+//     children: [
+//       Row(
+//         children: [
+//           Container(
+//             padding: const EdgeInsets.all(8),
+//             decoration: BoxDecoration(
+//               color: home1.withOpacity(0.1),
+//               shape: BoxShape.circle,
+//             ),
+//             child: Icon(
+//               icon,
+//               size: 20,
+//               color: home1,
+//             ),
+//           ),
+//           const SizedBox(width: 8),
+//           Text(
+//             title,
+//             style: const TextStyle(
+//               color: Colors.grey,
+//               fontSize: 14,
+//             ),
+//           ),
+//         ],
+//       ),
+//       const SizedBox(height: 8),
+//       Text(
+//         value,
+//         style: TextStyle(
+//           fontSize: 20,
+//           fontWeight: FontWeight.bold,
+//           color: home2,
+//         ),
+//       ),
+//     ],
+//   ),
+// );
+// FadeTransition(
+//   opacity: _fadeAnimation,
+//   child: SlideTransition(
+//     position: Tween<Offset>(
+//       begin: const Offset(0, 0.5),
+//       end: Offset.zero,
+//     ).animate(_animationController),
+//     child: Container(
+//       width: double.infinity,
+//       padding: const EdgeInsets.all(16),
+//       decoration: BoxDecoration(
+//         color: Colors.white,
+//         borderRadius: BorderRadius.circular(16),
+//         boxShadow: [
+//           BoxShadow(
+//             color: Colors.black.withOpacity(0.05),
+//             blurRadius: 10,
+//             offset: const Offset(0, 5),
+//           ),
+//         ],
+//       ),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Text(
+//             'Payment Information',
+//             style: TextStyle(
+//               fontSize: 18,
+//               fontWeight: FontWeight.bold,
+//               color: home2,
+//             ),
+//           ),
+//           const SizedBox(height: 12),
+//           _buildDetailItem(
+//             Icons.history,
+//             'Last Payment',
+//             loanDetails['lastPaymentDate'],
+//           ),
+//           _buildDetailItem(
+//             Icons.next_plan,
+//             'Next Payment Due',
+//             loanDetails['nextPaymentDue'],
+//           ),
+//         ],
+//       ),
+//     ),
+//   ),
+// ),
+// FadeTransition(
+//   opacity: _fadeAnimation,
+//   child: SlideTransition(
+//     position: Tween<Offset>(
+//       begin: const Offset(0, 0.4),
+//       end: Offset.zero,
+//     ).animate(_animationController),
+//     child: Container(
+//       width: double.infinity,
+//       padding: const EdgeInsets.all(16),
+//       decoration: BoxDecoration(
+//         color: Colors.white,
+//         borderRadius: BorderRadius.circular(16),
+//         boxShadow: [
+//           BoxShadow(
+//             color: Colors.black.withOpacity(0.05),
+//             blurRadius: 10,
+//             offset: const Offset(0, 5),
+//           ),
+//         ],
+//       ),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Text(
+//             'Loan Details',
+//             style: TextStyle(
+//               fontSize: 18,
+//               fontWeight: FontWeight.bold,
+//               color: home2,
+//             ),
+//           ),
+//           const SizedBox(height: 12),
+//           _buildDetailItem(
+//             Icons.percent,
+//             'Interest Rate',
+//             '${loanDetails['interestRate']}%',
+//           ),
+//           _buildDetailItem(
+//             Icons.calendar_today,
+//             'Loan Term',
+//             '${widget.loanTerm} days',
+//           ),
+//           _buildDetailItem(
+//             Icons.payment,
+//             'Monthly Payment',
+//             '₹${widget.emiAmount}',
+//           ),
+//           _buildDetailItem(
+//             Icons.date_range,
+//             'Start Date',
+//             loanDetails['startDate'],
+//           ),
+//           _buildDetailItem(
+//             Icons.event_available,
+//             'End Date',
+//             loanDetails['endDate'],
+//           ),
+//         ],
+//       ),
+//     ),
+//   ),
+// ),
+// FadeTransition(
+//   opacity: _fadeAnimation,
+//   child: SlideTransition(
+//     position: Tween<Offset>(
+//       begin: const Offset(0, 0.2),
+//       end: Offset.zero,
+//     ).animate(_animationController),
+//     child: Container(
+//       padding: const EdgeInsets.all(16),
+//       decoration: BoxDecoration(
+//         color: Colors.white,
+//         borderRadius: BorderRadius.circular(16),
+//         boxShadow: [
+//           BoxShadow(
+//             color: Colors.black.withOpacity(0.05),
+//             blurRadius: 10,
+//             offset: const Offset(0, 5),
+//           ),
+//         ],
+//       ),
+//       child: Row(
+//         children: [
+//           CircleAvatar(
+//             radius: 30,
+//             backgroundColor: home1.withOpacity(0.2),
+//             child: Icon(
+//               Icons.person,
+//               size: 30,
+//               color: home1,
+//             ),
+//           ),
+//           const SizedBox(width: 16),
+//           Expanded(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(
+//                   widget.customerName,
+//                   style: TextStyle(
+//                     fontSize: 18,
+//                     fontWeight: FontWeight.bold,
+//                     color: home2,
+//                   ),
+//                 ),
+//                 const SizedBox(height: 4),
+//                 Text(
+//                   'Loan #${widget.loanNumber.replaceAll("LOAN-", "")}',
+//                   style: const TextStyle(
+//                     color: Colors.grey,
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//           Container(
+//             padding: const EdgeInsets.symmetric(
+//                 horizontal: 12, vertical: 6),
+//             decoration: BoxDecoration(
+//               color: widget.loanStatus == 'Active'
+//                   ? Colors.green.withOpacity(0.1)
+//                   : Colors.orange.withOpacity(0.1),
+//               borderRadius: BorderRadius.circular(20),
+//               border: Border.all(
+//                 color: widget.loanStatus == 'Active'
+//                     ? Colors.green
+//                     : Colors.orange,
+//                 width: 1,
+//               ),
+//             ),
+//             child: Text(
+//               widget.loanStatus,
+//               style: TextStyle(
+//                 color: widget.loanStatus == 'Active'
+//                     ? Colors.green
+//                     : Colors.orange,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     ),
+//   ),
+// ),
