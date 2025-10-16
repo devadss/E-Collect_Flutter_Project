@@ -91,7 +91,6 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       case 1:
         return const AllGroupsPage();
       case 2:
-
         /// return const ProfileHomePage();
         //return const BankDetailsScreen();
         return const PaymentLinkHomePage();

@@ -688,7 +688,6 @@ class _NewQrCodePageState extends State<NewQrCodePage>
     final number = await SharedPref().getSubAgentMobNum();
     final subagentNum = await SharedPref().getSubAgentMobNum();
 
-
     if (mounted) {
       setState(() {
         agentName = name;

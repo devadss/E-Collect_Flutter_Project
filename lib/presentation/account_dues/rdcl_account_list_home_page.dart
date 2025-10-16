@@ -5,6 +5,7 @@ import 'package:pager/pager.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../core/colors.dart';
+import '../../core/utils.dart';
 import '../../data/provider/rdcl_cust_list_provider.dart';
 import '../../data/storage/shared_pref_helper.dart';
 import '../dues/rdcl_due_home_page.dart';
@@ -97,6 +98,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
     super.initState();
   }
 
+/*
   void showProgressDialog(BuildContext context) {
     showDialog(
         context: context,
@@ -129,6 +131,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
           );
         });
   }
+*/
 
   @override
   void dispose() {

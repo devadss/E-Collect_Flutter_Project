@@ -6,12 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../core/colors.dart';
+import '../../core/utils.dart';
 import '../../data/provider/cust_register_provider.dart';
 import '../../data/provider/parent_agent_detail_provider/parent_agent_detil_provider.dart';
 import '../../data/provider/parent_agent_detail_provider/parent_credential_provider/parent_credential_provider.dart';
 import '../../data/storage/shared_pref_helper.dart';
-import '../groups/bnk_account_details/bank_accout_detail_page.dart';
 import '../groups/min_kyc/request_otp/min_kyc_page.dart';
 import 'login/otp_verification/otp_verification.dart';
 
@@ -368,6 +367,7 @@ class _MobileNumberVerificationPageState
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
+/*
   void showProgressDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -395,6 +395,7 @@ class _MobileNumberVerificationPageState
       },
     );
   }
+*/
 
   @override
   Widget build(BuildContext context) {

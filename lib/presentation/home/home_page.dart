@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/colors.dart';
 import '../../../data/storage/shared_pref_helper.dart';
+import '../../core/utils.dart';
 import '../../data/provider/agent_transaction_provider.dart';
 import '../../data/provider/cash_transcation_history_provider.dart';
 import '../../data/provider/collection_summary_provider.dart';
@@ -351,6 +352,7 @@ class _HomePageState extends State<HomePage>
     await provider.getTransactions(token.toString());
   }
 
+/*
   void showProgressDialog(BuildContext context) {
 
     showDialog(
@@ -384,6 +386,7 @@ class _HomePageState extends State<HomePage>
           );
         });
   }
+*/
 
   String formatTimestamp(DateTime? timestamp) {
     if (timestamp == null) return "Invalid Date";

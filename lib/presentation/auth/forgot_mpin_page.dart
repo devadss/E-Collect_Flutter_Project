@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/colors.dart';
 import '../../core/general.dart';
+import '../../core/utils.dart';
 import '../../data/storage/shared_pref_helper.dart';
 import '../../data/repository/otp_request_repository.dart';
 import '../../data/repository/otp_verification_repository.dart';
@@ -73,6 +74,7 @@ class _ForgotMpinPageState extends State<ForgotMpinPage> {
     });
   }
 
+/*
   void showProgressDialog(BuildContext context) {
     showDialog(
         context: context,
@@ -105,6 +107,7 @@ class _ForgotMpinPageState extends State<ForgotMpinPage> {
           );
         });
   }
+*/
   void requestOtp(String mobnum) async {
     showProgressDialog(context);
     final provider = await OtpRequestRepository().requestOtp(mobnum);

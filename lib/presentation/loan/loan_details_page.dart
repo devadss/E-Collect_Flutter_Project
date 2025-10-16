@@ -66,7 +66,11 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
   String? agentOriginId;
   String? paymentSessionId;
   String? branchCode;
+  String? selectedAccNumber;
   TextEditingController editAmountController = TextEditingController();
+  TextEditingController utrController = TextEditingController();
+
+
 
   // Sample loan data
   final Map<String, dynamic> loanDetails = {
@@ -138,6 +142,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
     }
   }
 
+/*
   void showProgressDialog(BuildContext context) {
     showDialog(
         context: context,
@@ -170,9 +175,57 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
           );
         });
   }
+*/
+
+  Future<void> accTrans() async {
+    utl.showProgressDialog(context);
+    final loanCashProvider =
+    Provider.of<LoanCashCollectionProvider>(context, listen: false);
+    await loanCashProvider.submitCashCollection(
+        agentName.toString(),
+        agentId.toString(),
+        agentOriginId.toString(),
+        agentMobile.toString(),
+        agentEmail.toString(),
+        int.parse(subagentId.toString()),
+        "",
+        subAgentCodeNew.toString(),
+        widget.customerName,
+        widget.customerPhoneNumber,
+        widget.loanNumber,
+        widget.custId,
+        "",
+        double.parse(editAmountController.text),
+        "",
+        corpCode.toString(),
+        branchCode.toString(),
+        "",
+        "MOB", "TRANSFER",utrController.text );
+    if (loanCashProvider.loanCashCollectionResponse != null) {
+      Navigator.pop(context);
+      print(loanCashProvider.loanCashCollectionResponse?.message.toString());
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return linkShareAlert(context, loanCashProvider.loanCashCollectionResponse!.status == "Y" ? true
+                    : false,
+                loanCashProvider.loanCashCollectionResponse!.message
+                    .toString());
+          });
+    } else {
+      Navigator.pop(context);
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return linkShareAlert(
+                context, false, loanCashProvider.loanCollectionErr.toString());
+          });
+    }
+  }
+
 
   Future<void> loanCashCollection() async {
-    showProgressDialog(context);
+    utl.showProgressDialog(context);
     final loanCashProvider =
         Provider.of<LoanCashCollectionProvider>(context, listen: false);
     await loanCashProvider.submitCashCollection(
@@ -194,7 +247,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
         corpCode.toString(),
         branchCode.toString(),
         "",
-        "MOB");
+        "MOB", "CASH", "");
     if (loanCashProvider.loanCashCollectionResponse != null) {
       Navigator.pop(context);
       print(loanCashProvider.loanCashCollectionResponse?.message.toString());
@@ -267,7 +320,8 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
               MaterialPageRoute(
                 builder: (context) => ReceiptPage(
                   amount: success.amount.toString(),
-                  bankName: utl.getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
+                  bankName:
+                      utl.getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
                   agentName: agentName ?? "Name",
                   agentPhone: agentMobile ?? "agentPhone",
                   custName: customerName!,
@@ -283,88 +337,6 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
       );
     });
   }
-
-/*
-  String _getBankNameFromCorpCode(String corpCode) {
-    // Map corpcode to bank name
-    final Map<String, String> corpCodeToBankName = {
-      "BNKKRMR": "KURUMATHUR SERVICE CO OPERATIVE BANK LTD",
-      "BNKPDVR": "PIDAVOOR SCB",
-      "BNKKNPRM": "Kannapuram SCB",
-      "BNKTRK": "Thrikkakkara SCB",
-      "BNKKVRY": "KOOVERY SERVICE CO OPERATIVE BANK LTD",
-      "BNKKPM": "Kaipamangalam SCB",
-      "BNKKPMF": "Kaipamangalam Fisherman SCB",
-      "BNKPRK": "Peringottukara SCB",
-      "BNKPYPL": "POOYAPALLY SCB",
-      "BNKVLMK": "VELIMUKKU SCB",
-      "BNKPLKL": "PALLICKAL SCB",
-      "BNKCRKT": "CHERUKALATHUR SCB",
-      "BNKCLNR": "CHELANNUR SERVICE CO OPERATIVE BANK",
-      "BNKPPNS": "Pappinissery Rural Bank",
-      "BNKELYR": "ELAYAVOOR SERVICE CO OPERATIVE BANK LTD",
-      "BNKKTM": "KOTTAYAM SERVICE CO OPERATIVE BANK LTD",
-      "BNKAVN": "Avinissery SCB",
-      "BNKDMDM": "DHARMADAM SERVICE CO OPERATIVE BANK LTD",
-      "BNKPTVM": "PATTUVAM SERVICE CO OPERATIVE BANK",
-      "BNKKUTGM": "KUTTUMUGHAM SERVICE CO OPERATIVE BANK LTD",
-      "BNKERKT": "ERAMAM KUTTUR SERVICE CO OPERATIVE BANK LTD",
-      "BNKKDKD": "KODAKKAD SERVICE CO OPERATIVE BANK LTD",
-      "BNKPMP": "PMP SERVICE CO OPERATIVE BANK",
-      "BNKSKMB": "SRI KAMBILAYA MUTUAL NIDHI LIMITED",
-      "BNKTSSCB": "Thuravoor South SCB",
-      "BNKVBGR": "VIBGYOR NIDHI LIMITED",
-      "BNKPPL": "PERUMPILLY SCB",
-      "BNKKTRM": "KAITHARAM SCB",
-      "BNKKZPL": "KUZHUPPILLY SCB",
-      "BNKNABL": "NAYARAMBALAM SCB",
-      "BNKELR": "ELOOR SCB",
-      "BNKERYD": "ERIYAD SCB",
-      "BNKPYVR": "PAYYAVOOR SCB",
-      "BNKVDKRA": "VADAKKEKKARA SCB",
-      "BNKPRVR": "PARAVUR SCB",
-      "BNKVLLR": "Velloor Service Co Operative Bank",
-      "BNKMANK": "Manakunnam SCB",
-      "BNKAZKD": "AZHIKODE SCB",
-      "BNKTHRNL": "Thirunaloor SCB",
-      "BNKVDYR": "VADAYAR",
-      "BNKKDKPL": "KADAKKARAPALLY SCB",
-      "BNKUCMSA": "URBAN CARE MULTI STATE AGRO CSL",
-      "BNKKKYR": "KOKKAYAR SCB",
-      "BNKMFF": "MILK FARMERS AND FISHERIES",
-      "BNKCORDL": "Cordial Gramin Development Foundation",
-      "BNKCHLVR": "CHELAVUR SCB",
-      "BNKVRND": "VARANAD SCB",
-      "BNKVBGRK": "VIBGYOR NIDHI LIMITED KOOTTILANGADI",
-      "BNKKNKRA": "KUNNUKARA SCB",
-      "BNKEDVNKD": "EDAVANAKKAD",
-      "BNKKRDM": "KARTHEDOM SCB",
-      "BNKAROOR": "AROOR SCB",
-      "BNKGMSA": "Gramin Multi State Agro Co Operative Society Ltd",
-      "BNKICCSL": "Indian Cooperative Credit Society Limited",
-      "BNKNNDR": "Neendoor scb",
-      "BNKCOB": "Co operative bhavan",
-      "BNKCHMG": "Chathamangalam SCB",
-      "BNKCXTX": "COXTAX",
-      "BNKORNTL": "ORIENTAL AGRO MULTISTATE CO OP SOCIETY",
-      "BNKTSRA": "Thushara Nidhi",
-      "BNKPRTR": "PURATHUR SCB",
-      "BNKCLBT": "CLUB T",
-      "BNKPNP": "Pearls N Petals",
-      "BNKVLKD": "Vellarkkad SCB",
-      "BNKMDS": "Medi Soft",
-      "BNKPLSCB": "Pulakode service cooperative Bank",
-      "BNKMNCHL": "MEENACHIL SCB",
-      "BNKOMSRY": "Omassery SCB",
-      "BNKPTKL": "Pothukal SCB",
-      "BNKFPMC": "FAPMCO MSCS",
-      "BNKMULKD": "Mullakkodi Co-operative Bank",
-    };
-
-    // Return the bank name if found, otherwise return a default value
-    return corpCodeToBankName[corpCode] ?? "Unknown Bank";
-  }
-*/
 
   Future<bool> paymentConfirmation(
     BuildContext context,
@@ -820,7 +792,10 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                                   InkWell(
                                                     onTap: () {
                                                       Navigator.pop(context);
-                                                      editAmountController.text = widget.emiAmount.toString();
+                                                      editAmountController
+                                                              .text =
+                                                          widget.emiAmount
+                                                              .toString();
                                                     },
                                                     child: const Icon(
                                                       Icons.cancel_rounded,
@@ -931,7 +906,10 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                                     InkWell(
                                                       onTap: () {
                                                         Navigator.pop(context);
-                                                        editAmountController.text = widget.emiAmount.toString();
+                                                        editAmountController
+                                                                .text =
+                                                            widget.emiAmount
+                                                                .toString();
                                                       },
                                                       child: const Icon(
                                                         Icons.cancel_rounded,
@@ -1057,7 +1035,10 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                                   InkWell(
                                                     onTap: () {
                                                       Navigator.pop(context);
-                                                      editAmountController.text = widget.emiAmount.toString();
+                                                      editAmountController
+                                                              .text =
+                                                          widget.emiAmount
+                                                              .toString();
                                                     },
                                                     child: const Icon(
                                                       Icons.cancel_rounded,
@@ -1095,9 +1076,10 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                               ),
                                             ),
                                             ElevatedButton(
-                                                onPressed: () {
-                                                  showProgressDialog(context);
+                                                onPressed: () async {
+                                                  utl.showProgressDialog(context);
                                                   sendLinkFunction();
+
                                                 },
                                                 style: ElevatedButton.styleFrom(
                                                     backgroundColor: home1,
@@ -1122,6 +1104,153 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                               ),
                             ),
                           ),
+                          const SizedBox(height: 10,),
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                side: const BorderSide(color: home1),
+                              ),
+                              onPressed: () {
+                                showModalBottomSheet(
+                                  isScrollControlled: true, // Already set
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Padding(
+                                      padding: EdgeInsets.only(
+                                        bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom, // <-- important
+                                      ),
+                                      child: SizedBox(
+                                        height: 250,
+                                        // You can make it dynamic if needed
+                                        width: double.infinity,
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  const Spacer(flex: 1),
+                                                  const Text(
+                                                    "Account Transfer",
+                                                    style: TextStyle(
+                                                        color: home1,
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w700),
+                                                  ),
+                                                  const Spacer(flex: 1),
+                                                  InkWell(
+                                                    onTap: () {
+                                                      Navigator.pop(context);
+                                                      editAmountController
+                                                              .text =
+                                                          widget.emiAmount
+                                                              .toString();
+                                                      utrController.clear();
+                                                    },
+                                                    child: const Icon(
+                                                      Icons.cancel_rounded,
+                                                      size: 30,
+                                                      color: home2,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 10),
+                                              child: TextField(
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                controller: editAmountController,
+                                                decoration:
+                                                    const InputDecoration(
+                                                        prefixIcon: Icon(
+                                                          Icons.account_balance_sharp,
+                                                          color: home1,
+                                                        ),
+                                                        border: OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            10))),
+                                                        labelText:
+                                                            "Enter collection amount"),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 10),
+                                              child: TextField(
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                controller:
+                                                    utrController,
+                                                decoration:
+                                                    const InputDecoration(
+                                                        prefixIcon: Icon(
+                                                          Icons.currency_rupee,
+                                                          color: home1,
+                                                        ),
+                                                        border: OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            10))),
+                                                        labelText:
+                                                            "Enter UTR Number"),
+                                              ),
+                                            ),
+                                            ElevatedButton(
+                                                onPressed: () async {
+                                                  accTrans();
+
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                    backgroundColor: home1,
+                                                    foregroundColor:
+                                                        Colors.white),
+                                                child: const Text("Submit"))
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+
+                                // Handle view schedule action
+                              },
+                              child: const Text(
+                                'Account Transfer',
+                                style: TextStyle(
+                                  color: home1,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                         const SizedBox(height: 10,)
                         ],
                       ),
                     ),
@@ -1268,6 +1397,29 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
         ),
       ),
     );
+  }
+
+   showAccTransDialog() async {
+   return SizedBox(
+      height: 100,
+      child: await showModalBottomSheet(
+          backgroundColor: Colors.white,
+          context: context,
+          builder: (BuildContext context) {
+            return  SizedBox(
+              width: double.infinity,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                Center(child: Text("Collect Amount", style: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w700),)),
+
+
+              ],),
+            );
+          }),
+    );
+
   }
 
   Future<void> generateQrPaymentSession() async {
@@ -1696,3 +1848,84 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
 //     ),
 //   ),
 // ),
+/*
+  String _getBankNameFromCorpCode(String corpCode) {
+    // Map corpcode to bank name
+    final Map<String, String> corpCodeToBankName = {
+      "BNKKRMR": "KURUMATHUR SERVICE CO OPERATIVE BANK LTD",
+      "BNKPDVR": "PIDAVOOR SCB",
+      "BNKKNPRM": "Kannapuram SCB",
+      "BNKTRK": "Thrikkakkara SCB",
+      "BNKKVRY": "KOOVERY SERVICE CO OPERATIVE BANK LTD",
+      "BNKKPM": "Kaipamangalam SCB",
+      "BNKKPMF": "Kaipamangalam Fisherman SCB",
+      "BNKPRK": "Peringottukara SCB",
+      "BNKPYPL": "POOYAPALLY SCB",
+      "BNKVLMK": "VELIMUKKU SCB",
+      "BNKPLKL": "PALLICKAL SCB",
+      "BNKCRKT": "CHERUKALATHUR SCB",
+      "BNKCLNR": "CHELANNUR SERVICE CO OPERATIVE BANK",
+      "BNKPPNS": "Pappinissery Rural Bank",
+      "BNKELYR": "ELAYAVOOR SERVICE CO OPERATIVE BANK LTD",
+      "BNKKTM": "KOTTAYAM SERVICE CO OPERATIVE BANK LTD",
+      "BNKAVN": "Avinissery SCB",
+      "BNKDMDM": "DHARMADAM SERVICE CO OPERATIVE BANK LTD",
+      "BNKPTVM": "PATTUVAM SERVICE CO OPERATIVE BANK",
+      "BNKKUTGM": "KUTTUMUGHAM SERVICE CO OPERATIVE BANK LTD",
+      "BNKERKT": "ERAMAM KUTTUR SERVICE CO OPERATIVE BANK LTD",
+      "BNKKDKD": "KODAKKAD SERVICE CO OPERATIVE BANK LTD",
+      "BNKPMP": "PMP SERVICE CO OPERATIVE BANK",
+      "BNKSKMB": "SRI KAMBILAYA MUTUAL NIDHI LIMITED",
+      "BNKTSSCB": "Thuravoor South SCB",
+      "BNKVBGR": "VIBGYOR NIDHI LIMITED",
+      "BNKPPL": "PERUMPILLY SCB",
+      "BNKKTRM": "KAITHARAM SCB",
+      "BNKKZPL": "KUZHUPPILLY SCB",
+      "BNKNABL": "NAYARAMBALAM SCB",
+      "BNKELR": "ELOOR SCB",
+      "BNKERYD": "ERIYAD SCB",
+      "BNKPYVR": "PAYYAVOOR SCB",
+      "BNKVDKRA": "VADAKKEKKARA SCB",
+      "BNKPRVR": "PARAVUR SCB",
+      "BNKVLLR": "Velloor Service Co Operative Bank",
+      "BNKMANK": "Manakunnam SCB",
+      "BNKAZKD": "AZHIKODE SCB",
+      "BNKTHRNL": "Thirunaloor SCB",
+      "BNKVDYR": "VADAYAR",
+      "BNKKDKPL": "KADAKKARAPALLY SCB",
+      "BNKUCMSA": "URBAN CARE MULTI STATE AGRO CSL",
+      "BNKKKYR": "KOKKAYAR SCB",
+      "BNKMFF": "MILK FARMERS AND FISHERIES",
+      "BNKCORDL": "Cordial Gramin Development Foundation",
+      "BNKCHLVR": "CHELAVUR SCB",
+      "BNKVRND": "VARANAD SCB",
+      "BNKVBGRK": "VIBGYOR NIDHI LIMITED KOOTTILANGADI",
+      "BNKKNKRA": "KUNNUKARA SCB",
+      "BNKEDVNKD": "EDAVANAKKAD",
+      "BNKKRDM": "KARTHEDOM SCB",
+      "BNKAROOR": "AROOR SCB",
+      "BNKGMSA": "Gramin Multi State Agro Co Operative Society Ltd",
+      "BNKICCSL": "Indian Cooperative Credit Society Limited",
+      "BNKNNDR": "Neendoor scb",
+      "BNKCOB": "Co operative bhavan",
+      "BNKCHMG": "Chathamangalam SCB",
+      "BNKCXTX": "COXTAX",
+      "BNKORNTL": "ORIENTAL AGRO MULTISTATE CO OP SOCIETY",
+      "BNKTSRA": "Thushara Nidhi",
+      "BNKPRTR": "PURATHUR SCB",
+      "BNKCLBT": "CLUB T",
+      "BNKPNP": "Pearls N Petals",
+      "BNKVLKD": "Vellarkkad SCB",
+      "BNKMDS": "Medi Soft",
+      "BNKPLSCB": "Pulakode service cooperative Bank",
+      "BNKMNCHL": "MEENACHIL SCB",
+      "BNKOMSRY": "Omassery SCB",
+      "BNKPTKL": "Pothukal SCB",
+      "BNKFPMC": "FAPMCO MSCS",
+      "BNKMULKD": "Mullakkodi Co-operative Bank",
+    };
+
+    // Return the bank name if found, otherwise return a default value
+    return corpCodeToBankName[corpCode] ?? "Unknown Bank";
+  }
+*/

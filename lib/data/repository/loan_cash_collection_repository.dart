@@ -27,7 +27,9 @@ class LoanCashCollectionRepository implements LoanCashCollectionInterface {
       String corpCode,
       String branchCode,
       String cardRefNo,
-      String qrSource) async {
+      String qrSource,
+      String paymentMode,
+      String utrNumber) async {
     final uri = Uri.parse("${baseUrl}api/Cashfree/ReceiveCashLoan");
     bool checkConnection = await InternetConnectionChecker().hasConnection;
     if (checkConnection == true) {
@@ -55,10 +57,39 @@ class LoanCashCollectionRepository implements LoanCashCollectionInterface {
             "CorpCode": corpCode,
             "BranchCode": branchCode,
             "CardRefNum": cardRefNo,
-            "QrSource": "MOB"
+            "QrSource": "MOB",
+            "PaymentMode":paymentMode,
+            "UTRNumber":utrNumber
           }),
           headers: {'Content-Type': 'application/json'});
       print(request.body);
+      print({
+        "agent_details": {
+          "agent_name": agentName,
+          "agent_id": agentId,
+          "agent_orginId": agentOriginId,
+          "agent_phone": agentPhone,
+          "agent_email": agentEmail,
+          "SubAgentId": subAgentId,
+          "SubAgentBranch": subAgentBranch,
+          "SubAgentBranchCode": subAgentBranchCode
+        },
+        "customer_details": {
+          "customer_name": customerName,
+          "customer_phone": customerPhone,
+          "customer_accno": customerAccNo,
+          "customer_id": customerId,
+          "customer_email": customerEmail
+        },
+        "Amount": collectionAmount,
+        "note": "Loan collection payment",
+        "CorpCode": corpCode,
+        "BranchCode": branchCode,
+        "CardRefNum": cardRefNo,
+        "QrSource": "MOB",
+        "PaymentMode":paymentMode,
+        "UTRNumber":utrNumber
+      });
       if (request.statusCode == 200) {
         return Right(
             LoanCashCollectionResponse.fromJson(jsonDecode(request.body)));

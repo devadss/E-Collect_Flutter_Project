@@ -374,7 +374,7 @@ class _LoanHomePageState extends State<LoanHomePage>
                 MaterialPageRoute(
                   builder: (context) => LoanDetailsPage(
                     customerName: loan.customerName ?? "Name",
-                    loanNumber: loan.loanNumber ?? "Loan Number",
+                    loanNumber: loan.accountNo ?? "Loan Number",
                     emiAmount: loan.collectionAmount ?? 0,
                     loanTerm: loan.tenorDays ?? 0,
                     loanStatus: loan.status ?? "",

@@ -36,7 +36,10 @@ class LoanCashCollectionProvider with ChangeNotifier {
       String corpCode,
       String branchCode,
       String cardRefNo,
-      String qrSource) async {
+      String qrSource,
+      String paymentMode,
+      String utrNumber
+      ) async {
     final data = await _loanCashCollectionRepository.submitCashCollection(
         agentName,
         agentId,
@@ -56,7 +59,7 @@ class LoanCashCollectionProvider with ChangeNotifier {
         corpCode,
         branchCode,
         cardRefNo,
-        qrSource);
+        qrSource, paymentMode, utrNumber);
 
     data.fold((err) {
       _loanCollectionErr = err;

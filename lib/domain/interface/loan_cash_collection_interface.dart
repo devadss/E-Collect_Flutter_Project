@@ -21,6 +21,8 @@ abstract class LoanCashCollectionInterface{
       String corpCode,
       String branchCode,
       String cardRefNo,
-      String qrSource
+      String qrSource,
+      String paymentMode,
+      String UTRNumber
       );
 }

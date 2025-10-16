@@ -1,3 +1,7 @@
+import 'package:flutter/material.dart';
+
+import 'colors.dart';
+
 String getBankNameFromCorpCode(String corpCode) {
   // Map corpcode to bank name
   final Map<String, String> corpCodeToBankName = {
@@ -76,4 +80,38 @@ String getBankNameFromCorpCode(String corpCode) {
 
   // Return the bank name if found, otherwise return a default value
   return corpCodeToBankName[corpCode] ?? "Unknown Bank";
+}
+
+
+void showProgressDialog(BuildContext context) {
+  showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Center(
+          child: SingleChildScrollView(
+            child: Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              child:const Padding(
+                padding: EdgeInsets.all(50),
+                child: Column(
+                  children: [
+                    CircularProgressIndicator(color: home2),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "Please wait....",
+                      style: TextStyle(
+                        fontSize: 17,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      });
 }
