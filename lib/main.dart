@@ -1,8 +1,10 @@
 import 'dart:developer';
 import 'package:collection_qr_flutter/data/provider/link_transcation_history_provider.dart';
 import 'package:collection_qr_flutter/data/provider/loan_cash_coolection_provider.dart';
+import 'package:collection_qr_flutter/data/provider/transfer_transaction_provider.dart';
 import 'package:collection_qr_flutter/data/provider/whatsapp_share_provider.dart';
 import 'package:collection_qr_flutter/data/repository/loan_cash_collection_repository.dart';
+import 'package:collection_qr_flutter/data/repository/transfer_history_repository.dart';
 import 'package:collection_qr_flutter/data/repository/whats_app_share_repository.dart';
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 
@@ -185,6 +187,7 @@ void main() async {
     ChangeNotifierProvider(create: (_) => GroupStatusProvider(GroupStatusRepository())),
     ChangeNotifierProvider(create: (_) => MemberUpdateProvider(MemberUpdateRepository())),
     ChangeNotifierProvider(create: (_) => LoanCashCollectionProvider(LoanCashCollectionRepository())),
+    ChangeNotifierProvider(create: (_) => TransferHistoryProvider(TransferHistoryRepository())),
 
   ], child: const MyApp()));
 }

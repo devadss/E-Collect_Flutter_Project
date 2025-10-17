@@ -61,6 +61,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
   String? token;
   String? agentMobile;
   String? subAgentCodeNew;
+  String? cid;
   String? subagentId;
   String? agentName;
   String? agentOriginId;
@@ -1267,6 +1268,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
   Future<void> loadSharedPrefs() async {
     final id = await SharedPref().getSubAgentCode();
     final agentid = await SharedPref().getAgentId();
+    String custid = await SharedPref().getCustId();
 
     final crpCd = await SharedPref().getCorpCode();
     final tok = await SharedPref.shared.getTokenValue();
@@ -1280,6 +1282,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
     final brCode = await SharedPref().getBranchCode();
 
     setState(() {
+      cid = custid;
       subAgentCodeNew = sub_AgentCodeNew;
       branchCode = brCode;
       agent_Id = agentid;
@@ -1299,21 +1302,21 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
   Future<void> sendLinkFunction() async {
     final send = await PaymentLinkRepository().getPaymentLink(
         agentName: agentName!,
-        agentId: agentId!,
+        agentId: cid!.toString(),
         agentOriginId: agentOriginId!,
         agentPhone: agentMobile!,
         agentEmail: agentEmail!,
         customerName: widget.customerName,
-        customerPhone: agentMobile!,
+        customerPhone: widget.customerPhoneNumber,
         customerAccountNumber: widget.loanNumber,
         customerEmail: "",
-        customerId: widget.custId,
+        customerId: widget.custId.toString(),
         linkAmount: int.parse(editAmountController.text),
         note: "Payment for Order #12345",
         corpCode: corpCode!,
         cardRefNum: "",
         token: token.toString(),
-        subAgentId: subagentId!);
+        subAgentId: subagentId!.toString());
 
     send.fold(
       (error) {
@@ -1507,11 +1510,14 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                   ),
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 14,
+                Flexible(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      overflow: TextOverflow.clip,
+                      color: Colors.grey,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
               ],

@@ -876,52 +876,54 @@ class _NewQrCodePageState extends State<NewQrCodePage>
         ),
 
         // QR Code Container
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ScaleTransition(
-              scale: _scaleAnimation,
-              child: Container(
-                padding: const EdgeInsets.all(17),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 30,
-                      spreadRadius: 2,
-                    ),
-                  ],
-                ),
-                child: qrCodeImageBytes == null
-                    ? const SizedBox(
-                        width: 200,
-                        height: 200,
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            color: deepTeal,
-                            strokeWidth: 3,
-                          ),
-                        ),
-                      )
-                    : Image.memory(
-                        qrCodeImageBytes!,
-                        width: 240,
-                        height: 240,
+        SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ScaleTransition(
+                scale: _scaleAnimation,
+                child: Container(
+                  padding: const EdgeInsets.all(17),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 30,
+                        spreadRadius: 2,
                       ),
+                    ],
+                  ),
+                  child: qrCodeImageBytes == null
+                      ? const SizedBox(
+                          width: 200,
+                          height: 200,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: deepTeal,
+                              strokeWidth: 3,
+                            ),
+                          ),
+                        )
+                      : Image.memory(
+                          qrCodeImageBytes!,
+                          width: 240,
+                          height: 240,
+                        ),
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              "Scan the QR code to make payment",
-              style: GoogleFonts.poppins(
-                color: Colors.grey[700],
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
+              const SizedBox(height: 24),
+              Text(
+                "Scan the QR code to make payment",
+                style: GoogleFonts.poppins(
+                  color: Colors.grey[700],
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
@@ -975,6 +977,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
               Text(
                 label,
                 style: GoogleFonts.poppins(
+
                   color: color,
                   fontWeight: FontWeight.w600,
                   fontSize: 15,

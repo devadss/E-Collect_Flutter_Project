@@ -434,6 +434,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
     await fcmProvider.deleteFirebaseToken(entityId, token);
 
     await SharedPref.shared.setLogin(false);
+    await SharedPref.shared.setCustId("");
     await SharedPref.shared.setAgentName("");
     await SharedPref.shared.setParentAgentName("");
     await SharedPref.shared.setParentAgentPassword("");
@@ -445,6 +446,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
     await SharedPref.shared.setCustomerUnderAgentUrl("");
     await SharedPref.shared.setSubAgentName("");
     await SharedPref.shared.setSubAgentMobNum("");
+    await SharedPref.shared.setSubAgentCodeNew("");
     await SharedPref.shared.setFcmToken("");
     await SharedPref.shared.setAgentId("");
     await SharedPref.shared.setPassword("");
@@ -452,6 +454,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
     await SharedPref.shared.setMpinStatus("");
     await SharedPref.shared.setTokenValue("");
     await SharedPref.shared.setMobNum("");
+    await SharedPref.shared.setBranchCode("");
     await SharedPref.shared.setAgentOriginId("");
     await SharedPref.shared.setCorpCode("");
     await SharedPref.shared.setCardRefNum("");

@@ -214,6 +214,9 @@ class _MobileNumberVerificationPageState
                 else if(customer.response!.data!['Customer_type'] ==
                     "COLLECTION_AGENT"&& customer.response!.images!.integrationStaus=="N") {
                   print("Phase 2");
+                  SharedPref.shared.setCustId(
+                    customer.response!.data!['CustId'].toString(),
+                  );
                   SharedPref.shared.setEmail(
                     customer.response!.data!['emailId'].toString(),
                   );
