@@ -1,5 +1,6 @@
 import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
 import 'package:collection_qr_flutter/presentation/dues/rdcl_due_home_page.dart';
+import 'package:collection_qr_flutter/presentation/test_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/colors.dart';
@@ -57,7 +58,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       case 1:
         return const LoanHomePage();
       case 2:
-        return const ProfileHomePage();
+       // return const ProfileHomePage();
+        return const TestPage();
       default:
         return const HomePage();
     }

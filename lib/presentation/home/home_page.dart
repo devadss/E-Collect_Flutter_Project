@@ -357,7 +357,7 @@ class _HomePageState extends State<HomePage>
   }
 
   Future<void> fetchTransaction() async {
-    if(!mounted) return ;
+    if (!mounted) return;
     final provider = Provider.of<AgentTransactionProvider>(
       context,
       listen: false,
@@ -634,7 +634,7 @@ class _HomePageState extends State<HomePage>
   }
 
   Future<void> fetchCollection() async {
-    if(!mounted) return;
+    if (!mounted) return;
     final provider = Provider.of<CollectionSummaryProvider>(
       context,
       listen: false,
@@ -665,22 +665,22 @@ class _HomePageState extends State<HomePage>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Hello,",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: white.withOpacity(0.9),
-                    ),
-                  ).animate().fadeIn(duration: 300.ms).slideX(begin: -0.1),
+                  // Text(
+                  //   "Hello,",
+                  //   style: TextStyle(
+                  //     fontSize: 16,
+                  //     fontWeight: FontWeight.w500,
+                  //     color: white.withOpacity(0.9),
+                  //   ),
+                  // ).animate().fadeIn(duration: 300.ms).slideX(begin: -0.1),
                   const SizedBox(height: 4),
                   FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
-                      userName?.replaceFirst(
+                      "Hi , ${userName?.replaceFirst(
                             userName![0],
                             userName![0].toUpperCase(),
-                          ) ??
+                          )}" ??
                           "",
                       style: const TextStyle(
                         fontSize: 24,
@@ -701,18 +701,18 @@ class _HomePageState extends State<HomePage>
 
   Widget _buildAnimatedBannerCarousel(Size size) {
     return SizedBox(
-      height: size.height * 0.18,
+      height: size.height * 0.15,
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
           CarouselSlider(
             carouselController: _carouselController,
             options: CarouselOptions(
-              height: size.height * 0.18,
+              height: size.height * 0.15,
               autoPlay: true,
               enlargeCenterPage: true,
-              viewportFraction: 0.9,
-              autoPlayInterval: 4.seconds,
+              viewportFraction: 0.8,
+              autoPlayInterval: 2.seconds,
               autoPlayAnimationDuration: 800.ms,
               onPageChanged: (index, reason) {
                 setState(() {
@@ -724,15 +724,15 @@ class _HomePageState extends State<HomePage>
               return Container(
                 margin: const EdgeInsets.symmetric(horizontal: 4),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(10),
                   image: DecorationImage(
                     image: AssetImage(imagePath),
-                    fit: BoxFit.cover,
+                    fit: BoxFit.fitWidth,
                   ),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.2),
-                      blurRadius: 10,
+                      blurRadius: 5,
                       spreadRadius: 2,
                     ),
                   ],
@@ -744,20 +744,20 @@ class _HomePageState extends State<HomePage>
             }).toList(),
           ),
           Positioned(
-            bottom: 10,
+            bottom: 5,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: bannerImages.asMap().entries.map((entry) {
                 return AnimatedContainer(
                   duration: 300.ms,
                   width: _currentBannerIndex == entry.key ? 20 : 8,
-                  height: 8,
+                  height: 15,
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(50),
                     color: _currentBannerIndex == entry.key
-                        ? white
-                        : white.withOpacity(0.5),
+                        ? Colors.red
+                        : Colors.red.withOpacity(0.5),
                   ),
                 );
               }).toList(),
@@ -805,15 +805,15 @@ class _HomePageState extends State<HomePage>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const FittedBox(
+                  FittedBox(
                     fit: BoxFit.scaleDown,
-                    child: Text(
+                    child: const Text(
                       "Total Collection",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
-                    ),
+                    ).animate().fadeIn(duration: 300.ms).slideX(begin: -0.1),
                   ),
                   Container(
                     padding:
@@ -856,7 +856,7 @@ class _HomePageState extends State<HomePage>
                         fontWeight: FontWeight.bold,
                         color: home1,
                       ),
-                    ),
+                    ).animate().fadeIn(duration: 300.ms).slideX(begin: -0.1),
                   ),
                   Text(
                     getFilterDisplayText(),
@@ -1427,7 +1427,7 @@ class _HomePageState extends State<HomePage>
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(80),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
+                padding: const EdgeInsets.symmetric(vertical: 20),
                 child: _buildTabBar(),
               ),
             ),

@@ -211,7 +211,7 @@ class _LoanHomePageState extends State<LoanHomePage>
                         },
                         childCount: _filteredLoans.length,
                       ),
-                    ),
+                    )
         ],
       ),
     );
