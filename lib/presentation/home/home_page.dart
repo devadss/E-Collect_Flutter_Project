@@ -1134,19 +1134,19 @@ class _HomePageState extends State<HomePage>
       LinkTransactionHistoryProvider linkProvider) {
     if (linkProvider.erResposne != null) {
       return _buildEmptyState(
-        icon: Icons.select_all_rounded,
-        title: "No Transactions",
-        message: "Your payment transactions will appear here",
+        icon: Icons.link_outlined,
+        title: "No Link Transactions",
+        message: "Your link transactions will appear here",
       );
     } else if (linkProvider.linkTranscationHistoryModel == null) {
       return _buildLoadingList();
     }
     return _buildTransactionList(
       transactions: linkProvider.linkTranscationHistoryModel!.data!,
-      icon: Icons.select_all_rounded,
+      icon: Icons.link_outlined,
       iconColor: Colors.blue,
-      getAmount: (t) => t.orderAmount ?? 0,
-      getStatus: (t) => t.orderStatus.toString(),
+      getAmount: (t) => t.linkAmount ?? 0,
+      getStatus: (t) => t.linkStatus.toString(),
       getOrderId: (t) => t.orderId.toString(),
       getCustName: (t) => t.customerName.toString(),
       getCustId: (t) => t.customerId.toString(),
@@ -1287,7 +1287,8 @@ class _HomePageState extends State<HomePage>
                           horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: status.toLowerCase().contains("success") ||
-                                status.toLowerCase().contains("paid")
+                                status.toLowerCase().contains("paid") ||
+                                status.toLowerCase().contains("completed")
                             ? Colors.green.withOpacity(0.1)
                             : Colors.orange.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12),
@@ -1296,7 +1297,9 @@ class _HomePageState extends State<HomePage>
                         status,
                         style: TextStyle(
                           color: status.toLowerCase().contains("success") ||
-                                  status.toLowerCase().contains("paid")
+                                  status.toLowerCase().contains("paid")||
+                              status.toLowerCase().contains("completed")
+
                               ? Colors.green
                               : Colors.orange,
                           fontSize: 12,
@@ -1380,7 +1383,7 @@ class _HomePageState extends State<HomePage>
 
       return transaction.customerName.toString();
     }
-    if (transaction is AllQrTransaction) {
+    if (transaction is AllTransactionHistoryModel) {
       return transaction.customerName.toString();
     } else if (transaction is TransferTransaction) {
       return transaction.customerName.toString();
@@ -1395,8 +1398,8 @@ class _HomePageState extends State<HomePage>
   DateTime _getTransactionDate(dynamic transaction) {
     if (transaction is QrTransaction) {
       return transaction.createdAt ?? DateTime.now();
-    } else if (transaction is AllQrTransaction) {
-      return transaction.createdAt ?? DateTime.now();
+    } else if (transaction is AllTransactionHistoryModel) {
+    //  return  transaction.createdAt ?? DateTime.now();
     }
     return DateTime.now();
   }
@@ -1464,7 +1467,7 @@ class _HomePageState extends State<HomePage>
             Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
         if (linkProvider.linkTranscationHistoryModel != null) {
           total += linkProvider.linkTranscationHistoryModel!.data!
-              .fold(0, (sum, item) => sum + (item.orderAmount ?? 0));
+              .fold(0, (sum, item) => sum + (item.linkAmount ?? 0));
         }
 
         break;

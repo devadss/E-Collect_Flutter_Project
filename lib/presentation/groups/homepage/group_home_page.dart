@@ -873,7 +873,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
                       width: 60,
                       height: 60,
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
+                        gradient: const LinearGradient(
                           colors: [home1, home2],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,

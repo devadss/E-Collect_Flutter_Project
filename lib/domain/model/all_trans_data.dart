@@ -1,187 +1,142 @@
-// To parse this JSON data, do
-//
-//     final qrTranscationHistoryModel = qrTranscationHistoryModelFromJson(jsonString);
+class AllTransactionHistoryResponse {
+  String? status;
+  List<AllTransactionHistoryModel>? data;
 
-import 'dart:convert';
-
-AllTranscationHistoryModel qrTranscationHistoryModelFromJson(String str) => AllTranscationHistoryModel.fromJson(json.decode(str));
-
-String qrTranscationHistoryModelToJson(AllTranscationHistoryModel data) => json.encode(data.toJson());
-
-class AllTranscationHistoryModel {
-  int? filteredCount;
-  List<AllQrTransaction>? data;
-
-  AllTranscationHistoryModel({
-    this.filteredCount,
+  AllTransactionHistoryResponse({
+    this.status,
     this.data,
   });
 
-  factory AllTranscationHistoryModel.fromJson(Map<String, dynamic> json) => AllTranscationHistoryModel(
-    filteredCount: json["filteredCount"],
-    data: json["data"] == null ? [] : List<AllQrTransaction>.from(json["data"].map((x) => AllQrTransaction.fromJson(x))),
-  );
+  factory AllTransactionHistoryResponse.fromJson(Map<String, dynamic> json) {
+    return AllTransactionHistoryResponse(
+      status: json["Status"],
+      data: json["Data"] != null
+          ? List<AllTransactionHistoryModel>.from(
+          json["Data"].map((x) => AllTransactionHistoryModel.fromJson(x)))
+          : [],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
-    "filteredCount": filteredCount,
-    "data": data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
+    "Status": status,
+    "Data": data?.map((x) => x.toJson()).toList(),
   };
 }
-
-class AllQrTransaction {
+class AllTransactionHistoryModel {
   String? orderId;
-  String? cfOrderId;
-  double? orderAmount;
-  OrderCurrency? orderCurrency;
-  String? orderStatus;
-  String? customerId;
+  String? linkStatus;
+  String? linkCurrency;
+  double? linkAmount;
+  String? linkPurpose;
   String? customerName;
+  String? customerId;
   String? customerPhone;
-  CustomerEmail? customerEmail;
-  DateTime? createdAt;
-  String? source;
-  // Code? corpCode;
+  String? customerAcctno;
   String? corpCode;
-  //Code? branchCode;
-  String? branchCode;
-  //CorpName? corpName;
-  String? corpName;
-  String? shopName;
-  Gsttin? gsttin;
-  RegNo? regNo;
+  String? agentPhone;
+  String? agentId;
+  String? agentOrginId;
+  String? agentMail;
+  String? loadStatus;
+  String? transId;
+  String? exTransId;
+  String? cardRefNum;
+  String? linkUrl;
+  String? paymentMode;
+  String? linkExpiryTime;
+  String? createdAt;
+  String? source;
+  int? subAgentId;
+  String? subAgentBranch;
+  String? subAgentBranchCode;
 
-  AllQrTransaction({
+  AllTransactionHistoryModel({
     this.orderId,
-    this.cfOrderId,
-    this.orderAmount,
-    this.orderCurrency,
-    this.orderStatus,
-    this.customerId,
+    this.linkStatus,
+    this.linkCurrency,
+    this.linkAmount,
+    this.linkPurpose,
     this.customerName,
+    this.customerId,
     this.customerPhone,
-    this.customerEmail,
+    this.customerAcctno,
+    this.corpCode,
+    this.agentPhone,
+    this.agentId,
+    this.agentOrginId,
+    this.agentMail,
+    this.loadStatus,
+    this.transId,
+    this.exTransId,
+    this.cardRefNum,
+    this.linkUrl,
+    this.paymentMode,
+    this.linkExpiryTime,
     this.createdAt,
     this.source,
-    this.corpCode,
-    this.branchCode,
-    this.corpName,
-    this.shopName,
-    this.gsttin,
-    this.regNo,
+    this.subAgentId,
+    this.subAgentBranch,
+    this.subAgentBranchCode,
   });
 
-  factory AllQrTransaction.fromJson(Map<String, dynamic> json) => AllQrTransaction(
-    orderId: json["OrderId"],
-    cfOrderId: json["CFOrderId"],
-    orderAmount: json["OrderAmount"],
-    orderCurrency: orderCurrencyValues.map[json["OrderCurrency"]],
-    orderStatus:  json["OrderStatus"],
-    customerId: json["CustomerId"],
-    customerName: json["CustomerName"],
-    customerPhone: json["CustomerPhone"],
-    customerEmail: customerEmailValues.map[json["CustomerEmail"]],
-    createdAt: json["CreatedAt"] == null ? null : DateTime.parse(json["CreatedAt"]),
-    source: json["Source"] ,
-    corpCode: json["CorpCode"],
-    branchCode:json["BranchCode"],
-    corpName: json["CorpName"],
-    shopName: json["ShopName"],
-    gsttin: gsttinValues.map[json["GSTTIN"]],
-    regNo: regNoValues.map[json["RegNo"]],
-  );
+  factory AllTransactionHistoryModel.fromJson(Map<String, dynamic> json) =>
+      AllTransactionHistoryModel(
+        orderId: json["Order_id"],
+        linkStatus: json["link_status"],
+        linkCurrency: json["link_currency"],
+        linkAmount: (json["link_amount"] != null)
+            ? json["link_amount"].toDouble()
+            : null,
+        linkPurpose: json["link_purpose"],
+        customerName: json["customer_name"],
+        customerId: json["customer_Id"],
+        customerPhone: json["customer_phone"],
+        customerAcctno: json["customer_acctno"],
+        corpCode: json["CorpCode"],
+        agentPhone: json["agent_phone"],
+        agentId: json["agent_Id"],
+        agentOrginId: json["agent_orginId"],
+        agentMail: json["agent_mail"],
+        loadStatus: json["Load_Status"],
+        transId: json["TransId"],
+        exTransId: json["ExTransId"],
+        cardRefNum: json["CardRefNum"],
+        linkUrl: json["link_url"],
+        paymentMode: json["PaymentMode"],
+        linkExpiryTime: json["link_expiry_time"],
+        createdAt: json["created_at"],
+        source: json["Source"],
+        subAgentId: json["SubAgentId"],
+        subAgentBranch: json["SubAgentBranch"],
+        subAgentBranchCode: json["SubAgentBranchCode"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "OrderId": orderId,
-    "CFOrderId": cfOrderId,
-    "OrderAmount": orderAmount,
-    "OrderCurrency": orderCurrencyValues.reverse[orderCurrency],
-    "OrderStatus":  orderStatus,
-    "CustomerId":  customerId,
-    "CustomerName": customerName,
-    "CustomerPhone": customerPhone,
-    "CustomerEmail": customerEmailValues.reverse[customerEmail],
-    "CreatedAt": createdAt?.toIso8601String(),
-    "Source":  source,
+    "Order_id": orderId,
+    "link_status": linkStatus,
+    "link_currency": linkCurrency,
+    "link_amount": linkAmount,
+    "link_purpose": linkPurpose,
+    "customer_name": customerName,
+    "customer_Id": customerId,
+    "customer_phone": customerPhone,
+    "customer_acctno": customerAcctno,
     "CorpCode": corpCode,
-    "BranchCode": branchCode,
-    "CorpName": corpName,
-    "ShopName":  shopName,
-    "GSTTIN": gsttinValues.reverse[gsttin],
-    "RegNo": regNoValues.reverse[regNo],
+    "agent_phone": agentPhone,
+    "agent_Id": agentId,
+    "agent_orginId": agentOrginId,
+    "agent_mail": agentMail,
+    "Load_Status": loadStatus,
+    "TransId": transId,
+    "ExTransId": exTransId,
+    "CardRefNum": cardRefNum,
+    "link_url": linkUrl,
+    "PaymentMode": paymentMode,
+    "link_expiry_time": linkExpiryTime,
+    "created_at": createdAt,
+    "Source": source,
+    "SubAgentId": subAgentId,
+    "SubAgentBranch": subAgentBranch,
+    "SubAgentBranchCode": subAgentBranchCode,
   };
-}
-
-enum Code {
-  BNKMYL,
-  DOPNKTR
-}
-
-final codeValues = EnumValues({
-  "BNKMYL": Code.BNKMYL,
-  "DOPNKTR": Code.DOPNKTR
-});
-
-
-
-
-enum CustomerEmail {
-  ANANDHU_GMAIL_COM,
-  SALIM_GMAIL_COM,
-  VIDHYA_GMAIL_COM
-}
-
-final customerEmailValues = EnumValues({
-  "anandhu@gmail.com": CustomerEmail.ANANDHU_GMAIL_COM,
-  "salim@gmail.com": CustomerEmail.SALIM_GMAIL_COM,
-  "vidhya@gmail.com": CustomerEmail.VIDHYA_GMAIL_COM
-});
-
-
-
-enum Gsttin {
-  GST124,
-  GSTIN251435421,
-  THE_562143127371
-}
-
-final gsttinValues = EnumValues({
-  "gst124": Gsttin.GST124,
-  "GSTIN251435421": Gsttin.GSTIN251435421,
-  "562143127371": Gsttin.THE_562143127371
-});
-
-enum OrderCurrency {
-  INR
-}
-
-final orderCurrencyValues = EnumValues({
-  "INR": OrderCurrency.INR
-});
-
-
-
-enum RegNo {
-  REG1234,
-  THE_21436412634615,
-  THE_21536217872623
-}
-
-final regNoValues = EnumValues({
-  "reg1234": RegNo.REG1234,
-  "21436412634615": RegNo.THE_21436412634615,
-  "21536217872623": RegNo.THE_21536217872623
-});
-
-
-
-class EnumValues<T> {
-  Map<String, T> map;
-  late Map<T, String> reverseMap;
-
-  EnumValues(this.map);
-
-  Map<T, String> get reverse {
-    reverseMap = map.map((k, v) => MapEntry(v, k));
-    return reverseMap;
-  }
 }

@@ -8,8 +8,8 @@ class LinkTransactionHistoryProvider with ChangeNotifier{
   LinkTransactionHistoryProvider(this._linkTransactionHistoryRepository);
   String? _erResposne;
   String? get erResposne => _erResposne;
-  AllTranscationHistoryModel? _linkTranscationHistoryModel;
-  AllTranscationHistoryModel? get linkTranscationHistoryModel => _linkTranscationHistoryModel;
+  AllTransactionHistoryResponse? _linkTranscationHistoryModel;
+  AllTransactionHistoryResponse? get linkTranscationHistoryModel => _linkTranscationHistoryModel;
   bool? _showProgressDialog;
   bool? get showProgressDialog  => _showProgressDialog;
   Future<void>getLinkTransactionHistory(String filterType, String startDate, String endDate, String subAgentId,String corpCode,String agentOrginId) async{

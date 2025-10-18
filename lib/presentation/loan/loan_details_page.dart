@@ -1409,7 +1409,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
           backgroundColor: Colors.white,
           context: context,
           builder: (BuildContext context) {
-            return  SizedBox(
+            return  const SizedBox(
               width: double.infinity,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

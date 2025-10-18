@@ -58,8 +58,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       case 1:
         return const LoanHomePage();
       case 2:
-       // return const ProfileHomePage();
-        return const TestPage();
+        return const ProfileHomePage();
+       // return const TestPage();
       default:
         return const HomePage();
     }

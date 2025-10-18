@@ -725,6 +725,8 @@ class _ReceiptPageState extends State<ReceiptPage> {
                           _buildDetailRow("Agent Name:", widget.agentName),
                           Divider(height: 24, color: home2.withOpacity(0.1)),
                           _buildDetailRow("Agent Phone:", widget.agentPhone),
+                          Divider(height: 24, color: home2.withOpacity(0.1)),
+
                           widget.custPhone.isNotEmpty
                               ? _buildDetailRow(
                                   "Customer Phone:", widget.custPhone)
@@ -815,11 +817,14 @@ class _ReceiptPageState extends State<ReceiptPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: home2.withOpacity(0.7),
-            fontSize: 14,
+        Expanded(
+          child: Text(
+            label,
+            style: TextStyle(
+              overflow: TextOverflow.ellipsis,
+              color: home2.withOpacity(0.7),
+              fontSize: 14,
+            ),
           ),
         ),
         Text(
