@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:collection_qr_flutter/core/constants.dart';
 import 'package:collection_qr_flutter/data/provider/link_transcation_history_provider.dart';
 import 'package:collection_qr_flutter/data/provider/loan_cash_coolection_provider.dart';
 import 'package:collection_qr_flutter/data/provider/transfer_transaction_provider.dart';
@@ -7,6 +8,7 @@ import 'package:collection_qr_flutter/data/repository/loan_cash_collection_repos
 import 'package:collection_qr_flutter/data/repository/payment_link_repository.dart';
 import 'package:collection_qr_flutter/data/repository/transfer_history_repository.dart';
 import 'package:collection_qr_flutter/data/repository/whats_app_share_repository.dart';
+import 'package:collection_qr_flutter/domain/service/api_services.dart';
 import 'package:collection_qr_flutter/presentation/groups/homepage/payment_link_provider.dart';
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 
@@ -109,6 +111,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 void main() async {
+  final apiService = ApiService(baseUrl);
+
   WidgetsFlutterBinding.ensureInitialized();
   requestLocationPermission();
   try {
@@ -171,7 +175,7 @@ void main() async {
     ChangeNotifierProvider(create: (_) => DeleteFcmProvider(DeleteFcmTokenRepository())),
     ChangeNotifierProvider(create: (_) => ParentDetailAgentProvider(ParentAgentDetailRepository())),
     ChangeNotifierProvider(create: (_) => ParentAgentCredentialProvider(ParentAgentCredentialRepository())),
-    ChangeNotifierProvider(create: (_) => GetLoanProvider(GetLoanRepository())),
+    ChangeNotifierProvider(create: (_) => GetLoanProvider(GetLoanRepository(apiService))),
     ChangeNotifierProvider(create: (_) => AadhaarOtpRequestProvider(AadhaarOtpRequestRepository())),
     ChangeNotifierProvider(create: (_) => VerifyAadhaarDetailProvider(VerifyAadhaarDetailRepository())),
     ChangeNotifierProvider(create: (_) => BankDetailProvider(BankAccountRepository())),
