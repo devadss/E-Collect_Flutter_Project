@@ -71,11 +71,9 @@ class _MobileNumberVerificationPageState
           Provider.of<ParentDetailAgentProvider>(context, listen: false);
       final vendorBaseUrlProvider =
           Provider.of<CollectionBaseUrlProvider>(context, listen: false);
-      print(
-          "------------------------------PARENT AGENT MOBIE NUMBER-----------");
+      print("------------------------------PARENT AGENT MOBIE NUMBER-----------");
       print(parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);
-      print(
-          "------------------------------PARENT AGENT MOBIE NUMBER VENDOR-----------");
+      print("------------------------------PARENT AGENT MOBIE NUMBER VENDOR-----------");
       print(parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);
 
       await parentAgentDetailProvider.fetchParentAgentDetails(value);
@@ -261,7 +259,8 @@ class _MobileNumberVerificationPageState
           print(parentAgentCredentialProvider
               .parentAgentCredentialFailResponse!.message);
         }
-      } else {
+      }
+      else {
         print("Not an agent");
         final custRegisterProvider = Provider.of<CustRegisterProvider>(
           context,
@@ -284,6 +283,10 @@ class _MobileNumberVerificationPageState
             SharedPref.shared.setEmail(
               customer.response!.data!['emailId'].toString(),
             );
+
+            // SharedPref.shared.setCustId(
+            //   customer.response!.data!['subAgentId'].toString(),
+            // );
             SharedPref.shared.setCustId(
               customer.response!.data!['CustId'].toString(),
             );
@@ -370,35 +373,7 @@ class _MobileNumberVerificationPageState
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-/*
-  void showProgressDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Center(
-          child: SingleChildScrollView(
-            child: Dialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Padding(
-                padding: EdgeInsets.all(50),
-                child: Column(
-                  children: [
-                    CircularProgressIndicator(color: home2),
-                    SizedBox(height: 10),
-                    Text("Please wait....", style: TextStyle(fontSize: 17)),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-*/
+
 
   @override
   Widget build(BuildContext context) {
@@ -719,3 +694,32 @@ class _MobileNumberVerificationPageState
     );
   }
 }
+/*
+  void showProgressDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Center(
+          child: SingleChildScrollView(
+            child: Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Padding(
+                padding: EdgeInsets.all(50),
+                child: Column(
+                  children: [
+                    CircularProgressIndicator(color: home2),
+                    SizedBox(height: 10),
+                    Text("Please wait....", style: TextStyle(fontSize: 17)),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+*/

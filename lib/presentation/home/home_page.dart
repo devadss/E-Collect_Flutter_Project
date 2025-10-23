@@ -459,12 +459,9 @@ class _HomePageState extends State<HomePage>
 
       // showProgressDialog(context);
 
-      final linkProvider =
-          Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
-      final cashProvider =
-          Provider.of<CashTransactionHistoryProvider>(context, listen: false);
-      final transfer =
-          Provider.of<TransferHistoryProvider>(context, listen: false);
+      final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
+      final cashProvider = Provider.of<CashTransactionHistoryProvider>(context, listen: false);
+      final transfer = Provider.of<TransferHistoryProvider>(context, listen: false);
 
       await linkProvider.getLinkTransactionHistory(
           "TODAY", fromDate, toDate, subAgID!, crpCode!, agentOrgID!);
@@ -931,7 +928,6 @@ class _HomePageState extends State<HomePage>
         "TODAY",
         formattedFdate,
         formattedTdate,
-
         //"COLLECTION",
         userType,
         corpCode,

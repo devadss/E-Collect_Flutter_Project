@@ -1,6 +1,5 @@
 import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
 import 'package:collection_qr_flutter/presentation/dues/rdcl_due_home_page.dart';
-import 'package:collection_qr_flutter/presentation/test_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/colors.dart';
@@ -59,7 +58,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         return const LoanHomePage();
       case 2:
         return const ProfileHomePage();
-       // return const TestPage();
+      // return const TestPage();
       default:
         return const HomePage();
     }
@@ -93,6 +92,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       case 1:
         return const AllGroupsPage();
       case 2:
+
         /// return const ProfileHomePage();
         //return const BankDetailsScreen();
         return const PaymentLinkHomePage();
@@ -200,8 +200,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                       ],
                     ),
                     child: loggedInUserTPYE == "AGENT"
-                        ?
-                    Row(
+                        ? Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               _buildNavItem(
@@ -230,71 +229,70 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                               _buildNavItem(
                                 key: _tabKeys[3],
                                 index: 3,
-                                  icon: Icons.person_outline,
-                                  activeIcon: Icons.person,
+                                icon: Icons.person_outline,
+                                activeIcon: Icons.person,
                                 label: 'Profile',
                               ),
                             ],
                           )
-                        :
-                    loggedInUserTPYE == "AGENT_LOAN"?
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _buildNavItem(
-                          key: _tabKeys[0],
-                          index: 0,
-                          icon: Icons.home_outlined,
-                          activeIcon: Icons.home,
-                          label: 'Home',
-                        ),
+                        : loggedInUserTPYE == "AGENT_LOAN"
+                            ? Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  _buildNavItem(
+                                    key: _tabKeys[0],
+                                    index: 0,
+                                    icon: Icons.home_outlined,
+                                    activeIcon: Icons.home,
+                                    label: 'Home',
+                                  ),
+                                  _buildNavItem(
+                                      key: _tabKeys[1],
+                                      index: 1,
+                                      icon: Icons.paid_outlined,
+                                      activeIcon: Icons.paid,
+                                      label: "Loan"),
+                                  _buildNavItem(
+                                    key: _tabKeys[2],
+                                    index: 2,
+                                    icon: Icons.person_outline,
+                                    activeIcon: Icons.person,
+                                    label: 'Profile',
+                                  ),
+                                ],
+                              )
+                            : Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  // _buildGroupNavItem(0, Icons.home_rounded, Icons.home_outlined),
+                                  // _buildGroupNavItem(1, Icons.groups, Icons.groups_outlined),
+                                  // _buildGroupNavItem(2, Icons.person_rounded, Icons.person_outline),
+                                  _buildNavItem(
+                                    key: _tabKeys[0],
+                                    index: 0,
+                                    icon: Icons.home_outlined,
+                                    activeIcon: Icons.home,
+                                    label: 'Home',
+                                  ),
 
-                        _buildNavItem(
-                          key: _tabKeys[1],
-                          index: 1,
-                          icon: Icons.paid_outlined,
-                          activeIcon: Icons.paid,
-                          label: "Loan"
-                        ),
-                        _buildNavItem(
-                          key: _tabKeys[2],
-                          index: 2,
-                            icon: Icons.person_outline,
-                            activeIcon: Icons.person,
-                          label: 'Profile',
-                        ),
-                      ],
-                    ):
-                    Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              // _buildGroupNavItem(0, Icons.home_rounded, Icons.home_outlined),
-                              // _buildGroupNavItem(1, Icons.groups, Icons.groups_outlined),
-                              // _buildGroupNavItem(2, Icons.person_rounded, Icons.person_outline),
-                              _buildNavItem(
-                                key: _tabKeys[0],
-                                index: 0,
-                                icon: Icons.home_outlined,
-                                activeIcon: Icons.home,
-                                label: 'Home',
+                                  _buildNavItem(
+                                    key: _tabKeys[1],
+                                    index: 1,
+                                    icon: Icons.group_add_outlined,
+                                    activeIcon: Icons.group_add,
+                                    label: 'Groups',
+                                  ),
+                                  _buildNavItem(
+                                    key: _tabKeys[2],
+                                    index: 2,
+                                    icon: Icons.history_toggle_off,
+                                    activeIcon: Icons.history,
+                                    label: 'History',
+                                  ),
+                                ],
                               ),
-
-                              _buildNavItem(
-                                key: _tabKeys[1],
-                                index: 1,
-                                icon: Icons.group_add_outlined,
-                                activeIcon: Icons.group_add,
-                                label: 'Groups',
-                              ),
-                              _buildNavItem(
-                                key: _tabKeys[2],
-                                index: 2,
-                                icon: Icons.history_toggle_off,
-                                activeIcon: Icons.history,
-                                label: 'History',
-                              ),
-                            ],
-                          ),
                   ),
                 ),
               ],
