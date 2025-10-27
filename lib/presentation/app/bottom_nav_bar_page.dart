@@ -53,21 +53,21 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   Widget loanPages(int index) {
     switch (index) {
       case 0:
-        return const HomePage();
+        return  HomePage(userType: loggedInUserTPYE.toString(),);
       case 1:
         return const LoanHomePage();
       case 2:
         return const ProfileHomePage();
       // return const TestPage();
       default:
-        return const HomePage();
+        return  HomePage(userType: loggedInUserTPYE.toString(),);
     }
   }
 
   Widget _getSelectedPage(int index) {
     switch (index) {
       case 0:
-        return const HomePage();
+        return  HomePage(userType: loggedInUserTPYE.toString(),);
       case 1:
         return userTPYE?.contains("RDCL") == true
             ? const RdclDuesHomePage()
@@ -80,7 +80,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       case 3:
         return const ProfileHomePage();
       default:
-        return const HomePage();
+        return  HomePage(userType: loggedInUserTPYE.toString(),);
     }
   }
 
@@ -97,7 +97,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         //return const BankDetailsScreen();
         return const PaymentLinkHomePage();
       default:
-        return const HomePage();
+        return  HomePage(userType: loggedInUserTPYE.toString(),);
     }
   }
 

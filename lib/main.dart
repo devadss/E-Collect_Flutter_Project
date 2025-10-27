@@ -1,9 +1,11 @@
 import 'dart:developer';
 import 'package:collection_qr_flutter/core/constants.dart';
+import 'package:collection_qr_flutter/data/provider/cash_qr_provider.dart';
 import 'package:collection_qr_flutter/data/provider/link_transcation_history_provider.dart';
 import 'package:collection_qr_flutter/data/provider/loan_cash_coolection_provider.dart';
 import 'package:collection_qr_flutter/data/provider/transfer_transaction_provider.dart';
 import 'package:collection_qr_flutter/data/provider/whatsapp_share_provider.dart';
+import 'package:collection_qr_flutter/data/repository/cash_qr_repo.dart';
 import 'package:collection_qr_flutter/data/repository/loan_cash_collection_repository.dart';
 import 'package:collection_qr_flutter/data/repository/payment_link_repository.dart';
 import 'package:collection_qr_flutter/data/repository/transfer_history_repository.dart';
@@ -166,6 +168,7 @@ void main() async {
     ChangeNotifierProvider(create: (_) => AgentCustomerDetailsProvider(AgentCustomerDetailsRepository())),
     ChangeNotifierProvider(create: (_) => CreateOrderProvider(OrderCreateRepository())),
     ChangeNotifierProvider(create: (_) => BalanceProvider(FetchAccountBalanceRepository())),
+    ChangeNotifierProvider(create: (_) => CashQrProvider(CashQrRepository())),
     ChangeNotifierProvider(create: (_) => DueListProvider(DueListRepository())),
     ChangeNotifierProvider(create: (_) => TransactionProvider(TransactionRepository())),
     ChangeNotifierProvider(create: (_) => AgentTransactionProvider(AgentTransactionRepository())),

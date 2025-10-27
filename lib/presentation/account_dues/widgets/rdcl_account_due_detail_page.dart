@@ -956,10 +956,9 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
   String? subagentPhoneNumber;
 
   void updateTotalAmount() {
-    final provider =
-        Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
-    List.generate(
-        provider.rdclDueUnderAgentModel!.data.length, (index) => false);
+    final provider = Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
+
+    List.generate(provider.rdclDueUnderAgentModel!.data.length, (index) => false);
 
     int manualAmount = int.tryParse(amountController.text) ?? 0;
     int checkboxTotal = 0;
@@ -1595,6 +1594,9 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
         "--------------------------------DATE TIME--------------------------");
     print(_dateTime);
     print("Index value = ${widget.indexValue}");
+    print("Page no = ${widget.pageNo}");
+    print("Page size = ${widget.pageSize}");
+
 
     super.initState();
   }
@@ -1632,7 +1634,9 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
     final provider =
         Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
     await provider.getRdclDueList(
-        "", sub_AgentCodeNew, "", widget.pageNo, widget.pageSize, "");
+      //  "", sub_AgentCodeNew, "", 0, 1, widget.custName);
+        "", sub_AgentCodeNew, "", 1, 10, widget.custName);
+      //  "", sub_AgentCodeNew, "", widget.pageNo, widget.pageSize-1, widget.custName);
     if (provider.rdclDueUnderAgentModel == null &&
         provider.rdclDueUnderAgentError != null) {
       showToast(
@@ -1755,14 +1759,29 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
   }
 
   Widget _buildDueList(RdclDueUnderAgentProvider provider) {
+    final dataList = provider.rdclDueUnderAgentModel?.data ?? [];
+
+    // Validate the index before accessing
+    if (widget.indexValue == null||
+        widget.indexValue! < 0 ||
+        widget.indexValue! >= dataList.length
+    ) {
+      print("widget.indexValue = ${widget.indexValue}");
+      return const Center(child: Text("No due data available"));
+    }
+
+    final due = dataList[widget.indexValue!.toInt()];
+
+    // Ensure checkedItems is large enough
+    if (checkedItems.length <= widget.indexValue!) {
+      checkedItems = List<bool>.filled(dataList.length, false);
+    }
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       child: ListView.builder(
-        // itemCount: provider.rdclDueUnderAgentModel!.data.length,
-        itemCount: 1,
+        itemCount: 1, // you’re showing just one due detail
         itemBuilder: (_, index) {
-          final due =
-              provider.rdclDueUnderAgentModel?.data[widget.indexValue!.toInt()];
           return Card(
             elevation: 0,
             margin: const EdgeInsets.only(bottom: 12),
@@ -1775,6 +1794,142 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
               onTap: () {
                 setState(() {
                   checkedItems[widget.indexValue!] =
+                  !checkedItems[widget.indexValue!];
+                  updateTotalAmount();
+                });
+
+                if (checkedItems.contains(true)) {
+                  _showBottomBar(context);
+                } else {
+                  Navigator.of(context).pop();
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "Due Amount: ₹ ${due.dueAmount}",
+                            style: GoogleFonts.poppins(
+                              color: home1,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+
+                        Transform.scale(
+                          scale: 1.2,
+                          child: Checkbox(
+                            value: checkedItems[widget.indexValue!],
+                            onChanged: (bool? value) {
+                              setState(() {
+                                checkedItems[widget.indexValue!] = value!;
+                                updateTotalAmount();
+                              });
+
+                              if (checkedItems.contains(true)) {
+                                _showBottomBar(context);
+                              } else {
+                                Navigator.of(context).pop();
+                              }
+                            },
+                            activeColor: home1,
+                          ),
+                        ),
+                      ],
+                    ),
+                   Text(
+                        "Installment Amount: ₹ ${due.installAmt}",
+                        style: GoogleFonts.poppins(
+                          color: home2,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    Text(
+                        "Paid : ₹ ${due.paidAmount}",
+                        style: GoogleFonts.poppins(
+                          color: Colors.green,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+
+                    const SizedBox(height: 8),
+                    Text(
+                      "Loan Type: RDCL",
+                      style: GoogleFonts.poppins(
+                        color: Colors.grey[600],
+                        fontSize: 13,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "Due Date: ${due.openDate}",
+                      style: GoogleFonts.poppins(
+                        color: Colors.grey[600],
+                        fontSize: 13,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "Total Installment: ${due.totalInstallment}",
+                      style: GoogleFonts.poppins(
+                        color: Colors.grey[600],
+                        fontSize: 13,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "Paid Installments: ${due.paidInstallments}",
+                      style: GoogleFonts.poppins(
+                        color: Colors.grey[600],
+                        fontSize: 13,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "Due Installments: ${due.dueInstallments}",
+                      style: GoogleFonts.poppins(
+                        color: Colors.grey[600],
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+
+/*
+  Widget _buildDueList(RdclDueUnderAgentProvider provider) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      child: ListView.builder(
+        // itemCount: provider.rdclDueUnderAgentModel!.data.length,
+        itemCount: 1,
+        itemBuilder: (_, index) {
+          final due =
+              provider.rdclDueUnderAgentModel?.data[widget.indexValue?.toInt()];
+          return Card(
+            elevation: 0,
+            margin: const EdgeInsets.only(bottom: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(color: home1.withOpacity(0.1)),
+            ),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(12),
+              onTap: () {
+                setState(() {
+                  checkedItems[widget.indexValue.toInt()] =
                       !checkedItems[widget.indexValue!];
 
                   updateTotalAmount();
@@ -1868,6 +2023,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
       ),
     );
   }
+*/
 
   Widget _buildShimmerEffect() {
     return Padding(
