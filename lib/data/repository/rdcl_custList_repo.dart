@@ -21,7 +21,7 @@ class RdclCustListRep implements RdclCustomerListInterface {
     final uri = Uri.parse(vendorUrl); //This is the live one
    // final uri = Uri.parse("https://doorstepclientuat.digicob.in/getRdclCustomerunderAgentList"); //This is the live one
     bool checkInternetConnection =
-    await InternetConnectionChecker().hasConnection;
+    await InternetConnectionChecker.createInstance().hasConnection;
     try{
       if(checkInternetConnection == true){
         final data = await http.post(

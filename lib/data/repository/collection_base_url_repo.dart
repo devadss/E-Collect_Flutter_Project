@@ -41,7 +41,7 @@ import 'package:http/http.dart' as http;
 class CollectionBaseUrlRepo implements CollectionBaseUrlInterface{
   @override
   Future<Either<ErrorHandler, CollectionBaseUrlModel>> getCollectionUrl(String? parentMobNum) async{
-    bool checkConnection = await InternetConnectionChecker().hasConnection;
+    bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     parentMobNum!.startsWith("+91") ?parentMobNum.replaceAll("+91", "") : parentMobNum;
     final url = Uri.parse("$dopBaseUrl$parentMobNum");
     if(checkConnection){

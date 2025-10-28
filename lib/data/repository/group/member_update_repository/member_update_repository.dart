@@ -21,7 +21,7 @@ class MemberUpdateRepository implements MemberUpdateInterface {
       String branchCode,
       String entityId) async {
     final uri = Uri.parse("${baseUrl}api/UpdateMember/$memberId");
-    bool checkConnection = await InternetConnectionChecker().hasConnection;
+    bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     if(checkConnection== true){
       final request = await http.put(uri,
           body: jsonEncode({

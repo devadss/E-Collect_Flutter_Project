@@ -11,7 +11,7 @@ class UpdateDopRepository implements IUpdateDopRepository{
   @override
   Future<Either<ErrorHandler, UpdatePasswordModel>> getUpdateDop(String entityID, String userName, String password,String token) async{
     final url = Uri.parse("https://mydop.in/api/update/credentials");
-    bool checkConnection = await InternetConnectionChecker().hasConnection;
+    bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     final body ={
       "entityId": entityID,
       "username": userName,

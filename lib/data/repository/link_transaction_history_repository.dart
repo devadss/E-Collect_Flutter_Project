@@ -17,7 +17,7 @@ class LinkTransactionHistoryRepository implements ILinkTransactionHistoryReposit
     final url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$filterType&startDate=$startDate&endDate=$endDate&Source=ALL&CorpCode=$corpCode&agentOrginId=$agentOrginId");
 
   printLog("URL = ${"${baseUrl}api/GetMerchantOrders?dateFilterType=$filterType&startDate=$startDate&endDate=$endDate&Source=ALL&CorpCode=$corpCode&agentOrginId=$agentOrginId"}");
-   bool checkConnection = await InternetConnectionChecker().hasConnection;
+   bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
    if(checkConnection){
     final response = await http.get(url);
     if(response.statusCode == 200 || response.statusCode == 201){

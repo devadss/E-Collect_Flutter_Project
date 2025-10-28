@@ -15,7 +15,7 @@ class FetchAccountBalanceRepository implements IFetchAccountBalanceRepository {
       String? entityId, String? token) async {
     // final url = Uri.parse('https://adsspay.aanvinsolutions.com:8444/api/Fetchbalance');
     final url = Uri.parse('${baseUrl}api/Fetchbalance');
-    bool checkConnection = await InternetConnectionChecker().hasConnection;
+    bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
 
     if (checkConnection) {
       final body = {"entityId": entityId};

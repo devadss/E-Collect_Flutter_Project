@@ -11,7 +11,7 @@ class GetIvWithSkRepository implements IGetIvWithSkRepository{
   @override
   Future<Either<ErrorHandler, GetIvWithSkModel>> getIvWithSk() async{
    final url =Uri.parse("${baseUrl}api/Appdata");
-   bool checkConnection = await InternetConnectionChecker().hasConnection;
+   bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
    if(checkConnection){
      final response = await http.get(url);
      if(response.statusCode == 200 || response.statusCode == 201){

@@ -23,7 +23,7 @@ class RdclDueUnderAgentRepo implements RdclDueUnderAgentModelInterface{
     print("uri = $uri");
     try{
       bool checkInternetConnection =
-      await InternetConnectionChecker().hasConnection;
+      await InternetConnectionChecker.createInstance().hasConnection;
       if(checkInternetConnection == true){
         print("Network connection success");
         final request = await  http.get(uri);

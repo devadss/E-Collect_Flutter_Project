@@ -26,7 +26,7 @@ class DueUnderAgentRepository implements IDueUnderAgentRepository {
     final url = Uri.parse("$vendorUrl?agent_id=$agentId");
     print("--------------------------DUE UNDER AGENT URL------------------");
     print(url);
-    bool checkConnection = await InternetConnectionChecker().hasConnection;
+    bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     if (checkConnection) {
       final response = await http.get(url);
       print(

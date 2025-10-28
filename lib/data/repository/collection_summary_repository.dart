@@ -14,7 +14,7 @@ class CollectionSummaryRepository implements ICollectionSummaryRepository {
     final url = Uri.parse(
         "${baseUrl}api/Cashfree/GetCollectionSummary?agentId=$agentId&startDate=$startDate&endDate=$endDate");
 
-    bool checkConnection = await InternetConnectionChecker().hasConnection;
+    bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
    if(checkConnection){
      final response = await http.get(
        url,

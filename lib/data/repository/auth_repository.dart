@@ -13,7 +13,7 @@ class AuthRepository implements AuthInterface {
   Future<Either<AuthFailtResponse, AuthSuccessResponse>> getAuthResult(
       String mobnum, String mpin, String token) async {
     try {
-      bool checkConnection = await InternetConnectionChecker().hasConnection;
+      bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
       final uri = Uri.parse("${baseUrl}api/MobLogin");
 
       if (checkConnection) {

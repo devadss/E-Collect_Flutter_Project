@@ -15,7 +15,7 @@ class OrderCreateRepository implements CashFreeOrderCreateInterface{
     final uri = Uri.parse("${baseUrl}api/Cashfree/CashfeeOrder");
 
 
-    bool checkConnection = await InternetConnectionChecker().hasConnection;
+    bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     if(checkConnection == true){
       final body ={
         "order_id": orderID,

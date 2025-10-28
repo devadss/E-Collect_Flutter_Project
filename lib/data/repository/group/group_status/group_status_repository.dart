@@ -12,7 +12,7 @@ class GroupStatusRepository implements IGroupStatusRepository{
   @override
   Future<Either<ErrorHandler, GroupStatusModel>> getGroupStatus(int? groupId) async{
    final url = Uri.parse("${baseUrl}api/ToggleGroupStatus/$groupId");
-   bool checkConnection = await InternetConnectionChecker().hasConnection;
+   bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
    if(checkConnection){
      final response = await http.post(url);
      if(response.statusCode == 200 || response.statusCode == 201){

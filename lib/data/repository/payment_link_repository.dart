@@ -51,7 +51,7 @@ class PaymentLinkRepository implements IPaymentLinkRepository {
       "CardRefNum": cardRefNum
     };
 
-    bool checkConnection = await InternetConnectionChecker().hasConnection;
+    bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     if (!checkConnection) {
       return Left(FetchDataError("No Internet Connection"));
     }

@@ -7,7 +7,7 @@ class ConnectivityService {
 
   ConnectivityService() {
     // Listen to connection changes
-    InternetConnectionChecker().onStatusChange.listen((status) {
+    InternetConnectionChecker.createInstance().onStatusChange.listen((status) {
       final hasConnection = status == InternetConnectionStatus.connected;
       _controller.add(hasConnection);
 
@@ -23,9 +23,9 @@ class ConnectivityService {
   Stream<bool> get connectionStream => _controller.stream;
 
   Future<bool> get hasConnection async {
-    return await InternetConnectionChecker().hasConnection;
+    final checker = InternetConnectionChecker.createInstance();
+    return await checker.hasConnection;
   }
-
   void dispose() {
     _controller.close();
   }

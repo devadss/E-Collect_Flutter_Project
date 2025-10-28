@@ -50,7 +50,7 @@ class DeleteFcmTokenRepository extends DeleteFcmTokenInterface {
 //     String token,
 //   ) async {
 //     final url = Uri.parse("${baseUrl}api/DeleteToken");
-//     bool checkConnection = await InternetConnectionChecker().hasConnection;
+//     bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
 //     if (checkConnection) {
 //       final response = await http.post(
 //         url,

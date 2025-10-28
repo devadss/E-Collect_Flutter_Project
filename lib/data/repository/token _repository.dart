@@ -12,7 +12,7 @@ class TokenExpiryRepository implements TokenExpiryInterface {
   Future<Either<String, TokenExpireModel>> validateToken(String token) async {
     try {
       final uri = Uri.parse("${baseUrl}CheckExpiration?token=$token");
-      bool checkConnection = await InternetConnectionChecker().hasConnection;
+      bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
       if (checkConnection == true) {
         final request = await http.get(
           uri,

@@ -26,7 +26,7 @@ class DueListRepository implements IDueListRepository {
        // "https://doorstepmftctest.digicob.in/GetDuesList?accNo=$accountNumber&asOnDate=$onDate");
        // "${vendorUrl}GetDuesList?accNo=$accountNumber&asOnDate=$onDate");
         "${vendorUrl}?accNo=$accountNumber&asOnDate=$onDate");
-    bool checkConnection = await InternetConnectionChecker().hasConnection;
+    bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     if (checkConnection) {
       final response = await http.get(url);
       if (response.statusCode == 200 || response.statusCode == 201) {

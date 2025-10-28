@@ -32,7 +32,7 @@ class AgentCustomerDetailsRepository
     print(
         "--------------------------AGENT CUSTOMER DETAILS URL------------------");
     print(url);
-    bool checkConnection = await InternetConnectionChecker().hasConnection;
+    bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     final body = {"agent_id": agentId};
     if (checkConnection) {
       final response = await http.post(url, body: body);

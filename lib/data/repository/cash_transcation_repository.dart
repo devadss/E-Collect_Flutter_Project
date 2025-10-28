@@ -32,7 +32,7 @@ class CashTranscationRepository implements ICashTranscationRepository {
       }) async {
     final uri =
         Uri.parse("${baseUrl}api/Cashfree/ReceiveCash");
-    bool checkConnection = await InternetConnectionChecker().hasConnection;
+    bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     final body = {
       "agent_details": {
         "agent_name": agentName,

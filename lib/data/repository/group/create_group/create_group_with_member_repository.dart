@@ -17,7 +17,7 @@ class CreateGroupWithMemberRepository
   ) async {
     final uri = Uri.parse("${baseUrl}api/CreateGroupWithMembers");
     bool checkInternetConnection =
-        await InternetConnectionChecker().hasConnection;
+        await InternetConnectionChecker.createInstance().hasConnection;
     if (checkInternetConnection == true) {
 
         final response = await http.post(

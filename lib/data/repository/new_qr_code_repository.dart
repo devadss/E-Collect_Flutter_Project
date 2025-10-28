@@ -14,7 +14,7 @@ class NewQrCodeRepository implements INewQrCodeRepository {
       String? paymentSessionId,String? token
   ) async {
     final url = Uri.parse("${baseUrl}api/Cashfree/QRGenerator");
-    bool checkConnection = await InternetConnectionChecker().hasConnection;
+    bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     final body = {
       "payment_session_id": paymentSessionId,
       "payment_method": {

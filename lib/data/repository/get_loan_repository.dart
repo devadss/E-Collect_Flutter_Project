@@ -17,7 +17,7 @@ class GetLoanRepository implements IGetLoanRepository {
       String? agent,
       int? page,
       int? pageSize) async {
-    bool checkConnection = await InternetConnectionChecker().hasConnection;
+    bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     final url = Uri.parse("${baseUrl}api/GetLoans?customerName=$customerName&accountNo=$accountNo&status=$status&scheme=$scheme&agent=$agent&page=$page&pageSize=$pageSize");
 
     if(checkConnection){

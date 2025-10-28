@@ -17,7 +17,7 @@ class UpdatePasswordRepository implements IUpdatePasswordRepository{
       "MobPassword": mobPassword,
       "PhoneNumber": "+91$mobileNumber"
     };
-    bool checkConnection = await InternetConnectionChecker().hasConnection;
+    bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     if(checkConnection){
       final response = await http.post(
         url,

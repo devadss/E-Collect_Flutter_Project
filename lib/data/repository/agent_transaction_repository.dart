@@ -12,7 +12,7 @@ class AgentTransactionRepository implements IAgentTransactionRepository{
   @override
   Future<Either<ErrorHandler, AgentPaymentTransctionModel>>getTransactions(String token) async{
    final url = Uri.parse("${baseUrl}api/Cashfree/GetPaymentLinksQrTransactions");
-   bool checkConnection = await InternetConnectionChecker().hasConnection;
+   bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
    if(checkConnection){
      final response = await http.get(url,headers: {
        'Authorization': 'Bearer $token', // Add token here
