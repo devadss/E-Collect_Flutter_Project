@@ -12,6 +12,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../core/alerts.dart';
 import '../../core/colors.dart';
+import '../../core/utils.dart';
 import '../../data/repository/payment_link_repository.dart';
 import '../../data/repository/payment_session_id_repository.dart';
 import '../../data/storage/shared_pref_helper.dart';
@@ -110,6 +111,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
       });
     });
   }
+/*
   String _getBankNameFromCorpCode(String corpCode) {
     // Map corpcode to bank name
     final Map<String, String> corpCodeToBankName = {
@@ -189,6 +191,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
     // Return the bank name if found, otherwise return a default value
     return corpCodeToBankName[corpCode] ?? "Unknown Bank";
   }
+*/
   @override
   void dispose() {
     _fadeController.dispose();
@@ -331,7 +334,8 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
       required String? amount,
       required String? phoneNumber,
       required String? entityId,
-      required String? note}) async {
+      required String? note}) async
+  {
     final cashPaymentProvider =
         Provider.of<CashTranscationProvider>(context, listen: false);
     final cash = await cashPaymentProvider.getTranscations(
@@ -368,7 +372,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
               MaterialPageRoute(
                 builder: (context) => ReceiptPage(
                   amount: success.amount.toString(),
-                  bankName: _getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
+                  bankName: getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
                   agentName: agentName ?? "Name",
                   agentPhone: agentPhoneNumber ?? "agentPhone",
                   custName: customerName!,
@@ -465,7 +469,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
             note: "Payment For Agent $agentName",
             subAgentId: subagentId,
             agentName: agentName,
-            subAgentBranchCode: subAgentBranchCode);
+            subAgentBranchCode: subAgentBranchCode, collectionType: 'RDCL');
     paymentSession.fold((error) {
       print(
           "---------------------------------ERROR PAYMENT---------------------------");
@@ -1863,7 +1867,8 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
         );
       },
     ).then((value) => value ?? false); // default to false if dismissed
-  }}
+  }
+}
 
 //   Future<void> paymentConfirmation(
 //     BuildContext context,

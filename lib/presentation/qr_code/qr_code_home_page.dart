@@ -1,4 +1,5 @@
 import 'dart:math';
+import '../../core/utils.dart';
 import '../../presentation/qr_code/widgets/generate_qr_code_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -37,6 +38,7 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
   String? email;
   // double? balanceAmount = 0.0;
 
+/*
   void showProgressDialog(BuildContext context) {
     showDialog(
         context: context,
@@ -69,6 +71,7 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
           );
         });
   }
+*/
 
   Future<void> _fetchBalance() async {
     final provider =

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../core/colors.dart';
+import '../../../core/utils.dart';
 import '../../../data/provider/auth_provider.dart';
 import '../../../data/service/notification_service/notification_service.dart';
 import '../../../data/storage/shared_pref_helper.dart';
@@ -138,6 +139,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
 */
 
 
+/*
   void showProgressDialog(BuildContext context) {
     showDialog(
         context: context,
@@ -170,6 +172,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
           );
         });
   }
+*/
 
   Future<void> validateMpin() async {
     print("validateMpin");

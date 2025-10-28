@@ -1,5 +1,6 @@
 import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
 import 'package:collection_qr_flutter/presentation/dues/rdcl_due_home_page.dart';
+import 'package:collection_qr_flutter/presentation/test_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/colors.dart';
@@ -10,6 +11,7 @@ import '../dues/dues_home_page.dart';
 import '../groups/group_homepage/all_groups_page.dart';
 import '../groups/homepage/group_home_page.dart';
 import '../home/home_page.dart';
+import '../loan/loan_home_page.dart';
 import '../profile/profile_home_page.dart';
 import '../trancstion/payment_link_home_page.dart';
 
@@ -23,6 +25,7 @@ class BottomNavScreen extends StatefulWidget {
 class _BottomNavScreenState extends State<BottomNavScreen> {
   int _selectedIndex = 0;
   String? userTPYE;
+
   //int _currentIndex = 0;
   String? loggedInUserTPYE;
   double _indicatorPosition = 0.0;
@@ -48,6 +51,20 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     });
   }
 
+  Widget loanPages(int index) {
+    switch (index) {
+      case 0:
+        return const HomePage();
+      case 1:
+        return const LoanHomePage();
+      case 2:
+        return const ProfileHomePage();
+       // return const TestPage();
+      default:
+        return const HomePage();
+    }
+  }
+
   Widget _getSelectedPage(int index) {
     switch (index) {
       case 0:
@@ -56,6 +73,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         return userTPYE?.contains("RDCL") == true
             ? const RdclDuesHomePage()
             : const DuesHomePage();
+
       case 2:
         return userTPYE?.contains("RDCL") == true
             ? const RdclAccountListHomePage()
@@ -70,14 +88,14 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   Widget _getNonAgentSelectedPage(int index) {
     switch (index) {
       case 0:
-       // return const FeeHomePage();
+        // return const FeeHomePage();
         return const GroupHomePage();
       case 1:
         return const AllGroupsPage();
       case 2:
-       /// return const ProfileHomePage();
-    //return const BankDetailsScreen();
-    return const PaymentLinkHomePage();
+        /// return const ProfileHomePage();
+        //return const BankDetailsScreen();
+        return const PaymentLinkHomePage();
       default:
         return const HomePage();
     }
@@ -119,10 +137,15 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       child: Scaffold(
         backgroundColor: white,
         body:
-        loggedInUserTPYE == "AGENT" && loggedInUserTPYE?.isNotEmpty == true?
-        _getSelectedPage(_selectedIndex):
-        loggedInUserTPYE?.isNotEmpty == true?
-        _getNonAgentSelectedPage(_selectedIndex):const SizedBox.shrink(),
+            loggedInUserTPYE == "AGENT" && loggedInUserTPYE?.isNotEmpty == true
+                ? _getSelectedPage(_selectedIndex)
+                : loggedInUserTPYE == "AGENT_LOAN" &&
+                        loggedInUserTPYE?.isNotEmpty == true
+                    ? loanPages(_selectedIndex)
+                    : loggedInUserTPYE == "NOT_AN_AGENT" &&
+                            loggedInUserTPYE?.isNotEmpty == true
+                        ? _getNonAgentSelectedPage(_selectedIndex)
+                        : const SizedBox.shrink(),
         bottomNavigationBar: SafeArea(
           child: Container(
             height: 80,
@@ -176,9 +199,45 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                         ),
                       ],
                     ),
-                    child:
-                    loggedInUserTPYE == "AGENT"?
-
+                    child: loggedInUserTPYE == "AGENT"
+                        ?
+                    Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              _buildNavItem(
+                                key: _tabKeys[0],
+                                index: 0,
+                                icon: Icons.home_outlined,
+                                activeIcon: Icons.home,
+                                label: 'Home',
+                              ),
+                              _buildNavItem(
+                                key: _tabKeys[1],
+                                index: 1,
+                                icon: Icons.receipt_long_outlined,
+                                activeIcon: Icons.receipt_long,
+                                label: 'Dues',
+                              ),
+                              _buildNavItem(
+                                key: _tabKeys[2],
+                                index: 2,
+                                icon: Icons.list_alt_outlined,
+                                activeIcon: Icons.list_alt,
+                                label: userTPYE?.contains("RDCL") == true
+                                    ? "Cust List"
+                                    : 'Accounts',
+                              ),
+                              _buildNavItem(
+                                key: _tabKeys[3],
+                                index: 3,
+                                  icon: Icons.person_outline,
+                                  activeIcon: Icons.person,
+                                label: 'Profile',
+                              ),
+                            ],
+                          )
+                        :
+                    loggedInUserTPYE == "AGENT_LOAN"?
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -189,62 +248,53 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                           activeIcon: Icons.home,
                           label: 'Home',
                         ),
+
                         _buildNavItem(
                           key: _tabKeys[1],
                           index: 1,
-                          icon: Icons.receipt_long_outlined,
-                          activeIcon: Icons.receipt_long,
-                          label: 'Dues',
+                          icon: Icons.paid_outlined,
+                          activeIcon: Icons.paid,
+                          label: "Loan"
                         ),
                         _buildNavItem(
                           key: _tabKeys[2],
                           index: 2,
-                          icon: Icons.list_alt_outlined,
-                          activeIcon: Icons.list_alt,
-                          label:
-                          userTPYE?.contains("RDCL") == true?
-                          "Cust List":'Accounts',
-                        ),
-                        _buildNavItem(
-                          key: _tabKeys[3],
-                          index: 3,
-                          icon: Icons.person_outline,
-                          activeIcon: Icons.person,
+                            icon: Icons.person_outline,
+                            activeIcon: Icons.person,
                           label: 'Profile',
                         ),
                       ],
                     ):
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              // _buildGroupNavItem(0, Icons.home_rounded, Icons.home_outlined),
+                              // _buildGroupNavItem(1, Icons.groups, Icons.groups_outlined),
+                              // _buildGroupNavItem(2, Icons.person_rounded, Icons.person_outline),
+                              _buildNavItem(
+                                key: _tabKeys[0],
+                                index: 0,
+                                icon: Icons.home_outlined,
+                                activeIcon: Icons.home,
+                                label: 'Home',
+                              ),
 
-                        // _buildGroupNavItem(0, Icons.home_rounded, Icons.home_outlined),
-                        // _buildGroupNavItem(1, Icons.groups, Icons.groups_outlined),
-                        // _buildGroupNavItem(2, Icons.person_rounded, Icons.person_outline),
-                        _buildNavItem(
-                          key: _tabKeys[0],
-                          index: 0,
-                          icon: Icons.home_outlined,
-                          activeIcon: Icons.home,
-                          label: 'Home',
-                        ),
-
-                        _buildNavItem(
-                          key: _tabKeys[1],
-                          index: 1,
-                          icon: Icons.group_add_outlined,
-                          activeIcon: Icons.group_add,
-                          label: 'Groups',
-                        ),
-                        _buildNavItem(
-                          key: _tabKeys[2],
-                          index: 2,
-                          icon: Icons.history_toggle_off,
-                          activeIcon: Icons.history,
-                          label: 'History',
-                        ),
-                      ],
-                    ),
+                              _buildNavItem(
+                                key: _tabKeys[1],
+                                index: 1,
+                                icon: Icons.group_add_outlined,
+                                activeIcon: Icons.group_add,
+                                label: 'Groups',
+                              ),
+                              _buildNavItem(
+                                key: _tabKeys[2],
+                                index: 2,
+                                icon: Icons.history_toggle_off,
+                                activeIcon: Icons.history,
+                                label: 'History',
+                              ),
+                            ],
+                          ),
                   ),
                 ),
               ],
@@ -254,8 +304,6 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       ),
     );
   }
-
-
 
   Widget _buildNavItem({
     required GlobalKey key,

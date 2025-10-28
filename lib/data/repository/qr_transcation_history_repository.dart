@@ -13,8 +13,8 @@ class QRTransactionHistoryRepository implements IQRTransactionHistoryRepository{
   @override
   Future<Either<ErrorHandler, QrTranscationHistoryModel>> getQrTranscationHistory(String? dateFilterType,String? startDate,String? endDate,String? source,
       String? corpCode, String? agentOrginId) async{
-   final url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&CorpCode=$corpCode&agentOrginId=$agentOrginId");
-   bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
+   final url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&CorpCode=$corpCode&agentOrginId=$agentOrginId&PaymentMode=QR");
+   bool checkConnection = await InternetConnectionChecker().hasConnection;
    if(checkConnection){
      print(url);
      final response = await http.get(url);

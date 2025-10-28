@@ -5,7 +5,6 @@ import 'dart:math';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -15,6 +14,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../../../../core/colors.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 import '../../../core/general.dart';
+import '../../../core/utils.dart';
 import '../../../data/repository/new_qr_code_repository.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../../domain/model/cash_deposit_model.dart';
@@ -74,6 +74,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
   String? bankName;
   String? subagentPhoneNumber;
 
+/*
   String _getBankNameFromCorpCode(String corpCode) {
     // Map corpcode to bank name
     final Map<String, String> corpCodeToBankName = {
@@ -153,6 +154,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
     // Return the bank name if found, otherwise return a default value
     return corpCodeToBankName[corpCode] ?? "Unknown Bank";
   }
+*/
 
   void cashDepositDialog(CashDepositModel? cashDepositModel) {
     print("INSIDE DEPOSIT CASH DIALOG");
@@ -686,7 +688,6 @@ class _NewQrCodePageState extends State<NewQrCodePage>
     final number = await SharedPref().getSubAgentMobNum();
     final subagentNum = await SharedPref().getSubAgentMobNum();
 
-
     if (mounted) {
       setState(() {
         agentName = name;
@@ -697,7 +698,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
         agentOriginId = originId;
         corpCode = code;
         agentPhoneNumber = number;
-        bankName = _getBankNameFromCorpCode(code ?? ""); // Set bank name here
+        bankName = getBankNameFromCorpCode(code ?? ""); // Set bank name here
       });
     }
 
@@ -875,52 +876,54 @@ class _NewQrCodePageState extends State<NewQrCodePage>
         ),
 
         // QR Code Container
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ScaleTransition(
-              scale: _scaleAnimation,
-              child: Container(
-                padding: const EdgeInsets.all(17),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 30,
-                      spreadRadius: 2,
-                    ),
-                  ],
-                ),
-                child: qrCodeImageBytes == null
-                    ? const SizedBox(
-                        width: 200,
-                        height: 200,
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            color: deepTeal,
-                            strokeWidth: 3,
-                          ),
-                        ),
-                      )
-                    : Image.memory(
-                        qrCodeImageBytes!,
-                        width: 240,
-                        height: 240,
+        SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ScaleTransition(
+                scale: _scaleAnimation,
+                child: Container(
+                  padding: const EdgeInsets.all(17),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 30,
+                        spreadRadius: 2,
                       ),
+                    ],
+                  ),
+                  child: qrCodeImageBytes == null
+                      ? const SizedBox(
+                          width: 200,
+                          height: 200,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: deepTeal,
+                              strokeWidth: 3,
+                            ),
+                          ),
+                        )
+                      : Image.memory(
+                          qrCodeImageBytes!,
+                          width: 240,
+                          height: 240,
+                        ),
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              "Scan the QR code to make payment",
-              style: GoogleFonts.poppins(
-                color: Colors.grey[700],
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
+              const SizedBox(height: 24),
+              Text(
+                "Scan the QR code to make payment",
+                style: GoogleFonts.poppins(
+                  color: Colors.grey[700],
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
@@ -974,6 +977,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
               Text(
                 label,
                 style: GoogleFonts.poppins(
+
                   color: color,
                   fontWeight: FontWeight.w600,
                   fontSize: 15,

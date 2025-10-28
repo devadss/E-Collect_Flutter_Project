@@ -1,5 +1,4 @@
 import 'package:collection_qr_flutter/data/provider/group/create_member/create_member_provider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
@@ -590,7 +589,7 @@ class _MemberPageState extends State<MemberPage> {
                             const Expanded(
                               child: Text(
                                 "Name",
-                                style: const TextStyle(
+                                style:  TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -608,11 +607,11 @@ class _MemberPageState extends State<MemberPage> {
                                   NumberInputFormatter(),
                                 ],
                                 decoration:  InputDecoration(hintText: filteredMembers[index]["name"],
-                                  prefixIcon: Icon(Icons.person, size: 18),
+                                  prefixIcon: const Icon(Icons.person, size: 18),
                                   contentPadding:
                                  const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                                   isDense: true,
-                                  border: OutlineInputBorder(),
+                                  border:const OutlineInputBorder(),
                                 ),
                               ),
                             ),
@@ -624,7 +623,7 @@ class _MemberPageState extends State<MemberPage> {
                             const Expanded(
                               child: Text(
                                 "Number",
-                                style: const TextStyle(
+                                style:  TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -642,17 +641,17 @@ class _MemberPageState extends State<MemberPage> {
                                   NumberInputFormatter(),
                                 ],
                                 decoration:  InputDecoration(hintText: filteredMembers[index]["phone"],
-                                  prefixIcon: Icon(Icons.phone_iphone, size: 18),
+                                  prefixIcon:const Icon(Icons.phone_iphone, size: 18),
                                   contentPadding:
-                                  EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                 const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                                   isDense: true,
-                                  border: OutlineInputBorder(),
+                                  border: const OutlineInputBorder(),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(height: 5,),
+                        const SizedBox(height: 5,),
                         Row(
                           children: [
                             const Expanded(
@@ -676,11 +675,11 @@ class _MemberPageState extends State<MemberPage> {
                                   NumberInputFormatter(),
                                 ],
                                 decoration:  InputDecoration(hintText: widget.amount.toString(),
-                                  prefixIcon: Icon(Icons.currency_rupee, size: 18),
+                                  prefixIcon:const Icon(Icons.currency_rupee, size: 18),
                                   contentPadding:
-                                  EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                 const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                                   isDense: true,
-                                  border: OutlineInputBorder(),
+                                  border:const OutlineInputBorder(),
                                 ),
                               ),
                             ),

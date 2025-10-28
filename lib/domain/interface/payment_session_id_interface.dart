@@ -21,6 +21,8 @@ abstract class ICreatePaymentSessionIdRepository {
         required String? note,
         required String? corpCode,
         required String? cardRefNum,
-      required String? subAgentBranchCode
+      required String? subAgentBranchCode,
+            required String? collectionType,
+
       });
 }

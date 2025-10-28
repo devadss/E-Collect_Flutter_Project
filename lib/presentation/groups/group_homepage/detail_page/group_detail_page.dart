@@ -258,7 +258,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> with SingleTickerProv
           backgroundColor: white,
           elevation: 0,
           iconTheme: const IconThemeData(color: home2),
-          title: Text(
+          title:const Text(
             "Group Details",
             style: TextStyle(
               color: home2,
@@ -268,11 +268,11 @@ class _GroupDetailPageState extends State<GroupDetailPage> with SingleTickerProv
           ),
           actions: [
             IconButton(
-              icon: Icon(Icons.edit, color: home2),
+              icon: const Icon(Icons.edit, color: home2),
               onPressed: _editGroup,
             ),
             IconButton(
-              icon: Icon(Icons.delete, color: Colors.red),
+              icon:const Icon(Icons.delete, color: Colors.red),
               onPressed: _deleteGroup,
             ),
           ],
@@ -449,7 +449,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> with SingleTickerProv
                               color: home1.withOpacity(0.1),
                               shape: BoxShape.circle,
                             ),
-                            child: Icon(Icons.group, size: 30, color: home1),
+                            child:const Icon(Icons.group, size: 30, color: home1),
                           ),
                           const SizedBox(width: 16),
                           Expanded(
@@ -458,7 +458,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> with SingleTickerProv
                               children: [
                                 Text(
                                   widget.groupName,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.w700,
                                     color: home2,
@@ -508,9 +508,9 @@ class _GroupDetailPageState extends State<GroupDetailPage> with SingleTickerProv
               const SizedBox(height: 16),
 
               // Financial Summary
-              Text(
+              const Text(
                 "Financial Summary",
-                style: TextStyle(
+                style:  TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
                   color: home2,
@@ -571,7 +571,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> with SingleTickerProv
                       const SizedBox(height: 4),
                       Text(
                         "₹$totalAmount",
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.w800,
                           color: home2,
@@ -581,7 +581,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> with SingleTickerProv
                       LinearProgressIndicator(
                         value: collectedAmount / totalAmount,
                         backgroundColor: Colors.grey.shade200,
-                        valueColor: AlwaysStoppedAnimation<Color>(home1),
+                        valueColor: const AlwaysStoppedAnimation<Color>(home1),
                         borderRadius: BorderRadius.circular(10),
                         minHeight: 8,
                       ),
@@ -654,7 +654,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> with SingleTickerProv
             const SizedBox(height: 4),
             Text(
               value,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
                 color: home2,
@@ -674,13 +674,13 @@ class _GroupDetailPageState extends State<GroupDetailPage> with SingleTickerProv
         return Dialog(
           backgroundColor: white,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          child: Padding(
-            padding: const EdgeInsets.all(24),
+          child: const Padding(
+            padding:  EdgeInsets.all(24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 CircularProgressIndicator(color: home1),
-                const SizedBox(height: 16),
+                 SizedBox(height: 16),
                 Text(
                   "Please wait...",
                   style: TextStyle(
@@ -729,11 +729,11 @@ class _GroupDetailPageState extends State<GroupDetailPage> with SingleTickerProv
                     ],
                   ),
                   child: TextField(
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: "Search members...",
                       prefixIcon: Icon(Icons.search, color: home2),
                       border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                     ),
                     onChanged: (value) {
                       setState(() {
@@ -908,7 +908,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> with SingleTickerProv
                         child: Center(
                           child: Text(
                             member.memberName[0],
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: home1,
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
@@ -918,7 +918,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> with SingleTickerProv
                       ),
                       title: Text(
                         member.memberName,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           color: home2,
                         ),
@@ -962,7 +962,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> with SingleTickerProv
                         children: [
                           Text(
                             "₹${member.amount}",
-                            style: TextStyle(
+                            style:const TextStyle(
                               fontWeight: FontWeight.bold,
                               color: home1,
                             ),
@@ -1317,7 +1317,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> with SingleTickerProv
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         "Monthly Collection",
                         style: TextStyle(
                           fontSize: 18,
@@ -1340,7 +1340,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> with SingleTickerProv
                                   width: 24,
                                   height: height,
                                   decoration: BoxDecoration(
-                                    gradient: LinearGradient(
+                                    gradient: const LinearGradient(
                                       colors: [home1, home2],
                                       begin: Alignment.topCenter,
                                       end: Alignment.bottomCenter,
@@ -1368,7 +1368,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> with SingleTickerProv
               const SizedBox(height: 16),
 
               // Performance Metrics
-              Text(
+              const Text(
                 "Performance Metrics",
                 style: TextStyle(
                   fontSize: 18,
@@ -1428,7 +1428,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> with SingleTickerProv
           children: [
             Icon(Icons.pause_circle_outline, size: 64, color: home2.withOpacity(0.3)),
             const SizedBox(height: 16),
-            Text(
+            const Text(
               "Group is Inactive",
               style: TextStyle(
                 fontSize: 20,
@@ -1498,7 +1498,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> with SingleTickerProv
         const SizedBox(height: 4),
         Text(
           value,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
             color: home2,
@@ -1538,7 +1538,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> with SingleTickerProv
             const SizedBox(height: 12),
             Text(
               value,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
                 color: home2,

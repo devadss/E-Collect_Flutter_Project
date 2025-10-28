@@ -6,12 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../core/colors.dart';
+import '../../core/utils.dart';
 import '../../data/provider/cust_register_provider.dart';
 import '../../data/provider/parent_agent_detail_provider/parent_agent_detil_provider.dart';
 import '../../data/provider/parent_agent_detail_provider/parent_credential_provider/parent_credential_provider.dart';
 import '../../data/storage/shared_pref_helper.dart';
-import '../groups/bnk_account_details/bank_accout_detail_page.dart';
 import '../groups/min_kyc/request_otp/min_kyc_page.dart';
 import 'login/otp_verification/otp_verification.dart';
 
@@ -180,7 +179,7 @@ class _MobileNumberVerificationPageState
                       true) {
                 print("Phase 1");
                 if (customer.response!.data!['Customer_type'] ==
-                    "COLLECTION_AGENT") {
+                    "COLLECTION_AGENT"&& customer.response!.images!.integrationStaus=="Y") {
                   print("Phase 2");
                   SharedPref.shared.setEmail(
                     customer.response!.data!['emailId'].toString(),
@@ -210,7 +209,43 @@ class _MobileNumberVerificationPageState
                       ),
                     ),
                   );
-                } else {
+                }
+
+                else if(customer.response!.data!['Customer_type'] ==
+                    "COLLECTION_AGENT"&& customer.response!.images!.integrationStaus=="N") {
+                  print("Phase 2");
+                  SharedPref.shared.setCustId(
+                    customer.response!.data!['CustId'].toString(),
+                  );
+                  SharedPref.shared.setEmail(
+                    customer.response!.data!['emailId'].toString(),
+                  );
+                  SharedPref.shared.setCorpCode(
+                    customer.response!.data!['CorpCode'].toString(),
+                  );
+                  SharedPref.shared.setBranchCode(
+                    customer.response!.data!['BranchCode'].toString(),
+                  );
+                  SharedPref.shared.setMpinValue(customer.mpin.toString());
+                  print(
+                      "customer.mpin.toString() = ${customer.mpin.toString()}");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OtpRequestVerificationPage(
+                        subAgentmobNum: _mobileNumberController.text,
+                        parentAgentMobNum: parentAgentCredentialProvider
+                            .parentAgentCredentialModel!.b.phoneNumber,
+                        userName: parentAgentCredentialProvider
+                            .parentAgentCredentialModel!.b.userName,
+                        password: parentAgentCredentialProvider
+                            .parentAgentCredentialModel!.b.mobPassword,
+                        tokenStatus: customer.status.toString(),
+                        loggedInUserType: 'AGENT_LOAN',
+                      ),
+                    ),
+                  );
+                }else{
                   print("Not a valid collection agent");
                   showInSnackBar("Not a valid collection agent");
                 }
@@ -335,6 +370,7 @@ class _MobileNumberVerificationPageState
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
+/*
   void showProgressDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -362,6 +398,7 @@ class _MobileNumberVerificationPageState
       },
     );
   }
+*/
 
   @override
   Widget build(BuildContext context) {

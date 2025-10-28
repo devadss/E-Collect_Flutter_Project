@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../../../../core/colors.dart';
+import '../../../core/utils.dart';
 import '../../../data/provider/agent_customer_details_provider.dart';
 import '../../../data/provider/collection_summary_provider.dart';
 import '../../../data/provider/due_list_provider.dart';
@@ -57,6 +58,7 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
     }
   }
 
+/*
   void showProgressDialog(BuildContext context) {
     showDialog(
         context: context,
@@ -91,6 +93,7 @@ class _CollectionHomePageState extends State<CollectionHomePage> {
           );
         });
   }
+*/
 
   @override
   void dispose() {

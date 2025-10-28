@@ -12,21 +12,24 @@ import '../service/error_handler.dart';
 
 class LinkTransactionHistoryRepository implements ILinkTransactionHistoryRepository{
   @override
-  Future<Either<ErrorHandler, AllTranscationHistoryModel>> getLinkTransactionHistory(String filterType, String startDate, String endDate, String subAgentId,String corpCode,String agentOrginId) async{
+  Future<Either<ErrorHandler, AllTransactionHistoryResponse>> getLinkTransactionHistory(String filterType, String startDate, String endDate, String subAgentId,String corpCode,String agentOrginId) async{
   // final url = Uri.parse("${baseUrl}api/Cashfree/GetPaymentLinksQrTransactions?filterType=$filterType&startDate=$startDate&endDate=$endDate&subAgentId=$subAgentId");
-    final url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$filterType&startDate=$startDate&endDate=$endDate&Source=ALL&CorpCode=$corpCode&agentOrginId=$agentOrginId");
+     // final url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$filterType&startDate=$startDate&endDate=$endDate&Source=ALL&CorpCode=$corpCode&agentOrginId=$agentOrginId&PaymentMode=PAYMENTLINK");
+      final url = Uri.parse("${baseUrl}api/Cashfree/GetPaymentLinksQrTransactions?filterType=$filterType&startDate=$startDate&endDate=$endDate&subAgentId=$subAgentId&paymentMode=PAYMENTLINK&corpCode=$corpCode");
 
-  printLog("URL = ${"${baseUrl}api/GetMerchantOrders?dateFilterType=$filterType&startDate=$startDate&endDate=$endDate&Source=ALL&CorpCode=$corpCode&agentOrginId=$agentOrginId"}");
-   bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
+  printLog("https://adsspayweb.digicob.in/api/Cashfree/GetPaymentLinksQrTransactions?filterType=$filterType&startDate=$startDate&endDate=$endDate&subAgentId=$subAgentId&paymentMode=PAYMENTLINK&corpCode=$corpCode");
+
+   bool checkConnection = await InternetConnectionChecker().hasConnection;
    if(checkConnection){
     final response = await http.get(url);
+    print(response.body);
     if(response.statusCode == 200 || response.statusCode == 201){
       printLog("--------------------------------RESPONSE STATUS CODE LINK TRANSCATIONS---------------------------------");
       printLog(response.statusCode);
       printLog("--------------------------------RESPONSE BODY LINK TRANSCATIONS---------------------------------");
       printLog(response.body);
       try{
-        return Right(AllTranscationHistoryModel.fromJson(jsonDecode(response.body)));
+        return Right(AllTransactionHistoryResponse.fromJson(jsonDecode(response.body)));
       }catch(e){
         return Left(DataParsingException(e));
       }

@@ -889,6 +889,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/colors.dart';
+import '../../../core/utils.dart';
 import '../../../data/provider/cash_transcation_provider.dart';
 import '../../../data/provider/transaction_provider.dart';
 import '../../../data/repository/payment_link_repository.dart';
@@ -1076,12 +1077,14 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
                               note: "Payment For Agent $agentName",
                               subAgentId: subagentId,
                               agentName: agentName,
-                              subAgentBranchCode: subAgentCodeNew);
+                              subAgentBranchCode: subAgentCodeNew, collectionType: 'RDCL');
                   paymentSession.fold((error) {
                     print(
                         "---------------------------------ERROR PAYMENT---------------------------");
                     print(error);
-                  }, (sessionId) async {
+                  },
+                          (sessionId)
+                  async {
                     paymentSessionId = sessionId.paymentSessionId ?? "";
                     if (paymentSessionId!.isNotEmpty &&
                         paymentSessionId != null &&
@@ -1361,6 +1364,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
     );
   }
 
+/*
   String _getBankNameFromCorpCode(String corpCode) {
     // Map corpcode to bank name
     final Map<String, String> corpCodeToBankName = {
@@ -1440,6 +1444,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
     // Return the bank name if found, otherwise return a default value
     return corpCodeToBankName[corpCode] ?? "Unknown Bank";
   }
+*/
 
   void showProgressDialog(BuildContext context) {
     showDialog(
@@ -1521,7 +1526,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
               MaterialPageRoute(
                 builder: (context) => ReceiptPage(
                   amount: success.amount.toString(),
-                  bankName: _getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
+                  bankName: getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
                   agentName: agentName ?? "Name",
                   agentPhone: phoneNumber ?? "agentPhone",
                   custName: customerName!,

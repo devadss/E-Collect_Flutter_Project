@@ -15,8 +15,8 @@ class CashTransactionHistoryRepository
       getCashTranscationHistory(String? dateFilterType, String? startDate,
           String? endDate, String? source, String? subAgentId, String? corpCode,  String? agentOriginId) async {
     final url = Uri.parse(
-        "${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&subAgentId=$subAgentId&CorpCode=$corpCode&agentOrginId=$agentOriginId");
-    bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
+        "${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&subAgentId=$subAgentId&CorpCode=$corpCode&agentOrginId=$agentOriginId&PaymentMode=CASH");
+    bool checkConnection = await InternetConnectionChecker().hasConnection;
     if (checkConnection) {
       print(url);
       final response = await http.get(url);
