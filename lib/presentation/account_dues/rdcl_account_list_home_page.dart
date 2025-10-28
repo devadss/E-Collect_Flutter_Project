@@ -39,7 +39,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
   final ScrollController _scrollController = ScrollController();
   double totalListCount = 0;
   double? totalListCountNew;
-  int itemPerPage = 50;
+  int itemPerPage = 10;
   Timer? _debounce; // Declare this at the class level
 
   @override
@@ -218,10 +218,8 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
       final provider =
           Provider.of<RdclCustListProvider>(context, listen: false);
 
-      await provider.getRdclCustomerunderAgent(
-          "", agentBranchCode, _currentPage, itemPerPage, "");
-      totalListCount =
-          provider.rdclCustomerListModel!.customerList.totalCount.toDouble();
+      await provider.getRdclCustomerunderAgent("", agentBranchCode, _currentPage, itemPerPage, "");
+      totalListCount = provider.rdclCustomerListModel!.customerList.totalCount.toDouble();
       if (provider.showDialog == false) {
         if (mounted) {
           Navigator.pop(context);
@@ -232,13 +230,14 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
           var result = totalListCount / itemPerPage.toDouble();
           result % 2 == 0
               ? totalListCountNew = result
-              : totalListCountNew = result + 1;
+              : totalListCountNew = result + 1.0;
         });
       }
 
       print("totalListCount = $totalListCount");
 
-      print("totalListCount = $totalListCountNew");
+      print("totalListCount = ${totalListCountNew!.toInt()}");
+
     }
   }
 
@@ -552,6 +551,7 @@ if(provider.rdclCustomerListModel != null || provider.rdclCustomerListError != n
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: GestureDetector(
                           onTap: () {
+                            print("Index vale = $index");
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -563,7 +563,8 @@ if(provider.rdclCustomerListModel != null || provider.rdclCustomerListError != n
                                   custId: agentIdValue ?? "CUSTID",
                                   custEmail: "",
                                   corpCode: corpCode.toString(),
-                                  indexValue: index,
+                                //  indexValue: index,
+                                  indexValue: 0,
                                   branchCode: branchCode.toString(),
                                   custIdNew: customer.custId,
                                   pageNo: _currentPage,

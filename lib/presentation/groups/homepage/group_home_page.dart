@@ -9,6 +9,7 @@ import '../../../data/provider/group/member_list/member_list_provider.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../../domain/model/group/group_listing/group_list_model.dart';
 import '../../../domain/model/group/members_listing/members_listing_model.dart';
+import '../../splash_screen/splash_screen.dart';
 import '../group_homepage/detail_page/group_detail_page.dart';
 
 class GroupHomePage extends StatefulWidget {
@@ -21,8 +22,15 @@ class GroupHomePage extends StatefulWidget {
 }
 
 class _GroupHomePageState extends State<GroupHomePage> {
-  String? userName;
+  String? _agentName;
+  String? _agentId;
+  String? _subAgentId;
+  String? _agentOriginId;
+  String? _agentPhone;
+  String? _agentEmail;
   String? _corpCode;
+  final TextEditingController _mobNumController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
   List<Group> _filteredGroups = [];
   List<Group> _groups = [];
@@ -125,11 +133,21 @@ class _GroupHomePageState extends State<GroupHomePage> {
 
   void loadSharedData() async {
     String corpCode = await SharedPref.shared.getCorpCode();
-    final name = await SharedPref().getAgentName();
+    final agentName = await SharedPref().getAgentName();
     final token = await SharedPref().getTokenValue();
+    final agentId = await SharedPref.shared.getAgentId();
+    final subAgentId = await SharedPref.shared.getSubAgentId();
+    final agentPhone = await SharedPref.shared.getSubAgentMobNum();
+    final agentOriginId = await SharedPref.shared.getAgentId();
+    final agentEmail = await SharedPref.shared.getEmail();
     setState(() {
-      userName = name;
+      _agentName = agentName;
+      _agentId = agentId;
+      _subAgentId = subAgentId;
+      _agentPhone = agentPhone;
       _corpCode = corpCode;
+      _agentEmail = agentEmail;
+      _agentOriginId = agentOriginId;
     });
     print("loadSharedData");
     print("token = ${token}");
@@ -352,7 +370,47 @@ class _GroupHomePageState extends State<GroupHomePage> {
     );
   }
 
-  void _performLogout(BuildContext context) {}
+  Future<void> _performLogout(BuildContext context) async {
+    // String entityId = await SharedPref.shared.getSubAgentId();
+    // String token = await SharedPref.shared.getTokenValue();
+    // final fcmProvider = Provider.of<DeleteFcmProvider>(context, listen: false);
+    // await fcmProvider.deleteFirebaseToken(entityId, token);
+
+    await SharedPref.shared.setLogin(false);
+    await SharedPref.shared.setCustId("");
+    await SharedPref.shared.setAgentName("");
+    await SharedPref.shared.setParentAgentName("");
+    await SharedPref.shared.setParentAgentPassword("");
+    await SharedPref.shared.setParentAgentMobNum("");
+    await SharedPref.shared.setSubAgentId("");
+    await SharedPref.shared.setSubAgentCode("");
+    await SharedPref.shared.setUserType("");
+    await SharedPref.shared.setDueListUrl("");
+    await SharedPref.shared.setCustomerUnderAgentUrl("");
+    await SharedPref.shared.setSubAgentName("");
+    await SharedPref.shared.setSubAgentMobNum("");
+    await SharedPref.shared.setSubAgentCodeNew("");
+    await SharedPref.shared.setFcmToken("");
+    await SharedPref.shared.setAgentId("");
+    await SharedPref.shared.setPassword("");
+    await SharedPref.shared.setMpinValue("");
+    await SharedPref.shared.setMpinStatus("");
+    await SharedPref.shared.setTokenValue("");
+    await SharedPref.shared.setMobNum("");
+    await SharedPref.shared.setBranchCode("");
+    await SharedPref.shared.setAgentOriginId("");
+    await SharedPref.shared.setCorpCode("");
+    await SharedPref.shared.setCardRefNum("");
+    await SharedPref.shared.setEmail("");
+    await SharedPref.shared.setLoggedInUserType("");
+
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const SplashScreen()),
+          (route) => false,
+    );
+  }
 
   Future<void> _showSettingsDialog(BuildContext context) async {
     return showModalBottomSheet(
@@ -544,6 +602,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
   Widget _buildGlassField({
     required IconData icon,
     required String label,
+    required TextEditingController payemtLinkController,
     required TextInputType keyboardType,
     int? maxLength,
   }) {
@@ -561,6 +620,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
         ),
       ),
       child: TextField(
+        controller: payemtLinkController ,
         decoration: InputDecoration(
           counterText: maxLength != null ? "" : null,
           prefixIcon: Container(
@@ -593,6 +653,8 @@ class _GroupHomePageState extends State<GroupHomePage> {
   }
 
   Widget _buildExpandedContent() {
+    final paymentLinkProvider = Provider.of<PaymentLinkProvider>(context , listen:false);
+
     return Container(
       margin: const EdgeInsets.only(top: 20),
       decoration: BoxDecoration(
@@ -662,10 +724,11 @@ class _GroupHomePageState extends State<GroupHomePage> {
 
             // Mobile Number Field - Glassmorphism Style
             _buildGlassField(
+
               icon: Icons.phone_iphone,
               label: 'Mobile Number',
               keyboardType: TextInputType.number,
-              maxLength: 10,
+              maxLength: 10, payemtLinkController: _mobNumController,
             ),
 
             const SizedBox(height: 20),
@@ -674,7 +737,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
             _buildGlassField(
               icon: Icons.currency_rupee,
               label: 'Amount',
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.number, payemtLinkController: _amountController,
             ),
 
             const SizedBox(height: 20),
@@ -748,14 +811,15 @@ class _GroupHomePageState extends State<GroupHomePage> {
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () async{
-                    // await paymentLinkProvider.getPaymentLink(agentName: agentName,
-                    //     agentId: agentId, agentOriginId: agentOriginId,
-                    //     agentPhone: agentPhone, agentEmail: agentEmail,
-                    //     customerName: customerName, customerPhone: customerPhone,
-                    //     customerAccountNumber: customerAccountNumber, customerEmail: customerEmail,
-                    //     customerId: customerId, linkAmount: linkAmount, note: note, corpCode: corpCode,
-                    //     cardRefNum: cardRefNum, token: token, subAgentId: subAgentId);
-                    final paymentLinkProvider = Provider.of<PaymentLinkProvider>(context , listen:false);
+
+                    await paymentLinkProvider.getPaymentLink(agentName: _agentName ?? "",
+                        agentId: _agentId ?? '', agentOriginId: _agentOriginId ?? '',
+                        agentPhone: _agentPhone ?? '', agentEmail: _agentEmail ?? '',
+                        customerName: "", customerPhone: _mobNumController.text,
+                        customerAccountNumber: "", customerEmail: "",
+                        customerId: "", linkAmount: int.parse(_amountController.text), note: "", corpCode: _corpCode ??'',
+                        cardRefNum: "", token: "", subAgentId:_subAgentId ?? '' );
+
 
                     // Handle send action
                   },
@@ -902,7 +966,7 @@ class _GroupHomePageState extends State<GroupHomePage> {
                             ),
                           ),
                           Text(
-                            userName ?? "",
+                            _agentName ?? "",
                             style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w700,

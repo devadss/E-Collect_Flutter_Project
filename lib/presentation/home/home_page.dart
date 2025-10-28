@@ -1,6 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:collection_qr_flutter/data/provider/cash_qr_provider.dart';
 import 'package:collection_qr_flutter/data/provider/link_transcation_history_provider.dart';
 import 'package:collection_qr_flutter/domain/model/all_trans_data.dart';
+import 'package:collection_qr_flutter/domain/model/qr_cash_combined_response.dart';
 import 'package:collection_qr_flutter/domain/model/transfer_history_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -23,7 +25,9 @@ import '../../domain/model/qr_transaction_history_model.dart';
 import '../trancstion/transction_history_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String userType;
+
+  const HomePage({super.key, required this.userType});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -107,6 +111,7 @@ class _HomePageState extends State<HomePage>
   }
 
   void showDateRangeFilter() {
+    final cashQrProvider = context.read<CashQrProvider>();
     final qrProvider = context.read<QRTransactionHistoryProvider>();
     final cashTransProvider = context.read<CashTransactionHistoryProvider>();
     final linkProvider = context.read<LinkTransactionHistoryProvider>();
@@ -316,6 +321,17 @@ class _HomePageState extends State<HomePage>
                             agentOriginId);
                         await linkProvider.getLinkTransactionHistory(period,
                             from, to, subAgentID!, corpCode!, agentOriginId!);
+                        await cashQrProvider.getCombinedResponse(period, from,
+                            to, subAgentID!, corpCode!, agentOriginId!);
+
+                        await cashTransProvider.getCashTranscationHistory(
+                            period,
+                            from,
+                            to,
+                            "ALL",
+                            subAgentID!,
+                            corpCode,
+                            agentOriginId);
 
                         // ✅ Update parent state
                         setState(() {
@@ -414,15 +430,139 @@ class _HomePageState extends State<HomePage>
     final mobnum = await SharedPref().getParentAgentMobNum();
     final subAgID = await SharedPref().getSubAgentId();
     final crpCode = await SharedPref().getCorpCode();
-    var loggedInUserType = await SharedPref.shared.getLoggedInUserType();
 
     if (mounted) {
       setState(() {
-        loggedInUserType == "AGENT_LOAN"
+        print("user type = ${widget.userType}");
+        widget.userType == "AGENT_LOAN"
             ? userType = "LOAN_COLLECTION"
             : userType = "COLLECTION";
 
-        loggedInUserType == "AGENT_LOAN"
+        widget.userType == "AGENT_LOAN"
+            ? cashCollectionType = "LOAN_COLLECTION_CASH"
+            : cashCollectionType = "COLLECTION_CASH";
+
+        userName = name;
+        entityId = entId;
+        token = tok;
+        agentOriginId = agentOrgID;
+        mobNum = mobnum;
+        subAgentID = subAgID;
+        corpCode = crpCode;
+      });
+    }
+
+    final now = DateTime.now();
+    final fromDate = DateFormat('yyyy-MM-dd').format(now.subtract(const Duration(days: 30)));
+    final toDate = DateFormat('yyyy-MM-dd').format(now);
+
+    try {
+      // Load data for ALL providers, not just QR transactions
+      final qrProvider = Provider.of<QRTransactionHistoryProvider>(context, listen: false);
+      final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
+      final cashQrProvider = Provider.of<CashQrProvider>(context, listen: false);
+      final cashProvider = Provider.of<CashTransactionHistoryProvider>(context, listen: false);
+      final transferProvider = Provider.of<TransferHistoryProvider>(context, listen: false);
+
+      // Load QR transactions
+      await qrProvider.getQrTranscationHistory(
+        "TODAY",
+        fromDate,
+        toDate,
+        userType!,
+        corpCode!,
+        agentOriginId!,
+      );
+
+      // Load Link transactions (for AGENT_LOAN)
+      if (userType == "LOAN_COLLECTION") {
+        await linkProvider.getLinkTransactionHistory(
+            "TODAY",
+            fromDate,
+            toDate,
+            subAgentID!,
+            corpCode!,
+            agentOriginId!
+        );
+      }
+
+      // Load Cash transactions
+      await cashProvider.getCashTranscationHistory(
+        "TODAY",
+        fromDate,
+        toDate,
+        cashCollectionType!,
+        subAgentID!,
+        corpCode!,
+        agentOriginId!,
+      );
+
+      // Load Transfer transactions (for AGENT_LOAN)
+      if (userType == "LOAN_COLLECTION") {
+        await transferProvider.getQrTranscationHistory(
+          "TODAY",
+          fromDate,
+          toDate,
+          userType!,
+          corpCode!,
+          agentOriginId!,
+        );
+      }
+
+      // Load Combined Cash+QR transactions (for regular AGENT)
+      if (userType == "COLLECTION") {
+        await cashQrProvider.getCombinedResponse(
+          "TODAY",
+          fromDate,
+          toDate,
+          subAgentID!,
+          corpCode!,
+          agentOriginId!,
+        );
+      }
+
+      // Final tasks
+      fetchTransaction();
+      fetchCollection();
+
+    } catch (e) {
+      print("Error loading transaction data: $e");
+      if (mounted) {
+        // Show error message to user
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to load transactions: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      // Ensure any loading dialog is dismissed
+      if (mounted) {
+        // Navigator.of(context, rootNavigator: true).pop();
+      }
+    }
+  }
+
+/*
+  Future<void> loadSharedPrefs(BuildContext context) async {
+    final name = await SharedPref().getSubAgentName();
+    final entId = await SharedPref().getAgentId();
+    final tok = await SharedPref().getTokenValue();
+    final agentOrgID = await SharedPref().getAgentOriginId();
+    final mobnum = await SharedPref().getParentAgentMobNum();
+    final subAgID = await SharedPref().getSubAgentId();
+    final crpCode = await SharedPref().getCorpCode();
+    // var loggedInUserType = await SharedPref.shared.getLoggedInUserType();
+
+    if (mounted) {
+      setState(() {
+        print("user type = ${widget.userType}");
+        widget.userType == "AGENT_LOAN"
+            ? userType = "LOAN_COLLECTION"
+            : userType = "COLLECTION";
+
+        widget.userType == "AGENT_LOAN"
             ? cashCollectionType = "LOAN_COLLECTION_CASH"
             : cashCollectionType = "LOAN_COLLECTION";
 
@@ -461,12 +601,16 @@ class _HomePageState extends State<HomePage>
 
       final linkProvider =
           Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
+      final cashQrProvider =
+          Provider.of<CashQrProvider>(context, listen: false);
       final cashProvider =
           Provider.of<CashTransactionHistoryProvider>(context, listen: false);
       final transfer =
           Provider.of<TransferHistoryProvider>(context, listen: false);
 
       await linkProvider.getLinkTransactionHistory(
+          "TODAY", fromDate, toDate, subAgID!, crpCode!, agentOrgID!);
+      await cashQrProvider.getCombinedResponse(
           "TODAY", fromDate, toDate, subAgID!, crpCode!, agentOrgID!);
       await cashProvider.getCashTranscationHistory(
           "TODAY",
@@ -500,6 +644,7 @@ class _HomePageState extends State<HomePage>
       // if (mounted) Navigator.pop(context);
     }
   }
+*/
 
   Future<void> fetchBannerImages() async {
     final images = await CustRegRepository().checkRegCust(int.parse(mobNum!));
@@ -826,7 +971,9 @@ class _HomePageState extends State<HomePage>
                       fit: BoxFit.scaleDown,
                       child: Text(
                         _selectedTabIndex == 0
-                            ? 'Link'
+                            ? userType == "COLLECTION"
+                                ? "All"
+                                : 'Link'
                             : _selectedTabIndex == 1
                                 ? 'QR Code'
                                 : _selectedTabIndex == 2
@@ -915,9 +1062,94 @@ class _HomePageState extends State<HomePage>
 
   Future<void> _clearFilters() async {
     showProgressDialog(context);
+
     final qrProvider = context.read<QRTransactionHistoryProvider>();
     final cashTransProvider = context.read<CashTransactionHistoryProvider>();
     final linkProvider = context.read<LinkTransactionHistoryProvider>();
+    final cashQrProvider = context.read<CashQrProvider>();
+    final transferProvider = context.read<TransferHistoryProvider>();
+
+    // Reset to default period
+    final now = DateTime.now();
+    final fromDate = now.subtract(const Duration(days: 30));
+    final toDate = now;
+    final formattedFdate = DateFormat('yyyy-MM-dd').format(fromDate);
+    final formattedTdate = DateFormat('yyyy-MM-dd').format(toDate);
+
+    try {
+      // Load data for ALL transaction types
+      await qrProvider.getQrTranscationHistory(
+        "TODAY",
+        formattedFdate,
+        formattedTdate,
+        userType!,
+        corpCode!,
+        agentOriginId!,
+      );
+
+      await cashTransProvider.getCashTranscationHistory(
+        "TODAY",
+        formattedFdate,
+        formattedTdate,
+        cashCollectionType!,
+        subAgentID!,
+        corpCode!,
+        agentOriginId!,
+      );
+
+      // Load additional data based on user type
+      if (userType == "LOAN_COLLECTION") {
+        await transferProvider.getQrTranscationHistory(
+            "TODAY",
+            formattedFdate,
+            formattedTdate,
+            userType!,
+            corpCode!,
+            agentOriginId!
+        );
+
+        await linkProvider.getLinkTransactionHistory(
+            "TODAY",
+            formattedFdate,
+            formattedTdate,
+            subAgentID!,
+            corpCode!,
+            agentOriginId!
+        );
+      } else {
+        await cashQrProvider.getCombinedResponse(
+            "TODAY",
+            formattedFdate,
+            formattedTdate,
+            subAgentID!,
+            corpCode!,
+            agentOriginId!
+        );
+      }
+
+      setState(() {
+        _isFilterApplied = false;
+        _currentFilterPeriod = 'TODAY';
+        _currentFromDate = '';
+        _currentToDate = '';
+      });
+
+    } catch (e) {
+      print("Error clearing filters: $e");
+    } finally {
+      if (mounted && qrProvider.showProgressDialog == false) {
+        Navigator.pop(context);
+      }
+    }
+  }
+
+/*
+  Future<void> _clearFilters() async {
+    showProgressDialog(context);
+    final qrProvider = context.read<QRTransactionHistoryProvider>();
+    final cashTransProvider = context.read<CashTransactionHistoryProvider>();
+    final linkProvider = context.read<LinkTransactionHistoryProvider>();
+    final cashQrProvider = context.read<CashQrProvider>();
     final transferProvider = context.read<TransferHistoryProvider>();
 
     // Reset to default period (THIS_MONTH)
@@ -931,7 +1163,6 @@ class _HomePageState extends State<HomePage>
         "TODAY",
         formattedFdate,
         formattedTdate,
-
         //"COLLECTION",
         userType,
         corpCode,
@@ -951,6 +1182,8 @@ class _HomePageState extends State<HomePage>
 
     await linkProvider.getLinkTransactionHistory("TODAY", formattedFdate,
         formattedTdate, subAgentID!, corpCode!, agentOriginId!);
+    await cashQrProvider.getCombinedResponse("TODAY", formattedFdate,
+        formattedTdate, subAgentID!, corpCode!, agentOriginId!);
     if (qrProvider.showProgressDialog == false) {
       if (mounted) {
         Navigator.pop(context);
@@ -963,8 +1196,72 @@ class _HomePageState extends State<HomePage>
       _currentToDate = '';
     });
   }
+*/
 
   Widget _buildTabBar() {
+    // Determine the actual user type - use widget.userType directly since it's more reliable
+    final isAgentLoan = widget.userType == "AGENT_LOAN";
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Container(
+        height: 80,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: home1, width: 1),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: _buildTabItems(isAgentLoan),
+        ),
+      ),
+    );
+  }
+
+  // List<Widget> _buildTabItems(bool isAgentLoan) {
+  //   if (isAgentLoan) {
+  //     // AGENT_LOAN - Show only 3 tabs: Link, QR, Cash
+  //     return [
+  //       _buildAnimatedTabItem(0, Icons.link_outlined, "Link"),
+  //       _buildAnimatedTabItem(1, Icons.qr_code, "QR"),
+  //       _buildAnimatedTabItem(2, Icons.monetization_on, "Cash"),
+  //     ];
+  //   } else {
+  //     // Regular AGENT - Show 3 tabs: All, QR, Cash
+  //     return [
+  //       _buildAnimatedTabItem(0, Icons.all_out_rounded, "All"),
+  //       _buildAnimatedTabItem(1, Icons.qr_code, "QR"),
+  //       _buildAnimatedTabItem(2, Icons.monetization_on, "Cash"),
+  //     ];
+  //   }
+  // }
+
+  List<Widget> _buildTabItems(bool isAgentLoan) {
+    if (isAgentLoan) {
+      // AGENT_LOAN - Show all 4 tabs
+      return [
+        _buildAnimatedTabItem(0, Icons.link_outlined, "Link"),
+        _buildAnimatedTabItem(1, Icons.qr_code, "QR"),
+        _buildAnimatedTabItem(2, Icons.monetization_on, "Cash"),
+        _buildAnimatedTabItem(3, Icons.account_balance_sharp, "Transfer"),
+      ];
+    } else {
+      // Regular AGENT - Show only 3 tabs
+      return [
+        _buildAnimatedTabItem(0, Icons.all_out_rounded, "All"),
+        _buildAnimatedTabItem(1, Icons.qr_code, "QR"),
+        _buildAnimatedTabItem(2, Icons.monetization_on, "Cash"),
+      ];
+    }
+  }
+ /* Widget _buildTabBar() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Container(
@@ -983,15 +1280,20 @@ class _HomePageState extends State<HomePage>
         ),
         child: Row(
           children: [
-            _buildAnimatedTabItem(0, Icons.link_outlined, "Link"),
+            userType == "COLLECTION"
+                ? _buildAnimatedTabItem(0, Icons.all_out_rounded, "All")
+                : _buildAnimatedTabItem(0, Icons.link_outlined, "Link"),
             _buildAnimatedTabItem(1, Icons.qr_code, "QR"),
             _buildAnimatedTabItem(2, Icons.monetization_on, "Cash"),
-            _buildAnimatedTabItem(3, Icons.account_balance_sharp, "Transfer"),
+            userType == "COLLECTION"
+                ? const SizedBox()
+                : _buildAnimatedTabItem(
+                    3, Icons.account_balance_sharp, "Transfer"),
           ],
         ),
       ),
     );
-  }
+  }*/
 
   Widget _buildAnimatedTabItem(int index, IconData icon, String label) {
     return Expanded(
@@ -1024,6 +1326,30 @@ class _HomePageState extends State<HomePage>
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildContentCollectionSection(
+    QRTransactionHistoryProvider qrProvider,
+    CashTransactionHistoryProvider cashTranProvider,
+    CashQrProvider cashQrProvider,
+  ) {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          switch (_selectedTabIndex) {
+            case 0:
+              return _buildCashWithQrTransactionContent(cashQrProvider);
+            case 1:
+              return _buildQRTransactionContent(qrProvider);
+            case 2:
+              return _buildCashTransactionContent(cashTranProvider);
+            default:
+              return const SizedBox();
+          }
+        },
+        childCount: 1,
       ),
     );
   }
@@ -1120,6 +1446,30 @@ class _HomePageState extends State<HomePage>
       transactions: cashProvider.qrTranscationHistoryModel!.data!,
       icon: Icons.monetization_on,
       iconColor: Colors.orange,
+      getAmount: (t) => t.orderAmount ?? 0,
+      getStatus: (t) => t.orderStatus.toString(),
+      getOrderId: (t) => t.orderId.toString(),
+      getCustName: (t) => t.customerName.toString(),
+      getCustId: (t) => t.customerId.toString(),
+      getCustPhone: (t) => t.customerPhone.toString(),
+      getTnxType: (t) => t.source.toString(),
+    );
+  }
+
+  Widget _buildCashWithQrTransactionContent(CashQrProvider cashQrProvider) {
+    if (cashQrProvider.errResponse != null) {
+      return _buildEmptyState(
+        icon: Icons.link_outlined,
+        title: "No Transactions",
+        message: "Your transactions will appear here",
+      );
+    } else if (cashQrProvider.cashQrCombinedResponse == null) {
+      return _buildLoadingList();
+    }
+    return _buildTransactionList(
+      transactions: cashQrProvider.cashQrCombinedResponse!.data,
+      icon: Icons.all_out_rounded,
+      iconColor: Colors.blue,
       getAmount: (t) => t.orderAmount ?? 0,
       getStatus: (t) => t.orderStatus.toString(),
       getOrderId: (t) => t.orderId.toString(),
@@ -1297,9 +1647,8 @@ class _HomePageState extends State<HomePage>
                         status,
                         style: TextStyle(
                           color: status.toLowerCase().contains("success") ||
-                                  status.toLowerCase().contains("paid")||
-                              status.toLowerCase().contains("completed")
-
+                                  status.toLowerCase().contains("paid") ||
+                                  status.toLowerCase().contains("completed")
                               ? Colors.green
                               : Colors.orange,
                           fontSize: 12,
@@ -1387,6 +1736,8 @@ class _HomePageState extends State<HomePage>
       return transaction.customerName.toString();
     } else if (transaction is TransferTransaction) {
       return transaction.customerName.toString();
+    } else if (transaction is Order) {
+      return transaction.customerName.toString();
     } else if (transaction is LinkTransactions) {
       return transaction.customerName
           .toString()
@@ -1399,7 +1750,7 @@ class _HomePageState extends State<HomePage>
     if (transaction is QrTransaction) {
       return transaction.createdAt ?? DateTime.now();
     } else if (transaction is AllTransactionHistoryModel) {
-    //  return  transaction.createdAt ?? DateTime.now();
+      //  return  transaction.createdAt ?? DateTime.now();
     }
     return DateTime.now();
   }
@@ -1407,8 +1758,8 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     final qrProvider = Provider.of<QRTransactionHistoryProvider>(context);
-    final cashTranProvider =
-        Provider.of<CashTransactionHistoryProvider>(context);
+    final cashTranProvider = Provider.of<CashTransactionHistoryProvider>(context);
+    final cashQrProvider = Provider.of<CashQrProvider>(context);
     final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context);
     final transferProvider = Provider.of<TransferHistoryProvider>(context);
     final size = MediaQuery.of(context).size;
@@ -1449,8 +1800,11 @@ class _HomePageState extends State<HomePage>
           ),
           SliverPadding(
             padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
-            sliver: _buildContentSection(
-                qrProvider, cashTranProvider, linkProvider, transferProvider),
+            sliver: userType == "COLLECTION"
+                ? _buildContentCollectionSection(qrProvider, cashTranProvider,
+                     cashQrProvider)
+                : _buildContentSection(qrProvider, cashTranProvider,
+                    linkProvider,  transferProvider),
           ),
         ],
       ),
@@ -1463,12 +1817,20 @@ class _HomePageState extends State<HomePage>
     // Calculate based on selected tab
     switch (_selectedTabIndex) {
       case 0: // All Code tab
-        final linkProvider =
-            Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
-        if (linkProvider.linkTranscationHistoryModel != null) {
-          total += linkProvider.linkTranscationHistoryModel!.data!
-              .fold(0, (sum, item) => sum + (item.linkAmount ?? 0));
+        final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
+        final cashQrProvider = Provider.of<CashQrProvider>(context, listen: false);
+        if(userType != "COLLECTION"){
+          if (linkProvider.linkTranscationHistoryModel != null) {
+            total += linkProvider.linkTranscationHistoryModel!.data!
+                .fold(0, (sum, item) => sum + (item.linkAmount ?? 0));
+          }
+        }else{
+          if (cashQrProvider.cashQrCombinedResponse != null) {
+            total += cashQrProvider.cashQrCombinedResponse!.data
+                .fold(0, (sum, item) => sum + (item.orderAmount ?? 0));
+          }
         }
+
 
         break;
 
@@ -1531,6 +1893,10 @@ class _DatePickerButton extends StatelessWidget {
     );
   }
 }
+
+
+
+
 // Widget _buildQRTransactionList(
 //     QrTranscationHistoryModel? qrTransactions, String? error)
 // {

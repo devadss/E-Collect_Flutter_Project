@@ -16,8 +16,9 @@ abstract class IPaymentLinkRepository {
      required String customerId,
      required num linkAmount,
      required String note,
-     required String corpCode,
+      required String corpCode,
      required String cardRefNum,
         required String token,
-        required String subAgentId});
+        required String subAgentId
+      });
 }
