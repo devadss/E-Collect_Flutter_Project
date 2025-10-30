@@ -249,15 +249,15 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       await saveFcmToken(custID, context, "GPIN", token, subAgentContactNum, mpin);
     } else {
       if (!mounted) return; // ✅ re-check before using context again
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            "Authentication Error",
-            style: TextStyle(color: Colors.white),
-          ),
-          backgroundColor: Colors.red,
-        ),
-      );
+     // ScaffoldMessenger.of(context).showSnackBar(
+        // const SnackBar(
+        //   content: Text(
+        //     "Authentication Error",
+        //     style: TextStyle(color: Colors.white),
+        //   ),
+        //   backgroundColor: Colors.red,
+        // ),
+     // );
     }
 
     print("MPIN = $mpin");

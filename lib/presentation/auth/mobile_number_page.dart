@@ -588,7 +588,8 @@ class _MobileNumberVerificationPageState
                     ),
                     padding: const EdgeInsets.all(12),
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Transform.scale(
                           scale: 0.9,
@@ -615,9 +616,12 @@ class _MobileNumberVerificationPageState
                                 height: 1.4,
                               ),
                               children: [
+
                                 const TextSpan(
+
                                   text: "By continuing, you agree to our ",
                                 ),
+
                                 TextSpan(
                                   text: "Terms & Conditions",
                                   style: GoogleFonts.poppins(

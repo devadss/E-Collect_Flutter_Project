@@ -31,7 +31,7 @@ class LoanCashCollectionRepository implements LoanCashCollectionInterface {
       String paymentMode,
       String utrNumber) async {
     final uri = Uri.parse("${baseUrl}api/Cashfree/ReceiveCashLoan");
-    bool checkConnection = await InternetConnectionChecker().hasConnection;
+    bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     if (checkConnection == true) {
       final request = await http.post(uri,
           body: jsonEncode({

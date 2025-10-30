@@ -89,11 +89,5 @@
         <key>NSMicrophoneUsageDescription</key>
         <string>This app uses the microphone for scanning or recording purposes.</string>
 
-        <key>NSBluetoothPeripheralUsageDescription</key>
-        <string>This app uses Bluetooth to connect to nearby devices for improved functionality.</string>
-
-        <key>NSContactsUsageDescription</key>
-        <string>This app may need access to your contacts to enhance user experience and enable related features.</string>
-
 </dict>
 </plist>

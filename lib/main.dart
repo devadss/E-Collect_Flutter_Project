@@ -120,7 +120,7 @@ void main() async {
   try {
     if (Firebase.apps.isEmpty) {
       await Firebase.initializeApp(
-        name: 'com.collection.qr', // Use a unique name
+        name: 'com_collection_qr', // Use a unique name
         options: DefaultFirebaseOptions.currentPlatform,
       );
     }

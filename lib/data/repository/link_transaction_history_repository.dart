@@ -19,7 +19,7 @@ class LinkTransactionHistoryRepository implements ILinkTransactionHistoryReposit
 
   printLog("https://adsspayweb.digicob.in/api/Cashfree/GetPaymentLinksQrTransactions?filterType=$filterType&startDate=$startDate&endDate=$endDate&subAgentId=$subAgentId&paymentMode=PAYMENTLINK&corpCode=$corpCode");
 
-   bool checkConnection = await InternetConnectionChecker().hasConnection;
+   bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
    if(checkConnection){
     final response = await http.get(url);
     print(response.body);

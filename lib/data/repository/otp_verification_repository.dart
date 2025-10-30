@@ -26,7 +26,7 @@ class OtpVerificationRepository implements OtpVerificationInterface {
         headers: {'Content-Type': 'application/json'},
       );
       print("request = ${request.body}");
-      print("request = ${request.statusCode}");
+      print("request ststus code= ${request.statusCode}");
 
       if (request.statusCode == 200) {
         final otpSuccessModel = OtpSuccessModel.fromJson(jsonDecode(request.body));
@@ -37,10 +37,14 @@ class OtpVerificationRepository implements OtpVerificationInterface {
         final otpFailModel = OtpFailModel.fromJson(jsonDecode(request.body));
         return Left(otpFailModel);
       }
+      else if(request.statusCode == 429){
+        final otpfailmodel =OtpFailModel(message: "OTP Verification failed", status: "N");
+        return Left(otpfailmodel);
+      }
       else {
         // Handle all non-200 status codes with the same logic
-        final otpFailModel = OtpFailModel.fromJson(jsonDecode(request.body));
-        return Left(otpFailModel);
+        final otpfailmodel =OtpFailModel(message: "Multiple attempts please try again after some time", status: "N");
+        return Left(otpfailmodel);
       }
     } catch (e) {
       print("Error: $e");

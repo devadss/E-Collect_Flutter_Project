@@ -1626,8 +1626,14 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
             height: 10,
           ),
           totalListCountNew != null
-              ? pagerWidget(totalListCountNew!.toInt())
-              : pagerWidget(3),
+              ? Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: pagerWidget(totalListCountNew!.toInt()),
+              )
+              : Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: pagerWidget(3),
+              ),
         ],
       ),
     );
@@ -1636,7 +1642,25 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
   Container pagerWidget(int totPage) {
     final provider =
         Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
+    // Get screen width
+    final screenWidth = MediaQuery.of(context).size.width;
+    // Adjust number of pages shown based on screen width
+    int pagesViewCount;
+    if (screenWidth > 1000) {
+      pagesViewCount = 14; // Desktop / large tablet
+    }
+    else if (screenWidth > 700) {
+      pagesViewCount = 9; // Desktop / large tablet
+    }
+    else if (screenWidth > 400) {
+      pagesViewCount = 4; // Tablet
+    } else if (screenWidth > 300) {
+      pagesViewCount = 3; // Medium-size mobile
+    } else {
+      pagesViewCount = 3; // Small mobile
+    }
     return Container(
+      width: double.infinity,
       decoration: BoxDecoration(
         color: white,
         borderRadius: BorderRadius.circular(10),
@@ -1649,38 +1673,39 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
         ],
         border: Border.all(color: home1.withOpacity(0.5)),
       ),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Pager(
-          pageChangeIconColor: home1,
-          currentPage: _currentPage,
-          totalPages: totPage,
-          numberTextSelectedColor: Colors.white,
-          numberButtonSelectedColor: home1,
-          pagesView: 4,
-          currentItemsPerPage: 1,
-          onPageChanged: (page) async {
-            _searchController.clear();
-            showProgressDialog(context);
-            setState(() {
-              print("page : $page");
-              _currentPage = page;
-            });
-            await provider.getRdclDueList(
-                "", agentBranchCode!, "", _currentPage, itemPerPage, "");
-            if (provider.showDialog == false) {
-              if (mounted) {
-                Navigator.pop(context);
+      child: Center(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Pager(
+            pageChangeIconColor: home1,
+            currentPage: _currentPage,
+            totalPages: totPage,
+            numberTextSelectedColor: Colors.white,
+            numberButtonSelectedColor: home1,
+            pagesView: pagesViewCount,
+            currentItemsPerPage: 1,
+            onPageChanged: (page) async {
+              _searchController.clear();
+              showProgressDialog(context);
+              setState(() {
+                print("page : $page");
+                _currentPage = page;
+              });
+              await provider.getRdclDueList(
+                  "", agentBranchCode!, "", _currentPage, itemPerPage, "");
+              if (provider.showDialog == false) {
+                if (mounted) {
+                  Navigator.pop(context);
+                }
               }
-            }
-
-            // Optional: Scroll to top if you want user to see the beginning of the new data
-            _scrollController.animateTo(
-              0,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-            );
-          },
+              // Optional: Scroll to top if you want user to see the beginning of the new data
+              _scrollController.animateTo(
+                0,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            },
+          ),
         ),
       ),
     );

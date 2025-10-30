@@ -16,9 +16,11 @@ class CashTransactionHistoryRepository
           String? endDate, String? source, String? subAgentId, String? corpCode,  String? agentOriginId) async {
     Uri url = Uri();
     source == "COLLECTION_CASH"?
-     url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&subAgentId=$subAgentId&CorpCode=$corpCode&agentOrginId=$agentOriginId")
-     :url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&subAgentId=$subAgentId&CorpCode=$corpCode&agentOrginId=$agentOriginId&PaymentMode=CASH");
-    bool checkConnection = await InternetConnectionChecker().hasConnection;
+     url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&subAgentId=$subAgentId&CorpCode=$corpCode&agentOrginId=1231")
+     //url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&subAgentId=$subAgentId&CorpCode=$corpCode&agentOrginId=$agentOriginId")
+     :url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&subAgentId=$subAgentId&CorpCode=$corpCode&agentOrginId=1231&PaymentMode=CASH");
+    // :url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&subAgentId=$subAgentId&CorpCode=$corpCode&agentOrginId=$agentOriginId&PaymentMode=CASH");
+    bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     if (checkConnection) {
       print(url);
       final response = await http.get(url);

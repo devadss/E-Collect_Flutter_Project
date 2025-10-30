@@ -16,7 +16,8 @@ class CashQrRepository implements CashQrCombinedInterface {
       String corpCode,
       String agentOrginId) async {
     final uri = Uri.parse(
-        "${baseUrl}api/GetMerchantOrders?dateFilterType=$filterType&startDate=$startDate&endDate=$endDate&Source=ALL&CorpCode=$corpCode&agentOrginId=$agentOrginId");
+        //"${baseUrl}api/GetMerchantOrders?dateFilterType=$filterType&startDate=$startDate&endDate=$endDate&Source=ALL&CorpCode=$corpCode&agentOrginId=$agentOrginId");
+        "${baseUrl}api/GetMerchantOrders?dateFilterType=$filterType&startDate=$startDate&endDate=$endDate&Source=ALL&CorpCode=$corpCode&agentOrginId=1231");
     final request = await http.get(uri);
 
     if (request.statusCode == 200) {
