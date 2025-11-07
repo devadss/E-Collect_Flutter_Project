@@ -15,17 +15,17 @@ class TransferHistoryRepository implements TransferTransactionInterface{
   @override
   Future<Either<ErrorHandler, TransferHistoryModel>> getTransferTranscationHistory(String? dateFilterType, String? startDate, String? endDate, String? source, String? corpCode, String? agentOrginId)
      async{
-    final url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&CorpCode=$corpCode&agentOrginId=1231&PaymentMode=TRANSFER");
-   // final url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&CorpCode=$corpCode&agentOrginId=$agentOrginId&PaymentMode=TRANSFER");
+   // final url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&CorpCode=$corpCode&agentOrginId=1231&PaymentMode=TRANSFER");
+    final url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&CorpCode=$corpCode&agentOrginId=$agentOrginId&PaymentMode=TRANSFER");
     bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     if(checkConnection){
       print(url);
       final response = await http.get(url);
       if(response.statusCode == 200 || response.statusCode == 201){
         try{
-          printLog("==================================QR TRANSACTION STATUS CODE=================================");
+          printLog("==================================ALL TRANSACTION STATUS CODE=================================");
           printLog(response.statusCode);
-          printLog("==================================TRANSFER TRANSACTION STATUS CODE=================================");
+          printLog("==================================ALL TRANSFER TRANSACTION STATUS CODE=================================");
           printLog(response.body);
           if(response.body.contains("OrderId")){
             return Right(TransferHistoryModel.fromJson(jsonDecode(response.body)));

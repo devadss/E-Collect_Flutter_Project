@@ -15,10 +15,10 @@ class QRTransactionHistoryRepository implements IQRTransactionHistoryRepository{
       String? corpCode, String? agentOrginId) async{
     Uri url =Uri();
     source == "COLLECTION"?
-    url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&CorpCode=$corpCode&agentOrginId=1231")
-    //url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&CorpCode=$corpCode&agentOrginId=$agentOrginId")
-   : url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&CorpCode=$corpCode&agentOrginId=1231&PaymentMode=QR");
-   //: url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&CorpCode=$corpCode&agentOrginId=$agentOrginId&PaymentMode=QR");
+    //url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&CorpCode=$corpCode&agentOrginId=1231")
+    url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&CorpCode=$corpCode&agentOrginId=$agentOrginId")
+   //: url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&CorpCode=$corpCode&agentOrginId=1231&PaymentMode=QR");
+   : url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&CorpCode=$corpCode&agentOrginId=$agentOrginId&PaymentMode=QR");
 
 
     bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;

@@ -1529,7 +1529,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
                   agentName: agentName ?? "Name",
                   agentPhone: phoneNumber ?? "agentPhone",
                   custName: customerName!,
-                  custPhone: custPhoneNumber!,
+                  custPhone: custPhoneNumber ?? "",
                   custId: custId!,
                   txnId: success.transactionId.toString(),
                   txnType: "CASH",
