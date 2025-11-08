@@ -425,6 +425,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:collection_qr_flutter/core/alerts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -1061,7 +1062,16 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
                           const SizedBox(width: 16),
                           Expanded(
                             child: ElevatedButton(
-                              onPressed: _proceedButtonClick,
+                              onPressed:(){ 
+                                if(amountController.text.isNotEmpty ){
+                                  _proceedButtonClick(); 
+                                }else{
+                                  showToast(
+                                      message: "Amount field cannot be empty",
+                                      color: Colors.orange
+                                  );
+                                }
+                                },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: home1,
                                 foregroundColor: white,
@@ -1166,7 +1176,13 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
               ),
               const SizedBox(width: 10),
               ElevatedButton(
-                onPressed: _proceedButtonClick,
+                onPressed: (){
+                  if(amountController.text.isNotEmpty){
+                    _proceedButtonClick();
+                  }else{
+                    showToast(message: "Amount field cannot be empty", color: Colors.orange);
+                  }
+                },
                 style: ElevatedButton.styleFrom(
                   padding:
                   const EdgeInsets.symmetric(horizontal: 20, vertical: 12),

@@ -1045,78 +1045,78 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
               const SizedBox(height: 24),
 
               // Payment options buttons
-              _buildPaymentOptionButton(
-                icon: Icons.qr_code,
-                label: "Pay via QR Code",
-                onPressed: () async {
-                  print("--------------------TOKEN---------------------");
-                  print(token);
-                  print("---------------------AMOUNT--------------------");
-                  print(amountController.text);
-                  print("---------------------PHONENUMBER--------------------");
-                  print(agentMobile);
-                  print("---------------------ENTITYID--------------------");
-                  print(agentId);
-                  final paymentSession =
-                      await CreatePaymentSessionIdRepository()
-                          .getPaymentSessionId(
-                              agentOriginId: agentId,
-                              agentEmail: agentEmail,
-                              customerName: widget.custName,
-                              customerPhone: widget.custPhoneNumber,
-                              customerAccno: widget.custAcNumber,
-                              customerId: widget.custIdNew,
-                              customerEmail: widget.custEmail,
-                              corpCode: widget.corpCode,
-                              cardRefNum: "",
-                              token: token,
-                              amount: amountController.text,
-                              agentPhone: agentMobile,
-                              agentId: widget.custId,
-                              note: "Payment For Agent $agentName",
-                              subAgentId: subagentId,
-                              agentName: agentName,
-                              subAgentBranchCode: subAgentCodeNew, collectionType: 'RDCL');
-                  paymentSession.fold((error) {
-                    print(
-                        "---------------------------------ERROR PAYMENT---------------------------");
-                    print(error);
-                  },
-                          (sessionId)
-                  async {
-                    paymentSessionId = sessionId.paymentSessionId ?? "";
-                    if (paymentSessionId!.isNotEmpty &&
-                        paymentSessionId != null &&
-                        paymentSessionId != "") {
-                      if (!mounted) return;
-                      Navigator.pop(context);
-
-                      if (!mounted) return;
-                      final result = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => NewQrCodePage(
-                            paymentSessionId: paymentSessionId!,
-                            amount: amountController.text ?? "",
-                            token: token!,
-                            custName: customerName ?? "custName",
-                            custPhone: widget.custPhoneNumber,
-                            custId: widget.custId,
-                          ),
-                        ),
-                      );
-                      if (!mounted) return;
-                      if (result == "fetch_balance") {
-                        Navigator.pop(context);
-                      }
-                    } else {
-                      if (!mounted) return;
-                      Navigator.pop(context);
-                      EasyLoading.showToast("Session id is null");
-                    }
-                  });
-                },
-              ),
+              // _buildPaymentOptionButton(
+              //   icon: Icons.qr_code,
+              //   label: "Pay via QR Code",
+              //   onPressed: () async {
+              //     print("--------------------TOKEN---------------------");
+              //     print(token);
+              //     print("---------------------AMOUNT--------------------");
+              //     print(amountController.text);
+              //     print("---------------------PHONENUMBER--------------------");
+              //     print(agentMobile);
+              //     print("---------------------ENTITYID--------------------");
+              //     print(agentId);
+              //     final paymentSession =
+              //         await CreatePaymentSessionIdRepository()
+              //             .getPaymentSessionId(
+              //                 agentOriginId: agentId,
+              //                 agentEmail: agentEmail,
+              //                 customerName: widget.custName,
+              //                 customerPhone: widget.custPhoneNumber,
+              //                 customerAccno: widget.custAcNumber,
+              //                 customerId: widget.custIdNew,
+              //                 customerEmail: widget.custEmail,
+              //                 corpCode: widget.corpCode,
+              //                 cardRefNum: "",
+              //                 token: token,
+              //                 amount: amountController.text,
+              //                 agentPhone: agentMobile,
+              //                 agentId: widget.custId,
+              //                 note: "Payment For Agent $agentName",
+              //                 subAgentId: subagentId,
+              //                 agentName: agentName,
+              //                 subAgentBranchCode: subAgentCodeNew, collectionType: 'RDCL');
+              //     paymentSession.fold((error) {
+              //       print(
+              //           "---------------------------------ERROR PAYMENT---------------------------");
+              //       print(error);
+              //     },
+              //             (sessionId)
+              //     async {
+              //       paymentSessionId = sessionId.paymentSessionId ?? "";
+              //       if (paymentSessionId!.isNotEmpty &&
+              //           paymentSessionId != null &&
+              //           paymentSessionId != "") {
+              //         if (!mounted) return;
+              //         Navigator.pop(context);
+              //
+              //         if (!mounted) return;
+              //         final result = await Navigator.push(
+              //           context,
+              //           MaterialPageRoute(
+              //             builder: (context) => NewQrCodePage(
+              //               paymentSessionId: paymentSessionId!,
+              //               amount: amountController.text ?? "",
+              //               token: token!,
+              //               custName: customerName ?? "custName",
+              //               custPhone: widget.custPhoneNumber,
+              //               custId: widget.custId,
+              //             ),
+              //           ),
+              //         );
+              //         if (!mounted) return;
+              //         if (result == "fetch_balance") {
+              //           Navigator.pop(context);
+              //         }
+              //       } else {
+              //         if (!mounted) return;
+              //         Navigator.pop(context);
+              //         EasyLoading.showToast("Session id is null");
+              //       }
+              //     });
+              //   },
+              // ),
               // const SizedBox(height: 12),
               //
               // _buildPaymentOptionButton(
@@ -2180,7 +2180,13 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
                       const SizedBox(width: 16),
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: _proceedButtonClick,
+                          onPressed: (){
+                            if(amountController.text.isNotEmpty ){
+                              _proceedButtonClick();
+                            }else{
+                              showToast(message: "Amount field cannot be empty", color: Colors.orange);
+                            }
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: home1,
                             foregroundColor: white,

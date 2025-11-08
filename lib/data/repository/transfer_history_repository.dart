@@ -4,11 +4,8 @@ import 'package:collection_qr_flutter/domain/model/transfer_history_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-
 import '../../core/constants.dart';
 import '../../core/general.dart';
-import '../../domain/interface/qr_transcation_history_interface.dart';
-import '../../domain/model/qr_transaction_history_model.dart';
 import '../service/error_handler.dart';
 
 class TransferHistoryRepository implements TransferTransactionInterface{
