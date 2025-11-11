@@ -1,5 +1,6 @@
 import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
 import 'package:collection_qr_flutter/presentation/dues/rdcl_due_home_page.dart';
+import 'package:collection_qr_flutter/presentation/loan_integrated/loan_list.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/colors.dart';
@@ -55,7 +56,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       case 0:
         return  HomePage(userType: loggedInUserTPYE.toString(),);
       case 1:
-        return const LoanHomePage();
+       // return const LoanHomePage();
+        return const LoanList();
       case 2:
         return const ProfileHomePage();
       // return const TestPage();

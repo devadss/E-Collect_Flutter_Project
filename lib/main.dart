@@ -1,11 +1,15 @@
 import 'dart:developer';
 import 'package:collection_qr_flutter/core/constants.dart';
 import 'package:collection_qr_flutter/data/provider/cash_qr_provider.dart';
+import 'package:collection_qr_flutter/data/provider/integrated_loan_detail_provider.dart';
+import 'package:collection_qr_flutter/data/provider/integration_loan_list_provider.dart';
 import 'package:collection_qr_flutter/data/provider/link_transcation_history_provider.dart';
 import 'package:collection_qr_flutter/data/provider/loan_cash_coolection_provider.dart';
 import 'package:collection_qr_flutter/data/provider/transfer_transaction_provider.dart';
 import 'package:collection_qr_flutter/data/provider/whatsapp_share_provider.dart';
 import 'package:collection_qr_flutter/data/repository/cash_qr_repo.dart';
+import 'package:collection_qr_flutter/data/repository/integrated_loan_detail_repository.dart';
+import 'package:collection_qr_flutter/data/repository/integration_loan_repository.dart';
 import 'package:collection_qr_flutter/data/repository/loan_cash_collection_repository.dart';
 import 'package:collection_qr_flutter/data/repository/payment_link_repository.dart';
 import 'package:collection_qr_flutter/data/repository/transfer_history_repository.dart';
@@ -198,6 +202,8 @@ void main() async {
     ChangeNotifierProvider(create: (_) => LoanCashCollectionProvider(LoanCashCollectionRepository())),
     ChangeNotifierProvider(create: (_) => TransferHistoryProvider(TransferHistoryRepository())),
     ChangeNotifierProvider(create: (_) => PaymentLinkProvider(PaymentLinkRepository())),
+    ChangeNotifierProvider(create: (_) => IntegratedLoanListProvider(IntegrationLoanRepository())),
+    ChangeNotifierProvider(create: (_) => IntegratedLoanDetailProvider(IntegratedLoanDetailRepository())),
 
   ], child: const MyApp()));
 }
