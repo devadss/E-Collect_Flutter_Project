@@ -119,6 +119,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/card_agent.png
+    - assets/images/person_icon.png
     - assets/images/india.png
     - assets/images/verify_otp.jpeg
     - assets/images/mobile_number.png
@@ -126,6 +127,8 @@ flutter:
     - assets/images/salary_17531132.png
     - assets/icons/
     - assets/svg/
+    - assets/images/new_profile_bg.png
+    - assets/images/new_profile.png
     - assets/images/otp_verify_img.jpg
     - assets/animations/
 
