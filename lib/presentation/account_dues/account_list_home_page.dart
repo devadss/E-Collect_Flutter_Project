@@ -140,27 +140,30 @@ class _AccountListHomePageState extends State<AccountListHomePage> {
                                               AccountDueDetailsPage(
                                                 custName: provider
                                                         .agentCustomerDetailsModel
-                                                        ?.customerList
-                                                        ?.data?[index]
+
+                                                        ?.data[index]
                                                         .custName ??
                                                     "NAME",
-                                                custAcNumber: provider
+                                                custAcNumber:
+                                                provider
                                                         .agentCustomerDetailsModel
-                                                        ?.customerList
-                                                        ?.data?[index]
-                                                        .accNo ??
+
+                                                        ?.data[index]
+                                                        .depGlobalAccNo ??
                                                     "ACCNO",
-                                                custPhoneNumber: provider
-                                                        .agentCustomerDetailsModel
-                                                        ?.customerList
-                                                        ?.data?[index]
-                                                        .mobile ??
+                                                custPhoneNumber:
+                                                // provider
+                                                //         .agentCustomerDetailsModel
+                                                //         ?.customerList
+                                                //         ?.data?[index]
+                                                //         .mobile ??
                                                     "MOBILE",
-                                                custId: provider
-                                                        .agentCustomerDetailsModel
-                                                        ?.customerList
-                                                        ?.data?[index]
-                                                        .custId ??
+                                                custId:
+                                                // provider
+                                                //         .agentCustomerDetailsModel
+                                                //         ?.customerList
+                                                //         ?.data?[index]
+                                                //         .custId ??
                                                     "CUSTID",
                                                 custEmail: "",
                                                 corpCode: corpCode.toString(),
@@ -187,7 +190,7 @@ class _AccountListHomePageState extends State<AccountListHomePage> {
                                           Text(
                                             provider
                                                     .agentCustomerDetailsModel
-                                                    ?.customerList
+
                                                     ?.data?[index]
                                                     .custName ??
                                                 "CUST NAME",
@@ -202,7 +205,7 @@ class _AccountListHomePageState extends State<AccountListHomePage> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                "Account Number : ${provider.agentCustomerDetailsModel?.customerList?.data?[index].accNo ?? "ACC No"}",
+                                                "Account Number : ${provider.agentCustomerDetailsModel?.data?[index].depGlobalAccNo ?? "ACC No"}",
                                                 style: const TextStyle(
                                                     fontWeight: FontWeight.w700,
                                                     fontSize: 14,
@@ -245,13 +248,13 @@ class _AccountListHomePageState extends State<AccountListHomePage> {
                                             ],
                                           ),
                                           //const SizedBox(height: 5),
-                                          Text(
-                                            "Phone Number : ${provider.agentCustomerDetailsModel?.customerList?.data?[index].mobile ?? "MOBILE"}",
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: 14,
-                                                color: black87),
-                                          ),
+                                          // Text(
+                                          //   "Phone Number : ${provider.agentCustomerDetailsModel?.customerList?.data?[index].mobile ?? "MOBILE"}",
+                                          //   style: const TextStyle(
+                                          //       fontWeight: FontWeight.w700,
+                                          //       fontSize: 14,
+                                          //       color: black87),
+                                          // ),
                                         ]),
                                   ),
                                 ),
@@ -262,7 +265,7 @@ class _AccountListHomePageState extends State<AccountListHomePage> {
                             return const SizedBox(height: 10);
                           },
                           itemCount: provider.agentCustomerDetailsModel!
-                              .customerList!.data!.length),
+                              .data.length),
                     )
                   ],
                 );

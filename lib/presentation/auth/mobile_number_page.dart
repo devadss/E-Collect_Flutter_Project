@@ -79,7 +79,8 @@ class _MobileNumberVerificationPageState
       await parentAgentDetailProvider.fetchParentAgentDetails(value);
       if (parentAgentDetailProvider.subAgent != null) {
         await vendorBaseUrlProvider.getCollectionUrl(
-            parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);
+           // parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);
+            parentAgentDetailProvider.subAgent?.data.mobileNumber);
 
         if (vendorBaseUrlProvider.collectionBaseUrlModel != null) {
           print(

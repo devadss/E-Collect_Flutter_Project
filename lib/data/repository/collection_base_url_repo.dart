@@ -43,8 +43,8 @@ class CollectionBaseUrlRepo implements CollectionBaseUrlInterface{
   Future<Either<ErrorHandler, CollectionBaseUrlModel>> getCollectionUrl(String? parentMobNum) async{
     bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     parentMobNum!.startsWith("+91") ?parentMobNum.replaceAll("+91", "") : parentMobNum;
-   //final url = Uri.parse("$dopBaseUrl$parentMobNum");
-    final url = Uri.parse("${dopBaseUrl}+918905564553");
+   final url = Uri.parse("$dopBaseUrl$parentMobNum");
+   // final url = Uri.parse("${dopBaseUrl}+918905564553");
     print("vendor url ${url}");
     if(checkConnection){
       final response = await http.get(url);

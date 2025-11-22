@@ -25,7 +25,8 @@ class DueListRepository implements IDueListRepository {
     final url = Uri.parse(
        // "https://doorstepmftctest.digicob.in/GetDuesList?accNo=$accountNumber&asOnDate=$onDate");
        // "${vendorUrl}GetDuesList?accNo=$accountNumber&asOnDate=$onDate");
-        "${vendorUrl}?accNo=$accountNumber&asOnDate=$onDate");
+        "$vendorUrl?accNo=$accountNumber&asOnDate=$onDate");
+    print("getDueList = ${url}");
     bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     if (checkConnection) {
       final response = await http.get(url);
