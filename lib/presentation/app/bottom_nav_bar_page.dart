@@ -229,6 +229,15 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                                     ? "Cust List"
                                     : 'Accounts',
                               ),
+                              // _buildNavItem(
+                              //   key: _tabKeys[1],
+                              //   index: 1,
+                              //   icon: Icons.list_alt_outlined,
+                              //   activeIcon: Icons.list_alt,
+                              //   label: userTPYE?.contains("RDCL") == true
+                              //       ? "Cust List"
+                              //       : 'Accounts',
+                              // ),
                               _buildNavItem(
                                 key: _tabKeys[3],
                                 index: 3,

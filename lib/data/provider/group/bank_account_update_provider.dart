@@ -1,8 +1,6 @@
 import 'package:collection_qr_flutter/core/general.dart';
 import 'package:collection_qr_flutter/data/repository/group/bank_account_update_repository.dart';
-import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
-
 import '../../../domain/model/group/bank_account/bank_update_model.dart';
 
 class BankAccountUpdateProvider with ChangeNotifier {
@@ -15,7 +13,7 @@ class BankAccountUpdateProvider with ChangeNotifier {
   BankAccountUpdateResponse? get bankAccountUpdateResponse =>
       _bankAccountUpdateResponse;
 
-  Future<void> getBankAccountDetails(int id) async{
+  Future<void> getBankAccountDetails(String id) async{
     printLog("----------------Fetch Ac Details------------");
     printLog(bankAccountUpdateResponse);
     final result = await _bankAccountUpdateRepository.getBankAccountDetails(id);

@@ -1,6 +1,5 @@
 // Production
 import 'dart:io';
-
 import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:flutter/material.dart';
 

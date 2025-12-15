@@ -2,7 +2,6 @@
 //
 //     final agentCustomerDetailsModel = agentCustomerDetailsModelFromJson(jsonString);
 
-import 'dart:convert';
 class AgentCustomerDetailsModel {
   final int totalCount;
   final List<Customer> data;

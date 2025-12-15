@@ -424,7 +424,6 @@
 
 import 'dart:io';
 import 'dart:math';
-
 import 'package:collection_qr_flutter/core/alerts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -435,7 +434,6 @@ import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../../core/colors.dart';
 import '../../../data/provider/due_list_provider.dart';
 import '../../../data/provider/transaction_provider.dart';
@@ -842,7 +840,8 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
                   Navigator.of(context).pop();
                 }
               },
-              child: Padding(
+              child:
+              Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

@@ -22,9 +22,9 @@ class AgentCustomerDetailsRepository
       getAgentCustomerDetails(String agentId) async {
     final vendorUrl = await loadVendorUrl();
     final url =
-        // Uri.parse("https://doorstepmftctest.digicob.in/getCustomerlist");
+        Uri.parse("https://mftctest.digicob.in/getRDCustomerunderAgentList");
         //  Uri.parse("${vendorUrl}getCustomerlist");
-        Uri.parse(vendorUrl);
+       // Uri.parse(vendorUrl);
     print(
         "--------------------------AGENT CUSTOMER DETAILS VENDOR URL------------------");
     print(vendorUrl);
@@ -34,15 +34,15 @@ class AgentCustomerDetailsRepository
     print(url);
     bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     final body = {"agent_id": agentId};
+    print("agentId : $agentId");
     if (checkConnection) {
-      final response = await http.post(url, body: body);
-      printLog(
-          "------------------------AGENT CUSTOMER DETAILS STATUSCODE-------------------");
+      final response = await http.post(url, body:{"agentId": agentId},);
+      printLog("------------------------AGENT CUSTOMER DETAILS STATUSCODE-------------------");
       printLog(response.statusCode);
       printLog(
-          "------------------------AGENT CUSTOMER DETAILS BODY--------------------------");
+          "------------------------AGENT CUSTOMER DETAILS BODY RD--------------------------");
       printLog(response.body);
-      if (response.statusCode == 200 || response.statusCode == 201) {
+      if (response.statusCode == 200 ) {
         try {
           return Right(
               AgentCustomerDetailsModel.fromJson(jsonDecode(response.body)));

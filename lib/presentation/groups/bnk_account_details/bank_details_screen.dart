@@ -136,7 +136,8 @@ class _BankDetailsScreenState extends State<BankDetailsScreen> {
         Provider.of<BankAccountUpdateProvider>(context, listen: false);
     print("cust id passed = ${_custId}");
     await bankAccountUpdateProvider
-        .getBankAccountDetails(int.parse(_custId.toString()));
+       // .getBankAccountDetails(int.parse(_custId.toString()));
+        .getBankAccountDetails(_custId.toString());
     setState(() {
       if (bankAccountUpdateProvider.bankAccountUpdateResponse != null) {
         statusType = "EDIT";

@@ -192,6 +192,11 @@ Future<void> saveFcmToken(
             (route) => false,
       );
     } else {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const BottomNavScreen()),
+            (route) => false,
+      );
       print('Failed to fetch FCM token after retries');
       log('Failed to fetch FCM token after retries');
     }
