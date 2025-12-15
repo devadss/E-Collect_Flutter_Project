@@ -1,0 +1,288 @@
+import 'package:collection_qr_flutter/core/colors.dart';
+import 'package:collection_qr_flutter/data/provider/integrated_loan_detail_provider.dart';
+import 'package:collection_qr_flutter/data/provider/integration_loan_list_provider.dart';
+import 'package:collection_qr_flutter/domain/model/integrated_loan_list_model.dart';
+import 'package:collection_qr_flutter/presentation/loan_integrated/integrated_loan_detail.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+class LoanList extends StatefulWidget {
+  const LoanList({super.key});
+
+  @override
+  State<LoanList> createState() => _LoanListState();
+}
+
+class _LoanListState extends State<LoanList> {
+  IntegratedLoanListResponse? _integratedLoanListResponse;
+  List<CustomerData>? _filteredList;
+
+  Future<void> fetchIntegratedLoans() async {
+    final integratedLoanProvider = Provider.of<IntegratedLoanListProvider>(context , listen:false);
+   await integratedLoanProvider.fetchIntegratedLoans("", "", "", "");
+   setState(() {
+     _integratedLoanListResponse = integratedLoanProvider.integratedLoanListResponse;
+     _filteredList =  _integratedLoanListResponse!.data;
+   });
+  }
+
+  Future<void> fetchIntegratedLoanDetails(
+
+      String accNo)
+  async {
+    final integratedLoanDetailProvider = Provider.of<IntegratedLoanDetailProvider>(context , listen: false);
+    await integratedLoanDetailProvider.getIntegratedLoanDetails("", "00", "", "",accNo );
+    if(integratedLoanDetailProvider.integratedLoanListResponse?.loanDate.isNotEmpty == true){
+      Navigator.push(context, MaterialPageRoute(builder: (context)=> IntegratedLoanDetail(
+        name: integratedLoanDetailProvider.integratedLoanListResponse?.name ?? "",
+        custNo: integratedLoanDetailProvider.integratedLoanListResponse?.custNo ?? "",
+        loanDate: integratedLoanDetailProvider.integratedLoanListResponse?.loanDate.toString() ?? "",
+          loanAmount: integratedLoanDetailProvider.integratedLoanListResponse?.loanAmount.toString() ?? "",
+          loanNumber: integratedLoanDetailProvider.integratedLoanListResponse?.loanNo.toString() ?? "",
+          loanType: integratedLoanDetailProvider.integratedLoanListResponse?.loanType.toString() ?? "",
+          loanPeriod: integratedLoanDetailProvider.integratedLoanListResponse?.loanPeriod.toString() ?? "",
+          loanInterest: integratedLoanDetailProvider.integratedLoanListResponse?.interestRate.toString() ?? "",
+          principalAmountReceived: integratedLoanDetailProvider.integratedLoanListResponse!.receiptDetails[0].totalReceived,
+        principalAmountBalance:  integratedLoanDetailProvider.integratedLoanListResponse!.receiptDetails[0].balance,
+        principalAmountOverdue:  integratedLoanDetailProvider.integratedLoanListResponse!.receiptDetails[0].overdue,
+        principalAmountReceipt:  integratedLoanDetailProvider.integratedLoanListResponse!.receiptDetails[0].currentReceipt,
+        interestAmountReceived:  integratedLoanDetailProvider.integratedLoanListResponse!.receiptDetails[1].totalReceived,
+        interestAmountBalance:  integratedLoanDetailProvider.integratedLoanListResponse!.receiptDetails[1].balance,
+        interestAmountOverdue:  integratedLoanDetailProvider.integratedLoanListResponse!.receiptDetails[1].overdue,
+        interestAmountReceipt:  integratedLoanDetailProvider.integratedLoanListResponse!.receiptDetails[1].currentReceipt,
+        penalInterestAmountReceived:  integratedLoanDetailProvider.integratedLoanListResponse!.receiptDetails[2].totalReceived,
+        penalInterestAmountBalance:  integratedLoanDetailProvider.integratedLoanListResponse!.receiptDetails[2].balance,
+        penalInterestAmountReceipt:  integratedLoanDetailProvider.integratedLoanListResponse!.receiptDetails[2].currentReceipt,
+        penalInterestAmountOverdue:  integratedLoanDetailProvider.integratedLoanListResponse!.receiptDetails[2].overdue,
+
+
+      )));
+    }
+  }
+
+  @override
+  void initState() {
+    fetchIntegratedLoans();
+    super.initState();
+  }
+
+  void filterList(String filterValue){
+    print("filterValue $filterValue");
+    if(filterValue.isEmpty){
+      _filteredList = _integratedLoanListResponse!.data;
+    }else{
+      setState(() {
+        _filteredList = _integratedLoanListResponse!.data.where((item) {
+          return item.custName.toLowerCase().contains(filterValue);
+        }).toList();
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        title: Center(
+          child: Text(textAlign: TextAlign.center, "LOANS", style: TextStyle(
+            color: home2, fontSize: 22, fontWeight: FontWeight.w700
+          ),),
+        ),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Container(
+            width: double.infinity,
+            height: 50,
+            decoration: BoxDecoration(
+              color: Colors.white,
+
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12.withAlpha(10),
+                  offset: Offset(0, 1),
+                  spreadRadius: 3,
+                  blurRadius: 9
+                ),
+              ],
+
+            ),
+            child: TextField(
+             // controller: _searchController,
+              onChanged:
+                filterList
+              ,
+              decoration: InputDecoration(
+
+                prefixIcon: Icon(Icons.search),
+                labelStyle: TextStyle(color: Colors.black),
+                label: Text("Search account number",style: TextStyle(fontSize: 12),),
+
+                border: OutlineInputBorder(
+
+                  borderRadius: BorderRadius.circular(10),
+
+                )
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 20,),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Text(textAlign: TextAlign.start,"Active Loans", style: TextStyle(color:home2, fontWeight: FontWeight.w700),),
+        ),
+          SizedBox(height: 20,),
+          Expanded(
+            child: ListView.builder(
+                itemCount: _filteredList?.length,
+                itemBuilder: (BuildContext context , int index){
+              return InkWell(
+                onTap: ()
+                {
+                  fetchIntegratedLoanDetails(
+                      _filteredList![index].lnGlobalAccNo.toString()
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Card(
+                    elevation: 2,
+                    shadowColor: Colors.black26,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Customer Name
+                          _filteredList?[index].custName == null?
+                          LinearProgressIndicator(color: Colors.black12,backgroundColor:Colors.black26.withAlpha(10),borderRadius: BorderRadius.circular(5),
+                            minHeight: 20,
+                          ):
+                          Text(
+                            _filteredList?[index].custName ?? "",
+                            style: TextStyle(
+                              color: home1,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          // Scheme Name
+                          _filteredList?[index].schName == null?
+                          LinearProgressIndicator(color: Colors.black12,backgroundColor:Colors.black26.withAlpha(10),borderRadius: BorderRadius.circular(5),
+                            minHeight: 10,
+                          ):
+                          Text(
+                            _filteredList?[index].schName ?? "",
+                            style: TextStyle(
+                              color: home2,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500
+                            ),
+                          ),
+                          const Divider(height: 20, thickness: 1.2),
+
+                          // Info Labels Row
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: const [
+                              Text(
+                                "Customer ID",
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                "Account Number",
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                "Scheme Code",
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+
+                          // Data Row
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              _filteredList?[index].custId ==  null?
+                              CircularProgressIndicator(color: Colors.black12,
+                                backgroundColor:Colors.black26.withAlpha(10),
+
+                              ):
+                              Text(
+                                _filteredList?[index].custId ?? "",
+                                style: TextStyle(
+                                  color: home1,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 11,
+                                ),
+                              ),
+                              _filteredList?[index].lnGlobalAccNo == null?
+                              CircularProgressIndicator(color: Colors.black12,
+                                backgroundColor:Colors.black26.withAlpha(10),
+
+                              ):
+                              Text(
+                                _filteredList?[index].lnGlobalAccNo ?? "",
+                                style: TextStyle(
+                                  color: home1,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 11,
+                                ),
+                              ),
+                              _filteredList?[index].schCode == null?
+                              CircularProgressIndicator(color: Colors.black12,
+                                backgroundColor:Colors.black26.withAlpha(10),
+
+                              ):
+                              Text(
+                                _filteredList?[index].schCode ?? "",
+                                style: TextStyle(
+                                  color: home1,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
+          )
+
+      ],
+      ),
+    );
+  }
+}

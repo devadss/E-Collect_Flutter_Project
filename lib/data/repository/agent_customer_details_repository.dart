@@ -22,9 +22,9 @@ class AgentCustomerDetailsRepository
       getAgentCustomerDetails(String agentId) async {
     final vendorUrl = await loadVendorUrl();
     final url =
-        Uri.parse("https://mftctest.digicob.in/getRDCustomerunderAgentList");
+        //Uri.parse("https://mftctest.digicob.in/getRDCustomerunderAgentList");
         //  Uri.parse("${vendorUrl}getCustomerlist");
-       // Uri.parse(vendorUrl);
+        Uri.parse(vendorUrl);
     print(
         "--------------------------AGENT CUSTOMER DETAILS VENDOR URL------------------");
     print(vendorUrl);
