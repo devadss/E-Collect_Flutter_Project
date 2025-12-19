@@ -1,5 +1,10 @@
 import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../core/utils.dart' as utl;
+import '../../data/provider/loan_cash_coolection_provider.dart';
+import '../../data/storage/shared_pref_helper.dart';
 
 class IntegratedLoanDetail extends StatefulWidget {
   final String loanDate;
@@ -29,6 +34,21 @@ class IntegratedLoanDetail extends StatefulWidget {
 }
 
 class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
+  String? agentId;
+  String? agent_Id;
+  String? corpCode;
+  String? agentEmail;
+  String? agentIdValue;
+  String? token;
+  String? agentMobile;
+  String? subAgentCodeNew;
+  String? cid;
+  String? subagentId;
+  String? agentName;
+  String? agentOriginId;
+  String? paymentSessionId;
+  String? branchCode;
+  String? selectedAccNumber;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -501,4 +521,136 @@ shadowColor: Colors.white,
       ),
     );
   }
+/*  Future<void> loadSharedPrefs() async {
+    final id = await SharedPref().getSubAgentCode();
+    final agentid = await SharedPref().getAgentId();
+    String custid = await SharedPref().getCustId();
+
+    final crpCd = await SharedPref().getCorpCode();
+    final tok = await SharedPref.shared.getTokenValue();
+    final mail = await SharedPref().getEmail();
+    final agentOrigin = await SharedPref().getAgentOriginId();
+    final custId = await SharedPref().getAgentId();
+    final subAgentId = await SharedPref().getSubAgentId();
+    final sub_AgentCodeNew = await SharedPref().getSubAgentCodeNew();
+    final phone = await SharedPref().getParentAgentMobNum();
+    final name = await SharedPref().getAgentName();
+    final brCode = await SharedPref().getBranchCode();
+
+    setState(() {
+      cid = custid;
+      subAgentCodeNew = sub_AgentCodeNew;
+      branchCode = brCode;
+      agent_Id = agentid;
+      agentId = id;
+      corpCode = crpCd;
+      agentIdValue = custId;
+      token = tok;
+      agentName = name;
+      agentOriginId = agentOrigin;
+      agentEmail = mail;
+      agentMobile = phone;
+      subagentId = subAgentId;
+    });
+    editAmountController.addListener(validateInput);
+  }
+  Future<void> loanCashCollection() async {
+    utl.showProgressDialog(context);
+    final loanCashProvider =
+    Provider.of<LoanCashCollectionProvider>(context, listen: false);
+    await loanCashProvider.submitCashCollection(
+        agentName.toString(),
+        agentId.toString(),
+        agentOriginId.toString(),
+        agentMobile.toString(),
+        agentEmail.toString(),
+        int.parse(subagentId.toString()),
+        "",
+        subAgentCodeNew.toString(),
+        widget.name,
+        widget.custNo,
+        widget.loanNumber,
+        widget.,
+        "",
+        double.parse(editAmountController.text),
+        "",
+        corpCode.toString(),
+        branchCode.toString(),
+        "",
+        "MOB", "CASH", "");
+    if (loanCashProvider.loanCashCollectionResponse != null) {
+      Navigator.pop(context);
+      print(loanCashProvider.loanCashCollectionResponse?.message.toString());
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return linkShareAlert(
+                context,
+                loanCashProvider.loanCashCollectionResponse!.status == "Y"
+                    ? true
+                    : false,
+                loanCashProvider.loanCashCollectionResponse!.message
+                    .toString());
+          });
+    } else {
+      Navigator.pop(context);
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return linkShareAlert(
+                context, false, loanCashProvider.loanCollectionErr.toString());
+          });
+    }
+  }*/
+
+  AlertDialog linkShareAlert(BuildContext context, bool status, String msg) {
+    return AlertDialog(
+      icon: status == true
+          ? const Icon(
+        Icons.check_circle,
+        color: Colors.green,
+        size: 30,
+      )
+          : const Icon(
+        Icons.error,
+        color: Colors.red,
+        size: 30,
+      ),
+      alignment: Alignment.center,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10))),
+      title: Center(
+          child: status == true ? const Text("Success") : const Text("Error")),
+      backgroundColor: Colors.white,
+      content: SizedBox(
+        height: 120,
+        child: Column(
+          children: [
+            Text(
+              msg,
+              style: const TextStyle(
+                  fontWeight: FontWeight.w300,
+                  color: Colors.black,
+                  fontSize: 15),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: home1,
+                    foregroundColor: Colors.white,
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)))),
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                child: const Text(" OK "))
+          ],
+        ),
+      ),
+    );
+  }
+
 }

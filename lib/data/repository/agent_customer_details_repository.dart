@@ -36,7 +36,7 @@ class AgentCustomerDetailsRepository
     final body = {"agent_id": agentId};
     print("agentId : $agentId");
     if (checkConnection) {
-      final response = await http.post(url, body:{"agentId": agentId},);
+      final response = await http.post(url, body:{"agent_Id": agentId},);
       printLog("------------------------AGENT CUSTOMER DETAILS STATUSCODE-------------------");
       printLog(response.statusCode);
       printLog(

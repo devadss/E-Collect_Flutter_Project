@@ -57,8 +57,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       case 0:
         return  HomePage(userType: loggedInUserTPYE.toString(),);
       case 1:
-       // return const LoanHomePage();
-        return const LoanList();
+        return const LoanHomePage();
+       // return const LoanList();
       case 2:
       //  return const ProfileHomePage();
        return const TestProfilePage();

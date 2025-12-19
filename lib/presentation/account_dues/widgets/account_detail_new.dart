@@ -277,10 +277,11 @@ loadSharedPrefs();
                   print(agentMobile);
                   print("---------------------ENTITYID--------------------");
                   print(agentId);
+                  print("AccountDetailNew");
                   final paymentSession =
                       await CreatePaymentSessionIdRepository()
                           .getPaymentSessionId(
-                              agentOriginId: agentId,
+                              agentOriginId: agentOriginId,
                               agentEmail: agentEmail,
                               customerName: widget.custName,
                               customerPhone: "",
@@ -292,7 +293,7 @@ loadSharedPrefs();
                               token: token,
                               amount: amountController.text,
                               agentPhone: agentMobile,
-                              agentId: widget.custId,
+                              agentId: agentId,
                               note: "Payment For Agent $agentName",
                               subAgentId: subagentId,
                               agentName: agentName,
@@ -584,7 +585,8 @@ loadSharedPrefs();
     final phone = await SharedPref().getParentAgentMobNum();
     final agentid = await SharedPref().getAgentId();
     final subAgentId = await SharedPref().getSubAgentId();
-    final agentOrigin = await SharedPref().getAgentOriginId();
+    final agentOrigin = await SharedPref().getSubAgentCode();
+
     final mail = await SharedPref().getEmail();
     final corp = await SharedPref().getCorpCode();
     final tok = await SharedPref.shared.getTokenValue();
@@ -622,7 +624,7 @@ loadSharedPrefs();
     Provider.of<CashTranscationProvider>(context, listen: false);
     final cash = await cashPaymentProvider.getTranscations(
         agentName: agentName,
-        agentId: custId,
+        agentId: agentId,
         agentOriginId: agentOriginId,
         agentPhone: phoneNumber,
         agentEmail: agentEmail,

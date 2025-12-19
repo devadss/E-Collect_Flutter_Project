@@ -539,7 +539,7 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
                 final paymentSession = await CreatePaymentSessionIdRepository()
                     .getPaymentSessionId(
                     agentOriginId
-                    :agentId,
+                    :agentOriginId,
                     agentEmail
                     :agentEmail,
                     customerName
@@ -678,21 +678,22 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
   Future<void> loadSharedPrefs() async {
     final name = await SharedPref().getAgentName();
     final phone = await SharedPref().getParentAgentMobNum();
-    final agentid = await SharedPref().getAgentId();
-    final subAgentId = await SharedPref().getSubAgentId();
+    final id = await SharedPref().getAgentId();
+    final subAgentID = await SharedPref().getSubAgentId();
     final agentOrigin = await SharedPref().getAgentOriginId();
     final mail = await SharedPref().getEmail();
     final corp = await SharedPref().getCorpCode();
     final tok = await SharedPref.shared.getTokenValue();
     final sub_AgentCodeNew = await SharedPref.shared.getSubAgentCodeNew();
 
+
     // Trigger rebuild after fetching the userName
     if (mounted) {
       setState(() {
         agentName = name;
-        subagentId = subAgentId;
         agentMobile = phone;
-        agentId = agentid;
+        subagentId = subAgentID;
+        agentId = id;
         agentOriginId = agentOrigin;
         agentEmail = mail;
         corpCode = corp;

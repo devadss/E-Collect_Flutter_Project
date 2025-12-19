@@ -33,6 +33,7 @@ class CreatePaymentSessionIdRepository
       required String? collectionType,
 
   }) async {
+    print("collectionType = $collectionType");
     String endPoint = "";
     //final url = Uri.parse("${baseUrl}api/Cashfree/MerchantOrderCreate");
     collectionType == "LOAN"? endPoint = "LoanOrderCreate":

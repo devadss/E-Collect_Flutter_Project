@@ -15,6 +15,7 @@ class ApiService {
   Future<dynamic> getApiData(String endPoint) async {
     print("Inside ApiService");
     final uri = Uri.parse("$_baseUrl$endPoint");
+    print("$_baseUrl$endPoint");
     final response = await http.get(uri, headers: _headers());
     print(response.body);
     if (response.statusCode == 200) {

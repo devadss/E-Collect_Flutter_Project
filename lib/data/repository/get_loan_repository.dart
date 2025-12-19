@@ -25,6 +25,8 @@ class GetLoanRepository implements IGetLoanRepository {
     bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     final data = await _apiService.getApiData(
         "api/GetLoans?customerName=$customerName&accountNo=$accountNo&status=$status&scheme=$scheme&agent=$agent&page=$page&pageSize=$pageSize");
+print("GetLoanRepository");
+    print(data);
     if (checkConnection) {
       try {
         return Right(CollectionLoanModel.fromJson(jsonDecode(data)));

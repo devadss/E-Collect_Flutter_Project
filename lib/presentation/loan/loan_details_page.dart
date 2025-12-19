@@ -231,7 +231,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
         Provider.of<LoanCashCollectionProvider>(context, listen: false);
     await loanCashProvider.submitCashCollection(
         agentName.toString(),
-        agentId.toString(),
+        agent_Id.toString(),
         agentOriginId.toString(),
         agentMobile.toString(),
         agentEmail.toString(),
@@ -284,7 +284,9 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
       required String? amount,
       required String? phoneNumber,
       required String? entityId,
-      required String? note}) async {
+      required String? note})
+  async {
+
     final cashPaymentProvider =
         Provider.of<CashTranscationProvider>(context, listen: false);
     final cash = await cashPaymentProvider.getTranscations(
@@ -345,7 +347,8 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
     String accNo,
     String custId,
     String amt,
-  ) async {
+  )
+  async {
     return await showDialog<bool>(
       context: context,
       barrierDismissible: false, // Prevent closing by tapping outside
@@ -439,20 +442,21 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          getCashTrans(
-                            token: token,
-                            customerName: name,
-                            custPhoneNumber: widget.customerPhoneNumber,
-                            custAcNumber: accNo,
-                            custId: custId,
-                            custEmail: widget.email,
-                            phoneNumber: "$agentMobile",
-                            entityId: agentId,
-                            note: "Payment For Agent $agentName",
-                            amount: amt,
-                          );
-                          Navigator.pop(context, true); // ✅ User confirmed
-                          Navigator.pop(context, true); // ✅ User confirmed
+                          loanCashCollection();
+                        //   getCashTrans(
+                        //     token: token,
+                        //     customerName: name,
+                        //     custPhoneNumber: widget.customerPhoneNumber,
+                        //     custAcNumber: accNo,
+                        //     custId: custId,
+                        //     custEmail: widget.email,
+                        //     phoneNumber: "$agentMobile",
+                        //     entityId: agent_Id,
+                        //     note: "Payment For Agent $agentName",
+                        //     amount: amt,
+                        //   );
+                        // //  Navigator.pop(context, true); // ✅ User confirmed
+                        //   Navigator.pop(context, true); // ✅ User confirmed
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.redAccent,
@@ -950,7 +954,9 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                               ElevatedButton(
                                                   onPressed: () {
                                                     Navigator.pop(context);
-                                                    loanCashCollection();
+                                                    paymentConfirmation(context, agentName!,
+                                                        widget.loanNumber, widget.custId, editAmountController.text);
+
                                                   },
                                                   style:
                                                       ElevatedButton.styleFrom(
@@ -1273,7 +1279,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
     final crpCd = await SharedPref().getCorpCode();
     final tok = await SharedPref.shared.getTokenValue();
     final mail = await SharedPref().getEmail();
-    final agentOrigin = await SharedPref().getAgentOriginId();
+    final agentOrigin = await SharedPref().getSubAgentCode();
     final custId = await SharedPref().getAgentId();
     final subAgentId = await SharedPref().getSubAgentId();
     final sub_AgentCodeNew = await SharedPref().getSubAgentCodeNew();
@@ -1428,7 +1434,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
   Future<void> generateQrPaymentSession() async {
     final paymentSession = await CreatePaymentSessionIdRepository()
         .getPaymentSessionId(
-            agentOriginId: agentId,
+            agentOriginId: agentOriginId,
             agentEmail: agentEmail,
             customerName: widget.customerName,
             customerPhone: widget.customerPhoneNumber,
@@ -1440,7 +1446,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
             token: token,
             amount: editAmountController.text,
             agentPhone: agentMobile,
-            agentId: widget.custId,
+            agentId: agent_Id,
             note: "Payment For Agent ${widget.scheme}",
             subAgentId: subagentId,
             agentName: agentName,
