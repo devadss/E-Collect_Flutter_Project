@@ -10,7 +10,7 @@ import '../storage/shared_pref_helper.dart';
 
 class RdclCustListRep implements RdclCustomerListInterface {
   Future<String> loadVendorUrl() async {
-    return await SharedPref().getCustomerUnderAgentUrl();
+    return await SharedPref().getRdclCustomerVendorUrl();
   }
 
   @override

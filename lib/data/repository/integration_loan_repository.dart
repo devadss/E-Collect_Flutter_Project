@@ -9,7 +9,7 @@ import '../storage/shared_pref_helper.dart';
 class IntegrationLoanRepository extends IntegrationLoanInterface{
   Future<String> loadVendorUrl() async {
     //final liveUrl = await SharedPref().getVendorUrlLive();
-    return await SharedPref().getCustomerUnderAgentUrl();
+    return await SharedPref().getCustomerLoanUrl();
   }
 
 

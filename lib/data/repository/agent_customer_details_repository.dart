@@ -14,7 +14,7 @@ class AgentCustomerDetailsRepository
     implements IAgentCustomerDetailsRepository {
   Future<String> loadVendorUrl() async {
     //final liveUrl = await SharedPref().getVendorUrlLive();
-    return await SharedPref().getCustomerUnderAgentUrl();
+    return await SharedPref().getCustomerRdUrl();
   }
 
   @override
@@ -28,7 +28,7 @@ class AgentCustomerDetailsRepository
     print(
         "--------------------------AGENT CUSTOMER DETAILS VENDOR URL------------------");
     print(vendorUrl);
-    print("loadVendorUrl = ${await loadVendorUrl()}");
+    print("çl = ${await loadVendorUrl()}");
     print(
         "--------------------------AGENT CUSTOMER DETAILS URL------------------");
     print(url);

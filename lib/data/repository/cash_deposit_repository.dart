@@ -9,7 +9,7 @@ import '../storage/shared_pref_helper.dart';
 class CashDepositRepository implements CashDepositInterface {
   Future<String> loadVendorUrl() async {
     //final liveUrl = await SharedPref().getVendorUrlLive();
-    return await SharedPref().getDueListUrl();
+    return await SharedPref().getDueListRdUrl();
 
   }
 

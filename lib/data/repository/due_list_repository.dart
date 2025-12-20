@@ -13,7 +13,7 @@ class DueListRepository implements IDueListRepository {
 
   Future<String> loadVendorUrl() async {
     //final liveUrl = await SharedPref().getVendorUrlLive();
-    return await SharedPref().getDueListUrl();
+    return await SharedPref().getDueListRdUrl();
 
   }
 

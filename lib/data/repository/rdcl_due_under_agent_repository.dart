@@ -9,7 +9,7 @@ import '../storage/shared_pref_helper.dart';
 
 class RdclDueUnderAgentRepo implements RdclDueUnderAgentModelInterface{
   Future<String> loadVendorUrl() async {
-    return await SharedPref().getDueListUrl();
+    return await SharedPref().getDueListRdUrl();
 
   }
 

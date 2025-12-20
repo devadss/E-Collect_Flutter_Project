@@ -112,7 +112,16 @@ class SharedPrefKeys {
   static const String pinCodeText = "PIN_CODE_TEXT";
   static const String username = "USER_NAME";
   static const String parent_username = "PARENT_USERNAME";
-  static const String vendorUrlLive = "VENDOR_LIVE_URL";
+  //----------------------------------------------------------------------------
+  static const String RdclCustomervendorUrl = "getCustomerRdclUrl"; //
+  static const String RdclDueListvendorUrl = "getDueListRdclUrl";//
+  static const String RdCustomerVendorUrl = "getCustomerRdUrl";//
+  static const String RdDueVendorUrl = "getDueListRdUrl";//
+  static const String LoanCustomerVendorUrl = "getCustomerLoanUrl";//
+  static const String LoanDueVendorUrl = "getDueListLoanUrl";
+  static const String LoanAccountHolderVendorUrl = "getLoanAccountHolderUrl";
+  //----------------------------------------------------------------------------
+
   static const String vendorUrlTest = "VENDOR_TEST_URL";
   static const String userType = "USER_TYPE";
   static const String subAgent_username = "SUB_AGENT_USERNAME";

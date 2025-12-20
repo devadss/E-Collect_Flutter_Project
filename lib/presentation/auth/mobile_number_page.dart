@@ -85,14 +85,31 @@ class _MobileNumberVerificationPageState
         if (vendorBaseUrlProvider.collectionBaseUrlModel != null) {
           print(
               "------------------------------VENDOR BASED URL MODEL CUST-----------");
-          print(vendorBaseUrlProvider.collectionBaseUrlModel!.getCustomerUrl
+          // print(vendorBaseUrlProvider.collectionBaseUrlModel!.getCustomerUrl
+          //     .toString());
+
+          SharedPref.shared.setRdclCustomerVendorUrl(vendorBaseUrlProvider
+              .collectionBaseUrlModel!.getCustomerRdclUrl
               .toString());
-          SharedPref.shared.setCustomerUnderAgentUrl(vendorBaseUrlProvider
-              .collectionBaseUrlModel!.getCustomerUrl
+          SharedPref.shared.setDueListRdclUrl(vendorBaseUrlProvider
+              .collectionBaseUrlModel!.getDueListRdclUrl
               .toString());
-          SharedPref.shared.setDueListUrl(vendorBaseUrlProvider
-              .collectionBaseUrlModel!.getDueListUrl
+          SharedPref.shared.setCustomerRdUrl(vendorBaseUrlProvider
+              .collectionBaseUrlModel!.getCustomerRdUrl
               .toString());
+          SharedPref.shared.setDueListRdUrl(vendorBaseUrlProvider
+              .collectionBaseUrlModel!.getDueListRdUrl
+              .toString());
+          SharedPref.shared.setCustomerLoanUrl(vendorBaseUrlProvider
+              .collectionBaseUrlModel!.getCustomerLoanUrl
+              .toString());
+          SharedPref.shared.setDueListLoanUrl(vendorBaseUrlProvider
+              .collectionBaseUrlModel!.getDueListLoanUrl
+              .toString());
+          SharedPref.shared.setLoanAccountHolderUrl(vendorBaseUrlProvider
+              .collectionBaseUrlModel!.getLoanAccountHolderUrl
+              .toString());
+
           SharedPref.shared.setUserType(vendorBaseUrlProvider
               .collectionBaseUrlModel!.userType
               .toString());

@@ -12,7 +12,7 @@ import '../storage/shared_pref_helper.dart';
 class DueUnderAgentRepository implements IDueUnderAgentRepository {
   Future<String> loadVendorUrl() async {
     //final liveUrl = await SharedPref().getVendorUrlLive();
-    return await SharedPref().getDueListUrl();
+    return await SharedPref().getDueListRdUrl();
   }
 
   @override

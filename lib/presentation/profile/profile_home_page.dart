@@ -442,8 +442,14 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
     await SharedPref.shared.setSubAgentId("");
     await SharedPref.shared.setSubAgentCode("");
     await SharedPref.shared.setUserType("");
-    await SharedPref.shared.setDueListUrl("");
-    await SharedPref.shared.setCustomerUnderAgentUrl("");
+    await SharedPref.shared.setUserType("");
+    await SharedPref.shared.setRdclCustomerVendorUrl("");
+    await SharedPref.shared.setDueListRdclUrl("");
+    await SharedPref.shared.setCustomerRdUrl("");
+    await SharedPref.shared.setDueListRdUrl("");
+    await SharedPref.shared.setCustomerLoanUrl("");
+    await SharedPref.shared.setDueListLoanUrl("");
+    await SharedPref.shared.setLoanAccountHolderUrl("");
     await SharedPref.shared.setSubAgentName("");
     await SharedPref.shared.setSubAgentMobNum("");
     await SharedPref.shared.setSubAgentCodeNew("");

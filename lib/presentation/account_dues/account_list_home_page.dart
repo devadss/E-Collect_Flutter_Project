@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../domain/model/agent_customer_details_model.dart';
+import '../loan_integrated/loan_list.dart';
 
 
 class AccountListHomePage extends StatefulWidget {
@@ -18,6 +19,8 @@ class AccountListHomePage extends StatefulWidget {
 class _AccountListHomePageState extends State<AccountListHomePage> {
   String? agentId;
   String? corpCode;
+  bool? showShadowLoan=false;
+  bool? showShadowAcc = true;
   final TextEditingController searchController = TextEditingController();
   List<Customer>? _filteredCustomers;
   bool _isLoading = true;
@@ -322,14 +325,79 @@ class _AccountListHomePageState extends State<AccountListHomePage> {
         backgroundColor: white,
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: const Text(
-          "Account List",
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-            fontSize: 23,
-            color: home2,
-          ),
-        ),
+        title:
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+              InkWell(
+                onTap: (){
+                  setState(() {
+                    showShadowLoan = false;
+                    showShadowAcc = true;
+                  });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(color:
+                      showShadowAcc == true?
+                     home1: Colors.white, blurRadius: 9, spreadRadius: 1),
+
+                    ]
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: const Text(
+                      //"Account List",
+                      "RD List",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 23,
+                        color: home2,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+                InkWell(
+                  onTap: (){
+                    setState(() {
+                      showShadowLoan = true;
+                      showShadowAcc = false;
+                    });
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>LoanList()));
+                    showShadowLoan = false;
+                    showShadowAcc = true;
+                  },
+                  child: Container(
+
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(color:
+                          showShadowLoan == true?
+                          Colors.black12:Colors.white, blurRadius: 8, spreadRadius: 2),
+
+                        ]
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: const Text(
+                        "Loan List",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 23,
+                          color: home2,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],)
+
       ),
       backgroundColor: white,
       body: Consumer<AgentCustomerDetailsProvider>(

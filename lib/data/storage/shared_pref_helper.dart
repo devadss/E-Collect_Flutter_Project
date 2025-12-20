@@ -67,22 +67,70 @@ class SharedPref {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.userType) ?? '';
   }
-  setDueListUrl(String value) async {
+
+  setRdclCustomerVendorUrl(String value) async {
     final prefs = await _getPrefs();
-    return prefs.setString(SharedPrefKeys.vendorUrlTest, value);
+    return prefs.setString(SharedPrefKeys.RdclCustomervendorUrl, value);
   }
-  getDueListUrl() async {
+  getRdclCustomerVendorUrl() async {
     final prefs = await _getPrefs();
-    return prefs.getString(SharedPrefKeys.vendorUrlTest) ?? '';
+    return prefs.getString(SharedPrefKeys.RdclCustomervendorUrl) ?? '';
   }
-  setCustomerUnderAgentUrl(String value) async {
+
+  setDueListRdclUrl(String value) async {
     final prefs = await _getPrefs();
-    return prefs.setString(SharedPrefKeys.vendorUrlLive, value);
+    return prefs.setString(SharedPrefKeys.RdclDueListvendorUrl, value);
   }
-  getCustomerUnderAgentUrl() async {
+  getDueListRdclUrl() async {
     final prefs = await _getPrefs();
-    return prefs.getString(SharedPrefKeys.vendorUrlLive) ?? '';
+    return prefs.getString(SharedPrefKeys.RdclDueListvendorUrl) ?? '';
   }
+
+  setCustomerRdUrl(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.RdCustomerVendorUrl, value);
+  }
+  getCustomerRdUrl() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.RdCustomerVendorUrl) ?? '';
+  }
+
+  setDueListRdUrl(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.RdDueVendorUrl, value);
+  }
+  getDueListRdUrl() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.RdDueVendorUrl) ?? '';
+  }
+
+  setCustomerLoanUrl(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.LoanCustomerVendorUrl, value);
+  }
+  getCustomerLoanUrl() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.LoanCustomerVendorUrl) ?? '';
+  }
+
+  setDueListLoanUrl(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.LoanDueVendorUrl, value);
+  }
+  getDueListLoanUrl() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.LoanDueVendorUrl) ?? '';
+  }
+
+  setLoanAccountHolderUrl(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.LoanAccountHolderVendorUrl, value);
+  }
+  getLoanAccountHolderUrl() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.LoanAccountHolderVendorUrl) ?? '';
+  }
+
   setParentAgentName(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.parent_username, value);

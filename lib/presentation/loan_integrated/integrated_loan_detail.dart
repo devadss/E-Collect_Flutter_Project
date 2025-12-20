@@ -923,35 +923,35 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
               SizedBox(
                 height: 10,
               ),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                        shadowColor: Colors.white,
-                        backgroundColor: Colors.white,
-                        foregroundColor: home1,
-                        side: BorderSide(color: home1),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadiusGeometry.circular(10))),
-                    child: Text("Send Payment Link")),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                        shadowColor: Colors.white,
-                        backgroundColor: Colors.white,
-                        foregroundColor: home1,
-                        side: BorderSide(color: home1),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadiusGeometry.circular(10))),
-                    child: Text("Account Transfer")),
-              )
+              // SizedBox(
+              //   width: double.infinity,
+              //   child: ElevatedButton(
+              //       onPressed: () {},
+              //       style: ElevatedButton.styleFrom(
+              //           shadowColor: Colors.white,
+              //           backgroundColor: Colors.white,
+              //           foregroundColor: home1,
+              //           side: BorderSide(color: home1),
+              //           shape: RoundedRectangleBorder(
+              //               borderRadius: BorderRadiusGeometry.circular(10))),
+              //       child: Text("Send Payment Link")),
+              // ),
+              // SizedBox(
+              //   height: 10,
+              // ),
+              // SizedBox(
+              //   width: double.infinity,
+              //   child: ElevatedButton(
+              //       onPressed: () {},
+              //       style: ElevatedButton.styleFrom(
+              //           shadowColor: Colors.white,
+              //           backgroundColor: Colors.white,
+              //           foregroundColor: home1,
+              //           side: BorderSide(color: home1),
+              //           shape: RoundedRectangleBorder(
+              //               borderRadius: BorderRadiusGeometry.circular(10))),
+              //       child: Text("Account Transfer")),
+              // )
             ],
           ),
         ),
