@@ -9,7 +9,8 @@ class IntegratedLoanDetailRepository implements IntegratedLoanDetailInterface{
   @override
   Future<Either<String, IntegratedLoanDetails>> getIntegratedLoanDetails
       (String flag, String branchId, String schemeCode, String demandDate, String accountNumber) async {
-    final uri = Uri.parse("https://doorstepthazhava.digicob.in/getLoanAccountHolder");
+   // final uri = Uri.parse("https://doorstepthazhava.digicob.in/getLoanAccountHolder");
+    final uri = Uri.parse("https://mftctest.digicob.in/getLoanAccountHolder");
     final request = await http.post(uri,
     body: jsonEncode({
       "flag": flag,

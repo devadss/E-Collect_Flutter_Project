@@ -9,17 +9,14 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:shimmer/shimmer.dart';
 import '../../../../core/colors.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../core/utils.dart';
 import '../../data/provider/agent_transaction_provider.dart';
 import '../../data/provider/cash_transcation_history_provider.dart';
 import '../../data/provider/collection_summary_provider.dart';
-import '../../data/provider/fetch_account_balance_provider.dart';
 import '../../data/provider/qr_transcation_history_provider.dart';
 import '../../data/provider/transfer_transaction_provider.dart';
-import '../../data/repository/cust_reg_repository.dart';
 import '../../domain/model/link_transaction_history_model.dart';
 import '../../domain/model/qr_transaction_history_model.dart';
 import '../trancstion/transction_history_page.dart';
@@ -107,6 +104,7 @@ class _HomePageState extends State<HomePage>
   @override
   void dispose() {
     _animationController.dispose();
+
     super.dispose();
   }
 
@@ -301,14 +299,14 @@ class _HomePageState extends State<HomePage>
                             //'COLLECTION',
                             corpCode,
                             agentOriginId);
-                        await transferProvider.getQrTranscationHistory(
-                            period,
-                            from,
-                            to,
-                            userType,
-                            //'COLLECTION',
-                            corpCode,
-                            agentOriginId);
+                        // await transferProvider.getQrTranscationHistory(
+                        //     period,
+                        //     from,
+                        //     to,
+                        //     userType,
+                        //     //'COLLECTION',
+                        //     corpCode,
+                        //     agentOriginId);
 
                         await cashTransProvider.getCashTranscationHistory(
                             period,
@@ -319,8 +317,8 @@ class _HomePageState extends State<HomePage>
                             subAgentID,
                             corpCode,
                             agentOriginId);
-                        await linkProvider.getLinkTransactionHistory(period,
-                            from, to, subAgentID!, corpCode!, agentOriginId!);
+                        // await linkProvider.getLinkTransactionHistory(period,
+                        //     from, to, subAgentID!, corpCode!, agentOriginId!);
                         await cashQrProvider.getCombinedResponse(period, from,
                             to, subAgentID!, corpCode!, agentOriginId!);
 
@@ -361,16 +359,16 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Future<void> fetchBalance() async {
-    final fetchBalanceProvider = Provider.of<BalanceProvider>(
-      context,
-      listen: false,
-    );
-    await fetchBalanceProvider.getFetchBalance(
-      entityId.toString(),
-      token.toString(),
-    );
-  }
+  // Future<void> fetchBalance() async {
+  //   final fetchBalanceProvider = Provider.of<BalanceProvider>(
+  //     context,
+  //     listen: false,
+  //   );
+  //   await fetchBalanceProvider.getFetchBalance(
+  //     entityId.toString(),
+  //     token.toString(),
+  //   );
+  // }
 
   Future<void> fetchTransaction() async {
     if (!mounted) return;
@@ -381,41 +379,7 @@ class _HomePageState extends State<HomePage>
     await provider.getTransactions(token.toString());
   }
 
-/*
-  void showProgressDialog(BuildContext context) {
 
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return Center(
-            child: SingleChildScrollView(
-              child: Dialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                child: const Padding(
-                  padding: EdgeInsets.all(50),
-                  child: Column(
-                    children: [
-                      CircularProgressIndicator(color: home2),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        "Please wait....",
-                        style: TextStyle(
-                          fontSize: 17,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        });
-  }
-*/
 
   String formatTimestamp(DateTime? timestamp) {
     if (timestamp == null) return "Invalid Date";
@@ -544,218 +508,7 @@ class _HomePageState extends State<HomePage>
     }
   }
 
-/*
-  Future<void> loadSharedPrefs(BuildContext context) async {
-    final name = await SharedPref().getSubAgentName();
-    final entId = await SharedPref().getAgentId();
-    final tok = await SharedPref().getTokenValue();
-    final agentOrgID = await SharedPref().getAgentOriginId();
-    final mobnum = await SharedPref().getParentAgentMobNum();
-    final subAgID = await SharedPref().getSubAgentId();
-    final crpCode = await SharedPref().getCorpCode();
-    // var loggedInUserType = await SharedPref.shared.getLoggedInUserType();
 
-    if (mounted) {
-      setState(() {
-        print("user type = ${widget.userType}");
-        widget.userType == "AGENT_LOAN"
-            ? userType = "LOAN_COLLECTION"
-            : userType = "COLLECTION";
-
-        widget.userType == "AGENT_LOAN"
-            ? cashCollectionType = "LOAN_COLLECTION_CASH"
-            : cashCollectionType = "LOAN_COLLECTION";
-
-        userName = name;
-        entityId = entId;
-        token = tok;
-        agentOriginId = agentOrgID;
-        mobNum = mobnum;
-        subAgentID = subAgID;
-        corpCode = crpCode;
-      });
-
-      // showProgressDialog(context); // <- Show loading
-    }
-
-    final provider =
-        Provider.of<QRTransactionHistoryProvider>(context, listen: false);
-    final now = DateTime.now();
-    final fromDate =
-        DateFormat('yyyy-MM-dd').format(now.subtract(const Duration(days: 30)));
-    final toDate = DateFormat('yyyy-MM-dd').format(now);
-
-    try {
-      await provider.getQrTranscationHistory(
-        "TODAY",
-        fromDate,
-        toDate,
-
-        ///  "COLLECTION",
-        userType,
-        corpCode,
-        agentOriginId,
-      );
-
-      // showProgressDialog(context);
-
-      final linkProvider =
-          Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
-      final cashQrProvider =
-          Provider.of<CashQrProvider>(context, listen: false);
-      final cashProvider =
-          Provider.of<CashTransactionHistoryProvider>(context, listen: false);
-      final transfer =
-          Provider.of<TransferHistoryProvider>(context, listen: false);
-
-      await linkProvider.getLinkTransactionHistory(
-          "TODAY", fromDate, toDate, subAgID!, crpCode!, agentOrgID!);
-      await cashQrProvider.getCombinedResponse(
-          "TODAY", fromDate, toDate, subAgID!, crpCode!, agentOrgID!);
-      await cashProvider.getCashTranscationHistory(
-          "TODAY",
-          fromDate,
-          toDate,
-          cashCollectionType,
-          // "COLLECTION_CASH",
-          subAgID,
-          crpCode,
-          agentOrgID);
-      await transfer.getQrTranscationHistory(
-          "TODAY",
-          fromDate,
-          toDate,
-          cashCollectionType,
-          // "COLLECTION_CASH",
-
-          crpCode,
-          agentOrgID);
-
-      // Final tasks
-      fetchTransaction();
-      fetchCollection();
-      //if (provider.showProgressDialog == false) {
-      // Navigator.pop(context);
-      // }
-    } finally {
-      //Navigator.pop(context);
-
-      // Always dismiss the dialog, even on error
-      // if (mounted) Navigator.pop(context);
-    }
-  }
-*/
-
-  Future<void> fetchBannerImages() async {
-    final images = await CustRegRepository().checkRegCust(int.parse(mobNum!));
-    images.fold(
-      (error) {
-        print("NO BANNER IMAGE IS FOUND");
-        isBannerAvailable = false;
-      },
-      (image) {
-        final data = image.response?.images;
-        if (data != null) {
-          print("BANNER IMAGE IS FOUND");
-          bannerImages.add(data.banner1.toString());
-          bannerImages.add(data.banner2.toString());
-          bannerImages.add(data.banner3.toString());
-          bannerImages.add(data.banner4.toString());
-          setState(() {
-            isBannerAvailable = true;
-          });
-        }
-      },
-    );
-  }
-
-  String addCommasToNumber(num number) {
-    final formatter = NumberFormat('#,##0.##');
-    String formattedNumber = formatter.format(number);
-
-    if (number is double) {
-      formattedNumber = number.toStringAsFixed(2);
-      if (formattedNumber.endsWith('.00')) {
-        formattedNumber = formattedNumber.substring(
-          0,
-          formattedNumber.length - 3,
-        );
-      } else if (formattedNumber.endsWith('0')) {
-        formattedNumber = formattedNumber.substring(
-          0,
-          formattedNumber.length - 1,
-        );
-      }
-    }
-
-    return formattedNumber;
-  }
-
-  Widget buildShimmerText({
-    String text = "Loading Balance.....",
-    double fontSize = 16,
-  }) {
-    return Shimmer.fromColors(
-      baseColor: grey[300]!,
-      highlightColor: grey[100]!,
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: fontSize,
-          fontWeight: FontWeight.bold,
-          color: grey[300],
-        ),
-      ),
-    );
-  }
-
-  Widget buildShimmerList() {
-    return Shimmer.fromColors(
-      baseColor: grey[300]!,
-      highlightColor: grey[100]!,
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(width: 180, height: 20, color: white),
-                Container(width: 24, height: 24, color: white),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [_buildShimmerSummaryCard(), _buildShimmerSummaryCard()],
-          ),
-          const SizedBox(height: 20),
-          Expanded(
-            child: ListView.separated(
-              itemCount: 5,
-              separatorBuilder: (_, __) => const Divider(thickness: 1),
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: Container(
-                    height: 50,
-                    width: 50,
-                    decoration: const BoxDecoration(
-                      color: white,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  title: Container(width: 120, height: 16, color: white),
-                  subtitle: Container(width: 80, height: 12, color: white),
-                  trailing: Container(width: 60, height: 16, color: white),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildShimmerSummaryCard() {
     return Container(
@@ -1143,60 +896,7 @@ class _HomePageState extends State<HomePage>
     }
   }
 
-/*
-  Future<void> _clearFilters() async {
-    showProgressDialog(context);
-    final qrProvider = context.read<QRTransactionHistoryProvider>();
-    final cashTransProvider = context.read<CashTransactionHistoryProvider>();
-    final linkProvider = context.read<LinkTransactionHistoryProvider>();
-    final cashQrProvider = context.read<CashQrProvider>();
-    final transferProvider = context.read<TransferHistoryProvider>();
 
-    // Reset to default period (THIS_MONTH)
-    final now = DateTime.now();
-    final fromDate = now.subtract(const Duration(days: 30));
-    final toDate = now;
-    final formattedFdate = DateFormat('yyyy-MM-dd').format(fromDate);
-    final formattedTdate = DateFormat('yyyy-MM-dd').format(toDate);
-
-    await qrProvider.getQrTranscationHistory(
-        "TODAY",
-        formattedFdate,
-        formattedTdate,
-        //"COLLECTION",
-        userType,
-        corpCode,
-        agentOriginId);
-
-    await cashTransProvider.getCashTranscationHistory(
-        "TODAY",
-        formattedFdate,
-        formattedTdate,
-        //  "COLLECTION_CASH",
-        cashCollectionType,
-        subAgentID!,
-        corpCode,
-        agentOriginId);
-    await transferProvider.getQrTranscationHistory("TODAY", formattedFdate,
-        formattedTdate, cashCollectionType, corpCode, agentOriginId);
-
-    await linkProvider.getLinkTransactionHistory("TODAY", formattedFdate,
-        formattedTdate, subAgentID!, corpCode!, agentOriginId!);
-    await cashQrProvider.getCombinedResponse("TODAY", formattedFdate,
-        formattedTdate, subAgentID!, corpCode!, agentOriginId!);
-    if (qrProvider.showProgressDialog == false) {
-      if (mounted) {
-        Navigator.pop(context);
-      }
-    }
-    setState(() {
-      _isFilterApplied = false;
-      _currentFilterPeriod = 'TODAY';
-      _currentFromDate = '';
-      _currentToDate = '';
-    });
-  }
-*/
 
   Widget _buildTabBar() {
     // Determine the actual user type - use widget.userType directly since it's more reliable
@@ -1225,23 +925,7 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  // List<Widget> _buildTabItems(bool isAgentLoan) {
-  //   if (isAgentLoan) {
-  //     // AGENT_LOAN - Show only 3 tabs: Link, QR, Cash
-  //     return [
-  //       _buildAnimatedTabItem(0, Icons.link_outlined, "Link"),
-  //       _buildAnimatedTabItem(1, Icons.qr_code, "QR"),
-  //       _buildAnimatedTabItem(2, Icons.monetization_on, "Cash"),
-  //     ];
-  //   } else {
-  //     // Regular AGENT - Show 3 tabs: All, QR, Cash
-  //     return [
-  //       _buildAnimatedTabItem(0, Icons.all_out_rounded, "All"),
-  //       _buildAnimatedTabItem(1, Icons.qr_code, "QR"),
-  //       _buildAnimatedTabItem(2, Icons.monetization_on, "Cash"),
-  //     ];
-  //   }
-  // }
+
 
   List<Widget> _buildTabItems(bool isAgentLoan) {
     if (isAgentLoan) {
@@ -1250,7 +934,7 @@ class _HomePageState extends State<HomePage>
         _buildAnimatedTabItem(0, Icons.link_outlined, "Link"),
         _buildAnimatedTabItem(1, Icons.qr_code, "QR"),
         _buildAnimatedTabItem(2, Icons.monetization_on, "Cash"),
-        _buildAnimatedTabItem(3, Icons.account_balance_sharp, "Transfer"),
+      //  _buildAnimatedTabItem(3, Icons.account_balance_sharp, "Transfer"),
       ];
     } else {
       // Regular AGENT - Show only 3 tabs
@@ -1261,39 +945,7 @@ class _HomePageState extends State<HomePage>
       ];
     }
   }
- /* Widget _buildTabBar() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Container(
-        height: 80,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: home1, width: 1),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            userType == "COLLECTION"
-                ? _buildAnimatedTabItem(0, Icons.all_out_rounded, "All")
-                : _buildAnimatedTabItem(0, Icons.link_outlined, "Link"),
-            _buildAnimatedTabItem(1, Icons.qr_code, "QR"),
-            _buildAnimatedTabItem(2, Icons.monetization_on, "Cash"),
-            userType == "COLLECTION"
-                ? const SizedBox()
-                : _buildAnimatedTabItem(
-                    3, Icons.account_balance_sharp, "Transfer"),
-          ],
-        ),
-      ),
-    );
-  }*/
+
 
   Widget _buildAnimatedTabItem(int index, IconData icon, String label) {
     return Expanded(
@@ -1894,8 +1546,159 @@ class _DatePickerButton extends StatelessWidget {
   }
 }
 
+/*
+  void showProgressDialog(BuildContext context) {
 
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Center(
+            child: SingleChildScrollView(
+              child: Dialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                child: const Padding(
+                  padding: EdgeInsets.all(50),
+                  child: Column(
+                    children: [
+                      CircularProgressIndicator(color: home2),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Please wait....",
+                        style: TextStyle(
+                          fontSize: 17,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+*/
+/*
+  Future<void> loadSharedPrefs(BuildContext context) async {
+    final name = await SharedPref().getSubAgentName();
+    final entId = await SharedPref().getAgentId();
+    final tok = await SharedPref().getTokenValue();
+    final agentOrgID = await SharedPref().getAgentOriginId();
+    final mobnum = await SharedPref().getParentAgentMobNum();
+    final subAgID = await SharedPref().getSubAgentId();
+    final crpCode = await SharedPref().getCorpCode();
+    // var loggedInUserType = await SharedPref.shared.getLoggedInUserType();
 
+    if (mounted) {
+      setState(() {
+        print("user type = ${widget.userType}");
+        widget.userType == "AGENT_LOAN"
+            ? userType = "LOAN_COLLECTION"
+            : userType = "COLLECTION";
+
+        widget.userType == "AGENT_LOAN"
+            ? cashCollectionType = "LOAN_COLLECTION_CASH"
+            : cashCollectionType = "LOAN_COLLECTION";
+
+        userName = name;
+        entityId = entId;
+        token = tok;
+        agentOriginId = agentOrgID;
+        mobNum = mobnum;
+        subAgentID = subAgID;
+        corpCode = crpCode;
+      });
+
+      // showProgressDialog(context); // <- Show loading
+    }
+
+    final provider =
+        Provider.of<QRTransactionHistoryProvider>(context, listen: false);
+    final now = DateTime.now();
+    final fromDate =
+        DateFormat('yyyy-MM-dd').format(now.subtract(const Duration(days: 30)));
+    final toDate = DateFormat('yyyy-MM-dd').format(now);
+
+    try {
+      await provider.getQrTranscationHistory(
+        "TODAY",
+        fromDate,
+        toDate,
+
+        ///  "COLLECTION",
+        userType,
+        corpCode,
+        agentOriginId,
+      );
+
+      // showProgressDialog(context);
+
+      final linkProvider =
+          Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
+      final cashQrProvider =
+          Provider.of<CashQrProvider>(context, listen: false);
+      final cashProvider =
+          Provider.of<CashTransactionHistoryProvider>(context, listen: false);
+      final transfer =
+          Provider.of<TransferHistoryProvider>(context, listen: false);
+
+      await linkProvider.getLinkTransactionHistory(
+          "TODAY", fromDate, toDate, subAgID!, crpCode!, agentOrgID!);
+      await cashQrProvider.getCombinedResponse(
+          "TODAY", fromDate, toDate, subAgID!, crpCode!, agentOrgID!);
+      await cashProvider.getCashTranscationHistory(
+          "TODAY",
+          fromDate,
+          toDate,
+          cashCollectionType,
+          // "COLLECTION_CASH",
+          subAgID,
+          crpCode,
+          agentOrgID);
+      await transfer.getQrTranscationHistory(
+          "TODAY",
+          fromDate,
+          toDate,
+          cashCollectionType,
+          // "COLLECTION_CASH",
+
+          crpCode,
+          agentOrgID);
+
+      // Final tasks
+      fetchTransaction();
+      fetchCollection();
+      //if (provider.showProgressDialog == false) {
+      // Navigator.pop(context);
+      // }
+    } finally {
+      //Navigator.pop(context);
+
+      // Always dismiss the dialog, even on error
+      // if (mounted) Navigator.pop(context);
+    }
+  }
+*/
+// List<Widget> _buildTabItems(bool isAgentLoan) {
+//   if (isAgentLoan) {
+//     // AGENT_LOAN - Show only 3 tabs: Link, QR, Cash
+//     return [
+//       _buildAnimatedTabItem(0, Icons.link_outlined, "Link"),
+//       _buildAnimatedTabItem(1, Icons.qr_code, "QR"),
+//       _buildAnimatedTabItem(2, Icons.monetization_on, "Cash"),
+//     ];
+//   } else {
+//     // Regular AGENT - Show 3 tabs: All, QR, Cash
+//     return [
+//       _buildAnimatedTabItem(0, Icons.all_out_rounded, "All"),
+//       _buildAnimatedTabItem(1, Icons.qr_code, "QR"),
+//       _buildAnimatedTabItem(2, Icons.monetization_on, "Cash"),
+//     ];
+//   }
+// }
 
 // Widget _buildQRTransactionList(
 //     QrTranscationHistoryModel? qrTransactions, String? error)
@@ -2121,3 +1924,90 @@ class _DatePickerButton extends StatelessWidget {
     fetchCollection();
     // fetchBannerImages();
   }*/
+/* Widget _buildTabBar() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Container(
+        height: 80,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: home1, width: 1),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            userType == "COLLECTION"
+                ? _buildAnimatedTabItem(0, Icons.all_out_rounded, "All")
+                : _buildAnimatedTabItem(0, Icons.link_outlined, "Link"),
+            _buildAnimatedTabItem(1, Icons.qr_code, "QR"),
+            _buildAnimatedTabItem(2, Icons.monetization_on, "Cash"),
+            userType == "COLLECTION"
+                ? const SizedBox()
+                : _buildAnimatedTabItem(
+                    3, Icons.account_balance_sharp, "Transfer"),
+          ],
+        ),
+      ),
+    );
+  }*/
+/*
+  Future<void> _clearFilters() async {
+    showProgressDialog(context);
+    final qrProvider = context.read<QRTransactionHistoryProvider>();
+    final cashTransProvider = context.read<CashTransactionHistoryProvider>();
+    final linkProvider = context.read<LinkTransactionHistoryProvider>();
+    final cashQrProvider = context.read<CashQrProvider>();
+    final transferProvider = context.read<TransferHistoryProvider>();
+
+    // Reset to default period (THIS_MONTH)
+    final now = DateTime.now();
+    final fromDate = now.subtract(const Duration(days: 30));
+    final toDate = now;
+    final formattedFdate = DateFormat('yyyy-MM-dd').format(fromDate);
+    final formattedTdate = DateFormat('yyyy-MM-dd').format(toDate);
+
+    await qrProvider.getQrTranscationHistory(
+        "TODAY",
+        formattedFdate,
+        formattedTdate,
+        //"COLLECTION",
+        userType,
+        corpCode,
+        agentOriginId);
+
+    await cashTransProvider.getCashTranscationHistory(
+        "TODAY",
+        formattedFdate,
+        formattedTdate,
+        //  "COLLECTION_CASH",
+        cashCollectionType,
+        subAgentID!,
+        corpCode,
+        agentOriginId);
+    await transferProvider.getQrTranscationHistory("TODAY", formattedFdate,
+        formattedTdate, cashCollectionType, corpCode, agentOriginId);
+
+    await linkProvider.getLinkTransactionHistory("TODAY", formattedFdate,
+        formattedTdate, subAgentID!, corpCode!, agentOriginId!);
+    await cashQrProvider.getCombinedResponse("TODAY", formattedFdate,
+        formattedTdate, subAgentID!, corpCode!, agentOriginId!);
+    if (qrProvider.showProgressDialog == false) {
+      if (mounted) {
+        Navigator.pop(context);
+      }
+    }
+    setState(() {
+      _isFilterApplied = false;
+      _currentFilterPeriod = 'TODAY';
+      _currentFromDate = '';
+      _currentToDate = '';
+    });
+  }
+*/

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../loan/loan_details_page.dart';
-
+//THE LOAN CUSTOMER LISTING PAGE 1 OF 2....
 class LoanList extends StatefulWidget {
   const LoanList({super.key});
 
@@ -35,30 +35,12 @@ class _LoanListState extends State<LoanList> {
     final integratedLoanDetailProvider =
         Provider.of<IntegratedLoanDetailProvider>(context, listen: false);
     await integratedLoanDetailProvider.getIntegratedLoanDetails(
-        "", "00", "", "", accNo);
+        "", "01", "", "", accNo);
     if (integratedLoanDetailProvider
             .integratedLoanListResponse?.loanDate.isNotEmpty ==
         true) {
-      // Navigator.push(context , MaterialPageRoute(builder: (context)=>
-      //
-      //     LoanDetailsPage(customerName:
-      //     integratedLoanDetailProvider
-      //         .integratedLoanListResponse?.name ??""
-      //       , loanNumber: integratedLoanDetailProvider
-      //           .integratedLoanListResponse?.loanNo
-      //           .toString() ??""
-      //
-      //       , emiAmount: integratedLoanDetailProvider
-      //           .integratedLoanListResponse?.loanAmount
-      //          ??0
-      //
-      //       , loanTerm: 123
-      //
-      //         loanStatus: '',, loanAmount: null,, scheme: '',, paymentDate: '',, collectionFrequency: '',, email: '',, customerPhoneNumber: '', custId: SharedPrefKeys.custid,))
-      //
-      //
-      // )
-      /* Navigator.push(
+
+       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) =>
@@ -130,7 +112,6 @@ class _LoanListState extends State<LoanList> {
                     penalInterestAmountOverdue: integratedLoanDetailProvider
                         .integratedLoanListResponse!.receiptDetails[2].overdue,
                   )));
-      */
     }
   }
 

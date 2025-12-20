@@ -37,7 +37,7 @@ class _LoanHomePageState extends State<LoanHomePage>
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _animationController.forward();
       final provider = Provider.of<GetLoanProvider>(context, listen: false);
-      provider.getLoans("", "", "", "", agentId, 1, 58).then((_) {
+      provider.getLoans("", "", "", "", agentId, 1, 10).then((_) {
         if (mounted) {
           setState(() {
             _isLoading = false;
@@ -112,8 +112,8 @@ class _LoanHomePageState extends State<LoanHomePage>
 
   @override
   Widget build(BuildContext context) {
-    final loanProvider = Provider.of<GetLoanProvider>(context);
-    final loans = loanProvider.collectionLoanModel?.data ?? [];
+   // final loanProvider = Provider.of<GetLoanProvider>(context);
+   // final loans = loanProvider.collectionLoanModel?.data ?? [];
 
     return Scaffold(
       appBar: AppBar(
@@ -128,7 +128,7 @@ class _LoanHomePageState extends State<LoanHomePage>
           ),
         ),
       ),
-      backgroundColor: _backgroundColor,
+      backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
           // SliverAppBar(

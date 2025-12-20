@@ -4,12 +4,23 @@ import 'package:collection_qr_flutter/domain/interface/integrated_loan_list_inte
 import 'package:collection_qr_flutter/domain/model/integrated_loan_list_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
+
+import '../storage/shared_pref_helper.dart';
 class IntegrationLoanRepository extends IntegrationLoanInterface{
+  Future<String> loadVendorUrl() async {
+    //final liveUrl = await SharedPref().getVendorUrlLive();
+    return await SharedPref().getCustomerUnderAgentUrl();
+  }
+
+
   @override
   Future<Either<String, IntegratedLoanListResponse>> fetchIntegratedLoans(String? agentId, String? branchId, String? schemeCode, String? accNo) async {
-    final uri = Uri.parse("https://doorstepthazhava.digicob.in/getLoanCustUnderAgent");
+    print("loadVendorUrl = ${await loadVendorUrl()}");
+   // final uri = Uri.parse("https://doorstepthazhava.digicob.in/getLoanCustUnderAgent");
+    final uri = Uri.parse("https://mftctest.digicob.in/getLoanCustUnderAgent");
     final data  = await http.post(uri,
-    body: jsonEncode({"agent_id":"1165","branch_id":"00","sch_code":"","acno":""}),
+   // body: jsonEncode({"agent_id":"1165","branch_id":"00","sch_code":"","acno":""}),
+    body: jsonEncode({"agent_id":"169","branch_id":"01","sch_code":"","acno":""}),
     headers: {'Content-Type': 'application/json'});
 
     print("getLoanCustUnderAgent = ${data.body}");
