@@ -1,5 +1,4 @@
 import 'package:collection_qr_flutter/core/colors.dart';
-import 'package:collection_qr_flutter/core/constants.dart';
 import 'package:collection_qr_flutter/data/provider/integrated_loan_detail_provider.dart';
 import 'package:collection_qr_flutter/data/provider/integration_loan_list_provider.dart';
 import 'package:collection_qr_flutter/domain/model/integrated_loan_list_model.dart';
@@ -7,7 +6,7 @@ import 'package:collection_qr_flutter/presentation/loan_integrated/integrated_lo
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../loan/loan_details_page.dart';
+import '../../core/utils.dart';
 //THE LOAN CUSTOMER LISTING PAGE 1 OF 2....
 class LoanList extends StatefulWidget {
   const LoanList({super.key});
@@ -34,6 +33,7 @@ class _LoanListState extends State<LoanList> {
   }
 
   Future<void> fetchIntegratedLoanDetails(String accNo) async {
+    showProgressDialog(context);
     final integratedLoanDetailProvider =
         Provider.of<IntegratedLoanDetailProvider>(context, listen: false);
     await integratedLoanDetailProvider.getIntegratedLoanDetails(
@@ -62,7 +62,7 @@ class _LoanListState extends State<LoanList> {
                             .toString() ??
                         "",
                     loanNumber: integratedLoanDetailProvider
-                            .integratedLoanListResponse?.loanNo
+                            .integratedLoanListResponse?.acno
                             .toString() ??
                         "",
                     loanType: integratedLoanDetailProvider
@@ -113,7 +113,8 @@ class _LoanListState extends State<LoanList> {
                         .currentReceipt,
                     penalInterestAmountOverdue: integratedLoanDetailProvider
                         .integratedLoanListResponse!.receiptDetails[2].overdue,
-                  )));
+                  ))).then((_){Navigator.pop(context);});
+
     }
   }
 
@@ -170,7 +171,7 @@ class _LoanListState extends State<LoanList> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: const Text(
-                      "Account List",
+                      "RD List",
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 23,
@@ -196,7 +197,7 @@ class _LoanListState extends State<LoanList> {
                       boxShadow: [
                         BoxShadow(color:
                         showShadowLoan == true?
-                        home2:Colors.white, blurRadius: 8, spreadRadius: 2),
+                        home1.withAlpha(60):Colors.white, blurRadius: 8, spreadRadius: 2),
 
                       ]
                   ),
@@ -279,8 +280,10 @@ class _LoanListState extends State<LoanList> {
                 itemBuilder: (BuildContext context, int index) {
                   return InkWell(
                     onTap: () {
+
                       fetchIntegratedLoanDetails(
                           _filteredList![index].lnGlobalAccNo.toString());
+
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(

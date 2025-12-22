@@ -343,7 +343,7 @@ class _AccountListHomePageState extends State<AccountListHomePage> {
                     boxShadow: [
                       BoxShadow(color:
                       showShadowAcc == true?
-                     home1: Colors.white, blurRadius: 9, spreadRadius: 1),
+                      home1.withAlpha(60): Colors.white, blurRadius: 9, spreadRadius: 1),
 
                     ]
                   ),

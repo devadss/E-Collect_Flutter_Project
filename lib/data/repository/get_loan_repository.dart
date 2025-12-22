@@ -1,9 +1,7 @@
 import 'dart:convert';
-import 'package:collection_qr_flutter/core/constants.dart';
 import 'package:collection_qr_flutter/data/service/error_handler.dart';
 import 'package:collection_qr_flutter/domain/service/api_services.dart';
 import 'package:dartz/dartz.dart';
-import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import '../../domain/interface/loan_interface.dart';
 import '../../domain/model/loan_model.dart';

@@ -923,6 +923,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
               SizedBox(
                 height: 10,
               ),
+
               // SizedBox(
               //   width: double.infinity,
               //   child: ElevatedButton(
@@ -1141,6 +1142,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
   }
 
   Future<void> generateQrPaymentSession() async {
+    utl.showProgressDialog(context);
     final paymentSession = await CreatePaymentSessionIdRepository()
         .getPaymentSessionId(
         agentOriginId: agentOriginId,
@@ -1186,7 +1188,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
               custId: widget.custNo,
             ),
           ),
-        );
+        ).then((_){Navigator.pop(context);});
         if (!mounted) return;
         if (result == "fetch_balance") {
           Navigator.pop(context);
