@@ -1259,28 +1259,27 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                                                   },
                                                                   child: FittedBox(
                                                                     fit: BoxFit.scaleDown,
-                                                                    child:SizedBox()
-                                                                    // Text(
-                                                                    //   "Change Method >",
-                                                                    //   overflow:
-                                                                    //       TextOverflow
-                                                                    //           .ellipsis,
-                                                                    //   style: GoogleFonts
-                                                                    //       .inter(
-                                                                    //     decoration:
-                                                                    //         TextDecoration
-                                                                    //             .underline,
-                                                                    //     decorationColor:
-                                                                    //         home2,
-                                                                    //     fontWeight:
-                                                                    //         FontWeight
-                                                                    //             .w800,
-                                                                    //     color:
-                                                                    //         home2,
-                                                                    //     fontSize:
-                                                                    //         12,
-                                                                    //   ),
-                                                                    // ),
+                                                                    child: Text(
+                                                                      "Change Method >",
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      style: GoogleFonts
+                                                                          .inter(
+                                                                        decoration:
+                                                                            TextDecoration
+                                                                                .underline,
+                                                                        decorationColor:
+                                                                            home2,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w800,
+                                                                        color:
+                                                                            home2,
+                                                                        fontSize:
+                                                                            12,
+                                                                      ),
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               ],
@@ -1410,13 +1409,13 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                                               buttonColor:
                                                                   Colors.white,
                                                                 onConfirmed: () async {
-                                                                  if (selectedMethod == "Cash" && controller.text.isNotEmpty) {
-
+                                                                  if (selectedMethod == "Cash") {
                                                                     bool confirmed = await paymentConfirmation(
                                                                       context,
                                                                       due.name,
                                                                       due.accNo,
                                                                       due.custId,
+
                                                                       controller.text,
                                                                     );
 
@@ -1427,21 +1426,22 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                                                   } else {
                                                                     print("Selected QR");
                                                                     // ✅ This runs only after confirmation (or if non-cash method)
-                                                                    showToast(message: "Amount field cannot be empty", color: Colors.orange);
-                                                                    // getPaymentSessionId(
-                                                                    //   token: token,
-                                                                    //   customerName: due.name,
-                                                                    //   custPhoneNumber: "",
-                                                                    //   custAcNumber: due.accNo,
-                                                                    //   custId: due.custId,
-                                                                    //   custEmail: "",
-                                                                    //   phoneNumber: "$agentPhoneNumber",
-                                                                    //   entityId: agentId,
-                                                                    //   note: "Payment For Agent $agentName",
-                                                                    //   amount: controller.text,
-                                                                    //   subAgentBranchCode: subAgentCodeNew,
-                                                                    // );
+                                                                    getPaymentSessionId(
+                                                                      token: token,
+                                                                      customerName: due.name,
+                                                                      custPhoneNumber: "",
+                                                                      custAcNumber: due.accNo,
+                                                                      custId: due.custId,
+                                                                      custEmail: "",
+                                                                      phoneNumber: "$agentPhoneNumber",
+                                                                      entityId: agentId,
+                                                                      note: "Payment For Agent $agentName",
+                                                                      amount: controller.text,
+                                                                      subAgentBranchCode: subAgentCodeNew,
+                                                                    );
                                                                   }
+
+
                                                                 }
 
                                                               /*  onConfirmed:
@@ -1638,18 +1638,17 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
       ),
     );
   }
-
   Container pagerWidget(int totPage) {
     final provider =
-        Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
+    Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
     // Get screen width
     final screenWidth = MediaQuery.of(context).size.width;
     // Adjust number of pages shown based on screen width
     int pagesViewCount;
-    if (screenWidth > 1000) {
-      pagesViewCount = 14; // Desktop / large tablet
+    if(screenWidth > 1000){
+      pagesViewCount = 14;
     }
-    else if (screenWidth > 700) {
+   else if (screenWidth > 700) {
       pagesViewCount = 9; // Desktop / large tablet
     }
     else if (screenWidth > 400) {
@@ -1710,6 +1709,58 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
       ),
     );
   }
+  // Container pagerWidget(int totPage) {
+  //   final provider =
+  //       Provider.of<RdclDueUnderAgentProvider>(context, listen: false);
+  //   return Container(
+  //     decoration: BoxDecoration(
+  //       color: white,
+  //       borderRadius: BorderRadius.circular(10),
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: home2.withOpacity(0.1),
+  //           blurRadius: 20,
+  //           offset: const Offset(0, 10),
+  //         ),
+  //       ],
+  //       border: Border.all(color: home1.withOpacity(0.5)),
+  //     ),
+  //     child: SingleChildScrollView(
+  //       scrollDirection: Axis.horizontal,
+  //       child: Pager(
+  //         pageChangeIconColor: home1,
+  //         currentPage: _currentPage,
+  //         totalPages: totPage,
+  //         numberTextSelectedColor: Colors.white,
+  //         numberButtonSelectedColor: home1,
+  //         pagesView: 4,
+  //         currentItemsPerPage: 1,
+  //         onPageChanged: (page) async {
+  //           _searchController.clear();
+  //           showProgressDialog(context);
+  //           setState(() {
+  //             print("page : $page");
+  //             _currentPage = page;
+  //           });
+  //           await provider.getRdclDueList(
+  //               "", agentBranchCode!, "", _currentPage, itemPerPage, "");
+  //           if (provider.showDialog == false) {
+  //             if (mounted) {
+  //               Navigator.pop(context);
+  //             }
+  //           }
+  //
+  //           // Optional: Scroll to top if you want user to see the beginning of the new data
+  //           _scrollController.animateTo(
+  //             0,
+  //             duration: const Duration(milliseconds: 300),
+  //             curve: Curves.easeInOut,
+  //           );
+  //         },
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Future<void> sendLinkFunction(
       RDCLDueAccount custDetails, String amount) async {

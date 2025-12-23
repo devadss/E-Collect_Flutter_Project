@@ -141,8 +141,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         body:
             loggedInUserTPYE == "AGENT" && loggedInUserTPYE?.isNotEmpty == true
                 ? _getSelectedPage(_selectedIndex)
-                : loggedInUserTPYE == "AGENT_LOAN" &&
-                        loggedInUserTPYE?.isNotEmpty == true
+                : loggedInUserTPYE == "AGENT_LOAN" && loggedInUserTPYE?.isNotEmpty == true
                     ? loanPages(_selectedIndex)
                     : loggedInUserTPYE == "NOT_AN_AGENT" &&
                             loggedInUserTPYE?.isNotEmpty == true
