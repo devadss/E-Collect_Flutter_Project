@@ -25,7 +25,6 @@ class BottomNavScreen extends StatefulWidget {
 class _BottomNavScreenState extends State<BottomNavScreen> {
   int _selectedIndex = 0;
   String? userTPYE;
-
   //int _currentIndex = 0;
   String? loggedInUserTPYE;
   double _indicatorPosition = 0.0;
@@ -366,32 +365,4 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   }
 }
 
-/*
-  Widget _buildGroupNavItem(int index, IconData activeIcon, IconData inactiveIcon) {
-    bool isActive = _selectedIndex == index;
-    return GestureDetector(
-      onTap: () => setState(() => _selectedIndex = index),
-      child: AnimatedContainer(
-        height: 53,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: isActive ? home1.withOpacity(0.2) : Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Icon(
-              isActive ? activeIcon : inactiveIcon,
-              color: isActive ? home1 : Colors.grey[600],
-              size: 24,
-            ),
-            const SizedBox(height: 4),
-          ],
-        ),
-      ),
-    );
-  }
-*/
+
