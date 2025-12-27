@@ -1,3 +1,4 @@
+import 'package:animated_segmented_tab_control/animated_segmented_tab_control.dart';
 import 'package:collection_qr_flutter/presentation/account_dues/widgets/account_detail_new.dart';
 import '../../core/colors.dart';
 import '../../data/provider/agent_customer_details_provider.dart';
@@ -8,7 +9,6 @@ import 'package:shimmer/shimmer.dart';
 import '../../domain/model/agent_customer_details_model.dart';
 import '../loan_integrated/loan_list.dart';
 
-
 class AccountListHomePage extends StatefulWidget {
   const AccountListHomePage({super.key});
 
@@ -16,10 +16,10 @@ class AccountListHomePage extends StatefulWidget {
   State<AccountListHomePage> createState() => _AccountListHomePageState();
 }
 
-class _AccountListHomePageState extends State<AccountListHomePage> {
+class _AccountListHomePageState extends State<AccountListHomePage>  {
   String? agentId;
   String? corpCode;
-  bool? showShadowLoan=false;
+  bool? showShadowLoan = false;
   bool? showShadowAcc = true;
   final TextEditingController searchController = TextEditingController();
   List<Customer>? _filteredCustomers;
@@ -125,7 +125,8 @@ class _AccountListHomePageState extends State<AccountListHomePage> {
     );
   }
 
-  Widget _buildShimmerText({double width = double.infinity, double height = 16}) {
+  Widget _buildShimmerText(
+      {double width = double.infinity, double height = 16}) {
     return Shimmer.fromColors(
       period: const Duration(milliseconds: 1500),
       baseColor: grey[300]!,
@@ -165,7 +166,8 @@ class _AccountListHomePageState extends State<AccountListHomePage> {
                 ],
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -191,13 +193,13 @@ class _AccountListHomePageState extends State<AccountListHomePage> {
       child: customers.isEmpty
           ? _buildEmptyState()
           : ListView.separated(
-        itemCount: customers.length,
-        separatorBuilder: (context, index) => const SizedBox(height: 10),
-        itemBuilder: (context, index) {
-          final customer = customers[index];
-          return _buildCustomerItem(customer);
-        },
-      ),
+              itemCount: customers.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 10),
+              itemBuilder: (context, index) {
+                final customer = customers[index];
+                return _buildCustomerItem(customer);
+              },
+            ),
     );
   }
 
@@ -320,112 +322,152 @@ class _AccountListHomePageState extends State<AccountListHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: white,
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        title:
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-              InkWell(
-                onTap: (){
-                  setState(() {
-                    showShadowLoan = false;
-                    showShadowAcc = true;
-                  });
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+            backgroundColor: white,
+            automaticallyImplyLeading: false,
+            centerTitle: true,
+            title:
+            SegmentedTabControl(
+
+                barDecoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    border: Border.all(color: Colors.grey, ),
                     boxShadow: [
-                      BoxShadow(color:
-                      showShadowAcc == true?
-                      home1.withAlpha(60): Colors.white, blurRadius: 9, spreadRadius: 1),
+                      BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 2,
+                          spreadRadius: 8,
+                          offset: Offset(1, 0))
+                    ],
+                    borderRadius: BorderRadius.circular(30)),
+                tabs: [
+                  SegmentTab(
+                    splashColor: home1,
+                      textColor: Colors.black,
+                    color: home1,
+                      backgroundColor: Colors.black12,
+                      selectedTextColor: Colors.white,
+                      label: "RD LIST"),
+                  SegmentTab(
 
-                    ]
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: const Text(
-                      //"Account List",
-                      "RD List",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 23,
-                        color: home2,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-                InkWell(
-                  onTap: (){
-                    setState(() {
-                      showShadowLoan = true;
-                      showShadowAcc = false;
-                    });
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>LoanList()));
-                    showShadowLoan = false;
-                    showShadowAcc = true;
-                  },
-                  child: Container(
+                      splashColor: home1,
+                    textColor: Colors.black,
+                      color: home1,
+                      backgroundColor: Colors.grey.shade200,
+                      selectedTextColor: Colors.white,
+                      label: "LOAN LIST")
+                ])
 
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(color:
-                          showShadowLoan == true?
-                          Colors.black12:Colors.white, blurRadius: 8, spreadRadius: 2),
 
-                        ]
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: const Text(
-                        "Loan List",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 23,
-                          color: home2,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-            ],)
+            ),
+        backgroundColor: white,
+        body:TabBarView(children: [
+          Consumer<AgentCustomerDetailsProvider>(
+            builder: (context, provider, child) {
+              if (_isLoading || provider.agentCustomerDetailsModel == null) {
+                return Column(
+                  children: [
+                    _buildSearchField(),
+                    const SizedBox(height: 20),
+                    _buildShimmerList(),
+                  ],
+                );
+              }
 
-      ),
-      backgroundColor: white,
-      body: Consumer<AgentCustomerDetailsProvider>(
-        builder: (context, provider, child) {
-          if (_isLoading || provider.agentCustomerDetailsModel == null) {
-            return Column(
-              children: [
-                _buildSearchField(),
-                const SizedBox(height: 20),
-                _buildShimmerList(),
-              ],
-            );
-          }
+              final customers =
+                  _filteredCustomers ?? provider.agentCustomerDetailsModel!.data;
 
-          final customers = _filteredCustomers ?? provider.agentCustomerDetailsModel!.data;
+              return Column(
+                children: [
+                  _buildSearchField(),
+                  const SizedBox(height: 20),
+                  _buildCustomerList(customers),
+                ],
+              );
+            },
+          ),
+          LoanList()
+        ])
 
-          return Column(
-            children: [
-              _buildSearchField(),
-              const SizedBox(height: 20),
-              _buildCustomerList(customers),
-            ],
-          );
-        },
+
       ),
     );
   }
 }
+// Row(
+//   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//   children: [
+//   InkWell(
+//     onTap: (){
+//       setState(() {
+//         showShadowLoan = false;
+//         showShadowAcc = true;
+//       });
+//     },
+//     child: Container(
+//       decoration: BoxDecoration(
+//         color: Colors.white,
+//         borderRadius: BorderRadius.circular(10),
+//         boxShadow: [
+//           BoxShadow(color:
+//           showShadowAcc == true?
+//           home1.withAlpha(60): Colors.white, blurRadius: 9, spreadRadius: 1),
+//
+//         ]
+//       ),
+//       child: Padding(
+//         padding: const EdgeInsets.all(8.0),
+//         child: const Text(
+//           //"Account List",
+//           "RD List",
+//           style: TextStyle(
+//             fontWeight: FontWeight.w700,
+//             fontSize: 23,
+//             color: home2,
+//           ),
+//         ),
+//       ),
+//     ),
+//   ),
+//     InkWell(
+//       onTap: (){
+//         setState(() {
+//           showShadowLoan = true;
+//           showShadowAcc = false;
+//         });
+//         Navigator.push(context, MaterialPageRoute(builder: (context)=>LoanList()));
+//         showShadowLoan = false;
+//         showShadowAcc = true;
+//       },
+//       child: Container(
+//
+//         decoration: BoxDecoration(
+//             color: Colors.white,
+//             borderRadius: BorderRadius.circular(10),
+//             boxShadow: [
+//               BoxShadow(color:
+//               showShadowLoan == true?
+//               Colors.black12:Colors.white, blurRadius: 8, spreadRadius: 2),
+//
+//             ]
+//         ),
+//         child: Padding(
+//           padding: const EdgeInsets.all(8.0),
+//           child: const Text(
+//             "Loan List",
+//             style: TextStyle(
+//               fontWeight: FontWeight.w700,
+//               fontSize: 23,
+//               color: home2,
+//             ),
+//           ),
+//         ),
+//       ),
+//     ),
+// ],)
 // class AccountListHomePage extends StatefulWidget {
 //   const AccountListHomePage({super.key});
 //

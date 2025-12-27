@@ -141,89 +141,89 @@ class _LoanListState extends State<LoanList> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        title: Center(
-          child:
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              InkWell(
-                onTap: (){
-                  setState(() {
-                    showShadowLoan = false;
-                    showShadowAcc = true;
-                    Navigator.pop(context);
-                  });
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(color:
-                        showShadowAcc == true?
-                        Colors.black12: Colors.white, blurRadius: 9, spreadRadius: 1),
-
-                      ]
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: const Text(
-                      "RD List",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 23,
-                        color: home2,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              InkWell(
-                onTap: (){
-                  setState(() {
-                    showShadowLoan = true;
-                    showShadowAcc = false;
-                  });
-
-                },
-                child: Container(
-
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(color:
-                        showShadowLoan == true?
-                        home1.withAlpha(60):Colors.white, blurRadius: 8, spreadRadius: 2),
-
-                      ]
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: const Text(
-                      "Loan List",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 23,
-                        color: home2,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],),
-
-          // Text(
-          //   textAlign: TextAlign.center,
-          //   "LOANS",
-          //   style: TextStyle(
-          //       color: home2, fontSize: 22, fontWeight: FontWeight.w700),
-          // ),
-        ),
-      ),
+      // appBar: AppBar(
+      //   automaticallyImplyLeading: false,
+      //   centerTitle: true,
+      //   title: Center(
+      //     child:
+      //     Row(
+      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //       children: [
+      //         InkWell(
+      //           onTap: (){
+      //             setState(() {
+      //               showShadowLoan = false;
+      //               showShadowAcc = true;
+      //               Navigator.pop(context);
+      //             });
+      //           },
+      //           child: Container(
+      //             decoration: BoxDecoration(
+      //                 color: Colors.white,
+      //                 borderRadius: BorderRadius.circular(10),
+      //                 boxShadow: [
+      //                   BoxShadow(color:
+      //                   showShadowAcc == true?
+      //                   Colors.black12: Colors.white, blurRadius: 9, spreadRadius: 1),
+      //
+      //                 ]
+      //             ),
+      //             child: Padding(
+      //               padding: const EdgeInsets.all(8.0),
+      //               child: const Text(
+      //                 "RD List",
+      //                 style: TextStyle(
+      //                   fontWeight: FontWeight.w700,
+      //                   fontSize: 23,
+      //                   color: home2,
+      //                 ),
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //         InkWell(
+      //           onTap: (){
+      //             setState(() {
+      //               showShadowLoan = true;
+      //               showShadowAcc = false;
+      //             });
+      //
+      //           },
+      //           child: Container(
+      //
+      //             decoration: BoxDecoration(
+      //                 color: Colors.white,
+      //                 borderRadius: BorderRadius.circular(10),
+      //                 boxShadow: [
+      //                   BoxShadow(color:
+      //                   showShadowLoan == true?
+      //                   home1.withAlpha(60):Colors.white, blurRadius: 8, spreadRadius: 2),
+      //
+      //                 ]
+      //             ),
+      //             child: Padding(
+      //               padding: const EdgeInsets.all(8.0),
+      //               child: const Text(
+      //                 "Loan List",
+      //                 style: TextStyle(
+      //                   fontWeight: FontWeight.w700,
+      //                   fontSize: 23,
+      //                   color: home2,
+      //                 ),
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //       ],),
+      //
+      //     // Text(
+      //     //   textAlign: TextAlign.center,
+      //     //   "LOANS",
+      //     //   style: TextStyle(
+      //     //       color: home2, fontSize: 22, fontWeight: FontWeight.w700),
+      //     // ),
+      //   ),
+      // ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
