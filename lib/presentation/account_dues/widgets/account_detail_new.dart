@@ -297,7 +297,7 @@ loadSharedPrefs();
                               note: "Payment For Agent $agentName",
                               subAgentId: subagentId,
                               agentName: agentName,
-                              subAgentBranchCode: subAgentCodeNew, collectionType: 'RDCL');
+                              subAgentBranchCode: subAgentCodeNew, collectionType: 'RD');
                   paymentSession.fold((error) {
                     print(
                         "---------------------------------ERROR PAYMENT---------------------------");

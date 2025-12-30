@@ -1269,6 +1269,8 @@ class _HomePageState extends State<HomePage>
                           fontSize: 12,
                         ),
                       ),
+                      SizedBox(height: 5,),
+                      Text("LOAN COLLECTION", style: TextStyle(fontSize: 10, color:Colors.blue),)
                     ],
                   ),
                 ),

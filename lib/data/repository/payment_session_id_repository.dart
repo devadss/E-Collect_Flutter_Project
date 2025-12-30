@@ -56,6 +56,7 @@ class CreatePaymentSessionIdRepository
         "customer_id": customerId,
         "customer_email": customerEmail
       },
+      "CollectionType":collectionType,
       "Amount": amount,
       "note": "Payment for Order",
       "CorpCode": corpCode,
