@@ -1509,7 +1509,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
         cardRefNum: "",
         token: token,
         subagentBranchCode: subAgentCodeNew,
-        branchCode: widget.branchCode);
+        branchCode: widget.branchCode, collectionType: 'RDCL');
     cash.fold((err) {
       print("getCashTrans $err");
     }, (success) {

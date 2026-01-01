@@ -362,18 +362,18 @@ loadSharedPrefs();
                       widget.custId,
                       "",
                       amountController.text);
-                    getCashTrans(
-                        token: token,
-                        customerName: widget.custName,
-                        custPhoneNumber: customerNumber,
-                        custAcNumber: widget.accNo,
-                       // custId: custid,
-                        custId: widget.custId,
-                        custEmail: "",
-                        amount: amountController.text,
-                        phoneNumber: agentMobile,
-                        entityId: agentId,
-                        note: "");
+                    // getCashTrans(
+                    //     token: token,
+                    //     customerName: widget.custName,
+                    //     custPhoneNumber: customerNumber,
+                    //     custAcNumber: widget.accNo,
+                    //    // custId: custid,
+                    //     custId: widget.custId,
+                    //     custEmail: "",
+                    //     amount: amountController.text,
+                    //     phoneNumber: agentMobile,
+                    //     entityId: agentId,
+                    //     note: "");
                 },
               ),
               const SizedBox(height: 20),
@@ -640,7 +640,7 @@ loadSharedPrefs();
         cardRefNum: "",
         token: token,
         subagentBranchCode: subAgentCodeNew,
-        branchCode: "");
+        branchCode: "", collectionType: 'RD');
     cash.fold((err) {
       print("getCashTrans $err");
     }, (success) {

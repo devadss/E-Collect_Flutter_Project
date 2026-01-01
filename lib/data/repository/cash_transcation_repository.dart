@@ -27,11 +27,13 @@ class CashTranscationRepository implements ICashTranscationRepository {
      required String? cardRefNum,
      required String? token,
      required String? subagentBranchCode,
-     required String? branchCode
+     required String? branchCode,
+     required String? collectionType
 
       }) async {
     final uri =
         Uri.parse("${baseUrl}api/Cashfree/ReceiveCash");
+       // Uri.parse("${baseUrl}api/Cashfree/24234234");
     bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     final body = {
       "agent_details": {
@@ -51,6 +53,7 @@ class CashTranscationRepository implements ICashTranscationRepository {
         "customer_email": customerEmail,
 
       },
+      "CollectionType":collectionType,
       "Amount": amount,
       "note": note,
       "CorpCode": corpCode,

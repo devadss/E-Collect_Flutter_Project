@@ -23,6 +23,7 @@ abstract class LoanCashCollectionInterface{
       String cardRefNo,
       String qrSource,
       String paymentMode,
-      String UTRNumber
+      String UTRNumber,
+      String collectionType
       );
 }

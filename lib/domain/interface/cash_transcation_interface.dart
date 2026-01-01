@@ -23,5 +23,6 @@ abstract class ICashTranscationRepository {
    required String? token,
    required String? subagentBranchCode,
    required String? branchCode,
+   required String? collectionType,
   });
 }

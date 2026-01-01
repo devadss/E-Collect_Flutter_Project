@@ -1115,7 +1115,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
         corpCode.toString(),
         branchCode.toString(),
         "",
-        "MOB", "CASH", "");
+        "MOB", "CASH", "", "LOAN");
     if (loanCashProvider.loanCashCollectionResponse != null) {
       Navigator.pop(context);
       print(loanCashProvider.loanCashCollectionResponse?.message.toString());

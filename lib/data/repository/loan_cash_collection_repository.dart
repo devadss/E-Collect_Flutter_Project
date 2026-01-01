@@ -29,8 +29,11 @@ class LoanCashCollectionRepository implements LoanCashCollectionInterface {
       String cardRefNo,
       String qrSource,
       String paymentMode,
-      String utrNumber) async {
+      String utrNumber,
+      String collectionType,
+      ) async {
     final uri = Uri.parse("${baseUrl}api/Cashfree/ReceiveCashLoan");
+   // final uri = Uri.parse("${baseUrl}api/Cashfree/dfdfdf");
     bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     if (checkConnection == true) {
       final request = await http.post(uri,
@@ -52,6 +55,7 @@ class LoanCashCollectionRepository implements LoanCashCollectionInterface {
               "customer_id": customerId,
               "customer_email": customerEmail
             },
+            "CollectionType":collectionType,
             "Amount": collectionAmount,
             "note": "Loan collection payment",
             "CorpCode": corpCode,
@@ -63,6 +67,7 @@ class LoanCashCollectionRepository implements LoanCashCollectionInterface {
           }),
           headers: {'Content-Type': 'application/json'});
       print(request.body);
+      print("caling cash colection");
       print({
         "agent_details": {
           "agent_name": agentName,
@@ -81,6 +86,7 @@ class LoanCashCollectionRepository implements LoanCashCollectionInterface {
           "customer_id": customerId,
           "customer_email": customerEmail
         },
+        "CollectionType":collectionType,
         "Amount": collectionAmount,
         "note": "Loan collection payment",
         "CorpCode": corpCode,

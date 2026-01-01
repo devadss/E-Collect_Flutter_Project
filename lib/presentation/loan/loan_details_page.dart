@@ -201,7 +201,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
         corpCode.toString(),
         branchCode.toString(),
         "",
-        "MOB", "TRANSFER",utrController.text );
+        "MOB", "TRANSFER",utrController.text , "LOAN");
     if (loanCashProvider.loanCashCollectionResponse != null) {
       Navigator.pop(context);
       print(loanCashProvider.loanCashCollectionResponse?.message.toString());
@@ -248,7 +248,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
         corpCode.toString(),
         branchCode.toString(),
         "",
-        "MOB", "CASH", "");
+        "MOB", "CASH", "", "LOAN");
     if (loanCashProvider.loanCashCollectionResponse != null) {
       Navigator.pop(context);
       print(loanCashProvider.loanCashCollectionResponse?.message.toString());
@@ -307,7 +307,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
         cardRefNum: "",
         token: token,
         subagentBranchCode: subAgentCodeNew,
-        branchCode: branchCode);
+        branchCode: branchCode, collectionType: 'LOAN');
     cash.fold((err) {
       print("getCashTrans $err");
     }, (success) {
