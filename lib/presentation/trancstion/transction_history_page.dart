@@ -260,6 +260,7 @@ class TransactionHistoryPage extends StatefulWidget {
   final String customerNumber;
   final String corpCode;
   final String tnxType;
+  final String paymentMode;
 
   const TransactionHistoryPage({
     super.key,
@@ -270,7 +271,9 @@ class TransactionHistoryPage extends StatefulWidget {
     required this.agentPhone,
     required this.customerName,
     required this.customerId,
-    required this.customerNumber, required this.corpCode, required this.tnxType,
+    required this.customerNumber, required this.corpCode,
+    required this.tnxType,
+    required this.paymentMode,
     // required this.agentTransaction
   });
 

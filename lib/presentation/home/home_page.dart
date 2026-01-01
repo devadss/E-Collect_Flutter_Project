@@ -295,8 +295,9 @@ class _HomePageState extends State<HomePage>
                             period,
                             from,
                             to,
-                            userType,
-                            //'COLLECTION',
+                           // userType,
+                            "ALL",
+
                             corpCode,
                             agentOriginId);
                         // await transferProvider.getQrTranscationHistory(
@@ -312,8 +313,8 @@ class _HomePageState extends State<HomePage>
                             period,
                             from,
                             to,
-                            //'COLLECTION_CASH',
-                            cashCollectionType,
+                            //cashCollectionType,
+                            "ALL",
                             subAgentID,
                             corpCode,
                             agentOriginId);
@@ -432,9 +433,11 @@ class _HomePageState extends State<HomePage>
         "TODAY",
         fromDate,
         toDate,
-        userType!,
+       // userType!,
+        'ALL',
         corpCode!,
         agentOriginId!,
+
       );
 
       // Load Link transactions (for AGENT_LOAN)
@@ -454,7 +457,8 @@ class _HomePageState extends State<HomePage>
         "TODAY",
         fromDate,
         toDate,
-        cashCollectionType!,
+        //cashCollectionType!,
+        "ALL",
         subAgentID!,
         corpCode!,
         agentOriginId!,
@@ -466,7 +470,8 @@ class _HomePageState extends State<HomePage>
           "TODAY",
           fromDate,
           toDate,
-          userType!,
+         // userType!,
+          "ALL",
           corpCode!,
           agentOriginId!,
         );
@@ -834,7 +839,8 @@ class _HomePageState extends State<HomePage>
         "TODAY",
         formattedFdate,
         formattedTdate,
-        userType!,
+       // userType!,
+        "ALL",
         corpCode!,
         agentOriginId!,
       );
@@ -843,7 +849,8 @@ class _HomePageState extends State<HomePage>
         "TODAY",
         formattedFdate,
         formattedTdate,
-        cashCollectionType!,
+       // cashCollectionType!,
+        "ALL",
         subAgentID!,
         corpCode!,
         agentOriginId!,
@@ -855,7 +862,8 @@ class _HomePageState extends State<HomePage>
             "TODAY",
             formattedFdate,
             formattedTdate,
-            userType!,
+          //  userType!,
+            "ALL",
             corpCode!,
             agentOriginId!
         );
@@ -1054,6 +1062,8 @@ class _HomePageState extends State<HomePage>
       getCustId: (t) => t.customerId.toString(),
       getCustPhone: (t) => t.customerPhone.toString(),
       getTnxType: (t) => t.source.toString(),
+      paymentMode:  (t) => t.paymentMode.toString(),
+      collectionType:  (t) => t.collectionType.toString(),
     );
   }
 
@@ -1078,7 +1088,7 @@ class _HomePageState extends State<HomePage>
       getCustName: (t) => t.customerName.toString(),
       getCustId: (t) => t.customerId.toString(),
       getCustPhone: (t) => t.customerPhone.toString(),
-      getTnxType: (t) => t.source.toString(),
+      getTnxType: (t) => t.source.toString(), paymentMode:(t)=> t.paymentMode.toString(), collectionType: (t)=> cashCollectionType.toString(),
     );
   }
 
@@ -1103,7 +1113,7 @@ class _HomePageState extends State<HomePage>
       getCustName: (t) => t.customerName.toString(),
       getCustId: (t) => t.customerId.toString(),
       getCustPhone: (t) => t.customerPhone.toString(),
-      getTnxType: (t) => t.source.toString(),
+      getTnxType: (t) => t.source.toString(), paymentMode: (t)=> t.paymentMode.toString(), collectionType: (t)=> t.collectionType.toString()
     );
   }
 
@@ -1119,7 +1129,9 @@ class _HomePageState extends State<HomePage>
     }
     return _buildTransactionList(
       transactions: cashQrProvider.cashQrCombinedResponse!.data,
-      icon: Icons.all_out_rounded,
+
+      icon:
+      Icons.all_out_rounded,
       iconColor: Colors.blue,
       getAmount: (t) => t.orderAmount ?? 0,
       getStatus: (t) => t.orderStatus.toString(),
@@ -1127,7 +1139,7 @@ class _HomePageState extends State<HomePage>
       getCustName: (t) => t.customerName.toString(),
       getCustId: (t) => t.customerId.toString(),
       getCustPhone: (t) => t.customerPhone.toString(),
-      getTnxType: (t) => t.source.toString(),
+      getTnxType: (t) => t.source.toString(), paymentMode: (t)=> t.paymentMode, collectionType: (t)=> t.collectionType.toString(),
     );
   }
 
@@ -1152,7 +1164,7 @@ class _HomePageState extends State<HomePage>
       getCustName: (t) => t.customerName.toString(),
       getCustId: (t) => t.customerId.toString(),
       getCustPhone: (t) => t.customerPhone.toString(),
-      getTnxType: (t) => t.source.toString(),
+      getTnxType: (t) => t.source.toString(), paymentMode: (t)=> t.paymentMode.toString(), collectionType: (t)=>t.collectionType.toString(),
     );
   }
 
@@ -1166,7 +1178,10 @@ class _HomePageState extends State<HomePage>
       required String Function(T) getCustName,
       required String Function(T) getCustId,
       required String Function(T) getCustPhone,
-      required String Function(T) getTnxType}) {
+      required String Function(T) getTnxType,
+      required String Function(T) paymentMode,
+      required String Function(T) collectionType,
+      }) {
     return Column(
       children: transactions.asMap().entries.map((entry) {
         final index = entry.key;
@@ -1185,7 +1200,8 @@ class _HomePageState extends State<HomePage>
                 customerId: getCustId(transaction),
                 transferId: getOrderId(transaction),
                 customerNumber: getCustPhone(transaction),
-                tnxType: getTnxType(transaction))
+                tnxType: getTnxType(transaction), paymentMode:paymentMode(transaction), collectionType: collectionType(transaction),
+        )
             .animate(delay: (100 * index).ms);
       }).toList(),
     );
@@ -1205,6 +1221,8 @@ class _HomePageState extends State<HomePage>
     required String customerId,
     required String customerNumber,
     required String tnxType,
+    required String paymentMode,
+    required String collectionType,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -1230,7 +1248,7 @@ class _HomePageState extends State<HomePage>
                           customerId: customerId,
                           customerNumber: customerNumber,
                           corpCode: corpCode ?? "",
-                          tnxType: tnxType,
+                          tnxType: tnxType, paymentMode: paymentMode,
                           //agentTransaction: agentPaymentTransctionModel
                         )));
           },
@@ -1244,7 +1262,9 @@ class _HomePageState extends State<HomePage>
                     color: iconColor.withOpacity(0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(icon, color: iconColor, size: 20),
+                  child: Icon(
+                      paymentMode == "QR"?
+                      Icons.qr_code: Icons.monetization_on, color: iconColor, size: 20),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -1264,12 +1284,22 @@ class _HomePageState extends State<HomePage>
                       Text(
                         DateFormat('MMM dd, yyyy - hh:mm a').format(date),
                         style: TextStyle(
-                          color: Colors.grey[600],
+                         // color: Colors.grey[600],
+                          color: home2,
                           fontSize: 12,
                         ),
                       ),
                       SizedBox(height: 5,),
-                      Text("LOAN COLLECTION", style: TextStyle(fontSize: 10, color:Colors.blue),)
+                      collectionType.isNotEmpty?
+                      Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: home1.withAlpha(20)
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            child: Text("$collectionType", style: TextStyle(fontSize: 11, color:home1, fontWeight: FontWeight.w500),),
+                          )):SizedBox()
                     ],
                   ),
                 ),

@@ -43,6 +43,7 @@ class AllTransactionHistoryModel {
   String? cardRefNum;
   String? linkUrl;
   String? paymentMode;
+  String? collectionType;
   String? linkExpiryTime;
   String? createdAt;
   String? source;
@@ -77,6 +78,7 @@ class AllTransactionHistoryModel {
     this.subAgentId,
     this.subAgentBranch,
     this.subAgentBranchCode,
+    this.collectionType,
   });
 
   factory AllTransactionHistoryModel.fromJson(Map<String, dynamic> json) =>
@@ -101,6 +103,7 @@ class AllTransactionHistoryModel {
         transId: json["TransId"],
         exTransId: json["ExTransId"],
         cardRefNum: json["CardRefNum"],
+        collectionType: json["CollectionType"],
         linkUrl: json["link_url"],
         paymentMode: json["PaymentMode"],
         linkExpiryTime: json["link_expiry_time"],
@@ -127,6 +130,7 @@ class AllTransactionHistoryModel {
     "agent_orginId": agentOrginId,
     "agent_mail": agentMail,
     "Load_Status": loadStatus,
+    "CollectionType": collectionType,
     "TransId": transId,
     "ExTransId": exTransId,
     "CardRefNum": cardRefNum,

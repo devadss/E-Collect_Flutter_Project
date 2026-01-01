@@ -42,6 +42,8 @@ class Order {
   String shopName;
   String gstin;
   String regNo;
+  String paymentMode;
+  String collectionType;
 
   Order({
     required this.orderId,
@@ -63,6 +65,9 @@ class Order {
     required this.shopName,
     required this.gstin,
     required this.regNo,
+    required this.paymentMode,
+    required this.collectionType,
+
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -80,12 +85,13 @@ class Order {
       source: json['Source'],
       corpCode: json['CorpCode'],
       branchCode: json['BranchCode'],
+      collectionType: json['CollectionType'],
       agentOrginId: json['AgentOrginId'],
       vendorPostTransId: json['VendorPostTransId'],
       corpName: json['CorpName'],
       shopName: json['ShopName'] ?? '',
       gstin: json['GSTTIN'] ?? '',
-      regNo: json['RegNo'] ?? '',
+      regNo: json['RegNo'] ?? '', paymentMode: json["PaymentMode"],
     );
   }
 
@@ -102,6 +108,7 @@ class Order {
       'CustomerEmail': customerEmail,
       'CreatedAt': createdAt.toIso8601String(),
       'Source': source,
+      'CollectionType': collectionType,
       'CorpCode': corpCode,
       'BranchCode': branchCode,
       'AgentOrginId': agentOrginId,
@@ -110,6 +117,7 @@ class Order {
       'ShopName': shopName,
       'GSTTIN': gstin,
       'RegNo': regNo,
+      'RePaymentModegNo': paymentMode,
     };
   }
 }

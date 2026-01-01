@@ -40,6 +40,8 @@ class TransferTransaction {
   CustomerEmail? customerEmail;
   DateTime? createdAt;
   String? source;
+  String? paymentMode;
+  String? collectionType;
   // Code? corpCode;
   String? corpCode;
   //Code? branchCode;
@@ -62,10 +64,12 @@ class TransferTransaction {
     this.customerEmail,
     this.createdAt,
     this.source,
+    this.collectionType,
     this.corpCode,
     this.branchCode,
     this.corpName,
     this.shopName,
+    this.paymentMode,
     this.gsttin,
     this.regNo,
   });
@@ -83,9 +87,11 @@ class TransferTransaction {
     createdAt: json["CreatedAt"] == null ? null : DateTime.parse(json["CreatedAt"]),
     source: json["Source"] ,
     corpCode: json["CorpCode"],
+    collectionType: json["CollectionType"],
     branchCode:json["BranchCode"],
     corpName: json["CorpName"],
     shopName: json["ShopName"],
+    paymentMode: json["PaymentMode"],
     gsttin: gsttinValues.map[json["GSTTIN"]],
     regNo: regNoValues.map[json["RegNo"]],
   );
@@ -102,10 +108,12 @@ class TransferTransaction {
     "CustomerEmail": customerEmailValues.reverse[customerEmail],
     "CreatedAt": createdAt?.toIso8601String(),
     "Source":  source,
+    "CollectionType":  collectionType,
     "CorpCode": corpCode,
     "BranchCode": branchCode,
     "CorpName": corpName,
     "ShopName":  shopName,
+    "PaymentMode":  paymentMode,
     "GSTTIN": gsttinValues.reverse[gsttin],
     "RegNo": regNoValues.reverse[regNo],
   };

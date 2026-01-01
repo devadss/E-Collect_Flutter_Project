@@ -39,7 +39,9 @@ class QrTransaction {
   String? customerPhone;
   CustomerEmail? customerEmail;
   DateTime? createdAt;
-  String? source;
+  String?   source;
+  String? paymentMode;
+  String? collectionType;
  // Code? corpCode;
   String? corpCode;
   //Code? branchCode;
@@ -68,6 +70,8 @@ class QrTransaction {
     this.shopName,
     this.gsttin,
     this.regNo,
+    this.paymentMode,
+    this.collectionType
   });
 
   factory QrTransaction.fromJson(Map<String, dynamic> json) => QrTransaction(
@@ -86,6 +90,8 @@ class QrTransaction {
     branchCode:json["BranchCode"],
     corpName: json["CorpName"],
     shopName: json["ShopName"],
+    collectionType: json["CollectionType"],
+    paymentMode: json["PaymnetMode"],
     gsttin: gsttinValues.map[json["GSTTIN"]],
     regNo: regNoValues.map[json["RegNo"]],
   );
@@ -106,6 +112,8 @@ class QrTransaction {
     "BranchCode": branchCode,
     "CorpName": corpName,
     "ShopName":  shopName,
+    "CollectionType":  collectionType,
+    "PaymentMode":  paymentMode,
     "GSTTIN": gsttinValues.reverse[gsttin],
     "RegNo": regNoValues.reverse[regNo],
   };

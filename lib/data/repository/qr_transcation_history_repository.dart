@@ -14,10 +14,9 @@ class QRTransactionHistoryRepository implements IQRTransactionHistoryRepository{
   Future<Either<ErrorHandler, QrTranscationHistoryModel>> getQrTranscationHistory(String? dateFilterType,String? startDate,String? endDate,String? source,
       String? corpCode, String? agentOrginId) async{
     Uri url =Uri();
-    source == "COLLECTION"?
-    //url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&CorpCode=$corpCode&agentOrginId=1231")
-    url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&CorpCode=$corpCode&agentOrginId=$agentOrginId")
-   //: url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&CorpCode=$corpCode&agentOrginId=1231&PaymentMode=QR");
+   // source == "COLLECTION"?
+    source == "ALL"?
+    url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&CorpCode=$corpCode&agentOrginId=$agentOrginId&PaymentMode=QR")
    : url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&CorpCode=$corpCode&agentOrginId=$agentOrginId&PaymentMode=QR");
 
 
@@ -30,7 +29,7 @@ class QRTransactionHistoryRepository implements IQRTransactionHistoryRepository{
          printLog("==================================QR TRANSACTION STATUS CODE=================================");
          printLog(response.statusCode);
          printLog("==================================QR TRANSACTION STATUS CODE=================================");
-         printLog(response.body);
+         printLog("QR TRANSACTION ${response.body}");
          if(response.body.contains("OrderId")){
            return Right(QrTranscationHistoryModel.fromJson(jsonDecode(response.body)));
 
