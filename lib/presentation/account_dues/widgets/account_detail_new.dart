@@ -278,6 +278,7 @@ loadSharedPrefs();
                   print("---------------------ENTITYID--------------------");
                   print(agentId);
                   print("AccountDetailNew");
+                  showProgressDialog(context);
                   final paymentSession =
                       await CreatePaymentSessionIdRepository()
                           .getPaymentSessionId(
@@ -482,6 +483,7 @@ loadSharedPrefs();
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
+
                           getCashTrans(
                             token: token,
                             customerName: name,
@@ -496,6 +498,7 @@ loadSharedPrefs();
                           );
                           Navigator.pop(context, true); // ✅ User confirmed
                           Navigator.pop(context, true); // ✅ User confirmed
+                          showProgressDialog(context);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.redAccent,
@@ -643,8 +646,10 @@ loadSharedPrefs();
         branchCode: "", collectionType: 'RD');
     cash.fold((err) {
       print("getCashTrans $err");
+      Navigator.pop(context);
     }, (success) {
       print("getCashTrans $success");
+      Navigator.pop(context);
       showDialog(
         context: context,
         builder: (context) => TransactionSuccessDialog(

@@ -91,7 +91,7 @@ class QrTransaction {
     corpName: json["CorpName"],
     shopName: json["ShopName"],
     collectionType: json["CollectionType"],
-    paymentMode: json["PaymnetMode"],
+    paymentMode: json["PaymentMode"],
     gsttin: gsttinValues.map[json["GSTTIN"]],
     regNo: regNoValues.map[json["RegNo"]],
   );

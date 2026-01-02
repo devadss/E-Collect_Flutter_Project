@@ -1224,6 +1224,7 @@ class _HomePageState extends State<HomePage>
     required String paymentMode,
     required String collectionType,
   }) {
+    print("payment mode : $paymentMode");
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Card(
