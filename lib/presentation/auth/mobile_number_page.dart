@@ -54,7 +54,7 @@ class _MobileNumberVerificationPageState
         InAppUpdate.performImmediateUpdate(); // or .startFlexibleUpdate()
       }
     } catch (e) {
-      print("Update check failed: $e");
+      //print("Update check failed: $e");
     }
   }
 
@@ -71,10 +71,10 @@ class _MobileNumberVerificationPageState
           Provider.of<ParentDetailAgentProvider>(context, listen: false);
       final vendorBaseUrlProvider =
           Provider.of<CollectionBaseUrlProvider>(context, listen: false);
-      print("------------------------------PARENT AGENT MOBIE NUMBER-----------");
-      print(parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);
-      print("------------------------------PARENT AGENT MOBIE NUMBER VENDOR-----------");
-      print(parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);
+      // print("------------------------------PARENT AGENT MOBIE NUMBER-----------");
+      // print(parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);
+      // print("------------------------------PARENT AGENT MOBIE NUMBER VENDOR-----------");
+      // print(parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);
 
       await parentAgentDetailProvider.fetchParentAgentDetails(value);
       if (parentAgentDetailProvider.subAgent != null) {
@@ -83,8 +83,8 @@ class _MobileNumberVerificationPageState
             parentAgentDetailProvider.subAgent?.data.mobileNumber);
 
         if (vendorBaseUrlProvider.collectionBaseUrlModel != null) {
-          print(
-              "------------------------------VENDOR BASED URL MODEL CUST-----------");
+          // print(
+          //     "------------------------------VENDOR BASED URL MODEL CUST-----------");
           // print(vendorBaseUrlProvider.collectionBaseUrlModel!.getCustomerUrl
           //     .toString());
 
@@ -115,7 +115,7 @@ class _MobileNumberVerificationPageState
               .toString());
         }
 
-        print(parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);
+        //print(parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);
         await SharedPref.shared.setAgentId(
           parentAgentDetailProvider.subAgent!.data.parentAgentId.toString(),
         );
@@ -140,8 +140,9 @@ class _MobileNumberVerificationPageState
         await SharedPref.shared.setSubAgentId(
           parentAgentDetailProvider.subAgent!.data.subAgentId.toString(),
         );
-        print(
-            "parentAgentDetailProvider.subAgent!.parentAgentMobNo.toString() = ${parentAgentDetailProvider.subAgent!.data.parentAgentMobNo.toString()}");
+        // print(
+        //     "parentAgentDetailProvider.subAgent!.parentAgentMobNo.toString() = ${parentAgentDetailProvider.subAgent!.data.parentAgentMobNo.toString()}");
+        //
         final parentAgentCredentialProvider =
             Provider.of<ParentAgentCredentialProvider>(context, listen: false);
 
@@ -173,7 +174,7 @@ class _MobileNumberVerificationPageState
           response.fold(
             (error) {
               Navigator.pop(context);
-              print("Error: ${error.message}");
+              //print("Error: ${error.message}");
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
@@ -193,10 +194,10 @@ class _MobileNumberVerificationPageState
               if (customer.response!.data!['Customer_type'] != null ||
                   customer.response!.data!['Customer_type']?.isNotEmpty ==
                       true) {
-                print("Phase 1");
+                //print("Phase 1");
                 if (customer.response!.data!['Customer_type'] ==
                     "COLLECTION_AGENT"&& customer.response!.images!.integrationStaus=="Y") {
-                  print("Phase 2");
+                 // print("Phase 2");
                   SharedPref.shared.setEmail(
                     customer.response!.data!['emailId'].toString(),
                   );
@@ -207,8 +208,8 @@ class _MobileNumberVerificationPageState
                     customer.response!.data!['BranchCode'].toString(),
                   );
                   SharedPref.shared.setMpinValue(customer.mpin.toString());
-                  print(
-                      "customer.mpin.toString() = ${customer.mpin.toString()}");
+                  // print(
+                  //     "customer.mpin.toString() = ${customer.mpin.toString()}");
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -229,7 +230,7 @@ class _MobileNumberVerificationPageState
 
                 else if(customer.response!.data!['Customer_type'] ==
                     "COLLECTION_AGENT"&& customer.response!.images!.integrationStaus=="N") {
-                  print("Phase 2");
+                  //print("Phase 2");
                   SharedPref.shared.setCustId(
                     customer.response!.data!['CustId'].toString(),
                   );
@@ -243,8 +244,8 @@ class _MobileNumberVerificationPageState
                     customer.response!.data!['BranchCode'].toString(),
                   );
                   SharedPref.shared.setMpinValue(customer.mpin.toString());
-                  print(
-                      "customer.mpin.toString() = ${customer.mpin.toString()}");
+                  // print(
+                  //     "customer.mpin.toString() = ${customer.mpin.toString()}");
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -263,11 +264,11 @@ class _MobileNumberVerificationPageState
                     ),
                   );
                 }else{
-                  print("Not a valid collection agent");
+                  //print("Not a valid collection agent");
                   showInSnackBar("Not a valid collection agent");
                 }
               } else {
-                print("Not a valid collection agent");
+               // print("Not a valid collection agent");
                 showInSnackBar("Not a valid collection agent");
               }
             },
@@ -275,12 +276,12 @@ class _MobileNumberVerificationPageState
         } else if (parentAgentCredentialProvider
                 .parentAgentCredentialFailResponse !=
             null) {
-          print(parentAgentCredentialProvider
-              .parentAgentCredentialFailResponse!.message);
+          // print(parentAgentCredentialProvider
+          //     .parentAgentCredentialFailResponse!.message);
         }
       }
       else {
-        print("Not an agent");
+       // print("Not an agent");
         final custRegisterProvider = Provider.of<CustRegisterProvider>(
           context,
           listen: false,
@@ -289,7 +290,7 @@ class _MobileNumberVerificationPageState
             int.parse(_mobileNumberController.text.replaceAll("+91", "")));
         response.fold((error) {
           Navigator.pop(context);
-          print("Error: ${error.message}");
+          //print("Error: ${error.message}");
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -322,7 +323,7 @@ class _MobileNumberVerificationPageState
               customer.response!.data!['firstName'].toString(),
             );
             SharedPref.shared.setMpinValue(customer.mpin.toString());
-            print("customer.mpin.toString() = ${customer.mpin.toString()}");
+            //print("customer.mpin.toString() = ${customer.mpin.toString()}");
             Map<String, String?> nameParts =
                 splitName(customer.response!.data!['firstName'].toString());
             List<String> parts =

@@ -74,7 +74,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
 
 
   void cashDepositDialog(CashDepositModel? cashDepositModel) {
-    print("INSIDE DEPOSIT CASH DIALOG");
+    //print("INSIDE DEPOSIT CASH DIALOG");
     showDialog(
       context: context,
       builder: (context) {
@@ -124,7 +124,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
 
 //9745228327
   void _listenForFirebaseMessages() {
-    print("_listenForFirebaseMessages");
+    //print("_listenForFirebaseMessages");
     _firebaseMessageSubscription?.cancel(); // ✅ Ensure only one listener
 
     _firebaseMessageSubscription = FirebaseMessaging.onMessage.listen((
@@ -134,22 +134,22 @@ class _NewQrCodePageState extends State<NewQrCodePage>
         final String? notificationTitle = message.notification?.title;
         final String? notificationBody = message.notification?.body;
 
-        print("📩 Foreground Notification: $notificationTitle");
+       // print("📩 Foreground Notification: $notificationTitle");
 
         if (notificationTitle == "Wallet Load Successful 🎉") {
           if (mounted) {
-            print("✅ Showing Success Message");
+            //print("✅ Showing Success Message");
             _showSuccessMessage(notificationBody);
           }
         }
       } else {
-        print("⚠️ Empty Message Received: ${message.data}");
+        //print("⚠️ Empty Message Received: ${message.data}");
       }
     });
 
     // ✅ Handle background notification clicks
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print("🚀 Background Notification Clicked: ${message.data}");
+     // print("🚀 Background Notification Clicked: ${message.data}");
     });
 
     // ✅ Handle terminated app notification taps
@@ -157,7 +157,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
         RemoteMessage? message,
         ) {
       if (message != null) {
-        print("📱 App Launched via Notification: ${message.data}");
+       // print("📱 App Launched via Notification: ${message.data}");
       }
     });
   }
@@ -542,8 +542,8 @@ class _NewQrCodePageState extends State<NewQrCodePage>
     final generateQr =
     await NewQrCodeRepository().getQrCode(paymentSessionId, token);
     generateQr.fold((error) {
-      print("---------------------ERROR---------------");
-      print(error);
+      //print("---------------------ERROR---------------");
+     // print(error);
     }, (newQrCode) {
       if (newQrCode.data!.payload!.qrcode != null &&
           newQrCode.data!.payload!.qrcode!.isNotEmpty &&
@@ -573,7 +573,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
 
   @override
   void initState() {
-    print("NewQrCodePage");
+    //print("NewQrCodePage");
     super.initState();
     _animationController = AnimationController(
       vsync: this,

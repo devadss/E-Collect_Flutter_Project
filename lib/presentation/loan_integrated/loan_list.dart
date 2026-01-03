@@ -7,8 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/utils.dart';
+import '../../data/storage/shared_pref_helper.dart';
 //THE LOAN CUSTOMER LISTING PAGE 1 OF 2....
 class LoanList extends StatefulWidget {
+
   const LoanList({super.key});
 
   @override
@@ -21,10 +23,24 @@ class _LoanListState extends State<LoanList> {
   bool? showShadowAcc = false;
   bool? showShadowLoan=true;
 
+  String? _branchId;
+  String? _subAgentId;
+
+  Future<void> loadSharedPrefs(BuildContext context) async {
+    final subAgentId = await SharedPref().getSubAgentId(); //63
+    final branchId = await SharedPref().getSubAgentCodeNew(); //01
+    final subAgentCode = await SharedPref().getSubAgentCode(); //1021
+
+    setState(() {
+      _branchId = branchId;
+      _subAgentId= subAgentId;
+    });
+    fetchIntegratedLoans();
+  }
   Future<void> fetchIntegratedLoans() async {
     final integratedLoanProvider =
         Provider.of<IntegratedLoanListProvider>(context, listen: false);
-    await integratedLoanProvider.fetchIntegratedLoans("", "", "", "");
+    await integratedLoanProvider.fetchIntegratedLoans(_subAgentId, _branchId,"","");
     setState(() {
       _integratedLoanListResponse =
           integratedLoanProvider.integratedLoanListResponse;
@@ -120,18 +136,20 @@ class _LoanListState extends State<LoanList> {
 
   @override
   void initState() {
-    fetchIntegratedLoans();
+    loadSharedPrefs(context);
+
+
     super.initState();
   }
 
   void filterList(String filterValue) {
-    print("filterValue $filterValue");
+    //print("filterValue $filterValue");
     if (filterValue.isEmpty) {
       _filteredList = _integratedLoanListResponse!.data;
     } else {
       setState(() {
         _filteredList = _integratedLoanListResponse!.data.where((item) {
-          return item.custName.toLowerCase().contains(filterValue);
+          return item.custName.toLowerCase().contains(filterValue) || item.lnGlobalAccNo.toLowerCase().contains(filterValue);
         }).toList();
       });
     }

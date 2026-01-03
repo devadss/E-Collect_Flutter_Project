@@ -277,7 +277,7 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
                     amountController.text.isNotEmpty) {
                   createOrderId('SELF');
                 } else {
-                  print("Please Enter an Amount");
+                  //print("Please Enter an Amount");
                   // EasyLoading.showToast('Please Enter an Amount',
                   //     toastPosition: EasyLoadingToastPosition.bottom);
                 }
@@ -314,10 +314,10 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
         .toString();
     orderID = orderCraeteProvider.paymentGatewayOrderResponseModel!.orderId
         .toString();
-    print(
-        'CREATE paymentSessionId RESPONSE = ${orderCraeteProvider.paymentGatewayOrderResponseModel?.paymentSessionId.toString()}');
-    print(
-        'CREATE ORDER RESPONSE = ${orderCraeteProvider.paymentGatewayOrderResponseModel?.orderId.toString()}');
+    // print(
+    //     'CREATE paymentSessionId RESPONSE = ${orderCraeteProvider.paymentGatewayOrderResponseModel?.paymentSessionId.toString()}');
+    // print(
+    //     'CREATE ORDER RESPONSE = ${orderCraeteProvider.paymentGatewayOrderResponseModel?.orderId.toString()}');
     if (paymentSessionId.isNotEmpty && orderID.isNotEmpty) {
       printLog("------------------ORDER ID-----------------");
       printLog(orderID);

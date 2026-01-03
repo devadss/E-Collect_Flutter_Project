@@ -96,7 +96,7 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
       if (!mounted) return;
       setState(() => _isLoading = false);
       // Handle error appropriately
-      print("Error initializing data: $error");
+     // print("Error initializing data: $error");
     }
   }
 
@@ -225,11 +225,11 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
       child: GestureDetector(
         onTap: () => _navigateToCustomerDetails(customer),
         child: Container(
-          height: MediaQuery.of(context).size.height * 0.15,
+          height: MediaQuery.of(context).size.height * 0.11,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(5),
             color: white,
-            border: Border.all(color: home1, width: 1.2),
+            border: Border.all(color: home1.withAlpha(100), width: 1.2),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -241,7 +241,7 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
                   customer.custName,
                   style: const TextStyle(
                     fontWeight: FontWeight.w700,
-                    fontSize: 17,
+                    fontSize: 15,
                     color: black,
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -255,7 +255,7 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
                         "Account Number: ${customer.depGlobalAccNo}",
                         style: const TextStyle(
                           fontWeight: FontWeight.w700,
-                          fontSize: 14,
+                          fontSize: 12,
                           color: black87,
                         ),
                         overflow: TextOverflow.ellipsis,
@@ -278,8 +278,8 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
       height: 30,
       width: 90,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: home1, width: 1),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: home1, width: 0.5),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5),

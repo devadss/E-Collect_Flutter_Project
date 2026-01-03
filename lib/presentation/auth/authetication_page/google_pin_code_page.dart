@@ -54,13 +54,76 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       custID = custid;
       fcmToken = fcmTok;
     });
-    print("contactNum $contactNum");
-    print("MPIN $mpin");
-    print("fcmTok $fcmTok");
+    // print("contactNum $contactNum");
+    // print("MPIN $mpin");
+    // print("fcmTok $fcmTok");
     _authenticateWithBiometrics();
   }
-
   Future<void> _authenticateWithBiometrics() async {
+    try {
+      final canCheckBiometrics = await auth.canCheckBiometrics;
+      final isDeviceSupported = await auth.isDeviceSupported();
+
+      if (!canCheckBiometrics && !isDeviceSupported) {
+       // print('No biometric or device auth support');
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Device does not support biometric authentication'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+        return;
+      }
+
+      authenticated = await auth.authenticate(
+        localizedReason: 'Please authenticate to proceed',
+        options: const AuthenticationOptions(
+          biometricOnly: false,
+          stickyAuth: false,
+        ),
+      );
+
+      if (!mounted) return;
+
+      // Handle authentication result
+      if (authenticated) {
+        await validateMpinFingerAuth();
+      } else {
+       // print('Authentication canceled by user.');
+        // Optionally show a message to user
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Authentication required to proceed'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+    } on PlatformException catch (e) {
+      //print('PlatformException during biometric auth: ${e.code} - ${e.message}');
+      if (!mounted) return;
+
+      // Handle specific platform errors
+      if (e.code == 'PasscodeNotSet' || e.code == 'NotAvailable') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Biometric authentication not available: ${e.message}'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+    } catch (e) {
+      //print('Exception during biometric authentication: $e');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Authentication failed. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+/*  Future<void> _authenticateWithBiometrics() async {
     try {
       final canCheckBiometrics = await auth.canCheckBiometrics;
       final isDeviceSupported = await auth.isDeviceSupported();
@@ -96,47 +159,9 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       print('Authentication canceled by user.');
       return;
     }
-  }
-
-/*
-  Future<void> _authenticateWithBiometrics() async {
+  }*/
 
 
-    try {
-      final canCheckBiometrics = await auth.canCheckBiometrics;
-      final isDeviceSupported = await auth.isDeviceSupported();
-
-      if (!canCheckBiometrics && !isDeviceSupported) {
-        print('No biometric or device auth support');
-        return;
-      }
-
-      authenticated = await auth.authenticate(
-        localizedReason: 'Please authenticate to proceed',
-        options: const AuthenticationOptions(
-          biometricOnly: false, // ✅ Allows device PIN/password fallback
-          stickyAuth: false,
-        ),
-      );
-      validateMpinFingerAuth();
-    } on PlatformException catch (e) {
-      authenticated = true;
-      validateMpinFingerAuth();
-      print('PlatformException during biometric auth: ${e.code} - ${e.message}');
-      return;
-    } on Exception catch (e) {
-      print('Exception during biometric authentication: $e');
-      return;
-    }
-
-    if (!authenticated) {
-      print('Authentication canceled by user.');
-      return;
-    }
-
-   // validateMpinFingerAuth();
-  }
-*/
 
 
 /*
@@ -175,7 +200,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
 */
 
   Future<void> validateMpin() async {
-    print("validateMpin");
+    //print("validateMpin");
     if (pin.isNotEmpty) {
       if (pin.length == 6) {
         showProgressDialog(context);
@@ -188,7 +213,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
         response.fold(
               (error) {
             Navigator.pop(context);
-            print("Error: ${error.message}");
+            //print("Error: ${error.message}");
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text(
                 "Error: ${error.message}- Invalid M-pin",
@@ -227,17 +252,17 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
           },
         );
 
-        print("MPIN = ${encryptString(pin, _sk, _iv)}");
+       // print("MPIN = ${encryptString(pin, _sk, _iv)}");
       } else {
-        print("Enter 6 digit mpin");
+        //print("Enter 6 digit mpin");
       }
     } else {
-      print("Empty fields not allowed");
+      //print("Empty fields not allowed");
     }
   }
 
   Future<void> validateMpinFingerAuth() async {
-    print("validateMpinFingerAuth");
+    //print("validateMpinFingerAuth");
 
     if (!mounted) return; // ✅ very important before using context
 
@@ -260,7 +285,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
      // );
     }
 
-    print("MPIN = $mpin");
+   // print("MPIN = $mpin");
   }
 
 /*
@@ -291,10 +316,10 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
 
   String? encryptString(
       String textToEncrypt, String? secretKey, String? initialVector) {
-    print("-------------------encryptString values----------------");
-    print("textToEncrypt : $textToEncrypt");
-    print("secretKey : $secretKey");
-    print("initialVector : $initialVector");
+    // print("-------------------encryptString values----------------");
+    // print("textToEncrypt : $textToEncrypt");
+    // print("secretKey : $secretKey");
+    // print("initialVector : $initialVector");
     if (textToEncrypt.isEmpty || secretKey == null || initialVector == null) {
       return null;
     }

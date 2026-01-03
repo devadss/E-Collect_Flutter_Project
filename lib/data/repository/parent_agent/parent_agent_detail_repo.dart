@@ -15,7 +15,7 @@ class ParentAgentDetailRepository implements ParentDataDetailInterface {
     final request =
         await http.get(uri, headers: {'Content-Type': 'application/json'});
     print(uri);
-    print(request.body);
+    print('ParentAgentDetailRepository : ${request.body}');
     if (request.statusCode == 200) {
       return Right(SubAgentResponse.fromJson(jsonDecode(request.body)));
     } else {

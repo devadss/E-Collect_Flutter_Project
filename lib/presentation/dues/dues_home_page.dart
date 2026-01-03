@@ -73,16 +73,16 @@ class _DuesHomePageState extends State<DuesHomePage> {
       String? amount,String?
       phoneNumber,String?
       entityId,String? note)async{
-    print("--------------------TOKEN---------------------");
-    print(token);
-    print("---------------------AMOUNT--------------------");
-    print(amount);
-    print("---------------------PHONENUMBER--------------------");
-    print(phoneNumber);
-    print("---------------------ENTITYID--------------------");
-    print(entityId);
-    print("---------------------NOTE--------------------");
-    print(note);
+    // print("--------------------TOKEN---------------------");
+    // print(token);
+    // print("---------------------AMOUNT--------------------");
+    // print(amount);
+    // print("---------------------PHONENUMBER--------------------");
+    // print(phoneNumber);
+    // print("---------------------ENTITYID--------------------");
+    // print(entityId);
+    // print("---------------------NOTE--------------------");
+    // print(note);
     final paymentSession = await CreatePaymentSessionIdRepository()
         .getPaymentSessionId(
     agentOriginId
@@ -111,8 +111,8 @@ class _DuesHomePageState extends State<DuesHomePage> {
     agentName: agentName, subAgentBranchCode: '', collectionType: 'RDCL');
     paymentSession.fold(
         (error){
-          print("---------------------------------ERROR PAYMENT---------------------------");
-          print(error);
+          //print("---------------------------------ERROR PAYMENT---------------------------");
+         // print(error);
         },
         (sessionId)async{
           paymentSessionId = sessionId.paymentSessionId ?? "";
@@ -849,7 +849,7 @@ class _DuesHomePageState extends State<DuesHomePage> {
         agentId == null ||
         agentOriginId == null ||
         token == null) {
-      print("One or more required fields are null.");
+      //print("One or more required fields are null.");
       return; // or handle the error appropriately
     }
     final send = await PaymentLinkRepository().getPaymentLink(
@@ -873,14 +873,14 @@ class _DuesHomePageState extends State<DuesHomePage> {
 
     send.fold(
       (error) {
-        print("-------------------ERROR---------------------");
-        print(error);
+       // print("-------------------ERROR---------------------");
+        //print(error);
       },
       (sendLink) {
         if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
           Share.share("Here is your payment link: ${sendLink.linkUrl}");
         } else {
-          print("Payment link is empty or null");
+          //print("Payment link is empty or null");
         }
       },
     );

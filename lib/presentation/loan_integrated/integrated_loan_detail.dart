@@ -83,7 +83,8 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
 
     super.initState();
     loadSharedPrefs();
-    editAmountController.text = widget.loanAmount .toString();
+   // editAmountController.text = widget.loanAmount .toString();
+    editAmountController.text = (widget.principalAmountBalance+widget.interestAmountBalance+widget.penalInterestAmountBalance).toString();
   }
 
   void validateInput() {
@@ -1118,7 +1119,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
         "MOB", "CASH", "", "LOAN");
     if (loanCashProvider.loanCashCollectionResponse != null) {
       Navigator.pop(context);
-      print(loanCashProvider.loanCashCollectionResponse?.message.toString());
+      //print(loanCashProvider.loanCashCollectionResponse?.message.toString());
       showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -1164,9 +1165,9 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
         subAgentBranchCode: subAgentCodeNew,
         collectionType: 'LOAN');
     paymentSession.fold((error) {
-      print(
-          "---------------------------------ERROR PAYMENT---------------------------");
-      print(error);
+      // print(
+      //     "---------------------------------ERROR PAYMENT---------------------------");
+      // print(error);
     }, (sessionId) async {
       paymentSessionId = sessionId.paymentSessionId ?? "";
       if (paymentSessionId!.isNotEmpty &&

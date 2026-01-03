@@ -149,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
         },
             (data) {
           Navigator.pop(context);
-          print("Token status : ${widget.tokenStatus}");
+         // print("Token status : ${widget.tokenStatus}");
           SharedPref.shared.setTokenValue(data);
           // SharedPref.shared.setAgentName(userNameController.text.toString());
           SharedPref.shared.setPassword(

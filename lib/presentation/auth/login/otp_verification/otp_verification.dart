@@ -80,7 +80,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
     return output;
   }
   Future<void> tokenGeneration(String password) async {
-    print("Inside token gen");
+    //print("Inside token gen");
     showProgressDialog(context);
     final tokenRequestProvider = Provider.of<TokenRequestProvider>(context, listen: false);
     final response = await tokenRequestProvider.requestToken(
@@ -92,7 +92,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
     response.fold(
           (error) {
         Navigator.pop(context);
-        print("Inside tokenGeneration error");
+        //print("Inside tokenGeneration error");
         if (error == "User not found") {
           Navigator.pop(context);
 
@@ -125,8 +125,8 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
         }
       },
           (data) async {
-            print("Inside tokenGeneration data");
-            print("setTokenValue $data");
+            //print("Inside tokenGeneration data");
+            //print("setTokenValue $data");
         Navigator.pop(context);
         await SharedPref.shared.setTokenValue(data.toString());
         await SharedPref.shared.setLogin(true);
@@ -152,7 +152,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
         final data = await provider.verifyOtp(widget.subAgentmobNum, otpVal);
         data.fold(
           (error) {
-            print("request error= ${error.message}");
+            //print("request error= ${error.message}");
 
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -176,7 +176,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
               if(
               widget.loggedInUserType == "NOT_AN_AGENT"){
                // tokenGeneration(encryptString(widget.password, secretKey, initialVector)!);
-                print("setTokenValue $data");
+                //print("setTokenValue $data");
                // tokenGeneration(widget.password);
                 await SharedPref.shared.setTokenValue(data.toString());
                 await SharedPref.shared.setLogin(true);
@@ -206,7 +206,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
            //
            //    }
             }
-            print("Otp request stst : ${data.message}");
+            //print("Otp request stst : ${data.message}");
           },
         );
       } else {
@@ -264,7 +264,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
       },
       (data) {
         //Navigator.pop(context);
-        print("Otp request stst : ${data.message.toString()}");
+        //print("Otp request stst : ${data.message.toString()}");
       },
     );
   }

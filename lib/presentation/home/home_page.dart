@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage>
         InAppUpdate.performImmediateUpdate(); // or .startFlexibleUpdate()
       }
     } catch (e) {
-      print("Update check failed: $e");
+      //print("Update check failed: $e");
     }
   }
 
@@ -397,7 +397,7 @@ class _HomePageState extends State<HomePage>
 
     if (mounted) {
       setState(() {
-        print("user type = ${widget.userType}");
+        //print("user type = ${widget.userType}");
         widget.userType == "AGENT_LOAN"
             ? userType = "LOAN_COLLECTION"
             : userType = "COLLECTION";
@@ -494,7 +494,7 @@ class _HomePageState extends State<HomePage>
       fetchCollection();
 
     } catch (e) {
-      print("Error loading transaction data: $e");
+      //print("Error loading transaction data: $e");
       if (mounted) {
         // Show error message to user
         ScaffoldMessenger.of(context).showSnackBar(
@@ -895,7 +895,7 @@ class _HomePageState extends State<HomePage>
       });
 
     } catch (e) {
-      print("Error clearing filters: $e");
+      //print("Error clearing filters: $e");
     } finally {
       if (mounted && qrProvider.showProgressDialog == false) {
         Navigator.pop(context);
@@ -1224,7 +1224,7 @@ class _HomePageState extends State<HomePage>
     required String paymentMode,
     required String collectionType,
   }) {
-    print("payment mode : $paymentMode");
+    //print("payment mode : $paymentMode");
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Card(
@@ -1299,7 +1299,7 @@ class _HomePageState extends State<HomePage>
                           ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 5),
-                            child: Text("$collectionType", style: TextStyle(fontSize: 11, color:home1, fontWeight: FontWeight.w500),),
+                            child: Text(collectionType, style: TextStyle(fontSize: 11, color:home1, fontWeight: FontWeight.w500),),
                           )):SizedBox()
                     ],
                   ),
@@ -1412,7 +1412,7 @@ class _HomePageState extends State<HomePage>
   String _getTransactionTitle(dynamic transaction) {
     //print("_getTransactionTitle $transaction");
     if (transaction is QrTransaction) {
-      print("_getTransactionTitle ${transaction.customerPhone}");
+      //print("_getTransactionTitle ${transaction.customerPhone}");
 
       return transaction.customerName.toString();
     }

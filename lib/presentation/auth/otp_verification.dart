@@ -77,7 +77,7 @@ class _OtpVerificationState extends State<OtpVerification> {
         final data = await provider.verifyOtp(widget.mobNum, otpVal);
         data.fold(
               (error) {
-            print("request error= ${error.message}");
+           // print("request error= ${error.message}");
 
             ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -95,7 +95,7 @@ class _OtpVerificationState extends State<OtpVerification> {
             if(data.message == "OTP Verified"){
               Navigator.push(context, MaterialPageRoute(builder: (context)=>SetMpinPage(monNumber: widget.mobNum,)));
             }
-            print("Otp request stst : ${data.message}");
+            //print("Otp request stst : ${data.message}");
           },
         );
       }else{
@@ -142,7 +142,7 @@ class _OtpVerificationState extends State<OtpVerification> {
       },
           (data) {
         //Navigator.pop(context);
-        print("Otp request status : ${data.message.toString()}");
+        //print("Otp request status : ${data.message.toString()}");
       },
     );
 

@@ -290,9 +290,9 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
         subAgentCodeNew = sub_AgentCodeNew;
       });
     }
-    print("subagentId $subagentId");
-    print("agentId $agentId");
-    print("agentOriginId $agentOriginId");
+    // print("subagentId $subagentId");
+    // print("agentId $agentId");
+    // print("agentOriginId $agentOriginId");
     showProgressDialog(context);
     setState(() {
       agentBranchCode = subAgentCodeNew;
@@ -319,9 +319,9 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
           : totalListCountNew = result + 1;
     });
 
-    print("totalListCount = $totalListCount");
+    //print("totalListCount = $totalListCount");
 
-    print("totalListCount = $totalListCountNew");
+    //print("totalListCount = $totalListCountNew");
   }
 
   Future<void> getCashTrans(
@@ -358,9 +358,9 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
         subagentBranchCode: subAgentCodeNew,
         branchCode: branchCode, collectionType: 'RD');
     cash.fold((err) {
-      print("getCashTrans $err");
+      //print("getCashTrans $err");
     }, (success) {
-      print("getCashTrans $success");
+     // print("getCashTrans $success");
       showDialog(
         context: context,
         builder: (context) => TransactionSuccessDialog(
@@ -440,17 +440,17 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
       required String? entityId,
       required String? note,
       required String? subAgentBranchCode}) async {
-    print("--------------------INSIDE getPaymentSessionId---------------------");
-    print("--------------------TOKEN---------------------");
-    print(token);
-    print("---------------------AMOUNT--------------------");
-    print(amount);
-    print("---------------------PHONENUMBER--------------------");
-    print(phoneNumber);
-    print("---------------------ENTITYID--------------------");
-    print(entityId);
-    print("---------------------NOTE--------------------");
-    print(note);
+    // print("--------------------INSIDE getPaymentSessionId---------------------");
+    // print("--------------------TOKEN---------------------");
+    // print(token);
+    // print("---------------------AMOUNT--------------------");
+    // print(amount);
+    // print("---------------------PHONENUMBER--------------------");
+    // print(phoneNumber);
+    // print("---------------------ENTITYID--------------------");
+    // print(entityId);
+    // print("---------------------NOTE--------------------");
+    // print(note);
     final paymentSession = await CreatePaymentSessionIdRepository()
         .getPaymentSessionId(
             agentOriginId: agentOriginId,
@@ -471,9 +471,9 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
             agentName: agentName,
             subAgentBranchCode: subAgentBranchCode, collectionType: 'RDCL');
     paymentSession.fold((error) {
-      print(
-          "---------------------------------ERROR PAYMENT---------------------------");
-      print(error);
+      // print(
+      //     "---------------------------------ERROR PAYMENT---------------------------");
+      // print(error);
     }, (sessionId) async {
       paymentSessionId = sessionId.paymentSessionId ?? "";
       if (paymentSessionId!.isNotEmpty &&
@@ -783,7 +783,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                               selectedFilterType = "agentid";
                                             });
 
-                                            print("Filter by Agent ID");
+                                            //print("Filter by Agent ID");
                                             showProgressDialog(context);
                                             await provider.getRdclDueList(
                                                 agentOriginId!,
@@ -801,7 +801,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                             setState(() {
                                               selectedFilterType = "branchid";
                                             });
-                                            print("Filter by Branch ID");
+                                            //print("Filter by Branch ID");
                                             showProgressDialog(context);
 
                                             await provider.getRdclDueList(
@@ -963,7 +963,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                             final dueIndex = entry.key;
                             final due = entry.value;
 
-                              print("due values : ${due}");
+                              //print("due values : ${due}");
 
 
                             _checkboxStates.putIfAbsent(accNo, () => {});
@@ -1227,7 +1227,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                                                               ),
                                                                               trailing: const Icon(Icons.chevron_right),
                                                                               onTap: () {
-                                                                                print("selected method = $selectedMethod");
+                                                                                //print("selected method = $selectedMethod");
                                                                                 setModalState(() => selectedMethod = "QR Code");
                                                                                 Navigator.pop(ctx);
                                                                               },
@@ -1246,7 +1246,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                                                               ),
                                                                               trailing: const Icon(Icons.chevron_right),
                                                                               onTap: () {
-                                                                                print("selected method = $selectedMethod");
+                                                                                //print("selected method = $selectedMethod");
                                                                                 setModalState(() => selectedMethod = "Cash");
                                                                                 Navigator.pop(ctx);
                                                                               },
@@ -1424,7 +1424,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                                                       return;
                                                                     }
                                                                   } else {
-                                                                    print("Selected QR");
+                                                                    //print("Selected QR");
                                                                     // ✅ This runs only after confirmation (or if non-cash method)
                                                                     getPaymentSessionId(
                                                                       token: token,
@@ -1687,7 +1687,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
               _searchController.clear();
               showProgressDialog(context);
               setState(() {
-                print("page : $page");
+                //print("page : $page");
                 _currentPage = page;
               });
               await provider.getRdclDueList(
@@ -1768,7 +1768,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
         agentId == null ||
         agentOriginId == null ||
         token == null) {
-      print("One or more required fields are null.");
+      //print("One or more required fields are null.");
       return; // or handle the error appropriately
     }
 
@@ -1791,14 +1791,14 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
         customerName: custDetails.name);
     send.fold(
       (error) {
-        print("-------------------ERROR---------------------");
-        print(error);
+        //print("-------------------ERROR---------------------");
+        //print(error);
       },
       (sendLink) {
         if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
           Share.share("Here is your payment link: ${sendLink.linkUrl}");
         } else {
-          print("Payment link is empty or null");
+          //print("Payment link is empty or null");
         }
       },
     );
@@ -2273,10 +2273,10 @@ class TransactionSuccessDialog extends StatelessWidget {
   final VoidCallback onViewReceipt;
 
   const TransactionSuccessDialog({
-    Key? key,
+    super.key,
     required this.success,
     required this.onViewReceipt,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

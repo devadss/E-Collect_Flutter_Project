@@ -204,7 +204,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
         "MOB", "TRANSFER",utrController.text , "LOAN");
     if (loanCashProvider.loanCashCollectionResponse != null) {
       Navigator.pop(context);
-      print(loanCashProvider.loanCashCollectionResponse?.message.toString());
+      //print(loanCashProvider.loanCashCollectionResponse?.message.toString());
       showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -251,7 +251,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
         "MOB", "CASH", "", "LOAN");
     if (loanCashProvider.loanCashCollectionResponse != null) {
       Navigator.pop(context);
-      print(loanCashProvider.loanCashCollectionResponse?.message.toString());
+      //print(loanCashProvider.loanCashCollectionResponse?.message.toString());
       showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -309,9 +309,9 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
         subagentBranchCode: subAgentCodeNew,
         branchCode: branchCode, collectionType: 'LOAN');
     cash.fold((err) {
-      print("getCashTrans $err");
+      //print("getCashTrans $err");
     }, (success) {
-      print("getCashTrans $success");
+      //print("getCashTrans $success");
       showDialog(
         context: context,
         builder: (context) => TransactionSuccessDialog(
@@ -1326,8 +1326,8 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
 
     send.fold(
       (error) {
-        print("-------------------ERROR---------------------");
-        print(error);
+       // print("-------------------ERROR---------------------");
+        //print(error);
       },
       (sendLink) async {
         if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
@@ -1352,7 +1352,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                 });
           }
         } else {
-          print("Payment link is empty or null");
+          //print("Payment link is empty or null");
         }
       },
     );
@@ -1408,7 +1408,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
     );
   }
 
-   showAccTransDialog() async {
+   Future<SizedBox> showAccTransDialog() async {
    return SizedBox(
       height: 100,
       child: await showModalBottomSheet(
@@ -1453,9 +1453,9 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
             subAgentBranchCode: subAgentCodeNew,
             collectionType: 'LOAN');
     paymentSession.fold((error) {
-      print(
-          "---------------------------------ERROR PAYMENT---------------------------");
-      print(error);
+      // print(
+      //     "---------------------------------ERROR PAYMENT---------------------------");
+      // print(error);
     }, (sessionId) async {
       paymentSessionId = sessionId.paymentSessionId ?? "";
       if (paymentSessionId!.isNotEmpty &&

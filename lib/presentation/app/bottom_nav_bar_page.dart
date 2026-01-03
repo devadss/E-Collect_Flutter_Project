@@ -24,8 +24,7 @@ class BottomNavScreen extends StatefulWidget {
 
 class _BottomNavScreenState extends State<BottomNavScreen> {
   int _selectedIndex = 0;
-  String? userTPYE;
-  //int _currentIndex = 0;
+   String? userTPYE;
   String? loggedInUserTPYE;
   double _indicatorPosition = 0.0;
   final List<GlobalKey> _tabKeys = List.generate(5, (index) => GlobalKey());
@@ -43,8 +42,9 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     await SharedPref.shared.setLogin(true);
     var userType = await SharedPref.shared.getUserType();
     var loggedInUserType = await SharedPref.shared.getLoggedInUserType();
+    print("getUserType value = $userType");
     setState(() {
-      print("getUserType value = $userType");
+
       userTPYE = userType;
       loggedInUserTPYE = loggedInUserType;
     });
@@ -103,21 +103,71 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   }
 
   void _updateIndicatorPosition({bool animate = true}) {
-    final RenderBox renderBox = _tabKeys[_selectedIndex]
-        .currentContext
-        ?.findRenderObject() as RenderBox;
-    final position = renderBox.localToGlobal(Offset.zero);
-    final newPosition = position.dx + (renderBox.size.width / 2) - 20;
+    try {
+      // Check if index is valid
+      if (_selectedIndex < 0 || _selectedIndex >= _tabKeys.length) {
+        debugPrint('Invalid index: $_selectedIndex');
+        return;
+      }
 
-    if (animate) {
-      setState(() {
+      // Get the key
+      final key = _tabKeys[_selectedIndex];
+      if (key.currentContext == null) {
+        debugPrint('No context for index $_selectedIndex');
+        return;
+      }
+
+      // Get render object
+      final renderObject = key.currentContext!.findRenderObject();
+      if (renderObject == null || renderObject is! RenderBox) {
+        debugPrint('No RenderBox for index $_selectedIndex');
+        return;
+      }
+
+      final RenderBox renderBox = renderObject;
+
+      // Check if widget is still in the tree
+      if (!renderBox.attached) {
+        debugPrint('RenderBox not attached for index $_selectedIndex');
+        return;
+      }
+
+      final position = renderBox.localToGlobal(Offset.zero);
+      final newPosition = position.dx + (renderBox.size.width / 2) - 20;
+
+      if (animate) {
+        if (mounted) {
+          setState(() {
+            _indicatorPosition = newPosition;
+          });
+        }
+      } else {
         _indicatorPosition = newPosition;
-      });
-    } else {
-      _indicatorPosition = newPosition;
+        if (mounted) setState(() {});
+      }
+    } catch (e) {
+      debugPrint('Error in _updateIndicatorPosition: $e');
+      // Set a default position or skip
+      _indicatorPosition = 0.0;
       if (mounted) setState(() {});
     }
   }
+  // void _updateIndicatorPosition({bool animate = true}) {
+  //   final RenderBox renderBox = _tabKeys[_selectedIndex]
+  //       .currentContext
+  //       ?.findRenderObject() as RenderBox;
+  //   final position = renderBox.localToGlobal(Offset.zero);
+  //   final newPosition = position.dx + (renderBox.size.width / 2) - 20;
+  //
+  //   if (animate) {
+  //     setState(() {
+  //       _indicatorPosition = newPosition;
+  //     });
+  //   } else {
+  //     _indicatorPosition = newPosition;
+  //     if (mounted) setState(() {});
+  //   }
+  // }
 
   void _onItemTapped(int index) {
     if (_selectedIndex != index) {

@@ -83,7 +83,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
         final searchText = _searchController.text.trim();
 
         if (searchText.isNotEmpty) {
-          print("searchText $searchText");
+          //print("searchText $searchText");
           showProgressDialog(context);
           await apiNameSearch(searchText);
         }else{
@@ -188,7 +188,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
               _searchController.clear();
               showProgressDialog(context);
               setState(() {
-                print("page : $page");
+                //print("page : $page");
                 _currentPage = page;
               });
               await provider.getRdclCustomerunderAgent(
@@ -252,9 +252,9 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
         });
       }
 
-      print("totalListCount = $totalListCount");
+      //print("totalListCount = $totalListCount");
 
-      print("totalListCount = ${totalListCountNew!.toInt()}");
+      //print("totalListCount = ${totalListCountNew!.toInt()}");
 
     }
   }
@@ -273,7 +273,7 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
 
   //THE SEARCH IS DONE IF THE CUSTOMER IS NOT FOUND IN THE CURRENT LANDING PAGE...
   Future<void> apiNameSearch(String nameToSearch) async {
-    print("Inside apiNameSearch");
+    //print("Inside apiNameSearch");
     final provider = Provider.of<RdclCustListProvider>(context, listen: false);
 
     await provider.getRdclCustomerunderAgent(
@@ -492,7 +492,7 @@ if(provider.rdclCustomerListModel != null || provider.rdclCustomerListError != n
                                                     _currentPage,
                                                     itemPerPage,
                                                     "");
-                                            print("Filter by Agent ID");
+                                            //print("Filter by Agent ID");
 
                                             Navigator.pop(context);
                                           } else if (value == 'branch') {
@@ -507,7 +507,7 @@ if(provider.rdclCustomerListModel != null || provider.rdclCustomerListError != n
                                             setState(() {
                                               selectedFilterType = "branchid";
                                             });
-                                            print("Filter by Branch ID");
+                                            //print("Filter by Branch ID");
                                             Navigator.pop(context);
                                           }
                                         });
@@ -569,7 +569,7 @@ if(provider.rdclCustomerListModel != null || provider.rdclCustomerListError != n
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: GestureDetector(
                           onTap: () {
-                            print("Index vale = $index");
+                            //print("Index vale = $index");
                             Navigator.push(
                               context,
                               MaterialPageRoute(

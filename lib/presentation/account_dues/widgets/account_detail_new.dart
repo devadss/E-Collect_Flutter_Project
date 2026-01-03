@@ -269,15 +269,15 @@ loadSharedPrefs();
                 icon: Icons.qr_code,
                 label: "Pay via QR Code",
                 onPressed: () async {
-                  print("--------------------TOKEN---------------------");
-                  print(token);
-                  print("---------------------AMOUNT--------------------");
-                  print(amountController.text);
-                  print("---------------------PHONENUMBER--------------------");
-                  print(agentMobile);
-                  print("---------------------ENTITYID--------------------");
-                  print(agentId);
-                  print("AccountDetailNew");
+                  // print("--------------------TOKEN---------------------");
+                  // print(token);
+                  // print("---------------------AMOUNT--------------------");
+                  // print(amountController.text);
+                  // print("---------------------PHONENUMBER--------------------");
+                  // print(agentMobile);
+                  // print("---------------------ENTITYID--------------------");
+                  // print(agentId);
+                  // print("AccountDetailNew");
                   showProgressDialog(context);
                   final paymentSession =
                       await CreatePaymentSessionIdRepository()
@@ -339,16 +339,16 @@ loadSharedPrefs();
                   });
                 },
               ),
-              const SizedBox(height: 12),
-
-              _buildPaymentOptionButton(
-                icon: Icons.link,
-                label: "Send Payment Link",
-                onPressed: () {
-                  Navigator.pop(context);
-                  sendLinkFunction();
-                },
-              ),
+              // const SizedBox(height: 12),
+              //
+              // _buildPaymentOptionButton(
+              //   icon: Icons.link,
+              //   label: "Send Payment Link",
+              //   onPressed: () {
+              //     Navigator.pop(context);
+              //     sendLinkFunction();
+              //   },
+              // ),
               const SizedBox(height: 12),
 
               _buildPaymentOptionButton(
@@ -571,14 +571,14 @@ loadSharedPrefs();
 
     send.fold(
           (error) {
-        print("-------------------ERROR---------------------");
-        print(error);
+        //print("-------------------ERROR---------------------");
+       // print(error);
       },
           (sendLink) {
         if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
           Share.share("Here is your payment link: ${sendLink.linkUrl}");
         } else {
-          print("Payment link is empty or null");
+         // print("Payment link is empty or null");
         }
       },
     );
@@ -645,10 +645,10 @@ loadSharedPrefs();
         subagentBranchCode: subAgentCodeNew,
         branchCode: "", collectionType: 'RD');
     cash.fold((err) {
-      print("getCashTrans $err");
+      //print("getCashTrans $err");
       Navigator.pop(context);
     }, (success) {
-      print("getCashTrans $success");
+      //print("getCashTrans $success");
       Navigator.pop(context);
       showDialog(
         context: context,
@@ -800,12 +800,21 @@ loadSharedPrefs();
               ),
             ),
           ),
-          SizedBox(height: 50,),
-         ElevatedButton(onPressed: (){
-           _showBottomBar(context);
-         },
-             style: ElevatedButton.styleFrom(backgroundColor: home1, foregroundColor: Colors.white),
-             child: Text("Submit"))
+        Spacer(flex: 1,),
+        //  SizedBox(height: 50,),
+         Padding(
+           padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 30),
+           child: SizedBox(
+             width: double.infinity,
+             height: 50,
+             child: ElevatedButton(onPressed: (){
+               _showBottomBar(context);
+             },
+                 style: ElevatedButton.styleFrom(backgroundColor: home1, shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),foregroundColor: Colors.white),
+                 child: Text("Submit")),
+           ),
+         ),
+
 
         ],
       ),
