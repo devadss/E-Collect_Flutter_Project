@@ -25,6 +25,7 @@ class BottomNavScreen extends StatefulWidget {
 class _BottomNavScreenState extends State<BottomNavScreen> {
   int _selectedIndex = 0;
    String? userTPYE;
+   String? _corpCode;
   String? loggedInUserTPYE;
   double _indicatorPosition = 0.0;
   final List<GlobalKey> _tabKeys = List.generate(5, (index) => GlobalKey());
@@ -42,9 +43,10 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     await SharedPref.shared.setLogin(true);
     var userType = await SharedPref.shared.getUserType();
     var loggedInUserType = await SharedPref.shared.getLoggedInUserType();
+    var corpCode = await SharedPref.shared.getCorpCode();
     print("getUserType value = $userType");
     setState(() {
-
+      _corpCode = corpCode;
       userTPYE = userType;
       loggedInUserTPYE = loggedInUserType;
     });
@@ -72,7 +74,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       case 1:
         return userTPYE?.contains("RDCL") == true
             ? const RdclDuesHomePage()
-            : const DuesHomePage();
+            :_corpCode != "BNKVENAD" ?const DuesHomePage():SizedBox();
 
       case 2:
         return userTPYE?.contains("RDCL") == true
@@ -260,13 +262,14 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                                 activeIcon: Icons.home,
                                 label: 'Home',
                               ),
+                              _corpCode != "BNKVENAD"?
                               _buildNavItem(
                                 key: _tabKeys[1],
                                 index: 1,
                                 icon: Icons.receipt_long_outlined,
                                 activeIcon: Icons.receipt_long,
                                 label: 'Dues',
-                              ),
+                              ):SizedBox(),
                               _buildNavItem(
                                 key: _tabKeys[2],
                                 index: 2,
