@@ -1,16 +1,203 @@
-import 'dart:convert';
-import 'package:flutter/services.dart';
-import 'package:local_auth/local_auth.dart';
-import 'package:pointycastle/export.dart' as pc;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_screen_lock/flutter_screen_lock.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
+import 'package:local_auth/local_auth.dart';
+
 import '../../../core/colors.dart';
-import '../../../core/utils.dart';
-import '../../../data/provider/auth_provider.dart';
 import '../../../data/service/notification_service/notification_service.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../app/bottom_nav_bar_page.dart';
+
+// class GooglePinCodePage extends StatefulWidget {
+//   const GooglePinCodePage({super.key});
+//
+//   @override
+//   State<GooglePinCodePage> createState() => _GooglePinCodePageState();
+// }
+//
+// class _GooglePinCodePageState extends State<GooglePinCodePage> {
+//   String custID = "";
+//   String token = "";
+//   String mpin = "";
+//   String fcmToken = "";
+//   String subAgentContactNum = "";
+//   bool _lockShown = false;
+//   bool _authenticationInProgress = false; // Add this flag
+//
+//   bool authenticated = false;
+//   bool _biometricInProgress = false;
+//
+//   final LocalAuthentication auth = LocalAuthentication();
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _loadSharedData();
+//   }
+//
+//   Future<void> _loadSharedData() async {
+//     custID = await SharedPref.shared.getSubAgentId();
+//     token = await SharedPref.shared.getTokenValue();
+//     fcmToken = await SharedPref.shared.getFcmToken();
+//     mpin = await SharedPref.shared.getMpinValue();
+//     subAgentContactNum = await SharedPref.shared.getSubAgentMobNum();
+//
+//     // Check if we should show authentication
+//     WidgetsBinding.instance.addPostFrameCallback((_) {
+//       if (mounted && !_lockShown && !authenticated) {
+//         _openScreenLock();
+//       }
+//     });
+//   }
+//
+//   Future<void> _openScreenLock() async {
+//     if (_lockShown || authenticated || _authenticationInProgress) return;
+//
+//     _authenticationInProgress = true; // Set flag to prevent multiple calls
+//
+//     Future<void> localAuth(BuildContext ctx) async {
+//       if (_biometricInProgress) return;
+//       _biometricInProgress = true;
+//
+//       try {
+//         final didAuthenticate = await auth.authenticate(
+//           localizedReason: 'Authenticate to continue',
+//           options: const AuthenticationOptions(
+//             biometricOnly: false,
+//             stickyAuth: false,
+//           ),
+//         );
+//
+//         if (!mounted) return;
+//
+//         if (didAuthenticate) {
+//           authenticated = true;
+//           _lockShown = true;
+//
+//           Navigator.of(ctx).pop();
+//           await validateMpinFingerAuth();
+//         }
+//       } catch (e) {
+//         debugPrint('Biometric error: $e');
+//       } finally {
+//         _biometricInProgress = false;
+//       }
+//     }
+//
+//     screenLock(
+//       context: context,
+//       correctString: mpin,
+//       canCancel: false,
+//       maxRetries: 3,
+//
+//       onUnlocked: () async {
+//         if (!mounted) return;
+//
+//         authenticated = true;
+//         _lockShown = true;
+//         Navigator.pop(context);
+//         await validateMpinFingerAuth();
+//       },
+//
+//       customizedButtonChild: const Icon(Icons.fingerprint, size: 40),
+//       customizedButtonTap: () async => await localAuth(context),
+//       onOpened: () async => await localAuth(context),
+//     );
+//   }
+//
+//   Future<void> validateMpinFingerAuth() async {
+//     if (!mounted) return;
+//
+//     // Prevent further authentication attempts
+//     _authenticationInProgress = false;
+//
+//     // Clear any previous routes
+//     if (Navigator.canPop(context)) {
+//       Navigator.pop(context);
+//     }
+//
+//     if (fcmToken.isNotEmpty) {
+//       Navigator.pushAndRemoveUntil(
+//         context,
+//         MaterialPageRoute(builder: (_) => const BottomNavScreen()),
+//             (route) => false,
+//       );
+//     } else {
+//       await saveFcmToken(
+//         custID,
+//         context,
+//         "GPIN",
+//         token,
+//         subAgentContactNum,
+//         mpin,
+//       );
+//     }
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: white,
+//       appBar: AppBar(
+//         backgroundColor: white,
+//         elevation: 0,
+//         centerTitle: true,
+//         title: Text(
+//           "Please authenticate to proceed",
+//           style: GoogleFonts.poppins(
+//             color: home2,
+//             fontWeight: FontWeight.w600,
+//             fontSize: 20,
+//           ),
+//         ),
+//         leading: IconButton(
+//           icon: const Icon(Icons.arrow_back, color: home2),
+//           onPressed: () => Navigator.of(context).pop(),
+//         ),
+//       ),
+//       body: SafeArea(
+//         child: Padding(
+//           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+//           child: Column(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [
+//               const Icon(Icons.lock_outline, size: 100, color: home2),
+//               const SizedBox(height: 30),
+//               Text(
+//                 "Authenticate to Continue",
+//                 style: GoogleFonts.poppins(
+//                   fontSize: 18,
+//                   color: home2.withOpacity(0.8),
+//                 ),
+//               ),
+//               const SizedBox(height: 40),
+//               InkWell(
+//                 borderRadius: BorderRadius.circular(45),
+//                 onTap: () {
+//                   if (!authenticated && !_authenticationInProgress) {
+//                     _openScreenLock();
+//                   }
+//                 },
+//                 child: Icon(
+//                   Icons.fingerprint,
+//                   color: authenticated ? Colors.grey : home2,
+//                   size: 100,
+//                 ),
+//               ),
+//               if (_authenticationInProgress) ...[
+//                 const SizedBox(height: 20),
+//                 const CircularProgressIndicator(),
+//               ],
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
 
 class GooglePinCodePage extends StatefulWidget {
   const GooglePinCodePage({super.key});
@@ -40,8 +227,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
 
   void loadSharedData() async {
    String custid = await SharedPref.shared.getSubAgentId();
-
-    String tok = await SharedPref.shared.getTokenValue();
+   String tok = await SharedPref.shared.getTokenValue();
     String fcmTok = await SharedPref.shared.getFcmToken();
     String m_pin = await SharedPref.shared.getMpinValue();
     String mobNum = await SharedPref.shared.getParentAgentMobNum();
@@ -54,29 +240,24 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       custID = custid;
       fcmToken = fcmTok;
     });
-    // print("contactNum $contactNum");
-    // print("MPIN $mpin");
-    // print("fcmTok $fcmTok");
-    _authenticateWithBiometrics();
+   //_openScreenLock();
+    //_authenticateWithBiometrics();
   }
+
   Future<void> _authenticateWithBiometrics() async {
+    // 🔥 RESET AUTH STATE ON EVERY ATTEMPT
+    authenticated = false;
+
     try {
       final canCheckBiometrics = await auth.canCheckBiometrics;
       final isDeviceSupported = await auth.isDeviceSupported();
 
       if (!canCheckBiometrics && !isDeviceSupported) {
-       // print('No biometric or device auth support');
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Device does not support biometric authentication'),
-            backgroundColor: Colors.orange,
-          ),
-        );
+        debugPrint('No biometric or device auth support');
         return;
       }
 
-      authenticated = await auth.authenticate(
+      final bool result = await auth.authenticate(
         localizedReason: 'Please authenticate to proceed',
         options: const AuthenticationOptions(
           biometricOnly: false,
@@ -84,188 +265,76 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
         ),
       );
 
-      if (!mounted) return;
-
-      // Handle authentication result
-      if (authenticated) {
-        await validateMpinFingerAuth();
-      } else {
-       // print('Authentication canceled by user.');
-        // Optionally show a message to user
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Authentication required to proceed'),
-            backgroundColor: Colors.orange,
-          ),
-        );
-      }
-    } on PlatformException catch (e) {
-      //print('PlatformException during biometric auth: ${e.code} - ${e.message}');
-      if (!mounted) return;
-
-      // Handle specific platform errors
-      if (e.code == 'PasscodeNotSet' || e.code == 'NotAvailable') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Biometric authentication not available: ${e.message}'),
-            backgroundColor: Colors.orange,
-          ),
-        );
-      }
-    } catch (e) {
-      //print('Exception during biometric authentication: $e');
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Authentication failed. Please try again.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
-/*  Future<void> _authenticateWithBiometrics() async {
-    try {
-      final canCheckBiometrics = await auth.canCheckBiometrics;
-      final isDeviceSupported = await auth.isDeviceSupported();
-
-      if (!canCheckBiometrics && !isDeviceSupported) {
-        print('No biometric or device auth support');
+      // ❌ STOP immediately if widget disposed or auth failed
+      if (!mounted || result != true) {
+        debugPrint('Authentication canceled or failed');
         return;
       }
 
-      authenticated = await auth.authenticate(
-        localizedReason: 'Please authenticate to proceed',
-        options: const AuthenticationOptions(
-          biometricOnly: false,
-          stickyAuth: false,
-        ),
-      );
-
-      if (!mounted) return; // ✅ check before using context
-      await validateMpinFingerAuth();
-
-    } on PlatformException catch (e) {
+      // ✅ AUTH SUCCEEDED (fresh)
       authenticated = true;
-      if (!mounted) return; // ✅ check before using context
+
       await validateMpinFingerAuth();
-      print('PlatformException during biometric auth: ${e.code} - ${e.message}');
-      return;
+
+    } on PlatformException catch (e) {
+      // ❌ NEVER allow navigation on exception
+      authenticated = false;
+      debugPrint('PlatformException during biometric auth: ${e.code} - ${e.message}');
     } catch (e) {
-      print('Exception during biometric authentication: $e');
-      return;
-    }
-
-    if (!authenticated) {
-      print('Authentication canceled by user.');
-      return;
-    }
-  }*/
-
-
-
-
-/*
-  void showProgressDialog(BuildContext context) {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return Center(
-            child: SingleChildScrollView(
-              child: Dialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                child:const Padding(
-                  padding: EdgeInsets.all(50),
-                  child: Column(
-                    children: [
-                      CircularProgressIndicator(color: home2),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        "Please wait....",
-                        style: TextStyle(
-                          fontSize: 17,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        });
-  }
-*/
-
-  Future<void> validateMpin() async {
-    //print("validateMpin");
-    if (pin.isNotEmpty) {
-      if (pin.length == 6) {
-        showProgressDialog(context);
-        final provider = Provider.of<AuthProvider>(context, listen: false);
-        final response = await provider.getAuthResult(
-            contactNum,
-            encryptString(pin, _sk, _iv).toString(),
-            token);
-
-        response.fold(
-              (error) {
-            Navigator.pop(context);
-            //print("Error: ${error.message}");
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                "Error: ${error.message}- Invalid M-pin",
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 17),
-              ),
-              backgroundColor: Colors.red,
-            ));
-          },
-              (data) {
-                Navigator.pop(context);
-            ScaffoldMessenger.of(context).showSnackBar(
-              // SnackBar(content: Text("RESULT: ${data.message}")),
-                SnackBar(
-                  content: Text(
-                    "${data.message}",
-                    style: GoogleFonts.inter(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 17),
-                  ),
-                  backgroundColor: Colors.green,
-                ));
-            //Navigator.pop(context);
-            if (data.message == "Login Successfull") {
-              if (fcmToken.isNotEmpty) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const BottomNavScreen()));
-              }else{
-                saveFcmToken(custID, context, "GPIN", token, subAgentContactNum, mpin);
-              }
-
-            }
-          },
-        );
-
-       // print("MPIN = ${encryptString(pin, _sk, _iv)}");
-      } else {
-        //print("Enter 6 digit mpin");
-      }
-    } else {
-      //print("Empty fields not allowed");
+      authenticated = false;
+      debugPrint('Exception during biometric authentication: $e');
     }
   }
+
+  // Future<void> _openScreenLock() async {
+  //   final auth = LocalAuthentication();
+  //
+  //   Future<void> localAuth(BuildContext ctx) async {
+  //     try {
+  //       final didAuthenticate = await auth.authenticate(
+  //         localizedReason: 'Authenticate to continue',
+  //         options: const AuthenticationOptions(
+  //           biometricOnly: false,
+  //           stickyAuth: false,
+  //         ),
+  //       );
+  //
+  //       if (!mounted || !didAuthenticate) return;
+  //
+  //       Navigator.of(ctx).pop(); // close screenLock
+  //       await validateMpinFingerAuth();
+  //     } catch (e) {
+  //       debugPrint('Biometric error: $e');
+  //     }
+  //   }
+  //
+  //   screenLock(
+  //     context: context,
+  //     correctString: mpin,
+  //     canCancel: false,
+  //     maxRetries: 3,
+  //
+  //     onUnlocked: () async {
+  //       Navigator.pop(context);
+  //       await validateMpinFingerAuth();
+  //     },
+  //
+  //     customizedButtonChild: const Icon(
+  //       Icons.fingerprint,
+  //       size: 40,
+  //     ),
+  //
+  //     customizedButtonTap: () async => await localAuth(context),
+  //
+  //     // ✅ CORRECT for your version
+  //     onOpened: () async => await localAuth(context),
+  //   );
+  // }
+
+
 
   Future<void> validateMpinFingerAuth() async {
-    //print("validateMpinFingerAuth");
-
     if (!mounted) return; // ✅ very important before using context
-
     if (fcmToken.isNotEmpty && authenticated == true) {
       Navigator.push(context, MaterialPageRoute(
         builder: (context) => const BottomNavScreen(),
@@ -274,82 +343,8 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       await saveFcmToken(custID, context, "GPIN", token, subAgentContactNum, mpin);
     } else {
       if (!mounted) return; // ✅ re-check before using context again
-     // ScaffoldMessenger.of(context).showSnackBar(
-        // const SnackBar(
-        //   content: Text(
-        //     "Authentication Error",
-        //     style: TextStyle(color: Colors.white),
-        //   ),
-        //   backgroundColor: Colors.red,
-        // ),
-     // );
-    }
-
-   // print("MPIN = $mpin");
-  }
-
-/*
-  Future<void> validateMpinFingerAuth() async {
-    print("validateMpinFingerAuth");
-    if (fcmToken.isNotEmpty && authenticated== true) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const BottomNavScreen()));
-    }
-    else if(fcmToken.isEmpty && authenticated== true){
-      await  saveFcmToken(custID, context, "GPIN", token, subAgentContactNum, mpin);
 
     }
-    else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content:
-          Text("Authentication Error", style: TextStyle(color: Colors.white),),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-
-
-      print("MPIN = $mpin");
-  }
-*/
-
-
-  String? encryptString(
-      String textToEncrypt, String? secretKey, String? initialVector) {
-    // print("-------------------encryptString values----------------");
-    // print("textToEncrypt : $textToEncrypt");
-    // print("secretKey : $secretKey");
-    // print("initialVector : $initialVector");
-    if (textToEncrypt.isEmpty || secretKey == null || initialVector == null) {
-      return null;
-    }
-
-    try {
-      final secretKeyBytes = Uint8List.fromList(secretKey.codeUnits);
-      final iv = Uint8List.fromList(initialVector.codeUnits);
-      final key = pc.KeyParameter(secretKeyBytes);
-      final params = pc.ParametersWithIV(key, iv);
-      final cipher = pc.CBCBlockCipher(pc.AESEngine());
-      cipher.init(true, params);
-
-      final textBytes = Uint8List.fromList(textToEncrypt.codeUnits);
-      final paddedText = padPKCS7(textBytes);
-
-      final encryptedBytes = cipher.process(paddedText);
-
-      return base64.encode(encryptedBytes);
-    } catch (e) {
-      return null;
-    }
-  }
-
-  Uint8List padPKCS7(Uint8List input) {
-    final padLength = 16 - (input.length % 16);
-    final output = Uint8List(input.length + padLength)..setAll(0, input);
-    for (var i = input.length; i < output.length; i++) {
-      output[i] = padLength;
-    }
-    return output;
   }
 
   @override
@@ -432,6 +427,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       child: InkWell(
         borderRadius: BorderRadius.circular(45),
         onTap: _authenticateWithBiometrics,
+       // onTap: _openScreenLock,
         child:const Center(
           child: Icon(
             Icons.fingerprint,
@@ -444,4 +440,5 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   }
 
 }
+
 

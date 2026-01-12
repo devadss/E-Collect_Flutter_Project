@@ -16,8 +16,10 @@ class IntegrationLoanRepository extends IntegrationLoanInterface{
   @override
   Future<Either<String, IntegratedLoanListResponse>> fetchIntegratedLoans(String? agentId, String? branchId, String? schemeCode, String? accNo) async {
     print("loadVendorUrl = ${await loadVendorUrl()}");
+    var urls = await loadVendorUrl();
    // final uri = Uri.parse("https://doorstepthazhava.digicob.in/getLoanCustUnderAgent");
-    final uri = Uri.parse("https://mftctest.digicob.in/getLoanCustUnderAgent");
+   // final uri = Uri.parse("https://mftctest.digicob.in/getLoanCustUnderAgent");
+    final uri = Uri.parse(urls);
     final data  = await http.post(uri,
    // body: jsonEncode({"agent_id":"1165","branch_id":"00","sch_code":"","acno":""}),
    // body: jsonEncode({"agent_id":"169","branch_id":"01","sch_code":"","acno":""}),

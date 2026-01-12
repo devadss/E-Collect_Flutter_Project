@@ -19,7 +19,145 @@ import '../../data/storage/shared_pref_helper.dart';
 import '../../domain/model/account_list_model.dart';
 import '../../domain/model/cash_transcation_model.dart';
 import '../profile/widgets/recipect_page.dart';
-
+//   Future<void> paymentConfirmation(
+//     BuildContext context,
+//     String name,
+//     String accNo,
+//     String custId,
+//     String amt,
+//   ) {
+//     return showDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return Dialog(
+//           shape: RoundedRectangleBorder(
+//             borderRadius: BorderRadius.circular(25),
+//           ),
+//           elevation: 0,
+//           backgroundColor: Colors.transparent,
+//           child: Container(
+//             padding: const EdgeInsets.all(25),
+//             decoration: BoxDecoration(
+//               color: white,
+//               borderRadius: BorderRadius.circular(25),
+//               boxShadow: [
+//                 BoxShadow(
+//                   color: Colors.black.withOpacity(0.2),
+//                   blurRadius: 20,
+//                   spreadRadius: 5,
+//                 ),
+//               ],
+//             ),
+//             child: Column(
+//               mainAxisSize: MainAxisSize.min,
+//               children: [
+//                 // Animated icon
+//                 TweenAnimationBuilder(
+//                   duration: const Duration(milliseconds: 500),
+//                   tween: Tween<double>(begin: 0, end: 1),
+//                   builder: (context, value, child) {
+//                     return Transform.scale(scale: value, child: child);
+//                   },
+//                   child: Container(
+//                     width: 80,
+//                     height: 80,
+//                     decoration: BoxDecoration(
+//                       color: Colors.redAccent.withOpacity(0.1),
+//                       shape: BoxShape.circle,
+//                     ),
+//                     // child: Lottie.asset("assets/animations/logout.json"),
+//                   ),
+//                 ),
+//                 const SizedBox(height: 20),
+//
+//                 Text(
+//                   "Payment Confirmation",
+//                   style: GoogleFonts.poppins(
+//                     fontSize: 20,
+//                     fontWeight: FontWeight.w600,
+//                     color: Colors.grey[800],
+//                   ),
+//                 ),
+//                 const SizedBox(height: 10),
+//                 Text(
+//                   "Do you wish to proceed with the payment ?",
+//                   textAlign: TextAlign.center,
+//                   style: GoogleFonts.poppins(
+//                     color: Colors.grey[600],
+//                     fontSize: 14,
+//                   ),
+//                 ),
+//                 const SizedBox(height: 25),
+//                 Row(
+//                   children: [
+//                     // Cancel button
+//                     Expanded(
+//                       child: OutlinedButton(
+//                         onPressed: () =>{},
+//                             //Navigator.pop(context),
+//                         style: OutlinedButton.styleFrom(
+//                           padding: const EdgeInsets.symmetric(vertical: 14),
+//                           side: const BorderSide(color: home1),
+//                           shape: RoundedRectangleBorder(
+//                             borderRadius: BorderRadius.circular(12),
+//                           ),
+//                           backgroundColor: white,
+//                         ),
+//                         child: Text(
+//                           "No",
+//                           style: GoogleFonts.poppins(
+//                             color: home1,
+//                             fontWeight: FontWeight.w500,
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                     const SizedBox(width: 15),
+//
+//                     // Logout button
+//                     Expanded(
+//                       child: ElevatedButton(
+//                         onPressed: () {
+//                           getCashTrans(
+//                             token: token,
+//                             customerName: name,
+//                             custPhoneNumber: "",
+//                             custAcNumber: accNo,
+//                             custId: custId,
+//                             custEmail: "",
+//                             phoneNumber: "$agentPhoneNumber",
+//                             entityId: agentId,
+//                             note: "Payment For Agent $agentName",
+//                             amount: amt,
+//                           );
+//                         },
+//                         style: ElevatedButton.styleFrom(
+//                           backgroundColor: Colors.redAccent,
+//                           padding: const EdgeInsets.symmetric(vertical: 14),
+//                           shape: RoundedRectangleBorder(
+//                             borderRadius: BorderRadius.circular(12),
+//                           ),
+//                           elevation: 2,
+//                         ),
+//                         child: Text(
+//                           "Yes",
+//                           style: GoogleFonts.poppins(
+//                             color: white,
+//                             fontWeight: FontWeight.w500,
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ],
+//             ),
+//           ),
+//         );
+//       },
+//     );
+//   }
+// }
 class RdclDuesHomePage extends StatefulWidget {
   const RdclDuesHomePage({super.key});
 
@@ -61,7 +199,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
   final ScrollController _scrollController = ScrollController();
   double totalListCount = 0;
   double? totalListCountNew;
-  int itemPerPage = 50;
+  int itemPerPage = 10;
 
   @override
   void initState() {
@@ -111,87 +249,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
       });
     });
   }
-/*
-  String _getBankNameFromCorpCode(String corpCode) {
-    // Map corpcode to bank name
-    final Map<String, String> corpCodeToBankName = {
-      "BNKKRMR": "KURUMATHUR SERVICE CO OPERATIVE BANK LTD",
-      "BNKPDVR": "PIDAVOOR SCB",
-      "BNKKNPRM": "Kannapuram SCB",
-      "BNKTRK": "Thrikkakkara SCB",
-      "BNKKVRY": "KOOVERY SERVICE CO OPERATIVE BANK LTD",
-      "BNKKPM": "Kaipamangalam SCB",
-      "BNKKPMF": "Kaipamangalam Fisherman SCB",
-      "BNKPRK": "Peringottukara SCB",
-      "BNKPYPL": "POOYAPALLY SCB",
-      "BNKVLMK": "VELIMUKKU SCB",
-      "BNKPLKL": "PALLICKAL SCB",
-      "BNKCRKT": "CHERUKALATHUR SCB",
-      "BNKCLNR": "CHELANNUR SERVICE CO OPERATIVE BANK",
-      "BNKPPNS": "Pappinissery Rural Bank",
-      "BNKELYR": "ELAYAVOOR SERVICE CO OPERATIVE BANK LTD",
-      "BNKKTM": "KOTTAYAM SERVICE CO OPERATIVE BANK LTD",
-      "BNKAVN": "Avinissery SCB",
-      "BNKDMDM": "DHARMADAM SERVICE CO OPERATIVE BANK LTD",
-      "BNKPTVM": "PATTUVAM SERVICE CO OPERATIVE BANK",
-      "BNKKUTGM": "KUTTUMUGHAM SERVICE CO OPERATIVE BANK LTD",
-      "BNKERKT": "ERAMAM KUTTUR SERVICE CO OPERATIVE BANK LTD",
-      "BNKKDKD": "KODAKKAD SERVICE CO OPERATIVE BANK LTD",
-      "BNKPMP": "PMP SERVICE CO OPERATIVE BANK",
-      "BNKSKMB": "SRI KAMBILAYA MUTUAL NIDHI LIMITED",
-      "BNKTSSCB": "Thuravoor South SCB",
-      "BNKVBGR": "VIBGYOR NIDHI LIMITED",
-      "BNKPPL": "PERUMPILLY SCB",
-      "BNKKTRM": "KAITHARAM SCB",
-      "BNKKZPL": "KUZHUPPILLY SCB",
-      "BNKNABL": "NAYARAMBALAM SCB",
-      "BNKELR": "ELOOR SCB",
-      "BNKERYD": "ERIYAD SCB",
-      "BNKPYVR": "PAYYAVOOR SCB",
-      "BNKVDKRA": "VADAKKEKKARA SCB",
-      "BNKPRVR": "PARAVUR SCB",
-      "BNKVLLR": "Velloor Service Co Operative Bank",
-      "BNKMANK": "Manakunnam SCB",
-      "BNKAZKD": "AZHIKODE SCB",
-      "BNKTHRNL": "Thirunaloor SCB",
-      "BNKVDYR": "VADAYAR",
-      "BNKKDKPL": "KADAKKARAPALLY SCB",
-      "BNKUCMSA": "URBAN CARE MULTI STATE AGRO CSL",
-      "BNKKKYR": "KOKKAYAR SCB",
-      "BNKMFF": "MILK FARMERS AND FISHERIES",
-      "BNKCORDL": "Cordial Gramin Development Foundation",
-      "BNKCHLVR": "CHELAVUR SCB",
-      "BNKVRND": "VARANAD SCB",
-      "BNKVBGRK": "VIBGYOR NIDHI LIMITED KOOTTILANGADI",
-      "BNKKNKRA": "KUNNUKARA SCB",
-      "BNKEDVNKD": "EDAVANAKKAD",
-      "BNKKRDM": "KARTHEDOM SCB",
-      "BNKAROOR": "AROOR SCB",
-      "BNKGMSA": "Gramin Multi State Agro Co Operative Society Ltd",
-      "BNKICCSL": "Indian Cooperative Credit Society Limited",
-      "BNKNNDR": "Neendoor scb",
-      "BNKCOB": "Co operative bhavan",
-      "BNKCHMG": "Chathamangalam SCB",
-      "BNKCXTX": "COXTAX",
-      "BNKORNTL": "ORIENTAL AGRO MULTISTATE CO OP SOCIETY",
-      "BNKTSRA": "Thushara Nidhi",
-      "BNKPRTR": "PURATHUR SCB",
-      "BNKCLBT": "CLUB T",
-      "BNKPNP": "Pearls N Petals",
-      "BNKVLKD": "Vellarkkad SCB",
-      "BNKMDS": "Medi Soft",
-      "BNKPLSCB": "Pulakode service cooperative Bank",
-      "BNKMNCHL": "MEENACHIL SCB",
-      "BNKOMSRY": "Omassery SCB",
-      "BNKPTKL": "Pothukal SCB",
-      "BNKFPMC": "FAPMCO MSCS",
-      "BNKMULKD": "Mullakkodi Co-operative Bank",
-    };
 
-    // Return the bank name if found, otherwise return a default value
-    return corpCodeToBankName[corpCode] ?? "Unknown Bank";
-  }
-*/
   @override
   void dispose() {
     _fadeController.dispose();
@@ -942,11 +1000,11 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                               const SizedBox(height: 8),
                               Row(
                                 children: [
-                                  const Icon(
-                                    Icons.currency_rupee,
-                                    size: 18,
-                                    color: black87,
-                                  ),
+                                  // const Icon(
+                                  //   Icons.currency_rupee,
+                                  //   size: 18,
+                                  //   color: black87,
+                                  // ),
                                   Text(
                                     "Total Due: ₹$totalDue",
                                     style: const TextStyle(
@@ -955,8 +1013,17 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                       color: black87,
                                     ),
                                   ),
+
                                 ],
                               ),
+                              corpCode == "BNKFPMC"?
+                              Container(
+                                padding: EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Colors.green.shade50
+                                  ),
+                                  child: Text("Loan Status : PAID", style: TextStyle(fontSize: 12, color: home2),)):SizedBox()
                             ],
                           ),
                           children: dues.asMap().entries.map((entry) {
@@ -1946,145 +2013,6 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
   }
 }
 
-//   Future<void> paymentConfirmation(
-//     BuildContext context,
-//     String name,
-//     String accNo,
-//     String custId,
-//     String amt,
-//   ) {
-//     return showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return Dialog(
-//           shape: RoundedRectangleBorder(
-//             borderRadius: BorderRadius.circular(25),
-//           ),
-//           elevation: 0,
-//           backgroundColor: Colors.transparent,
-//           child: Container(
-//             padding: const EdgeInsets.all(25),
-//             decoration: BoxDecoration(
-//               color: white,
-//               borderRadius: BorderRadius.circular(25),
-//               boxShadow: [
-//                 BoxShadow(
-//                   color: Colors.black.withOpacity(0.2),
-//                   blurRadius: 20,
-//                   spreadRadius: 5,
-//                 ),
-//               ],
-//             ),
-//             child: Column(
-//               mainAxisSize: MainAxisSize.min,
-//               children: [
-//                 // Animated icon
-//                 TweenAnimationBuilder(
-//                   duration: const Duration(milliseconds: 500),
-//                   tween: Tween<double>(begin: 0, end: 1),
-//                   builder: (context, value, child) {
-//                     return Transform.scale(scale: value, child: child);
-//                   },
-//                   child: Container(
-//                     width: 80,
-//                     height: 80,
-//                     decoration: BoxDecoration(
-//                       color: Colors.redAccent.withOpacity(0.1),
-//                       shape: BoxShape.circle,
-//                     ),
-//                     // child: Lottie.asset("assets/animations/logout.json"),
-//                   ),
-//                 ),
-//                 const SizedBox(height: 20),
-//
-//                 Text(
-//                   "Payment Confirmation",
-//                   style: GoogleFonts.poppins(
-//                     fontSize: 20,
-//                     fontWeight: FontWeight.w600,
-//                     color: Colors.grey[800],
-//                   ),
-//                 ),
-//                 const SizedBox(height: 10),
-//                 Text(
-//                   "Do you wish to proceed with the payment ?",
-//                   textAlign: TextAlign.center,
-//                   style: GoogleFonts.poppins(
-//                     color: Colors.grey[600],
-//                     fontSize: 14,
-//                   ),
-//                 ),
-//                 const SizedBox(height: 25),
-//                 Row(
-//                   children: [
-//                     // Cancel button
-//                     Expanded(
-//                       child: OutlinedButton(
-//                         onPressed: () =>{},
-//                             //Navigator.pop(context),
-//                         style: OutlinedButton.styleFrom(
-//                           padding: const EdgeInsets.symmetric(vertical: 14),
-//                           side: const BorderSide(color: home1),
-//                           shape: RoundedRectangleBorder(
-//                             borderRadius: BorderRadius.circular(12),
-//                           ),
-//                           backgroundColor: white,
-//                         ),
-//                         child: Text(
-//                           "No",
-//                           style: GoogleFonts.poppins(
-//                             color: home1,
-//                             fontWeight: FontWeight.w500,
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                     const SizedBox(width: 15),
-//
-//                     // Logout button
-//                     Expanded(
-//                       child: ElevatedButton(
-//                         onPressed: () {
-//                           getCashTrans(
-//                             token: token,
-//                             customerName: name,
-//                             custPhoneNumber: "",
-//                             custAcNumber: accNo,
-//                             custId: custId,
-//                             custEmail: "",
-//                             phoneNumber: "$agentPhoneNumber",
-//                             entityId: agentId,
-//                             note: "Payment For Agent $agentName",
-//                             amount: amt,
-//                           );
-//                         },
-//                         style: ElevatedButton.styleFrom(
-//                           backgroundColor: Colors.redAccent,
-//                           padding: const EdgeInsets.symmetric(vertical: 14),
-//                           shape: RoundedRectangleBorder(
-//                             borderRadius: BorderRadius.circular(12),
-//                           ),
-//                           elevation: 2,
-//                         ),
-//                         child: Text(
-//                           "Yes",
-//                           style: GoogleFonts.poppins(
-//                             color: white,
-//                             fontWeight: FontWeight.w500,
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ],
-//             ),
-//           ),
-//         );
-//       },
-//     );
-//   }
-// }
 
 class CustomSliderButton extends StatefulWidget {
   final Future<void> Function() onConfirmed;
@@ -2452,702 +2380,6 @@ class TransactionSuccessDialog extends StatelessWidget {
   }
 }
 
-/*      Expanded(
-            child: Consumer<RdclDueUnderAgentProvider>(
-              builder: (context, provider, child) {
-                final allData = provider.rdclDueUnderAgentModel?.data ?? [];
-                final filteredData = _filterDues(allData, _searchController.text);
-
-                if (provider.rdclDueUnderAgentModel == null) {
-                  return buildShimmerList();
-                }
-                else if (filteredData.isEmpty) {
-                  return Center(
-                    child: Text(
-                      _searchController.text.isEmpty
-                          ? "No data found"
-                          : "No results found for '${_searchController.text}'",
-                      style: TextStyle(color: grey[600]),
-                    ),
-                  );
-                }
-
-                final groupedData = <String, List<dynamic>>{};
-                for (var due in filteredData) {
-                  groupedData.putIfAbsent(due.accNo, () => []).add(due);
-                }
-
-                return ListView.separated(
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                  itemCount: groupedData.keys.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 12),
-                  itemBuilder: (_, index) {
-                    final accNo = groupedData.keys.elementAt(index);
-                    final dues = groupedData[accNo]!;
-                    final totalDue = dues.fold<num>(
-                      0,
-                          (sum, item) => sum + (item.dueAmount ?? 0),
-                    );
-
-                    return Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        color: white,
-                        border: Border.all(
-                            color: home2.withOpacity(0.7), width: 1.5),
-                        boxShadow: [
-                          BoxShadow(
-                            offset: const Offset(0, 4),
-                            blurRadius: 12,
-                            color: black.withOpacity(0.08),
-                          ),
-                        ],
-                      ),
-                      child: Theme(
-                        data: Theme.of(context).copyWith(
-                          splashColor: transparent,
-                          highlightColor: transparent,
-                          dividerColor: transparent,
-                        ),
-                        child: ExpansionTile(
-                          onExpansionChanged: (expanded) {
-                            setState(() {
-                              _expandedAccNo = expanded ? accNo : null;
-                            });
-                          },
-                          tilePadding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 12,
-                          ),
-                          childrenPadding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 12,
-                          ),
-                          title: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Account Number",
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: grey[600],
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                accNo,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                  color: home1,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  const Icon(
-                                    Icons.currency_rupee,
-                                    size: 18,
-                                    color: black87,
-                                  ),
-                                  Text(
-                                    "Total Due: ₹$totalDue",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 15,
-                                      color: black87,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          children: dues.asMap().entries.map((entry) {
-                            final dueIndex = entry.key;
-                            final due = entry.value;
-
-                            _checkboxStates.putIfAbsent(accNo, () => {});
-                            _checkboxStates[accNo]!.putIfAbsent(
-                              dueIndex,
-                                  () => false,
-                            );
-
-                            final isEnabled = _expandedAccNo == null ||
-                                _expandedAccNo == accNo;
-
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Checkbox(
-                                    value: _checkboxStates[accNo]![dueIndex],
-                                    onChanged: isEnabled
-                                        ? (bool? value) {
-                                      setState(() {
-                                        // Uncheck all other account numbers
-                                        _checkboxStates.forEach((
-                                            key,
-                                            map,
-                                            ) {
-                                          if (key != accNo) {
-                                            map.updateAll(
-                                                  (_, __) => false,
-                                            );
-                                          }
-                                        });
-
-                                        // Update current checkbox state
-                                        _checkboxStates[accNo]![
-                                        dueIndex] = value ?? false;
-                                        _expandedAccNo = accNo;
-                                      });
-
-                                      // Calculate the selected amount only for current group
-                                      num modalSelectedAmount = 0;
-                                      final map = _checkboxStates[accNo];
-                                      if (map != null) {
-                                        map.forEach((i, isChecked) {
-                                          if (isChecked) {
-                                            modalSelectedAmount +=
-                                                dues[i].installAmt ?? 0;
-                                          }
-                                        });
-                                      }
-
-                                      final hasAnyChecked =
-                                          modalSelectedAmount > 0;
-
-                                      if (!hasAnyChecked) return;
-
-                                      final controller =
-                                      TextEditingController(
-                                        text: modalSelectedAmount
-                                            .toStringAsFixed(2),
-                                      );
-
-                                      String selectedMethod =
-                                          "Link"; // Default selection
-
-                                      showModalBottomSheet(
-                                        context: context,
-                                        isScrollControlled: true,
-                                        shape:
-                                        const RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.vertical(
-                                            top: Radius.circular(
-                                              20,
-                                            ),
-                                          ),
-                                        ),
-                                        backgroundColor: white,
-                                        builder: (context) {
-                                          return StatefulBuilder(
-                                            builder: (
-                                                context,
-                                                setModalState,
-                                                ) {
-                                              return Padding(
-                                                padding: EdgeInsets.only(
-                                                  top: 20,
-                                                  left: 20,
-                                                  right: 20,
-                                                  bottom: MediaQuery.of(
-                                                    context,
-                                                  )
-                                                      .viewInsets
-                                                      .bottom +
-                                                      20,
-                                                ),
-                                                child:
-                                                SingleChildScrollView(
-                                                  child: Column(
-                                                    mainAxisSize:
-                                                    MainAxisSize.min,
-                                                    crossAxisAlignment:
-                                                    CrossAxisAlignment
-                                                        .start,
-                                                    children: [
-                                                      Row(
-                                                        children: [
-                                                          Container(
-                                                            height: 60,
-                                                            width: 60,
-                                                            decoration:
-                                                            BoxDecoration(
-                                                              borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                10,
-                                                              ),
-                                                              border:
-                                                              Border
-                                                                  .all(
-                                                                color:
-                                                                black54,
-                                                                width: 1,
-                                                              ),
-                                                            ),
-                                                            child: selectedMethod ==
-                                                                "Link"
-                                                                ? Image
-                                                                .asset(
-                                                              "assets/icons/web-link.png",
-                                                              scale:
-                                                              12,
-                                                              color:
-                                                              home2,
-                                                            )
-                                                                : selectedMethod ==
-                                                                "QR Code"
-                                                                ? Image
-                                                                .asset(
-                                                              "assets/icons/qr-code.png",
-                                                              scale: 12,
-                                                              color: home2,
-                                                            )
-                                                                : Image
-                                                                .asset(
-                                                              "assets/images/rupee_6414183.png",
-                                                              scale: 10,
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                            width: 8,
-                                                          ),
-                                                          Expanded(
-                                                            child: Column(
-                                                              crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                              children: [
-                                                                Text(
-                                                                  "Collect Payment Using",
-                                                                  overflow:
-                                                                  TextOverflow.ellipsis,
-                                                                  style: GoogleFonts
-                                                                      .inter(
-                                                                    fontWeight:
-                                                                    FontWeight.w500,
-                                                                    color:
-                                                                    black87,
-                                                                    fontSize:
-                                                                    15,
-                                                                  ),
-                                                                ),
-                                                                Text(
-                                                                  selectedMethod,
-                                                                  overflow:
-                                                                  TextOverflow.ellipsis,
-                                                                  style: GoogleFonts
-                                                                      .inter(
-                                                                    fontWeight:
-                                                                    FontWeight.w700,
-                                                                    color:
-                                                                    black,
-                                                                    fontSize:
-                                                                    15,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                            width: 8,
-                                                          ),
-                                                          GestureDetector(
-                                                            onTap: () {
-                                                              showModalBottomSheet(
-                                                                context:
-                                                                context,
-                                                                backgroundColor:
-                                                                Colors
-                                                                    .white,
-                                                                shape:
-                                                                const RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                  BorderRadius.vertical(
-                                                                    top: Radius.circular(
-                                                                        24),
-                                                                  ),
-                                                                ),
-                                                                builder:
-                                                                    (ctx) =>
-                                                                    Container(
-                                                                      padding: const EdgeInsets
-                                                                          .symmetric(
-                                                                          vertical:
-                                                                          16),
-                                                                      child:
-                                                                      Column(
-                                                                        mainAxisSize:
-                                                                        MainAxisSize.min,
-                                                                        children: [
-                                                                          // drag handle
-                                                                          Container(
-                                                                            width: 40,
-                                                                            height: 5,
-                                                                            decoration: BoxDecoration(
-                                                                              color: Colors.grey.shade300,
-                                                                              borderRadius: BorderRadius.circular(10),
-                                                                            ),
-                                                                          ),
-                                                                          const SizedBox(height: 16),
-                                                                          ListTile(
-                                                                            leading: const Icon(Icons.link, color: Colors.blueAccent),
-                                                                            title: const Text(
-                                                                              "Link",
-                                                                              style: TextStyle(
-                                                                                fontWeight: FontWeight.w600,
-                                                                                fontSize: 16,
-                                                                              ),
-                                                                            ),
-                                                                            trailing: const Icon(Icons.chevron_right),
-                                                                            onTap: () {
-                                                                              setModalState(() => selectedMethod = "Link");
-                                                                              Navigator.pop(ctx);
-                                                                            },
-                                                                          ),
-                                                                          const Divider(
-                                                                              indent: 16,
-                                                                              endIndent: 16),
-                                                                          ListTile(
-                                                                            leading: const Icon(Icons.qr_code, color: Colors.green),
-                                                                            title: const Text(
-                                                                              "QR Code",
-                                                                              style: TextStyle(
-                                                                                fontWeight: FontWeight.w600,
-                                                                                fontSize: 16,
-                                                                              ),
-                                                                            ),
-                                                                            trailing: const Icon(Icons.chevron_right),
-                                                                            onTap: () {
-                                                                              setModalState(() => selectedMethod = "QR Code");
-                                                                              Navigator.pop(ctx);
-                                                                            },
-                                                                          ),
-                                                                          const Divider(
-                                                                              indent: 16,
-                                                                              endIndent: 16),
-                                                                          ListTile(
-                                                                            leading: const Icon(Icons.money, color: Colors.deepOrange),
-                                                                            title: const Text(
-                                                                              "Cash",
-                                                                              style: TextStyle(
-                                                                                fontWeight: FontWeight.w600,
-                                                                                fontSize: 16,
-                                                                              ),
-                                                                            ),
-                                                                            trailing: const Icon(Icons.chevron_right),
-                                                                            onTap: () {
-                                                                              setModalState(() => selectedMethod = "Cash");
-                                                                              Navigator.pop(ctx);
-                                                                            },
-                                                                          ),
-                                                                          const SizedBox(height: 12),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                              );
-                                                            },
-                                                            child: Text(
-                                                              "Change Method >",
-                                                              overflow:
-                                                              TextOverflow
-                                                                  .ellipsis,
-                                                              style: GoogleFonts
-                                                                  .inter(
-                                                                decoration:
-                                                                TextDecoration
-                                                                    .underline,
-                                                                decorationColor:
-                                                                home2,
-                                                                fontWeight:
-                                                                FontWeight
-                                                                    .w800,
-                                                                color:
-                                                                home2,
-                                                                fontSize:
-                                                                12,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 15,
-                                                      ),
-                                                      const Text(
-                                                        "Installment Details",
-                                                        style: TextStyle(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                          FontWeight
-                                                              .w600,
-                                                          color: home2,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 12,
-                                                      ),
-                                                      Text(
-                                                        "Open Date: ${due.openDate}",
-                                                        overflow:
-                                                        TextOverflow
-                                                            .ellipsis,
-                                                      ),
-                                                      Text(
-                                                        "Paid Installments: ${provider.rdclDueUnderAgentModel?.data[index].paidInstallments}",
-                                                        overflow:
-                                                        TextOverflow
-                                                            .ellipsis,
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 20,
-                                                      ),
-                                                      Text(
-                                                        "Edit Total Selected Amount",
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                          FontWeight
-                                                              .w500,
-                                                          color:
-                                                          grey[800],
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 8,
-                                                      ),
-                                                      TextFormField(
-                                                        controller:
-                                                        controller,
-                                                        keyboardType:
-                                                        const TextInputType
-                                                            .numberWithOptions(
-                                                          decimal: true,
-                                                          signed: true,
-                                                        ),
-                                                        decoration:
-                                                        InputDecoration(
-                                                          filled: true,
-                                                          fillColor:
-                                                          home2,
-                                                          border:
-                                                          OutlineInputBorder(
-                                                            borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                              10,
-                                                            ),
-                                                            borderSide:
-                                                            const BorderSide(
-                                                              color:
-                                                              deepTeal,
-                                                            ),
-                                                          ),
-                                                          focusedBorder:
-                                                          OutlineInputBorder(
-                                                            borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                              10,
-                                                            ),
-                                                            borderSide:
-                                                            const BorderSide(
-                                                              color:
-                                                              deepTeal,
-                                                              width: 1.5,
-                                                            ),
-                                                          ),
-                                                          contentPadding:
-                                                          const EdgeInsets
-                                                              .symmetric(
-                                                            horizontal:
-                                                            14,
-                                                            vertical: 12,
-                                                          ),
-                                                          prefixIcon:
-                                                          const Icon(
-                                                            Icons
-                                                                .currency_rupee,
-                                                            color: white,
-                                                          ),
-                                                        ),
-                                                        style:
-                                                        const TextStyle(
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                          FontWeight
-                                                              .w600,
-                                                          color: white,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 20,
-                                                      ),
-                                                      CustomSliderButton(
-                                                        token: token!,
-                                                        label:
-                                                        "Slide to Collect Using $selectedMethod",
-                                                        backgroundColor:
-                                                        home2,
-                                                        buttonColor:
-                                                        Colors.white,
-                                                        onConfirmed:
-                                                            () async {
-                                                          selectedMethod ==
-                                                              "Link"
-                                                              ? sendLinkFunction(
-                                                              provider.rdclDueUnderAgentModel!
-                                                                  .data[
-                                                              index],
-                                                              controller
-                                                                  .text)
-                                                              : selectedMethod ==
-                                                              "Cash"
-                                                              ? getCashTrans(
-                                                            token:
-                                                            token,
-                                                            customerName:
-                                                            provider.rdclDueUnderAgentModel?.data[index].name,
-                                                            custPhoneNumber:
-                                                            "",
-                                                            custAcNumber:
-                                                            provider.rdclDueUnderAgentModel?.data[index].accNo,
-                                                            custId:
-                                                            provider.rdclDueUnderAgentModel?.data[index].custId,
-                                                            custEmail:
-                                                            "",
-                                                            phoneNumber:
-                                                            "$agentPhoneNumber",
-                                                            entityId:
-                                                            agentId,
-                                                            note:
-                                                            "Payment For Agent $agentName",
-                                                            amount:
-                                                            controller.text,
-                                                          )
-                                                              : getPaymentSessionId(
-                                                            token:
-                                                            token,
-                                                            customerName:
-                                                            provider.rdclDueUnderAgentModel?.data[index].name,
-                                                            custPhoneNumber:
-                                                            "",
-                                                            custAcNumber:
-                                                            provider.rdclDueUnderAgentModel?.data[index].accNo,
-                                                            custId:
-                                                            provider.rdclDueUnderAgentModel?.data[index].custId,
-                                                            custEmail:
-                                                            "",
-                                                            phoneNumber:
-                                                            "$agentPhoneNumber",
-                                                            entityId:
-                                                            agentId,
-                                                            note:
-                                                            "Payment For Agent $agentName",
-                                                            amount:
-                                                            controller.text,
-                                                          );
-                                                        },
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        },
-                                      );
-                                    }
-                                        : null,
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Expanded(
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 14,
-                                        vertical: 12,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(
-                                          color: home1,
-                                          width: 1.5,
-                                        ),
-                                        color: grey[50],
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Installment: ₹${due.installAmt}",
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 14,
-                                              color: black87,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            "Name: ${provider.rdclDueUnderAgentModel!.data[index].name}",
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              color: grey[700],
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            "Open Date: ${provider.rdclDueUnderAgentModel!.data[index].openDate}",
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              color: grey[700],
-                                            ),
-                                          ),
-                                          const SizedBox(height: 2),
-                                          Text(
-                                            "Paid Installemnts: ${provider.rdclDueUnderAgentModel!.data[index].paidInstallments}",
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              color: grey[700],
-                                            ),
-                                          ),
-                                          const SizedBox(height: 2),
-                                          Text(
-                                            "DueInstallments: ${provider.rdclDueUnderAgentModel!.data[index].dueInstallments}",
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              color: grey[700],
-                                            ),
-                                          ),
-                                          const SizedBox(height: 2),
-                                          Text(
-                                            "TotalInstallment: ${provider.rdclDueUnderAgentModel!.data[index].totalInstallment}",
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              color: grey[700],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ),*/
 
 ///currently the api is not used....
 // Future<void> _searchMethod(String query) async {

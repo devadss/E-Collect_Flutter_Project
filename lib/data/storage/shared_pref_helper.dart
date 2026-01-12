@@ -256,6 +256,14 @@ class SharedPref {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.email, value);
   }
+  Future<bool> setForceLogout(bool value) async {
+    final prefs = await _getPrefs();
+    return prefs.setBool(SharedPrefKeys.force_logout, value);
+  }
+  Future<bool> getForceLogout() async {
+    final prefs = await _getPrefs();
+    return prefs.getBool(SharedPrefKeys.force_logout) ?? false;
+  }
 
   getEmail() async {
     final prefs = await _getPrefs();
