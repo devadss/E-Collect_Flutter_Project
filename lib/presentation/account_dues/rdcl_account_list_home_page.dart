@@ -581,7 +581,6 @@ if(provider.rdclCustomerListModel != null || provider.rdclCustomerListError != n
                                   custId: agentIdValue ?? "CUSTID",
                                   custEmail: "",
                                   corpCode: corpCode.toString(),
-                                //  indexValue: index,
                                   indexValue: 0,
                                   branchCode: branchCode.toString(),
                                   custIdNew: customer.custId,

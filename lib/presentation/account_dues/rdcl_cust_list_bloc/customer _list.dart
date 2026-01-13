@@ -1,3 +1,4 @@
+import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:collection_qr_flutter/presentation/account_dues/rdcl_cust_list_bloc/rdcl_due_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,6 +18,8 @@ class CustomerList extends StatefulWidget {
 
 class _CustomerListState extends State<CustomerList> {
   String? branchid;
+  String? agentPhoneNumber;
+  String? agentIdValue;
   TextEditingController searchController = TextEditingController();
   bool iconSwitch = false;
   @override
@@ -30,8 +33,14 @@ class _CustomerListState extends State<CustomerList> {
   Future<void> loadSharedPrefs() async {
 
     final branchID = await SharedPref().getSubAgentCodeNew();
+    final number = await SharedPref().getParentAgentMobNum();
+    final custId = await SharedPref().getAgentId();
+
     setState(() {
       branchid = branchID;
+      agentPhoneNumber = number;
+      agentIdValue = custId;
+
     });
     context.read<CustomerListBloc>().add(
       CustomerListFetchEvent("", branchid.toString(), "0", "0", ""),
@@ -87,8 +96,8 @@ class _CustomerListState extends State<CustomerList> {
                     },
                     child: Icon(
                         iconSwitch == true?
-                        Icons.clear: Icons.send)),
-                prefixIcon: Icon(Icons.search),
+                        Icons.clear: Icons.send, color: home1,)),
+                prefixIcon: Icon(Icons.search, color: home1,),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5)
                 )
@@ -135,25 +144,33 @@ class _CustomerListState extends State<CustomerList> {
                         ),
                         child: InkWell(
                           onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>RdclDueDetail(branchCode: '15', customeName: data?.data?[index].custName??"",)));
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>RdclDueDetail(branchCode: '15', customeName: data?.data?[index].custName??"",
+                              custPhoneNumber: agentPhoneNumber.toString(), custIdNew: data?.data?[index].custId.toString()??"",
+                              custAcNumber: data?.data?[index].rdclGlobalAccNo.toString()??"", custId: agentIdValue??"",)));
                           },
                           child: Container(
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(color: home2.withAlpha(25),
+                                blurRadius: 8, spreadRadius: 3)
+                              ],
                               borderRadius: BorderRadius.circular(5),
                               color: Colors.white,
-                              border: Border.all(color: Colors.grey),
+                              border: Border.all(color: home1.withAlpha(100)),
                             ),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(data?.data?[index].custName.toString() ?? ""),
+                                Text(data?.data?[index].custName.toString() ?? "", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13),),
+                                SizedBox(height: 5,),
                                 Text(
-                                  "Acc No: ${data?.data?[index].rdclGlobalAccNo.toString() ?? ""}",
+                                  "Acc No: ${data?.data?[index].rdclGlobalAccNo.toString() ?? ""}",style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w700, fontSize: 13),
                                 ),
+                                SizedBox(height: 5,),
                                 Text(
-                                  "Scheme Name : ${data?.data?[index].schName.toString() ?? ""}",
+                                  "Scheme Name : ${data?.data?[index].schName.toString() ?? ""}",style: TextStyle(fontSize: 12),
                                 ),
                               ],
                             ),

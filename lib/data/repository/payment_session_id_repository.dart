@@ -67,6 +67,7 @@ class CreatePaymentSessionIdRepository
       // "EntityId": entityId,
       // "Note": note,
       // "SubAgentId":subAgentID
+    print("Body payment session= $url");
     print("Body payment session= $body");
     print("Body payment session= $endPoint");
 

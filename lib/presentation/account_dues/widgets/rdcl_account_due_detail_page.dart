@@ -660,7 +660,8 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
       required String? amount,
       required String? phoneNumber,
       required String? entityId,
-      required String? note}) async {
+      required String? note})
+  async {
     final cashPaymentProvider =
         Provider.of<CashTranscationProvider>(context, listen: false);
     final cash = await cashPaymentProvider.getTranscations(
