@@ -7,6 +7,7 @@ import '../../core/colors.dart';
 import '../../core/constants.dart';
 import '../account_dues/account_list_home_page.dart';
 import '../account_dues/rdcl_account_list_home_page.dart';
+import '../account_dues/rdcl_cust_list_bloc/customer _list.dart';
 import '../dues/dues_home_page.dart';
 import '../groups/group_homepage/all_groups_page.dart';
 import '../groups/homepage/group_home_page.dart';
@@ -78,7 +79,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
 
       case 2:
         return userTPYE?.contains("RDCL") == true
-            ? const RdclAccountListHomePage()
+           // ? const RdclAccountListHomePage()
+            ? const CustomerList()
             : const AccountListHomePage();
       case 3:
         return const ProfileHomePage();

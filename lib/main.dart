@@ -16,6 +16,7 @@ import 'package:collection_qr_flutter/data/repository/transfer_history_repositor
 import 'package:collection_qr_flutter/data/repository/whats_app_share_repository.dart';
 import 'package:collection_qr_flutter/domain/service/api_services.dart';
 import 'package:collection_qr_flutter/presentation/groups/homepage/payment_link_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 
 import '../../data/provider/agent_customer_details_provider.dart';
@@ -40,6 +41,7 @@ import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'data/customer_list_bloc/customer_list_bloc.dart';
 import 'data/provider/aadhaar_otp_request_provider.dart';
 import 'data/provider/auth_provider.dart';
 import 'data/provider/cash_transcation_history_provider.dart';
@@ -72,6 +74,7 @@ import 'data/provider/token_expiry_provider.dart';
 import 'data/provider/token_request_provider.dart';
 import 'data/provider/transaction_provider.dart';
 import 'data/provider/verify_aadhaar_detail_provider.dart';
+import 'data/rdcl_duelist_bloc/rdcl_duelist_bloc.dart';
 import 'data/repository/TransactionRepository.dart';
 import 'data/repository/aadhaar_otp_request_repository.dart';
 import 'data/repository/auth_repository.dart';
@@ -79,6 +82,7 @@ import 'data/repository/cash_transcation_history_repository.dart';
 import 'data/repository/cash_transcation_repository.dart';
 import 'data/repository/collection_base_url_repo.dart';
 import 'data/repository/create_order_repository.dart';
+import 'data/repository/customer_list_repo/customer_list_repo.dart';
 import 'data/repository/get_loan_repository.dart';
 import 'data/repository/group/bank_account_update_repository.dart';
 import 'data/repository/group/bank_detail_repository.dart';
@@ -100,6 +104,7 @@ import 'data/repository/parent_agent/fetch_parent_crentials/parent_agent_credent
 import 'data/repository/parent_agent/parent_agent_detail_repo.dart';
 import 'data/repository/qr_transcation_history_repository.dart';
 import 'data/repository/rdcl_custList_repo.dart';
+import 'data/repository/rdcl_due_list_repo/rdcl_due_list_repo.dart';
 import 'data/repository/rdcl_due_under_agent_repository.dart';
 import 'data/repository/set_mpin_repository.dart';
 import 'data/repository/token _repository.dart';
@@ -155,57 +160,133 @@ void main() async {
     debugPrint("Firebase Messaging error: $e");
   }
 
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (_) => CashTransactionHistoryProvider(CashTransactionHistoryRepository())),
-    ChangeNotifierProvider(create: (_) => CashTranscationProvider(CashTranscationRepository())),
-    ChangeNotifierProvider(create: (_) => RdclCustListProvider(RdclCustListRep())),
-    ChangeNotifierProvider(create: (_) => RdclDueUnderAgentProvider(RdclDueUnderAgentRepo())),
-    ChangeNotifierProvider(create: (_) => LinkTransactionHistoryProvider(LinkTransactionHistoryRepository())),
-    ChangeNotifierProvider(create: (_) => CollectionBaseUrlProvider(CollectionBaseUrlRepo())),
-    ChangeNotifierProvider(create: (_) => QRTransactionHistoryProvider(QRTransactionHistoryRepository())),
-    ChangeNotifierProvider(create: (_) => CustRegisterProvider(CustRegRepository())),
-    ChangeNotifierProvider(create: (_) => TokenRequestProvider(TokenRequestRepository())),
-    ChangeNotifierProvider(create: (_) => OtpRequestProvider(OtpRequestRepository())),
-    ChangeNotifierProvider(create: (_) => OtpVerificationProvider(OtpVerificationRepository())),
-    ChangeNotifierProvider(create: (_) => SetMpinProvider(SetMpinRepository())),
-    ChangeNotifierProvider(create: (_) => AuthProvider(AuthRepository())),
-    ChangeNotifierProvider(create: (_) => AgentCustomerDetailsProvider(AgentCustomerDetailsRepository())),
-    ChangeNotifierProvider(create: (_) => CreateOrderProvider(OrderCreateRepository())),
-    ChangeNotifierProvider(create: (_) => BalanceProvider(FetchAccountBalanceRepository())),
-    ChangeNotifierProvider(create: (_) => CashQrProvider(CashQrRepository())),
-    ChangeNotifierProvider(create: (_) => DueListProvider(DueListRepository())),
-    ChangeNotifierProvider(create: (_) => TransactionProvider(TransactionRepository())),
-    ChangeNotifierProvider(create: (_) => AgentTransactionProvider(AgentTransactionRepository())),
-    ChangeNotifierProvider(create: (_) => CollectionSummaryProvider(CollectionSummaryRepository())),
-    ChangeNotifierProvider(create: (_) => DueUnderAgentProvider(DueUnderAgentRepository())),
-    ChangeNotifierProvider(create: (_) => TokenExpiryProvider(TokenExpiryRepository())),
-    ChangeNotifierProvider(create: (_) => DeleteFcmProvider(DeleteFcmTokenRepository())),
-    ChangeNotifierProvider(create: (_) => ParentDetailAgentProvider(ParentAgentDetailRepository())),
-    ChangeNotifierProvider(create: (_) => ParentAgentCredentialProvider(ParentAgentCredentialRepository())),
-    ChangeNotifierProvider(create: (_) => GetLoanProvider(GetLoanRepository(apiService))),
-    ChangeNotifierProvider(create: (_) => AadhaarOtpRequestProvider(AadhaarOtpRequestRepository())),
-    ChangeNotifierProvider(create: (_) => VerifyAadhaarDetailProvider(VerifyAadhaarDetailRepository())),
-    ChangeNotifierProvider(create: (_) => BankDetailProvider(BankAccountRepository())),
-    ChangeNotifierProvider(create: (_) => BankAccountUpdateProvider(BankAccountUpdateRepository())),
-    ChangeNotifierProvider(create: (_) => GroupListProvider(GroupListRepository())),
-    ChangeNotifierProvider(create: (_) => MemberListProvider(MemberListRepository())),
-    ChangeNotifierProvider(create: (_) => CreateGroupProvider(CreateGroupRepository())),
-    ChangeNotifierProvider(create: (_) => CreateMemberProvider(CreateMemberRepository())),
-    ChangeNotifierProvider(create: (_) => DeleteMemberProvider(MemberDeleteRepository())),
-    ChangeNotifierProvider(create: (_) => WhatsAppShareProvider(WhatsAppShareRepository())),
-    ChangeNotifierProvider(create: (_) => GroupDeleteProvider(DeleteGroupRepository())),
-    ChangeNotifierProvider(create: (_) => CreateGroupWithMemberProvider(CreateGroupWithMemberRepository())),
-    ChangeNotifierProvider(create: (_) => GroupUpdateProvider(GroupUpdateRepository())),
-    ChangeNotifierProvider(create: (_) => UpdateGroupProvider(UpdateBankAccountRepository())),
-    ChangeNotifierProvider(create: (_) => GroupStatusProvider(GroupStatusRepository())),
-    ChangeNotifierProvider(create: (_) => MemberUpdateProvider(MemberUpdateRepository())),
-    ChangeNotifierProvider(create: (_) => LoanCashCollectionProvider(LoanCashCollectionRepository())),
-    ChangeNotifierProvider(create: (_) => TransferHistoryProvider(TransferHistoryRepository())),
-    ChangeNotifierProvider(create: (_) => PaymentLinkProvider(PaymentLinkRepository())),
-    ChangeNotifierProvider(create: (_) => IntegratedLoanListProvider(IntegrationLoanRepository())),
-    ChangeNotifierProvider(create: (_) => IntegratedLoanDetailProvider(IntegratedLoanDetailRepository())),
 
-  ], child: const MyApp()));
+
+  runApp(
+    // Layer 1: All Repositories (Dependency Injection)
+    MultiRepositoryProvider(
+      providers: [
+
+        RepositoryProvider(create: (_) => CustomerListRepo()),
+       RepositoryProvider(create: (_) => RdclDueListRepo()),
+
+        // Add all your existing repositories
+        RepositoryProvider(create: (_) => CashTransactionHistoryRepository()),
+        RepositoryProvider(create: (_) => CashTranscationRepository()),
+        RepositoryProvider(create: (_) => RdclCustListRep()),
+        RepositoryProvider(create: (_) => RdclDueUnderAgentRepo()),
+        RepositoryProvider(create: (_) => LinkTransactionHistoryRepository()),
+        RepositoryProvider(create: (_) => CollectionBaseUrlRepo()),
+        RepositoryProvider(create: (_) => QRTransactionHistoryRepository()),
+        RepositoryProvider(create: (_) => CustRegRepository()),
+        RepositoryProvider(create: (_) => TokenRequestRepository()),
+        RepositoryProvider(create: (_) => OtpRequestRepository()),
+        RepositoryProvider(create: (_) => OtpVerificationRepository()),
+        RepositoryProvider(create: (_) => SetMpinRepository()),
+        RepositoryProvider(create: (_) => AuthRepository()),
+        RepositoryProvider(create: (_) => AgentCustomerDetailsRepository()),
+        RepositoryProvider(create: (_) => OrderCreateRepository()),
+        RepositoryProvider(create: (_) => FetchAccountBalanceRepository()),
+        RepositoryProvider(create: (_) => CashQrRepository()),
+        RepositoryProvider(create: (_) => DueListRepository()),
+        RepositoryProvider(create: (_) => TransactionRepository()),
+        RepositoryProvider(create: (_) => AgentTransactionRepository()),
+        RepositoryProvider(create: (_) => CollectionSummaryRepository()),
+        RepositoryProvider(create: (_) => DueUnderAgentRepository()),
+        RepositoryProvider(create: (_) => TokenExpiryRepository()),
+        RepositoryProvider(create: (_) => DeleteFcmTokenRepository()),
+        RepositoryProvider(create: (_) => ParentAgentDetailRepository()),
+        RepositoryProvider(create: (_) => ParentAgentCredentialRepository()),
+        RepositoryProvider(create: (_) => GetLoanRepository(apiService)),
+        RepositoryProvider(create: (_) => AadhaarOtpRequestRepository()),
+        RepositoryProvider(create: (_) => VerifyAadhaarDetailRepository()),
+        RepositoryProvider(create: (_) => BankAccountRepository()),
+        RepositoryProvider(create: (_) => BankAccountUpdateRepository()),
+        RepositoryProvider(create: (_) => GroupListRepository()),
+        RepositoryProvider(create: (_) => MemberListRepository()),
+        RepositoryProvider(create: (_) => CreateGroupRepository()),
+        RepositoryProvider(create: (_) => CreateMemberRepository()),
+        RepositoryProvider(create: (_) => MemberDeleteRepository()),
+        RepositoryProvider(create: (_) => WhatsAppShareRepository()),
+        RepositoryProvider(create: (_) => DeleteGroupRepository()),
+        RepositoryProvider(create: (_) => CreateGroupWithMemberRepository()),
+        RepositoryProvider(create: (_) => GroupUpdateRepository()),
+        RepositoryProvider(create: (_) => UpdateBankAccountRepository()),
+        RepositoryProvider(create: (_) => GroupStatusRepository()),
+        RepositoryProvider(create: (_) => MemberUpdateRepository()),
+        RepositoryProvider(create: (_) => LoanCashCollectionRepository()),
+        RepositoryProvider(create: (_) => TransferHistoryRepository()),
+        RepositoryProvider(create: (_) => PaymentLinkRepository()),
+        RepositoryProvider(create: (_) => IntegrationLoanRepository()),
+        RepositoryProvider(create: (_) => IntegratedLoanDetailRepository()),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          // Layer 2: All BLoCs
+
+          BlocProvider(create: (context) => CustomerListBloc(context.read<CustomerListRepo>())),
+          BlocProvider(create: (context) => RdclDuelistBloc(context.read<RdclDueListRepo>())),
+
+          // Add BLoCs for your existing providers (if you migrate them)
+          // Example: BlocProvider(create: (context) => AuthBloc(context.read<AuthRepository>())),
+        ],
+        child: MultiProvider(
+          // Layer 3: All ChangeNotifier Providers
+          providers: [
+            ChangeNotifierProvider(create: (_) => CashTransactionHistoryProvider(CashTransactionHistoryRepository())),
+            ChangeNotifierProvider(create: (_) => CashTranscationProvider(CashTranscationRepository())),
+            ChangeNotifierProvider(create: (_) => RdclCustListProvider(RdclCustListRep())),
+            ChangeNotifierProvider(create: (_) => RdclDueUnderAgentProvider(RdclDueUnderAgentRepo())),
+            ChangeNotifierProvider(create: (_) => LinkTransactionHistoryProvider(LinkTransactionHistoryRepository())),
+            ChangeNotifierProvider(create: (_) => CollectionBaseUrlProvider(CollectionBaseUrlRepo())),
+            ChangeNotifierProvider(create: (_) => QRTransactionHistoryProvider(QRTransactionHistoryRepository())),
+            ChangeNotifierProvider(create: (_) => CustRegisterProvider(CustRegRepository())),
+            ChangeNotifierProvider(create: (_) => TokenRequestProvider(TokenRequestRepository())),
+            ChangeNotifierProvider(create: (_) => OtpRequestProvider(OtpRequestRepository())),
+            ChangeNotifierProvider(create: (_) => OtpVerificationProvider(OtpVerificationRepository())),
+            ChangeNotifierProvider(create: (_) => SetMpinProvider(SetMpinRepository())),
+            ChangeNotifierProvider(create: (_) => AuthProvider(AuthRepository())),
+            ChangeNotifierProvider(create: (_) => AgentCustomerDetailsProvider(AgentCustomerDetailsRepository())),
+            ChangeNotifierProvider(create: (_) => CreateOrderProvider(OrderCreateRepository())),
+            ChangeNotifierProvider(create: (_) => BalanceProvider(FetchAccountBalanceRepository())),
+            ChangeNotifierProvider(create: (_) => CashQrProvider(CashQrRepository())),
+            ChangeNotifierProvider(create: (_) => DueListProvider(DueListRepository())),
+            ChangeNotifierProvider(create: (_) => TransactionProvider(TransactionRepository())),
+            ChangeNotifierProvider(create: (_) => AgentTransactionProvider(AgentTransactionRepository())),
+            ChangeNotifierProvider(create: (_) => CollectionSummaryProvider(CollectionSummaryRepository())),
+            ChangeNotifierProvider(create: (_) => DueUnderAgentProvider(DueUnderAgentRepository())),
+            ChangeNotifierProvider(create: (_) => TokenExpiryProvider(TokenExpiryRepository())),
+            ChangeNotifierProvider(create: (_) => DeleteFcmProvider(DeleteFcmTokenRepository())),
+            ChangeNotifierProvider(create: (_) => ParentDetailAgentProvider(ParentAgentDetailRepository())),
+            ChangeNotifierProvider(create: (_) => ParentAgentCredentialProvider(ParentAgentCredentialRepository())),
+            ChangeNotifierProvider(create: (_) => GetLoanProvider(GetLoanRepository(apiService))),
+            ChangeNotifierProvider(create: (_) => AadhaarOtpRequestProvider(AadhaarOtpRequestRepository())),
+            ChangeNotifierProvider(create: (_) => VerifyAadhaarDetailProvider(VerifyAadhaarDetailRepository())),
+            ChangeNotifierProvider(create: (_) => BankDetailProvider(BankAccountRepository())),
+            ChangeNotifierProvider(create: (_) => BankAccountUpdateProvider(BankAccountUpdateRepository())),
+            ChangeNotifierProvider(create: (_) => GroupListProvider(GroupListRepository())),
+            ChangeNotifierProvider(create: (_) => MemberListProvider(MemberListRepository())),
+            ChangeNotifierProvider(create: (_) => CreateGroupProvider(CreateGroupRepository())),
+            ChangeNotifierProvider(create: (_) => CreateMemberProvider(CreateMemberRepository())),
+            ChangeNotifierProvider(create: (_) => DeleteMemberProvider(MemberDeleteRepository())),
+            ChangeNotifierProvider(create: (_) => WhatsAppShareProvider(WhatsAppShareRepository())),
+            ChangeNotifierProvider(create: (_) => GroupDeleteProvider(DeleteGroupRepository())),
+            ChangeNotifierProvider(create: (_) => CreateGroupWithMemberProvider(CreateGroupWithMemberRepository())),
+            ChangeNotifierProvider(create: (_) => GroupUpdateProvider(GroupUpdateRepository())),
+            ChangeNotifierProvider(create: (_) => UpdateGroupProvider(UpdateBankAccountRepository())),
+            ChangeNotifierProvider(create: (_) => GroupStatusProvider(GroupStatusRepository())),
+            ChangeNotifierProvider(create: (_) => MemberUpdateProvider(MemberUpdateRepository())),
+            ChangeNotifierProvider(create: (_) => LoanCashCollectionProvider(LoanCashCollectionRepository())),
+            ChangeNotifierProvider(create: (_) => TransferHistoryProvider(TransferHistoryRepository())),
+            ChangeNotifierProvider(create: (_) => PaymentLinkProvider(PaymentLinkRepository())),
+            ChangeNotifierProvider(create: (_) => IntegratedLoanListProvider(IntegrationLoanRepository())),
+            ChangeNotifierProvider(create: (_) => IntegratedLoanDetailProvider(IntegratedLoanDetailRepository())),
+          ],
+          child: const MyApp(),
+        ),
+      ),
+    ),
+  );
 }
 Future<void> requestOverlayPermission() async {
   final isGranted = await FlutterOverlayWindow.isPermissionGranted();
