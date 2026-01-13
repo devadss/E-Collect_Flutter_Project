@@ -97,10 +97,11 @@ class RdclCustListRep implements RdclCustomerListInterface {
         "cust_name": custName
       };
 
-      if (isDebug) {
+     // if (isDebug) {
         print("Making request to: ${vendorUrl.split('?')[0]}");
-        print("Page: $pgNo, Size: $pgSize, Customer: $custName");
-      }
+       // print("Page: $pgNo, Size: $pgSize, Customer: $custName");
+        print(requestBody);
+     // }
 
       // Make HTTP request with timeout
       final response = await http.post(
@@ -112,15 +113,16 @@ class RdclCustListRep implements RdclCustomerListInterface {
         onTimeout: () => http.Response('Request Timeout', 408),
       );
 
-      if (isDebug) {
+     // if (isDebug) {
         print("Response status: ${response.statusCode}");
+        print("vendorUrl: ${vendorUrl}");
         // Only print partial response for debugging (first 200 chars)
         if (response.body.length > 0 && response.body.length < 500) {
           print("Response: ${response.body}");
         } else if (response.body.length >= 500) {
           print("Response length: ${response.body.length} characters");
         }
-      }
+     // }
 
       if (response.statusCode == 200) {
         try {
@@ -143,9 +145,9 @@ class RdclCustListRep implements RdclCustomerListInterface {
           return result;
 
         } catch (e) {
-          if (isDebug) {
+         // if (isDebug) {
             print("JSON parsing error: $e");
-          }
+        //  }
           final error = Left<String, RdclCustomerListModel>("Failed to parse response");
           completer.complete(error);
           _activeRequests.remove(cacheKey);

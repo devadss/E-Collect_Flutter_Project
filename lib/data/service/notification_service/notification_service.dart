@@ -132,6 +132,7 @@ class NotificationService {
     if (response.statusCode == 200) {
       print('stnavPageatusCode: $navPage');
       if (navPage == 'GPIN') {
+        print("calling Gpin from notification service");
         Navigator.push(context, MaterialPageRoute(builder: (context)=>
             const GooglePinCodePage()));
 

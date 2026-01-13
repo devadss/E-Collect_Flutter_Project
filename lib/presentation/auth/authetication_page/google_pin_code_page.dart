@@ -241,7 +241,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       fcmToken = fcmTok;
     });
    //_openScreenLock();
-    //_authenticateWithBiometrics();
+    _authenticateWithBiometrics();
   }
 
   Future<void> _authenticateWithBiometrics() async {

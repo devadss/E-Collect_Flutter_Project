@@ -18,7 +18,8 @@ class NewQrCodeRepository implements INewQrCodeRepository {
     final body = {
       "payment_session_id": paymentSessionId,
       "payment_method": {
-        "upi": {"channel": "qrcode"},
+        //"upi": {"channel": "qrcode"},
+        "upi": {"channel": "podQrCode"},
       },
     };
 

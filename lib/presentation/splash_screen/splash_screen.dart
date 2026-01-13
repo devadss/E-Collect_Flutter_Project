@@ -70,6 +70,7 @@ class _SplashScreenState extends State<SplashScreen> {
             if (fcmToken.isNotEmpty) {
               Future.delayed(const Duration(milliseconds: 100), () {
                 if (mounted) {
+                  print("Gpin page from validateToken data.isExpired == false");
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -111,6 +112,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 if (fcmToken.isNotEmpty) {
                   Future.delayed(const Duration(milliseconds: 100), () {
                     if (mounted) {
+                      print("Gpin page from validateToken data.isExpired == true");
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -203,7 +205,8 @@ class _SplashScreenState extends State<SplashScreen> {
       // Trigger navigation based on login status
       if (loginStatus) {
         if (fcmToken.isNotEmpty) {
-          _navigateAfterAnimations(const GooglePinCodePage());
+          print("Gpin page from _onAnimationsComplete");
+         // _navigateAfterAnimations(const GooglePinCodePage());
         }
       } else {
         _navigateAfterAnimations(const MobileNumberVerificationPage());

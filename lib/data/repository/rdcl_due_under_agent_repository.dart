@@ -110,10 +110,10 @@ class RdclDueUnderAgentRepo implements RdclDueUnderAgentModelInterface {
               "&PageNumber=$pageNo&PageSize=$pageSize&CustName=$custName"
       );
 
-      if (isDebug) {
+    //  if (isDebug) {
         print("Making request to: ${uri.toString().split('?')[0]}");
-        print("Page: $pageNo, Size: $pageSize");
-      }
+        print("uri $uri");
+     // }
 
       // Make HTTP request with timeout
       final response = await http.get(uri).timeout(
