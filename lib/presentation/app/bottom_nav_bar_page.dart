@@ -79,8 +79,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
 
       case 2:
         return userTPYE?.contains("RDCL") == true
-           // ? const RdclAccountListHomePage()
-            ? const CustomerList()
+          //  ? const RdclAccountListHomePage()
+           ? const CustomerList()
             : const AccountListHomePage();
       case 3:
         return const ProfileHomePage();

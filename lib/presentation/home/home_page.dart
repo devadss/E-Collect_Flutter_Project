@@ -35,6 +35,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   int test = 0;
+  int todaysCount = 0;
   String? userName;
   String? entityId;
   String? token;
@@ -507,7 +508,10 @@ class _HomePageState extends State<HomePage>
           agentOriginId!,
         );
       }
+      setState(() {
+        todaysCount = cashQrProvider.cashQrCombinedResponse?.filteredCount ??0;
 
+      });
       // Final tasks
       fetchTransaction();
       fetchCollection();
@@ -783,6 +787,10 @@ class _HomePageState extends State<HomePage>
                       ),
                     ).animate().fadeIn(duration: 300.ms).slideX(begin: -0.1),
                   ),
+                  // SizedBox(width: 10,),
+                  // Text(todaysCount.toString()),
+                  //
+                  // Spacer(flex: 1,),
                   Container(
                     padding:
                     const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -840,7 +848,7 @@ class _HomePageState extends State<HomePage>
                   ),
                 ],
               ),
-
+              Text("Today's collection count : ${todaysCount.toString()} Nos", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w700, fontSize: 12),),
               const SizedBox(height: 12),
 
               // Filter Buttons Row
@@ -952,6 +960,7 @@ class _HomePageState extends State<HomePage>
             agentOriginId!
         );
       }
+
 
       setState(() {
         _isFilterApplied = false;

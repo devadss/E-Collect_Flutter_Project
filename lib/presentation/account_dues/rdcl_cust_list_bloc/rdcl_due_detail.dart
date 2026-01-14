@@ -638,86 +638,120 @@ showProgressDialog(context);
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            child: BlocBuilder<RdclDuelistBloc, RdclDuelistState>(
-              builder: (BuildContext context, RdclDuelistState state) {
-                if (state is RdclDueListLoaderState) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (state is RdclDueListSuccessState) {
-                  duemAount = state.rdclDulistSuccess.rdclduesListSuccessModel
-                      .rdclDuesList1?.data[0].dueAmount;
-                  return Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(color: home1.withAlpha(50)),
-                        boxShadow: [
-                          BoxShadow(
-                              color: home1.withAlpha(30),
-                              spreadRadius: 2,
-                              blurRadius: 8,
-                              offset: Offset(0, 1))
-                        ]),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Customer name : "),
-                            Text(state
-                                    .rdclDulistSuccess
-                                    .rdclduesListSuccessModel
-                                    .rdclDuesList1
-                                    ?.data[0]
-                                    .name ??
-                                "")
-                          ],
-                        ),
-                        Divider(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Account Number : "),
-                            Text(state
-                                    .rdclDulistSuccess
-                                    .rdclduesListSuccessModel
-                                    .rdclDuesList1
-                                    ?.data[0]
-                                    .accNo ??
-                                "")
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                }
-                return SizedBox.shrink();
-              },
-            ),
-          ),
-          SizedBox(
+      Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: BlocBuilder<RdclDuelistBloc, RdclDuelistState>(
+        builder: (BuildContext context, RdclDuelistState state) {
+          if (state is RdclDueListLoaderState) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state is RdclDueListSuccessState) {
+            final list = state
+                .rdclDulistSuccess
+                .rdclduesListSuccessModel
+                .rdclDuesList1
+                ?.data;
+
+            if (list == null || list.isEmpty) {
+              return const SizedBox.shrink();
+            }
+
+            final data = list
+                .where((item) => item.accNo == widget.custAcNumber)
+                .toList();
+
+            if (data.isEmpty) {
+              return const SizedBox.shrink(); // 🔐 prevents RangeError
+            }
+
+            final item = data.first; // ✅ SAFE
+            duemAount = item.dueAmount;
+
+            return Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(color: home1.withAlpha(50)),
+                boxShadow: [
+                  BoxShadow(
+                    color: home1.withAlpha(30),
+                    spreadRadius: 2,
+                    blurRadius: 8,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("Customer name : "),
+                      Text(item.name ?? ""),
+                    ],
+                  ),
+                  const Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("Account Number : "),
+                      Text(item.accNo ?? ""),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return const SizedBox.shrink();
+        },
+      ),
+    ),
+    SizedBox(
             height: 30,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: BlocBuilder<RdclDuelistBloc, RdclDuelistState>(
               builder: (BuildContext context, RdclDuelistState state) {
+
+
                 if (state is RdclDueListSuccessState) {
+                  final list = state
+                      .rdclDulistSuccess
+                      .rdclduesListSuccessModel
+                      .rdclDuesList1
+                      ?.data;
+
+                  if (list == null || list.isEmpty) {
+                    return const SizedBox.shrink();
+                  }
+
+                  final data = list
+                      .where((item) => item.accNo == widget.custAcNumber)
+                      .toList();
+
+                  if (data.isEmpty) {
+                    return const SizedBox.shrink(); // 👈 VERY IMPORTANT
+                  }
+
+                  final item = data.first; // ✅ safe now
+
                   return Container(
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     width: double.infinity,
                     height: 170,
                     decoration: BoxDecoration(
                       border: Border.all(color: home1.withAlpha(100)),
                       borderRadius: BorderRadius.circular(5),
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 8,
-                            spreadRadius: 2)
+                          color: Colors.black12,
+                          blurRadius: 8,
+                          spreadRadius: 2,
+                        )
                       ],
                       color: Colors.grey.shade100,
                     ),
@@ -728,32 +762,28 @@ showProgressDialog(context);
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                                "Due amount: ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[0].dueAmount}"),
+                            Text("Due amount: ${item.dueAmount}"),
                             Checkbox(
-                                value: (isChecked),
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    isChecked = value ?? false;
-                                  });
+                              value: isChecked,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  isChecked = value ?? false;
+                                });
 
-                                  if(isChecked == true){
-                                    _showBottomBar(context);
-                                  } else {
-                                    Navigator.of(context).pop();
-                                  }
-                                })
+                                if (isChecked) {
+                                  _showBottomBar(context);
+                                } else {
+                                  Navigator.of(context).pop();
+                                }
+                              },
+                            ),
                           ],
                         ),
-                        Text(
-                            "Installement amount: ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[0].installAmt}"),
-                        Text("Loan Type: RDCL"),
-                        Text(
-                            "Total Installment: ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[0].totalInstallment}"),
-                        Text(
-                            "Pain Installment: ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[0].paidInstallments}"),
-                        Text(
-                            "Due Installment: ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[0].dueAmount}"),
+                        Text("Installment amount: ${item.installAmt}"),
+                        const Text("Loan Type: RDCL"),
+                        Text("Total Installment: ${item.totalInstallment}"),
+                        Text("Paid Installment: ${item.paidInstallments}"),
+                        Text("Due Installment: ${item.dueInstallments}"),
                       ],
                     ),
                   );

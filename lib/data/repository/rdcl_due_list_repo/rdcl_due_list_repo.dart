@@ -1,20 +1,26 @@
 import 'dart:convert';
 
+import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
 import 'package:http/http.dart'as http;
 
 import '../../../domain/model/rdcl_duelist_model/rdcl_due_list_model.dart';
 import '../../../domain/model/rdcl_duelist_model/rdcl_due_list_success.dart';
 
 class RdclDueListRepo {
-
+Future<String> loadVendorUrl()async{
+  return await SharedPref().getDueListRdclUrl();
+}
   Future<RdclDueListModel> fetchRdclDueList(
       String agentId,
       String branchCode,
       String accNo,
       String custName,
       ) async {
-    final uri = Uri.parse("https://doorstepmeenachilmscs.digicob.in/GetRdclDuesListunderAgent?agent_id=$agentId&br_code=$branchCode&acc_no=$accNo&PageNumber=0&PageSize=0&CustName=$custName");
+  final vendorUrl = await loadVendorUrl();
+    final uri = Uri.parse("$vendorUrl?agent_id=$agentId&br_code=$branchCode&acc_no=$accNo&PageNumber=0&PageSize=0&CustName=$custName");
     final request =  await http.get(uri , headers: {"Content-Type":"application/json"});
+    print("Uri = $uri");
+    print(request.body);
     if(request.statusCode == 200){
       return RdclDulistSuccess(RdclduesListSuccessModel.fromJson(jsonDecode(request.body)));
     }else{

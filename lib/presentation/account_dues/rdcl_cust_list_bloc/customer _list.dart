@@ -91,8 +91,8 @@ class _CustomerListState extends State<CustomerList> {
                         }
                       });
                       iconSwitch == false?
-                      context.read<CustomerListBloc>().add(CustomerListFetchEvent("", "15", "0", "0", ""),):
-                      context.read<CustomerListBloc>().add(CustomerListFetchEvent("", "15", "0", "0", searchController.text),);
+                      context.read<CustomerListBloc>().add(CustomerListFetchEvent("", branchid.toString(), "0", "0", ""),):
+                      context.read<CustomerListBloc>().add(CustomerListFetchEvent("", branchid.toString(), "0", "0", searchController.text),);
                     },
                     child: Icon(
                         iconSwitch == true?
@@ -144,7 +144,7 @@ class _CustomerListState extends State<CustomerList> {
                         ),
                         child: InkWell(
                           onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>RdclDueDetail(branchCode: '15', customeName: data?.data?[index].custName??"",
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>RdclDueDetail(branchCode: branchid.toString(), customeName: data?.data?[index].custName??"",
                               custPhoneNumber: agentPhoneNumber.toString(), custIdNew: data?.data?[index].custId.toString()??"",
                               custAcNumber: data?.data?[index].rdclGlobalAccNo.toString()??"", custId: agentIdValue??"",)));
                           },
