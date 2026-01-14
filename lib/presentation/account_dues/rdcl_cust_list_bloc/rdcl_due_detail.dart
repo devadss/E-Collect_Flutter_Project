@@ -466,6 +466,7 @@ showProgressDialog(context);
           success: success,
           onViewReceipt: () {
             Navigator.pop(context);
+
             Navigator.push(
               context,
               MaterialPageRoute(

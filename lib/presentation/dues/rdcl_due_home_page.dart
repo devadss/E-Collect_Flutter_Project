@@ -2329,7 +2329,10 @@ class TransactionSuccessDialog extends StatelessWidget {
       children: [
         Expanded(
           child: OutlinedButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+      Navigator.pop(context);
+              Navigator.pop(context);},
+
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 12),
               shape: RoundedRectangleBorder(
