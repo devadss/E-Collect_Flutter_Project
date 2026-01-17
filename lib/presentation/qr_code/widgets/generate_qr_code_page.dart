@@ -329,7 +329,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
                                     agentPhoneNumber ?? "agentPhone",
                                     custName: widget.custName,
                                     custPhone: widget.custPhone,
-                                    custId: widget.custId, txnId: "", txnType: "QR",
+                                    custId: widget.custId, txnId: "", txnType: "QR", dat: '',
                                   )));
                         },
                         child: const Text(

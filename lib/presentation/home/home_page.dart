@@ -1286,7 +1286,7 @@ class _HomePageState extends State<HomePage>
     required IconData icon,
     required Color iconColor,
     required String title,
-    required DateTime date,
+    required String date,
     required double amount,
     required String status,
     required String transferId,
@@ -1324,7 +1324,7 @@ class _HomePageState extends State<HomePage>
                       customerId: customerId,
                       customerNumber: customerNumber,
                       corpCode: corpCode ?? "",
-                      tnxType: tnxType, paymentMode: paymentMode,
+                      tnxType: tnxType, paymentMode: paymentMode, dat: date,
                       //agentTransaction: agentPaymentTransctionModel
                     )));
           },
@@ -1358,7 +1358,8 @@ class _HomePageState extends State<HomePage>
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        DateFormat('MMM dd, yyyy - hh:mm a').format(date),
+                       // DateFormat('MMM dd, yyyy - hh:mm a').format(date),
+                       date,
                         style: TextStyle(
                           // color: Colors.grey[600],
                           color: home2,
@@ -1505,13 +1506,17 @@ class _HomePageState extends State<HomePage>
     return "";
   }
 
-  DateTime _getTransactionDate(dynamic transaction) {
+  String _getTransactionDate(dynamic transaction) {
     if (transaction is QrTransaction) {
-      return transaction.createdAt ?? DateTime.now();
-    } else if (transaction is AllTransactionHistoryModel) {
-      //  return  transaction.createdAt ?? DateTime.now();
+      //print("_getTransactionDate = $QrTransaction");
+      return transaction.createdAt.toString().substring(0,16).toString()?? "";
+    } else if (transaction is Order) {
+      //print("_getTransactionDate = $AllTransactionHistoryModel");
+      return transaction.createdAt.toString().substring(0,16).toString() ?? "";
+
     }
-    return DateTime.now();
+    //print("_getTransactionDate = ${transaction}");
+    return DateTime.now().toString();
   }
 
   @override

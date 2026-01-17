@@ -252,6 +252,7 @@ class TransactionHistoryPage extends StatefulWidget {
   //final AgentTransaction agentTransaction;
   final String paymentStatus;
   final double amount;
+  final String dat;
   final String transferId;
   final String agentName;
   final String agentPhone;
@@ -273,7 +274,7 @@ class TransactionHistoryPage extends StatefulWidget {
     required this.customerId,
     required this.customerNumber, required this.corpCode,
     required this.tnxType,
-    required this.paymentMode,
+    required this.paymentMode, required this.dat,
     // required this.agentTransaction
   });
 
@@ -511,14 +512,14 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                       onTap: (){
                         Navigator.push(context, MaterialPageRoute(builder: (context)=> ReceiptPage(
                           amount: "${widget.amount}",
-                          bankName: getBankNameFromCorpCode(widget.corpCode),
+                          bankName: getBankNameFromCorpCode(widget.corpCode).toString(),
                           agentName: widget.agentName,
                           agentPhone: widget.agentPhone,
                           custName: widget.customerName,
                           custPhone: widget.customerNumber,
                           custId: widget.customerId,
                           txnId: widget.transferId.replaceAll("_MERCHANT", ""),
-                          txnType: widget.tnxType,
+                          txnType: widget.tnxType, dat: widget.dat,
                         )));
                       },
                       child: Container(

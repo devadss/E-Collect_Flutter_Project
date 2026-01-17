@@ -705,7 +705,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
                   custPhone: custPhoneNumber!,
                   custId: custId!,
                   txnId: success.transactionId.toString(),
-                  txnType: "CASH",
+                  txnType: "CASH", dat: '',
                 ),
               ),
             );

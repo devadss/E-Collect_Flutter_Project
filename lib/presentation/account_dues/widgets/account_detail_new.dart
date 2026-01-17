@@ -668,7 +668,7 @@ loadSharedPrefs();
                   custPhone: custPhoneNumber ?? "",
                   custId: custId!,
                   txnId: success.transactionId.toString(),
-                  txnType: "CASH",
+                  txnType: "CASH", dat: '',
                 ),
               ),
             );

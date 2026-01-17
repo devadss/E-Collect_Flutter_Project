@@ -13,6 +13,7 @@ import 'package:share_plus/share_plus.dart';
 
 class ReceiptPage extends StatefulWidget {
   final String amount;
+  final String dat;
   final String bankName;
   final String agentName;
   final String agentPhone;
@@ -32,7 +33,7 @@ class ReceiptPage extends StatefulWidget {
       required this.custPhone,
       required this.custId,
       required this.txnId,
-      required this.txnType});
+      required this.txnType, required this.dat});
 
   @override
   State<ReceiptPage> createState() => _ReceiptPageState();
@@ -715,8 +716,9 @@ class _ReceiptPageState extends State<ReceiptPage> {
                           const SizedBox(height: 16),
                           _buildDetailRow("Transaction ID:", widget.txnId),
                           Divider(height: 24, color: home2.withOpacity(0.1)),
-                          _buildDetailRow("Date & Time:",
-                              "${DateFormat('dd-MMM-yyyy').format(DateTime.now())} - ${DateFormat('hh:mm a').format(DateTime.now())}"),
+                      _buildDetailRow("Date & Time",widget.dat.toString()),
+                          // _buildDetailRow("Date & Time:",
+                          //     "${DateFormat('dd-MMM-yyyy').format(DateTime.now())} - ${DateFormat('hh:mm a').format(DateTime.now())}"),
                           Divider(height: 24, color: home2.withOpacity(0.1)),
                           _buildDetailRow("Amount:", "Rs.${widget.amount}"),
                           Divider(height: 24, color: home2.withOpacity(0.1)),

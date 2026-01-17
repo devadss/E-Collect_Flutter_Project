@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'colors.dart';
 
 String getBankNameFromCorpCode(String corpCode) {
+  print("getBankNameFromCorpCode $corpCode");
   // Map corpcode to bank name
   final Map<String, String> corpCodeToBankName = {
     "BNKKRMR": "KURUMATHUR SERVICE CO OPERATIVE BANK LTD",
