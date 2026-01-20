@@ -105,8 +105,10 @@ class _RdclDueListBlocPageState extends State<RdclDueListBlocPage> {
         subagentBranchCode: subAgentCodeNew,
         branchCode: branchCode, collectionType: 'RD');
     cash.fold((err) {
+      Navigator.pop(context);
       //print("getCashTrans $err");
     }, (success) {
+      Navigator.pop(context);
       // print("getCashTrans $success");
       showDialog(
         context: context,
@@ -148,6 +150,7 @@ class _RdclDueListBlocPageState extends State<RdclDueListBlocPage> {
         required String? note,
         required String? subAgentBranchCode})
   async {
+    showProgressDialog(context);
     final paymentSession = await CreatePaymentSessionIdRepository()
         .getPaymentSessionId(
         agentOriginId: agentOriginId,
@@ -324,6 +327,7 @@ class _RdclDueListBlocPageState extends State<RdclDueListBlocPage> {
                           );
                           Navigator.pop(context, true); // ✅ User confirmed
                           Navigator.pop(context, true); // ✅ User confirmed
+                          showProgressDialog(context);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.redAccent,
@@ -444,7 +448,9 @@ class _RdclDueListBlocPageState extends State<RdclDueListBlocPage> {
                             if (_isSelected[index] == false) {
                               _isSelected[index] = true;
                               _showDrops[index] = true;
+
                             } else {
+                              _itemSelected[index] =false;
                               _isSelected[index] = false;
                               _showDrops[index] = false;
                             }

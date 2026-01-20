@@ -191,12 +191,10 @@ class _MobileNumberVerificationPageState
             },
             (customer) {
               Navigator.pop(context);
-              if (customer.response!.data!['Customer_type'] != null ||
-                  customer.response!.data!['Customer_type']?.isNotEmpty ==
+              if (customer.response!.data!['Customer_type'] != null || customer.response!.data!['Customer_type']?.isNotEmpty ==
                       true) {
                 //print("Phase 1");
-                if (customer.response!.data!['Customer_type'] ==
-                    "COLLECTION_AGENT"&& customer.response!.images!.integrationStaus=="Y") {
+                if (customer.response!.data!['Customer_type'] == "COLLECTION_AGENT"&& customer.response!.images!.integrationStaus=="Y") {
                  // print("Phase 2");
                   SharedPref.shared.setEmail(
                     customer.response!.data!['emailId'].toString(),
@@ -228,8 +226,7 @@ class _MobileNumberVerificationPageState
                   );
                 }
 
-                else if(customer.response!.data!['Customer_type'] ==
-                    "COLLECTION_AGENT"&& customer.response!.images!.integrationStaus=="N") {
+                else if(customer.response!.data!['Customer_type'] == "COLLECTION_AGENT"&& customer.response!.images!.integrationStaus=="N") {
                   //print("Phase 2");
                   SharedPref.shared.setCustId(
                     customer.response!.data!['CustId'].toString(),
@@ -258,8 +255,8 @@ class _MobileNumberVerificationPageState
                         password: parentAgentCredentialProvider
                             .parentAgentCredentialModel!.b.mobPassword,
                         tokenStatus: customer.status.toString(),
-                      //  loggedInUserType: 'AGENT_LOAN',
-                        loggedInUserType: 'AGENT',//// REMOVE THIS AFTER TESTING AND UNCOMMENT THE ABOVE ONE
+                        loggedInUserType: 'AGENT_LOAN',
+                      //  loggedInUserType: 'AGENT',//// REMOVE THIS AFTER TESTING AND UNCOMMENT THE ABOVE ONE
                       ),
                     ),
                   );

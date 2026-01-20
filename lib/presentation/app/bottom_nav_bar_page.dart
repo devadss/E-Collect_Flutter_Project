@@ -13,6 +13,7 @@ import '../dues/rdcl_due_list_bloc_page.dart';
 import '../groups/group_homepage/all_groups_page.dart';
 import '../groups/homepage/group_home_page.dart';
 import '../home/home_page.dart';
+import '../loan/loan_home_page.dart';
 import '../profile/profile_home_page.dart';
 import '../test_page.dart';
 import '../trancstion/payment_link_home_page.dart';
@@ -62,11 +63,11 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       case 0:
         return  HomePage(userType: loggedInUserTPYE.toString(),);
       case 1:
-       // return const LoanHomePage();
-        return const LoanList();
+        return const LoanHomePage();
+       // return const LoanList();
       case 2:
-      //  return const ProfileHomePage();
-       return const TestProfilePage();
+        return const ProfileHomePage();
+      // return const TestProfilePage();
       default:
         return  HomePage(userType: loggedInUserTPYE.toString(),);
     }
