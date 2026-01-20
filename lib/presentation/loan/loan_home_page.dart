@@ -18,6 +18,7 @@ class LoanHomePage extends StatefulWidget {
 class _LoanHomePageState extends State<LoanHomePage>
     with TickerProviderStateMixin {
   String? agentId;
+  String? _corpCode;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   bool _isLoading = true;
@@ -31,13 +32,16 @@ class _LoanHomePageState extends State<LoanHomePage>
 
   Future<void> loadSharedPrefs() async {
     final custID = await SharedPref().getSubAgentId();
+    final corpCode = await SharedPref().getBranchCode();
+print("corpCode =$corpCode");
     setState(() {
       agentId = custID;
+      _corpCode = corpCode;
     });
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _animationController.forward();
       final provider = Provider.of<GetLoanProvider>(context, listen: false);
-      provider.getLoans("", "", "", "", agentId, 1, 10).then((_) {
+      provider.getLoans("", "", "", "",_corpCode, agentId,1, 10).then((_) {
         if (mounted) {
           setState(() {
             _isLoading = false;

@@ -2,8 +2,6 @@ import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:collection_qr_flutter/presentation/account_dues/rdcl_cust_list_bloc/rdcl_due_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-//import 'package:tye/model/customer_list_model/customer_list_success.dart' as prefix0;
-
 import '../../../data/customer_list_bloc/customer_list_bloc.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../../domain/model/customer_list_model/customer_list_success.dart' as prefix0;

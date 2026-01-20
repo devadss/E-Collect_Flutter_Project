@@ -8,9 +8,9 @@ class GetLoanProvider with ChangeNotifier {
   CollectionLoanModel? _collectionLoanModel;
   CollectionLoanModel? get collectionLoanModel => _collectionLoanModel;
   Future<void> getLoans(String? customerName, String? accountNo, String? status,
-      String? scheme, String? agent, int? page, int? pageSize) async {
+      String? scheme, String? agent,String? corpCode, int? page, int? pageSize) async {
     final result = await _getLoanRepository.getLoans(
-        customerName, accountNo, status, scheme, agent, page, pageSize);
+        customerName, accountNo, status, scheme, agent,corpCode, page, pageSize);
     result.fold((error) {
       print("---------------------------ERROR------------------");
       print(error);

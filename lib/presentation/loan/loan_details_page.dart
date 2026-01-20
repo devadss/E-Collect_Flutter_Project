@@ -1112,7 +1112,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                             ),
                           ),
                           const SizedBox(height: 10,),
-                          SizedBox(
+                         /* SizedBox(
                             width: double.infinity,
                             child: OutlinedButton(
                               style: OutlinedButton.styleFrom(
@@ -1256,7 +1256,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                 ),
                               ),
                             ),
-                          ),
+                          ),*/
                          const SizedBox(height: 10,)
                         ],
                       ),

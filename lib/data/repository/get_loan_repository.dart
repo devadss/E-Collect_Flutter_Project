@@ -17,12 +17,13 @@ class GetLoanRepository implements IGetLoanRepository {
       String? accountNo,
       String? status,
       String? scheme,
+      String? corpCode,
       String? agent,
       int? page,
       int? pageSize) async {
     bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     final data = await _apiService.getApiData(
-        "api/GetLoans?customerName=$customerName&accountNo=$accountNo&status=$status&scheme=$scheme&agent=$agent&page=$page&pageSize=$pageSize");
+        "api/GetLoans?customerName=$customerName&accountNo=$accountNo&status=$status&scheme=$scheme&agent=$agent&page=$page&pageSize=$pageSize&corpcode=$corpCode");
 print("GetLoanRepository");
     print(data);
     if (checkConnection) {

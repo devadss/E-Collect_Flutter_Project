@@ -23,7 +23,11 @@ class RdclDueListBlocPage extends StatefulWidget {
   State<RdclDueListBlocPage> createState() => _RdclDueListBlocPageState();
 }
 
+
 class _RdclDueListBlocPageState extends State<RdclDueListBlocPage> {
+
+
+
   final List<bool> _showDrops = [false];
   final List<bool> _isSelected = [false];
   final List<bool> _itemSelected = [false];
@@ -42,34 +46,47 @@ class _RdclDueListBlocPageState extends State<RdclDueListBlocPage> {
    bool _showSendIcon = false;
   String? token;
   TextEditingController searchController = TextEditingController();
-  Future<void> loadSharedPrefs() async {
-    final name = await SharedPref().getParentAgentName();
-    final id = await SharedPref().getAgentId();
-    final originId = await SharedPref().getSubAgentCode();
-    final subAgentID = await SharedPref().getSubAgentId();
-    final code = await SharedPref().getCorpCode();
-    final brCode = await SharedPref().getBranchCode();
-    final email = await SharedPref().getEmail();
-    final number = await SharedPref().getParentAgentMobNum();
-    final tok = await SharedPref().getTokenValue();
-    final sub_AgentCodeNew = await SharedPref().getSubAgentCodeNew();
-    final subagentNum = await SharedPref().getSubAgentMobNum();
-    if (mounted) {
-      setState(() {
-        subagentId = subAgentID;
-        agentName = name;
-        agentEmail = email;
-        subagentPhoneNumber = subagentNum;
-        agentId = id;
-        agentOriginId = originId;
-        corpCode = code;
-        branchCode = brCode;
-        agentPhoneNumber = number;
-        token = tok;
-        subAgentCodeNew = sub_AgentCodeNew;
-      });
-    }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
+
+  Future<void> loadSharedPrefs() async {
+    final prefs = SharedPref();
+
+    final name = await prefs.getParentAgentName();
+    final id = await prefs.getAgentId();
+    final originId = await prefs.getSubAgentCode();
+    final subAgentID = await prefs.getSubAgentId();
+    final code = await prefs.getCorpCode();
+    final brCode = await prefs.getBranchCode();
+    final email = await prefs.getEmail();
+    final number = await prefs.getParentAgentMobNum();
+    final tok = await prefs.getTokenValue();
+    final subAgentCodeNewVal = await prefs.getSubAgentCodeNew();
+    final subagentNum = await prefs.getSubAgentMobNum();
+
+    if (!mounted) return;
+
+    setState(() {
+      agentName = name;
+      agentId = id;
+      agentOriginId = originId;
+      subagentId = subAgentID;
+      corpCode = code;
+      branchCode = brCode;
+      agentEmail = email;
+      agentPhoneNumber = number;
+      token = tok;
+      subAgentCodeNew = subAgentCodeNewVal;
+      subagentPhoneNumber = subagentNum;
+    });
+  }
+
+
+
 
   Future<void> getCashTrans(
       {required String? token,
@@ -355,7 +372,13 @@ class _RdclDueListBlocPageState extends State<RdclDueListBlocPage> {
       },
     ).then((value) => value ?? false); // default to false if dismissed
   }
-
+bool chekValue(String value){
+    if(int.tryParse(value)==null){
+      return false;
+    }else{
+      return true;
+    }
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -394,11 +417,15 @@ class _RdclDueListBlocPageState extends State<RdclDueListBlocPage> {
                   _showSendIcon ==true?
                   InkWell(
                       onTap: (){
+
                         setState(() {
 
                           didSearch == false?didSearch = true:didSearch = false;
                         });
                         didSearch == true?
+
+                        chekValue(searchController.text)== true?
+                        context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode,  searchController.text, "")):
                         context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", searchController.text)):
                         context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", ""));
 
@@ -415,7 +442,7 @@ class _RdclDueListBlocPageState extends State<RdclDueListBlocPage> {
 
                   SizedBox.shrink(),
                   prefixIcon: Icon(Icons.search),
-                  hint: Text("Search account number"),
+                  hint: Text("Search by name"),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5))),
             ),
