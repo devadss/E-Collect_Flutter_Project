@@ -497,7 +497,8 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
       required String? phoneNumber,
       required String? entityId,
       required String? note,
-      required String? subAgentBranchCode}) async {
+      required String? subAgentBranchCode})
+  async {
     // print("--------------------INSIDE getPaymentSessionId---------------------");
     // print("--------------------TOKEN---------------------");
     // print(token);
@@ -1097,11 +1098,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                                                 // "Link"; // Default selection
                                                 "Cash"; // Default selection
 
-                                            showModalBottomSheet(
-                                              context: context,
-                                              isScrollControlled: true,
-                                              shape:
-                                                  const RoundedRectangleBorder(
+                                            showModalBottomSheet(context: context, isScrollControlled: true, shape: const RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.vertical(
                                                   top: Radius.circular(
@@ -1830,7 +1827,8 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
   // }
 
   Future<void> sendLinkFunction(
-      RDCLDueAccount custDetails, String amount) async {
+      RDCLDueAccount custDetails, String amount)
+  async {
     if (agentName == null ||
         agentId == null ||
         agentOriginId == null ||
@@ -1876,7 +1874,8 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
       String accNo,
       String custId,
       String amt,
-      ) async {
+      )
+  async {
     return await showDialog<bool>(
       context: context,
       barrierDismissible: false, // Prevent closing by tapping outside

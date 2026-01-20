@@ -9,6 +9,7 @@ import '../account_dues/account_list_home_page.dart';
 import '../account_dues/rdcl_account_list_home_page.dart';
 import '../account_dues/rdcl_cust_list_bloc/customer _list.dart';
 import '../dues/dues_home_page.dart';
+import '../dues/rdcl_due_list_bloc_page.dart';
 import '../groups/group_homepage/all_groups_page.dart';
 import '../groups/homepage/group_home_page.dart';
 import '../home/home_page.dart';
@@ -28,6 +29,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
    String? userTPYE;
    String? _corpCode;
   String? loggedInUserTPYE;
+  String? _branchID;
   double _indicatorPosition = 0.0;
   final List<GlobalKey> _tabKeys = List.generate(5, (index) => GlobalKey());
 
@@ -45,8 +47,10 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     var userType = await SharedPref.shared.getUserType();
     var loggedInUserType = await SharedPref.shared.getLoggedInUserType();
     var corpCode = await SharedPref.shared.getCorpCode();
+    final branchID = await SharedPref().getSubAgentCodeNew();
     print("getUserType value = $userType");
     setState(() {
+      _branchID = branchID;
       _corpCode = corpCode;
       userTPYE = userType;
       loggedInUserTPYE = loggedInUserType;
@@ -74,7 +78,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         return  HomePage(userType: loggedInUserTPYE.toString(),);
       case 1:
         return userTPYE?.contains("RDCL") == true
-            ? const RdclDuesHomePage()
+          //  ? const RdclDuesHomePage()
+            ?  RdclDueListBlocPage(branchCode: _branchID.toString(),)
             :_corpCode != "BNKVENAD" ?const DuesHomePage():SizedBox();
 
       case 2:

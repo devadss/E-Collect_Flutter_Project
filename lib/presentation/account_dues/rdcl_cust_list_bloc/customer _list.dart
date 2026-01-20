@@ -149,7 +149,7 @@ class _CustomerListState extends State<CustomerList> {
                               custAcNumber: data?.data?[index].rdclGlobalAccNo.toString()??"", custId: agentIdValue??"",)));
                           },
                           child: Container(
-                            padding: EdgeInsets.all(10),
+                            padding: EdgeInsets.all(15),
                             decoration: BoxDecoration(
                               boxShadow: [
                                 BoxShadow(color: home2.withAlpha(25),
@@ -157,7 +157,7 @@ class _CustomerListState extends State<CustomerList> {
                               ],
                               borderRadius: BorderRadius.circular(5),
                               color: Colors.white,
-                              border: Border.all(color: home1.withAlpha(100)),
+                              border: Border.all(color: home1.withAlpha(70)),
                             ),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -166,7 +166,7 @@ class _CustomerListState extends State<CustomerList> {
                                 Text(data?.data?[index].custName.toString() ?? "", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13),),
                                 SizedBox(height: 5,),
                                 Text(
-                                  "Acc No: ${data?.data?[index].rdclGlobalAccNo.toString() ?? ""}",style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w700, fontSize: 13),
+                                  "Acc No: ${data?.data?[index].rdclGlobalAccNo.toString() ?? ""}",style: TextStyle(color: home1, fontWeight: FontWeight.w700, fontSize: 13),
                                 ),
                                 SizedBox(height: 5,),
                                 Text(

@@ -84,8 +84,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
   @override
   void initState() {
     super.initState();
-    context.read<RdclDuelistBloc>().add(
-        RdclDueListFetchEvent("", widget.branchCode, "", widget.customeName));
+    context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", widget.customeName));
     loadSharedPrefs();
   }
   TextStyle _labelTextStyle() =>

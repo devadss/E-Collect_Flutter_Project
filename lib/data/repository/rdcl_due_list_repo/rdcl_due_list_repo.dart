@@ -21,9 +21,17 @@ Future<String> loadVendorUrl()async{
     final request =  await http.get(uri , headers: {"Content-Type":"application/json"});
     print("Uri = $uri");
     print(request.body);
-    if(request.statusCode == 200){
+    print(request.statusCode);
+    var data  = jsonDecode(request.body);
+    var d = data.toString();
+    if(request.statusCode == 200 && !d.contains("No results found")){
       return RdclDulistSuccess(RdclduesListSuccessModel.fromJson(jsonDecode(request.body)));
-    }else{
+    }else if(request.statusCode == 200 && d.contains("No results found")){
+      return RdclDueListFail(request.body);
+    }
+
+
+    else{
       return RdclDueListFail(request.body);
     }
 
