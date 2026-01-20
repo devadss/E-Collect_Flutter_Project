@@ -991,126 +991,126 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                           const SizedBox(
                             height: 15,
                           ),
-                          SizedBox(
-                            width: double.infinity,
-                            child: OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 16),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                side: const BorderSide(color: home1),
-                              ),
-                              onPressed: () {
-                                showModalBottomSheet(
-                                  isScrollControlled: true, // Already set
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return Padding(
-                                      padding: EdgeInsets.only(
-                                        bottom: MediaQuery.of(context)
-                                            .viewInsets
-                                            .bottom, // <-- important
-                                      ),
-                                      child: SizedBox(
-                                        height: 200,
-                                        // You can make it dynamic if needed
-                                        width: double.infinity,
-                                        child: Column(
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  const Spacer(flex: 1),
-                                                  const Text(
-                                                    "Payment Link Amount",
-                                                    style: TextStyle(
-                                                        color: home1,
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.w700),
-                                                  ),
-                                                  const Spacer(flex: 1),
-                                                  InkWell(
-                                                    onTap: () {
-                                                      Navigator.pop(context);
-                                                      editAmountController
-                                                              .text =
-                                                          widget.emiAmount
-                                                              .toString();
-                                                    },
-                                                    child: const Icon(
-                                                      Icons.cancel_rounded,
-                                                      size: 30,
-                                                      color: home2,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 20,
-                                                      vertical: 10),
-                                              child: TextField(
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                controller:
-                                                    editAmountController,
-                                                decoration:
-                                                    const InputDecoration(
-                                                        prefixIcon: Icon(
-                                                          Icons.currency_rupee,
-                                                          color: home1,
-                                                        ),
-                                                        border: OutlineInputBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            10))),
-                                                        labelText:
-                                                            "Enter collection amount"),
-                                              ),
-                                            ),
-                                            ElevatedButton(
-                                                onPressed: () async {
-                                                  utl.showProgressDialog(context);
-                                                  sendLinkFunction();
-
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                    backgroundColor: home1,
-                                                    foregroundColor:
-                                                        Colors.white),
-                                                child: const Text("Submit"))
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-
-                                // Handle view schedule action
-                              },
-                              child: const Text(
-                                'Send Payment Link',
-                                style: TextStyle(
-                                  color: home1,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
+                          // SizedBox(
+                          //   width: double.infinity,
+                          //   child: OutlinedButton(
+                          //     style: OutlinedButton.styleFrom(
+                          //       padding:
+                          //           const EdgeInsets.symmetric(vertical: 16),
+                          //       shape: RoundedRectangleBorder(
+                          //         borderRadius: BorderRadius.circular(12),
+                          //       ),
+                          //       side: const BorderSide(color: home1),
+                          //     ),
+                          //     onPressed: () {
+                          //       showModalBottomSheet(
+                          //         isScrollControlled: true, // Already set
+                          //         context: context,
+                          //         builder: (BuildContext context) {
+                          //           return Padding(
+                          //             padding: EdgeInsets.only(
+                          //               bottom: MediaQuery.of(context)
+                          //                   .viewInsets
+                          //                   .bottom, // <-- important
+                          //             ),
+                          //             child: SizedBox(
+                          //               height: 200,
+                          //               // You can make it dynamic if needed
+                          //               width: double.infinity,
+                          //               child: Column(
+                          //                 children: [
+                          //                   Padding(
+                          //                     padding:
+                          //                         const EdgeInsets.all(8.0),
+                          //                     child: Row(
+                          //                       crossAxisAlignment:
+                          //                           CrossAxisAlignment.center,
+                          //                       mainAxisAlignment:
+                          //                           MainAxisAlignment
+                          //                               .spaceBetween,
+                          //                       children: [
+                          //                         const Spacer(flex: 1),
+                          //                         const Text(
+                          //                           "Payment Link Amount",
+                          //                           style: TextStyle(
+                          //                               color: home1,
+                          //                               fontSize: 18,
+                          //                               fontWeight:
+                          //                                   FontWeight.w700),
+                          //                         ),
+                          //                         const Spacer(flex: 1),
+                          //                         InkWell(
+                          //                           onTap: () {
+                          //                             Navigator.pop(context);
+                          //                             editAmountController
+                          //                                     .text =
+                          //                                 widget.emiAmount
+                          //                                     .toString();
+                          //                           },
+                          //                           child: const Icon(
+                          //                             Icons.cancel_rounded,
+                          //                             size: 30,
+                          //                             color: home2,
+                          //                           ),
+                          //                         ),
+                          //                       ],
+                          //                     ),
+                          //                   ),
+                          //                   Padding(
+                          //                     padding:
+                          //                         const EdgeInsets.symmetric(
+                          //                             horizontal: 20,
+                          //                             vertical: 10),
+                          //                     child: TextField(
+                          //                       keyboardType:
+                          //                           TextInputType.number,
+                          //                       controller:
+                          //                           editAmountController,
+                          //                       decoration:
+                          //                           const InputDecoration(
+                          //                               prefixIcon: Icon(
+                          //                                 Icons.currency_rupee,
+                          //                                 color: home1,
+                          //                               ),
+                          //                               border: OutlineInputBorder(
+                          //                                   borderRadius:
+                          //                                       BorderRadius
+                          //                                           .all(Radius
+                          //                                               .circular(
+                          //                                                   10))),
+                          //                               labelText:
+                          //                                   "Enter collection amount"),
+                          //                     ),
+                          //                   ),
+                          //                   ElevatedButton(
+                          //                       onPressed: () async {
+                          //                         utl.showProgressDialog(context);
+                          //                         sendLinkFunction();
+                          //
+                          //                       },
+                          //                       style: ElevatedButton.styleFrom(
+                          //                           backgroundColor: home1,
+                          //                           foregroundColor:
+                          //                               Colors.white),
+                          //                       child: const Text("Submit"))
+                          //                 ],
+                          //               ),
+                          //             ),
+                          //           );
+                          //         },
+                          //       );
+                          //
+                          //       // Handle view schedule action
+                          //     },
+                          //     child: const Text(
+                          //       'Send Payment Link',
+                          //       style: TextStyle(
+                          //         color: home1,
+                          //         fontWeight: FontWeight.bold,
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
                           const SizedBox(height: 10,),
                          /* SizedBox(
                             width: double.infinity,
