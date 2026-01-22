@@ -1,6 +1,8 @@
 part of 'customer_list_bloc.dart';
 
-abstract class CustomerListEvent {}
+abstract class CustomerListEvent {
+  const CustomerListEvent();
+}
 
 class CustomerListFetchEvent extends CustomerListEvent{
   final String agentId;
@@ -8,5 +10,5 @@ class CustomerListFetchEvent extends CustomerListEvent{
   final String pageNo;
   final String pageSize;
   final String customerName;
-  CustomerListFetchEvent(this.agentId, this.branchId, this.pageNo, this.pageSize, this.customerName);
+  const CustomerListFetchEvent(this.agentId, this.branchId, this.pageNo, this.pageSize, this.customerName);
 }

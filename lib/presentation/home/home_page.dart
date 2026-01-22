@@ -117,8 +117,8 @@ class _HomePageState extends State<HomePage>
     final cashQrProvider = context.read<CashQrProvider>();
     final qrProvider = context.read<QRTransactionHistoryProvider>();
     final cashTransProvider = context.read<CashTransactionHistoryProvider>();
-    final linkProvider = context.read<LinkTransactionHistoryProvider>();
-    final transferProvider = context.read<TransferHistoryProvider>();
+  //  final linkProvider = context.read<LinkTransactionHistoryProvider>();
+  // final transferProvider = context.read<TransferHistoryProvider>();
 
     DateTime? fromDate;
     DateTime? toDate;

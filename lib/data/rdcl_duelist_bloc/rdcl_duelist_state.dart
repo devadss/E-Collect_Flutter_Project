@@ -1,16 +1,22 @@
 part of 'rdcl_duelist_bloc.dart';
-abstract class RdclDuelistState {}
+abstract class RdclDuelistState {
+  const RdclDuelistState();
+}
 
-class RdclDueListInitialState extends RdclDuelistState{}
+class RdclDueListInitialState extends RdclDuelistState{
+  const RdclDueListInitialState();
+}
 
-class RdclDueListLoaderState extends RdclDuelistState{}
+class RdclDueListLoaderState extends RdclDuelistState{
+  const RdclDueListLoaderState();
+}
 
 class RdclDueListSuccessState  extends RdclDuelistState{
   final RdclDulistSuccess rdclDulistSuccess;
-  RdclDueListSuccessState(this.rdclDulistSuccess);
+ const RdclDueListSuccessState(this.rdclDulistSuccess);
 }
 
 class RdclDueListFailState extends RdclDuelistState{
   final RdclDueListFail rdclDueListFail;
-  RdclDueListFailState(this.rdclDueListFail);
+  const RdclDueListFailState(this.rdclDueListFail);
 }

@@ -2,7 +2,7 @@ class CustomerListFailResponse {
   final String error;
   final int totalCount;
 
-  CustomerListFailResponse({
+  const CustomerListFailResponse({
     required this.error,
     required this.totalCount,
   });
@@ -30,7 +30,7 @@ class CustomerListFailResponse {
 class CustomerListResponse {
   final CustomerListFailResponse customerList;
 
-  CustomerListResponse({
+  const CustomerListResponse({
     required this.customerList,
   });
 

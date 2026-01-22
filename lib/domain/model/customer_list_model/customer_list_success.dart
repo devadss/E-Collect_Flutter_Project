@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 class CustomerListSuccessResponse {
-  CustomerList? customerList;
+  final CustomerList? customerList;
 
-  CustomerListSuccessResponse({
+  const CustomerListSuccessResponse({
     this.customerList,
   });
 
@@ -25,10 +25,10 @@ class CustomerListSuccessResponse {
 }
 
 class CustomerList {
-  List<Customer>? data;
-  int? totalCount;
+  final List<Customer>? data;
+  final int? totalCount;
 
-  CustomerList({
+  const CustomerList({
     this.data,
     this.totalCount,
   });
@@ -55,13 +55,13 @@ class CustomerList {
 }
 
 class Customer {
-  String? custId;
-  String? custName;
-  String? rdclGlobalAccNo;
-  String? schName;
-  String? schCode;
+  final String? custId;
+  final String? custName;
+  final String? rdclGlobalAccNo;
+  final String? schName;
+  final String? schCode;
 
-  Customer({
+  const Customer({
     this.custId,
     this.custName,
     this.rdclGlobalAccNo,

@@ -1,14 +1,16 @@
 import 'customer_list_fail_model.dart';
 import 'customer_list_success.dart';
 
-sealed class CustomerListModel {}
+sealed class CustomerListModel {
+  const CustomerListModel();
+}
 
 class CustomerListSuccessModel extends CustomerListModel{
   final CustomerListSuccessResponse customerListSuccessResponse;
-  CustomerListSuccessModel(this.customerListSuccessResponse);
+  const CustomerListSuccessModel(this.customerListSuccessResponse);
 }
 
 class CustomerListFailModel extends CustomerListModel{
   final CustomerListFailResponse customerListFailResponse;
-  CustomerListFailModel(this.customerListFailResponse);
+  const CustomerListFailModel(this.customerListFailResponse);
 }

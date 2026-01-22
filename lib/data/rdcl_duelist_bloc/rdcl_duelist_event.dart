@@ -1,13 +1,15 @@
 part of 'rdcl_duelist_bloc.dart';
 
-abstract class RdclDuelistEvent {}
+abstract class RdclDuelistEvent {
+  const RdclDuelistEvent();
+}
 
 class RdclDueListFetchEvent extends RdclDuelistEvent {
-  String agentId;
-  String branchCode;
-  String accNo;
-  String custName;
-  RdclDueListFetchEvent(
+  final String agentId;
+  final String branchCode;
+  final String accNo;
+  final String custName;
+  const RdclDueListFetchEvent(
     this.agentId,
     this.branchCode,
     this.accNo,

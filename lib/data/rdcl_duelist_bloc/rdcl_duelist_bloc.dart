@@ -11,9 +11,9 @@ part 'rdcl_duelist_state.dart';
 
 class RdclDuelistBloc extends Bloc<RdclDuelistEvent , RdclDuelistState>{
   final RdclDueListRepo rdclDueListRepo;
-  RdclDuelistBloc(this.rdclDueListRepo):super(RdclDueListInitialState()){
+  RdclDuelistBloc(this.rdclDueListRepo):super(const RdclDueListInitialState()){
     on<RdclDueListFetchEvent>((event ,emit) async {
-      emit(RdclDueListLoaderState());
+      emit(const RdclDueListLoaderState());
       final data = await rdclDueListRepo.fetchRdclDueList(event.agentId, event.branchCode, event.accNo, event.custName);
       if(data is RdclDulistSuccess){
         emit(RdclDueListSuccessState(data));

@@ -1,7 +1,7 @@
-class RdclDueUnderAgentModel {
+ class RdclDueUnderAgentModel {
   final List<RDCLDueAccount> data;
 
-  RdclDueUnderAgentModel({required this.data});
+  const RdclDueUnderAgentModel({required this.data});
 
   factory RdclDueUnderAgentModel.fromJson(Map<String, dynamic> json) {
     return RdclDueUnderAgentModel(
@@ -30,7 +30,7 @@ class RDCLDueAccount {
   final String brCode;
   final String totalCount;
 
-  RDCLDueAccount({
+  const RDCLDueAccount({
     required this.accNo,
     required this.openDate,
     required this.installAmt,

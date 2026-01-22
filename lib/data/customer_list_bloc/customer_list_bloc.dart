@@ -8,7 +8,7 @@ part 'customer_list_event.dart';
 
 class CustomerListBloc extends Bloc<CustomerListEvent, CustomerListState>{
   final CustomerListRepo customerListRepo;
-  CustomerListBloc(this.customerListRepo):super(CustomerListInitialState()){
+  CustomerListBloc(this.customerListRepo):super(const CustomerListInitialState()){
     on<CustomerListFetchEvent>((event , emit) async {
       final data = await customerListRepo.fetchCustList(event.agentId,
           event.branchId, event.pageNo, event.pageSize, event.customerName);

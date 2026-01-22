@@ -1,7 +1,7 @@
 class RdclduesListSuccessModel {
   final RdclduesList1? rdclDuesList1;
 
-  RdclduesListSuccessModel({
+  const RdclduesListSuccessModel({
     this.rdclDuesList1,
   });
 
@@ -23,7 +23,7 @@ class RdclduesListSuccessModel {
 class RdclduesList1 {
   final List<RdclduesData> data;
 
-  RdclduesList1({
+  const RdclduesList1({
     required this.data,
   });
 
@@ -69,7 +69,7 @@ class RdclduesData {
   final String brCode;
   final String totalCount;
 
-  RdclduesData({
+  const RdclduesData({
     required this.accNo,
     required this.openDate,
     required this.installAmt,

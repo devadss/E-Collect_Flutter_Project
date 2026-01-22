@@ -1,13 +1,15 @@
 import 'package:collection_qr_flutter/domain/model/rdcl_duelist_model/rdcl_due_list_success.dart';
 
-sealed class RdclDueListModel {}
+sealed class RdclDueListModel {
+  const RdclDueListModel();
+}
 
 class RdclDulistSuccess extends RdclDueListModel{
-  RdclduesListSuccessModel rdclduesListSuccessModel;
-  RdclDulistSuccess(this.rdclduesListSuccessModel);
+  final RdclduesListSuccessModel rdclduesListSuccessModel;
+  const RdclDulistSuccess(this.rdclduesListSuccessModel);
 }
 
 class RdclDueListFail extends RdclDueListModel{
-  String error;
-  RdclDueListFail(this.error);
+  final String error;
+  const RdclDueListFail(this.error);
 }

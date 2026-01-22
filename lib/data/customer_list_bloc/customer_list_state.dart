@@ -1,16 +1,22 @@
 part of 'customer_list_bloc.dart';
-abstract class CustomerListState {}
+abstract class CustomerListState {
+  const CustomerListState();
+}
 
-class CustomerListInitialState extends CustomerListState{}
+class CustomerListInitialState extends CustomerListState{
+  const CustomerListInitialState();
+}
 
-class CustomerListLoaderState extends CustomerListState{}
+class CustomerListLoaderState extends CustomerListState{
+  const CustomerListLoaderState();
+}
 
 class CustomerListSuccessState extends CustomerListState{
   final CustomerListSuccessModel customerListSuccessModel;
-  CustomerListSuccessState(this.customerListSuccessModel);
+  const CustomerListSuccessState(this.customerListSuccessModel);
 }
 
 class CustomerListFailState extends CustomerListState{
   final CustomerListFailModel customerListFailModel;
-  CustomerListFailState(this.customerListFailModel);
+  const CustomerListFailState(this.customerListFailModel);
 }
