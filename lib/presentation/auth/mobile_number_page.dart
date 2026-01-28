@@ -255,8 +255,8 @@ class _MobileNumberVerificationPageState
                         password: parentAgentCredentialProvider
                             .parentAgentCredentialModel!.b.mobPassword,
                         tokenStatus: customer.status.toString(),
-                        loggedInUserType: 'AGENT_LOAN',
-                      //  loggedInUserType: 'AGENT',//// REMOVE THIS AFTER TESTING AND UNCOMMENT THE ABOVE ONE
+                      //  loggedInUserType: 'AGENT_LOAN',
+                        loggedInUserType: 'AGENT',//// REMOVE THIS AFTER TESTING AND UNCOMMENT THE ABOVE ONE
                       ),
                     ),
                   );

@@ -1193,9 +1193,9 @@ class _HomePageState extends State<HomePage>
   }
 
   Widget _buildCashWithQrTransactionContent(CashQrProvider cashQrProvider) {
-    if (cashQrProvider.errResponse != null) {
+    if (cashQrProvider.errResponse != null || cashQrProvider.cashQrCombinedResponse?.data.isEmpty== true) {
       return _buildEmptyState(
-        icon: Icons.link_outlined,
+        icon: Icons.all_out,
         title: "No Transactions",
         message: "Your transactions will appear here",
       );
