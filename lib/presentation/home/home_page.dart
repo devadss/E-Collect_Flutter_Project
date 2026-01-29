@@ -211,7 +211,7 @@ class _HomePageState extends State<HomePage>
                         children: const [
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 12),
-                            child: Text('Today',
+                            child:  Text('Today',
                                 style: TextStyle(color: Colors.black)),
                           ),
                           Padding(
