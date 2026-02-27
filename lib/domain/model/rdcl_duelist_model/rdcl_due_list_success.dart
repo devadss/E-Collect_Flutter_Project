@@ -1,3 +1,10 @@
+import 'dart:convert';
+
+RdclduesListSuccessModel parseRdclDuesSuccess(String body) {
+  final decoded = json.decode(body);
+  return RdclduesListSuccessModel.fromJson(decoded);
+}
+
 class RdclduesListSuccessModel {
   final RdclduesList1? rdclDuesList1;
 

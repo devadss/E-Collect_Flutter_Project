@@ -1,8 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../domain/model/customer_list_model/customer_list_model.dart';
 import '../repository/customer_list_repo/customer_list_repo.dart';
-
 part 'customer_list_state.dart';
 part 'customer_list_event.dart';
 

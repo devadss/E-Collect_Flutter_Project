@@ -1,4 +1,7 @@
 import 'dart:convert';
+CustomerListSuccessResponse parseCustomerSuccess(String body) {
+  return CustomerListSuccessResponse.fromRawJson(body);
+}
 
 class CustomerListSuccessResponse {
   final CustomerList? customerList;

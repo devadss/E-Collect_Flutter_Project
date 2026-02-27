@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart'as http;
 
 import '../../../domain/model/rdcl_duelist_model/rdcl_due_list_model.dart';
@@ -25,7 +26,12 @@ Future<String> loadVendorUrl()async{
     var data  = jsonDecode(request.body);
     var d = data.toString();
     if(request.statusCode == 200 && !d.contains("No results found")){
-      return RdclDulistSuccess(RdclduesListSuccessModel.fromJson(jsonDecode(request.body)));
+      final success =
+      await compute(parseRdclDuesSuccess, request.body);
+
+
+     // return CustomerListSuccessModel(successResponse);
+      return RdclDulistSuccess(success);
     }else if(request.statusCode == 200 && d.contains("No results found")){
       return RdclDueListFail(request.body);
     }

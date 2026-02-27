@@ -47,10 +47,6 @@ class NotificationChannels {
 }
 
 
-
-
-
-
 AlertDialog exitAlert(BuildContext context){
   return AlertDialog(
     icon: const Icon(Icons.warning_amber, color: home1,size: 30,),

@@ -18,7 +18,6 @@ import 'package:collection_qr_flutter/domain/service/api_services.dart';
 import 'package:collection_qr_flutter/presentation/groups/homepage/payment_link_provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
-
 import '../../data/provider/agent_customer_details_provider.dart';
 import '../../data/provider/agent_transaction_provider.dart';
 import '../../data/provider/cerate_order_provider.dart';

@@ -175,9 +175,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
               SharedPref.shared.setLogin(true);
               if(
               widget.loggedInUserType == "NOT_AN_AGENT"){
-               // tokenGeneration(encryptString(widget.password, secretKey, initialVector)!);
-                //print("setTokenValue $data");
-               // tokenGeneration(widget.password);
+
                 await SharedPref.shared.setTokenValue(data.toString());
                 await SharedPref.shared.setLogin(true);
                 await SharedPref.shared.setLoggedInUserType(widget.loggedInUserType);

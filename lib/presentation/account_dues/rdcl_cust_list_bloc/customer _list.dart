@@ -108,7 +108,6 @@ class _CustomerListState extends State<CustomerList> {
             child: BlocBuilder<CustomerListBloc, CustomerListState>(
               builder: (BuildContext context, state) {
                 prefix0.CustomerList? data;
-
                 if (state is CustomerListLoaderState) {
                   return const Center(child: CircularProgressIndicator());
                 }
