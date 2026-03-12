@@ -59,7 +59,8 @@ AlertDialog exitAlert(BuildContext context){
     content: SizedBox(
       height: 120,
       child: Column(children: [
-        const Text("Are you sure you want to exit Collection Qr? ",
+        const Text(
+          "Are you sure you want to exit Collection Qr? ",
         style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black,
         fontSize: 15),),
         const SizedBox(height: 30,),
@@ -80,6 +81,7 @@ AlertDialog exitAlert(BuildContext context){
                 exit(0);
               }, child: const Text("YES")),
             ElevatedButton(
+
                 style: ElevatedButton.styleFrom(
                     backgroundColor: homeColor,
                     foregroundColor: Colors.white,

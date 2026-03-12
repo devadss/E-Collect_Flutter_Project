@@ -22,7 +22,13 @@ class RdclDueDetail extends StatefulWidget {
   final String custId;
 
   const RdclDueDetail(
-      {super.key, required this.branchCode, required this.customeName, required this.custPhoneNumber, required this.custIdNew, required this.custAcNumber, required this.custId});
+      {super.key,
+      required this.branchCode,
+      required this.customeName,
+      required this.custPhoneNumber,
+      required this.custIdNew,
+      required this.custAcNumber,
+      required this.custId});
 
   @override
   State<RdclDueDetail> createState() => _RdclDueDetailState();
@@ -79,20 +85,21 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
         subAgentCodeNew = sub_AgentCodeNew;
       });
     }
-
   }
+
   @override
   void initState() {
     super.initState();
-    context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", widget.customeName));
+    context.read<RdclDuelistBloc>().add(
+        RdclDueListFetchEvent("", widget.branchCode, "", widget.customeName));
     loadSharedPrefs();
   }
+
   TextStyle _labelTextStyle() =>
       const TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: black);
 
   TextStyle _valueTextStyle() => const TextStyle(
       fontWeight: FontWeight.w500, fontSize: 16, color: black87);
-
 
   Widget _buildPaymentOptionButton({
     required IconData icon,
@@ -181,66 +188,65 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                 icon: Icons.qr_code,
                 label: "Pay via QR Code",
                 onPressed: () async {
-showProgressDialog(context);
+                  showProgressDialog(context);
                   final paymentSession =
-                  await CreatePaymentSessionIdRepository()
-                      .getPaymentSessionId(
-                      agentOriginId: agentId,
-                      agentEmail: agentEmail,
-                      customerName: widget.customeName,
-                      customerPhone: widget.custPhoneNumber,
-                      customerAccno: widget.custAcNumber,
-                      customerId: widget.custIdNew,
-                      customerEmail: "",
-                      corpCode: corpCode,
-                      cardRefNum: "",
-                      token: token,
-                      amount: amountController.text,
-                      agentPhone: agentMobile,
-                      agentId: widget.custId,
-                      note: "Payment For Agent $agentName",
-                      subAgentId: subagentId,
-                      agentName: agentName,
-                      subAgentBranchCode: subAgentCodeNew, collectionType: 'RDCL');
+                      await CreatePaymentSessionIdRepository()
+                          .getPaymentSessionId(
+                              agentOriginId: agentId,
+                              agentEmail: agentEmail,
+                              customerName: widget.customeName,
+                              customerPhone: widget.custPhoneNumber,
+                              customerAccno: widget.custAcNumber,
+                              customerId: widget.custIdNew,
+                              customerEmail: "",
+                              corpCode: corpCode,
+                              cardRefNum: "",
+                              token: token,
+                              amount: amountController.text,
+                              agentPhone: agentMobile,
+                              agentId: widget.custId,
+                              note: "Payment For Agent $agentName",
+                              subAgentId: subagentId,
+                              agentName: agentName,
+                              subAgentBranchCode: subAgentCodeNew,
+                              collectionType: 'RDCL');
                   paymentSession.fold((error) {
                     Navigator.pop(context);
                     // print(
                     //     "---------------------------------ERROR PAYMENT---------------------------");
                     // print(error);
-                  },
-                          (sessionId)
-                      async {
-                        paymentSessionId = sessionId.paymentSessionId ?? "";
-                        if (paymentSessionId!.isNotEmpty &&
-                            paymentSessionId != null &&
-                            paymentSessionId != "") {
-                          if (!mounted) return;
-                          Navigator.pop(context);
+                  }, (sessionId) async {
+                    paymentSessionId = sessionId.paymentSessionId ?? "";
+                    if (paymentSessionId!.isNotEmpty &&
+                        paymentSessionId != null &&
+                        paymentSessionId != "") {
+                      if (!mounted) return;
+                      Navigator.pop(context);
 
-                          if (!mounted) return;
-                          final result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => NewQrCodePage(
-                                paymentSessionId: paymentSessionId!,
-                                amount: amountController.text ?? "",
-                                token: token!,
-                                custName: customerName ?? "custName",
-                                custPhone: widget.custPhoneNumber,
-                                custId: widget.custId,
-                              ),
-                            ),
-                          );
-                          if (!mounted) return;
-                          if (result == "fetch_balance") {
-                            Navigator.pop(context);
-                          }
-                        } else {
-                          if (!mounted) return;
-                          Navigator.pop(context);
-                        //  EasyLoading.showToast("Session id is null");
-                        }
-                      });
+                      if (!mounted) return;
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NewQrCodePage(
+                            paymentSessionId: paymentSessionId!,
+                            amount: amountController.text ?? "",
+                            token: token!,
+                            custName: customerName ?? "custName",
+                            custPhone: widget.custPhoneNumber,
+                            custId: widget.custId,
+                          ),
+                        ),
+                      );
+                      if (!mounted) return;
+                      if (result == "fetch_balance") {
+                        Navigator.pop(context);
+                      }
+                    } else {
+                      if (!mounted) return;
+                      Navigator.pop(context);
+                      //  EasyLoading.showToast("Session id is null");
+                    }
+                  });
                 },
               ),
               // const SizedBox(height: 12),
@@ -267,7 +273,6 @@ showProgressDialog(context);
                       widget.custId,
                       "",
                       amountController.text);
-
                 },
               ),
               const SizedBox(height: 20),
@@ -277,14 +282,15 @@ showProgressDialog(context);
       },
     );
   }
+
   Future<void> paymentConfirmation(
-      BuildContext context,
-      String name,
-      String accNo,
-      String custId,
-      String email,
-      String amt,
-      ) {
+    BuildContext context,
+    String name,
+    String accNo,
+    String custId,
+    String email,
+    String amt,
+  ) {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -376,7 +382,6 @@ showProgressDialog(context);
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-
                           getCashTrans(
                             token: token,
                             customerName: name,
@@ -422,18 +427,17 @@ showProgressDialog(context);
 
   Future<void> getCashTrans(
       {required String? token,
-        required String? customerName,
-        required String? custPhoneNumber,
-        required String? custAcNumber,
-        required String? custId,
-        required String? custEmail,
-        required String? amount,
-        required String? phoneNumber,
-        required String? entityId,
-        required String? note})
-  async {
+      required String? customerName,
+      required String? custPhoneNumber,
+      required String? custAcNumber,
+      required String? custId,
+      required String? custEmail,
+      required String? amount,
+      required String? phoneNumber,
+      required String? entityId,
+      required String? note}) async {
     final cashPaymentProvider =
-    Provider.of<CashTranscationProvider>(context, listen: false);
+        Provider.of<CashTranscationProvider>(context, listen: false);
     final cash = await cashPaymentProvider.getTranscations(
         agentName: agentName,
         agentId: custId,
@@ -452,12 +456,13 @@ showProgressDialog(context);
         cardRefNum: "",
         token: token,
         subagentBranchCode: subAgentCodeNew,
-        branchCode: widget.branchCode, collectionType: 'RDCL');
+        branchCode: widget.branchCode,
+        collectionType: 'RDCL');
     cash.fold((err) {
       Navigator.pop(context);
-    //  print("getCashTrans $err");
+      //  print("getCashTrans $err");
     }, (success) {
-     // print("getCashTrans $success");
+      // print("getCashTrans $success");
       Navigator.pop(context);
       showDialog(
         context: context,
@@ -474,21 +479,21 @@ showProgressDialog(context);
                   bankName: getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
                   agentName: agentName ?? "Name",
                   agentPhone: phoneNumber ?? "agentPhone",
-                  custName: customerName!,
-                  custPhone: custPhoneNumber!,
-                  custId: custId!,
+                  custName: customerName ?? "",
+                  custPhone: custPhoneNumber ?? "",
+                  custId: custId ?? "",
                   txnId: success.transactionId.toString(),
-                  txnType: "CASH", dat: '',
+                  txnType: "CASH",
+                  dat: '',
                 ),
               ),
             );
           },
         ),
       );
-
-
     });
   }
+
   Future<void> _showBottomBar(BuildContext context) async {
     return showModalBottomSheet(
       context: context,
@@ -638,92 +643,84 @@ showProgressDialog(context);
       ),
       body: Column(
         children: [
-      Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: BlocBuilder<RdclDuelistBloc, RdclDuelistState>(
-        builder: (BuildContext context, RdclDuelistState state) {
-          if (state is RdclDueListLoaderState) {
-            return const Center(child: CircularProgressIndicator());
-          }
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            child: BlocBuilder<RdclDuelistBloc, RdclDuelistState>(
+              builder: (BuildContext context, RdclDuelistState state) {
+                if (state is RdclDueListLoaderState) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-          if (state is RdclDueListSuccessState) {
-            final list = state
-                .rdclDulistSuccess
-                .rdclduesListSuccessModel
-                .rdclDuesList1
-                ?.data;
+                if (state is RdclDueListSuccessState) {
+                  final list = state.rdclDulistSuccess.rdclduesListSuccessModel
+                      .rdclDuesList1?.data;
 
-            if (list == null || list.isEmpty) {
-              return const SizedBox.shrink();
-            }
+                  if (list == null || list.isEmpty) {
+                    return const SizedBox.shrink();
+                  }
 
-            final data = list
-                .where((item) => item.accNo == widget.custAcNumber)
-                .toList();
+                  final data = list
+                      .where((item) => item.accNo == widget.custAcNumber)
+                      .toList();
 
-            if (data.isEmpty) {
-              return const SizedBox.shrink(); // 🔐 prevents RangeError
-            }
+                  if (data.isEmpty) {
+                    return const SizedBox.shrink(); // 🔐 prevents RangeError
+                  }
 
-            final item = data.first; // ✅ SAFE
-            duemAount = item.dueAmount;
+                  final item = data.first; // ✅ SAFE
+                  duemAount = item.dueAmount;
 
-            return Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(5),
-                border: Border.all(color: home1.withAlpha(50)),
-                boxShadow: [
-                  BoxShadow(
-                    color: home1.withAlpha(30),
-                    spreadRadius: 2,
-                    blurRadius: 8,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text("Customer name : "),
-                      Text(item.name ?? ""),
-                    ],
-                  ),
-                  const Divider(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text("Account Number : "),
-                      Text(item.accNo ?? ""),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          }
+                  return Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(color: home1.withAlpha(50)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: home1.withAlpha(30),
+                          spreadRadius: 2,
+                          blurRadius: 8,
+                          offset: const Offset(0, 1),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("Customer name : "),
+                            Text(item.name ?? ""),
+                          ],
+                        ),
+                        const Divider(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("Account Number : "),
+                            Text(item.accNo ?? ""),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                }
 
-          return const SizedBox.shrink();
-        },
-      ),
-    ),
-    SizedBox(
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+          SizedBox(
             height: 30,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: BlocBuilder<RdclDuelistBloc, RdclDuelistState>(
               builder: (BuildContext context, RdclDuelistState state) {
-
-
                 if (state is RdclDueListSuccessState) {
-                  final list = state
-                      .rdclDulistSuccess
-                      .rdclduesListSuccessModel
-                      .rdclDuesList1
-                      ?.data;
+                  final list = state.rdclDulistSuccess.rdclduesListSuccessModel
+                      .rdclDuesList1?.data;
 
                   if (list == null || list.isEmpty) {
                     return const SizedBox.shrink();

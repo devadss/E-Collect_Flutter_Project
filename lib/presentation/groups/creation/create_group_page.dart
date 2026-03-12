@@ -30,12 +30,9 @@ class CreateGroupPage extends StatefulWidget {
 class _CreateGroupPageState extends State<CreateGroupPage> {
   final TextEditingController groupNameController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
-  final TextEditingController feeCollectionDayController =
-      TextEditingController();
-  final TextEditingController feeCollectionStartDateController =
-      TextEditingController();
-  final TextEditingController groupDeactivationDateController =
-      TextEditingController();
+  final TextEditingController feeCollectionDayController = TextEditingController();
+  final TextEditingController feeCollectionStartDateController = TextEditingController();
+  final TextEditingController groupDeactivationDateController = TextEditingController();
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
   final TextEditingController _searchController = TextEditingController();
 

@@ -239,10 +239,7 @@ class _AllGroupsPageState extends State<AllGroupsPage> {
                             MaterialPageRoute(
                               builder: (_) => GroupDetailPage(
                                 amount: group.defaultAmount.toStringAsFixed(0),
-                                dueDate: group.defaultDueDate
-                                    .toLocal()
-                                    .toString()
-                                    .split(' ')[0],
+                                dueDate: group.defaultDueDate.toLocal().toString().split(' ')[0],
                                 groupId: group.groupId,
                                 groupName: group.groupName,
                                 groupStatus: group.status.toString(),

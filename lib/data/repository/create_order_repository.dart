@@ -28,7 +28,7 @@ class OrderCreateRepository implements CashFreeOrderCreateInterface{
           "customer_phone": custMobNumber
         },
         "order_meta": {
-          "return_url": "${baseUrl}?order_id={order_id}",
+          "return_url": "$baseUrl?order_id={order_id}",
           "notify_url": "https://adsspayweb.digicob.in/api/Cashfree/CashfreeWebhook"
 
 
