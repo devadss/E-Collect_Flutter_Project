@@ -13,13 +13,14 @@ class NewQrCodeRepository implements INewQrCodeRepository {
   Future<Either<ErrorHandler, NewQrCodeModel>> getQrCode(
       String? paymentSessionId,String? token
   ) async {
-    final url = Uri.parse("${baseUrl}api/Cashfree/QRGenerator");
+   // final url = Uri.parse("${baseUrl}api/Cashfree/QRGenerator");
+    final url = Uri.parse("${baseUrl}api/eCollect/eCollectQRGenerator");
     bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     final body = {
       "payment_session_id": paymentSessionId,
       "payment_method": {
-        //"upi": {"channel": "qrcode"},
-        "upi": {"channel": "podQrCode"},
+        "upi": {"channel": "qrcode"},
+        //"upi": {"channel": "podQrCode"},
       },
     };
 
@@ -32,8 +33,15 @@ class NewQrCodeRepository implements INewQrCodeRepository {
             'Content-Type': 'application/json',
           }
       );
-      print(response.statusCode);
-      print(response.body);
+      print("NewQrCodeRepository = ${response.statusCode}");
+      print("NewQrCodeRepository = ${response.body}");
+      print({
+        "payment_session_id": paymentSessionId,
+        "payment_method": {
+          "upi": {"channel": "qrcode"},
+          //"upi": {"channel": "podQrCode"},
+        },
+      });
       if(response.statusCode == 200 || response.statusCode == 201){
         try{
           return Right(NewQrCodeModel.fromJson(jsonDecode(response.body)));

@@ -12,7 +12,8 @@ class OrderCreateRepository implements CashFreeOrderCreateInterface{
   @override
   Future<Either<ErrorHandler, PaymentGatewayOrderResponseModel>> createOrderId(String? orderID,double? amount,String? custId,String? custName,String? custEmail,String? custMobNumber,String token) async{
 
-    final uri = Uri.parse("${baseUrl}api/Cashfree/CashfeeOrder");
+    //final uri = Uri.parse("${baseUrl}api/Cashfree/CashfeeOrder");
+    final uri = Uri.parse("${baseUrl}api/eCollect/eCollectOrder");
 
 
     bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
@@ -29,9 +30,7 @@ class OrderCreateRepository implements CashFreeOrderCreateInterface{
         },
         "order_meta": {
           "return_url": "$baseUrl?order_id={order_id}",
-          "notify_url": "https://adsspayweb.digicob.in/api/Cashfree/CashfreeWebhook"
-
-
+         // "notify_url": "https://adsspayweb.digicob.in/api/Cashfree/CashfreeWebhook"
         }
       };
 

@@ -451,7 +451,16 @@ bool chekValue(String value){
             builder: (BuildContext context, RdclDuelistState state) {
 
               if(state is RdclDueListLoaderState){
-                return Center(child: CircularProgressIndicator());
+                return Expanded(child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(color: home1,),
+                      SizedBox(height: 10,),
+                      Text("Loading")
+                    ],
+                  ),
+                ));
               }
 
               if(state is RdclDueListFailState){
@@ -510,12 +519,14 @@ bool chekValue(String value){
                                     mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                     children: [
+
                                       Text(
                                         "Account Number",
                                         style: TextStyle(
                                             color: Colors.grey,
                                             fontWeight: FontWeight.w700),
                                       ),
+                                      Spacer(flex: 1,),
                                       _showDrops[index] == false
                                           ? Icon(
                                         Icons
@@ -528,21 +539,60 @@ bool chekValue(String value){
                                       )
                                     ],
                                   ),
-                                  Text(
-                                    state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].accNo??"001",
-                                    style: TextStyle(
-                                        color: home1,
-                                        fontWeight: FontWeight.w700),
+                                  SizedBox(height: 10,),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            color: Colors.green.withAlpha(30),
+                                            borderRadius: BorderRadius.circular(10)
+                                          )
+                                          ,
+                                          child: Icon(Icons.account_balance, color: Colors.green,)),
+                                       SizedBox(width: 10,),
+                                       Container(
+                                         padding: EdgeInsets.all(10),
+                                         decoration: BoxDecoration(
+                                           borderRadius: BorderRadius.circular(10),
+                                           color: home1.withAlpha(20)
+                                         ),
+                                         child: Text(
+                                          state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].accNo??"001",
+                                          style: TextStyle(
+                                              color: home1,
+                                              fontWeight: FontWeight.w700),
+                                                                               ),
+                                       ),
+                                    ],
+
                                   ),
                                   SizedBox(
-                                    height: 5,
+                                    height: 10,
                                   ),
                                   Text(
-                                    "Total Due : ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].dueAmount??"001"}",
+                                    "Total Due",
                                     style: TextStyle(
-                                        color: home2,
+                                        color: Colors.grey,
                                         fontWeight: FontWeight.w700),
                                   ),
+                                  SizedBox(height: 5,),
+                                  Row(children: [
+                                    Container(
+                                      padding: EdgeInsets.all(10)
+                                      ,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          color: Colors.blue.shade50
+                                        ),
+                                        child: Icon(Icons.attach_money, color: Colors.blue,)),
+                                    SizedBox(width: 10,),
+                                    Container(
+                                      padding: EdgeInsets.all(10)
+                                      ,
+                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.orange.shade50)
+                                        ,child: Text(state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].dueAmount.toString() ?? "", style: TextStyle(fontWeight: FontWeight.w700, color: Colors.orange),))
+                                  ],),
                                   //   SizedBox(height: 10,),
                                   Divider(),
                                   _showDrops[index] == true
@@ -1076,19 +1126,69 @@ bool chekValue(String value){
                                   )
                                       : SizedBox.shrink(),
                                   _showDrops[index] == true
-                                      ? Text("Name : ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].name??"001"}")
+                                      ?
+                                  Row(
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.all(10),
+                                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.blueAccent.shade100.withAlpha(30))
+                                            ,child: Icon(Icons.person, color: Colors.blueAccent,)),
+                                        SizedBox(width: 10,),
+                                        Text("Name : ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].name??"001"}")
+                                      ],
+                                     )
                                       : SizedBox.shrink(),
                                   _showDrops[index] == true
-                                      ? Text("Open Date : ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].openDate.toString().substring(0,11)??"001"}")
+                                      ?
+                                  Row(
+                                    children: [
+                                      Container(
+                                          padding: EdgeInsets.all(10),
+                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.cyan.shade100.withAlpha(30))
+                                          ,child: Icon(Icons.date_range, color: Colors.cyan,)),
+                                      SizedBox(width: 10,),
+                                      Text("Open Date : ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].openDate.toString().substring(0,11)??"001"}")
+                                    ],
+                                  )
                                       : SizedBox.shrink(),
                                   _showDrops[index] == true
-                                      ? Text("Paid Installment : ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].paidInstallments??"001"}")
+                                      ?
+                                  Row(
+                                    children: [
+                                      Container(
+                                          padding: EdgeInsets.all(10),
+                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.deepPurpleAccent.shade100.withAlpha(30))
+                                          ,child: Icon(Icons.date_range, color: Colors.deepPurpleAccent,)),
+                                      SizedBox(width: 10,),
+                                      Text("Paid Installment : ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].paidInstallments??"001"}")
+                                    ],
+                                  )
                                       : SizedBox.shrink(),
                                   _showDrops[index] == true
-                                      ? Text("Due Installment : ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].dueInstallments??"001"}")
+                                      ?
+                                  Row(
+                                    children: [
+                                      Container(
+                                          padding: EdgeInsets.all(10),
+                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.redAccent.shade100.withAlpha(30))
+                                          ,child: Icon(Icons.date_range, color: Colors.redAccent,)),
+                                      SizedBox(width: 10,),
+                                      Text("Due Installment : ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].dueInstallments??"001"}")
+                                    ],
+                                  )
                                       : SizedBox.shrink(),
                                   _showDrops[index] == true
-                                      ? Text("Total Installment : ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].totalInstallment??"001"}")
+                                      ?
+                                  Row(
+                                    children: [
+                                      Container(
+                                          padding: EdgeInsets.all(10),
+                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.green.shade100.withAlpha(30))
+                                          ,child: Icon(Icons.payments_outlined, color: Colors.green,)),
+                                      SizedBox(width: 10,),
+                                      Text("Total Installment : ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].totalInstallment??"001"}")
+                                    ],
+                                  )
                                       : SizedBox.shrink(),
                                   SizedBox(
                                     height: 20,

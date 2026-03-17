@@ -117,7 +117,7 @@ class _ForgotMpinPageState extends State<ForgotMpinPage> {
       printLog(error);
     }, (otpRequest) {
       Navigator.pop(context);
-      print("Otp request stst : ${otpRequest.message.toString()}");
+      //print("Otp request stst : ${otpRequest.message.toString()}");
     });
   }
 
@@ -133,7 +133,7 @@ class _ForgotMpinPageState extends State<ForgotMpinPage> {
       //     toastPosition: EasyLoadingToastPosition.bottom);
     }, (verifyOtp) {
       Navigator.pop(context);
-      print(verifyOtp);
+      //print(verifyOtp);
       if (verifyOtp.message!.contains('OTP Verified')) {
         showInSnackBar("OTP Verified", "GREEN");
 

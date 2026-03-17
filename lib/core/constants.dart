@@ -4,11 +4,11 @@ import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:flutter/material.dart';
 
 //******************************************************************
-//const String baseUrl = "https://adsspay.aanvinsolutions.com:8444/";///LIVE
-const String baseUrl = "https://adsspayweb.digicob.in/"; //TEST
+const String baseUrl = "https://adsspay.aanvinsolutions.com:8444/";///LIVE
+//const String baseUrl = "https://adsspayweb.digicob.in/"; //TEST
 //*******************************************************************
-const String dopBaseUrl = "https://devops.mydop.in/api/fetch/vendor/urls/"; //UAT
-//const String dopBaseUrl = "https://mydop.in/api/fetch/vendor/urls/"; //LIVE
+//const String dopBaseUrl = "https://devops.mydop.in/api/fetch/vendor/urls/"; //UAT
+const String dopBaseUrl = "https://mydop.in/api/fetch/vendor/urls/"; //LIVE
 
 const String port = ":8444/";
 const String agentIdLive = "ADSS20231011";
@@ -35,17 +35,13 @@ const String kNameValidError = "Enter a valid name";
 const String kOtpNullError = "Enter the otp";
 
 
-
-
 class NotificationChannels {
   static const String getCartNonDeliverable = "GET_CART_NON_DELIVERABLE";
   static const String login = "LOGIN";
   static const String nonDeliverableButton = "NON_DELIVERABLE_BUTTON";
   static const String getAllCart = "GET_ALL_CART";
   static const String getCart = "GET_CART";
-
 }
-
 
 AlertDialog exitAlert(BuildContext context){
   return AlertDialog(
@@ -97,7 +93,7 @@ AlertDialog exitAlert(BuildContext context){
     ),
   );
 }
-
+abstract class C{}
 class SharedPrefKeys {
   static const String guestCartCount = "GET_CART_COUNT";
   static const String userId = "USER_ID";
