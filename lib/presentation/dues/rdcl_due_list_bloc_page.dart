@@ -389,63 +389,143 @@ bool chekValue(String value){
         title: Text(
           "RDCL-Due List",
           style: TextStyle(
-              color: home2, fontSize: 25, fontWeight: FontWeight.w700),
+              color: home1, fontSize: 25, fontWeight: FontWeight.w700),
         ),
       ),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: TextField(
-              onChanged: (value){
-                // if(_showSendIcon == true && searchController.text.isEmpty){
-                //   _showSendIcon = true;
-                //   context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", ""));
-                // }
-                setState(() {
-                  if(value.isNotEmpty){
-                    _showSendIcon = true;
-                  }else{
-                    _showSendIcon = false;
-                  }
-                });
-              },
-              controller: searchController,
-              decoration: InputDecoration(
+            child:
+            // Container(
+            //   height: 60,
+            //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(16),
+            //   color: Colors.grey.withAlpha(40)
+            //   ),
+            //   child: TextField(
+            //     onChanged: (value){
+            //       // if(_showSendIcon == true && searchController.text.isEmpty){
+            //       //   _showSendIcon = true;
+            //       //   context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", ""));
+            //       // }
+            //       setState(() {
+            //         if(value.isNotEmpty){
+            //           _showSendIcon = true;
+            //         }else{
+            //           _showSendIcon = false;
+            //         }
+            //       });
+            //     },
+            //     controller: searchController,
+            //     decoration: InputDecoration(
+            //         suffixIcon:
+            //         _showSendIcon ==true?
+            //         InkWell(
+            //             onTap: (){
+            //
+            //               setState(() {
+            //
+            //                 didSearch == false?didSearch = true:didSearch = false;
+            //               });
+            //               didSearch == true?
+            //
+            //               chekValue(searchController.text)== true?
+            //               context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode,  searchController.text, "")):
+            //               context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", searchController.text)):
+            //               context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", ""));
+            //
+            //               didSearch == false?
+            //                   searchController.clear():"";
+            //             },
+            //             child:
+            //             didSearch == false?
+            //             Icon(Icons.send, color: Colors.grey,):Icon(Icons.clear)
+            //
+            //
+            //         ):
+            //
+            //
+            //         SizedBox.shrink(),
+            //         prefixIcon: Icon(Icons.search),
+            //         hint: Text("Search by name"),
+            //         // border: OutlineInputBorder(
+            //         //     borderRadius: BorderRadius.circular(5)
+            //         // )),
+            //     ),
+            //   ),
+            // ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: TextField(
+                controller: searchController,
+                onChanged: (value) {
+                  setState(() {
+                    _showSendIcon = value.isNotEmpty;
+                  });
+                },
+                style: TextStyle(fontSize: 16),
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: "Search by name",
+                  hintStyle: TextStyle(color: Colors.grey.shade500),
 
-                  suffixIcon:
-                  _showSendIcon ==true?
-                  InkWell(
-                      onTap: (){
+                  prefixIcon: Icon(Icons.search, color: Colors.grey),
 
-                        setState(() {
+                  suffixIcon: _showSendIcon
+                      ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Clear button
+                      InkWell(
+                        onTap: () {
+                          searchController.clear();
+                          setState(() {
+                            _showSendIcon = false;
+                            didSearch = false;
+                          });
+                          context.read<RdclDuelistBloc>().add(
+                            RdclDueListFetchEvent("", widget.branchCode, "", ""),
+                          );
+                        },
+                        child: Icon(Icons.close, color: home1),
+                      ),
 
-                          didSearch == false?didSearch = true:didSearch = false;
-                        });
-                        didSearch == true?
+                      SizedBox(width: 8),
 
-                        chekValue(searchController.text)== true?
-                        context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode,  searchController.text, "")):
-                        context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", searchController.text)):
-                        context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", ""));
+                      // Search button
+                      InkWell(
+                        onTap: () {
+                          final text = searchController.text;
 
-                        didSearch == false?
-                            searchController.clear():"";
-                      },
-                      child:
-                      didSearch == false?
-                      Icon(Icons.send):Icon(Icons.clear)
+                          setState(() {
+                            didSearch = true;
+                          });
 
+                          if (chekValue(text)) {
+                            context.read<RdclDuelistBloc>().add(
+                              RdclDueListFetchEvent("", widget.branchCode, text, ""),
+                            );
+                          } else {
+                            context.read<RdclDuelistBloc>().add(
+                              RdclDueListFetchEvent("", widget.branchCode, "", text),
+                            );
+                          }
+                        },
+                        child: Icon(Icons.send, color: home1),
+                      ),
 
-                  ):
-
-
-                  SizedBox.shrink(),
-                  prefixIcon: Icon(Icons.search),
-                  hint: Text("Search by name"),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5))),
-            ),
+                      SizedBox(width: 8),
+                    ],
+                  )
+                      : null,
+                ),
+              ),
+            )
           ),
           BlocBuilder<RdclDuelistBloc, RdclDuelistState>(
             builder: (BuildContext context, RdclDuelistState state) {
@@ -504,7 +584,7 @@ bool chekValue(String value){
                                       spreadRadius: 3)
                                 ],
                                 border: Border.all(color: home1.withAlpha(50)),
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(16),
                                 color:
                                 _itemSelected[index]== true?home1.withAlpha(10):
 
@@ -512,35 +592,11 @@ bool chekValue(String value){
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                    children: [
-
-                                      Text(
-                                        "Account Number",
-                                        style: TextStyle(
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.w700),
-                                      ),
-                                      Spacer(flex: 1,),
-                                      _showDrops[index] == false
-                                          ? Icon(
-                                        Icons
-                                            .arrow_drop_down_circle_outlined,
-                                        color: home2,
-                                      )
-                                          : Icon(
-                                        Icons.arrow_drop_up_sharp,
-                                        color: home2,
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(height: 10,),
-                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Container(
                                         padding: EdgeInsets.all(10),
@@ -551,50 +607,92 @@ bool chekValue(String value){
                                           ,
                                           child: Icon(Icons.account_balance, color: Colors.green,)),
                                        SizedBox(width: 10,),
-                                       Container(
-                                         padding: EdgeInsets.all(10),
-                                         decoration: BoxDecoration(
-                                           borderRadius: BorderRadius.circular(10),
-                                           color: home1.withAlpha(20)
+                                       Column(
+                                         mainAxisAlignment: MainAxisAlignment.start,
+                                         crossAxisAlignment: CrossAxisAlignment.start,
+                                         children: [
+                                         Text(
+                                           "Account Number",
+                                           style: TextStyle(
+                                               color: Colors.grey,
+                                               fontWeight: FontWeight.w700, fontSize: 12),
                                          ),
-                                         child: Text(
-                                          state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].accNo??"001",
-                                          style: TextStyle(
-                                              color: home1,
-                                              fontWeight: FontWeight.w700),
-                                                                               ),
-                                       ),
+                                         Container(
+                                           padding: EdgeInsets.all(5),
+                                           decoration: BoxDecoration(
+                                               borderRadius: BorderRadius.circular(10),
+                                               color: home1.withAlpha(10)
+                                           ),
+                                           child: Text(
+                                             state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].accNo??"001",
+                                             style: TextStyle(
+                                               fontSize: 17,
+                                                 color: home1,
+                                                 fontWeight: FontWeight.w700),
+                                           ),
+                                         ),
+                                       ],),
+                                      Spacer(flex: 1,),
+                                      Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "Total Due",
+                                            style: TextStyle(fontSize: 12,
+                                                color: Colors.grey,
+                                                fontWeight: FontWeight.w700),
+                                          ),
+                                          Container(
+                                              padding: EdgeInsets.all(10)
+                                              ,
+                                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.orange.shade50)
+                                              ,child: Text(
+                                            state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].dueAmount.toString() ?? "", style: TextStyle(fontWeight: FontWeight.w700, color: Colors.orange, fontSize: 17),))
+                                          // Row(children: [
+                                          //   Container(
+                                          //       padding: EdgeInsets.all(10)
+                                          //       ,
+                                          //       decoration: BoxDecoration(
+                                          //           borderRadius: BorderRadius.circular(10),
+                                          //           color: Colors.blue.shade50
+                                          //       ),
+                                          //       child: Icon(Icons.attach_money, color: Colors.blue,)),
+                                          //   SizedBox(width: 10,),
+                                          //
+                                          // ],),
+                                        ],
+                                      ),
+
+
+                                     // Spacer(flex: 1,),
+                                      _showDrops[index] == false
+                                          ? Icon(
+                                        Icons
+                                            .arrow_drop_down_sharp,
+                                        color: home2,
+                                      )
+                                          : Icon(
+                                        Icons.arrow_drop_up_outlined,
+                                        color: home2,
+                                      )
+
                                     ],
 
                                   ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    "Total Due",
-                                    style: TextStyle(
-                                        color: Colors.grey,
-                                        fontWeight: FontWeight.w700),
-                                  ),
-                                  SizedBox(height: 5,),
-                                  Row(children: [
-                                    Container(
-                                      padding: EdgeInsets.all(10)
-                                      ,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
-                                          color: Colors.blue.shade50
-                                        ),
-                                        child: Icon(Icons.attach_money, color: Colors.blue,)),
-                                    SizedBox(width: 10,),
-                                    Container(
-                                      padding: EdgeInsets.all(10)
-                                      ,
-                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.orange.shade50)
-                                        ,child: Text(state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].dueAmount.toString() ?? "", style: TextStyle(fontWeight: FontWeight.w700, color: Colors.orange),))
-                                  ],),
+                                  // SizedBox(
+                                  //   height: 3,
+                                  // ),
+                                  // Text(
+                                  //   "Total Due",
+                                  //   style: TextStyle(
+                                  //       color: Colors.grey,
+                                  //       fontWeight: FontWeight.w700),
+                                  // ),
+                                 // SizedBox(height: 5,),
+
                                   //   SizedBox(height: 10,),
-                                  Divider(),
+                                 // Divider(),
                                   _showDrops[index] == true
                                       ? Row(
                                     crossAxisAlignment:
@@ -604,8 +702,10 @@ bool chekValue(String value){
                                     children: [
                                       Text("Installment : ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].dueInstallments??"001"}",
                                           style: TextStyle(
-                                              color: home2,
-                                              fontWeight: FontWeight.w700)),
+
+                                                  color: Colors.grey,
+                                                  fontWeight: FontWeight.w700),
+                                             ),
                                       Checkbox(
                                           activeColor: home1,
                                           checkColor: Colors.white,
@@ -1127,69 +1227,110 @@ bool chekValue(String value){
                                       : SizedBox.shrink(),
                                   _showDrops[index] == true
                                       ?
-                                  Row(
-                                      children: [
-                                        Container(
-                                          padding: EdgeInsets.all(10),
-                                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.blueAccent.shade100.withAlpha(30))
-                                            ,child: Icon(Icons.person, color: Colors.blueAccent,)),
-                                        SizedBox(width: 10,),
-                                        Text("Name : ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].name??"001"}")
-                                      ],
-                                     )
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.all(10),
+                                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.blueAccent.shade100.withAlpha(30))
+                                                ,child: Icon(Icons.person, color: Colors.blueAccent,)),
+                                            SizedBox(width: 10,),
+
+                                            Text("Name", style: TextStyle(fontWeight: FontWeight.w700, color: Colors.grey),),
+                                            Spacer(flex: 1,),
+                                            Text(state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].name??"001")
+                                          ],
+                                         ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 50),
+                                        child: Divider(),
+                                      )
+                                    ],
+                                  )
+
                                       : SizedBox.shrink(),
                                   _showDrops[index] == true
                                       ?
-                                  Row(
+                                  Column(
                                     children: [
-                                      Container(
-                                          padding: EdgeInsets.all(10),
-                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.cyan.shade100.withAlpha(30))
-                                          ,child: Icon(Icons.date_range, color: Colors.cyan,)),
-                                      SizedBox(width: 10,),
-                                      Text("Open Date : ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].openDate.toString().substring(0,11)??"001"}")
+                                      Row(
+                                        children: [
+                                          Container(
+                                              padding: EdgeInsets.all(10),
+                                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.cyan.shade100.withAlpha(30))
+                                              ,child: Icon(Icons.date_range, color: Colors.cyan,)),
+                                          SizedBox(width: 10,),
+                                          Text("Open Date",style: TextStyle(fontWeight: FontWeight.w700, color: Colors.grey)),
+                                          Spacer(flex: 1,),
+                                          Text("${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].openDate.toString().substring(0,11)??"001"}")
+                                        ],
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 50),
+                                        child: Divider(),
+                                      )
                                     ],
                                   )
                                       : SizedBox.shrink(),
                                   _showDrops[index] == true
                                       ?
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 10),
+                                        child: Text("Installment Details", style: TextStyle(
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.w700),),
+                                      ):SizedBox.shrink(),
+                                  _showDrops[index] == true
+                                      ?
                                   Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Container(
                                           padding: EdgeInsets.all(10),
                                           decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.deepPurpleAccent.shade100.withAlpha(30))
                                           ,child: Icon(Icons.date_range, color: Colors.deepPurpleAccent,)),
                                       SizedBox(width: 10,),
-                                      Text("Paid Installment : ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].paidInstallments??"001"}")
-                                    ],
-                                  )
-                                      : SizedBox.shrink(),
-                                  _showDrops[index] == true
-                                      ?
-                                  Row(
-                                    children: [
                                       Container(
-                                          padding: EdgeInsets.all(10),
-                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.redAccent.shade100.withAlpha(30))
-                                          ,child: Icon(Icons.date_range, color: Colors.redAccent,)),
-                                      SizedBox(width: 10,),
-                                      Text("Due Installment : ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].dueInstallments??"001"}")
-                                    ],
-                                  )
-                                      : SizedBox.shrink(),
-                                  _showDrops[index] == true
-                                      ?
-                                  Row(
-                                    children: [
+                                        padding: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.grey.shade100),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text("Paid Installment", style: TextStyle(fontWeight: FontWeight.w700, color: Colors.grey, fontSize: 12),),
+                                            Text("${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].paidInstallments??"001"}",style: TextStyle(fontWeight: FontWeight.w700, color: Colors.black)),
+                                          ],
+                                        ),
+                                      ),
+                                      Spacer(flex: 1,),
                                       Container(
-                                          padding: EdgeInsets.all(10),
-                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.green.shade100.withAlpha(30))
-                                          ,child: Icon(Icons.payments_outlined, color: Colors.green,)),
-                                      SizedBox(width: 10,),
-                                      Text("Total Installment : ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].totalInstallment??"001"}")
+                                        padding: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16),color: Colors.grey.shade100),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text("Due Installment",style: TextStyle(fontWeight: FontWeight.w700, color: Colors.grey, fontSize: 12)),
+                                            Text("${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].dueInstallments??"001"}",style: TextStyle(fontWeight: FontWeight.w700, color: Colors.black)),
+                                          ],
+                                        ),
+                                      ),
+                                      Spacer(flex: 1,),
+                                      Container(
+                                        padding: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.grey.shade100),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text("Total",style: TextStyle(fontWeight: FontWeight.w700, color: Colors.grey, fontSize: 12)),
+                                            Text("${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].totalInstallment??"001"}",style: TextStyle(fontWeight: FontWeight.w700, color: Colors.black)),
+                                          ],
+                                        ),
+                                      )
                                     ],
                                   )
                                       : SizedBox.shrink(),
+
                                   SizedBox(
                                     height: 20,
                                   ),
