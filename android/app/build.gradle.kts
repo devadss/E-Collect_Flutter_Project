@@ -54,10 +54,10 @@ android {
     buildTypes {
         release {
             // Use release signing config if keystore exists, otherwise fall back to debug
-            if (keystorePropertiesFile.exists()) {
-                signingConfig = signingConfigs.getByName("release")
+            signingConfig = if (keystorePropertiesFile.exists()) {
+                signingConfigs.getByName("release")
             } else {
-                signingConfig = signingConfigs.getByName("debug")
+                signingConfigs.getByName("debug")
             }
         }
     }
