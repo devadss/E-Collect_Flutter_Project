@@ -38,8 +38,8 @@ class CreatePaymentSessionIdRepository
     //final url = Uri.parse("${baseUrl}api/Cashfree/MerchantOrderCreate");
     collectionType == "LOAN"? endPoint = "LoanOrderCreate":
         endPoint = "CollectiontOrderCreate";
-    //final url = Uri.parse("${baseUrl}api/Cashfree/$endPoint");
-    final url = Uri.parse("${baseUrl}api/eCollect/eCollectOrder");
+    final url = Uri.parse("${baseUrl}api/Cashfree/$endPoint");
+   // final url = Uri.parse("${baseUrl}api/eCollect/eCollectOrder");
     final body = {
       "agent_details": {
         "agent_name": agentName,
