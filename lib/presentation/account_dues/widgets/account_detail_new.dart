@@ -734,71 +734,112 @@ loadSharedPrefs();
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            child: Container(
+            child:
+            // Container(
+            //   width: double.infinity,
+            //  // height: 200,
+            //   decoration: BoxDecoration(
+            //     color: Colors.white,
+            //     borderRadius: BorderRadius.circular(10),
+            //     border: BoxBorder.all(color: home1.withAlpha(30)),
+            //     boxShadow: [
+            //       BoxShadow(
+            //         color: home1.withAlpha(40),
+            //         offset: Offset(0, 1),
+            //         blurRadius: 8, spreadRadius: 2
+            //       )
+            //     ]
+            //   ),
+            //   child: Column(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     crossAxisAlignment: CrossAxisAlignment.center,
+            //     children: [
+            //       Padding(
+            //         padding: const EdgeInsets.all(20.0),
+            //         child: Row(
+            //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //           crossAxisAlignment: CrossAxisAlignment.center,
+            //           children: [
+            //             Text("Customer Name : ", style: TextStyle(color: home2, fontSize: 17),),
+            //             Flexible(child: Text(
+            //               textAlign: TextAlign.end,
+            //               widget.custName, style: TextStyle(color: home1, fontSize: 15,fontWeight: FontWeight.w500),))
+            //           ],
+            //         ),
+            //       ),
+            //       Padding(
+            //         padding: const EdgeInsets.symmetric(horizontal: 20),
+            //         child: Divider(),
+            //       ),
+            //       Padding(
+            //         padding: const EdgeInsets.all(20.0),
+            //         child: Row(
+            //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //           crossAxisAlignment: CrossAxisAlignment.center,
+            //           children: [
+            //             Text("Account number : ", style: TextStyle(color: home2, fontSize: 17),),
+            //             Text(widget.accNo, style: TextStyle(color: home1, fontSize: 15,fontWeight: FontWeight.w500),)
+            //           ],
+            //         ),
+            //       ),
+            //       Padding(
+            //         padding: const EdgeInsets.symmetric(horizontal: 20),
+            //         child: Divider(),
+            //       ),
+            //       Padding(
+            //         padding: const EdgeInsets.all(20.0),
+            //         child: Row(
+            //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //           crossAxisAlignment: CrossAxisAlignment.center,
+            //           children: [
+            //             Text("Scheme name : ", style: TextStyle(color: home2, fontSize: 17),),
+            //             Flexible(child: Text(textAlign: TextAlign.end,widget.scheme, style: TextStyle(color: home1, fontSize: 13,fontWeight: FontWeight.w500),))
+            //           ],
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            Container(
               width: double.infinity,
-             // height: 200,
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                border: BoxBorder.all(color: home1.withAlpha(30)),
-                boxShadow: [
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: const [
                   BoxShadow(
-                    color: home1.withAlpha(40),
-                    offset: Offset(0, 1),
-                    blurRadius: 8, spreadRadius: 2
-                  )
-                ]
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text("Customer Name : ", style: TextStyle(color: home2, fontSize: 17),),
-                        Flexible(child: Text(
-                          textAlign: TextAlign.end,
-                          widget.custName, style: TextStyle(color: home1, fontSize: 15,fontWeight: FontWeight.w500),))
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Divider(),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text("Account number : ", style: TextStyle(color: home2, fontSize: 17),),
-                        Text(widget.accNo, style: TextStyle(color: home1, fontSize: 15,fontWeight: FontWeight.w500),)
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Divider(),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text("Scheme name : ", style: TextStyle(color: home2, fontSize: 17),),
-                        Flexible(child: Text(textAlign: TextAlign.end,widget.scheme, style: TextStyle(color: home1, fontSize: 13,fontWeight: FontWeight.w500),))
-                      ],
-                    ),
+                    color: Colors.black12,
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
                   ),
                 ],
               ),
-            ),
+              child: Column(
+                children: [
+                  _buildInfoRow(
+                    label: "Customer Name",
+                    value: widget.custName,
+                    icon: Icons.person,
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  _buildInfoRow(
+                    label: "Account Number",
+                    value: widget.accNo,
+                    icon: Icons.account_balance,
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  _buildInfoRow(
+                    label: "Scheme",
+                    value: widget.scheme,
+                    icon: Icons.description,
+                  ),
+                ],
+              ),
+            )
           ),
         Spacer(flex: 1,),
         //  SizedBox(height: 50,),
@@ -820,4 +861,54 @@ loadSharedPrefs();
       ),
     );
   }
+}
+
+Widget _buildInfoRow({
+  required String label,
+  required String value,
+  required IconData icon,
+}) {
+  return Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      /// Icon
+      Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: home1.withOpacity(0.08),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, size: 18, color: home1),
+      ),
+
+      const SizedBox(width: 12),
+
+      /// Texts
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey.shade600,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: home1,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
 }

@@ -450,7 +450,7 @@ class _HomePageState extends State<HomePage>
 
       // Load QR transactions
       await qrProvider.getQrTranscationHistory(
-        "TODAY",
+        "THIS_WEEK",
         fromDate,
         toDate,
         // userType!,
@@ -463,7 +463,7 @@ class _HomePageState extends State<HomePage>
       // Load Link transactions (for AGENT_LOAN)
       if (userType == "LOAN_COLLECTION") {
         await linkProvider.getLinkTransactionHistory(
-            "TODAY",
+            "THIS_WEEK",
             fromDate,
             toDate,
             subAgentID!,
@@ -474,7 +474,7 @@ class _HomePageState extends State<HomePage>
 
       // Load Cash transactions
       await cashProvider.getCashTranscationHistory(
-        "TODAY",
+        "THIS_WEEK",
         fromDate,
         toDate,
         //cashCollectionType!,
@@ -487,7 +487,7 @@ class _HomePageState extends State<HomePage>
       // Load Transfer transactions (for AGENT_LOAN)
       if (userType == "LOAN_COLLECTION") {
         await transferProvider.getQrTranscationHistory(
-          "TODAY",
+          "THIS_WEEK",
           fromDate,
           toDate,
           // userType!,
@@ -500,9 +500,9 @@ class _HomePageState extends State<HomePage>
       // Load Combined Cash+QR transactions (for regular AGENT)
       if (userType == "COLLECTION") {
         await cashQrProvider.getCombinedResponse(
-          "TODAY",
-          fromDate,
+          "THIS_WEEK",
           toDate,
+          fromDate,
           subAgentID!,
           corpCode!,
           agentOriginId!,

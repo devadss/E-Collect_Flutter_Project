@@ -36,10 +36,11 @@ class CreatePaymentSessionIdRepository
     print("collectionType = $collectionType");
     String endPoint = "";
     //final url = Uri.parse("${baseUrl}api/Cashfree/MerchantOrderCreate");
-    collectionType == "LOAN"? endPoint = "LoanOrderCreate":
+   // collectionType == "LOAN"? endPoint = "LoanOrderCreate":
+    collectionType == "LOAN"? endPoint = "api/eCollect/eCollectOrder":
         endPoint = "CollectiontOrderCreate";
-    final url = Uri.parse("${baseUrl}api/Cashfree/$endPoint");
-   // final url = Uri.parse("${baseUrl}api/eCollect/eCollectOrder");
+   // final url = Uri.parse("${baseUrl}api/Cashfree/$endPoint");
+    final url = Uri.parse("${baseUrl}api/eCollect/eCollectOrder");
     final body = {
       "agent_details": {
         "agent_name": agentName,
@@ -52,7 +53,7 @@ class CreatePaymentSessionIdRepository
       },
       "customer_details": {
         "customer_name": customerName,
-        "customer_phone": customerPhone,
+        "customer_phone": agentPhone,
         "customer_accno": customerAccno,
         "customer_id": customerId,
         "customer_email": customerEmail
@@ -61,7 +62,9 @@ class CreatePaymentSessionIdRepository
       "Amount": amount,
       "note": "Payment for Order",
       "CorpCode": corpCode,
-      "CardRefNum": ""
+      "CardRefNum": "",
+      "QrSource":"MOB",
+      "Source":"COLLECTION"
     };
       // "Amount": amount,
       // "CustomerMobNo": phoneNumber,

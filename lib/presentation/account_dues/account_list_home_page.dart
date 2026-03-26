@@ -1,4 +1,5 @@
 import 'package:animated_segmented_tab_control/animated_segmented_tab_control.dart';
+import 'package:collection_qr_flutter/core/constants.dart';
 import 'package:collection_qr_flutter/presentation/account_dues/widgets/account_detail_new.dart';
 import '../../core/colors.dart';
 import '../../data/provider/agent_customer_details_provider.dart';
@@ -99,31 +100,80 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
      // print("Error initializing data: $error");
     }
   }
-
   Widget _buildSearchField() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: TextField(
         controller: searchController,
+        style: const TextStyle(fontSize: 14),
         decoration: InputDecoration(
-          hintText: "Search customer name",
-          prefixIcon: Icon(Icons.search, color: home1.withAlpha(120)),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: home1.withAlpha(120)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: home1.withAlpha(120)),
-          ),
+          hintText: "Search customers...",
+          hintStyle: TextStyle(color: Colors.grey.shade500),
+
+          /// 🔍 Prefix Icon
+          prefixIcon: Icon(Icons.search, color: Colors.grey.shade500),
+
+          /// ❌ Clear Button (modern UX)
+          suffixIcon: searchController.text.isNotEmpty
+              ? IconButton(
+            icon: const Icon(Icons.close, size: 18),
+            onPressed: () {
+              searchController.clear();
+            },
+          )
+              : null,
+
+          filled: true,
+          fillColor: Colors.grey.shade100,
+
+          contentPadding:
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide(color: home1),
+            borderRadius: BorderRadius.circular(30), // pill shape
+            borderSide: BorderSide.none,
+          ),
+
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide.none,
+          ),
+
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide(
+              color: home1.withOpacity(0.4),
+              width: 1,
+            ),
           ),
         ),
       ),
     );
   }
+  // Widget _buildSearchField() {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+  //     child: TextField(
+  //       controller: searchController,
+  //       decoration: InputDecoration(
+  //         hintText: "Search customer name",
+  //         prefixIcon: Icon(Icons.search, color: home1.withAlpha(120)),
+  //         enabledBorder: OutlineInputBorder(
+  //           borderRadius: BorderRadius.circular(10),
+  //           borderSide: BorderSide(color: home1.withAlpha(120)),
+  //         ),
+  //         focusedBorder: OutlineInputBorder(
+  //           borderRadius: BorderRadius.circular(10),
+  //           borderSide: BorderSide(color: home1.withAlpha(120)),
+  //         ),
+  //         border: OutlineInputBorder(
+  //           borderRadius: BorderRadius.circular(15),
+  //           borderSide: BorderSide(color: home1),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildShimmerText(
       {double width = double.infinity, double height = 16}) {
@@ -218,18 +268,108 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
       ),
     );
   }
-
   Widget _buildCustomerItem(Customer customer) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () => _navigateToCustomerDetails(customer),
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 10,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              /// Avatar
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.person, color: Colors.blue),
+              ),
+
+              const SizedBox(width: 12),
+
+              /// Main Info
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      customer.custName,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+
+                    const SizedBox(height: 6),
+
+                    Row(
+                      children: [
+                        const Icon(Icons.account_balance,
+                            size: 16, color: Colors.grey),
+                        const SizedBox(width: 6),
+                        const Text(
+                          "Account",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 4),
+
+                    Text(
+                      customer.depGlobalAccNo,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.green.shade700,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+
+              /// Action Button
+              _buildCollectButton(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+/*  Widget _buildCustomerItem(Customer customer) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: GestureDetector(
         onTap: () => _navigateToCustomerDetails(customer),
         child: Container(
-          height: MediaQuery.of(context).size.height * 0.11,
+          padding: EdgeInsets.symmetric(vertical: 10),
+          height: MediaQuery.of(context).size.height * 0.16,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(12),
             color: white,
-            border: Border.all(color: home1.withAlpha(100), width: 1.2),
+            boxShadow: [
+              BoxShadow(color: Colors.black12, blurRadius: 4, spreadRadius: 3)
+            ],
+            border: Border.all(color: home1.withAlpha(70), width: 1.2),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -237,31 +377,70 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  customer.custName,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 15,
-                    color: black,
-                  ),
-                  overflow: TextOverflow.ellipsis,
+                Row(
+mainAxisAlignment:
+                  MainAxisAlignment.start,
+                  children: [
+                    Container(decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(10),  color: Colors.blue.shade50,),
+padding: EdgeInsets.all(8),
+                      child: Icon(Icons.person, color: Colors.blue,),
+                    ),
+                    SizedBox(width: 10,),
+                    Text(
+                      customer.custName,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15,
+                        color: black,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
-                      child: Text(
-                        "Account Number: ${customer.depGlobalAccNo}",
+                    Container(decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(10),  color: Colors.orange.shade50,),
+                      padding: EdgeInsets.all(8),
+                      child: Icon(Icons.account_balance, color: Colors.orange,),
+                    ),
+                    SizedBox(width: 10,),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                      Text(
+                        "Account Number",
                         style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 12,
-                          color: black87,
+                          color: Colors.grey,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    const SizedBox(width: 10),
+                      SizedBox(height: 3,),
+                      Container(
+                        padding: EdgeInsets.all(3),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.green.shade50
+                        ),
+                        child: Text(
+                          customer.depGlobalAccNo,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14,
+                            color: Colors.green,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],),
+
+                   Spacer(flex: 1,),
                     _buildCollectButton(),
                   ],
                 ),
@@ -271,15 +450,43 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
         ),
       ),
     );
-  }
-
+  }*/
   Widget _buildCollectButton() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: home1.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        children: [
+          Image.asset(
+            "assets/images/money.png",
+            height: 16,
+            width: 16,
+            color: home1,
+          ),
+          const SizedBox(width: 6),
+          Text(
+            "Collect",
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: home1,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+/*  Widget _buildCollectButton() {
     return Container(
       height: 30,
       width: 90,
       decoration: BoxDecoration(
+        color: home1.withAlpha(20),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: home1, width: 0.5),
+        border: Border.all(color: home1.withAlpha(55), width: 0.5),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -288,7 +495,7 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
           children: [
             Image.asset(
               "assets/images/money.png",
-              color: home2,
+              color: home1,
               scale: 25,
             ),
             const SizedBox(width: 5),
@@ -297,14 +504,14 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 12,
-                color: home2,
+                color: Colors.black,
               ),
             ),
           ],
         ),
       ),
     );
-  }
+  }*/
 
   void _navigateToCustomerDetails(Customer customer) {
     Navigator.push(
@@ -330,38 +537,70 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
             automaticallyImplyLeading: false,
             centerTitle: true,
             title:
+            // SegmentedTabControl(
+            //
+            //     barDecoration: BoxDecoration(
+            //         shape: BoxShape.rectangle,
+            //         border: Border.all(color: Colors.grey, ),
+            //         boxShadow: [
+            //           BoxShadow(
+            //               color: Colors.black12,
+            //               blurRadius: 2,
+            //               spreadRadius: 8,
+            //               offset: Offset(1, 0))
+            //         ],
+            //         borderRadius: BorderRadius.circular(30)),
+            //     tabs: [
+            //       SegmentTab(
+            //         splashColor: home1,
+            //           textColor: Colors.black,
+            //         color: home1,
+            //           backgroundColor: Colors.black12,
+            //           selectedTextColor: Colors.white,
+            //           label: "RD LIST"),
+            //       SegmentTab(
+            //
+            //           splashColor: home1,
+            //         textColor: Colors.black,
+            //           color: home1,
+            //           backgroundColor: Colors.grey.shade200,
+            //           selectedTextColor: Colors.white,
+            //           label: "LOAN LIST")
+            //     ])
+
             SegmentedTabControl(
+              barDecoration: BoxDecoration(
+                color: Colors.grey.shade100, // soft background
+                borderRadius: BorderRadius.circular(30),
+              ),
+              tabs: [
+                SegmentTab(
+                  label: "RD LIST",
 
-                barDecoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    border: Border.all(color: Colors.grey, ),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 2,
-                          spreadRadius: 8,
-                          offset: Offset(1, 0))
-                    ],
-                    borderRadius: BorderRadius.circular(30)),
-                tabs: [
-                  SegmentTab(
-                    splashColor: home1,
-                      textColor: Colors.black,
-                    color: home1,
-                      backgroundColor: Colors.black12,
-                      selectedTextColor: Colors.white,
-                      label: "RD LIST"),
-                  SegmentTab(
+                  /// Active color
+                  color: home1,
 
-                      splashColor: home1,
-                    textColor: Colors.black,
-                      color: home1,
-                      backgroundColor: Colors.grey.shade200,
-                      selectedTextColor: Colors.white,
-                      label: "LOAN LIST")
-                ])
+                  /// Inactive
+                  backgroundColor: Colors.transparent,
 
+                  textColor: Colors.grey.shade700,
+                  selectedTextColor: Colors.white,
 
+                  splashColor: home1.withOpacity(0.2),
+                ),
+                SegmentTab(
+                  label: "LOAN LIST",
+
+                  color: home1,
+                  backgroundColor: Colors.transparent,
+
+                  textColor: Colors.grey.shade700,
+                  selectedTextColor: Colors.white,
+
+                  splashColor: home1.withOpacity(0.2),
+                ),
+              ],
+            )
             ),
         backgroundColor: white,
         body:TabBarView(children: [

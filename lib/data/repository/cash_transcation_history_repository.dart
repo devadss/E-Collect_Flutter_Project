@@ -20,8 +20,9 @@ class CashTransactionHistoryRepository
     //  :url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&subAgentId=$subAgentId&CorpCode=$corpCode&agentOrginId=$agentOriginId&PaymentMode=CASH");
     //
     source == "ALL"?
-    url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&subAgentId=$subAgentId&CorpCode=$corpCode&agentOrginId=$agentOriginId&PaymentMode=CASH")
-        :url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&subAgentId=$subAgentId&CorpCode=$corpCode&agentOrginId=$agentOriginId&PaymentMode=CASH");
+    url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=COLLECTION&subAgentId=$subAgentId&CorpCode=$corpCode&agentOrginId=$agentOriginId&PaymentMode=CASH")
+        :
+    url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=COLLECTION&subAgentId=$subAgentId&CorpCode=$corpCode&agentOrginId=$agentOriginId&PaymentMode=CASH");
 
     bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     if (checkConnection) {

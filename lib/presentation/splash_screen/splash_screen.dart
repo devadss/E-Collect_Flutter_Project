@@ -103,7 +103,14 @@ class _SplashScreenState extends State<SplashScreen> {
           requestNewTokenResponse.fold(
                 (error) {
               print("Error: $error");
-
+              if (mounted) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MobileNumberVerificationPage(),
+                  ),
+                );
+              }
             },
                 (data) {
               print("Token Response : $data");

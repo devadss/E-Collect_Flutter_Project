@@ -16,8 +16,8 @@ class QRTransactionHistoryRepository implements IQRTransactionHistoryRepository{
     Uri url =Uri();
    // source == "COLLECTION"?
     source == "ALL"?
-    url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&CorpCode=$corpCode&agentOrginId=$agentOrginId&PaymentMode=QR")
-   : url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=$source&CorpCode=$corpCode&agentOrginId=$agentOrginId&PaymentMode=QR");
+    url = Uri.parse("${baseUrl}api/eCollect/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=COLLECTION&CorpCode=$corpCode&agentOrginId=$agentOrginId&PaymentMode=QR")
+   : url = Uri.parse("${baseUrl}api/eCollect/GetMerchantOrders?dateFilterType=$dateFilterType&startDate=$startDate&endDate=$endDate&Source=COLLECTION&CorpCode=$corpCode&agentOrginId=$agentOrginId&PaymentMode=QR");
 
 
     bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
