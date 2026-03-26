@@ -1231,7 +1231,7 @@ class _HomePageState extends State<HomePage>
       return [
         _buildAnimatedTabItem(0, Icons.link_outlined, "Link"),
         _buildAnimatedTabItem(1, Icons.qr_code, "QR"),
-        _buildAnimatedTabItem(2, Icons.monetization_on, "Cash"),
+        _buildAnimatedTabItem(2, Icons.currency_rupee, "Cash"),
         //  _buildAnimatedTabItem(3, Icons.account_balance_sharp, "Transfer"),
       ];
     } else {
@@ -1239,7 +1239,7 @@ class _HomePageState extends State<HomePage>
       return [
         _buildAnimatedTabItem(0, Icons.all_out_rounded, "All"),
         _buildAnimatedTabItem(1, Icons.qr_code, "QR"),
-        _buildAnimatedTabItem(2, Icons.monetization_on, "Cash"),
+        _buildAnimatedTabItem(2, Icons.currency_rupee, "Cash"),
       ];
     }
   }
