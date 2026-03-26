@@ -33,7 +33,8 @@ class _ContactUsPageState extends State<ContactUsPage> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
+      body:
+      SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

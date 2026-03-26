@@ -479,24 +479,3 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
 
 
 }
-
-
-// await SharedPref.shared.setLogin(false);
-// await SharedPref.shared.setAgentName("");
-// await SharedPref.shared.setFcmToken("");
-// await SharedPref.shared.setAgentId("");
-// await SharedPref.shared.setPassword("");
-// await SharedPref.shared.setMpinValue("");
-// await SharedPref.shared.setMpinStatus("");
-// await SharedPref.shared.setTokenValue("");
-// await SharedPref.shared.setMobNum("");
-// await SharedPref.shared.setAgentOriginId("");
-// await SharedPref.shared.setCorpCode("");
-// await SharedPref.shared.setCardRefNum("");
-// await SharedPref.shared.setEmail("");
-
-// Navigator.pushAndRemoveUntil(
-//   context,
-//   MaterialPageRoute(builder: (context) => const SplashScreen()),
-//       (route) => false,
-// );

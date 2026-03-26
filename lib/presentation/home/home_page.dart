@@ -619,8 +619,57 @@ class _HomePageState extends State<HomePage>
     // }
   }
 
+  // Widget _buildAnimatedHeader(BuildContext context, Size size) {
+  //   return Container(
+  //     decoration: const BoxDecoration(
+  //       gradient: LinearGradient(
+  //         colors: [home1, home2],
+  //         begin: Alignment.topLeft,
+  //         end: Alignment.bottomRight,
+  //       ),
+  //     ),
+  //     child: SingleChildScrollView(
+  //       child: Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           Padding(
+  //             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+  //             child: Column(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //
+  //                 const SizedBox(height: 4),
+  //                 FittedBox(
+  //                   fit: BoxFit.scaleDown,
+  //                   child: Text(
+  //                     "Hi , ${userName?.replaceFirst(
+  //                       userName![0],
+  //                       userName![0].toUpperCase(),
+  //                     )}" ??
+  //                         "",
+  //                     style: const TextStyle(
+  //                       fontSize: 24,
+  //                       fontWeight: FontWeight.w700,
+  //                       color: white,
+  //                     ),
+  //                   ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.1),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //           _buildAnimatedBannerCarousel(size),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
   Widget _buildAnimatedHeader(BuildContext context, Size size) {
+    final formattedName = (userName != null && userName!.isNotEmpty)
+        ? userName![0].toUpperCase() + userName!.substring(1)
+        : "";
+
     return Container(
+      width: double.infinity,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [home1, home2],
@@ -628,49 +677,69 @@ class _HomePageState extends State<HomePage>
           end: Alignment.bottomRight,
         ),
       ),
-      child: SingleChildScrollView(
+      child: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
+            /// HEADER TEXT
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Text(
-                  //   "Hello,",
-                  //   style: TextStyle(
-                  //     fontSize: 16,
-                  //     fontWeight: FontWeight.w500,
-                  //     color: white.withOpacity(0.9),
-                  //   ),
-                  // ).animate().fadeIn(duration: 300.ms).slideX(begin: -0.1),
+
+                  /// GREETING SMALL
+                  Text(
+                    "Welcome back",
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.8),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+
                   const SizedBox(height: 4),
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      "Hi , ${userName?.replaceFirst(
-                        userName![0],
-                        userName![0].toUpperCase(),
-                      )}" ??
-                          "",
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                        color: white,
-                      ),
-                    ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.1),
+
+                  /// USER NAME
+                  Text(
+                    "Hi, $formattedName 👋",
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                      letterSpacing: 0.3,
+                    ),
+                  )
+                      .animate()
+                      .fadeIn(duration: 400.ms)
+                      .slideY(begin: -0.2),
+
+                  const SizedBox(height: 6),
+
+                  /// OPTIONAL SUBTEXT
+                  Text(
+                    "Here's your collection overview",
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.75),
+                      fontSize: 12,
+                    ),
                   ),
                 ],
               ),
             ),
+
+
+
+            /// BANNER / CAROUSEL
             _buildAnimatedBannerCarousel(size),
+
+            const SizedBox(height: 10),
           ],
         ),
       ),
     );
   }
-
   Widget _buildAnimatedBannerCarousel(Size size) {
     return SizedBox(
       height: size.height * 0.15,
@@ -743,7 +812,7 @@ class _HomePageState extends State<HomePage>
   Widget _buildTotalCollectionCard() {
     // Helper function to format the filter period for display
     String getFilterDisplayText() {
-      if (!_isFilterApplied) return 'Today ';
+      if (!_isFilterApplied) return 'THIS WEEK ';
 
       switch (_currentFilterPeriod) {
         case 'TODAY':
@@ -762,124 +831,271 @@ class _HomePageState extends State<HomePage>
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: Card(
-        elevation: 4,
+      padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 16),
+      child:
+      // Card(
+      //   elevation: 4,
+      //   shape: RoundedRectangleBorder(
+      //     borderRadius: BorderRadius.circular(16),
+      //   ),
+      //   child: Padding(
+      //     padding: const EdgeInsets.all(16),
+      //     child: Column(
+      //       crossAxisAlignment: CrossAxisAlignment.start,
+      //       children: [
+      //         // First Row: Total Collection Label and Transaction Type
+      //         Row(
+      //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //           children: [
+      //             FittedBox(
+      //               fit: BoxFit.scaleDown,
+      //               child: const Text(
+      //                 "Total Collection",
+      //                 style: TextStyle(
+      //                   fontSize: 16,
+      //                   fontWeight: FontWeight.bold,
+      //                 ),
+      //               ).animate().fadeIn(duration: 300.ms).slideX(begin: -0.1),
+      //             ),
+      //             Container(
+      //               padding:
+      //               const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      //               decoration: BoxDecoration(
+      //                 color: home1.withOpacity(0.1),
+      //                 borderRadius: BorderRadius.circular(12),
+      //               ),
+      //               child: FittedBox(
+      //                 fit: BoxFit.scaleDown,
+      //                 child: Text(
+      //                   _selectedTabIndex == 0
+      //                       ? userType == "COLLECTION"
+      //                       ? "All"
+      //                       : 'Link'
+      //                       : _selectedTabIndex == 1
+      //                       ? 'QR Code'
+      //                       : _selectedTabIndex == 2
+      //                       ? 'Cash'
+      //                       : "Transfer",
+      //                   style: const TextStyle(
+      //                     color: home1,
+      //                     fontWeight: FontWeight.w600,
+      //                     fontSize: 12,
+      //                   ),
+      //                 ),
+      //               ),
+      //             ),
+      //           ],
+      //         ),
+      //
+      //         // Second Row: Amount and Filter Info
+      //         Row(
+      //           crossAxisAlignment: CrossAxisAlignment.end,
+      //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //           children: [
+      //             Expanded(
+      //               child: Text(
+      //                 "₹${calculateTotalAmount().toStringAsFixed(2)}",
+      //                 style: const TextStyle(
+      //                   fontSize: 24,
+      //                   fontWeight: FontWeight.bold,
+      //                   color: home1,
+      //                 ),
+      //               ).animate().fadeIn(duration: 300.ms).slideX(begin: -0.1),
+      //             ),
+      //             Text(
+      //               getFilterDisplayText(),
+      //               overflow: TextOverflow.ellipsis,
+      //               softWrap: false,
+      //               style: const TextStyle(
+      //                 fontSize: 12,
+      //                 color: Colors.black,
+      //                 fontWeight: FontWeight.w600,
+      //               ),
+      //             ),
+      //           ],
+      //         ),
+      //         Text("Today's collection count : ${todaysCount.toString()} Nos", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w700, fontSize: 12),),
+      //         const SizedBox(height: 12),
+      //
+      //         // Filter Buttons Row
+      //         Row(
+      //           children: [
+      //             if (_isFilterApplied)
+      //               Expanded(
+      //                 child: Padding(
+      //                   padding: const EdgeInsets.only(right: 8),
+      //                   child: OutlinedButton.icon(
+      //                     onPressed: _clearFilters,
+      //                     style: OutlinedButton.styleFrom(
+      //                       foregroundColor: Colors.red,
+      //                       side: const BorderSide(color: Colors.red),
+      //                       padding: const EdgeInsets.symmetric(vertical: 12),
+      //                     ),
+      //                     icon: const Icon(Icons.clear, size: 18),
+      //                     label: const Text('Clear Filter'),
+      //                   ),
+      //                 ),
+      //               ),
+      //             Expanded(
+      //               child: ElevatedButton.icon(
+      //                 onPressed: showDateRangeFilter,
+      //                 style: ElevatedButton.styleFrom(
+      //                   backgroundColor: home1,
+      //                   foregroundColor: Colors.white,
+      //                   padding: const EdgeInsets.symmetric(vertical: 12),
+      //                 ),
+      //                 icon: const Icon(Icons.filter_alt, size: 18),
+      //                 label: const Text('Filter'),
+      //               ),
+      //             ),
+      //           ],
+      //         ),
+      //       ],
+      //     ),
+      //   ),
+      // ),
+      Card(
+        elevation: 2,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
         ),
+        shadowColor: Colors.black.withOpacity(0.08),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(18),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // First Row: Total Collection Label and Transaction Type
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: const Text(
-                      "Total Collection",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ).animate().fadeIn(duration: 300.ms).slideX(begin: -0.1),
-                  ),
-                  // SizedBox(width: 10,),
-                  // Text(todaysCount.toString()),
-                  //
-                  // Spacer(flex: 1,),
-                  Container(
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: home1.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        _selectedTabIndex == 0
-                            ? userType == "COLLECTION"
-                            ? "All"
-                            : 'Link'
-                            : _selectedTabIndex == 1
-                            ? 'QR Code'
-                            : _selectedTabIndex == 2
-                            ? 'Cash'
-                            : "Transfer",
-                        style: const TextStyle(
-                          color: home1,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
 
-              // Second Row: Amount and Filter Info
+              /// HEADER
               Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    child: Text(
-                      "₹${calculateTotalAmount().toStringAsFixed(2)}",
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: home1,
-                      ),
-                    ).animate().fadeIn(duration: 300.ms).slideX(begin: -0.1),
-                  ),
                   Text(
-                    getFilterDisplayText(),
-                    overflow: TextOverflow.ellipsis,
-                    softWrap: false,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.black,
+                    "Total Collection",
+                    style: TextStyle(
+                      fontSize: 14,
                       fontWeight: FontWeight.w600,
+                      color: Colors.grey.shade700,
+                    ),
+                  ),
+
+                  /// TAG
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: home1.withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      _selectedTabIndex == 0
+                          ? userType == "COLLECTION"
+                          ? "All"
+                          : 'Link'
+                          : _selectedTabIndex == 1
+                          ? 'QR Code'
+                          : _selectedTabIndex == 2
+                          ? 'Cash'
+                          : "Transfer",
+                      style: TextStyle(
+                        color: home1,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 11,
+                      ),
                     ),
                   ),
                 ],
               ),
-              Text("Today's collection count : ${todaysCount.toString()} Nos", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w700, fontSize: 12),),
-              const SizedBox(height: 12),
 
-              // Filter Buttons Row
+              //const SizedBox(height: 10),
+
+              /// AMOUNT
+              Text(
+                "₹${calculateTotalAmount().toStringAsFixed(2)}",
+                style: const TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: home1,
+                  letterSpacing: 0.5,
+                ),
+              ),
+
+             // const SizedBox(height: 4),
+
+              /// FILTER TEXT
+              // Text(
+              //   getFilterDisplayText(),
+              //   style: TextStyle(
+              //     fontSize: 12,
+              //     color: Colors.grey.shade600,
+              //     fontWeight: FontWeight.w500,
+              //   ),
+              // ),
+
+              const SizedBox(height: 8),
+
+              /// COUNT TEXT
+              Container(
+                padding: EdgeInsets.all(5),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: home1.withAlpha(30)),
+                child: Text(
+                  "${getFilterDisplayText()} : $todaysCount Nos",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: home1,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+
+             // const SizedBox(height: 14),
+
+              Divider(color: home1.withAlpha(50)),
+
+              //const SizedBox(height: 10),
+
+              /// BUTTONS
               Row(
                 children: [
                   if (_isFilterApplied)
                     Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: OutlinedButton.icon(
-                          onPressed: _clearFilters,
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.red,
-                            side: const BorderSide(color: Colors.red),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: OutlinedButton(
+                        onPressed: _clearFilters,
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.redAccent,
+                          side: BorderSide(
+                            color: Colors.redAccent.withOpacity(0.5),
                           ),
-                          icon: const Icon(Icons.clear, size: 18),
-                          label: const Text('Clear Filter'),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding:
+                          const EdgeInsets.symmetric(vertical: 12),
                         ),
+                        child: const Text("Clear"),
                       ),
                     ),
+
+                  if (_isFilterApplied)
+                    const SizedBox(width: 10),
+
                   Expanded(
-                    child: ElevatedButton.icon(
+                    child: ElevatedButton(
                       onPressed: showDateRangeFilter,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: home1,
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        backgroundColor: home1,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding:
+                        const EdgeInsets.symmetric(vertical: 12),
                       ),
-                      icon: const Icon(Icons.filter_alt, size: 18),
-                      label: const Text('Filter'),
+                      child: const Text(
+                        "Filter",
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
                     ),
                   ),
                 ],
@@ -887,7 +1103,7 @@ class _HomePageState extends State<HomePage>
             ],
           ),
         ),
-      ),
+      )
     );
   }
 
@@ -1027,42 +1243,110 @@ class _HomePageState extends State<HomePage>
       ];
     }
   }
-
-
   Widget _buildAnimatedTabItem(int index, IconData icon, String label) {
+    final isSelected = _selectedTabIndex == index;
+
     return Expanded(
-      child: GestureDetector(
-        onTap: () => setState(() => _selectedTabIndex = index),
-        child: AnimatedContainer(
-          duration: 300.ms,
-          margin: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: _selectedTabIndex == index ? home1 : Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                color: _selectedTabIndex == index ? white : home1,
-                size: 24,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 2),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(14),
+          onTap: () => setState(() => _selectedTabIndex = index),
+          child: AnimatedContainer(margin: EdgeInsets.all(7),
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOut,
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            decoration: BoxDecoration(
+              color: isSelected ? home1.withAlpha(150) : Colors.transparent,
+              borderRadius: BorderRadius.circular(16),
+
+              /// subtle border for inactive
+              border: Border.all(
+                color: isSelected
+                    ? home1.withAlpha(100)
+                    : Colors.grey.withOpacity(0.2),
               ),
-              const SizedBox(height: 4),
-              Text(
-                label,
-                style: TextStyle(
-                  color: _selectedTabIndex == index ? white : home1,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12,
+
+              /// soft shadow when selected
+              boxShadow: isSelected
+                  ? [
+                BoxShadow(
+                  color: home1.withOpacity(0.25),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                )
+              ]
+                  : [],
+            ),
+
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+
+                /// ICON
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  child: Icon(
+                    icon,
+                    key: ValueKey(isSelected),
+                    color: isSelected ? Colors.white : home1,
+                    size: 20,
+                  ),
                 ),
-              ),
-            ],
+
+                const SizedBox(height: 4),
+
+                /// LABEL
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: isSelected ? Colors.white : home1,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 11,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+
+  // Widget _buildAnimatedTabItem(int index, IconData icon, String label) {
+  //   return Expanded(
+  //     child: GestureDetector(
+  //       onTap: () => setState(() => _selectedTabIndex = index),
+  //       child: AnimatedContainer(
+  //         duration: 300.ms,
+  //         margin: const EdgeInsets.all(8),
+  //         decoration: BoxDecoration(
+  //           color: _selectedTabIndex == index ? home1 : Colors.transparent,
+  //           borderRadius: BorderRadius.circular(12),
+  //         ),
+  //         child: Column(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: [
+  //             Icon(
+  //               icon,
+  //               color: _selectedTabIndex == index ? white : home1,
+  //               size: 24,
+  //             ),
+  //             const SizedBox(height: 4),
+  //             Text(
+  //               label,
+  //               style: TextStyle(
+  //                 color: _selectedTabIndex == index ? white : home1,
+  //                 fontWeight: FontWeight.w600,
+  //                 fontSize: 12,
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildContentCollectionSection(
       QRTransactionHistoryProvider qrProvider,
@@ -1302,106 +1586,264 @@ class _HomePageState extends State<HomePage>
     //print("payment mode : $paymentMode");
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: Card(
-        elevation: 2,
-        margin: EdgeInsets.zero,
+      child:
+      // Card(
+      //   elevation: 2,
+      //   margin: EdgeInsets.zero,
+      //   shape: RoundedRectangleBorder(
+      //     borderRadius: BorderRadius.circular(12),
+      //   ),
+      //   child: InkWell(
+      //     borderRadius: BorderRadius.circular(12),
+      //     onTap: () {
+      //       Navigator.push(
+      //           context,
+      //           MaterialPageRoute(
+      //               builder: (context) => TransactionHistoryPage(
+      //                 paymentStatus: status,
+      //                 amount: amount,
+      //                 transferId: transferId,
+      //                 agentName: agentName,
+      //                 agentPhone: agentPhone,
+      //                 customerName: customerName,
+      //                 customerId: customerId,
+      //                 customerNumber: customerNumber,
+      //                 corpCode: corpCode ?? "",
+      //                 tnxType: tnxType, paymentMode: paymentMode, dat: date,
+      //                 //agentTransaction: agentPaymentTransctionModel
+      //               )));
+      //     },
+      //     child: Padding(
+      //       padding: const EdgeInsets.all(16),
+      //       child: Row(
+      //         children: [
+      //           Container(
+      //             padding: const EdgeInsets.all(10),
+      //             decoration: BoxDecoration(
+      //               color: iconColor.withOpacity(0.1),
+      //               shape: BoxShape.circle,
+      //             ),
+      //             child: Icon(
+      //                 paymentMode == "QR"?
+      //                 Icons.qr_code: Icons.monetization_on, color: iconColor, size: 20),
+      //           ),
+      //           const SizedBox(width: 16),
+      //           Expanded(
+      //             child: Column(
+      //               crossAxisAlignment: CrossAxisAlignment.start,
+      //               children: [
+      //                 Text(
+      //                   title,
+      //                   style: const TextStyle(
+      //                     fontWeight: FontWeight.bold,
+      //                     fontSize: 15,
+      //                   ),
+      //                   maxLines: 1,
+      //                   overflow: TextOverflow.ellipsis,
+      //                 ),
+      //                 const SizedBox(height: 4),
+      //                 Text(
+      //                  // DateFormat('MMM dd, yyyy - hh:mm a').format(date),
+      //                  date,
+      //                   style: TextStyle(
+      //                     // color: Colors.grey[600],
+      //                     color: home2,
+      //                     fontSize: 12,
+      //                   ),
+      //                 ),
+      //                 SizedBox(height: 5,),
+      //                 collectionType.isNotEmpty?
+      //                 Container(
+      //                     decoration: BoxDecoration(
+      //                         borderRadius: BorderRadius.circular(10),
+      //                         color: home1.withAlpha(20)
+      //                     ),
+      //                     child: Padding(
+      //                       padding: const EdgeInsets.symmetric(horizontal: 5),
+      //                       child: Text(collectionType, style: TextStyle(fontSize: 11, color:home1, fontWeight: FontWeight.w500),),
+      //                     )):SizedBox()
+      //               ],
+      //             ),
+      //           ),
+      //           Column(
+      //             crossAxisAlignment: CrossAxisAlignment.end,
+      //             children: [
+      //               Text(
+      //                 "₹${amount.toStringAsFixed(2)}",
+      //                 style: const TextStyle(
+      //                   fontWeight: FontWeight.bold,
+      //                   fontSize: 15,
+      //                   color: home1,
+      //                 ),
+      //               ),
+      //               const SizedBox(height: 4),
+      //               Container(
+      //                 padding: const EdgeInsets.symmetric(
+      //                     horizontal: 8, vertical: 4),
+      //                 decoration: BoxDecoration(
+      //                   color: status.toLowerCase().contains("success") ||
+      //                       status.toLowerCase().contains("paid") ||
+      //                       status.toLowerCase().contains("completed")
+      //                       ? Colors.green.withOpacity(0.1)
+      //                       : Colors.orange.withOpacity(0.1),
+      //                   borderRadius: BorderRadius.circular(12),
+      //                 ),
+      //                 child: Text(
+      //                   status,
+      //                   style: TextStyle(
+      //                     color: status.toLowerCase().contains("success") ||
+      //                         status.toLowerCase().contains("paid") ||
+      //                         status.toLowerCase().contains("completed")
+      //                         ? Colors.green
+      //                         : Colors.orange,
+      //                     fontSize: 12,
+      //                     fontWeight: FontWeight.w600,
+      //                   ),
+      //                 ),
+      //               ),
+      //             ],
+      //           ),
+      //         ],
+      //       ),
+      //     ),
+      //   ),
+      // ),
+      Card(
+        elevation: 0,
+        margin: const EdgeInsets.symmetric(vertical: 6),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: Colors.grey.shade200),
         ),
         child: InkWell(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           onTap: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => TransactionHistoryPage(
-                      paymentStatus: status,
-                      amount: amount,
-                      transferId: transferId,
-                      agentName: agentName,
-                      agentPhone: agentPhone,
-                      customerName: customerName,
-                      customerId: customerId,
-                      customerNumber: customerNumber,
-                      corpCode: corpCode ?? "",
-                      tnxType: tnxType, paymentMode: paymentMode, dat: date,
-                      //agentTransaction: agentPaymentTransctionModel
-                    )));
+              context,
+              MaterialPageRoute(
+                builder: (context) => TransactionHistoryPage(
+                  paymentStatus: status,
+                  amount: amount,
+                  transferId: transferId,
+                  agentName: agentName,
+                  agentPhone: agentPhone,
+                  customerName: customerName,
+                  customerId: customerId,
+                  customerNumber: customerNumber,
+                  corpCode: corpCode ?? "",
+                  tnxType: tnxType,
+                  paymentMode: paymentMode,
+                  dat: date,
+                ),
+              ),
+            );
           },
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(14),
             child: Row(
               children: [
+
+                /// ICON
                 Container(
-                  padding: const EdgeInsets.all(10),
+                  height: 42,
+                  width: 42,
                   decoration: BoxDecoration(
-                    color: iconColor.withOpacity(0.1),
-                    shape: BoxShape.circle,
+                    color: iconColor.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
-                      paymentMode == "QR"?
-                      Icons.qr_code: Icons.monetization_on, color: iconColor, size: 20),
+                    paymentMode == "QR"
+                        ? Icons.qr_code_rounded
+                        : Icons.currency_rupee_rounded,
+                    color: iconColor,
+                    size: 20,
+                  ),
                 ),
-                const SizedBox(width: 16),
+
+                const SizedBox(width: 14),
+
+                /// LEFT CONTENT
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+
+                      /// TITLE
                       Text(
                         title,
                         style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
+
                       const SizedBox(height: 4),
+
+                      /// DATE
                       Text(
-                       // DateFormat('MMM dd, yyyy - hh:mm a').format(date),
-                       date,
+                        date,
                         style: TextStyle(
-                          // color: Colors.grey[600],
-                          color: home2,
+                          color: Colors.grey.shade600,
                           fontSize: 12,
                         ),
                       ),
-                      SizedBox(height: 5,),
-                      collectionType.isNotEmpty?
-                      Container(
+
+                      const SizedBox(height: 6),
+
+                      /// COLLECTION TYPE TAG
+                      if (collectionType.isNotEmpty)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: home1.withAlpha(20)
+                            color: home1.withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            child: Text(collectionType, style: TextStyle(fontSize: 11, color:home1, fontWeight: FontWeight.w500),),
-                          )):SizedBox()
+                          child: Text(
+                            collectionType,
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: home1,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
+
+                const SizedBox(width: 10),
+
+                /// RIGHT CONTENT
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
+
+                    /// AMOUNT
                     Text(
                       "₹${amount.toStringAsFixed(2)}",
                       style: const TextStyle(
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w700,
                         fontSize: 15,
                         color: home1,
                       ),
                     ),
-                    const SizedBox(height: 4),
+
+                    const SizedBox(height: 6),
+
+                    /// STATUS TAG
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
+                          horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
                         color: status.toLowerCase().contains("success") ||
                             status.toLowerCase().contains("paid") ||
                             status.toLowerCase().contains("completed")
-                            ? Colors.green.withOpacity(0.1)
-                            : Colors.orange.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
+                            ? Colors.green.withOpacity(0.08)
+                            : Colors.orange.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
                         status,
@@ -1409,9 +1851,9 @@ class _HomePageState extends State<HomePage>
                           color: status.toLowerCase().contains("success") ||
                               status.toLowerCase().contains("paid") ||
                               status.toLowerCase().contains("completed")
-                              ? Colors.green
-                              : Colors.orange,
-                          fontSize: 12,
+                              ? Colors.green.shade700
+                              : Colors.orange.shade700,
+                          fontSize: 11,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -1422,7 +1864,7 @@ class _HomePageState extends State<HomePage>
             ),
           ),
         ),
-      ),
+      )
     );
   }
 
@@ -1535,7 +1977,7 @@ class _HomePageState extends State<HomePage>
         slivers: [
           SliverAppBar(
             automaticallyImplyLeading: false,
-            expandedHeight: size.height * 0.32,
+            expandedHeight: size.height * 0.375,
             floating: false,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
@@ -1543,9 +1985,10 @@ class _HomePageState extends State<HomePage>
               background: _buildAnimatedHeader(context, size),
             ),
             bottom: PreferredSize(
+
               preferredSize: const Size.fromHeight(80),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 child: _buildTabBar(),
               ),
             ),
@@ -1563,7 +2006,7 @@ class _HomePageState extends State<HomePage>
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+            padding: const EdgeInsets.only(top: 1, left: 16, right: 16),
             sliver: userType == "COLLECTION"
                 ? _buildContentCollectionSection(qrProvider, cashTranProvider,
                 cashQrProvider)

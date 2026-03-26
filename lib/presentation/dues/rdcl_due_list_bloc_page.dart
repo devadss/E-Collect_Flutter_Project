@@ -397,69 +397,91 @@ bool chekValue(String value){
           Padding(
             padding: const EdgeInsets.all(10.0),
             child:
+
             // Container(
-            //   height: 60,
-            //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(16),
-            //   color: Colors.grey.withAlpha(40)
+            //   padding: EdgeInsets.symmetric(horizontal: 12),
+            //   decoration: BoxDecoration(
+            //     color: Colors.grey.shade200,
+            //     borderRadius: BorderRadius.circular(16),
+            //     border: Border.all(color: Colors.grey.shade300),
             //   ),
             //   child: TextField(
-            //     onChanged: (value){
-            //       // if(_showSendIcon == true && searchController.text.isEmpty){
-            //       //   _showSendIcon = true;
-            //       //   context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", ""));
-            //       // }
+            //     controller: searchController,
+            //     onChanged: (value) {
             //       setState(() {
-            //         if(value.isNotEmpty){
-            //           _showSendIcon = true;
-            //         }else{
-            //           _showSendIcon = false;
-            //         }
+            //         _showSendIcon = value.isNotEmpty;
             //       });
             //     },
-            //     controller: searchController,
+            //     style: TextStyle(fontSize: 16),
             //     decoration: InputDecoration(
-            //         suffixIcon:
-            //         _showSendIcon ==true?
-            //         InkWell(
-            //             onTap: (){
+            //       border: InputBorder.none,
+            //       hintText: "Search by name",
+            //       hintStyle: TextStyle(color: Colors.grey.shade500),
+            //
+            //       prefixIcon: Icon(Icons.search, color: Colors.grey),
+            //
+            //       suffixIcon: _showSendIcon
+            //           ? Row(
+            //         mainAxisSize: MainAxisSize.min,
+            //         children: [
+            //           // Clear button
+            //           InkWell(
+            //             onTap: () {
+            //               searchController.clear();
+            //               setState(() {
+            //                 _showSendIcon = false;
+            //                 didSearch = false;
+            //               });
+            //               context.read<RdclDuelistBloc>().add(
+            //                 RdclDueListFetchEvent("", widget.branchCode, "", ""),
+            //               );
+            //             },
+            //             child: Icon(Icons.close, color: home1),
+            //           ),
+            //
+            //           SizedBox(width: 8),
+            //
+            //           // Search button
+            //           InkWell(
+            //             onTap: () {
+            //               final text = searchController.text;
             //
             //               setState(() {
-            //
-            //                 didSearch == false?didSearch = true:didSearch = false;
+            //                 didSearch = true;
             //               });
-            //               didSearch == true?
             //
-            //               chekValue(searchController.text)== true?
-            //               context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode,  searchController.text, "")):
-            //               context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", searchController.text)):
-            //               context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", ""));
-            //
-            //               didSearch == false?
-            //                   searchController.clear():"";
+            //               if (chekValue(text)) {
+            //                 context.read<RdclDuelistBloc>().add(
+            //                   RdclDueListFetchEvent("", widget.branchCode, text, ""),
+            //                 );
+            //               } else {
+            //                 context.read<RdclDuelistBloc>().add(
+            //                   RdclDueListFetchEvent("", widget.branchCode, "", text),
+            //                 );
+            //               }
             //             },
-            //             child:
-            //             didSearch == false?
-            //             Icon(Icons.send, color: Colors.grey,):Icon(Icons.clear)
+            //             child: Icon(Icons.send, color: home1),
+            //           ),
             //
-            //
-            //         ):
-            //
-            //
-            //         SizedBox.shrink(),
-            //         prefixIcon: Icon(Icons.search),
-            //         hint: Text("Search by name"),
-            //         // border: OutlineInputBorder(
-            //         //     borderRadius: BorderRadius.circular(5)
-            //         // )),
+            //           SizedBox(width: 8),
+            //         ],
+            //       )
+            //           : null,
             //     ),
             //   ),
-            // ),
+            // )
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.grey.shade300),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.06),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: TextField(
                 controller: searchController,
@@ -468,37 +490,59 @@ bool chekValue(String value){
                     _showSendIcon = value.isNotEmpty;
                   });
                 },
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 14),
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: "Search by name",
-                  hintStyle: TextStyle(color: Colors.grey.shade500),
+                  hintText: "Search by name...",
+                  hintStyle: TextStyle(
+                    color: Colors.grey.shade500,
+                    fontSize: 13,
+                  ),
 
-                  prefixIcon: Icon(Icons.search, color: Colors.grey),
+                  /// SEARCH ICON
+                  prefixIcon: Icon(
+                    Icons.search_rounded,
+                    color: Colors.grey.shade500,
+                  ),
 
+                  /// ACTIONS
                   suffixIcon: _showSendIcon
                       ? Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Clear button
-                      InkWell(
+
+                      /// CLEAR
+                      GestureDetector(
                         onTap: () {
                           searchController.clear();
                           setState(() {
                             _showSendIcon = false;
                             didSearch = false;
                           });
+
                           context.read<RdclDuelistBloc>().add(
-                            RdclDueListFetchEvent("", widget.branchCode, "", ""),
+                            RdclDueListFetchEvent(
+                                "", widget.branchCode, "", ""),
                           );
                         },
-                        child: Icon(Icons.close, color: home1),
+                        child: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.close,
+                            size: 16,
+                            color: Colors.grey.shade700,
+                          ),
+                        ),
                       ),
 
-                      SizedBox(width: 8),
+                      const SizedBox(width: 6),
 
-                      // Search button
-                      InkWell(
+                      /// SEND
+                      GestureDetector(
                         onTap: () {
                           final text = searchController.text;
 
@@ -508,18 +552,31 @@ bool chekValue(String value){
 
                           if (chekValue(text)) {
                             context.read<RdclDuelistBloc>().add(
-                              RdclDueListFetchEvent("", widget.branchCode, text, ""),
+                              RdclDueListFetchEvent(
+                                  "", widget.branchCode, text, ""),
                             );
                           } else {
                             context.read<RdclDuelistBloc>().add(
-                              RdclDueListFetchEvent("", widget.branchCode, "", text),
+                              RdclDueListFetchEvent(
+                                  "", widget.branchCode, "", text),
                             );
                           }
                         },
-                        child: Icon(Icons.send, color: home1),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: home1,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.arrow_forward_rounded,
+                            size: 16,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
 
-                      SizedBox(width: 8),
+                      const SizedBox(width: 6),
                     ],
                   )
                       : null,
@@ -574,7 +631,8 @@ bool chekValue(String value){
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
-                          child: Container(
+                          child:
+                          Container(
                             width: double.infinity,
                             decoration: BoxDecoration(
                                 boxShadow: [

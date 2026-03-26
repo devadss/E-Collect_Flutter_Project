@@ -407,58 +407,146 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
       ),
     );
   }
-
   Widget _buildHeaderSection() {
+    final isSuccess = widget.paymentStatus
+        .toString()
+        .toLowerCase()
+        .contains("success");
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
       width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(16, 32, 16, 24),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [home1, home2.withOpacity(0.8)],
+          colors: [
+            home1,
+            home2.withOpacity(0.85),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
       ),
+
+      /// FLOATING CARD
       child: Container(
-        padding: const EdgeInsets.all(15),
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
         decoration: BoxDecoration(
-          color: white,
-          borderRadius: BorderRadius.circular(16),
+          color: Colors.white.withOpacity(0.95),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
             ),
           ],
         ),
+
         child: isLoading
             ? _buildShimmerHeader()
             : Column(
-                children: [
-                  Text(
-                    // "Payment ${widget.agentTransaction.linkStatus.toString().replaceAll("Status.", "")}",
-                    "Payment ${widget.paymentStatus.toString().replaceAll("Status.", "")}",
-                    style: GoogleFonts.poppins(
-                      color: Colors.grey[600],
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    // "₹${widget.agentTransaction.linkAmount}",
-                    "₹${widget.amount}",
-                    style: GoogleFonts.poppins(
-                      color: home1,
-                      fontSize: 28,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
+          mainAxisSize: MainAxisSize.min,
+          children: [
+
+            /// STATUS ICON
+            Container(
+              height: 48,
+              width: 48,
+              decoration: BoxDecoration(
+                color: isSuccess
+                    ? Colors.green.withOpacity(0.1)
+                    : Colors.orange.withOpacity(0.1),
+                shape: BoxShape.circle,
               ),
+              child: Icon(
+                isSuccess
+                    ? Icons.check_circle_rounded
+                    : Icons.access_time_rounded,
+                color: isSuccess ? Colors.green : Colors.orange,
+                size: 26,
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            /// STATUS TEXT
+            Text(
+              "Payment ${widget.paymentStatus.toString().replaceAll("Status.", "")}",
+              style: GoogleFonts.poppins(
+                color: Colors.grey.shade600,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+
+            const SizedBox(height: 6),
+
+            /// AMOUNT
+            Text(
+              "₹${widget.amount}",
+              style: GoogleFonts.poppins(
+                color: home1,
+                fontSize: 30,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
+  // Widget _buildHeaderSection() {
+  //   return Container(
+  //     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+  //     width: double.infinity,
+  //     decoration: BoxDecoration(
+  //       gradient: LinearGradient(
+  //         colors: [home1, home2.withOpacity(0.8)],
+  //         begin: Alignment.topLeft,
+  //         end: Alignment.bottomRight,
+  //       ),
+  //     ),
+  //     child: Container(
+  //       padding: const EdgeInsets.all(15),
+  //       decoration: BoxDecoration(
+  //         color: white,
+  //         borderRadius: BorderRadius.circular(16),
+  //         boxShadow: [
+  //           BoxShadow(
+  //             color: Colors.black.withOpacity(0.1),
+  //             blurRadius: 12,
+  //             offset: const Offset(0, 4),
+  //           ),
+  //         ],
+  //       ),
+  //       child: isLoading
+  //           ? _buildShimmerHeader()
+  //           : Column(
+  //               children: [
+  //                 Text(
+  //                   // "Payment ${widget.agentTransaction.linkStatus.toString().replaceAll("Status.", "")}",
+  //                   "Payment ${widget.paymentStatus.toString().replaceAll("Status.", "")}",
+  //                   style: GoogleFonts.poppins(
+  //                     color: Colors.grey[600],
+  //                     fontSize: 16,
+  //                   ),
+  //                 ),
+  //                 const SizedBox(height: 8),
+  //                 Text(
+  //                   // "₹${widget.agentTransaction.linkAmount}",
+  //                   "₹${widget.amount}",
+  //                   style: GoogleFonts.poppins(
+  //                     color: home1,
+  //                     fontSize: 28,
+  //                     fontWeight: FontWeight.w700,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildDetailsSection() {
     return Container(
@@ -480,70 +568,178 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
       ),
       child: isLoading
           ? _buildShimmerDetails()
-          : SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Transaction Information",
-                    style: GoogleFonts.poppins(
-                      color: home1,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildDetailCard(),
-                  const SizedBox(height: 24),
-                  Text(
-                    "Customer Information",
-                    style: GoogleFonts.poppins(
-                      color: home1,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildCustomerCard(),
-                 const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: GestureDetector(
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=> ReceiptPage(
-                          amount: "${widget.amount}",
-                          bankName: getBankNameFromCorpCode(widget.corpCode).toString(),
-                          agentName: widget.agentName,
-                          agentPhone: widget.agentPhone,
-                          custName: widget.customerName,
-                          custPhone: widget.customerNumber,
-                          custId: widget.customerId,
-                          txnId: widget.transferId.replaceAll("_MERCHANT", ""),
-                          txnType: widget.tnxType, dat: widget.dat,
-                        )));
-                      },
-                      child: Container(
-                        height: 50,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: home1,
-                        ),
-                        child: Center(
-                          child: Text(
-                            "Print",
-                            style: GoogleFonts.poppins(
-                                color: white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+          :
+      // SingleChildScrollView(
+      //         child: Column(
+      //           crossAxisAlignment: CrossAxisAlignment.start,
+      //           children: [
+      //             Text(
+      //               "Transaction Information",
+      //               style: GoogleFonts.poppins(
+      //                 color: home1,
+      //                 fontSize: 18,
+      //                 fontWeight: FontWeight.w600,
+      //               ),
+      //             ),
+      //             const SizedBox(height: 16),
+      //             _buildDetailCard(),
+      //             const SizedBox(height: 24),
+      //             Text(
+      //               "Customer Information",
+      //               style: GoogleFonts.poppins(
+      //                 color: home1,
+      //                 fontSize: 18,
+      //                 fontWeight: FontWeight.w600,
+      //               ),
+      //             ),
+      //             const SizedBox(height: 16),
+      //             _buildCustomerCard(),
+      //            const SizedBox(height: 20),
+      //             Padding(
+      //               padding: const EdgeInsets.symmetric(horizontal: 20),
+      //               child: GestureDetector(
+      //                 onTap: (){
+      //                   Navigator.push(context, MaterialPageRoute(builder: (context)=> ReceiptPage(
+      //                     amount: "${widget.amount}",
+      //                     bankName: getBankNameFromCorpCode(widget.corpCode).toString(),
+      //                     agentName: widget.agentName,
+      //                     agentPhone: widget.agentPhone,
+      //                     custName: widget.customerName,
+      //                     custPhone: widget.customerNumber,
+      //                     custId: widget.customerId,
+      //                     txnId: widget.transferId.replaceAll("_MERCHANT", ""),
+      //                     txnType: widget.tnxType, dat: widget.dat,
+      //                   )));
+      //                 },
+      //                 child: Container(
+      //                   height: 50,
+      //                   width: double.infinity,
+      //                   decoration: BoxDecoration(
+      //                     borderRadius: BorderRadius.circular(10),
+      //                     color: home1,
+      //                   ),
+      //                   child: Center(
+      //                     child: Text(
+      //                       "Print",
+      //                       style: GoogleFonts.poppins(
+      //                           color: white,
+      //                           fontSize: 20,
+      //                           fontWeight: FontWeight.w600),
+      //                     ),
+      //                   ),
+      //                 ),
+      //               ),
+      //             ),
+      //           ],
+      //         ),
+      //       ),
+      SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+
+            /// TRANSACTION HEADER
+            Text(
+              "Transaction Information",
+              style: GoogleFonts.poppins(
+                color: Colors.black87,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
               ),
             ),
+
+            const SizedBox(height: 12),
+
+            /// CARD
+            _buildDetailCard(),
+
+            const SizedBox(height: 20),
+
+            /// CUSTOMER HEADER
+            Text(
+              "Customer Information",
+              style: GoogleFonts.poppins(
+                color: Colors.black87,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            /// CARD
+            _buildCustomerCard(),
+
+            const SizedBox(height: 28),
+
+            /// PRINT BUTTON
+            InkWell(
+              borderRadius: BorderRadius.circular(14),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ReceiptPage(
+                      amount: "${widget.amount}",
+                      bankName: getBankNameFromCorpCode(widget.corpCode).toString(),
+                      agentName: widget.agentName,
+                      agentPhone: widget.agentPhone,
+                      custName: widget.customerName,
+                      custPhone: widget.customerNumber,
+                      custId: widget.customerId,
+                      txnId: widget.transferId.replaceAll("_MERCHANT", ""),
+                      txnType: widget.tnxType,
+                      dat: widget.dat,
+                    ),
+                  ),
+                );
+              },
+              child: Ink(
+                height: 52,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+
+                  /// subtle gradient = modern look
+                  gradient: LinearGradient(
+                    colors: [
+                      home1,
+                      home1.withOpacity(0.85),
+                    ],
+                  ),
+
+                  boxShadow: [
+                    BoxShadow(
+                      color: home1.withOpacity(0.25),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    )
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.print_rounded, color: Colors.white, size: 20),
+                    const SizedBox(width: 8),
+                    Text(
+                      "Print Receipt",
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 10),
+          ],
+        ),
+      )
     );
   }
 
