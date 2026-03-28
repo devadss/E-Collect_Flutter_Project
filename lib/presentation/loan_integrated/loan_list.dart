@@ -518,7 +518,8 @@ class _LoanListState extends State<LoanList> {
 
                               /// 🔹 Info Chips Row (Modern replacement for table)
                               Wrap(
-                                spacing: 10,
+
+                                spacing: 15,
                                 runSpacing: 8,
                                 children: [
                                   _buildInfoChip(

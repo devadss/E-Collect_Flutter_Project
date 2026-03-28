@@ -451,43 +451,135 @@ class _ReceiptPageState extends State<ReceiptPage> {
       }
     }
   }
-
   void _showPrinterSelectionDialog() {
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Select Printer"),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: devices.isEmpty
-              ? Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text("No printers found"),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        _scanDevices();
-                      },
-                      child: const Text("Scan for Printers"),
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+
+              /// HANDLE BAR
+              Container(
+                height: 4,
+                width: 40,
+                margin: const EdgeInsets.only(bottom: 12),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+
+              /// TITLE
+              Row(
+                children: const [
+                  Icon(Icons.print, size: 20),
+                  SizedBox(width: 8),
+                  Text(
+                    "Select Printer",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
                     ),
-                  ],
-                )
-              : ListView.builder(
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 16),
+
+              /// CONTENT
+              devices.isEmpty
+                  ? Column(
+                children: [
+                  const SizedBox(height: 20),
+
+                  Icon(
+                    Icons.print_disabled,
+                    size: 48,
+                    color: Colors.grey.shade400,
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  const Text(
+                    "No printers found",
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
+
+                  const SizedBox(height: 6),
+
+                  Text(
+                    "Make sure your printer is on and nearby",
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      fontSize: 13,
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _scanDevices();
+                    },
+                    icon: const Icon(Icons.refresh),
+                    label: const Text("Scan for Printers"),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(48),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+                  : Flexible(
+                child: ListView.separated(
                   shrinkWrap: true,
                   itemCount: devices.length,
+                  separatorBuilder: (_, __) =>
+                      Divider(color: Colors.grey.shade200),
                   itemBuilder: (context, index) {
                     final device = devices[index];
+                    final isSelected =
+                        selectedMac == device.macAdress;
+
                     return ListTile(
-                      title: Text(device.name ?? "Unknown Device"),
-                      subtitle: Text(device.macAdress ?? "No MAC Address"),
-                      trailing: Icon(
-                        Icons.print,
-                        color: selectedMac == device.macAdress
-                            ? Colors.blue
-                            : Colors.grey,
+                      contentPadding: EdgeInsets.zero,
+                      leading: CircleAvatar(
+                        backgroundColor: isSelected
+                            ? Colors.blue.withOpacity(0.1)
+                            : Colors.grey.shade200,
+                        child: Icon(
+                          Icons.print,
+                          color:
+                          isSelected ? Colors.blue : Colors.grey,
+                        ),
                       ),
+                      title: Text(
+                        device.name ?? "Unknown Device",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      subtitle: Text(
+                        device.macAdress ?? "No MAC Address",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                      trailing: isSelected
+                          ? const Icon(Icons.check_circle,
+                          color: Colors.blue)
+                          : null,
                       onTap: () {
                         Navigator.pop(context);
                         _connectToPrinter(device.macAdress);
@@ -495,16 +587,74 @@ class _ReceiptPageState extends State<ReceiptPage> {
                     );
                   },
                 ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
+              ),
+
+              const SizedBox(height: 12),
+
+              /// CANCEL BUTTON
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Cancel"),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
+  // void _showPrinterSelectionDialog() {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) => AlertDialog(
+  //       title: const Text("Select Printer"),
+  //       content: SizedBox(
+  //         width: double.maxFinite,
+  //         child: devices.isEmpty
+  //             ? Column(
+  //                 mainAxisSize: MainAxisSize.min,
+  //                 children: [
+  //                   const Text("No printers found"),
+  //                   const SizedBox(height: 16),
+  //                   ElevatedButton(
+  //                     onPressed: () {
+  //                       Navigator.pop(context);
+  //                       _scanDevices();
+  //                     },
+  //                     child: const Text("Scan for Printers"),
+  //                   ),
+  //                 ],
+  //               )
+  //             : ListView.builder(
+  //                 shrinkWrap: true,
+  //                 itemCount: devices.length,
+  //                 itemBuilder: (context, index) {
+  //                   final device = devices[index];
+  //                   return ListTile(
+  //                     title: Text(device.name ?? "Unknown Device"),
+  //                     subtitle: Text(device.macAdress ?? "No MAC Address"),
+  //                     trailing: Icon(
+  //                       Icons.print,
+  //                       color: selectedMac == device.macAdress
+  //                           ? Colors.blue
+  //                           : Colors.grey,
+  //                     ),
+  //                     onTap: () {
+  //                       Navigator.pop(context);
+  //                       _connectToPrinter(device.macAdress);
+  //                     },
+  //                   );
+  //                 },
+  //               ),
+  //       ),
+  //       actions: [
+  //         TextButton(
+  //           onPressed: () => Navigator.pop(context),
+  //           child: const Text("Cancel"),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   // This function will be called by the button
   Future<void> _takeScreenshotAndShare() async {
@@ -631,7 +781,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                     const SizedBox(height: 24),
 
                     // QR Code Section
-                    Container(
+                   /* Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         color: white,
@@ -681,8 +831,80 @@ class _ReceiptPageState extends State<ReceiptPage> {
                           ),
                         ],
                       ),
-                    ),
+                    ),*/
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(18),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 16,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
 
+                          /// TITLE
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.verified, color: home2, size: 18),
+                              const SizedBox(width: 6),
+                              const Text(
+                                "Transaction QR",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          /// QR CONTAINER (FOCUS AREA)
+                          Container(
+                            padding: const EdgeInsets.all(14),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade50,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: QrImageView(
+                              data: '''
+Transaction ID: 1234567890
+Amount: Rs.${widget.amount}
+Date: ${DateFormat('dd-MMM-yyyy').format(DateTime.now())}
+Bank: ${widget.bankName}
+Customer: ${widget.custName}
+Customer ID: ${widget.custId}
+Customer Phone: ${widget.custPhone}
+Agent: ${widget.agentName}
+Agent Phone: ${widget.agentPhone}
+''',
+                              version: QrVersions.auto,
+                              size: 140,
+                              backgroundColor: Colors.white,
+                            ),
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          /// DESCRIPTION
+                          Text(
+                            "Scan to verify this transaction",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     const SizedBox(height: 24),
 
                     // Transaction Details
@@ -744,6 +966,56 @@ class _ReceiptPageState extends State<ReceiptPage> {
                     if (_isTakingSS == false)
                       Row(
                         children: [
+                          /// PRINT BUTTON
+                          Expanded(
+                            child: OutlinedButton.icon(
+                              onPressed: _printReceipt,
+                              icon: const Icon(Icons.print, size: 18),
+                              label: const Text("Print"),
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                side: BorderSide(color: home1.withOpacity(0.6)),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                foregroundColor: home1,
+                                textStyle: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(width: 12),
+
+                          /// SHARE BUTTON
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                _takeScreenshotAndShare();
+                              },
+                              icon: const Icon(Icons.share, size: 18, color: Colors.white,),
+                              label: const Text("Share", style: TextStyle(color: Colors.white),),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: home2,
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                elevation: 2,
+                                shadowColor: home2.withOpacity(0.3),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                textStyle: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    /*  Row(
+                        children: [
                           Expanded(
                             child: OutlinedButton(
                               onPressed: _printReceipt,
@@ -790,7 +1062,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                             ),
                           ),
                         ],
-                      ),
+                      ),*/
                   ],
                 ),
               ),
@@ -814,8 +1086,38 @@ class _ReceiptPageState extends State<ReceiptPage> {
       ),
     );
   }
-
   Widget _buildDetailRow(String label, String value) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: TextStyle(
+                color: Colors.grey.shade600,
+                fontSize: 13,
+              ),
+            ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              color: home2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+/*  Widget _buildDetailRow(String label, String value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -839,7 +1141,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
         ),
       ],
     );
-  }
+  }*/
 }
 // import 'dart:async';
 // import 'dart:convert';

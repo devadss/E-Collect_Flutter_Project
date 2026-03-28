@@ -585,6 +585,7 @@ padding: EdgeInsets.all(8),
 
                   textColor: Colors.grey.shade700,
                   selectedTextColor: Colors.white,
+                  splashHighlightColor: home1,
 
                   splashColor: home1.withOpacity(0.2),
                 ),

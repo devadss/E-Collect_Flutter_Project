@@ -703,7 +703,7 @@ class _HomePageState extends State<HomePage>
 
                   /// USER NAME
                   Text(
-                    "Hi, $formattedName 👋",
+                    "Hi, $formattedName ",
                     style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,

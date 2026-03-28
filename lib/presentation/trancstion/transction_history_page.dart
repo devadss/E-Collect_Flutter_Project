@@ -287,6 +287,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
 
   @override
   void initState() {
+    print("status : ${widget.paymentStatus}");
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
       setState(() => isLoading = false);
@@ -408,11 +409,10 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
     );
   }
   Widget _buildHeaderSection() {
-    final isSuccess = widget.paymentStatus
-        .toString()
-        .toLowerCase()
-        .contains("success");
-
+    final isSuccess = widget.paymentStatus.toString().toLowerCase().contains("success")
+    || widget.paymentStatus.toString().toLowerCase().contains("paid")
+    ;
+print("isSuccess : $isSuccess");
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(16, 32, 16, 24),
@@ -483,7 +483,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
 
             /// AMOUNT
             Text(
-              "₹${widget.amount}",
+              "₹ ${widget.amount}",
               style: GoogleFonts.poppins(
                 color: home1,
                 fontSize: 30,
@@ -673,65 +673,69 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
             _buildCustomerCard(),
 
             const SizedBox(height: 28),
-
             /// PRINT BUTTON
-            InkWell(
-              borderRadius: BorderRadius.circular(14),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ReceiptPage(
-                      amount: "${widget.amount}",
-                      bankName: getBankNameFromCorpCode(widget.corpCode).toString(),
-                      agentName: widget.agentName,
-                      agentPhone: widget.agentPhone,
-                      custName: widget.customerName,
-                      custPhone: widget.customerNumber,
-                      custId: widget.customerId,
-                      txnId: widget.transferId.replaceAll("_MERCHANT", ""),
-                      txnType: widget.tnxType,
-                      dat: widget.dat,
-                    ),
-                  ),
-                );
-              },
-              child: Ink(
-                height: 52,
-                width: double.infinity,
-                decoration: BoxDecoration(
+            Padding(
+              padding: EdgeInsetsGeometry.all(10),
+              child: Material(
+                child: InkWell(
                   borderRadius: BorderRadius.circular(14),
-
-                  /// subtle gradient = modern look
-                  gradient: LinearGradient(
-                    colors: [
-                      home1,
-                      home1.withOpacity(0.85),
-                    ],
-                  ),
-
-                  boxShadow: [
-                    BoxShadow(
-                      color: home1.withOpacity(0.25),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    )
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.print_rounded, color: Colors.white, size: 20),
-                    const SizedBox(width: 8),
-                    Text(
-                      "Print Receipt",
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ReceiptPage(
+                          amount: "${widget.amount}",
+                          bankName: getBankNameFromCorpCode(widget.corpCode).toString(),
+                          agentName: widget.agentName,
+                          agentPhone: widget.agentPhone,
+                          custName: widget.customerName,
+                          custPhone: widget.customerNumber,
+                          custId: widget.customerId,
+                          txnId: widget.transferId.replaceAll("_MERCHANT", ""),
+                          txnType: widget.tnxType,
+                          dat: widget.dat,
+                        ),
                       ),
+                    );
+                  },
+                  child: Ink(
+                    height: 52,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(14),
+                
+                      /// subtle gradient = modern look
+                      gradient: LinearGradient(
+                        colors: [
+                          home1,
+                          home2.withOpacity(0.85),
+                        ],
+                      ),
+                
+                      boxShadow: [
+                        BoxShadow(
+                          color: home1.withOpacity(0.25),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        )
+                      ],
                     ),
-                  ],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.print_rounded, color: Colors.white, size: 20),
+                        const SizedBox(width: 8),
+                        Text(
+                          "Print Receipt",
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -903,8 +907,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
 
   Widget _buildShimmerDetails() {
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: Colors.grey[600]!,
+      highlightColor: Colors.grey[300]!,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
