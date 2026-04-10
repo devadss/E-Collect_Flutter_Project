@@ -45,7 +45,7 @@ class CollectionBaseUrlRepo implements CollectionBaseUrlInterface{
     parentMobNum!.startsWith("+91") ?parentMobNum.replaceAll("+91", "") : parentMobNum;
    final url = Uri.parse("$dopBaseUrl$parentMobNum");
    // final url = Uri.parse("${dopBaseUrl}+918905564553");
-    print("vendor url ${url}");
+    print("vendor url $url");
     if(checkConnection){
       final response = await http.get(url);
       if(response.statusCode ==200 || response.statusCode == 201){

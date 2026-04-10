@@ -206,7 +206,9 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                             loggedInUserTPYE?.isNotEmpty == true
                         ? _getNonAgentSelectedPage(_selectedIndex)
                         : const SizedBox.shrink(),
-        bottomNavigationBar: SafeArea(
+        bottomNavigationBar:
+
+        SafeArea(
           child: Container(
             height: 80,
             decoration: BoxDecoration(

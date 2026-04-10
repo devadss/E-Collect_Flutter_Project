@@ -23,8 +23,8 @@ class IntegrationLoanRepository extends IntegrationLoanInterface{
     final data  = await http.post(uri,
    // body: jsonEncode({"agent_id":"1165","branch_id":"00","sch_code":"","acno":""}),
    // body: jsonEncode({"agent_id":"169","branch_id":"01","sch_code":"","acno":""}),
-   // body: jsonEncode({"agent_id":agentId,"branch_id":branchId,"sch_code":schemeCode,"acno":accNo}),
-    body: jsonEncode({"agent_id":agentId,"branch_id":"01","sch_code":schemeCode,"acno":accNo}),
+    body: jsonEncode({"agent_id":agentId,"branch_id":branchId,"sch_code":schemeCode,"acno":accNo}),
+   // body: jsonEncode({"agent_id":agentId,"branch_id":"01","sch_code":schemeCode,"acno":accNo}),
     headers: {'Content-Type': 'application/json'});
 
     print({"agent_id":agentId,"branch_id":branchId,"sch_code":schemeCode,"acno":accNo});

@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../core/colors.dart';
 import '../../core/utils.dart';
 import '../../data/provider/cust_register_provider.dart';
 import '../../data/provider/parent_agent_detail_provider/parent_agent_detil_provider.dart';
@@ -255,8 +256,8 @@ class _MobileNumberVerificationPageState
                         password: parentAgentCredentialProvider
                             .parentAgentCredentialModel!.b.mobPassword,
                         tokenStatus: customer.status.toString(),
-                       // loggedInUserType: 'AGENT_LOAN',
-                        loggedInUserType: 'AGENT',//// REMOVE THIS AFTER TESTING AND UNCOMMENT THE ABOVE ONE
+                        loggedInUserType: 'AGENT_LOAN',
+                       // loggedInUserType: 'AGENT',//// REMOVE THIS AFTER TESTING AND UNCOMMENT THE ABOVE ONE
                       ),
                     ),
                   );
@@ -420,7 +421,8 @@ class _MobileNumberVerificationPageState
                   ),
                 ],
               ),
-              child: Stack(
+              child:
+             /* Stack(
                 children: [
                   const Positioned(
                     top: 20,
@@ -489,7 +491,119 @@ class _MobileNumberVerificationPageState
                     ),
                   ),
                 ],
-              ),
+              ),*/
+              Stack(
+                children: [
+
+                  /// 🌈 BACKGROUND GRADIENT (PREMIUM LOOK)
+                  Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          home1,
+                          home2,
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  /// 🧩 DOODLE BACKGROUND (SOFT)
+                  Positioned.fill(
+                    child: Opacity(
+                      opacity: 0.08,
+                      child: Image.asset(
+                        "assets/images/doodle.jpeg",
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+
+                  /// 📱 FLOATING ICON (TOP RIGHT – MORE SUBTLE)
+                  const Positioned(
+                    top: 40,
+                    right: 30,
+                    child: Opacity(
+                      opacity: 0.08,
+                      child: Icon(
+                        Icons.phone_iphone,
+                        size: 120,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+
+                  /// 🎯 MAIN CONTENT
+                  Positioned(
+                    bottom: 60,
+                    left: 20,
+                    right: 20,
+                    child: Column(
+                      children: [
+
+                        /// 🔘 ICON CONTAINER (GLASS + GLOW EFFECT)
+                        Container(
+                          padding: const EdgeInsets.all(22),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white.withOpacity(0.15),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.3),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: home1.withOpacity(0.4),
+                                blurRadius: 25,
+                                spreadRadius: 2,
+                              ),
+                            ],
+                          ),
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                            ),
+                            child: Image.asset(
+                              "assets/images/mobile_number.png",
+                              height: 60,
+                              width: 60,
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 28),
+
+                        /// 📝 TITLE
+                        Text(
+                          "Mobile Verification",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 26,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        /// 📄 SUBTITLE
+                        Text(
+                          "Enter your registered mobile number\nto continue securely",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.poppins(
+                            color: Colors.white.withOpacity(0.85),
+                            fontSize: 14,
+                            height: 1.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              )
             ),
 
             // Form Section
@@ -715,32 +829,3 @@ class _MobileNumberVerificationPageState
     );
   }
 }
-/*
-  void showProgressDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Center(
-          child: SingleChildScrollView(
-            child: Dialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Padding(
-                padding: EdgeInsets.all(50),
-                child: Column(
-                  children: [
-                    CircularProgressIndicator(color: home2),
-                    SizedBox(height: 10),
-                    Text("Please wait....", style: TextStyle(fontSize: 17)),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-*/

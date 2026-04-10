@@ -78,11 +78,12 @@ class _CustomerListState extends State<CustomerList> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        automaticallyImplyLeading: false,
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded, color: home1),
-          onPressed: () => Navigator.pop(context),
-        ),
+        // leading: IconButton(
+        //   icon: Icon(Icons.arrow_back_ios_new_rounded, color: home1),
+        //   onPressed: () => Navigator.pop(context),
+        // ),
         title: Text(
           "Customer List",
           style: TextStyle(

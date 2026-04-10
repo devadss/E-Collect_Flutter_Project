@@ -487,22 +487,28 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
       {bool isAmount = false}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          label,
-          style: GoogleFonts.poppins(
-            color: Colors.grey[600],
-            fontSize: 14,
+        // Text(
+        //   label,
+        //   style: GoogleFonts.poppins(
+        //     color: Colors.grey[600],
+        //     fontSize: 14,
+        //   ),
+        // ),
+        //Spacer(flex: 1,),
+        // Expanded(
+        //   child:
+      Text(
+            value,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.poppins(
+              color: isAmount ? Colors.red : Colors.grey[800],
+              fontSize: 14,
+              fontWeight: isAmount ? FontWeight.w700 : FontWeight.w600,
+            ),
           ),
-        ),
-        Text(
-          value,
-          style: GoogleFonts.poppins(
-            color: isAmount ? Colors.red : Colors.grey[800],
-            fontSize: 16,
-            fontWeight: isAmount ? FontWeight.w700 : FontWeight.w600,
-          ),
-        ),
+       // ),
       ],
     );
   }

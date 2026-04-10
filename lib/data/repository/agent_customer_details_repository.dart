@@ -25,23 +25,20 @@ class AgentCustomerDetailsRepository
         //Uri.parse("https://mftctest.digicob.in/getRDCustomerunderAgentList");
         //  Uri.parse("${vendorUrl}getCustomerlist");
         Uri.parse(vendorUrl);
-    print(
-        "--------------------------AGENT CUSTOMER DETAILS VENDOR URL------------------");
+    print("--------------------------AGENT CUSTOMER DETAILS VENDOR URL------------------");
     print(vendorUrl);
     print("çl = ${await loadVendorUrl()}");
-    print(
-        "--------------------------AGENT CUSTOMER DETAILS URL------------------");
+    print("--------------------------AGENT CUSTOMER DETAILS URL------------------");
     print(url);
     bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     final body = {"agent_id": agentId};
     print("agentId : $agentId");
     if (checkConnection) {
-      //final response = await http.post(url, body:{"agent_Id": agentId},);
+     // final response = await http.post(url, body:{"agent_Id": agentId},);
       final response = await http.post(url, body:{"agent_Id": "1002"},);
       printLog("------------------------AGENT CUSTOMER DETAILS STATUSCODE-------------------");
       printLog(response.statusCode);
-      printLog(
-          "------------------------AGENT CUSTOMER DETAILS BODY RD--------------------------");
+      printLog("------------------------AGENT CUSTOMER DETAILS BODY RD--------------------------");
       printLog(response.body);
       if (response.statusCode == 200 ) {
         try {

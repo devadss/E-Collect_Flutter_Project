@@ -53,7 +53,8 @@ class _SplashScreenState extends State<SplashScreen> {
       String mobNum,
       String type,
 
-      ) async {
+      ) async
+  {
     final provider = Provider.of<TokenExpiryProvider>(context, listen: false);
     final tokenValidateResponse = await provider.validateToken(token);
 
@@ -284,7 +285,8 @@ class _SplashScreenState extends State<SplashScreen> {
                     tag: 'splash-logo',
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.7,
-                      child: SvgPicture.asset(
+                      child:
+                      SvgPicture.asset(
                         "assets/svg/QR Code-bro.svg",
                         fit: BoxFit.contain,
                       ),

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:lottie/lottie.dart';
 import '../../presentation/profile/widgets/contact_us_page.dart';
 import 'package:flutter/material.dart';
@@ -80,7 +82,8 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                 ),
               ],
             ),
-            child: Stack(
+            child:
+            Stack(
               children: [
                 // Decorative elements
                 const Positioned(
@@ -227,53 +230,180 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
     required IconData icon,
     required VoidCallback onTap,
   }) {
+    // return TweenAnimationBuilder(
+    //   duration: Duration(milliseconds: 500 + (index * 200)),
+    //   tween: Tween<double>(begin: 0, end: 1),
+    //   builder: (context, value, child) {
+    //     return Opacity(
+    //       opacity: value,
+    //       child: Transform.translate(
+    //         offset: Offset((1 - value) * 50, 0),
+    //         child: child,
+    //       ),
+    //     );
+    //   },
+    //   child: Card(
+    //     elevation: 4,
+    //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+    //     shadowColor: color.withOpacity(0.3),
+    //     child: InkWell(
+    //       borderRadius: BorderRadius.circular(15),
+    //       onTap: onTap,
+    //       splashColor: color.withOpacity(0.1),
+    //       highlightColor: color.withOpacity(0.05),
+    //       child: Padding(
+    //         padding: const EdgeInsets.all(16),
+    //         child: Row(
+    //           children: [
+    //             Container(
+    //               width: 50,
+    //               height: 50,
+    //               decoration: BoxDecoration(
+    //                 color: color.withOpacity(0.15),
+    //                 borderRadius: BorderRadius.circular(12),
+    //               ),
+    //               child: Icon(icon, color: color, size: 28),
+    //             ),
+    //             const SizedBox(width: 16),
+    //             Expanded(
+    //               child: Text(
+    //                 label,
+    //                 style: GoogleFonts.poppins(
+    //                   fontSize: 16,
+    //                   fontWeight: FontWeight.w500,
+    //                   color: Colors.grey[800],
+    //                 ),
+    //               ),
+    //             ),
+    //             Icon(Icons.chevron_right, color: Colors.grey[400]),
+    //           ],
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
     return TweenAnimationBuilder(
       duration: Duration(milliseconds: 500 + (index * 200)),
       tween: Tween<double>(begin: 0, end: 1),
+      curve: Curves.easeOutCubic,
       builder: (context, value, child) {
         return Opacity(
           opacity: value,
           child: Transform.translate(
             offset: Offset((1 - value) * 50, 0),
-            child: child,
+            child: Transform.scale(
+              scale: 0.95 + (value * 0.05),
+              child: child,
+            ),
           ),
         );
       },
       child: Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        shadowColor: color.withOpacity(0.3),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        shadowColor: color.withOpacity(0.2),
+        color: Colors.white,
         child: InkWell(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(20),
           onTap: onTap,
-          splashColor: color.withOpacity(0.1),
+          splashColor: color.withOpacity(0.15),
           highlightColor: color.withOpacity(0.05),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: color.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(icon, color: color, size: 28),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Text(
-                    label,
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.grey[800],
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  // Modern icon container with gradient
+                  Container(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          color.withOpacity(0.2),
+                          color.withOpacity(0.1),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(18),
+                      boxShadow: [
+                        BoxShadow(
+                          color: color.withOpacity(0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Icon(
+                        icon,
+                        color: color,
+                        size: 28,
+                      ),
                     ),
                   ),
-                ),
-                Icon(Icons.chevron_right, color: Colors.grey[400]),
-              ],
+                  const SizedBox(width: 18),
+
+                  // Text content with modern styling
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          label,
+                          style: GoogleFonts.inter(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey[800],
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        // Optional subtitle (you can add if needed)
+                        // Text(
+                        //   subtitle,
+                        //   style: GoogleFonts.inter(
+                        //     fontSize: 13,
+                        //     color: Colors.grey[500],
+                        //   ),
+                        // ),
+                      ],
+                    ),
+                  ),
+
+                  // Modern chevron with animation
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    transform: Matrix4.identity()..rotateZ(0),
+                    child: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: color.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        color: color,
+                        size: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -305,98 +435,335 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                 ),
               ],
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Animated icon
-                TweenAnimationBuilder(
-                  duration: const Duration(milliseconds: 500),
-                  tween: Tween<double>(begin: 0, end: 1),
-                  builder: (context, value, child) {
-                    return Transform.scale(scale: value, child: child);
-                  },
-                  child: Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: Colors.redAccent.withOpacity(0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Lottie.asset("assets/animations/logout.json"),
+            child:
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(28),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
                   ),
-                ),
-                const SizedBox(height: 20),
-
-                Text(
-                  "Logout Confirmation",
-                  style: GoogleFonts.poppins(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey[800],
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "Are you sure you want to logout?",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
-                    color: Colors.grey[600],
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 25),
-                Row(
-                  children: [
-                    // Cancel button
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => Navigator.pop(context),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          side: const BorderSide(color: home1),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(28),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 0, sigmaY: 0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Modern gradient header
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.redAccent.withOpacity(0.1),
+                              Colors.redAccent.withOpacity(0.05),
+                            ],
                           ),
-                          backgroundColor: white,
                         ),
-                        child: Text(
-                          "Cancel",
-                          style: GoogleFonts.poppins(
-                            color: home1,
-                            fontWeight: FontWeight.w500,
-                          ),
+                        child: Column(
+                          children: [
+                            // Animated icon with modern design
+                            TweenAnimationBuilder(
+                              duration: const Duration(milliseconds: 500),
+                              tween: Tween<double>(begin: 0, end: 1),
+                              curve: Curves.elasticOut,
+                              builder: (context, value, child) {
+                                return Transform.scale(scale: value, child: child);
+                              },
+                              child: Container(
+                                width: 100,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Colors.redAccent,
+                                      Colors.redAccent.withOpacity(0.7),
+                                    ],
+                                  ),
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.redAccent.withOpacity(0.3),
+                                      blurRadius: 20,
+                                      spreadRadius: 5,
+                                    ),
+                                  ],
+                                ),
+                                child: Lottie.asset(
+                                  "assets/animations/logout.json",
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Text(
+                              "Ready to Leave?",
+                              style: GoogleFonts.poppins(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w700,
+                                foreground: Paint()
+                                  ..shader = LinearGradient(
+                                    colors: [
+                                      Colors.redAccent,
+                                      Colors.redAccent.shade700,
+                                    ],
+                                  ).createShader(Rect.fromLTWH(0, 0, 200, 50)),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              "You'll need to sign in again to access your account",
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.inter(
+                                color: Colors.grey[600],
+                                fontSize: 14,
+                                height: 1.4,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 15),
 
-                    // Logout button
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          await performLogout(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.redAccent,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 2,
-                        ),
-                        child: Text(
-                          "Logout",
-                          style: GoogleFonts.poppins(
-                            color: white,
-                            fontWeight: FontWeight.w500,
-                          ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+                        child: Column(
+                          children: [
+                            // Warning message with icon
+                            // Container(
+                            //   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            //   decoration: BoxDecoration(
+                            //     color: Colors.amber.withOpacity(0.1),
+                            //     borderRadius: BorderRadius.circular(16),
+                            //     border: Border.all(
+                            //       color: Colors.amber.withOpacity(0.3),
+                            //       width: 1,
+                            //     ),
+                            //   ),
+                            //   child: Row(
+                            //     children: [
+                            //       Icon(
+                            //         Icons.warning_amber_rounded,
+                            //         color: Colors.amber[700],
+                            //         size: 20,
+                            //       ),
+                            //       const SizedBox(width: 12),
+                            //       Expanded(
+                            //         child: Text(
+                            //           "Any unsaved changes will be lost",
+                            //           style: GoogleFonts.inter(
+                            //             color: Colors.amber[800],
+                            //             fontSize: 12,
+                            //             fontWeight: FontWeight.w500,
+                            //           ),
+                            //         ),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
+                            const SizedBox(height: 24),
+
+                            // Modern buttons
+                            Row(
+                              children: [
+                                // Cancel button
+                                Expanded(
+                                  child: Material(
+                                    elevation: 0,
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: InkWell(
+                                      onTap: () => Navigator.pop(context),
+                                      borderRadius: BorderRadius.circular(16),
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(vertical: 14),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(16),
+                                          border: Border.all(
+                                            color: Colors.grey[300]!,
+                                            width: 1.5,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          "Cancel",
+                                          textAlign: TextAlign.center,
+                                          style: GoogleFonts.inter(
+                                            color: Colors.grey[700],
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+
+                                // Logout button with modern gradient
+                                Expanded(
+                                  child: Material(
+                                    elevation: 0,
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: InkWell(
+                                      onTap: () async {
+                                        await performLogout(context);
+                                      },
+                                      borderRadius: BorderRadius.circular(16),
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(vertical: 14),
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            begin: Alignment.centerLeft,
+                                            end: Alignment.centerRight,
+                                            colors: [
+                                              Colors.redAccent,
+                                              Colors.redAccent.shade700,
+                                            ],
+                                          ),
+                                          borderRadius: BorderRadius.circular(16),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.redAccent.withOpacity(0.4),
+                                              blurRadius: 12,
+                                              offset: const Offset(0, 4),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Text(
+                                          "Logout",
+                                          textAlign: TextAlign.center,
+                                          style: GoogleFonts.inter(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 12),
+
+                            // Additional subtle hint
+                            Text(
+                              "Session will be terminated immediately",
+                              style: GoogleFonts.inter(
+                                color: Colors.grey[500],
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ],
-            ),
+              ),
+            )
+            // Column(
+            //   mainAxisSize: MainAxisSize.min,
+            //   children: [
+            //     // Animated icon
+            //     TweenAnimationBuilder(
+            //       duration: const Duration(milliseconds: 500),
+            //       tween: Tween<double>(begin: 0, end: 1),
+            //       builder: (context, value, child) {
+            //         return Transform.scale(scale: value, child: child);
+            //       },
+            //       child: Container(
+            //         width: 80,
+            //         height: 80,
+            //         decoration: BoxDecoration(
+            //           color: Colors.redAccent.withOpacity(0.1),
+            //           shape: BoxShape.circle,
+            //         ),
+            //         child: Lottie.asset("assets/animations/logout.json"),
+            //       ),
+            //     ),
+            //     const SizedBox(height: 20),
+            //
+            //     Text(
+            //       "Logout Confirmation",
+            //       style: GoogleFonts.poppins(
+            //         fontSize: 20,
+            //         fontWeight: FontWeight.w600,
+            //         color: Colors.grey[800],
+            //       ),
+            //     ),
+            //     const SizedBox(height: 10),
+            //     Text(
+            //       "Are you sure you want to logout?",
+            //       textAlign: TextAlign.center,
+            //       style: GoogleFonts.poppins(
+            //         color: Colors.grey[600],
+            //         fontSize: 14,
+            //       ),
+            //     ),
+            //     const SizedBox(height: 25),
+            //     Row(
+            //       children: [
+            //         // Cancel button
+            //         Expanded(
+            //           child: OutlinedButton(
+            //             onPressed: () => Navigator.pop(context),
+            //             style: OutlinedButton.styleFrom(
+            //               padding: const EdgeInsets.symmetric(vertical: 14),
+            //               side: const BorderSide(color: home1),
+            //               shape: RoundedRectangleBorder(
+            //                 borderRadius: BorderRadius.circular(12),
+            //               ),
+            //               backgroundColor: white,
+            //             ),
+            //             child: Text(
+            //               "Cancel",
+            //               style: GoogleFonts.poppins(
+            //                 color: home1,
+            //                 fontWeight: FontWeight.w500,
+            //               ),
+            //             ),
+            //           ),
+            //         ),
+            //         const SizedBox(width: 15),
+            //
+            //         // Logout button
+            //         Expanded(
+            //           child: ElevatedButton(
+            //             onPressed: () async {
+            //               await performLogout(context);
+            //             },
+            //             style: ElevatedButton.styleFrom(
+            //               backgroundColor: Colors.redAccent,
+            //               padding: const EdgeInsets.symmetric(vertical: 14),
+            //               shape: RoundedRectangleBorder(
+            //                 borderRadius: BorderRadius.circular(12),
+            //               ),
+            //               elevation: 2,
+            //             ),
+            //             child: Text(
+            //               "Logout",
+            //               style: GoogleFonts.poppins(
+            //                 color: white,
+            //                 fontWeight: FontWeight.w500,
+            //               ),
+            //             ),
+            //           ),
+            //         ),
+            //       ],
+            //     ),
+            //   ],
+            // ),
           ),
         );
       },

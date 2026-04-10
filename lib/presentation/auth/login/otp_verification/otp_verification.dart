@@ -345,15 +345,51 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
             // Top decorative element
             Center(
               child: Container(
-                width: 300,
-                height: 300,
+                width: 260,
+                height: 260,
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: white,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(24),
+
+                  /// 🌈 SOFT BACKGROUND
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.white,
+                      Colors.grey.shade50,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+
+                  /// 💎 SHADOW
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.06),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
                 ),
-                child: Image.asset("assets/images/otp_verify_img.jpg"),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(18),
+                  child: Image.asset(
+                    "assets/images/otp_verify_img.jpg",
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
             ),
+            // Center(
+            //   child: Container(
+            //     width: 300,
+            //     height: 300,
+            //     decoration: BoxDecoration(
+            //       color: white,
+            //       borderRadius: BorderRadius.circular(20),
+            //     ),
+            //     child: Image.asset("assets/images/otp_verify_img.jpg"),
+            //   ),
+            // ),
 
             const SizedBox(height: 40),
 

@@ -437,7 +437,8 @@ class _HomePageState extends State<HomePage>
     //
     // }
     final now = DateTime.now();
-    final fromDate = DateFormat('yyyy-MM-dd').format(now.subtract(const Duration(days: 30)));
+   // final fromDate = DateFormat('yyyy-MM-dd').format(now.subtract(const Duration(days: 30)));
+    final fromDate = DateFormat('yyyy-MM-dd').format(now.subtract(const Duration(days: 7)));
     final toDate = DateFormat('yyyy-MM-dd').format(now);
 
     try {
@@ -450,7 +451,8 @@ class _HomePageState extends State<HomePage>
 
       // Load QR transactions
       await qrProvider.getQrTranscationHistory(
-        "THIS_WEEK",
+        //"THIS_WEEK",
+        "TODAY",
         fromDate,
         toDate,
         // userType!,
@@ -463,7 +465,8 @@ class _HomePageState extends State<HomePage>
       // Load Link transactions (for AGENT_LOAN)
       if (userType == "LOAN_COLLECTION") {
         await linkProvider.getLinkTransactionHistory(
-            "THIS_WEEK",
+           // "THIS_WEEK",
+            "TODAY",
             fromDate,
             toDate,
             subAgentID!,
@@ -474,7 +477,8 @@ class _HomePageState extends State<HomePage>
 
       // Load Cash transactions
       await cashProvider.getCashTranscationHistory(
-        "THIS_WEEK",
+       // "THIS_WEEK",
+        "TODAY",
         fromDate,
         toDate,
         //cashCollectionType!,
@@ -487,7 +491,8 @@ class _HomePageState extends State<HomePage>
       // Load Transfer transactions (for AGENT_LOAN)
       if (userType == "LOAN_COLLECTION") {
         await transferProvider.getQrTranscationHistory(
-          "THIS_WEEK",
+         // "THIS_WEEK",
+          "TODAY",
           fromDate,
           toDate,
           // userType!,
@@ -500,7 +505,8 @@ class _HomePageState extends State<HomePage>
       // Load Combined Cash+QR transactions (for regular AGENT)
       if (userType == "COLLECTION") {
         await cashQrProvider.getCombinedResponse(
-          "THIS_WEEK",
+         // "THIS_WEEK",
+          "TODAY",
           toDate,
           fromDate,
           subAgentID!,
@@ -509,6 +515,7 @@ class _HomePageState extends State<HomePage>
         );
       }
       setState(() {
+        print("Total count : ${cashQrProvider.cashQrCombinedResponse?.filteredCount}");
         todaysCount = cashQrProvider.cashQrCombinedResponse?.filteredCount ??0;
 
       });
@@ -812,7 +819,7 @@ class _HomePageState extends State<HomePage>
   Widget _buildTotalCollectionCard() {
     // Helper function to format the filter period for display
     String getFilterDisplayText() {
-      if (!_isFilterApplied) return 'THIS WEEK ';
+      if (!_isFilterApplied) return 'TODAY ';
 
       switch (_currentFilterPeriod) {
         case 'TODAY':
@@ -2033,8 +2040,11 @@ class _HomePageState extends State<HomePage>
           }
         }else{
           if (cashQrProvider.cashQrCombinedResponse != null) {
-            total += cashQrProvider.cashQrCombinedResponse!.data
-                .fold(0, (sum, item) => sum + (item.orderAmount ?? 0));
+            total += cashQrProvider.cashQrCombinedResponse!.data.fold(0, (sum, item) => sum + (item.orderAmount ?? 0));
+            setState(() {
+              todaysCount = cashQrProvider.cashQrCombinedResponse?.filteredCount ??0;
+
+            });
           }
         }
 
