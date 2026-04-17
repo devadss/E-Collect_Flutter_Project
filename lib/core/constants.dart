@@ -93,7 +93,7 @@ AlertDialog exitAlert(BuildContext context){
     ),
   );
 }
-abstract class C{}
+
 class SharedPrefKeys {
   static const String guestCartCount = "GET_CART_COUNT";
   static const String userId = "USER_ID";
