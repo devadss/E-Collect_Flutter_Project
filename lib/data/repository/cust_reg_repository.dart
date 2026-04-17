@@ -28,6 +28,8 @@ class CustRegRepository implements RegCustInterafce {
 
         if (responseBody is Map<String, dynamic> && responseBody.containsKey("Response")) {
           final registeredCustomer = RegistedCustomerModel.fromJson(responseBody);
+          printLog("uri = $uri");
+          printLog("body = $data");
           printLog("-------------------BODY---------------------");
           printLog(responseBody);
           return Right(registeredCustomer);

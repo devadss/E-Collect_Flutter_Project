@@ -59,7 +59,11 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
     }
 
     final filtered = originalList.where((customer) {
-      return customer.custName.toLowerCase().contains(query.toLowerCase());
+      final name = customer.custName?.toLowerCase() ?? '';
+      final accNo = customer.depGlobalAccNo?.toString().toLowerCase() ?? '';
+      final search = query.toLowerCase();
+
+      return name.contains(search) || accNo.contains(search);
     }).toList();
 
     setState(() {
@@ -616,9 +620,7 @@ padding: EdgeInsets.all(8),
                   ],
                 );
               }
-
-              final customers =
-                  _filteredCustomers ?? provider.agentCustomerDetailsModel!.data;
+              final customers = _filteredCustomers ?? provider.agentCustomerDetailsModel!.data;
 
               return Column(
                 children: [

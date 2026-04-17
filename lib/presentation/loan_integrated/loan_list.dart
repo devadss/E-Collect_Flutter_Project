@@ -35,6 +35,8 @@ class _LoanListState extends State<LoanList> {
       _branchId = branchId;
       _subAgentId= subAgentId;
     });
+    print("Loan _branchId = $_branchId");
+    print("Loan _subAgentId = $_subAgentId");
     fetchIntegratedLoans();
   }
   Future<void> fetchIntegratedLoans() async {
@@ -52,8 +54,8 @@ class _LoanListState extends State<LoanList> {
     showProgressDialog(context);
     final integratedLoanDetailProvider =
         Provider.of<IntegratedLoanDetailProvider>(context, listen: false);
-    await integratedLoanDetailProvider.getIntegratedLoanDetails(
-        "", "01", "", "", accNo);
+   // await integratedLoanDetailProvider.getIntegratedLoanDetails("", "01", "", "", accNo);
+    await integratedLoanDetailProvider.getIntegratedLoanDetails("", _branchId.toString(), "", "", accNo);
     if (integratedLoanDetailProvider
             .integratedLoanListResponse?.loanDate.isNotEmpty ==
         true) {

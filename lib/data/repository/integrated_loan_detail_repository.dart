@@ -4,13 +4,20 @@ import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 
 import '../../domain/model/integrated_loan_detail_model.dart';
+import '../storage/shared_pref_helper.dart';
 
 class IntegratedLoanDetailRepository implements IntegratedLoanDetailInterface{
+  Future<String> loadVendorUrl() async {
+    return await SharedPref().getDueListLoanUrl();
+  }
   @override
   Future<Either<String, IntegratedLoanDetails>> getIntegratedLoanDetails
       (String flag, String branchId, String schemeCode, String demandDate, String accountNumber) async {
    // final uri = Uri.parse("https://doorstepthazhava.digicob.in/getLoanAccountHolder");
-    final uri = Uri.parse("https://mftctest.digicob.in/getLoanAccountHolder");
+   // final uri = Uri.parse("https://mftctest.digicob.in/getLoanAccountHolder");
+    print("loadVendorUrl = ${await loadVendorUrl()}");
+    var urls = await loadVendorUrl();
+    final uri = Uri.parse(urls);
     final request = await http.post(uri,
     body: jsonEncode({
       "flag": flag,

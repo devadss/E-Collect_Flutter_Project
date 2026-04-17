@@ -26,8 +26,10 @@ class MobileNumberVerificationPage extends StatefulWidget {
 class _MobileNumberVerificationPageState
     extends State<MobileNumberVerificationPage> {
   bool isChecked = false;
-  final String termsUrl = 'https://aanvinsolutions.com/terms.html';
-  final String privacyUrl = 'https://aanvinsolutions.com/privacy.html';
+ // final String termsUrl = 'https://aanvinsolutions.com/terms.html';
+  final String termsUrl = 'https://collect.org.in/terms-of-conditions.html';
+ // final String privacyUrl = 'https://aanvinsolutions.com/privacy.html';
+  final String privacyUrl = 'https://collect.org.in/privacy-policy.html';
   String? errorMsg;
   final TextEditingController _mobileNumberController = TextEditingController();
 

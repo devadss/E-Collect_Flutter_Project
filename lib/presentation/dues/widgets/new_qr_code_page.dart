@@ -127,7 +127,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
 
 //9745228327
   void _listenForFirebaseMessages() {
-    //print("_listenForFirebaseMessages");
+    print("_listenForFirebaseMessages");
     _firebaseMessageSubscription?.cancel(); // ✅ Ensure only one listener
 
     _firebaseMessageSubscription = FirebaseMessaging.onMessage.listen((
@@ -137,16 +137,15 @@ class _NewQrCodePageState extends State<NewQrCodePage>
         final String? notificationTitle = message.notification?.title;
         final String? notificationBody = message.notification?.body;
 
-        //print("📩 Foreground Notification: $notificationTitle");
-
-        if (notificationTitle == "Wallet Load Successful 🎉") {
-          if (mounted) {
-            //print("✅ Showing Success Message");
+        print("📩 Foreground Notification: $notificationTitle");
+ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(notificationTitle.toString())));
+        if (notificationTitle == "Wallet Load Successful 🎉"||notificationTitle == "Amount Collected Successfully" ) {
+         // if (mounted) {
             _showSuccessMessage(notificationBody);
-          }
+         // }
         }
       } else {
-        //print("⚠️ Empty Message Received: ${message.data}");
+        print("⚠️ Empty Message Received: ${message.data}");
       }
     });
 
@@ -596,6 +595,8 @@ class _NewQrCodePageState extends State<NewQrCodePage>
     if (!_isFirebaseListenerInitialized) {
       _listenForFirebaseMessages();
       _isFirebaseListenerInitialized = true;
+    }else{
+      _listenForFirebaseMessages();
     }
   }
 

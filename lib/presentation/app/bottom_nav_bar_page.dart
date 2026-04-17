@@ -50,6 +50,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     var corpCode = await SharedPref.shared.getCorpCode();
     final branchID = await SharedPref().getSubAgentCodeNew();
     print("getUserType value = $userType");
+    print("getLoggedInUserType value = $loggedInUserType");
+    print("corpCode value = $corpCode");
     setState(() {
       _branchID = branchID;
       _corpCode = corpCode;
@@ -74,14 +76,17 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   }
 
   Widget _getSelectedPage(int index) {
+    print("Inside _getSelectedPage");
     switch (index) {
       case 0:
         return  HomePage(userType: loggedInUserTPYE.toString(),);
       case 1:
         return userTPYE?.contains("RDCL") == true
-          //  ? const RdclDuesHomePage()
+
             ?  RdclDueListBlocPage(branchCode: _branchID.toString(),)
-            :_corpCode != "BNKVENAD" ?const DuesHomePage():SizedBox();
+           // :_corpCode != "BNKVENAD" ? const DuesHomePage(): UAT
+            :_corpCode != "BNKVND" ? const DuesHomePage():
+        SizedBox();
 
       case 2:
         return userTPYE?.contains("RDCL") == true
@@ -272,7 +277,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                                 activeIcon: Icons.home,
                                 label: 'Home',
                               ),
-                              _corpCode != "BNKVENAD"?
+                             // _corpCode != "BNKVENAD"?
+                              _corpCode != "BNKVND"?
                               _buildNavItem(
                                 key: _tabKeys[1],
                                 index: 1,

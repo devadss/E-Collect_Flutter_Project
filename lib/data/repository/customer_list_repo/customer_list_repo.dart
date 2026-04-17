@@ -24,8 +24,8 @@ class CustomerListRepo {
     ),
     headers: {"Content-Type":"application/json"}
     );
-
-   // print(request.body);
+print(uri);
+    print(request.body);
     if(request.statusCode == 200){  final successResponse =
     await compute(parseCustomerSuccess, request.body);
 
