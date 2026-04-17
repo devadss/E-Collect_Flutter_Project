@@ -274,63 +274,74 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
   }
   Widget _buildCustomerItem(Customer customer) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: InkWell(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         onTap: () => _navigateToCustomerDetails(customer),
         child: Container(
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: const [
+            color: const Color(0xFFF9FAFB), // soft background instead of pure white
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.grey.shade200),
+            boxShadow: [
               BoxShadow(
-                color: Colors.black12,
-                blurRadius: 10,
-                offset: Offset(0, 4),
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 12,
+                offset: const Offset(0, 6),
               ),
             ],
           ),
           child: Row(
             children: [
-              /// Avatar
+              /// Avatar (Modern Gradient Style)
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
                   shape: BoxShape.circle,
+                  color: home1.withOpacity(0.5)
+                  // gradient: LinearGradient(
+                  //   colors: [
+                  //     Colors.blue.shade400,
+                  //     Colors.blue.shade700,
+                  //   ],
+                  // ),
                 ),
-                child: const Icon(Icons.person, color: Colors.blue),
+                child: const Icon(Icons.person, color: Colors.white, size: 20),
               ),
 
-              const SizedBox(width: 12),
+              const SizedBox(width: 14),
 
-              /// Main Info
+              /// Customer Info
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    /// Name
                     Text(
                       customer.custName,
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 16.5,
                         fontWeight: FontWeight.w600,
+                        letterSpacing: 0.2,
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
 
                     const SizedBox(height: 6),
 
+                    /// Account Label Row
                     Row(
                       children: [
-                        const Icon(Icons.account_balance,
-                            size: 16, color: Colors.grey),
+                        Icon(Icons.account_balance,
+                            size: 14, color: Colors.grey.shade500),
                         const SizedBox(width: 6),
-                        const Text(
+                        Text(
                           "Account",
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey,
+                            color: Colors.grey.shade500,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
@@ -338,11 +349,12 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
 
                     const SizedBox(height: 4),
 
+                    /// Account Number
                     Text(
                       customer.depGlobalAccNo,
                       style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.w600,
                         color: Colors.green.shade700,
                       ),
                       overflow: TextOverflow.ellipsis,
@@ -351,7 +363,9 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
                 ),
               ),
 
-              /// Action Button
+              const SizedBox(width: 10),
+
+              /// Action Button (Modern Pill)
               _buildCollectButton(),
             ],
           ),
@@ -359,163 +373,110 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
       ),
     );
   }
-/*  Widget _buildCustomerItem(Customer customer) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: GestureDetector(
-        onTap: () => _navigateToCustomerDetails(customer),
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 10),
-          height: MediaQuery.of(context).size.height * 0.16,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: white,
-            boxShadow: [
-              BoxShadow(color: Colors.black12, blurRadius: 4, spreadRadius: 3)
-            ],
-            border: Border.all(color: home1.withAlpha(70), width: 1.2),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-mainAxisAlignment:
-                  MainAxisAlignment.start,
-                  children: [
-                    Container(decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(10),  color: Colors.blue.shade50,),
-padding: EdgeInsets.all(8),
-                      child: Icon(Icons.person, color: Colors.blue,),
-                    ),
-                    SizedBox(width: 10,),
-                    Text(
-                      customer.custName,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15,
-                        color: black,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(10),  color: Colors.orange.shade50,),
-                      padding: EdgeInsets.all(8),
-                      child: Icon(Icons.account_balance, color: Colors.orange,),
-                    ),
-                    SizedBox(width: 10,),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                      Text(
-                        "Account Number",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 12,
-                          color: Colors.grey,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      SizedBox(height: 3,),
-                      Container(
-                        padding: EdgeInsets.all(3),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.green.shade50
-                        ),
-                        child: Text(
-                          customer.depGlobalAccNo,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
-                            color: Colors.green,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],),
-
-                   Spacer(flex: 1,),
-                    _buildCollectButton(),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }*/
+  // Widget _buildCustomerItem(Customer customer) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+  //     child: InkWell(
+  //       borderRadius: BorderRadius.circular(16),
+  //       onTap: () => _navigateToCustomerDetails(customer),
+  //       child: Container(
+  //         padding: const EdgeInsets.all(14),
+  //         decoration: BoxDecoration(
+  //           color: Colors.white,
+  //           borderRadius: BorderRadius.circular(16),
+  //           boxShadow: const [
+  //             BoxShadow(
+  //               color: Colors.black12,
+  //               blurRadius: 10,
+  //               offset: Offset(0, 4),
+  //             ),
+  //           ],
+  //         ),
+  //         child: Row(
+  //           children: [
+  //             /// Avatar
+  //             Container(
+  //               padding: const EdgeInsets.all(10),
+  //               decoration: BoxDecoration(
+  //                 color: Colors.blue.shade50,
+  //                 shape: BoxShape.circle,
+  //               ),
+  //               child: const Icon(Icons.person, color: Colors.blue),
+  //             ),
+  //
+  //             const SizedBox(width: 12),
+  //
+  //             /// Main Info
+  //             Expanded(
+  //               child: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   Text(
+  //                     customer.custName,
+  //                     style: const TextStyle(
+  //                       fontSize: 16,
+  //                       fontWeight: FontWeight.w600,
+  //                     ),
+  //                     overflow: TextOverflow.ellipsis,
+  //                   ),
+  //
+  //                   const SizedBox(height: 6),
+  //
+  //                   Row(
+  //                     children: [
+  //                       const Icon(Icons.account_balance,
+  //                           size: 16, color: Colors.grey),
+  //                       const SizedBox(width: 6),
+  //                       const Text(
+  //                         "Account",
+  //                         style: TextStyle(
+  //                           fontSize: 12,
+  //                           color: Colors.grey,
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //
+  //                   const SizedBox(height: 4),
+  //
+  //                   Text(
+  //                     customer.depGlobalAccNo,
+  //                     style: TextStyle(
+  //                       fontSize: 13,
+  //                       fontWeight: FontWeight.w500,
+  //                       color: Colors.green.shade700,
+  //                     ),
+  //                     overflow: TextOverflow.ellipsis,
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //
+  //             /// Action Button
+  //             _buildCollectButton(),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
   Widget _buildCollectButton() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        color: home1.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(20),
+        color: home1.withOpacity(0.9),
+        borderRadius: BorderRadius.circular(30),
       ),
-      child: Row(
-        children: [
-          Image.asset(
-            "assets/images/money.png",
-            height: 16,
-            width: 16,
-            color: home1,
-          ),
-          const SizedBox(width: 6),
-          Text(
-            "Collect",
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: home1,
-            ),
-          ),
-        ],
+      child: const Text(
+        "Collect",
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w600,
+          fontSize: 13,
+        ),
       ),
     );
   }
-/*  Widget _buildCollectButton() {
-    return Container(
-      height: 30,
-      width: 90,
-      decoration: BoxDecoration(
-        color: home1.withAlpha(20),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: home1.withAlpha(55), width: 0.5),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 5),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              "assets/images/money.png",
-              color: home1,
-              scale: 25,
-            ),
-            const SizedBox(width: 5),
-            const Text(
-              "Collect",
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 12,
-                color: Colors.black,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }*/
 
   void _navigateToCustomerDetails(Customer customer) {
     Navigator.push(
