@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:in_app_update/in_app_update.dart';
 
 import 'colors.dart';
 
 String getBankNameFromCorpCode(String corpCode) {
-  print("getBankNameFromCorpCode $corpCode");
+  //print("getBankNameFromCorpCode $corpCode");
   // Map corpcode to bank name
   final Map<String, String> corpCodeToBankName = {
     "BNKKRMR": "KURUMATHUR SERVICE CO OPERATIVE BANK LTD",
@@ -82,7 +83,59 @@ String getBankNameFromCorpCode(String corpCode) {
   // Return the bank name if found, otherwise return a default value
   return corpCodeToBankName[corpCode] ?? "Unknown Bank";
 }
+Map<String, String?> splitName(String fullName) {
+  List<String> parts = fullName.trim().split(RegExp(r'\s+'));
 
+  String? first;
+  String? middle;
+  String? last;
+
+  if (parts.isEmpty) {
+    return {'first': null, 'middle': null, 'last': null};
+  }
+
+  if (parts.length == 1) {
+    first = parts[0];
+  } else if (parts.length == 2) {
+    first = parts[0];
+    last = parts[1];
+  } else {
+    first = parts[0];
+    last = parts.last;
+    middle = parts.sublist(1, parts.length - 1).join(' ');
+  }
+
+  return {
+    'first': first,
+    'middle': middle,
+    'last': last,
+  };
+}
+
+void checkForUpdate() async {
+  try {
+    AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
+    if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
+      InAppUpdate.performImmediateUpdate(); // or .startFlexibleUpdate()
+    }
+  } catch (e) {
+    //print("Update check failed: $e");
+  }
+}
+void showInSnackBar(String value, BuildContext context) {
+  var snackBar = SnackBar(
+    content: Text(
+      value,
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 17,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+    backgroundColor: Colors.red,
+  );
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+}
 
 void showProgressDialog(BuildContext context) {
   showDialog(
@@ -102,7 +155,7 @@ void showProgressDialog(BuildContext context) {
                     SizedBox(
                       height: 10,
                     ),
-                    Text(
+                     Text(
                       "Please wait....",
                       style: TextStyle(
                         fontSize: 17,

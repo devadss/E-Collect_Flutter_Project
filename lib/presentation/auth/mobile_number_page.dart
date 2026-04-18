@@ -3,10 +3,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:in_app_update/in_app_update.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/colors.dart';
+import '../../core/constants.dart';
 import '../../core/utils.dart';
 import '../../data/provider/cust_register_provider.dart';
 import '../../data/provider/parent_agent_detail_provider/parent_agent_detil_provider.dart';
@@ -22,24 +22,21 @@ class MobileNumberVerificationPage extends StatefulWidget {
       _MobileNumberVerificationPageState();
 }
 
-class _MobileNumberVerificationPageState
-    extends State<MobileNumberVerificationPage> {
+class _MobileNumberVerificationPageState extends State<MobileNumberVerificationPage> {
   bool isChecked = false;
- // final String termsUrl = 'https://aanvinsolutions.com/terms.html';
-  // final String privacyUrl = 'https://aanvinsolutions.com/privacy.html';
-  final String termsUrl = 'https://collect.org.in/terms-of-conditions.html';
-  final String privacyUrl = 'https://collect.org.in/privacy-policy.html';
+  final String termsUrl = terms;
+  final String privacyUrl = privacy;
   String? errorMsg;
   final TextEditingController _mobileNumberController = TextEditingController();
 
-  // All your existing methods remain exactly the same...
+ 
   Future<void> checkMobileNumber() async {
     showProgressDialog(context);
     if (_mobileNumberController.text.isNotEmpty) {
       validateMobile(_mobileNumberController.text);
     } else {
       Navigator.pop(context);
-      showInSnackBar("EMPTY FIELD NOT ALLOWED");
+      showInSnackBar("EMPTY FIELD NOT ALLOWED", context);
     }
   }
 
@@ -49,35 +46,25 @@ class _MobileNumberVerificationPageState
     checkForUpdate();
   }
 
-  void checkForUpdate() async {
-    try {
-      AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
-      if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
-        InAppUpdate.performImmediateUpdate(); // or .startFlexibleUpdate()
-      }
-    } catch (e) {
-      //print("Update check failed: $e");
-    }
-  }
 
   Future<void> validateMobile(String value) async {
-    String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
-    RegExp regExp = RegExp(pattern);
     if (value.isEmpty) {
-      showInSnackBar('EMPTY FIELDS NOT ALLOWED');
+      showInSnackBar(mobileNumEmpty, context);
     } else if (!regExp.hasMatch(value)) {
       Navigator.pop(context);
-      showInSnackBar('Please enter valid mobile number');
+      showInSnackBar(mobileNumEmptyMSG, context);
     } else {
-      final parentAgentDetailProvider =
-          Provider.of<ParentDetailAgentProvider>(context, listen: false);
-      final vendorBaseUrlProvider =
-          Provider.of<CollectionBaseUrlProvider>(context, listen: false);
 
+      final parentAgentDetailProvider = Provider.of<ParentDetailAgentProvider>(context, listen: false);
+      final vendorBaseUrlProvider = Provider.of<CollectionBaseUrlProvider>(context, listen: false);
+      final custRegisterProvider = Provider.of<CustRegisterProvider>(context, listen: false,);
+
+      //PROVIDER CALL 1......
       await parentAgentDetailProvider.fetchParentAgentDetails(value);
+
       if (parentAgentDetailProvider.subAgent != null) {
-        await vendorBaseUrlProvider.getCollectionUrl(
-            parentAgentDetailProvider.subAgent?.data.mobileNumber);
+        //PROVIDER CALL 2......
+        await vendorBaseUrlProvider.getCollectionUrl(parentAgentDetailProvider.subAgent?.data.mobileNumber);
 
         if (vendorBaseUrlProvider.collectionBaseUrlModel != null) {
 
@@ -136,6 +123,7 @@ class _MobileNumberVerificationPageState
         final parentAgentCredentialProvider =
             Provider.of<ParentAgentCredentialProvider>(context, listen: false);
 
+        //PROVIDER CALL 3......
         await parentAgentCredentialProvider.fetchParentAgentCredentials(
             parentAgentDetailProvider.subAgent!.data.parentAgentMobNo
                 .toString()
@@ -147,20 +135,18 @@ class _MobileNumberVerificationPageState
               .parentAgentCredentialModel!.b.mobPassword);
           SharedPref.shared.setAgentName(parentAgentCredentialProvider
               .parentAgentCredentialModel!.b.userName);
-          final custRegisterProvider = Provider.of<CustRegisterProvider>(
-            context,
-            listen: false,
-          );
 
-          await custRegisterProvider.checkRegCust(int.parse(
-              parentAgentDetailProvider.subAgent!.data.parentAgentMobNo
+          //PROVIDER CALL 4......
+          // await custRegisterProvider.checkRegCust(int.parse(
+          //     parentAgentDetailProvider.subAgent!.data.parentAgentMobNo
+          //         .toString()
+          //         .replaceAll("+91", "")));
+
+          //PROVIDER CALL 5......
+          final response = await custRegisterProvider.checkRegCust(int.parse(parentAgentDetailProvider.subAgent!.data.parentAgentMobNo
                   .toString()
                   .replaceAll("+91", "")));
 
-          final response = await custRegisterProvider.checkRegCust(int.parse(
-              parentAgentDetailProvider.subAgent!.data.parentAgentMobNo
-                  .toString()
-                  .replaceAll("+91", "")));
           response.fold(
             (error) {
               Navigator.pop(context);
@@ -248,11 +234,11 @@ class _MobileNumberVerificationPageState
                   );
                 }else{
 
-                  showInSnackBar("Not a valid collection agent");
+                  showInSnackBar("Not a valid collection agent", context);
                 }
               } else {
 
-                showInSnackBar("Not a valid collection agent");
+                showInSnackBar("Not a valid collection agent", context);
               }
             },
           );
@@ -262,12 +248,14 @@ class _MobileNumberVerificationPageState
         }
       }
       else {
-        final custRegisterProvider = Provider.of<CustRegisterProvider>(
-          context,
-          listen: false,
-        );
+        // final custRegisterProvider = Provider.of<CustRegisterProvider>(
+        //   context,
+        //   listen: false,
+        // );
+        //PROVIDER CALL 5......
         final response = await custRegisterProvider.checkRegCust(
             int.parse(_mobileNumberController.text.replaceAll("+91", "")));
+
         response.fold((error) {
           Navigator.pop(context);
         }, (customer) async {
@@ -319,50 +307,7 @@ class _MobileNumberVerificationPageState
     }
   }
 
-  Map<String, String?> splitName(String fullName) {
-    List<String> parts = fullName.trim().split(RegExp(r'\s+'));
-
-    String? first;
-    String? middle;
-    String? last;
-
-    if (parts.isEmpty) {
-      return {'first': null, 'middle': null, 'last': null};
-    }
-
-    if (parts.length == 1) {
-      first = parts[0];
-    } else if (parts.length == 2) {
-      first = parts[0];
-      last = parts[1];
-    } else {
-      first = parts[0];
-      last = parts.last;
-      middle = parts.sublist(1, parts.length - 1).join(' ');
-    }
-
-    return {
-      'first': first,
-      'middle': middle,
-      'last': last,
-    };
-  }
-
-  void showInSnackBar(String value) {
-    var snackBar = SnackBar(
-      content: Text(
-        value,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 17,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-      backgroundColor: Colors.red,
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -372,7 +317,7 @@ class _MobileNumberVerificationPageState
           children: [
             // Hero Section with new color theme
             Container(
-              height: MediaQuery.of(context).size.height * 0.35,
+              height: MediaQuery.of(context).size.height * 0.43,
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [Color(0xFFEA307B), Color(0xFF470952)],
@@ -696,7 +641,7 @@ class _MobileNumberVerificationPageState
                     child: ElevatedButton(
                       onPressed: () {
                         if (!isChecked) {
-                          showInSnackBar("Please accept Terms & Conditions");
+                          showInSnackBar("Please accept Terms & Conditions", context);
                           return;
                         }
                         checkMobileNumber();

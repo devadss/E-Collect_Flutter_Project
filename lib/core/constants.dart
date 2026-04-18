@@ -33,7 +33,12 @@ const String kPinCodeNullError = "Enter your pin code";
 const String kPinCodeValidError = "Enter a valid pin code";
 const String kNameValidError = "Enter a valid name";
 const String kOtpNullError = "Enter the otp";
-
+const String mobileNumEmpty = 'EMPTY FIELDS NOT ALLOWED';
+const String mobileNumEmptyMSG = "Please enter valid mobile number";
+const String terms = 'https://collect.org.in/terms-of-conditions.html';
+const String privacy = 'https://collect.org.in/privacy-policy.html';
+String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+RegExp regExp = RegExp(pattern);
 
 class NotificationChannels {
   static const String getCartNonDeliverable = "GET_CART_NON_DELIVERABLE";
