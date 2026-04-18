@@ -148,818 +148,8 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
         ),
       ),
       body:
-      // SingleChildScrollView(
-      //   child: Padding(
-      //     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      //     child: Column(
-      //       mainAxisAlignment: MainAxisAlignment.start,
-      //       crossAxisAlignment: CrossAxisAlignment.center,
-      //       children: [
-      //         Container(
-      //             width: double.infinity,
-      //             height: MediaQuery.of(context).size.width * 0.15,
-      //             decoration: BoxDecoration(
-      //                 color: Colors.white,
-      //                 borderRadius: BorderRadius.circular(10),
-      //                 boxShadow: [
-      //                   BoxShadow(
-      //                       color: Colors.black12.withAlpha(20),
-      //                       offset: Offset(0, 1),
-      //                       blurRadius: 8,
-      //                       spreadRadius: 2)
-      //                 ]),
-      //             child: Padding(
-      //               padding: const EdgeInsets.all(8.0),
-      //               child: Row(
-      //                 mainAxisAlignment: MainAxisAlignment.start,
-      //                 children: [
-      //                   Container(
-      //                       decoration: BoxDecoration(
-      //                           color: home1.withAlpha(40),
-      //                           borderRadius: BorderRadius.circular(5)),
-      //                       child: Padding(
-      //                         padding: const EdgeInsets.all(5.0),
-      //                         child: Icon(Icons.supervised_user_circle_rounded,
-      //                             color: home1),
-      //                       )),
-      //                   SizedBox(
-      //                     width: 10,
-      //                   ),
-      //                   Column(
-      //                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      //                     crossAxisAlignment: CrossAxisAlignment.start,
-      //                     children: [
-      //                       Text(
-      //                         widget.name,
-      //                         style: TextStyle(
-      //                             color: home2, fontWeight: FontWeight.w700),
-      //                       ),
-      //                       Text(
-      //                         "CUST NO : ${widget.custNo}",
-      //                         style: TextStyle(
-      //                             fontSize: 12,
-      //                             color: home2,
-      //                             fontWeight: FontWeight.w700),
-      //                       ),
-      //                     ],
-      //                   )
-      //                 ],
-      //               ),
-      //             )),
-      //         SizedBox(
-      //           height: 20,
-      //         ),
-      //         Container(
-      //           padding: EdgeInsets.all(10),
-      //           width: double.infinity,
-      //           height: MediaQuery.of(context).size.height * 0.30,
-      //           decoration: BoxDecoration(
-      //               color: Colors.white,
-      //               borderRadius: BorderRadius.circular(10),
-      //               boxShadow: [
-      //                 BoxShadow(
-      //                     offset: Offset(0, 1),
-      //                     color: Colors.black12,
-      //                     spreadRadius: 2,
-      //                     blurRadius: 8)
-      //               ]),
-      //           child: Column(
-      //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      //             crossAxisAlignment: CrossAxisAlignment.start,
-      //             children: [
-      //               Text(
-      //                 "Loan Details",
-      //                 style:
-      //                     TextStyle(color: home2, fontWeight: FontWeight.w700),
-      //               ),
-      //               Divider(),
-      //               Row(
-      //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                 crossAxisAlignment: CrossAxisAlignment.center,
-      //                 children: [
-      //                   Row(
-      //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                     children: [
-      //                       Container(
-      //                           decoration: BoxDecoration(
-      //                               color: home1.withAlpha(40),
-      //                               borderRadius: BorderRadius.circular(5)),
-      //                           child: Padding(
-      //                             padding: const EdgeInsets.all(5.0),
-      //                             child: Icon(
-      //                               Icons.date_range,
-      //                               color: home1,
-      //                               size: 20,
-      //                             ),
-      //                           )),
-      //                       SizedBox(
-      //                         width: 5,
-      //                       ),
-      //                       Text("Loan Date",
-      //                           style: TextStyle(color: home2, fontSize: 12)),
-      //                     ],
-      //                   ),
-      //                   Text(
-      //                     widget.loanDate,
-      //                     style: TextStyle(fontSize: 12),
-      //                   )
-      //                 ],
-      //               ),
-      //               //  Divider(color: Colors.black12,),
-      //               Row(
-      //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                 crossAxisAlignment: CrossAxisAlignment.center,
-      //                 children: [
-      //                   Row(
-      //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                     children: [
-      //                       Container(
-      //                           decoration: BoxDecoration(
-      //                               color: home1.withAlpha(40),
-      //                               borderRadius: BorderRadius.circular(5)),
-      //                           child: Padding(
-      //                             padding: const EdgeInsets.all(5.0),
-      //                             child: Icon(
-      //                               Icons.currency_rupee,
-      //                               color: home1,
-      //                               size: 18,
-      //                             ),
-      //                           )),
-      //                       SizedBox(
-      //                         width: 5,
-      //                       ),
-      //                       Text(
-      //                         "Loan Amount",
-      //                         style: TextStyle(color: home2, fontSize: 12),
-      //                       ),
-      //                     ],
-      //                   ),
-      //                   Text(widget.loanAmount, style: TextStyle(fontSize: 12))
-      //                 ],
-      //               ),
-      //               // Divider(color: Colors.black12,),
-      //               Row(
-      //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                 crossAxisAlignment: CrossAxisAlignment.center,
-      //                 children: [
-      //                   Row(
-      //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                     children: [
-      //                       Container(
-      //                           decoration: BoxDecoration(
-      //                               color: home1.withAlpha(40),
-      //                               borderRadius: BorderRadius.circular(5)),
-      //                           child: Padding(
-      //                             padding: const EdgeInsets.all(5.0),
-      //                             child: Icon(
-      //                               Icons.numbers,
-      //                               color: home1,
-      //                               size: 20,
-      //                             ),
-      //                           )),
-      //                       SizedBox(
-      //                         width: 5,
-      //                       ),
-      //                       Text("Loan Number",
-      //                           style: TextStyle(color: home2, fontSize: 12)),
-      //                     ],
-      //                   ),
-      //                   Text(widget.loanNumber, style: TextStyle(fontSize: 12))
-      //                 ],
-      //               ),
-      //               //  Divider(color: Colors.black12,),
-      //               Row(
-      //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                 crossAxisAlignment: CrossAxisAlignment.center,
-      //                 children: [
-      //                   Row(
-      //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                     children: [
-      //                       Container(
-      //                           decoration: BoxDecoration(
-      //                               color: home1.withAlpha(40),
-      //                               borderRadius: BorderRadius.circular(5)),
-      //                           child: Padding(
-      //                             padding: const EdgeInsets.all(5.0),
-      //                             child: Icon(
-      //                               Icons.account_balance_wallet,
-      //                               color: home1,
-      //                               size: 20,
-      //                             ),
-      //                           )),
-      //                       SizedBox(
-      //                         width: 5,
-      //                       ),
-      //                       Text("Loan Type",
-      //                           style: TextStyle(color: home2, fontSize: 12)),
-      //                     ],
-      //                   ),
-      //                   Text(widget.loanType, style: TextStyle(fontSize: 12))
-      //                 ],
-      //               ),
-      //               // Divider(color: Colors.black12,),
-      //               Row(
-      //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                 crossAxisAlignment: CrossAxisAlignment.center,
-      //                 children: [
-      //                   Row(
-      //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                     children: [
-      //                       Container(
-      //                           decoration: BoxDecoration(
-      //                               color: home1.withAlpha(40),
-      //                               borderRadius: BorderRadius.circular(5)),
-      //                           child: Padding(
-      //                             padding: const EdgeInsets.all(5.0),
-      //                             child: Icon(
-      //                               Icons.data_exploration,
-      //                               color: home1,
-      //                               size: 20,
-      //                             ),
-      //                           )),
-      //                       SizedBox(
-      //                         width: 5,
-      //                       ),
-      //                       Text("Loan Period",
-      //                           style: TextStyle(color: home2, fontSize: 12)),
-      //                     ],
-      //                   ),
-      //                   Text(widget.loanPeriod, style: TextStyle(fontSize: 12))
-      //                 ],
-      //               ),
-      //               // Divider(color: Colors.black12,),
-      //               Row(
-      //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                 crossAxisAlignment: CrossAxisAlignment.center,
-      //                 children: [
-      //                   Row(
-      //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                     children: [
-      //                       Container(
-      //                           decoration: BoxDecoration(
-      //                               color: home1.withAlpha(40),
-      //                               borderRadius: BorderRadius.circular(5)),
-      //                           child: Padding(
-      //                             padding: const EdgeInsets.all(5.0),
-      //                             child: Icon(
-      //                               Icons.integration_instructions_outlined,
-      //                               color: home1,
-      //                               size: 20,
-      //                             ),
-      //                           )),
-      //                       SizedBox(
-      //                         width: 5,
-      //                       ),
-      //                       Text("Loan Interest",
-      //                           style: TextStyle(color: home2, fontSize: 12)),
-      //                     ],
-      //                   ),
-      //                   Text(widget.loanInterest,
-      //                       style: TextStyle(fontSize: 12))
-      //                 ],
-      //               ),
-      //             ],
-      //           ),
-      //         ),
-      //         SizedBox(
-      //           height: 20,
-      //         ),
-      //         Container(
-      //           height: MediaQuery.of(context).size.height * 0.20,
-      //           width: double.infinity,
-      //           decoration: BoxDecoration(
-      //               borderRadius: BorderRadius.circular(10),
-      //               color: Colors.white,
-      //               boxShadow: [
-      //                 BoxShadow(
-      //                     color: Colors.black12,
-      //                     offset: Offset(1, 0),
-      //                     blurRadius: 8,
-      //                     spreadRadius: 2)
-      //               ]),
-      //           child: Padding(
-      //             padding: const EdgeInsets.all(10.0),
-      //             child: Column(
-      //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      //               crossAxisAlignment: CrossAxisAlignment.start,
-      //               children: [
-      //                 Text(
-      //                   "Particular : Principal amount",
-      //                   style: TextStyle(
-      //                       color: home2, fontWeight: FontWeight.w700),
-      //                 ),
-      //                 Divider(),
-      //                 Row(
-      //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                   crossAxisAlignment: CrossAxisAlignment.center,
-      //                   children: [
-      //                     Text("Total Received",
-      //                         style:
-      //                             TextStyle(color: Colors.green, fontSize: 12)),
-      //                     Text(
-      //                       widget.principalAmountReceived.toString(),
-      //                       style: TextStyle(
-      //                           fontSize: 12,
-      //                           color: Colors.green,
-      //                           fontWeight: FontWeight.w500),
-      //                     ),
-      //                   ],
-      //                 ),
-      //                 Row(
-      //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                   crossAxisAlignment: CrossAxisAlignment.center,
-      //                   children: [
-      //                     Text("Balance",
-      //                         style:
-      //                             TextStyle(color: Colors.blue, fontSize: 12)),
-      //                     Text(
-      //                       widget.principalAmountBalance.toString(),
-      //                       style: TextStyle(
-      //                           fontSize: 12,
-      //                           color: Colors.blue,
-      //                           fontWeight: FontWeight.w500),
-      //                     ),
-      //                   ],
-      //                 ),
-      //                 Row(
-      //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                   crossAxisAlignment: CrossAxisAlignment.center,
-      //                   children: [
-      //                     Text("Overdue",
-      //                         style:
-      //                             TextStyle(color: Colors.red, fontSize: 12)),
-      //                     Text(
-      //                       widget.principalAmountOverdue.toString(),
-      //                       style: TextStyle(
-      //                           fontSize: 12,
-      //                           color: Colors.red,
-      //                           fontWeight: FontWeight.w500),
-      //                     ),
-      //                   ],
-      //                 ),
-      //                 Row(
-      //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                   crossAxisAlignment: CrossAxisAlignment.center,
-      //                   children: [
-      //                     Text("Current Receipt",
-      //                         style: TextStyle(color: home1, fontSize: 12)),
-      //                     Text(
-      //                       widget.principalAmountReceipt.toString(),
-      //                       style: TextStyle(fontSize: 12),
-      //                     ),
-      //                   ],
-      //                 ),
-      //               ],
-      //             ),
-      //           ),
-      //         ),
-      //         SizedBox(
-      //           height: 20,
-      //         ),
-      //         Container(
-      //           height: MediaQuery.of(context).size.height * 0.20,
-      //           width: double.infinity,
-      //           decoration: BoxDecoration(
-      //               borderRadius: BorderRadius.circular(10),
-      //               color: Colors.white,
-      //               boxShadow: [
-      //                 BoxShadow(
-      //                     color: Colors.black12,
-      //                     offset: Offset(1, 0),
-      //                     blurRadius: 8,
-      //                     spreadRadius: 2)
-      //               ]),
-      //           child: Padding(
-      //             padding: const EdgeInsets.all(10.0),
-      //             child: Column(
-      //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      //               crossAxisAlignment: CrossAxisAlignment.start,
-      //               children: [
-      //                 Text(
-      //                   "Particular : Interest",
-      //                   style: TextStyle(
-      //                       color: home2, fontWeight: FontWeight.w700),
-      //                 ),
-      //                 Divider(),
-      //                 Row(
-      //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                   crossAxisAlignment: CrossAxisAlignment.center,
-      //                   children: [
-      //                     Text("Total Received",
-      //                         style:
-      //                             TextStyle(color: Colors.green, fontSize: 12)),
-      //                     Text(
-      //                       widget.interestAmountReceived.toString(),
-      //                       style: TextStyle(
-      //                           fontSize: 12,
-      //                           color: Colors.green,
-      //                           fontWeight: FontWeight.w500),
-      //                     ),
-      //                   ],
-      //                 ),
-      //                 Row(
-      //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                   crossAxisAlignment: CrossAxisAlignment.center,
-      //                   children: [
-      //                     Text("Balance",
-      //                         style:
-      //                             TextStyle(color: Colors.blue, fontSize: 12)),
-      //                     Text(
-      //                       widget.interestAmountBalance.toString(),
-      //                       style: TextStyle(
-      //                           fontSize: 12,
-      //                           color: Colors.blue,
-      //                           fontWeight: FontWeight.w500),
-      //                     ),
-      //                   ],
-      //                 ),
-      //                 Row(
-      //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                   crossAxisAlignment: CrossAxisAlignment.center,
-      //                   children: [
-      //                     Text("Overdue",
-      //                         style:
-      //                             TextStyle(color: Colors.red, fontSize: 12)),
-      //                     Text(
-      //                       widget.interestAmountOverdue.toString(),
-      //                       style: TextStyle(
-      //                           fontSize: 12,
-      //                           color: Colors.red,
-      //                           fontWeight: FontWeight.w500),
-      //                     ),
-      //                   ],
-      //                 ),
-      //                 Row(
-      //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                   crossAxisAlignment: CrossAxisAlignment.center,
-      //                   children: [
-      //                     Text("Current Receipt",
-      //                         style: TextStyle(color: home1, fontSize: 12)),
-      //                     Text(
-      //                       widget.interestAmountReceipt.toString(),
-      //                       style: TextStyle(
-      //                         fontSize: 12,
-      //                       ),
-      //                     ),
-      //                   ],
-      //                 ),
-      //               ],
-      //             ),
-      //           ),
-      //         ),
-      //         SizedBox(
-      //           height: 20,
-      //         ),
-      //         Container(
-      //           height: MediaQuery.of(context).size.height * 0.20,
-      //           width: double.infinity,
-      //           decoration: BoxDecoration(
-      //               borderRadius: BorderRadius.circular(10),
-      //               color: Colors.white,
-      //               boxShadow: [
-      //                 BoxShadow(
-      //                     color: Colors.black12,
-      //                     offset: Offset(1, 0),
-      //                     blurRadius: 8,
-      //                     spreadRadius: 2)
-      //               ]),
-      //           child: Padding(
-      //             padding: const EdgeInsets.all(10.0),
-      //             child: Column(
-      //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      //               crossAxisAlignment: CrossAxisAlignment.start,
-      //               children: [
-      //                 Text(
-      //                   "Particular : Penal Interest",
-      //                   style: TextStyle(
-      //                       color: home2, fontWeight: FontWeight.w700),
-      //                 ),
-      //                 Divider(),
-      //                 Row(
-      //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                   crossAxisAlignment: CrossAxisAlignment.center,
-      //                   children: [
-      //                     Text("Total Received",
-      //                         style: TextStyle(
-      //                           color: Colors.green,
-      //                           fontSize: 12,
-      //                         )),
-      //                     Text(widget.penalInterestAmountReceived.toString(),
-      //                         style: TextStyle(
-      //                             fontSize: 12,
-      //                             color: Colors.green,
-      //                             fontWeight: FontWeight.w500)),
-      //                   ],
-      //                 ),
-      //                 Row(
-      //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                   crossAxisAlignment: CrossAxisAlignment.center,
-      //                   children: [
-      //                     Text("Balance",
-      //                         style:
-      //                             TextStyle(color: Colors.blue, fontSize: 12)),
-      //                     Text(widget.penalInterestAmountBalance.toString(),
-      //                         style: TextStyle(
-      //                             fontSize: 12,
-      //                             color: Colors.blue,
-      //                             fontWeight: FontWeight.w500)),
-      //                   ],
-      //                 ),
-      //                 Row(
-      //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                   crossAxisAlignment: CrossAxisAlignment.center,
-      //                   children: [
-      //                     Text("Overdue",
-      //                         style:
-      //                             TextStyle(color: Colors.red, fontSize: 12)),
-      //                     Text(widget.penalInterestAmountOverdue.toString(),
-      //                         style: TextStyle(
-      //                             fontSize: 12,
-      //                             color: Colors.red,
-      //                             fontWeight: FontWeight.w500)),
-      //                   ],
-      //                 ),
-      //                 Row(
-      //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                   crossAxisAlignment: CrossAxisAlignment.center,
-      //                   children: [
-      //                     Text("Current Receipt",
-      //                         style: TextStyle(color: home1, fontSize: 12)),
-      //                     Text(
-      //                       widget.penalInterestAmountReceipt.toString(),
-      //                       style: TextStyle(fontSize: 12),
-      //                     ),
-      //                   ],
-      //                 ),
-      //               ],
-      //             ),
-      //           ),
-      //         ),
-      //         SizedBox(
-      //           height: 10,
-      //         ),
-      //         SizedBox(
-      //           width: double.infinity,
-      //           child: ElevatedButton(
-      //               onPressed: () {
-      //                 showModalBottomSheet(
-      //                   isScrollControlled: true, // Already set
-      //                   context: context,
-      //                   builder: (BuildContext context) {
-      //                     return Padding(
-      //                       padding: EdgeInsets.only(
-      //                         bottom: MediaQuery.of(context)
-      //                             .viewInsets
-      //                             .bottom, // <-- important
-      //                       ),
-      //                       child: SizedBox(
-      //                         height: 200,
-      //                         // You can make it dynamic if needed
-      //                         width: double.infinity,
-      //                         child: Column(
-      //                           children: [
-      //                             Padding(
-      //                               padding:
-      //                               const EdgeInsets.all(8.0),
-      //                               child: Row(
-      //                                 crossAxisAlignment:
-      //                                 CrossAxisAlignment.center,
-      //                                 mainAxisAlignment:
-      //                                 MainAxisAlignment
-      //                                     .spaceBetween,
-      //                                 children: [
-      //                                   const Spacer(flex: 1),
-      //                                   const Text(
-      //                                     "QR Amount",
-      //                                     style: TextStyle(
-      //                                         color: home1,
-      //                                         fontSize: 18,
-      //                                         fontWeight:
-      //                                         FontWeight.w700),
-      //                                   ),
-      //                                   const Spacer(flex: 1),
-      //                                   InkWell(
-      //                                     onTap: () {
-      //                                       Navigator.pop(context);
-      //                                       editAmountController
-      //                                           .text =
-      //                                           widget.loanAmount
-      //                                               .toString();
-      //                                     },
-      //                                     child: const Icon(
-      //                                       Icons.cancel_rounded,
-      //                                       size: 30,
-      //                                       color: home2,
-      //                                     ),
-      //                                   ),
-      //                                 ],
-      //                               ),
-      //                             ),
-      //                             Padding(
-      //                               padding:
-      //                               const EdgeInsets.symmetric(
-      //                                   horizontal: 20,
-      //                                   vertical: 10),
-      //                               child: TextField(
-      //                                 keyboardType:
-      //                                 TextInputType.number,
-      //                                 controller:
-      //                                 editAmountController,
-      //                                 decoration:
-      //                                 const InputDecoration(
-      //                                     prefixIcon: Icon(
-      //                                       Icons.currency_rupee,
-      //                                       color: home1,
-      //                                     ),
-      //                                     border: OutlineInputBorder(
-      //                                         borderRadius:
-      //                                         BorderRadius
-      //                                             .all(Radius
-      //                                             .circular(
-      //                                             10))),
-      //                                     labelText:
-      //                                     "Enter collection amount"),
-      //                               ),
-      //                             ),
-      //                             ElevatedButton(
-      //                                 onPressed: () {
-      //                                   //Navigator.pop(context);
-      //                                   generateQrPaymentSession();
-      //                                 },
-      //                                 style: ElevatedButton.styleFrom(
-      //                                     backgroundColor: home1,
-      //                                     foregroundColor:
-      //                                     Colors.white),
-      //                                 child: const Text("Submit"))
-      //                           ],
-      //                         ),
-      //                       ),
-      //                     );
-      //                   },
-      //                 );
-      //
-      //               },
-      //               style: ElevatedButton.styleFrom(
-      //                   shape: RoundedRectangleBorder(
-      //                       borderRadius: BorderRadius.circular(10)),
-      //                   backgroundColor: home1,
-      //                   foregroundColor: Colors.white),
-      //               child: Text("Generate QR")),
-      //         ),
-      //         SizedBox(
-      //           height: 10,
-      //         ),
-      //         SizedBox(
-      //           width: double.infinity,
-      //           child: ElevatedButton(
-      //               onPressed: () {
-      //                 showModalBottomSheet(
-      //                   isScrollControlled: true, // Already set
-      //                   context: context,
-      //                   builder: (BuildContext context) {
-      //                     return Padding(
-      //                       padding: EdgeInsets.only(
-      //                         bottom: MediaQuery.of(context)
-      //                             .viewInsets
-      //                             .bottom, // <-- important
-      //                       ),
-      //                       child: SizedBox(
-      //                         height: 200,
-      //                         // You can make it dynamic if needed
-      //                         width: double.infinity,
-      //                         child: Column(
-      //                           children: [
-      //                             Padding(
-      //                               padding:
-      //                               const EdgeInsets.all(8.0),
-      //                               child: Row(
-      //                                 crossAxisAlignment:
-      //                                 CrossAxisAlignment.center,
-      //                                 mainAxisAlignment:
-      //                                 MainAxisAlignment
-      //                                     .spaceBetween,
-      //                                 children: [
-      //                                   const Spacer(flex: 1),
-      //                                   const Text(
-      //                                     "Collection Amount",
-      //                                     style: TextStyle(
-      //                                         color: home1,
-      //                                         fontSize: 18,
-      //                                         fontWeight:
-      //                                         FontWeight.w700),
-      //                                   ),
-      //                                   const Spacer(flex: 1),
-      //                                   InkWell(
-      //                                     onTap: () {
-      //                                       Navigator.pop(context);
-      //                                       editAmountController
-      //                                           .text =
-      //                                           widget.loanAmount
-      //                                               .toString();
-      //                                     },
-      //                                     child: const Icon(
-      //                                       Icons.cancel_rounded,
-      //                                       size: 30,
-      //                                       color: home2,
-      //                                     ),
-      //                                   ),
-      //                                 ],
-      //                               ),
-      //                             ),
-      //                             Padding(
-      //                               padding:
-      //                               const EdgeInsets.symmetric(
-      //                                   horizontal: 20,
-      //                                   vertical: 10),
-      //                               child: TextField(
-      //                                 keyboardType:
-      //                                 TextInputType.number,
-      //                                 controller:
-      //                                 editAmountController,
-      //                                 decoration:
-      //                                 const InputDecoration(
-      //                                     prefixIcon: Icon(
-      //                                       Icons
-      //                                           .currency_rupee,
-      //                                       color: home1,
-      //                                     ),
-      //                                     border: OutlineInputBorder(
-      //                                         borderRadius: BorderRadius
-      //                                             .all(Radius
-      //                                             .circular(
-      //                                             10))),
-      //                                     labelText:
-      //                                     "Enter collection amount"),
-      //                               ),
-      //                             ),
-      //                             ElevatedButton(
-      //                                 onPressed: () {
-      //                                   Navigator.pop(context);
-      //                                   paymentConfirmation(context, agentName!,
-      //                                       widget.loanNumber, widget.custNo, editAmountController.text);
-      //
-      //                                 },
-      //                                 style:
-      //                                 ElevatedButton.styleFrom(
-      //                                     backgroundColor:
-      //                                     home1,
-      //                                     foregroundColor:
-      //                                     Colors.white),
-      //                                 child: const Text("Submit"))
-      //                           ],
-      //                         ),
-      //                       ),
-      //                     );
-      //                   },
-      //                 );
-      //               },
-      //               style: ElevatedButton.styleFrom(
-      //                   shadowColor: Colors.white,
-      //                   backgroundColor: Colors.white,
-      //                   foregroundColor: home1,
-      //                   side: BorderSide(color: home1),
-      //                   shape: RoundedRectangleBorder(
-      //                       borderRadius: BorderRadiusGeometry.circular(10))),
-      //               child: Text("Collect Cash")),
-      //         ),
-      //         SizedBox(
-      //           height: 10,
-      //         ),
-      //
-      //         // SizedBox(
-      //         //   width: double.infinity,
-      //         //   child: ElevatedButton(
-      //         //       onPressed: () {},
-      //         //       style: ElevatedButton.styleFrom(
-      //         //           shadowColor: Colors.white,
-      //         //           backgroundColor: Colors.white,
-      //         //           foregroundColor: home1,
-      //         //           side: BorderSide(color: home1),
-      //         //           shape: RoundedRectangleBorder(
-      //         //               borderRadius: BorderRadiusGeometry.circular(10))),
-      //         //       child: Text("Send Payment Link")),
-      //         // ),
-      //         // SizedBox(
-      //         //   height: 10,
-      //         // ),
-      //         // SizedBox(
-      //         //   width: double.infinity,
-      //         //   child: ElevatedButton(
-      //         //       onPressed: () {},
-      //         //       style: ElevatedButton.styleFrom(
-      //         //           shadowColor: Colors.white,
-      //         //           backgroundColor: Colors.white,
-      //         //           foregroundColor: home1,
-      //         //           side: BorderSide(color: home1),
-      //         //           shape: RoundedRectangleBorder(
-      //         //               borderRadius: BorderRadiusGeometry.circular(10))),
-      //         //       child: Text("Account Transfer")),
-      //         // )
-      //       ],
-      //     ),
-      //   ),
-      // ),
-      SingleChildScrollView(
+
+     /* SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
@@ -1223,10 +413,307 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                     ),
           ],
         ),
+      )*/
+      SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            _buildHeaderCard(),
+            const SizedBox(height: 20),
+            _buildLoanDetailsCard(),
+            const SizedBox(height: 24),
+
+            // Modern Card Container for Amount Sections
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  _buildModernAmountSection(
+                    title: "Principal Amount",
+                    received: widget.principalAmountReceived,
+                    balance: widget.principalAmountBalance,
+                    overdue: widget.principalAmountOverdue,
+                    current: widget.principalAmountReceipt,
+                    icon: Icons.account_balance_wallet,
+                    color: const Color(0xFF4361EE),
+                  ),
+                  Divider(height: 1, color: Colors.grey.shade100),
+                  _buildModernAmountSection(
+                    title: "Interest",
+                    received: widget.interestAmountReceived,
+                    balance: widget.interestAmountBalance,
+                    overdue: widget.interestAmountOverdue,
+                    current: widget.interestAmountReceipt,
+                    icon: Icons.trending_up,
+                    color: const Color(0xFFE76F51),
+                  ),
+                  Divider(height: 1, color: Colors.grey.shade100),
+                  _buildModernAmountSection(
+                    title: "Penal Interest",
+                    received: widget.penalInterestAmountReceived,
+                    balance: widget.penalInterestAmountBalance,
+                    overdue: widget.penalInterestAmountOverdue,
+                    current: widget.penalInterestAmountReceipt,
+                    icon: Icons.warning_amber_rounded,
+                    color: const Color(0xFFE63946),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Modern Button Row
+            Row(
+              children: [
+                Expanded(
+                  child: _buildModernButton(
+                    text: "Generate QR",
+                    icon: Icons.qr_code_scanner,
+                    onPressed: () {
+                      showModalBottomSheet(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom,
+                            ),
+                            child: Container(
+                              padding: const EdgeInsets.all(24),
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(30),
+                                ),
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        "QR Amount",
+                                        style: TextStyle(
+                                          color: Color(0xFF4361EE),
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                          editAmountController.text = widget.loanAmount.toString();
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.shade100,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Icon(
+                                            Icons.close,
+                                            size: 20,
+                                            color: Color(0xFF64748B),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 20),
+                                  TextField(
+                                    keyboardType: TextInputType.number,
+                                    controller: editAmountController,
+                                    decoration: InputDecoration(
+                                      prefixIcon: const Icon(
+                                        Icons.currency_rupee,
+                                        color: Color(0xFF4361EE),
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                        borderSide: BorderSide(color: Colors.grey.shade300),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                        borderSide: BorderSide(color: Colors.grey.shade300),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                        borderSide: const BorderSide(color: Color(0xFF4361EE), width: 2),
+                                      ),
+                                      labelText: "Enter collection amount",
+                                      labelStyle: TextStyle(color: Colors.grey.shade600),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        generateQrPaymentSession();
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: home1,
+                                        foregroundColor: Colors.white,
+                                        padding: const EdgeInsets.symmetric(vertical: 14),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(16),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        "Generate QR Code",
+                                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    isOutlined: false,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _buildModernButton(
+                    text: "Collect Cash",
+                    icon: Icons.money_rounded,
+                    onPressed: () {
+                      showModalBottomSheet(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom,
+                            ),
+                            child: Container(
+                              padding: const EdgeInsets.all(24),
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(30),
+                                ),
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        "Collection Amount",
+                                        style: TextStyle(
+                                          color: Color(0xFF4361EE),
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                          editAmountController.text = widget.loanAmount.toString();
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.shade100,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Icon(
+                                            Icons.close,
+                                            size: 20,
+                                            color: Color(0xFF64748B),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 20),
+                                  TextField(
+                                    keyboardType: TextInputType.number,
+                                    controller: editAmountController,
+                                    decoration: InputDecoration(
+                                      prefixIcon: const Icon(
+                                        Icons.currency_rupee,
+                                        color: Color(0xFF4361EE),
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                        borderSide: BorderSide(color: Colors.grey.shade300),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                        borderSide: BorderSide(color: Colors.grey.shade300),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                        borderSide: const BorderSide(color: Color(0xFF4361EE), width: 2),
+                                      ),
+                                      labelText: "Enter collection amount",
+                                      labelStyle: TextStyle(color: Colors.grey.shade600),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        paymentConfirmation(
+                                          context,
+                                          agentName!,
+                                          widget.loanNumber,
+                                          widget.custNo,
+                                          editAmountController.text,
+                                        );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: home1,
+                                        foregroundColor: Colors.white,
+                                        padding: const EdgeInsets.symmetric(vertical: 14),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(16),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        "Confirm Collection",
+                                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    isOutlined: true,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       )
     );
   }
-  Widget _buildHeaderCard() {
+  /*Widget _buildHeaderCard() {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: _cardDecoration(),
@@ -1253,6 +740,140 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                       color: Colors.grey.shade600)),
             ],
           )
+        ],
+      ),
+    );
+  }*/
+  BoxDecoration _modernCardDecoration() {
+    return BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(20),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.04),
+          blurRadius: 10,
+          offset: const Offset(0, 2),
+        ),
+        BoxShadow(
+          color: Colors.black.withOpacity(0.02),
+          blurRadius: 20,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    );
+  }
+  Widget _buildHeaderCard() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: _modernCardDecoration(),
+      child: Row(
+        children: [
+          // Modern Avatar with gradient background
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  home1,
+                  home1.withAlpha(3),
+                ],
+              ),            borderRadius: BorderRadius.circular(30),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF4361EE).withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: CircleAvatar(
+              radius: 28,
+              backgroundColor: Colors.transparent,
+              child: const Icon(
+                Icons.person_outline_rounded,
+                color: Colors.white,
+                size: 28,
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        widget.name,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1E293B),
+                          letterSpacing: -0.3,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF10B981).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.verified_rounded,
+                            size: 12,
+                            color: const Color(0xFF10B981),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            "Active",
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFF10B981),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF4361EE).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.badge_rounded,
+                        size: 14,
+                        color: Color(0xFF4361EE),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      "Customer ID: ${widget.custNo}",
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -1283,6 +904,55 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
     );
   }
   Widget _buildDetailRow(IconData icon, String label, String value) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: const Color(0xFFEA307B).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, size: 18, color: const Color(0xFFEA307B)),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.grey.shade500,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF1E293B),
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+/*  Widget _buildDetailRow(IconData icon, String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
@@ -1302,7 +972,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
         ],
       ),
     );
-  }
+  }*/
   Widget _buildAmountSection({
     required String title,
     required dynamic received,
@@ -1347,36 +1017,174 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
       ),
     );
   }
-  Widget _buildPrimaryButton(String text, {required VoidCallback onTap}) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: onTap,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: home1,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+  // Widget _buildPrimaryButton(String text, {required VoidCallback onTap}) {
+  //   return SizedBox(
+  //     width: double.infinity,
+  //     child: ElevatedButton(
+  //       onPressed: onTap,
+  //       style: ElevatedButton.styleFrom(
+  //         backgroundColor: home1,
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(14),
+  //         ),
+  //         padding: const EdgeInsets.symmetric(vertical: 14),
+  //       ),
+  //       child: Text(text, style: const TextStyle(fontSize: 14)),
+  //     ),
+  //   );
+  // }
+  //
+  // Widget _buildOutlineButton(String text, {required VoidCallback onTap}) {
+  //   return SizedBox(
+  //     width: double.infinity,
+  //     child: OutlinedButton(
+  //       onPressed: onTap,
+  //       style: OutlinedButton.styleFrom(
+  //         side: BorderSide(color: home1),
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(14),
+  //         ),
+  //         padding: const EdgeInsets.symmetric(vertical: 14),
+  //       ),
+  //       child: Text(text, style: TextStyle(color: home1)),
+  //     ),
+  //   );
+  // }
+  Widget _buildModernAmountSection({
+    required String title,
+    required double received,
+    required double balance,
+    required double overdue,
+    required double current,
+    required IconData icon,
+    required Color color,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, size: 20, color: color),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF1E293B),
+                ),
+              ),
+            ],
           ),
-          padding: const EdgeInsets.symmetric(vertical: 14),
-        ),
-        child: Text(text, style: const TextStyle(fontSize: 14)),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              _buildAmountChip("Received", received, const Color(0xFF10B981)),
+              const SizedBox(width: 8),
+              _buildAmountChip("Balance", balance, const Color(0xFFF59E0B)),
+              const SizedBox(width: 8),
+              _buildAmountChip("Overdue", overdue, const Color(0xFFEF4444)),
+            ],
+          ),
+          if (current > 0) ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: color.withOpacity(0.2)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Current Receipt",
+                    style: TextStyle(fontSize: 13, color: Color(0xFF64748B)),
+                  ),
+                  Text(
+                    "₹${current.toStringAsFixed(2)}",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: color,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }
 
-  Widget _buildOutlineButton(String text, {required VoidCallback onTap}) {
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton(
-        onPressed: onTap,
-        style: OutlinedButton.styleFrom(
-          side: BorderSide(color: home1),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 14),
+  Widget _buildAmountChip(String label, double amount, Color color) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
         ),
-        child: Text(text, style: TextStyle(color: home1)),
+        child: Column(
+          children: [
+            Text(
+              label,
+              style: TextStyle(fontSize: 11, color: color, fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              "₹${amount.toStringAsFixed(2)}",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModernButton({
+    required String text,
+    required IconData icon,
+    required VoidCallback onPressed,
+    required bool isOutlined,
+  }) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: isOutlined ? Colors.white : home1,
+        foregroundColor: isOutlined ? home1 : Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: isOutlined ? BorderSide(color: home1) : BorderSide.none,
+        ),
+        elevation: isOutlined ? 0 : 2,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 20),
+          const SizedBox(width: 8),
+          Text(
+            text,
+            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+          ),
+        ],
       ),
     );
   }

@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:animated_segmented_tab_control/animated_segmented_tab_control.dart';
 import 'package:collection_qr_flutter/core/constants.dart';
 import 'package:collection_qr_flutter/presentation/account_dues/widgets/account_detail_new.dart';
+import 'package:flutter/services.dart';
 import '../../core/colors.dart';
 import '../../data/provider/agent_customer_details_provider.dart';
 import '../../data/storage/shared_pref_helper.dart';
@@ -275,99 +278,175 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
   Widget _buildCustomerItem(Customer customer) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(20),
-        onTap: () => _navigateToCustomerDetails(customer),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: const Color(0xFFF9FAFB), // soft background instead of pure white
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.grey.shade200),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.04),
-                blurRadius: 12,
-                offset: const Offset(0, 6),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              /// Avatar (Modern Gradient Style)
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: home1.withOpacity(0.5)
-                  // gradient: LinearGradient(
-                  //   colors: [
-                  //     Colors.blue.shade400,
-                  //     Colors.blue.shade700,
-                  //   ],
-                  // ),
-                ),
-                child: const Icon(Icons.person, color: Colors.white, size: 20),
-              ),
-
-              const SizedBox(width: 14),
-
-              /// Customer Info
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      child: Material(
+        elevation: 2,
+        borderRadius: BorderRadius.circular(18),
+        color: Colors.white,
+        shadowColor: Colors.black.withOpacity(0.05),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(18),
+          onTap: () => _navigateToCustomerDetails(customer),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// 👤 Customer Header
+                Row(
                   children: [
-                    /// Name
-                    Text(
-                      customer.custName,
-                      style: const TextStyle(
-                        fontSize: 16.5,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.2,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-
-                    const SizedBox(height: 6),
-
-                    /// Account Label Row
-                    Row(
-                      children: [
-                        Icon(Icons.account_balance,
-                            size: 14, color: Colors.grey.shade500),
-                        const SizedBox(width: 6),
-                        Text(
-                          "Account",
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey.shade500,
-                            fontWeight: FontWeight.w500,
-                          ),
+                    Container(
+                      padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16),
+                        color: home1.withOpacity(0.2)),
+                        child: Icon(Icons.person_rounded, size: 20, color: home1)),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        customer.custName,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          height: 1.3,
                         ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 4),
-
-                    /// Account Number
-                    Text(
-                      customer.depGlobalAccNo,
-                      style: TextStyle(
-                        fontSize: 13.5,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.green.shade700,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Icon(
+                      Icons.chevron_right_rounded,
+                      size: 20,
+                      color: Colors.grey.shade400,
                     ),
                   ],
                 ),
-              ),
 
-              const SizedBox(width: 10),
+                const SizedBox(height: 16),
 
-              /// Action Button (Modern Pill)
-              _buildCollectButton(),
-            ],
+                /// 🏦 Account Section
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Account Number",
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.grey.shade600,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: home1.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        "Primary",
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: home1,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 8),
+
+                /// 🔢 Account Number Display
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
+                        color: home1.withOpacity(0.2)),
+                        child: Icon(Icons.account_balance, size: 18, color: home1)),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: home2.withOpacity(0.03)
+                        ),
+                        child: Text(
+                          customer.depGlobalAccNo,
+                          style: TextStyle(
+                            fontSize: 17,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 1.5,
+                            fontFamily: Platform.isIOS ? 'Courier' : 'monospace',
+                          ),
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Clipboard.setData(ClipboardData(text: customer.depGlobalAccNo));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Copied!'), duration: Duration(seconds: 1)),
+                        );
+                      },
+                      child: Icon(
+                        Icons.copy_rounded,
+                        size: 18,
+                        color: Colors.grey.shade500,
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 20),
+
+                /// 🎯 Action Buttons Row
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: FilledButton.icon(
+                        onPressed: () {
+                          _navigateToCustomerDetails(customer);
+                        },
+                        icon: const Icon(Icons.payments_rounded, size: 18),
+                        label: const Text(
+                          'Collect',
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: home1,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          _navigateToCustomerDetails(customer);
+                        },
+                        icon: Icon(Icons.info_rounded, size: 18, color: home1),
+                        label: const Text('Details'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: home1,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          side: BorderSide(color: home1.withOpacity(0.5)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -375,43 +454,33 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
   }
   // Widget _buildCustomerItem(Customer customer) {
   //   return Padding(
-  //     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+  //     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
   //     child: InkWell(
-  //       borderRadius: BorderRadius.circular(16),
+  //       borderRadius: BorderRadius.circular(18),
   //       onTap: () => _navigateToCustomerDetails(customer),
   //       child: Container(
-  //         padding: const EdgeInsets.all(14),
+  //         padding: const EdgeInsets.all(16),
   //         decoration: BoxDecoration(
   //           color: Colors.white,
-  //           borderRadius: BorderRadius.circular(16),
-  //           boxShadow: const [
+  //           borderRadius: BorderRadius.circular(18),
+  //           boxShadow: [
   //             BoxShadow(
-  //               color: Colors.black12,
-  //               blurRadius: 10,
-  //               offset: Offset(0, 4),
+  //               color: Colors.black.withOpacity(0.05),
+  //               blurRadius: 14,
+  //               offset: const Offset(0, 6),
   //             ),
   //           ],
   //         ),
-  //         child: Row(
+  //         child: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.start,
   //           children: [
-  //             /// Avatar
-  //             Container(
-  //               padding: const EdgeInsets.all(10),
-  //               decoration: BoxDecoration(
-  //                 color: Colors.blue.shade50,
-  //                 shape: BoxShape.circle,
-  //               ),
-  //               child: const Icon(Icons.person, color: Colors.blue),
-  //             ),
-  //
-  //             const SizedBox(width: 12),
-  //
-  //             /// Main Info
-  //             Expanded(
-  //               child: Column(
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 children: [
-  //                   Text(
+  //             /// 👤 Customer Name Row
+  //             Row(
+  //               children: [
+  //                 Icon(Icons.person, size: 18, color: home1),
+  //                 const SizedBox(width: 8),
+  //                 Expanded(
+  //                   child: Text(
   //                     customer.custName,
   //                     style: const TextStyle(
   //                       fontSize: 16,
@@ -419,60 +488,79 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
   //                     ),
   //                     overflow: TextOverflow.ellipsis,
   //                   ),
+  //                 ),
+  //               ],
+  //             ),
   //
-  //                   const SizedBox(height: 6),
+  //             const SizedBox(height: 12),
   //
-  //                   Row(
-  //                     children: [
-  //                       const Icon(Icons.account_balance,
-  //                           size: 16, color: Colors.grey),
-  //                       const SizedBox(width: 6),
-  //                       const Text(
-  //                         "Account",
-  //                         style: TextStyle(
-  //                           fontSize: 12,
-  //                           color: Colors.grey,
-  //                         ),
+  //             /// 🏦 Account Label
+  //             Text(
+  //               "ACCOUNT NUMBER",
+  //               style: TextStyle(
+  //                 fontSize: 11,
+  //                 color: Colors.grey.shade500,
+  //                 letterSpacing: 0.8,
+  //               ),
+  //             ),
+  //
+  //             const SizedBox(height: 6),
+  //
+  //             Container(
+  //               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+  //               decoration: BoxDecoration(
+  //                 color: Colors.grey.shade100,
+  //                 borderRadius: BorderRadius.circular(10),
+  //               ),
+  //               child: Row(
+  //                 children: [
+  //                   Icon(Icons.account_balance, size: 16, color: home1),
+  //                   const SizedBox(width: 8),
+  //
+  //                   Expanded(
+  //                     child: Text(
+  //                       customer.depGlobalAccNo,
+  //                       style: const TextStyle(
+  //                         fontSize: 14,
+  //                         fontWeight: FontWeight.w600,
+  //                         letterSpacing: 1.2, // 🔥 KEY FIX
   //                       ),
-  //                     ],
-  //                   ),
-  //
-  //                   const SizedBox(height: 4),
-  //
-  //                   Text(
-  //                     customer.depGlobalAccNo,
-  //                     style: TextStyle(
-  //                       fontSize: 13,
-  //                       fontWeight: FontWeight.w500,
-  //                       color: Colors.green.shade700,
   //                     ),
-  //                     overflow: TextOverflow.ellipsis,
   //                   ),
   //                 ],
   //               ),
   //             ),
   //
-  //             /// Action Button
-  //             _buildCollectButton(),
+  //             const SizedBox(height: 16),
+  //
+  //             /// 🎯 Collect Button (Full Width)
+  //             SizedBox(
+  //               width: double.infinity,
+  //               child: _buildCollectButton(),
+  //             ),
   //           ],
   //         ),
   //       ),
   //     ),
   //   );
   // }
+
+
+
   Widget _buildCollectButton() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
-        color: home1.withOpacity(0.9),
-        borderRadius: BorderRadius.circular(30),
+        color: home1,
+        borderRadius: BorderRadius.circular(12),
       ),
+      alignment: Alignment.center,
       child: const Text(
         "Collect",
         style: TextStyle(
           color: Colors.white,
+          fontSize: 14,
           fontWeight: FontWeight.w600,
-          fontSize: 13,
         ),
       ),
     );
@@ -498,76 +586,93 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-            backgroundColor: white,
-            automaticallyImplyLeading: false,
-            centerTitle: true,
-            title:
-            // SegmentedTabControl(
-            //
-            //     barDecoration: BoxDecoration(
-            //         shape: BoxShape.rectangle,
-            //         border: Border.all(color: Colors.grey, ),
-            //         boxShadow: [
-            //           BoxShadow(
-            //               color: Colors.black12,
-            //               blurRadius: 2,
-            //               spreadRadius: 8,
-            //               offset: Offset(1, 0))
-            //         ],
-            //         borderRadius: BorderRadius.circular(30)),
-            //     tabs: [
-            //       SegmentTab(
-            //         splashColor: home1,
-            //           textColor: Colors.black,
-            //         color: home1,
-            //           backgroundColor: Colors.black12,
-            //           selectedTextColor: Colors.white,
-            //           label: "RD LIST"),
-            //       SegmentTab(
-            //
-            //           splashColor: home1,
-            //         textColor: Colors.black,
-            //           color: home1,
-            //           backgroundColor: Colors.grey.shade200,
-            //           selectedTextColor: Colors.white,
-            //           label: "LOAN LIST")
-            //     ])
-
-            SegmentedTabControl(
-              barDecoration: BoxDecoration(
-                color: Colors.grey.shade100, // soft background
-                borderRadius: BorderRadius.circular(30),
+          backgroundColor: Colors.white,
+          automaticallyImplyLeading: false,
+          centerTitle: true,
+          toolbarHeight: 100,
+          title: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Customer List",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              tabs: [
-                SegmentTab(
-                  label: "RD LIST",
-
-                  /// Active color
-                  color: home1,
-
-                  /// Inactive
-                  backgroundColor: Colors.transparent,
-
-                  textColor: Colors.grey.shade700,
-                  selectedTextColor: Colors.white,
-                  splashHighlightColor: home1,
-
-                  splashColor: home1.withOpacity(0.2),
+              SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade200.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(40),
                 ),
-                SegmentTab(
-                  label: "LOAN LIST",
-
-                  color: home1,
-                  backgroundColor: Colors.transparent,
-
-                  textColor: Colors.grey.shade700,
-                  selectedTextColor: Colors.white,
-
-                  splashColor: home1.withOpacity(0.2),
+                child: SegmentedTabControl(
+                  indicatorPadding: const EdgeInsets.all(4),
+                  indicatorDecoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [home1, home1.withOpacity(0.85)],
+                    ),
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                        color: home1.withOpacity(0.9),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  barDecoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                  tabs: [
+                    SegmentTab(
+                      label: "RD",
+                      color: Colors.transparent,
+                      backgroundColor: Colors.transparent,
+                      textColor: Colors.grey.shade600,
+                      selectedTextColor: Colors.white,
+                    ),
+                    SegmentTab(
+                      label: "LOANS",
+                      color: Colors.transparent,
+                      backgroundColor: Colors.transparent,
+                      textColor: Colors.grey.shade600,
+                      selectedTextColor: Colors.white,
+                    ),
+                  ],
                 ),
-              ],
-            )
-            ),
+              )
+              // SegmentedTabControl(
+              //   barDecoration: BoxDecoration(
+              //     color: Colors.grey.shade100,
+              //     borderRadius: BorderRadius.circular(30),
+              //   ),
+              //   tabs: [
+              //     SegmentTab(
+              //       label: "RD LIST",
+              //       color: home1,
+              //       backgroundColor: Colors.transparent,
+              //       textColor: Colors.grey.shade700,
+              //       selectedTextColor: Colors.white,
+              //       splashHighlightColor: home1,
+              //       splashColor: home1.withOpacity(0.2),
+              //     ),
+              //     SegmentTab(
+              //       label: "LOAN LIST",
+              //       color: home1,
+              //       backgroundColor: Colors.transparent,
+              //       textColor: Colors.grey.shade700,
+              //       selectedTextColor: Colors.white,
+              //       splashColor: home1.withOpacity(0.2),
+              //     ),
+              //   ],
+              // ),
+            ],
+          ),
+        ),
         backgroundColor: white,
         body:TabBarView(children: [
           Consumer<AgentCustomerDetailsProvider>(

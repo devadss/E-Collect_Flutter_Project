@@ -174,7 +174,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
             if (data.message == "OTP Verified"|| data.message == "OTP Verified (Play Store)") {
               SharedPref.shared.setLogin(true);
               if(widget.loggedInUserType == "NOT_AN_AGENT"){
-print("loggedInUserType = ${widget.loggedInUserType}");
+//print("loggedInUserType = ${widget.loggedInUserType}");
                 await SharedPref.shared.setTokenValue(data.toString());
                 await SharedPref.shared.setLogin(true);
                 await SharedPref.shared.setLoggedInUserType(widget.loggedInUserType);

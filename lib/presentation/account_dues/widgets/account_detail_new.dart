@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -735,107 +738,259 @@ loadSharedPrefs();
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             child:
+
             // Container(
             //   width: double.infinity,
-            //  // height: 200,
+            //   padding: const EdgeInsets.all(16),
             //   decoration: BoxDecoration(
             //     color: Colors.white,
-            //     borderRadius: BorderRadius.circular(10),
-            //     border: BoxBorder.all(color: home1.withAlpha(30)),
-            //     boxShadow: [
+            //     borderRadius: BorderRadius.circular(16),
+            //     boxShadow: const [
             //       BoxShadow(
-            //         color: home1.withAlpha(40),
-            //         offset: Offset(0, 1),
-            //         blurRadius: 8, spreadRadius: 2
-            //       )
-            //     ]
-            //   ),
-            //   child: Column(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     crossAxisAlignment: CrossAxisAlignment.center,
-            //     children: [
-            //       Padding(
-            //         padding: const EdgeInsets.all(20.0),
-            //         child: Row(
-            //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //           crossAxisAlignment: CrossAxisAlignment.center,
-            //           children: [
-            //             Text("Customer Name : ", style: TextStyle(color: home2, fontSize: 17),),
-            //             Flexible(child: Text(
-            //               textAlign: TextAlign.end,
-            //               widget.custName, style: TextStyle(color: home1, fontSize: 15,fontWeight: FontWeight.w500),))
-            //           ],
-            //         ),
-            //       ),
-            //       Padding(
-            //         padding: const EdgeInsets.symmetric(horizontal: 20),
-            //         child: Divider(),
-            //       ),
-            //       Padding(
-            //         padding: const EdgeInsets.all(20.0),
-            //         child: Row(
-            //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //           crossAxisAlignment: CrossAxisAlignment.center,
-            //           children: [
-            //             Text("Account number : ", style: TextStyle(color: home2, fontSize: 17),),
-            //             Text(widget.accNo, style: TextStyle(color: home1, fontSize: 15,fontWeight: FontWeight.w500),)
-            //           ],
-            //         ),
-            //       ),
-            //       Padding(
-            //         padding: const EdgeInsets.symmetric(horizontal: 20),
-            //         child: Divider(),
-            //       ),
-            //       Padding(
-            //         padding: const EdgeInsets.all(20.0),
-            //         child: Row(
-            //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //           crossAxisAlignment: CrossAxisAlignment.center,
-            //           children: [
-            //             Text("Scheme name : ", style: TextStyle(color: home2, fontSize: 17),),
-            //             Flexible(child: Text(textAlign: TextAlign.end,widget.scheme, style: TextStyle(color: home1, fontSize: 13,fontWeight: FontWeight.w500),))
-            //           ],
-            //         ),
+            //         color: Colors.black12,
+            //         blurRadius: 10,
+            //         offset: Offset(0, 4),
             //       ),
             //     ],
             //   ),
-            // ),
+            //   child: Column(
+            //     children: [
+            //       _buildInfoRow(
+            //         label: "Customer Name",
+            //         value: widget.custName,
+            //         icon: Icons.person,
+            //       ),
+            //
+            //       const SizedBox(height: 12),
+            //
+            //       _buildInfoRow(
+            //         label: "Account Number",
+            //         value: widget.accNo,
+            //         icon: Icons.account_balance,
+            //       ),
+            //
+            //       const SizedBox(height: 12),
+            //
+            //       _buildInfoRow(
+            //         label: "Scheme",
+            //         value: widget.scheme,
+            //         icon: Icons.description,
+            //       ),
+            //     ],
+            //   ),
+            // )
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: const [
+                gradient: LinearGradient(colors: [
+                  home1.withOpacity(0.22),
+                  home1.withOpacity(0.02)
+
+
+                ],
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
                   BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 10,
-                    offset: Offset(0, 4),
+                    color: Colors.black.withOpacity(0.06),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
+                    spreadRadius: -2,
                   ),
                 ],
               ),
               child: Column(
                 children: [
-                  _buildInfoRow(
-                    label: "Customer Name",
-                    value: widget.custName,
-                    icon: Icons.person,
+                  /// Customer Name
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                        gradient: LinearGradient(colors: [
+                          home1.withOpacity(0.02),
+                          home1.withOpacity(0.02),
+                        ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.shade50,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(Icons.person_rounded, size: 20, color: Colors.blue.shade700),
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Customer Name",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey.shade600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                widget.custName,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.3,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Icon(Icons.verified_rounded, size: 18, color: Colors.green.shade400),
+                      ],
+                    ),
                   ),
 
-                  const SizedBox(height: 12),
-
-                  _buildInfoRow(
-                    label: "Account Number",
-                    value: widget.accNo,
-                    icon: Icons.account_balance,
+                  /// Divider
+                  Container(
+                    height: 1,
+                    color: Colors.grey.shade100,
                   ),
 
-                  const SizedBox(height: 12),
+                  /// Account Number
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.purple.shade50,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(Icons.account_balance_wallet_rounded, size: 20, color: Colors.purple.shade700),
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Account Number",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey.shade600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      widget.accNo,
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 1.2,
+                                        fontFamily: Platform.isIOS ? 'Courier' : 'monospace',
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Clipboard.setData(ClipboardData(text: widget.accNo));
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Copied!'),
+                                          duration: Duration(seconds: 1),
+                                          behavior: SnackBarBehavior.floating,
+                                        ),
+                                      );
+                                    },
+                                    child: Icon(Icons.copy_rounded, size: 16, color: Colors.grey.shade400),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
 
-                  _buildInfoRow(
-                    label: "Scheme",
-                    value: widget.scheme,
-                    icon: Icons.description,
+                  /// Divider
+                  Container(
+                    height: 1,
+                    color: Colors.grey.shade100,
+                  ),
+
+                  /// Scheme
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.orange.shade50,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(Icons.description_rounded, size: 20, color: Colors.orange.shade700),
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Scheme",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey.shade600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                widget.scheme,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.3,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Chip(
+                          label: Text(
+                            "Active",
+                            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Colors.green.shade700),
+                          ),
+                          backgroundColor: Colors.green.shade50,
+                          side: BorderSide.none,
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

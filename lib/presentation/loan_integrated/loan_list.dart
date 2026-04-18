@@ -161,126 +161,12 @@ class _LoanListState extends State<LoanList> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // appBar: AppBar(
-      //   automaticallyImplyLeading: false,
-      //   centerTitle: true,
-      //   title: Center(
-      //     child:
-      //     Row(
-      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //       children: [
-      //         InkWell(
-      //           onTap: (){
-      //             setState(() {
-      //               showShadowLoan = false;
-      //               showShadowAcc = true;
-      //               Navigator.pop(context);
-      //             });
-      //           },
-      //           child: Container(
-      //             decoration: BoxDecoration(
-      //                 color: Colors.white,
-      //                 borderRadius: BorderRadius.circular(10),
-      //                 boxShadow: [
-      //                   BoxShadow(color:
-      //                   showShadowAcc == true?
-      //                   Colors.black12: Colors.white, blurRadius: 9, spreadRadius: 1),
-      //
-      //                 ]
-      //             ),
-      //             child: Padding(
-      //               padding: const EdgeInsets.all(8.0),
-      //               child: const Text(
-      //                 "RD List",
-      //                 style: TextStyle(
-      //                   fontWeight: FontWeight.w700,
-      //                   fontSize: 23,
-      //                   color: home2,
-      //                 ),
-      //               ),
-      //             ),
-      //           ),
-      //         ),
-      //         InkWell(
-      //           onTap: (){
-      //             setState(() {
-      //               showShadowLoan = true;
-      //               showShadowAcc = false;
-      //             });
-      //
-      //           },
-      //           child: Container(
-      //
-      //             decoration: BoxDecoration(
-      //                 color: Colors.white,
-      //                 borderRadius: BorderRadius.circular(10),
-      //                 boxShadow: [
-      //                   BoxShadow(color:
-      //                   showShadowLoan == true?
-      //                   home1.withAlpha(60):Colors.white, blurRadius: 8, spreadRadius: 2),
-      //
-      //                 ]
-      //             ),
-      //             child: Padding(
-      //               padding: const EdgeInsets.all(8.0),
-      //               child: const Text(
-      //                 "Loan List",
-      //                 style: TextStyle(
-      //                   fontWeight: FontWeight.w700,
-      //                   fontSize: 23,
-      //                   color: home2,
-      //                 ),
-      //               ),
-      //             ),
-      //           ),
-      //         ),
-      //       ],),
-      //
-      //     // Text(
-      //     //   textAlign: TextAlign.center,
-      //     //   "LOANS",
-      //     //   style: TextStyle(
-      //     //       color: home2, fontSize: 22, fontWeight: FontWeight.w700),
-      //     // ),
-      //   ),
-      // ),
+
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          //   child:
-          //   Container(
-          //     width: double.infinity,
-          //     height: 50,
-          //     decoration: BoxDecoration(
-          //       color: Colors.white,
-          //       borderRadius: BorderRadius.circular(10),
-          //       boxShadow: [
-          //         BoxShadow(
-          //             color: Colors.black12.withAlpha(10),
-          //             offset: Offset(0, 1),
-          //             spreadRadius: 3,
-          //             blurRadius: 9),
-          //       ],
-          //     ),
-          //     child: TextField(
-          //       // controller: _searchController,
-          //       onChanged: filterList,
-          //       decoration: InputDecoration(
-          //           prefixIcon: Icon(Icons.search),
-          //           labelStyle: TextStyle(color: Colors.black),
-          //           label: Text(
-          //             "Search account number",
-          //             style: TextStyle(fontSize: 12),
-          //           ),
-          //           border: OutlineInputBorder(
-          //             borderRadius: BorderRadius.circular(10),
-          //           )),
-          //     ),
-          //   ),
-          // ),
+
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             child: Container(
@@ -334,211 +220,307 @@ class _LoanListState extends State<LoanList> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 8),
                       child:
+
                       // Card(
-                      //   elevation: 2,
-                      //   shadowColor: Colors.black26,
+                      //   elevation: 0,
+                      //   margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
                       //   shape: RoundedRectangleBorder(
-                      //     borderRadius: BorderRadius.circular(16),
+                      //     borderRadius: BorderRadius.circular(18),
                       //   ),
-                      //   child: Padding(
+                      //   child: Container(
                       //     padding: const EdgeInsets.all(16),
+                      //     decoration: BoxDecoration(
+                      //       borderRadius: BorderRadius.circular(18),
+                      //       color: Colors.white,
+                      //       boxShadow: const [
+                      //         BoxShadow(
+                      //           color: Colors.black12,
+                      //           blurRadius: 12,
+                      //           offset: Offset(0, 4),
+                      //         ),
+                      //       ],
+                      //     ),
                       //     child: Column(
                       //       crossAxisAlignment: CrossAxisAlignment.start,
                       //       children: [
-                      //         // Customer Name
+                      //         /// 🔹 Customer Name
                       //         _filteredList?[index].custName == null
-                      //             ? LinearProgressIndicator(
-                      //                 color: Colors.black12,
-                      //                 backgroundColor:
-                      //                     Colors.black26.withAlpha(10),
-                      //                 borderRadius: BorderRadius.circular(5),
-                      //                 minHeight: 20,
-                      //               )
+                      //             ? _buildSkeleton(width: 140, height: 16)
                       //             : Text(
-                      //                 _filteredList?[index].custName ?? "",
-                      //                 style: TextStyle(
-                      //                   color: home1,
-                      //                   fontWeight: FontWeight.bold,
-                      //                   fontSize: 16,
-                      //                 ),
-                      //               ),
-                      //         const SizedBox(height: 4),
-                      //         // Scheme Name
-                      //         _filteredList?[index].schName == null
-                      //             ? LinearProgressIndicator(
-                      //                 color: Colors.black12,
-                      //                 backgroundColor:
-                      //                     Colors.black26.withAlpha(10),
-                      //                 borderRadius: BorderRadius.circular(5),
-                      //                 minHeight: 10,
-                      //               )
-                      //             : Text(
-                      //                 _filteredList?[index].schName ?? "",
-                      //                 style: TextStyle(
-                      //                     color: home2,
-                      //                     fontSize: 11,
-                      //                     fontWeight: FontWeight.w500),
-                      //               ),
-                      //         const Divider(height: 20, thickness: 1.2),
-                      //
-                      //         // Info Labels Row
-                      //         Row(
-                      //           mainAxisAlignment:
-                      //               MainAxisAlignment.spaceBetween,
-                      //           children: const [
-                      //             Text(
-                      //               "Customer ID",
-                      //               style: TextStyle(
-                      //                 color: Colors.black54,
-                      //                 fontSize: 12,
-                      //                 fontWeight: FontWeight.w600,
-                      //               ),
-                      //             ),
-                      //             Text(
-                      //               "Account Number",
-                      //               style: TextStyle(
-                      //                 color: Colors.black54,
-                      //                 fontSize: 12,
-                      //                 fontWeight: FontWeight.w600,
-                      //               ),
-                      //             ),
-                      //             Text(
-                      //               "Scheme Code",
-                      //               style: TextStyle(
-                      //                 color: Colors.black54,
-                      //                 fontSize: 12,
-                      //                 fontWeight: FontWeight.w600,
-                      //               ),
-                      //             ),
-                      //           ],
+                      //           _filteredList?[index].custName ?? "",
+                      //           style: TextStyle(
+                      //             fontSize: 16,
+                      //             fontWeight: FontWeight.w600,
+                      //             color: home1,
+                      //           ),
                       //         ),
+                      //
                       //         const SizedBox(height: 4),
                       //
-                      //         // Data Row
-                      //         Row(
-                      //           mainAxisAlignment:
-                      //               MainAxisAlignment.spaceBetween,
-                      //           crossAxisAlignment: CrossAxisAlignment.center,
+                      //         /// 🔹 Scheme Name
+                      //         _filteredList?[index].schName == null
+                      //             ? _buildSkeleton(width: 100, height: 12)
+                      //             : Text(
+                      //           _filteredList?[index].schName ?? "",
+                      //           style: TextStyle(
+                      //             fontSize: 12,
+                      //             color: Colors.grey.shade600,
+                      //           ),
+                      //         ),
+                      //
+                      //         const SizedBox(height: 12),
+                      //
+                      //         /// 🔹 Info Chips Row (Modern replacement for table)
+                      //         Wrap(
+                      //
+                      //           spacing: 15,
+                      //           runSpacing: 8,
                       //           children: [
-                      //             _filteredList?[index].custId == null
-                      //                 ? CircularProgressIndicator(
-                      //                     color: Colors.black12,
-                      //                     backgroundColor:
-                      //                         Colors.black26.withAlpha(10),
-                      //                   )
-                      //                 : Text(
-                      //                     _filteredList?[index].custId ?? "",
-                      //                     style: TextStyle(
-                      //                       color: home1,
-                      //                       fontWeight: FontWeight.bold,
-                      //                       fontSize: 11,
-                      //                     ),
-                      //                   ),
-                      //             _filteredList?[index].lnGlobalAccNo == null
-                      //                 ? CircularProgressIndicator(
-                      //                     color: Colors.black12,
-                      //                     backgroundColor:
-                      //                         Colors.black26.withAlpha(10),
-                      //                   )
-                      //                 : Text(
-                      //                     _filteredList?[index].lnGlobalAccNo ??
-                      //                         "",
-                      //                     style: TextStyle(
-                      //                       color: home1,
-                      //                       fontWeight: FontWeight.bold,
-                      //                       fontSize: 11,
-                      //                     ),
-                      //                   ),
-                      //             _filteredList?[index].schCode == null
-                      //                 ? CircularProgressIndicator(
-                      //                     color: Colors.black12,
-                      //                     backgroundColor:
-                      //                         Colors.black26.withAlpha(10),
-                      //                   )
-                      //                 : Text(
-                      //                     _filteredList?[index].schCode ?? "",
-                      //                     style: TextStyle(
-                      //                       color: home1,
-                      //                       fontWeight: FontWeight.bold,
-                      //                       fontSize: 11,
-                      //                     ),
-                      //                   ),
+                      //             _buildInfoChip(
+                      //               label: "Customer ID",
+                      //               value: _filteredList?[index].custId,
+                      //             ),
+                      //             _buildInfoChip(
+                      //               label: "Account",
+                      //               value: _filteredList?[index].lnGlobalAccNo,
+                      //             ),
+                      //             _buildInfoChip(
+                      //               label: "Scheme",
+                      //               value: _filteredList?[index].schCode,
+                      //             ),
                       //           ],
                       //         ),
                       //       ],
                       //     ),
                       //   ),
-                      // ),
+                      // )
                       Card(
                         elevation: 0,
-                        margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+                        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18),
+                          borderRadius: BorderRadius.circular(24),
+                          side: BorderSide(color: Colors.grey.shade100, width: 1),
                         ),
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(18),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(24),
+                          child: Material(
                             color: Colors.white,
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 12,
-                                offset: Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              /// 🔹 Customer Name
-                              _filteredList?[index].custName == null
-                                  ? _buildSkeleton(width: 140, height: 16)
-                                  : Text(
-                                _filteredList?[index].custName ?? "",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: home1,
+                            child: InkWell(
+                              onTap: () {
+                                // Add tap handling if needed
+                              },
+                              splashColor: home1.withOpacity(0.08),
+                              highlightColor: home1.withOpacity(0.04),
+                              child: Padding(
+                                padding: const EdgeInsets.all(18),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    /// 🔹 Header Row with Customer + Menu
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        /// Avatar + Name Section
+                                        Expanded(
+                                          child: Row(
+                                            children: [
+                                              /// Modern Avatar
+                                              Container(
+                                                width: 44,
+                                                height: 44,
+                                                decoration: BoxDecoration(
+                                                  gradient: LinearGradient(
+                                                    begin: Alignment.topLeft,
+                                                    end: Alignment.bottomRight,
+                                                    colors: [
+                                                      home1.withOpacity(0.15),
+                                                      home1.withOpacity(0.05),
+                                                    ],
+                                                  ),
+                                                  borderRadius: BorderRadius.circular(14),
+                                                ),
+                                                child: Center(
+                                                  child: _filteredList?[index].custName == null
+                                                      ? _buildSkeleton(width: 24, height: 24)
+                                                      : Text(
+                                                    _filteredList?[index].custName?.substring(0, 1).toUpperCase() ?? "?",
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight: FontWeight.w700,
+                                                      color: home1,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 14),
+
+                                              /// Name & Scheme
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    _filteredList?[index].custName == null
+                                                        ? _buildSkeleton(width: 140, height: 18)
+                                                        : Text(
+                                                      _filteredList?[index].custName ?? "",
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.w700,
+                                                        color: Colors.grey.shade900,
+                                                        height: 1.3,
+                                                      ),
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                    const SizedBox(height: 6),
+                                                    _filteredList?[index].schName == null
+                                                        ? _buildSkeleton(width: 100, height: 12)
+                                                        : Row(
+                                                      children: [
+                                                        Container(
+                                                          width: 6,
+                                                          height: 6,
+                                                          decoration: BoxDecoration(
+                                                            color: Colors.green.shade500,
+                                                            shape: BoxShape.circle,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(width: 6),
+                                                        Text(
+                                                          _filteredList?[index].schName ?? "",
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.w500,
+                                                            color: Colors.grey.shade600,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+
+                                        /// Menu Button
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.shade50,
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: IconButton(
+                                            icon: Icon(Icons.more_horiz_rounded, size: 20, color: Colors.grey.shade700),
+                                            onPressed: () {
+                                              // Show options menu
+                                            },
+                                            padding: EdgeInsets.zero,
+                                            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+
+                                    const SizedBox(height: 20),
+
+                                    /// 🔹 Stats Row - Modern Metrics Display
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            home1.withOpacity(0.04),
+                                            home1.withOpacity(0.02),
+                                          ],
+                                        ),
+                                        borderRadius: BorderRadius.circular(16),
+                                        border: Border.all(color: home1.withOpacity(0.08)),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: _buildModernMetric(
+                                              label: "Customer ID",
+                                              value: _filteredList?[index].custId,
+                                              icon: Icons.person_outline_rounded,
+                                            ),
+                                          ),
+                                          Container(
+                                            width: 1,
+                                            height: 30,
+                                            color: Colors.grey.shade200,
+                                          ),
+                                          Expanded(
+                                            child: _buildModernMetric(
+                                              label: "Account",
+                                              value: _filteredList?[index].lnGlobalAccNo,
+                                              icon: Icons.account_balance_wallet_rounded,
+                                            ),
+                                          ),
+                                          Container(
+                                            width: 1,
+                                            height: 30,
+                                            color: Colors.grey.shade200,
+                                          ),
+                                          Expanded(
+                                            child: _buildModernMetric(
+                                              label: "Scheme",
+                                              value: _filteredList?[index].schCode,
+                                              icon: Icons.code_rounded,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    const SizedBox(height: 16),
+
+                                    /// 🔹 Action Buttons Row
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: OutlinedButton.icon(
+                                            onPressed: () {
+                                              fetchIntegratedLoanDetails(
+                                                  _filteredList![index].lnGlobalAccNo.toString());
+                                            },
+                                            icon: Icon(Icons.visibility_rounded, size: 18, color: home1),
+                                            label: const Text('Details'),
+                                            style: OutlinedButton.styleFrom(
+                                              foregroundColor: home1,
+                                              side: BorderSide(color: home1.withOpacity(0.3)),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(12),
+                                              ),
+                                              padding: const EdgeInsets.symmetric(vertical: 10),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: FilledButton.icon(
+                                            onPressed: () {
+                                              fetchIntegratedLoanDetails(
+                                                  _filteredList![index].lnGlobalAccNo.toString());
+                                            },
+                                            icon: Icon(Icons.payments_rounded, size: 18),
+                                            label: const Text('Collect'),
+                                            style: FilledButton.styleFrom(
+                                              backgroundColor: home1,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(12),
+                                              ),
+                                              padding: const EdgeInsets.symmetric(vertical: 10),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
-
-                              const SizedBox(height: 4),
-
-                              /// 🔹 Scheme Name
-                              _filteredList?[index].schName == null
-                                  ? _buildSkeleton(width: 100, height: 12)
-                                  : Text(
-                                _filteredList?[index].schName ?? "",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey.shade600,
-                                ),
-                              ),
-
-                              const SizedBox(height: 12),
-
-                              /// 🔹 Info Chips Row (Modern replacement for table)
-                              Wrap(
-
-                                spacing: 15,
-                                runSpacing: 8,
-                                children: [
-                                  _buildInfoChip(
-                                    label: "Customer ID",
-                                    value: _filteredList?[index].custId,
-                                  ),
-                                  _buildInfoChip(
-                                    label: "Account",
-                                    value: _filteredList?[index].lnGlobalAccNo,
-                                  ),
-                                  _buildInfoChip(
-                                    label: "Scheme",
-                                    value: _filteredList?[index].schCode,
-                                  ),
-                                ],
-                              ),
-                            ],
+                            ),
                           ),
                         ),
                       )
@@ -551,7 +533,48 @@ class _LoanListState extends State<LoanList> {
     );
   }
 }
+Widget _buildModernMetric({
+  required String label,
+  required String? value,
+  required IconData icon,
+}) {
+  if (value == null) {
+    return _buildSkeleton(width: 60, height: 32);
+  }
 
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        children: [
+          Icon(icon, size: 12, color: home1.withOpacity(0.6)),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey.shade500,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 6),
+      Text(
+        value,
+        style: TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: Colors.grey.shade800,
+          letterSpacing: 0.3,
+        ),
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
+      ),
+    ],
+  );
+}
 Widget _buildInfoChip({required String label, String? value}) {
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),

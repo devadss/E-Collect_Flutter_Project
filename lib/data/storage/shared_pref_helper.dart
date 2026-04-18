@@ -3,9 +3,7 @@ import '../../core/constants.dart';
 
 class SharedPref {
   static final SharedPref _singleton = SharedPref._internal();
-
   factory SharedPref() => _singleton;
-
   SharedPref._internal();
 
   static SharedPref get shared => _singleton;
@@ -25,234 +23,234 @@ class SharedPref {
     final prefs = await _getPrefs();
     return prefs.setBool(SharedPrefKeys().login, value);
   }
-  setFcmToken(String value) async {
+  Future<Future<bool>> setFcmToken(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.fcm_token, value);
   }
-  getFcmToken() async {
+  Future<String> getFcmToken() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.fcm_token) ?? '';
   }
-  setAgentId(String value) async {
+  Future<Future<bool>> setAgentId(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.userId, value);
   }
-  getAgentId() async {
+  Future<String> getAgentId() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.userId) ?? '';
   }
 
-  setPassword(String value) async {
+  Future<Future<bool>> setPassword(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.password, value);
   }
 
-  getPassword() async {
+  Future<String> getPassword() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.password) ?? '';
   }
-  setSubAgentName(String value) async {
+  Future<Future<bool>> setSubAgentName(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.subAgent_username, value);
   }
-  getSubAgentName() async {
+  Future<String> getSubAgentName() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.subAgent_username) ?? '';
   }
-  setUserType(String value) async {
+  Future<Future<bool>> setUserType(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.userType, value);
   }
-  getUserType() async {
+  Future<String> getUserType() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.userType) ?? '';
   }
 
-  setRdclCustomerVendorUrl(String value) async {
+  Future<Future<bool>> setRdclCustomerVendorUrl(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.RdclCustomervendorUrl, value);
   }
-  getRdclCustomerVendorUrl() async {
+  Future<String> getRdclCustomerVendorUrl() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.RdclCustomervendorUrl) ?? '';
   }
 
-  setDueListRdclUrl(String value) async {
+  Future<Future<bool>> setDueListRdclUrl(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.RdclDueListvendorUrl, value);
   }
-  getDueListRdclUrl() async {
+  Future<String> getDueListRdclUrl() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.RdclDueListvendorUrl) ?? '';
   }
 
-  setCustomerRdUrl(String value) async {
+  Future<Future<bool>> setCustomerRdUrl(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.RdCustomerVendorUrl, value);
   }
-  getCustomerRdUrl() async {
+  Future<String> getCustomerRdUrl() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.RdCustomerVendorUrl) ?? '';
   }
 
-  setDueListRdUrl(String value) async {
+  Future<Future<bool>> setDueListRdUrl(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.RdDueVendorUrl, value);
   }
-  getDueListRdUrl() async {
+  Future<String> getDueListRdUrl() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.RdDueVendorUrl) ?? '';
   }
 
-  setCustomerLoanUrl(String value) async {
+  Future<Future<bool>> setCustomerLoanUrl(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.LoanCustomerVendorUrl, value);
   }
-  getCustomerLoanUrl() async {
+  Future<String> getCustomerLoanUrl() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.LoanCustomerVendorUrl) ?? '';
   }
 
-  setDueListLoanUrl(String value) async {
+  Future<Future<bool>> setDueListLoanUrl(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.LoanDueVendorUrl, value);
   }
-  getDueListLoanUrl() async {
+  Future<String> getDueListLoanUrl() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.LoanDueVendorUrl) ?? '';
   }
 
-  setLoanAccountHolderUrl(String value) async {
+  Future<Future<bool>> setLoanAccountHolderUrl(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.LoanAccountHolderVendorUrl, value);
   }
-  getLoanAccountHolderUrl() async {
+  Future<String> getLoanAccountHolderUrl() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.LoanAccountHolderVendorUrl) ?? '';
   }
 
-  setParentAgentName(String value) async {
+  Future<Future<bool>> setParentAgentName(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.parent_username, value);
   }
-  getParentAgentName() async {
+  Future<String> getParentAgentName() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.parent_username) ?? '';
   }
 
-  setLoggedInUserType(String value)async{
+  Future<Object> setLoggedInUserType(String value)async{
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.loggedInUserType, value) ?? '';
   }
 
-  getLoggedInUserType()async{
+  Future<String> getLoggedInUserType()async{
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.loggedInUserType) ?? '';
 
   }
 
-  setParentAgentPassword(String value) async {
+  Future<Future<bool>> setParentAgentPassword(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.parent_agent_password, value);
   }
-  getParentAgentPassword() async {
+  Future<String> getParentAgentPassword() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.parent_agent_password) ?? '';
   }
 
-  setAgentName(String value) async {
+  Future<Future<bool>> setAgentName(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.username, value);
   }
 
-  getAgentName() async {
+  Future<String> getAgentName() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.username) ?? '';
   }
 
-  setMpinValue(String value) async {
+  Future<Future<bool>> setMpinValue(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.mpin_value, value);
   }
 
-  getMpinValue() async {
+  Future<String> getMpinValue() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.mpin_value) ?? '';
   }
 
-  setMpinStatus(String value) async {
+  Future<Future<bool>> setMpinStatus(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.mpin_status, value);
   }
 
-  getMpinStatus() async {
+  Future<String> getMpinStatus() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.mpin_status) ?? '';
   }
 
-  setTokenValue(String value) async {
+  Future<Future<bool>> setTokenValue(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.adsspay_token, value);
   }
 
-  getTokenValue() async {
+  Future<String> getTokenValue() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.adsspay_token) ?? '';
   }
 
-  setSubAgentMobNum(String value) async {
+  Future<Future<bool>> setSubAgentMobNum(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.subAgentMobNum, value);
   }
-  setSubAgentCodeNew(String value) async {
+  Future<Future<bool>> setSubAgentCodeNew(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.subAgentCodeNew, value);
   }
-  getSubAgentCodeNew() async {
+  Future<String> getSubAgentCodeNew() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.subAgentCodeNew) ?? '';
   }
-  setSubAgentCode(String value) async {
+  Future<Future<bool>> setSubAgentCode(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.subAgentCode, value);
   }
-  setSubAgentId(String value) async {
+  Future<Future<bool>> setSubAgentId(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.subAgentID, value);
   }
-  getSubAgentId() async {
+  Future<String> getSubAgentId() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.subAgentID) ?? '';
   }
-  getSubAgentCode() async {
+  Future<String> getSubAgentCode() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.subAgentCode) ?? '';
   }
-  getSubAgentMobNum() async {
+  Future<String> getSubAgentMobNum() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.subAgentMobNum) ?? '';
   }
 
-  setParentAgentMobNum(String value) async {
+  Future<Future<bool>> setParentAgentMobNum(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.parentAgentMobNum, value);
   }
 
-  getParentAgentMobNum() async {
+  Future<String> getParentAgentMobNum() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.parentAgentMobNum) ?? '';
   }
-  setMobNum(String value) async {
+  Future<Future<bool>> setMobNum(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.mob_num, value);
   }
 
-  getMobNum() async {
+  Future<String> getMobNum() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.mob_num) ?? '';
   }
 
-  setEmail(String value) async {
+  Future<Future<bool>> setEmail(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.email, value);
   }
@@ -265,50 +263,50 @@ class SharedPref {
     return prefs.getBool(SharedPrefKeys.force_logout) ?? false;
   }
 
-  getEmail() async {
+  Future<String> getEmail() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.email) ?? '';
   }
-  setCustId(String value) async {
+  Future<Future<bool>> setCustId(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.custid, value);
   }
-  getCustId() async {
+  Future<String> getCustId() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.custid) ?? '';
   }
-  setAgentOriginId(String value) async {
+  Future<Future<bool>> setAgentOriginId(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.agentOriginId, value);
   }
 
-  getAgentOriginId() async {
+  Future<String> getAgentOriginId() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.agentOriginId) ?? '';
   }
-  setBranchCode(String value) async {
+  Future<Future<bool>> setBranchCode(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.branchCode, value);
   }
-  getBranchCode() async {
+  Future<String> getBranchCode() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.branchCode) ?? '';
   }
-  setCorpCode(String value) async {
+  Future<Future<bool>> setCorpCode(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.corpCode, value);
   }
 
-  getCorpCode() async {
+  Future<String> getCorpCode() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.corpCode) ?? '';
   }
-  setCardRefNum(String value) async {
+  Future<Future<bool>> setCardRefNum(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.cardRefNum, value);
   }
 
-  getCardRefNum() async {
+  Future<String> getCardRefNum() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.cardRefNum) ?? '';
   }

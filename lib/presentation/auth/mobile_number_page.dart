@@ -12,7 +12,6 @@ import '../../data/provider/cust_register_provider.dart';
 import '../../data/provider/parent_agent_detail_provider/parent_agent_detil_provider.dart';
 import '../../data/provider/parent_agent_detail_provider/parent_credential_provider/parent_credential_provider.dart';
 import '../../data/storage/shared_pref_helper.dart';
-import '../groups/min_kyc/request_otp/min_kyc_page.dart';
 import 'login/otp_verification/otp_verification.dart';
 
 class MobileNumberVerificationPage extends StatefulWidget {
@@ -27,8 +26,8 @@ class _MobileNumberVerificationPageState
     extends State<MobileNumberVerificationPage> {
   bool isChecked = false;
  // final String termsUrl = 'https://aanvinsolutions.com/terms.html';
+  // final String privacyUrl = 'https://aanvinsolutions.com/privacy.html';
   final String termsUrl = 'https://collect.org.in/terms-of-conditions.html';
- // final String privacyUrl = 'https://aanvinsolutions.com/privacy.html';
   final String privacyUrl = 'https://collect.org.in/privacy-policy.html';
   String? errorMsg;
   final TextEditingController _mobileNumberController = TextEditingController();
@@ -74,22 +73,13 @@ class _MobileNumberVerificationPageState
           Provider.of<ParentDetailAgentProvider>(context, listen: false);
       final vendorBaseUrlProvider =
           Provider.of<CollectionBaseUrlProvider>(context, listen: false);
-      // print("------------------------------PARENT AGENT MOBIE NUMBER-----------");
-      // print(parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);
-      // print("------------------------------PARENT AGENT MOBIE NUMBER VENDOR-----------");
-      // print(parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);
 
       await parentAgentDetailProvider.fetchParentAgentDetails(value);
       if (parentAgentDetailProvider.subAgent != null) {
         await vendorBaseUrlProvider.getCollectionUrl(
-           // parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);
             parentAgentDetailProvider.subAgent?.data.mobileNumber);
 
         if (vendorBaseUrlProvider.collectionBaseUrlModel != null) {
-          // print(
-          //     "------------------------------VENDOR BASED URL MODEL CUST-----------");
-          // print(vendorBaseUrlProvider.collectionBaseUrlModel!.getCustomerUrl
-          //     .toString());
 
           SharedPref.shared.setRdclCustomerVendorUrl(vendorBaseUrlProvider
               .collectionBaseUrlModel!.getCustomerRdclUrl
@@ -118,7 +108,6 @@ class _MobileNumberVerificationPageState
               .toString());
         }
 
-        //print(parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);
         await SharedPref.shared.setAgentId(
           parentAgentDetailProvider.subAgent!.data.parentAgentId.toString(),
         );
@@ -143,9 +132,7 @@ class _MobileNumberVerificationPageState
         await SharedPref.shared.setSubAgentId(
           parentAgentDetailProvider.subAgent!.data.subAgentId.toString(),
         );
-        // print(
-        //     "parentAgentDetailProvider.subAgent!.parentAgentMobNo.toString() = ${parentAgentDetailProvider.subAgent!.data.parentAgentMobNo.toString()}");
-        //
+
         final parentAgentCredentialProvider =
             Provider.of<ParentAgentCredentialProvider>(context, listen: false);
 
@@ -177,7 +164,6 @@ class _MobileNumberVerificationPageState
           response.fold(
             (error) {
               Navigator.pop(context);
-              //print("Error: ${error.message}");
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
@@ -196,9 +182,8 @@ class _MobileNumberVerificationPageState
               Navigator.pop(context);
               if (customer.response!.data!['Customer_type'] != null || customer.response!.data!['Customer_type']?.isNotEmpty ==
                       true) {
-                //print("Phase 1");
                 if (customer.response!.data!['Customer_type'] == "COLLECTION_AGENT"&& customer.response!.images!.integrationStaus=="Y") {
-                 // print("Phase 2");
+
                   SharedPref.shared.setEmail(
                     customer.response!.data!['emailId'].toString(),
                   );
@@ -209,8 +194,7 @@ class _MobileNumberVerificationPageState
                     customer.response!.data!['BranchCode'].toString(),
                   );
                   SharedPref.shared.setMpinValue(customer.mpin.toString());
-                  // print(
-                  //     "customer.mpin.toString() = ${customer.mpin.toString()}");
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -244,8 +228,7 @@ class _MobileNumberVerificationPageState
                     customer.response!.data!['BranchCode'].toString(),
                   );
                   SharedPref.shared.setMpinValue(customer.mpin.toString());
-                  // print(
-                  //     "customer.mpin.toString() = ${customer.mpin.toString()}");
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -264,11 +247,11 @@ class _MobileNumberVerificationPageState
                     ),
                   );
                 }else{
-                  //print("Not a valid collection agent");
+
                   showInSnackBar("Not a valid collection agent");
                 }
               } else {
-               // print("Not a valid collection agent");
+
                 showInSnackBar("Not a valid collection agent");
               }
             },
@@ -276,12 +259,9 @@ class _MobileNumberVerificationPageState
         } else if (parentAgentCredentialProvider
                 .parentAgentCredentialFailResponse !=
             null) {
-          // print(parentAgentCredentialProvider
-          //     .parentAgentCredentialFailResponse!.message);
         }
       }
       else {
-       // print("Not an agent");
         final custRegisterProvider = Provider.of<CustRegisterProvider>(
           context,
           listen: false,
@@ -290,12 +270,6 @@ class _MobileNumberVerificationPageState
             int.parse(_mobileNumberController.text.replaceAll("+91", "")));
         response.fold((error) {
           Navigator.pop(context);
-          //print("Error: ${error.message}");
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      AadhaarOtpRequest(mobNum: _mobileNumberController.text)));
         }, (customer) async {
           Navigator.pop(context);
           if (customer.response!.data!['CustId'] != null ||
@@ -303,10 +277,6 @@ class _MobileNumberVerificationPageState
             SharedPref.shared.setEmail(
               customer.response!.data!['emailId'].toString(),
             );
-
-            // SharedPref.shared.setCustId(
-            //   customer.response!.data!['subAgentId'].toString(),
-            // );
             SharedPref.shared.setCustId(
               customer.response!.data!['CustId'].toString(),
             );
@@ -323,7 +293,7 @@ class _MobileNumberVerificationPageState
               customer.response!.data!['firstName'].toString(),
             );
             SharedPref.shared.setMpinValue(customer.mpin.toString());
-            //print("customer.mpin.toString() = ${customer.mpin.toString()}");
+
             Map<String, String?> nameParts =
                 splitName(customer.response!.data!['firstName'].toString());
             List<String> parts =
@@ -393,8 +363,6 @@ class _MobileNumberVerificationPageState
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -424,76 +392,7 @@ class _MobileNumberVerificationPageState
                 ],
               ),
               child:
-             /* Stack(
-                children: [
-                  const Positioned(
-                    top: 20,
-                    right: 20,
-                    child: Opacity(
-                      opacity: 0.2,
-                      child: Icon(
-                        Icons.phone_iphone,
-                        size: 150,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  Positioned.fill(
-                    child: Opacity(
-                      opacity: 0.2,
-                      child: Image.asset(
-                        "assets/images/doodle.jpeg",
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 40,
-                    left: 0,
-                    right: 0,
-                    child: Column(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFFEA307B).withOpacity(0.3),
-                                blurRadius: 15,
-                                spreadRadius: 5,
-                              ),
-                            ],
-                          ),
-                          child: Image.asset(
-                            "assets/images/mobile_number.png",
-                            height: 80,
-                            width: 80,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Text(
-                          "Mobile Verification",
-                          style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          "Enter your registered mobile number",
-                          style: GoogleFonts.poppins(
-                            color: Colors.white.withOpacity(0.9),
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),*/
+
               Stack(
                 children: [
 

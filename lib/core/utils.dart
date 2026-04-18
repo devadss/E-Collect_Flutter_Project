@@ -76,7 +76,7 @@ String getBankNameFromCorpCode(String corpCode) {
     "BNKOMSRY": "Omassery SCB",
     "BNKPTKL": "Pothukal SCB",
     "BNKFPMC": "FAPMCO MSCS",
-    "BNKMULKD": "Mullakkodi Co-operative Bank",
+    "BNKVND": "VENAD",
   };
 
   // Return the bank name if found, otherwise return a default value

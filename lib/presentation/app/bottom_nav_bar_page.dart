@@ -1,21 +1,15 @@
 import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
-import 'package:collection_qr_flutter/presentation/dues/rdcl_due_home_page.dart';
-import 'package:collection_qr_flutter/presentation/loan_integrated/loan_list.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/colors.dart';
 import '../../core/constants.dart';
 import '../account_dues/account_list_home_page.dart';
-import '../account_dues/rdcl_account_list_home_page.dart';
 import '../account_dues/rdcl_cust_list_bloc/customer _list.dart';
 import '../dues/dues_home_page.dart';
 import '../dues/rdcl_due_list_bloc_page.dart';
-import '../groups/group_homepage/all_groups_page.dart';
-import '../groups/homepage/group_home_page.dart';
 import '../home/home_page.dart';
 import '../loan/loan_home_page.dart';
 import '../profile/profile_home_page.dart';
-import '../test_page.dart';
 import '../trancstion/payment_link_home_page.dart';
 
 class BottomNavScreen extends StatefulWidget {
@@ -27,8 +21,8 @@ class BottomNavScreen extends StatefulWidget {
 
 class _BottomNavScreenState extends State<BottomNavScreen> {
   int _selectedIndex = 0;
-   String? userTPYE;
-   String? _corpCode;
+  String? userTPYE;
+  String? _corpCode;
   String? loggedInUserTPYE;
   String? _branchID;
   double _indicatorPosition = 0.0;
@@ -49,13 +43,13 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     var loggedInUserType = await SharedPref.shared.getLoggedInUserType();
     var corpCode = await SharedPref.shared.getCorpCode();
     final branchID = await SharedPref().getSubAgentCodeNew();
-    print("getUserType value = $userType");
-    print("getLoggedInUserType value = $loggedInUserType");
-    print("corpCode value = $corpCode");
+    // print("getUserType value = $userType");
+    // print("getLoggedInUserType value = $loggedInUserType");
+    // print("corpCode value = $corpCode");
     setState(() {
       _branchID = branchID;
       _corpCode = corpCode;
-      userTPYE = userType;
+      userTPYE = userType; // This is from the vendor url like All , RDCL
       loggedInUserTPYE = loggedInUserType;
     });
   }
@@ -63,57 +57,67 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   Widget loanPages(int index) {
     switch (index) {
       case 0:
-        return  HomePage(userType: loggedInUserTPYE.toString(),);
+        return HomePage(
+          userType: loggedInUserTPYE.toString(),
+        );
       case 1:
         return const LoanHomePage();
-       // return const LoanList();
+      // return const LoanList();
       case 2:
         return const ProfileHomePage();
       // return const TestProfilePage();
       default:
-        return  HomePage(userType: loggedInUserTPYE.toString(),);
+        return HomePage(
+          userType: loggedInUserTPYE.toString(),
+        );
     }
   }
 
   Widget _getSelectedPage(int index) {
-    print("Inside _getSelectedPage");
+    //print("Inside _getSelectedPage");
     switch (index) {
       case 0:
-        return  HomePage(userType: loggedInUserTPYE.toString(),);
+        return HomePage(
+          userType: loggedInUserTPYE.toString(),
+        );
       case 1:
         return userTPYE?.contains("RDCL") == true
-
-            ?  RdclDueListBlocPage(branchCode: _branchID.toString(),)
-           // :_corpCode != "BNKVENAD" ? const DuesHomePage(): UAT
-            :_corpCode != "BNKVND" ? const DuesHomePage():
-        SizedBox();
+            ? RdclDueListBlocPage(branchCode: _branchID.toString(),)
+            // :_corpCode != "BNKVENAD" ? const DuesHomePage(): UAT This was on uat on live the below one is used....
+            : _corpCode != "BNKVND"
+            ? const DuesHomePage()
+            : SizedBox();
 
       case 2:
         return userTPYE?.contains("RDCL") == true
-          //  ? const RdclAccountListHomePage()
-           ? const CustomerList()
+            //  ? const RdclAccountListHomePage()
+            ? const CustomerList()
             : const AccountListHomePage();
       case 3:
         return const ProfileHomePage();
       default:
-        return  HomePage(userType: loggedInUserTPYE.toString(),);
+        return HomePage(
+          userType: loggedInUserTPYE.toString(),
+        );
     }
   }
 
   Widget _getNonAgentSelectedPage(int index) {
     switch (index) {
       case 0:
-        // return const FeeHomePage();
-        return const GroupHomePage();
+      // return const FeeHomePage();
+      //return const GroupHomePage();
       case 1:
-        return const AllGroupsPage();
+      //return const AllGroupsPage();
       case 2:
 
         /// return const ProfileHomePage();
         //return const BankDetailsScreen();
         return const PaymentLinkHomePage();
       default:
-        return  HomePage(userType: loggedInUserTPYE.toString(),);
+        return HomePage(
+          userType: loggedInUserTPYE.toString(),
+        );
     }
   }
 
@@ -205,15 +209,14 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         body:
             loggedInUserTPYE == "AGENT" && loggedInUserTPYE?.isNotEmpty == true
                 ? _getSelectedPage(_selectedIndex)
-                : loggedInUserTPYE == "AGENT_LOAN" && loggedInUserTPYE?.isNotEmpty == true
+                : loggedInUserTPYE == "AGENT_LOAN" &&
+                        loggedInUserTPYE?.isNotEmpty == true
                     ? loanPages(_selectedIndex)
                     : loggedInUserTPYE == "NOT_AN_AGENT" &&
                             loggedInUserTPYE?.isNotEmpty == true
                         ? _getNonAgentSelectedPage(_selectedIndex)
                         : const SizedBox.shrink(),
-        bottomNavigationBar:
-
-        SafeArea(
+        bottomNavigationBar: SafeArea(
           child: Container(
             height: 80,
             decoration: BoxDecoration(
@@ -277,15 +280,16 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                                 activeIcon: Icons.home,
                                 label: 'Home',
                               ),
-                             // _corpCode != "BNKVENAD"?
-                              _corpCode != "BNKVND"?
-                              _buildNavItem(
-                                key: _tabKeys[1],
-                                index: 1,
-                                icon: Icons.receipt_long_outlined,
-                                activeIcon: Icons.receipt_long,
-                                label: 'Dues',
-                              ):SizedBox(),
+                              // _corpCode != "BNKVENAD"?
+                              _corpCode != "BNKVND"
+                                  ? _buildNavItem(
+                                      key: _tabKeys[1],
+                                      index: 1,
+                                      icon: Icons.receipt_long_outlined,
+                                      activeIcon: Icons.receipt_long,
+                                      label: 'Dues',
+                                    )
+                                  : SizedBox(),
                               _buildNavItem(
                                 key: _tabKeys[2],
                                 index: 2,
@@ -433,5 +437,3 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     );
   }
 }
-
-
