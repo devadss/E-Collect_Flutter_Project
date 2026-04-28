@@ -1,13 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/colors.dart';
 import '../../../../core/general.dart';
-import 'package:pointycastle/export.dart' as pc;
+import '../../../../core/utils.dart';
 import '../../../../data/provider/otp_request_provider.dart';
 import '../../../../data/provider/otp_verification_provider.dart';
 import '../../../../data/provider/token_request_provider.dart';
@@ -15,14 +13,9 @@ import '../../../../data/storage/shared_pref_helper.dart';
 import '../../authetication_page/google_pin_code_page.dart';
 
 class OtpRequestVerificationPage extends StatefulWidget {
-  final String subAgentmobNum;
-  final String parentAgentMobNum;
-  final String userName;
-  final String password;
-  final String tokenStatus;
-  final String loggedInUserType;
+final OtpPageData otpPageData;
 
-  const OtpRequestVerificationPage({super.key, required this.parentAgentMobNum, required this.userName, required this.password, required this.tokenStatus, required this.subAgentmobNum, required this.loggedInUserType});
+  const OtpRequestVerificationPage({super.key,required this.otpPageData});
 
   @override
   State<OtpRequestVerificationPage> createState() => _OtpRequestVerificationPageState();
@@ -46,48 +39,16 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
   final Color white = Colors.white;
   final Color black = Colors.black;
   final Color grey = Colors.grey;
-  String? encryptString(
-      String textToEncrypt, String? secretKey, String? initialVector) {
-    if (textToEncrypt.isEmpty || secretKey == null || initialVector == null) {
-      return null;
-    }
 
-    try {
-      final secretKeyBytes = Uint8List.fromList(secretKey.codeUnits);
-      final iv = Uint8List.fromList(initialVector.codeUnits);
-      final key = pc.KeyParameter(secretKeyBytes);
-      final params = pc.ParametersWithIV(key, iv);
-      final cipher = pc.CBCBlockCipher(pc.AESFastEngine());
-      cipher.init(true, params);
-
-      final textBytes = Uint8List.fromList(textToEncrypt.codeUnits);
-      final paddedText = padPKCS7(textBytes);
-
-      final encryptedBytes = cipher.process(paddedText);
-
-      return base64.encode(encryptedBytes);
-    } catch (e) {
-      return null;
-    }
-  }
-
-  Uint8List padPKCS7(Uint8List input) {
-    final padLength = 16 - (input.length % 16);
-    final output = Uint8List(input.length + padLength)..setAll(0, input);
-    for (var i = input.length; i < output.length; i++) {
-      output[i] = padLength;
-    }
-    return output;
-  }
   Future<void> tokenGeneration(String password) async {
     //print("Inside token gen");
     showProgressDialog(context);
     final tokenRequestProvider = Provider.of<TokenRequestProvider>(context, listen: false);
     final response = await tokenRequestProvider.requestToken(
-        widget.userName,
+        widget.otpPageData.userName,
         password,
       //  encryptString("adsspay@321", secretKey, initialVector)!,
-        widget.parentAgentMobNum.replaceAll("+91", ""),
+        widget.otpPageData.parentAgentMobNum.replaceAll("+91", ""),
         "Mob");
     response.fold(
           (error) {
@@ -130,12 +91,8 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
         Navigator.pop(context);
         await SharedPref.shared.setTokenValue(data.toString());
         await SharedPref.shared.setLogin(true);
-        await SharedPref.shared.setLoggedInUserType(widget.loggedInUserType);
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const GooglePinCodePage()));
-
+        await SharedPref.shared.setLoggedInUserType(widget.otpPageData.loggedInUserType);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const GooglePinCodePage()));
       },
     );
   }
@@ -149,7 +106,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
           context,
           listen: false,
         );
-        final data = await provider.verifyOtp(widget.subAgentmobNum, otpVal);
+        final data = await provider.verifyOtp(widget.otpPageData.subAgentmobNum, otpVal);
         data.fold(
           (error) {
             //print("request error= ${error.message}");
@@ -173,17 +130,17 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
             Navigator.pop(context);
             if (data.message == "OTP Verified"|| data.message == "OTP Verified (Play Store)") {
               SharedPref.shared.setLogin(true);
-              if(widget.loggedInUserType == "NOT_AN_AGENT"){
+              if(widget.otpPageData.loggedInUserType == "NOT_AN_AGENT"){
 //print("loggedInUserType = ${widget.loggedInUserType}");
                 await SharedPref.shared.setTokenValue(data.toString());
                 await SharedPref.shared.setLogin(true);
-                await SharedPref.shared.setLoggedInUserType(widget.loggedInUserType);
+                await SharedPref.shared.setLoggedInUserType(widget.otpPageData.loggedInUserType);
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const GooglePinCodePage()));
               }else{
-                tokenGeneration(widget.password);
+                tokenGeneration(widget.otpPageData.password);
               }
 
            //    if (widget.tokenStatus == "MPIN_N") {
@@ -241,7 +198,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
   Future<void> otpRequest() async {
     // showProgressDialog(context);
     final provider = Provider.of<OtpRequestProvider>(context, listen: false);
-    final data = await provider.requestOtp(widget.subAgentmobNum);
+    final data = await provider.requestOtp(widget.otpPageData.subAgentmobNum);
     data.fold(
       (error) {
         // Navigator.pop(context);
@@ -378,17 +335,6 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
                 ),
               ),
             ),
-            // Center(
-            //   child: Container(
-            //     width: 300,
-            //     height: 300,
-            //     decoration: BoxDecoration(
-            //       color: white,
-            //       borderRadius: BorderRadius.circular(20),
-            //     ),
-            //     child: Image.asset("assets/images/otp_verify_img.jpg"),
-            //   ),
-            // ),
 
             const SizedBox(height: 40),
 
@@ -418,7 +364,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
                       ),
                       children: [
                         TextSpan(
-                          text: widget.subAgentmobNum,
+                          text: widget.otpPageData.subAgentmobNum,
                           style: GoogleFonts.poppins(
                             color: deepPurple,
                             fontWeight: FontWeight.w600,
@@ -569,3 +515,28 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
     );
   }
 }
+// String? encryptString(
+//     String textToEncrypt, String? secretKey, String? initialVector)
+// {
+//   if (textToEncrypt.isEmpty || secretKey == null || initialVector == null) {
+//     return null;
+//   }
+//
+//   try {
+//     final secretKeyBytes = Uint8List.fromList(secretKey.codeUnits);
+//     final iv = Uint8List.fromList(initialVector.codeUnits);
+//     final key = pc.KeyParameter(secretKeyBytes);
+//     final params = pc.ParametersWithIV(key, iv);
+//     final cipher = pc.CBCBlockCipher(pc.AESFastEngine());
+//     cipher.init(true, params);
+//
+//     final textBytes = Uint8List.fromList(textToEncrypt.codeUnits);
+//     final paddedText = padPKCS7(textBytes);
+//
+//     final encryptedBytes = cipher.process(paddedText);
+//
+//     return base64.encode(encryptedBytes);
+//   } catch (e) {
+//     return null;
+//   }
+// }

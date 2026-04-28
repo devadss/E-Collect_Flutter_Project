@@ -33,6 +33,12 @@ class CollectionBaseUrlProvider with ChangeNotifier{
   CollectionBaseUrlProvider(this._collectionBaseUrlRepo);
   CollectionBaseUrlModel? _collectionBaseUrlModel;
   CollectionBaseUrlModel? get collectionBaseUrlModel=>_collectionBaseUrlModel;
+
+  void clearData(){
+    _collectionBaseUrlModel = null;
+  }
+
+
   Future<void> getCollectionUrl(String? parentMobNum)async{
     printLog("-------------------------------GET COLLECTION URL-------------------");
     printLog(collectionBaseUrlModel);

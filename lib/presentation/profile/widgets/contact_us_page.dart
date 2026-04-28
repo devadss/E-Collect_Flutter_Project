@@ -1,4 +1,6 @@
 
+import 'package:collection_qr_flutter/core/constants.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -70,30 +72,77 @@ class _ContactUsPageState extends State<ContactUsPage> {
               icon: Icons.email,
               title: "Email Us",
               subtitle: "Reply within 24 hours",
-              value: "cards@transcorpint.com",
+             // value: "cards@transcorpint.com",
+              value: "support@adsslimited.com",
               onTap: _handleEmailTap,
               color: Colors.redAccent,
             ),
 
             const SizedBox(height: 32),
-            Text(
-              "Terms & Conditions",
-              style: GoogleFonts.poppins(
-                color: home1,
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
+            Center(
+              child: RichText(
+                text: TextSpan(
+                  style: GoogleFonts.poppins(
+                    fontSize: 15,
+                    color: Colors.black87,
+                    height: 1.4,
+                  ),
+                  children: [
+
+                    // const TextSpan(
+                    //
+                    //   text: "By continuing, you agree to our ",
+                    // ),
+
+                    TextSpan(
+                      text: "Terms & Conditions",
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFFEA307B),
+                        fontWeight: FontWeight.w600,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () async {
+                          if (await canLaunch(terms)) {
+                            await launch(terms);
+                          }
+                        },
+                    ),
+                    const TextSpan(text: " | "),
+                    TextSpan(
+                      text: "Privacy Policy",
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFFEA307B),
+                        fontWeight: FontWeight.w600,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () async {
+                          if (await canLaunch(privacy)) {
+                            await launch(privacy);
+                          }
+                        },
+                    ),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 12),
-            _buildDocumentLink(
-              title: "English Version",
-              url: "https://transcorpint.com/wp-content/uploads/2023/07/TERMSANDCONDITIONS_with_ATM_Hindi.pdf",
-            ),
-            const SizedBox(height: 12),
-            _buildDocumentLink(
-              title: "Hindi Version",
-              url: "https://transcorpint.com/wp-content/uploads/2023/07/TERMSANDCONDITIONS_with_ATM_Hindi.pdf",
-            ),
+            // Text(
+            //   "Terms & Conditions",
+            //   style: GoogleFonts.poppins(
+            //     color: home1,
+            //     fontSize: 18,
+            //     fontWeight: FontWeight.w600,
+            //   ),
+            // ),
+            // const SizedBox(height: 12),
+            // _buildDocumentLink(
+            //   title: "English Version",
+            //   url: "https://transcorpint.com/wp-content/uploads/2023/07/TERMSANDCONDITIONS_with_ATM_Hindi.pdf",
+            // ),
+            // const SizedBox(height: 12),
+            // _buildDocumentLink(
+            //   title: "Hindi Version",
+            //   url: "https://transcorpint.com/wp-content/uploads/2023/07/TERMSANDCONDITIONS_with_ATM_Hindi.pdf",
+            // ),
           ],
         ),
       ),

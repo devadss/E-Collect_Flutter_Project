@@ -290,6 +290,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                                       label: 'Dues',
                                     )
                                   : SizedBox(),
+                            //uncomment the below after cashfree uat
                               _buildNavItem(
                                 key: _tabKeys[2],
                                 index: 2,

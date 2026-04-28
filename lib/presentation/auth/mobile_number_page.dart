@@ -12,7 +12,6 @@ import '../../data/provider/cust_register_provider.dart';
 import '../../data/provider/parent_agent_detail_provider/parent_agent_detil_provider.dart';
 import '../../data/provider/parent_agent_detail_provider/parent_credential_provider/parent_credential_provider.dart';
 import '../../data/storage/shared_pref_helper.dart';
-import 'login/otp_verification/otp_verification.dart';
 
 class MobileNumberVerificationPage extends StatefulWidget {
   const MobileNumberVerificationPage({super.key});
@@ -33,7 +32,13 @@ class _MobileNumberVerificationPageState extends State<MobileNumberVerificationP
   Future<void> checkMobileNumber() async {
     showProgressDialog(context);
     if (_mobileNumberController.text.isNotEmpty) {
+      final parentAgentDetailProvider = Provider.of<ParentDetailAgentProvider>(context, listen: false);
+      final vendorBaseUrlProvider = Provider.of<CollectionBaseUrlProvider>(context, listen: false);
+      resetInitialData();
+      parentAgentDetailProvider.clearData();
+      vendorBaseUrlProvider.clearData();
       validateMobile(_mobileNumberController.text);
+
     } else {
       Navigator.pop(context);
       showInSnackBar("EMPTY FIELD NOT ALLOWED", context);
@@ -44,6 +49,7 @@ class _MobileNumberVerificationPageState extends State<MobileNumberVerificationP
   void initState() {
     super.initState();
     checkForUpdate();
+
   }
 
 
@@ -53,7 +59,8 @@ class _MobileNumberVerificationPageState extends State<MobileNumberVerificationP
     } else if (!regExp.hasMatch(value)) {
       Navigator.pop(context);
       showInSnackBar(mobileNumEmptyMSG, context);
-    } else {
+    }
+    else {
 
       final parentAgentDetailProvider = Provider.of<ParentDetailAgentProvider>(context, listen: false);
       final vendorBaseUrlProvider = Provider.of<CollectionBaseUrlProvider>(context, listen: false);
@@ -61,64 +68,15 @@ class _MobileNumberVerificationPageState extends State<MobileNumberVerificationP
 
       //PROVIDER CALL 1......
       await parentAgentDetailProvider.fetchParentAgentDetails(value);
-
       if (parentAgentDetailProvider.subAgent != null) {
         //PROVIDER CALL 2......
         await vendorBaseUrlProvider.getCollectionUrl(parentAgentDetailProvider.subAgent?.data.mobileNumber);
 
         if (vendorBaseUrlProvider.collectionBaseUrlModel != null) {
-
-          SharedPref.shared.setRdclCustomerVendorUrl(vendorBaseUrlProvider
-              .collectionBaseUrlModel!.getCustomerRdclUrl
-              .toString());
-          SharedPref.shared.setDueListRdclUrl(vendorBaseUrlProvider
-              .collectionBaseUrlModel!.getDueListRdclUrl
-              .toString());
-          SharedPref.shared.setCustomerRdUrl(vendorBaseUrlProvider
-              .collectionBaseUrlModel!.getCustomerRdUrl
-              .toString());
-          SharedPref.shared.setDueListRdUrl(vendorBaseUrlProvider
-              .collectionBaseUrlModel!.getDueListRdUrl
-              .toString());
-          SharedPref.shared.setCustomerLoanUrl(vendorBaseUrlProvider
-              .collectionBaseUrlModel!.getCustomerLoanUrl
-              .toString());
-          SharedPref.shared.setDueListLoanUrl(vendorBaseUrlProvider
-              .collectionBaseUrlModel!.getDueListLoanUrl
-              .toString());
-          SharedPref.shared.setLoanAccountHolderUrl(vendorBaseUrlProvider
-              .collectionBaseUrlModel!.getLoanAccountHolderUrl
-              .toString());
-
-          SharedPref.shared.setUserType(vendorBaseUrlProvider
-              .collectionBaseUrlModel!.userType
-              .toString());
+          insertCollectionBaseUrl(vendorBaseUrlProvider);
         }
+        insertParentDetailAgent(parentAgentDetailProvider);
 
-        await SharedPref.shared.setAgentId(
-          parentAgentDetailProvider.subAgent!.data.parentAgentId.toString(),
-        );
-        await SharedPref.shared.setParentAgentMobNum(
-          parentAgentDetailProvider.subAgent!.data.parentAgentMobNo.toString(),
-        );
-        await SharedPref.shared.setSubAgentName(
-          parentAgentDetailProvider.subAgent!.data.subAgentName.toString(),
-        );
-        await SharedPref.shared.setSubAgentMobNum(
-          parentAgentDetailProvider.subAgent!.data.mobileNumber.toString(),
-        );
-        await SharedPref.shared.setAgentOriginId(parentAgentDetailProvider
-            .subAgent!.data.subAgentOriginId
-            .toString());
-        await SharedPref.shared.setSubAgentCode(
-          parentAgentDetailProvider.subAgent!.data.subAgentOriginId.toString(),
-        );
-        await SharedPref.shared.setSubAgentCodeNew(
-          parentAgentDetailProvider.subAgent!.data.subAgentCode.toString(),
-        );
-        await SharedPref.shared.setSubAgentId(
-          parentAgentDetailProvider.subAgent!.data.subAgentId.toString(),
-        );
 
         final parentAgentCredentialProvider =
             Provider.of<ParentAgentCredentialProvider>(context, listen: false);
@@ -129,18 +87,9 @@ class _MobileNumberVerificationPageState extends State<MobileNumberVerificationP
                 .toString()
                 .replaceAll("+91", ""));
         if (parentAgentCredentialProvider.parentAgentCredentialModel != null) {
-          SharedPref.shared.setParentAgentName(parentAgentCredentialProvider
-              .parentAgentCredentialModel!.b.userName);
-          SharedPref.shared.setParentAgentPassword(parentAgentCredentialProvider
-              .parentAgentCredentialModel!.b.mobPassword);
-          SharedPref.shared.setAgentName(parentAgentCredentialProvider
-              .parentAgentCredentialModel!.b.userName);
-
-          //PROVIDER CALL 4......
-          // await custRegisterProvider.checkRegCust(int.parse(
-          //     parentAgentDetailProvider.subAgent!.data.parentAgentMobNo
-          //         .toString()
-          //         .replaceAll("+91", "")));
+          SharedPref.shared.setParentAgentName(parentAgentCredentialProvider.parentAgentCredentialModel!.b.userName);
+          SharedPref.shared.setParentAgentPassword(parentAgentCredentialProvider.parentAgentCredentialModel!.b.mobPassword);
+          SharedPref.shared.setAgentName(parentAgentCredentialProvider.parentAgentCredentialModel!.b.userName);
 
           //PROVIDER CALL 5......
           final response = await custRegisterProvider.checkRegCust(int.parse(parentAgentDetailProvider.subAgent!.data.parentAgentMobNo
@@ -169,69 +118,31 @@ class _MobileNumberVerificationPageState extends State<MobileNumberVerificationP
               if (customer.response!.data!['Customer_type'] != null || customer.response!.data!['Customer_type']?.isNotEmpty ==
                       true) {
                 if (customer.response!.data!['Customer_type'] == "COLLECTION_AGENT"&& customer.response!.images!.integrationStaus=="Y") {
-
-                  SharedPref.shared.setEmail(
-                    customer.response!.data!['emailId'].toString(),
+                  insertCollectionAgentIntegrationY(customer);
+                  var otpData = OtpPageData(
+                    subAgentmobNum: _mobileNumberController.text,
+                    parentAgentMobNum: parentAgentCredentialProvider.parentAgentCredentialModel!.b.phoneNumber,
+                    userName: parentAgentCredentialProvider
+                        .parentAgentCredentialModel!.b.userName,
+                    password: parentAgentCredentialProvider
+                        .parentAgentCredentialModel!.b.mobPassword,
+                    tokenStatus: customer.status.toString(),
+                    loggedInUserType: 'AGENT',
                   );
-                  SharedPref.shared.setCorpCode(
-                    customer.response!.data!['CorpCode'].toString(),
-                  );
-                  SharedPref.shared.setBranchCode(
-                    customer.response!.data!['BranchCode'].toString(),
-                  );
-                  SharedPref.shared.setMpinValue(customer.mpin.toString());
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => OtpRequestVerificationPage(
-                        subAgentmobNum: _mobileNumberController.text,
-                        parentAgentMobNum: parentAgentCredentialProvider
-                            .parentAgentCredentialModel!.b.phoneNumber,
-                        userName: parentAgentCredentialProvider
-                            .parentAgentCredentialModel!.b.userName,
-                        password: parentAgentCredentialProvider
-                            .parentAgentCredentialModel!.b.mobPassword,
-                        tokenStatus: customer.status.toString(),
-                        loggedInUserType: 'AGENT',
-                      ),
-                    ),
-                  );
+                  otpPageNavigation(context,otpData );
                 }
 
                 else if(customer.response!.data!['Customer_type'] == "COLLECTION_AGENT"&& customer.response!.images!.integrationStaus=="N") {
                   //print("Phase 2");
-                  SharedPref.shared.setCustId(
-                    customer.response!.data!['CustId'].toString(),
-                  );
-                  SharedPref.shared.setEmail(
-                    customer.response!.data!['emailId'].toString(),
-                  );
-                  SharedPref.shared.setCorpCode(
-                    customer.response!.data!['CorpCode'].toString(),
-                  );
-                  SharedPref.shared.setBranchCode(
-                    customer.response!.data!['BranchCode'].toString(),
-                  );
-                  SharedPref.shared.setMpinValue(customer.mpin.toString());
+                  insertCollectionAgentIntegrationN(customer);
 
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => OtpRequestVerificationPage(
-                        subAgentmobNum: _mobileNumberController.text,
-                        parentAgentMobNum: parentAgentCredentialProvider
-                            .parentAgentCredentialModel!.b.phoneNumber,
-                        userName: parentAgentCredentialProvider
-                            .parentAgentCredentialModel!.b.userName,
-                        password: parentAgentCredentialProvider
-                            .parentAgentCredentialModel!.b.mobPassword,
-                        tokenStatus: customer.status.toString(),
-                        loggedInUserType: 'AGENT_LOAN',
-                       // loggedInUserType: 'AGENT',//// REMOVE THIS AFTER TESTING AND UNCOMMENT THE ABOVE ONE
-                      ),
-                    ),
-                  );
+                  var otpData = OtpPageData(subAgentmobNum: _mobileNumberController.text,
+                      parentAgentMobNum:parentAgentCredentialProvider.parentAgentCredentialModel!.b.phoneNumber,
+                      userName:parentAgentCredentialProvider.parentAgentCredentialModel!.b.userName
+                      , password: parentAgentCredentialProvider.parentAgentCredentialModel!.b.mobPassword,
+                      tokenStatus: customer.status.toString(),
+                      loggedInUserType: 'AGENT_LOAN',);
+                  otpPageNavigation(context,otpData );
                 }else{
 
                   showInSnackBar("Not a valid collection agent", context);
@@ -245,62 +156,34 @@ class _MobileNumberVerificationPageState extends State<MobileNumberVerificationP
         } else if (parentAgentCredentialProvider
                 .parentAgentCredentialFailResponse !=
             null) {
+          showInSnackBar("Not a registered user", context);
         }
       }
       else {
-        // final custRegisterProvider = Provider.of<CustRegisterProvider>(
-        //   context,
-        //   listen: false,
-        // );
         //PROVIDER CALL 5......
         final response = await custRegisterProvider.checkRegCust(
             int.parse(_mobileNumberController.text.replaceAll("+91", "")));
 
         response.fold((error) {
           Navigator.pop(context);
+          showInSnackBar("Not a registered user", context);
         }, (customer) async {
           Navigator.pop(context);
-          if (customer.response!.data!['CustId'] != null ||
-              customer.response!.data!['CustId']?.isNotEmpty == true) {
-            SharedPref.shared.setEmail(
-              customer.response!.data!['emailId'].toString(),
-            );
-            SharedPref.shared.setCustId(
-              customer.response!.data!['CustId'].toString(),
-            );
-            SharedPref.shared.setCorpCode(
-              customer.response!.data!['CorpCode'].toString(),
-            );
-            SharedPref.shared.setBranchCode(
-              customer.response!.data!['BranchCode'].toString(),
-            );
-            SharedPref.shared.setSubAgentMobNum(
-              customer.response!.data!['contactNo'].toString(),
-            );
-            SharedPref.shared.setAgentName(
-              customer.response!.data!['firstName'].toString(),
-            );
-            SharedPref.shared.setMpinValue(customer.mpin.toString());
 
-            Map<String, String?> nameParts =
-                splitName(customer.response!.data!['firstName'].toString());
-            List<String> parts =
-                customer.response!.data!['date'].toString().split('-');
+          if (customer.response!.data!['CustId'] != null || customer.response!.data!['CustId']?.isNotEmpty == true) {
+            insertCustRegister(customer);
+
+            Map<String, String?> nameParts = splitName(customer.response!.data!['firstName'].toString());
+            List<String> parts = customer.response!.data!['date'].toString().split('-');
             String year = parts[0];
             String? firstName = nameParts['first'];
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => OtpRequestVerificationPage(
-                  subAgentmobNum: _mobileNumberController.text,
-                  parentAgentMobNum: _mobileNumberController.text,
-                  userName: firstName!,
-                  password: "$firstName@$year",
-                  tokenStatus: customer.status.toString(),
-                  loggedInUserType: 'NOT_AN_AGENT',
-                ),
-              ),
-            );
+
+            var otpData = OtpPageData(subAgentmobNum: _mobileNumberController.text,
+                parentAgentMobNum: _mobileNumberController.text,
+                userName: firstName!, password: "$firstName@$year", tokenStatus: customer.status.toString(),
+                loggedInUserType: 'NOT_AN_AGENT');
+              otpPageNavigation(context,otpData );
+
           }
         });
       }

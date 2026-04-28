@@ -1,7 +1,5 @@
 import 'dart:io';
-
 import 'package:animated_segmented_tab_control/animated_segmented_tab_control.dart';
-import 'package:collection_qr_flutter/core/constants.dart';
 import 'package:collection_qr_flutter/presentation/account_dues/widgets/account_detail_new.dart';
 import 'package:flutter/services.dart';
 import '../../core/colors.dart';
@@ -62,8 +60,8 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
     }
 
     final filtered = originalList.where((customer) {
-      final name = customer.custName?.toLowerCase() ?? '';
-      final accNo = customer.depGlobalAccNo?.toString().toLowerCase() ?? '';
+      final name = customer.custName.toLowerCase() ?? '';
+      final accNo = customer.depGlobalAccNo.toString().toLowerCase() ?? '';
       final search = query.toLowerCase();
 
       return name.contains(search) || accNo.contains(search);
@@ -157,30 +155,7 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
       ),
     );
   }
-  // Widget _buildSearchField() {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-  //     child: TextField(
-  //       controller: searchController,
-  //       decoration: InputDecoration(
-  //         hintText: "Search customer name",
-  //         prefixIcon: Icon(Icons.search, color: home1.withAlpha(120)),
-  //         enabledBorder: OutlineInputBorder(
-  //           borderRadius: BorderRadius.circular(10),
-  //           borderSide: BorderSide(color: home1.withAlpha(120)),
-  //         ),
-  //         focusedBorder: OutlineInputBorder(
-  //           borderRadius: BorderRadius.circular(10),
-  //           borderSide: BorderSide(color: home1.withAlpha(120)),
-  //         ),
-  //         border: OutlineInputBorder(
-  //           borderRadius: BorderRadius.circular(15),
-  //           borderSide: BorderSide(color: home1),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
+
 
   Widget _buildShimmerText(
       {double width = double.infinity, double height = 16}) {
@@ -267,10 +242,7 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
         children: [
           Icon(Icons.search_off, size: 64, color: Colors.grey),
           SizedBox(height: 16),
-          Text(
-            "No customers found",
-            style: TextStyle(fontSize: 18, color: Colors.grey),
-          ),
+          Text("No customers found", style: TextStyle(fontSize: 18, color: Colors.grey),),
         ],
       ),
     );
@@ -452,119 +424,6 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
       ),
     );
   }
-  // Widget _buildCustomerItem(Customer customer) {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-  //     child: InkWell(
-  //       borderRadius: BorderRadius.circular(18),
-  //       onTap: () => _navigateToCustomerDetails(customer),
-  //       child: Container(
-  //         padding: const EdgeInsets.all(16),
-  //         decoration: BoxDecoration(
-  //           color: Colors.white,
-  //           borderRadius: BorderRadius.circular(18),
-  //           boxShadow: [
-  //             BoxShadow(
-  //               color: Colors.black.withOpacity(0.05),
-  //               blurRadius: 14,
-  //               offset: const Offset(0, 6),
-  //             ),
-  //           ],
-  //         ),
-  //         child: Column(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           children: [
-  //             /// 👤 Customer Name Row
-  //             Row(
-  //               children: [
-  //                 Icon(Icons.person, size: 18, color: home1),
-  //                 const SizedBox(width: 8),
-  //                 Expanded(
-  //                   child: Text(
-  //                     customer.custName,
-  //                     style: const TextStyle(
-  //                       fontSize: 16,
-  //                       fontWeight: FontWeight.w600,
-  //                     ),
-  //                     overflow: TextOverflow.ellipsis,
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //
-  //             const SizedBox(height: 12),
-  //
-  //             /// 🏦 Account Label
-  //             Text(
-  //               "ACCOUNT NUMBER",
-  //               style: TextStyle(
-  //                 fontSize: 11,
-  //                 color: Colors.grey.shade500,
-  //                 letterSpacing: 0.8,
-  //               ),
-  //             ),
-  //
-  //             const SizedBox(height: 6),
-  //
-  //             Container(
-  //               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-  //               decoration: BoxDecoration(
-  //                 color: Colors.grey.shade100,
-  //                 borderRadius: BorderRadius.circular(10),
-  //               ),
-  //               child: Row(
-  //                 children: [
-  //                   Icon(Icons.account_balance, size: 16, color: home1),
-  //                   const SizedBox(width: 8),
-  //
-  //                   Expanded(
-  //                     child: Text(
-  //                       customer.depGlobalAccNo,
-  //                       style: const TextStyle(
-  //                         fontSize: 14,
-  //                         fontWeight: FontWeight.w600,
-  //                         letterSpacing: 1.2, // 🔥 KEY FIX
-  //                       ),
-  //                     ),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //
-  //             const SizedBox(height: 16),
-  //
-  //             /// 🎯 Collect Button (Full Width)
-  //             SizedBox(
-  //               width: double.infinity,
-  //               child: _buildCollectButton(),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-
-
-  Widget _buildCollectButton() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      decoration: BoxDecoration(
-        color: home1,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      alignment: Alignment.center,
-      child: const Text(
-        "Collect",
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
 
   void _navigateToCustomerDetails(Customer customer) {
     Navigator.push(
@@ -585,94 +444,7 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          automaticallyImplyLeading: false,
-          centerTitle: true,
-          toolbarHeight: 100,
-          title: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "Customer List",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade200.withOpacity(0.6),
-                  borderRadius: BorderRadius.circular(40),
-                ),
-                child: SegmentedTabControl(
-                  indicatorPadding: const EdgeInsets.all(4),
-                  indicatorDecoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [home1, home1.withOpacity(0.85)],
-                    ),
-                    borderRadius: BorderRadius.circular(30),
-                    boxShadow: [
-                      BoxShadow(
-                        color: home1.withOpacity(0.9),
-                        blurRadius: 10,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  barDecoration: BoxDecoration(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(40),
-                  ),
-                  tabs: [
-                    SegmentTab(
-                      label: "RD",
-                      color: Colors.transparent,
-                      backgroundColor: Colors.transparent,
-                      textColor: Colors.grey.shade600,
-                      selectedTextColor: Colors.white,
-                    ),
-                    SegmentTab(
-                      label: "LOANS",
-                      color: Colors.transparent,
-                      backgroundColor: Colors.transparent,
-                      textColor: Colors.grey.shade600,
-                      selectedTextColor: Colors.white,
-                    ),
-                  ],
-                ),
-              )
-              // SegmentedTabControl(
-              //   barDecoration: BoxDecoration(
-              //     color: Colors.grey.shade100,
-              //     borderRadius: BorderRadius.circular(30),
-              //   ),
-              //   tabs: [
-              //     SegmentTab(
-              //       label: "RD LIST",
-              //       color: home1,
-              //       backgroundColor: Colors.transparent,
-              //       textColor: Colors.grey.shade700,
-              //       selectedTextColor: Colors.white,
-              //       splashHighlightColor: home1,
-              //       splashColor: home1.withOpacity(0.2),
-              //     ),
-              //     SegmentTab(
-              //       label: "LOAN LIST",
-              //       color: home1,
-              //       backgroundColor: Colors.transparent,
-              //       textColor: Colors.grey.shade700,
-              //       selectedTextColor: Colors.white,
-              //       splashColor: home1.withOpacity(0.2),
-              //     ),
-              //   ],
-              // ),
-            ],
-          ),
-        ),
+        appBar: buildAppBar(),
         backgroundColor: white,
         body:TabBarView(children: [
           Consumer<AgentCustomerDetailsProvider>(
@@ -704,403 +476,72 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
       ),
     );
   }
+
+  AppBar buildAppBar() {
+    return AppBar(
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        toolbarHeight: 100,
+        title: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "Customer List",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200.withOpacity(0.6),
+                borderRadius: BorderRadius.circular(40),
+              ),
+              child: SegmentedTabControl(
+                indicatorPadding: const EdgeInsets.all(4),
+                indicatorDecoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [home1, home1.withOpacity(0.85)],
+                  ),
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: [
+                    BoxShadow(
+                      color: home1.withOpacity(0.9),
+                      blurRadius: 10,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                barDecoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                tabs: [
+                  SegmentTab(
+                    label: "RD",
+                    color: Colors.transparent,
+                    backgroundColor: Colors.transparent,
+                    textColor: Colors.grey.shade600,
+                    selectedTextColor: Colors.white,
+                  ),
+                  SegmentTab(
+                    label: "LOANS",
+                    color: Colors.transparent,
+                    backgroundColor: Colors.transparent,
+                    textColor: Colors.grey.shade600,
+                    selectedTextColor: Colors.white,
+                  ),
+                ],
+              ),
+            )
+
+          ],
+        ),
+      );
+  }
 }
-// Row(
-//   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//   children: [
-//   InkWell(
-//     onTap: (){
-//       setState(() {
-//         showShadowLoan = false;
-//         showShadowAcc = true;
-//       });
-//     },
-//     child: Container(
-//       decoration: BoxDecoration(
-//         color: Colors.white,
-//         borderRadius: BorderRadius.circular(10),
-//         boxShadow: [
-//           BoxShadow(color:
-//           showShadowAcc == true?
-//           home1.withAlpha(60): Colors.white, blurRadius: 9, spreadRadius: 1),
-//
-//         ]
-//       ),
-//       child: Padding(
-//         padding: const EdgeInsets.all(8.0),
-//         child: const Text(
-//           //"Account List",
-//           "RD List",
-//           style: TextStyle(
-//             fontWeight: FontWeight.w700,
-//             fontSize: 23,
-//             color: home2,
-//           ),
-//         ),
-//       ),
-//     ),
-//   ),
-//     InkWell(
-//       onTap: (){
-//         setState(() {
-//           showShadowLoan = true;
-//           showShadowAcc = false;
-//         });
-//         Navigator.push(context, MaterialPageRoute(builder: (context)=>LoanList()));
-//         showShadowLoan = false;
-//         showShadowAcc = true;
-//       },
-//       child: Container(
-//
-//         decoration: BoxDecoration(
-//             color: Colors.white,
-//             borderRadius: BorderRadius.circular(10),
-//             boxShadow: [
-//               BoxShadow(color:
-//               showShadowLoan == true?
-//               Colors.black12:Colors.white, blurRadius: 8, spreadRadius: 2),
-//
-//             ]
-//         ),
-//         child: Padding(
-//           padding: const EdgeInsets.all(8.0),
-//           child: const Text(
-//             "Loan List",
-//             style: TextStyle(
-//               fontWeight: FontWeight.w700,
-//               fontSize: 23,
-//               color: home2,
-//             ),
-//           ),
-//         ),
-//       ),
-//     ),
-// ],)
-// class AccountListHomePage extends StatefulWidget {
-//   const AccountListHomePage({super.key});
-//
-//   @override
-//   State<AccountListHomePage> createState() => _AccountListHomePageState();
-// }
-//
-// class _AccountListHomePageState extends State<AccountListHomePage> {
-//   String? agentId;
-//   String? corpCode;
-//   TextEditingController searchController = TextEditingController();
-//   List<Customer>? _agentCustomerDetailsFilteredModel;
-//   AgentCustomerDetailsModel? agentCustomerDetailsModel;
-//
-//   void searchNames() {
-//     var query = searchController.text.toLowerCase();
-//
-//     setState(() {
-//       if (query.isEmpty) {
-//         // Reset to full list
-//         _agentCustomerDetailsFilteredModel =
-//             agentCustomerDetailsModel?.data.toList();
-//       } else {
-//         // Filter only CustomerData list
-//         _agentCustomerDetailsFilteredModel =
-//             agentCustomerDetailsModel!.data
-//                 .where((item) =>
-//                 item.custName.toLowerCase().contains(query))
-//                 .toList();
-//       }
-//     });
-//   }
-//
-//
-//
-//   @override
-//   void initState() {
-//     WidgetsBinding.instance.addPostFrameCallback((_) {
-//       loadSharedPrefs();
-//     });
-//     super.initState();
-//   }
-//
-//   Future<void> loadSharedPrefs() async {
-//     final id = await SharedPref().getAgentOriginId();
-//     final crpCd = await SharedPref().getCorpCode();
-//     if (mounted) {
-//       setState(() {
-//         agentId = id;
-//         corpCode = crpCd;
-//       });
-//       print(
-//           "----------------------------------AGENT ORIGIN ID---------------------------");
-//       print(agentId);
-//       final provider =
-//           Provider.of<AgentCustomerDetailsProvider>(context, listen: false);
-//       provider.getAgentCustomerDetails(agentId!);
-//
-//       setState(() {
-//         agentCustomerDetailsModel = provider.agentCustomerDetailsModel;
-//         _agentCustomerDetailsFilteredModel =
-//             agentCustomerDetailsModel!.data; // original list
-//       });
-//
-//
-//     }
-//   }
-//
-//   Widget buildShimmerText(
-//       {double width = double.infinity, double height = 16}) {
-//     return Shimmer.fromColors(
-//       period: const Duration(milliseconds: 1500), // Ensures smooth animation
-//       baseColor: grey[300]!,
-//       highlightColor: grey[100]!,
-//       child: Container(
-//         width: width,
-//         height: height,
-//         decoration: BoxDecoration(
-//           color: grey[300],
-//           borderRadius: BorderRadius.circular(4),
-//         ),
-//       ),
-//     );
-//   }
-//
-//   Widget buildShimmerList() {
-//     return Expanded(
-//       child: ListView.separated(
-//         physics: const NeverScrollableScrollPhysics(),
-//         itemCount: 10,
-//         separatorBuilder: (context, index) => const SizedBox(height: 10),
-//         itemBuilder: (context, index) {
-//           return Padding(
-//             padding: const EdgeInsets.symmetric(horizontal: 20),
-//             child: Container(
-//               height: MediaQuery.of(context).size.height * 0.15,
-//               width: double.infinity,
-//               decoration: BoxDecoration(
-//                 borderRadius: BorderRadius.circular(10),
-//                 color: white,
-//                 border: Border.all(color: grey[300]!, width: 1),
-//                 boxShadow: const [
-//                   BoxShadow(
-//                     color: black45,
-//                     blurRadius: 8,
-//                     offset: Offset(0, 4),
-//                   ),
-//                 ],
-//               ),
-//               child: Padding(
-//                 padding:
-//                     const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-//                 child: Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   mainAxisAlignment: MainAxisAlignment.center,
-//                   children: [
-//                     buildShimmerText(width: 150), // Name
-//                     const SizedBox(height: 10),
-//                     buildShimmerText(width: 100), // Customer ID
-//                     const SizedBox(height: 10),
-//                     buildShimmerText(width: 180), // Account Number
-//                     const SizedBox(height: 10),
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           );
-//         },
-//       ),
-//     );
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//         appBar: AppBar(
-//             backgroundColor: white,
-//             automaticallyImplyLeading: false,
-//             centerTitle: true,
-//             title: const Text(
-//               "Account List",
-//               style: TextStyle(
-//                   fontWeight: FontWeight.w700, fontSize: 23, color: home2),
-//             )),
-//         backgroundColor: white,
-//         body: Consumer<AgentCustomerDetailsProvider>(
-//             builder: (context, provider, child) {
-//           return provider.agentCustomerDetailsModel == null
-//               ? buildShimmerList()
-//               : Column(
-//                   children: [
-//
-//                     Padding(
-//                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-//                       child: TextField(
-//                         onChanged: (_)=>searchNames(),
-//                         keyboardType: TextInputType.name,
-//                         decoration: InputDecoration(
-//                           hint: Text("Customer name"),
-//                           prefixIcon: Icon(Icons.search, color: home1.withAlpha(120),),
-//                           enabledBorder: OutlineInputBorder(
-//                             borderRadius: BorderRadius.circular(10),
-//                             borderSide: BorderSide(color: home1.withAlpha(120))
-//                           ),
-//                           focusedBorder: OutlineInputBorder(
-//                               borderRadius: BorderRadius.circular(10),
-//                             borderSide: BorderSide(color: home1.withAlpha(120))
-//                           ),
-//                           border: OutlineInputBorder(
-//
-//                             borderRadius: BorderRadius.circular(15),
-//                             borderSide: BorderSide(color: home1)
-//                           )
-//                         ),
-//                       ),
-//                     ),
-// SizedBox(height: 20,),
-//                     Expanded(
-//                       child: ListView.separated(
-//                           itemBuilder: (context, index) {
-//                             return Padding(
-//                               padding:
-//                                   const EdgeInsets.symmetric(horizontal: 20),
-//                               child: GestureDetector(
-//                                 onTap: () {
-//                                   Navigator.push(
-//                                       context,
-//                                       MaterialPageRoute(
-//                                           builder: (context) =>
-//                                           AccountDetailNew(custName: _agentCustomerDetailsFilteredModel![index].custName,
-//                                             accNo: _agentCustomerDetailsFilteredModel![index].depGlobalAccNo,
-//                                             scheme: _agentCustomerDetailsFilteredModel![index].schName,
-//                                             custId: _agentCustomerDetailsFilteredModel![index].custId,)
-//                                               // AccountDueDetailsPage(
-//                                               //   custName: provider
-//                                               //           .agentCustomerDetailsModel
-//                                               //
-//                                               //           ?.data[index]
-//                                               //           .custName ??
-//                                               //       "NAME",
-//                                               //   custAcNumber:
-//                                               //   provider
-//                                               //           .agentCustomerDetailsModel
-//                                               //
-//                                               //           ?.data[index]
-//                                               //           .depGlobalAccNo ??
-//                                               //       "ACCNO",
-//                                               //   custPhoneNumber:
-//                                               //   // provider
-//                                               //   //         .agentCustomerDetailsModel
-//                                               //   //         ?.customerList
-//                                               //   //         ?.data?[index]
-//                                               //   //         .mobile ??
-//                                               //       "MOBILE",
-//                                               //   custId:
-//                                               //   // provider
-//                                               //   //         .agentCustomerDetailsModel
-//                                               //   //         ?.customerList
-//                                               //   //         ?.data?[index]
-//                                               //   //         .custId ??
-//                                               //       "CUSTID",
-//                                               //   custEmail: "",
-//                                               //   corpCode: corpCode.toString(),
-//                                               // )
-//
-//                                       )
-//                                   );
-//                                 },
-//                                 child: Container(
-//                                   height:
-//                                       MediaQuery.of(context).size.height * 0.15,
-//                                   width: double.infinity,
-//                                   decoration: BoxDecoration(
-//                                       borderRadius: BorderRadius.circular(10),
-//                                       color: white,
-//                                       border:
-//                                           Border.all(color: home1, width: 1.2)),
-//                                   child: Padding(
-//                                     padding: const EdgeInsets.symmetric(
-//                                         horizontal: 10),
-//                                     child: Column(
-//                                         crossAxisAlignment:
-//                                             CrossAxisAlignment.start,
-//                                         mainAxisAlignment:
-//                                             MainAxisAlignment.center,
-//                                         children: [
-//                                           Text(
-//                                             _agentCustomerDetailsFilteredModel![index]
-//                                                     .custName ??
-//                                                 "CUST NAME",
-//                                             style: const TextStyle(
-//                                                 fontWeight: FontWeight.w700,
-//                                                 fontSize: 17,
-//                                                 color: black),
-//                                           ),
-//                                           //const SizedBox(height: 5),
-//                                           Row(
-//                                             mainAxisAlignment:
-//                                                 MainAxisAlignment.spaceBetween,
-//                                             children: [
-//                                               Text(
-//                                                 "Account Number : ${_agentCustomerDetailsFilteredModel![index].depGlobalAccNo ?? "ACC No"}",
-//                                                 style: const TextStyle(
-//                                                     fontWeight: FontWeight.w700,
-//                                                     fontSize: 14,
-//                                                     color: black87),
-//                                               ),
-//                                               const Spacer(),
-//                                               Container(
-//                                                 height: 30,
-//                                                 width: 90,
-//                                                 decoration: BoxDecoration(
-//                                                     borderRadius:
-//                                                         BorderRadius.circular(
-//                                                             30),
-//                                                     border: Border.all(
-//                                                         color: home1,
-//                                                         width: 1)),
-//                                                 child: Padding(
-//                                                   padding: const EdgeInsets
-//                                                       .symmetric(horizontal: 5),
-//                                                   child: Row(
-//                                                     children: [
-//                                                       Image.asset(
-//                                                         "assets/images/money.png",
-//                                                         color: home2,
-//                                                         scale: 25,
-//                                                       ),
-//                                                       const SizedBox(width: 5),
-//                                                       const Text(
-//                                                         "Collect",
-//                                                         style: TextStyle(
-//                                                             fontWeight:
-//                                                                 FontWeight.w700,
-//                                                             fontSize: 12,
-//                                                             color: home2),
-//                                                       )
-//                                                     ],
-//                                                   ),
-//                                                 ),
-//                                               ),
-//                                             ],
-//                                           ),
-//                                           //const SizedBox(height: 5),
-//                                           // Text(
-//                                           //   "Phone Number : ${provider.agentCustomerDetailsModel?.customerList?.data?[index].mobile ?? "MOBILE"}",
-//                                           //   style: const TextStyle(
-//                                           //       fontWeight: FontWeight.w700,
-//                                           //       fontSize: 14,
-//                                           //       color: black87),
-//                                           // ),
-//                                         ]),
-//                                   ),
-//                                 ),
-//                               ),
-//                             );
-//                           },
-//                           separatorBuilder: (context, index) {
-//                             return const SizedBox(height: 10);
-//                           },
-//                           itemCount: _agentCustomerDetailsFilteredModel?.length ?? 0
-//                       ),
-//                     )
-//                   ],
-//                 );
-//         }));
-//   }
-// }
+

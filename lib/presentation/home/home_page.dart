@@ -15,12 +15,10 @@ import '../../core/utils.dart';
 import '../../data/provider/agent_transaction_provider.dart';
 import '../../data/provider/cash_transcation_history_provider.dart';
 import '../../data/provider/collection_summary_provider.dart';
-import '../../data/provider/delete_fcm_provider.dart';
 import '../../data/provider/qr_transcation_history_provider.dart';
 import '../../data/provider/transfer_transaction_provider.dart';
 import '../../domain/model/link_transaction_history_model.dart';
 import '../../domain/model/qr_transaction_history_model.dart';
-import '../splash_screen/splash_screen.dart';
 import '../trancstion/transction_history_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -365,16 +363,7 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  // Future<void> fetchBalance() async {
-  //   final fetchBalanceProvider = Provider.of<BalanceProvider>(
-  //     context,
-  //     listen: false,
-  //   );
-  //   await fetchBalanceProvider.getFetchBalance(
-  //     entityId.toString(),
-  //     token.toString(),
-  //   );
-  // }
+
 
   Future<void> fetchTransaction() async {
     if (!mounted) return;
@@ -530,7 +519,7 @@ class _HomePageState extends State<HomePage>
       }
     }
   }
-  Future<void> performLogout(BuildContext context) async {
+/*  Future<void> performLogout(BuildContext context) async {
     String entityId = await SharedPref.shared.getSubAgentId();
     String token = await SharedPref.shared.getTokenValue();
 
@@ -576,7 +565,7 @@ class _HomePageState extends State<HomePage>
       MaterialPageRoute(builder: (context) => const SplashScreen()),
           (route) => false,
     );
-  }
+  }*/
 
 
 

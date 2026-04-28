@@ -16,6 +16,12 @@ class ParentDetailAgentProvider with ChangeNotifier {
   AgentSubagentDetailFail? get agentSubagentDetailFail => _agentSubagentDetailFail;
 
 
+  void clearData(){
+    _subAgent = null;
+    _agentSubagentDetailFail = null;
+    notifyListeners();
+  }
+
   Future<Either<AgentSubagentDetailFail, SubAgentResponse>> fetchParentAgentDetails(
       String mobNum) async {
     final data =

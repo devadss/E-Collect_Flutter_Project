@@ -73,16 +73,7 @@ class _DuesHomePageState extends State<DuesHomePage> {
       String? amount,String?
       phoneNumber,String?
       entityId,String? note)async{
-    // print("--------------------TOKEN---------------------");
-    // print(token);
-    // print("---------------------AMOUNT--------------------");
-    // print(amount);
-    // print("---------------------PHONENUMBER--------------------");
-    // print(phoneNumber);
-    // print("---------------------ENTITYID--------------------");
-    // print(entityId);
-    // print("---------------------NOTE--------------------");
-    // print(note);
+
     final paymentSession = await CreatePaymentSessionIdRepository()
         .getPaymentSessionId(
     agentOriginId
@@ -111,8 +102,7 @@ class _DuesHomePageState extends State<DuesHomePage> {
     agentName: agentName, subAgentBranchCode: '', collectionType: 'RDCL');
     paymentSession.fold(
         (error){
-          //print("---------------------------------ERROR PAYMENT---------------------------");
-         // print(error);
+
         },
         (sessionId)async{
           paymentSessionId = sessionId.paymentSessionId ?? "";
