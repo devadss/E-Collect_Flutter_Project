@@ -1,4 +1,5 @@
 import 'package:collection_qr_flutter/core/colors.dart';
+import 'package:collection_qr_flutter/core/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -340,118 +341,177 @@ print("corpCode =$corpCode");
       ],
     );
   }
-
   Widget _buildLoanItem(Datum loan, int index) {
     final statusColor = _getStatusColor(loan.status);
     final formattedAmount =
         '₹${loan.outstandingAmount?.toStringAsFixed(2) ?? '0.00'}';
-    final formattedDate = loan.createdAt?.toString().substring(0, 10) ?? 'N/A';
+    final formattedDate =
+        loan.createdAt?.toString().substring(0, 10) ?? 'N/A';
 
     return FadeTransition(
       opacity: _fadeAnimation,
       child: SlideTransition(
         position: Tween<Offset>(
-          begin: Offset(0, (0.5 + index * 0.1).clamp(0, 0.5)),
+          begin: Offset(0, 0.2),
           end: Offset.zero,
         ).animate(CurvedAnimation(
           parent: _animationController,
-          curve: Curves.easeOutQuart,
+          curve: Curves.easeOutCubic,
         )),
         child: Container(
-          margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: InkWell(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(20),
             onTap: () {
               var loanSchm = "";
-              if (loan.collectionFrequency?.toLowerCase().toString() ==
-                  "daily") {
+              if (loan.collectionFrequency?.toLowerCase() == "daily") {
                 loanSchm = "days";
-              } else if (loan.collectionFrequency?.toLowerCase().toString() ==
-                  "monthly") {
+              } else if (loan.collectionFrequency?.toLowerCase() == "monthly") {
                 loanSchm = "months";
-              } else if (loan.collectionFrequency?.toLowerCase().toString() ==
-                  "weekly") {
+              } else if (loan.collectionFrequency?.toLowerCase() == "weekly") {
                 loanSchm = "weeks";
               }
+
+var loanModel = LoanDetailsModel(
+  customerName: loan.customerName ?? "Name",
+  loanNumber: loan.accountNo ?? "Loan Number",
+  emiAmount: loan.collectionAmount ?? 0,
+  loanTerm: loan.tenorDays ?? 0,
+  loanStatus: loan.status ?? "",
+  loanAmount: loan.outstandingAmount ?? 0,
+  scheme: loan.scheme ?? "",
+  paymentDate: loan.lastRepaymentDate.toString(),
+  collectionFrequency: loanSchm,
+  email: loan.customerEmail ?? "",
+  customerPhoneNumber: loan.phoneNumber ?? "",
+  custId: loan.loanId.toString(), dueDate: loan.lastRepaymentDate.toString(), assignedAgent: loan.assignedAgent.toString(), createdAt: loan.createdAt.toString(),
+);
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => LoanDetailsPage(
-                    customerName: loan.customerName ?? "Name",
-                    loanNumber: loan.accountNo ?? "Loan Number",
-                    emiAmount: loan.collectionAmount ?? 0,
-                    loanTerm: loan.tenorDays ?? 0,
-                    loanStatus: loan.status ?? "",
-                    loanAmount: loan.outstandingAmount ?? 0,
-                    scheme: loan.scheme ?? "",
-                    paymentDate: loan.lastRepaymentDate.toString() ?? "",
-                    collectionFrequency: loanSchm,
-                    email: loan.customerEmail ?? "",
-                    customerPhoneNumber: loan.phoneNumber ?? "",
-                    custId: loan.loanId.toString() ?? "",
+                    loanDetailsModel: loanModel,
+
                   ),
                 ),
               );
             },
-            child: Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+            child: Ink(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.white,
+                    Colors.grey.shade50,
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 12,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
               ),
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(18),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    /// TOP ROW
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(
+                        /// Avatar
+                        CircleAvatar(
+                          radius: 22,
+                          backgroundColor: home1.withOpacity(0.15),
                           child: Text(
-                            loan.customerName ?? 'Customer Name',
+                            (loan.customerName ?? "C")[0].toUpperCase(),
                             style: TextStyle(
-                              fontSize: 18,
+                              color: home1,
                               fontWeight: FontWeight.bold,
-                              color: _textColor,
                             ),
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                        const SizedBox(width: 12),
+
+                        /// Name + scheme
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                loan.customerName ?? 'Customer Name',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: _textColor,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                '${capitalizeFirstLetter(loan.scheme ?? 'Loan')} Loan',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.grey[500],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        /// Status Chip
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
+                              horizontal: 10, vertical: 5),
                           decoration: BoxDecoration(
-                            color: statusColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(20),
+                            color: statusColor.withOpacity(0.12),
+                            borderRadius: BorderRadius.circular(30),
                           ),
                           child: Text(
                             loan.status ?? 'Unknown',
                             style: TextStyle(
                               color: statusColor,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 11,
                             ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+
+                    const SizedBox(height: 18),
+
+                    /// AMOUNT (highlight)
                     Text(
-                      '${capitalizeFirstLetter(loan.scheme ?? 'Loan')} Loan',
+                      formattedAmount,
                       style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[600],
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: _textColor,
                       ),
                     ),
-                    const SizedBox(height: 16),
+
+                    const SizedBox(height: 14),
+
+                    /// DETAILS ROW
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _buildLoanDetail("Loan #",
-                            (loan.loanNumber ?? 'N/A').replaceAll("LOAN-", "")),
-                        const Spacer(),
-                        _buildLoanDetail("Date", formattedDate),
-                        const Spacer(),
-                        _buildLoanDetail("Amount", formattedAmount),
+                        _modernDetail(
+                          icon: Icons.confirmation_number_outlined,
+                          label: "Loan #",
+                          value: (loan.loanNumber ?? 'N/A')
+                              .replaceAll("LOAN-", ""),
+                        ),
+                        _modernDetail(
+                          icon: Icons.calendar_today_outlined,
+                          label: "Date",
+                          value: formattedDate,
+                        ),
                       ],
                     ),
                   ],
@@ -463,6 +523,158 @@ print("corpCode =$corpCode");
       ),
     );
   }
+  Widget _modernDetail({
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
+    return Row(
+      children: [
+        Icon(icon, size: 16, color: Colors.grey[500]),
+        const SizedBox(width: 6),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 11,
+                color: Colors.grey[500],
+              ),
+            ),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+  // Widget _buildLoanItem(Datum loan, int index) {
+  //   final statusColor = _getStatusColor(loan.status);
+  //   final formattedAmount = '₹${loan.outstandingAmount?.toStringAsFixed(2) ?? '0.00'}';
+  //   final formattedDate = loan.createdAt?.toString().substring(0, 10) ?? 'N/A';
+  //
+  //   return FadeTransition(
+  //     opacity: _fadeAnimation,
+  //     child: SlideTransition(
+  //       position: Tween<Offset>(
+  //         begin: Offset(0, (0.5 + index * 0.1).clamp(0, 0.5)),
+  //         end: Offset.zero,
+  //       ).animate(CurvedAnimation(
+  //         parent: _animationController,
+  //         curve: Curves.easeOutQuart,
+  //       )),
+  //       child: Container(
+  //         margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+  //         child: InkWell(
+  //           borderRadius: BorderRadius.circular(12),
+  //           onTap: () {
+  //             var loanSchm = "";
+  //             if (loan.collectionFrequency?.toLowerCase().toString() ==
+  //                 "daily") {
+  //               loanSchm = "days";
+  //             } else if (loan.collectionFrequency?.toLowerCase().toString() ==
+  //                 "monthly") {
+  //               loanSchm = "months";
+  //             } else if (loan.collectionFrequency?.toLowerCase().toString() ==
+  //                 "weekly") {
+  //               loanSchm = "weeks";
+  //             }
+  //             Navigator.push(
+  //               context,
+  //               MaterialPageRoute(
+  //                 builder: (context) => LoanDetailsPage(
+  //                   customerName: loan.customerName ?? "Name",
+  //                   loanNumber: loan.accountNo ?? "Loan Number",
+  //                   emiAmount: loan.collectionAmount ?? 0,
+  //                   loanTerm: loan.tenorDays ?? 0,
+  //                   loanStatus: loan.status ?? "",
+  //                   loanAmount: loan.outstandingAmount ?? 0,
+  //                   scheme: loan.scheme ?? "",
+  //                   paymentDate: loan.lastRepaymentDate.toString() ?? "",
+  //                   collectionFrequency: loanSchm,
+  //                   email: loan.customerEmail ?? "",
+  //                   customerPhoneNumber: loan.phoneNumber ?? "",
+  //                   custId: loan.loanId.toString() ?? "",
+  //                 ),
+  //               ),
+  //             );
+  //           },
+  //           child: Card(
+  //             elevation: 2,
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.circular(12),
+  //             ),
+  //             child: Padding(
+  //               padding: const EdgeInsets.all(16),
+  //               child: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   Row(
+  //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                     children: [
+  //                       Expanded(
+  //                         child: Text(
+  //                           loan.customerName ?? 'Customer Name',
+  //                           style: TextStyle(
+  //                             fontSize: 18,
+  //                             fontWeight: FontWeight.bold,
+  //                             color: _textColor,
+  //                           ),
+  //                           overflow: TextOverflow.ellipsis,
+  //                         ),
+  //                       ),
+  //                       Container(
+  //                         padding: const EdgeInsets.symmetric(
+  //                             horizontal: 12, vertical: 6),
+  //                         decoration: BoxDecoration(
+  //                           color: statusColor.withOpacity(0.1),
+  //                           borderRadius: BorderRadius.circular(20),
+  //                         ),
+  //                         child: Text(
+  //                           loan.status ?? 'Unknown',
+  //                           style: TextStyle(
+  //                             color: statusColor,
+  //                             fontWeight: FontWeight.w500,
+  //                             fontSize: 12,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                   const SizedBox(height: 8),
+  //                   Text(
+  //                     '${capitalizeFirstLetter(loan.scheme ?? 'Loan')} Loan',
+  //                     style: TextStyle(
+  //                       fontSize: 14,
+  //                       color: Colors.grey[600],
+  //                     ),
+  //                   ),
+  //                   const SizedBox(height: 16),
+  //                   Row(
+  //                     children: [
+  //                       _buildLoanDetail("Loan #",
+  //                           (loan.loanNumber ?? 'N/A').replaceAll("LOAN-", "")),
+  //                       const Spacer(),
+  //                       _buildLoanDetail("Date", formattedDate),
+  //                       const Spacer(),
+  //                       _buildLoanDetail("Amount", formattedAmount),
+  //                     ],
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildLoanDetail(String label, String value) {
     return Column(

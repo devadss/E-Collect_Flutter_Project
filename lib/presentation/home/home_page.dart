@@ -441,17 +441,17 @@ class _HomePageState extends State<HomePage>
       );
 
       // Load Link transactions (for AGENT_LOAN)
-      if (userType == "LOAN_COLLECTION") {
-        await linkProvider.getLinkTransactionHistory(
-           // "THIS_WEEK",
-            "TODAY",
-            fromDate,
-            toDate,
-            subAgentID!,
-            corpCode!,
-            agentOriginId!
-        );
-      }
+      // if (userType == "LOAN_COLLECTION") {
+      //   await linkProvider.getLinkTransactionHistory(
+      //      // "THIS_WEEK",
+      //       "TODAY",
+      //       fromDate,
+      //       toDate,
+      //       subAgentID!,
+      //       corpCode!,
+      //       agentOriginId!
+      //   );
+      // }
 
       // Load Cash transactions
       await cashProvider.getCashTranscationHistory(
@@ -468,7 +468,16 @@ class _HomePageState extends State<HomePage>
 
       // Load Transfer transactions (for AGENT_LOAN)
       if (userType == "LOAN_COLLECTION") {
-        await transferProvider.getQrTranscationHistory(
+        await cashQrProvider.getCombinedResponse(
+          // "THIS_WEEK",
+          "TODAY",
+          toDate,
+          fromDate,
+          subAgentID!,
+          corpCode!,
+          agentOriginId!,
+        );
+      /*  await transferProvider.getQrTranscationHistory(
          // "THIS_WEEK",
           "TODAY",
           fromDate,
@@ -477,7 +486,7 @@ class _HomePageState extends State<HomePage>
           "ALL",
           corpCode!,
           agentOriginId!,
-        );
+        );*/
       }
 
       // Load Combined Cash+QR transactions (for regular AGENT)
@@ -814,7 +823,8 @@ class _HomePageState extends State<HomePage>
                       _selectedTabIndex == 0
                           ? userType == "COLLECTION"
                           ? "All"
-                          : 'Link'
+                        //  : 'Link'
+                          : 'All'
                           : _selectedTabIndex == 1
                           ? 'QR Code'
                           : _selectedTabIndex == 2
@@ -971,17 +981,7 @@ class _HomePageState extends State<HomePage>
 
       // Load additional data based on user type
       if (userType == "LOAN_COLLECTION") {
-        await transferProvider.getQrTranscationHistory(
-            "TODAY",
-            formattedFdate,
-            formattedTdate,
-            //  userType!,
-            "ALL",
-            corpCode!,
-            agentOriginId!
-        );
-
-        await linkProvider.getLinkTransactionHistory(
+        await cashQrProvider.getCombinedResponse(
             "TODAY",
             formattedFdate,
             formattedTdate,
@@ -989,6 +989,24 @@ class _HomePageState extends State<HomePage>
             corpCode!,
             agentOriginId!
         );
+        // await transferProvider.getQrTranscationHistory(
+        //     "TODAY",
+        //     formattedFdate,
+        //     formattedTdate,
+        //     //  userType!,
+        //     "ALL",
+        //     corpCode!,
+        //     agentOriginId!
+        // );
+        //
+        // await linkProvider.getLinkTransactionHistory(
+        //     "TODAY",
+        //     formattedFdate,
+        //     formattedTdate,
+        //     subAgentID!,
+        //     corpCode!,
+        //     agentOriginId!
+        // );
       } else {
         await cashQrProvider.getCombinedResponse(
             "TODAY",
@@ -1048,7 +1066,8 @@ class _HomePageState extends State<HomePage>
     if (isAgentLoan) {
       // AGENT_LOAN - Show all 4 tabs
       return [
-        _buildAnimatedTabItem(0, Icons.link_outlined, "Link"),
+       // _buildAnimatedTabItem(0, Icons.link_outlined, "Link"),
+        _buildAnimatedTabItem(0, Icons.all_out_rounded, "All"),
         _buildAnimatedTabItem(1, Icons.qr_code, "QR"),
         _buildAnimatedTabItem(2, Icons.currency_rupee, "Cash"),
         //  _buildAnimatedTabItem(3, Icons.account_balance_sharp, "Transfer"),
@@ -1695,7 +1714,8 @@ class _HomePageState extends State<HomePage>
             padding: const EdgeInsets.only(top: 1, left: 16, right: 16),
             sliver: userType == "COLLECTION"
                 ? _buildContentCollectionSection(qrProvider, cashTranProvider, cashQrProvider)
-                : _buildContentSection(qrProvider, cashTranProvider, linkProvider,  transferProvider),
+               // : _buildContentSection(qrProvider, cashTranProvider, linkProvider,  transferProvider),
+                : _buildContentCollectionSection(qrProvider, cashTranProvider, cashQrProvider)
           ),
         ],
       ),
@@ -1711,10 +1731,17 @@ class _HomePageState extends State<HomePage>
         final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
         final cashQrProvider = Provider.of<CashQrProvider>(context, listen: false);
         if(userType != "COLLECTION"){
-          if (linkProvider.linkTranscationHistoryModel != null) {
-            total += linkProvider.linkTranscationHistoryModel!.data!
-                .fold(0, (sum, item) => sum + (item.linkAmount ?? 0));
+          if (cashQrProvider.cashQrCombinedResponse != null) {
+            total += cashQrProvider.cashQrCombinedResponse!.data.fold(0, (sum, item) => sum + (item.orderAmount ?? 0));
+            setState(() {
+              todaysCount = cashQrProvider.cashQrCombinedResponse?.filteredCount ??0;
+
+            });
           }
+          // if (linkProvider.linkTranscationHistoryModel != null) {
+          //   total += linkProvider.linkTranscationHistoryModel!.data!
+          //       .fold(0, (sum, item) => sum + (item.linkAmount ?? 0));
+          // }
         }else{
           if (cashQrProvider.cashQrCombinedResponse != null) {
             total += cashQrProvider.cashQrCombinedResponse!.data.fold(0, (sum, item) => sum + (item.orderAmount ?? 0));

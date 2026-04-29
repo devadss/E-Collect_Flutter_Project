@@ -43,7 +43,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     var loggedInUserType = await SharedPref.shared.getLoggedInUserType();
     var corpCode = await SharedPref.shared.getCorpCode();
     final branchID = await SharedPref().getSubAgentCodeNew();
-    // print("getUserType value = $userType");
+     print("getUserType value = $loggedInUserType");
     // print("getLoggedInUserType value = $loggedInUserType");
     // print("corpCode value = $corpCode");
     setState(() {

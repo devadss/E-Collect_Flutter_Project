@@ -226,7 +226,39 @@ Future<void> insertParentDetailAgent(ParentDetailAgentProvider parentAgentDetail
   await SharedPref.shared.setSubAgentCodeNew(parentAgentDetailProvider.subAgent!.data.subAgentCode.toString(),);
   await SharedPref.shared.setSubAgentId(parentAgentDetailProvider.subAgent!.data.subAgentId.toString(),);
 }
+class LoanDetailsModel{
+  final String customerName;
+  final String customerPhoneNumber;
+  final String loanNumber;
+  final String loanStatus;
+  final num emiAmount;
+  final num loanTerm;
+  final num loanAmount;
+  final String scheme;
+  final String paymentDate;
+  final String collectionFrequency;
+  final String email;
+  final String dueDate;
+  final String assignedAgent;
+  final String custId;
+  final String createdAt;
+  LoanDetailsModel({
+    required this.customerName,
+    required this.customerPhoneNumber,
+    required this.loanNumber,
+    required this.loanStatus,
+    required this.emiAmount,
+    required this.loanTerm,
+    required this.loanAmount,
+    required this.scheme,
+    required this.paymentDate,
+    required this.collectionFrequency,
+    required this.email,
+    required this.custId, required this.dueDate, required this.assignedAgent, required this.createdAt,
 
+
+  });
+}
 class OtpPageData{
   final String subAgentmobNum;
   final String parentAgentMobNum;
