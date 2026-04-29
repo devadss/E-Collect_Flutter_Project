@@ -145,7 +145,7 @@ class _RdclDueListBlocPageState extends State<RdclDueListBlocPage> {
                   custPhone: custPhoneNumber!,
                   custId: custId!,
                   txnId: success.transactionId.toString(),
-                  txnType: "CASH", dat: '',
+                  txnType: "CASH", dat: '', tranType: '', accNo: '',
                 ),
               ),
             );
@@ -1401,7 +1401,7 @@ bool chekValue(String value){
                           ),*/
                           Container(
                             width: double.infinity,
-                            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            margin: const EdgeInsets.symmetric(horizontal: 7, vertical: 8),
                             decoration: BoxDecoration(
                               color: _itemSelected[index] == true ? home1.withAlpha(8) : Colors.white,
                               borderRadius: BorderRadius.circular(20),
@@ -1436,7 +1436,7 @@ bool chekValue(String value){
                                         Row(
                                           children: [
                                             Container(
-                                              padding: const EdgeInsets.all(12),
+                                              padding: const EdgeInsets.all(7),
                                               decoration: BoxDecoration(
                                                 color: home1.withAlpha(12),
                                                 borderRadius: BorderRadius.circular(14),

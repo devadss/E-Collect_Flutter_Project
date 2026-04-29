@@ -22,6 +22,8 @@ class ReceiptPage extends StatefulWidget {
   final String custId;
   final String txnId;
   final String txnType;
+  final String tranType;
+  final String accNo;
 
   const ReceiptPage(
       {super.key,
@@ -33,7 +35,7 @@ class ReceiptPage extends StatefulWidget {
       required this.custPhone,
       required this.custId,
       required this.txnId,
-      required this.txnType, required this.dat});
+      required this.txnType, required this.dat, required this.tranType, required this.accNo});
 
   @override
   State<ReceiptPage> createState() => _ReceiptPageState();
@@ -328,8 +330,126 @@ class _ReceiptPageState extends State<ReceiptPage> {
       throw Exception('Failed to generate QR code');
     }
   }
-
   Future<void> _printReceipt() async {
+    if (selectedMac == null) {
+      _showPrinterSelectionDialog();
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      _lastError = '';
+    });
+
+    try {
+      if (!_isConnected) {
+        await _connectToPrinter(selectedMac!);
+      }
+
+      final now = DateTime.now();
+      final formattedDate = DateFormat('dd MMM yyyy').format(now);
+      final formattedTime = DateFormat('hh:mm a').format(now);
+
+      final List<int> bytes = [];
+
+      // Reset
+      bytes.addAll([0x1B, 0x40]);
+
+      // ===== HEADER =====
+      bytes.addAll([0x1B, 0x61, 0x01]); // Center
+      bytes.addAll([0x1B, 0x21, 0x30]); // Big + Bold
+      bytes.addAll("${widget.bankName}\n".codeUnits);
+
+      bytes.addAll([0x1B, 0x21, 0x00]);
+      bytes.addAll("Transaction Receipt\n".codeUnits);
+
+      bytes.addAll("\n".codeUnits);
+      bytes.addAll("------------------------------\n".codeUnits);
+
+      // ===== DATE & TIME =====
+      bytes.addAll([0x1B, 0x61, 0x00]); // Left
+      bytes.addAll("Date : $formattedDate\n".codeUnits);
+      bytes.addAll("Time : $formattedTime\n".codeUnits);
+
+      bytes.addAll("------------------------------\n".codeUnits);
+
+      // ===== TRANSACTION =====
+      bytes.addAll([0x1B, 0x21, 0x08]); // Bold
+      bytes.addAll("TRANSACTION\n".codeUnits);
+      bytes.addAll([0x1B, 0x21, 0x00]);
+
+      String txnType = widget.tranType.contains("CASH") ? "CASH" : "UPI";
+
+      bytes.addAll("Type     : $txnType\n".codeUnits);
+      bytes.addAll("Status   : SUCCESS\n".codeUnits);
+
+      if (widget.txnId.isNotEmpty) {
+        bytes.addAll("Txn ID   : ${widget.txnId}\n".codeUnits);
+      }
+
+      bytes.addAll("\n".codeUnits);
+
+      // ===== AMOUNT (Highlight) =====
+      bytes.addAll([0x1B, 0x61, 0x01]); // Center
+      bytes.addAll([0x1B, 0x21, 0x30]); // Large
+      bytes.addAll("Rs. ${widget.amount}\n".codeUnits);
+
+      bytes.addAll([0x1B, 0x21, 0x00]);
+      bytes.addAll([0x1B, 0x61, 0x00]);
+
+      bytes.addAll("------------------------------\n".codeUnits);
+
+      // ===== CUSTOMER =====
+      bytes.addAll([0x1B, 0x21, 0x08]);
+      bytes.addAll("CUSTOMER\n".codeUnits);
+      bytes.addAll([0x1B, 0x21, 0x00]);
+
+      bytes.addAll("Name     : ${widget.custName}\n".codeUnits);
+
+      if (widget.custPhone.isNotEmpty) {
+        bytes.addAll("Phone    : ${widget.custPhone}\n".codeUnits);
+      }
+
+      bytes.addAll("A/C No   : ${widget.accNo}\n".codeUnits);
+
+      bytes.addAll("------------------------------\n".codeUnits);
+
+      // ===== AGENT =====
+      bytes.addAll([0x1B, 0x21, 0x08]);
+      bytes.addAll("AGENT\n".codeUnits);
+      bytes.addAll([0x1B, 0x21, 0x00]);
+
+      bytes.addAll("Name     : ${widget.agentName}\n".codeUnits);
+      bytes.addAll("Phone    : ${widget.agentPhone}\n".codeUnits);
+
+      bytes.addAll("------------------------------\n".codeUnits);
+
+      // ===== FOOTER =====
+      bytes.addAll([0x1B, 0x61, 0x01]); // Center
+      bytes.addAll("\nThank you for banking with us!\n".codeUnits);
+
+      bytes.addAll("\n\n".codeUnits);
+
+      // Cut
+      bytes.addAll([0x1D, 0x56, 0x41, 0x10]);
+
+      await PrintBluetoothThermal.writeBytes(bytes);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Receipt printed successfully!")),
+      );
+    } catch (e) {
+      setState(() => _lastError = e.toString());
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Print failed: $e")),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+/*  Future<void> _printReceipt() async {
     // First print attempt - try to use background connection
     if (_isFirstPrintAttempt) {
       setState(() {
@@ -399,7 +519,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
       bytes.addAll("Transaction Details:\n".codeUnits);
       bytes.addAll([0x1B, 0x21, 0x00]); // Reset
 
-      bytes.addAll("Txn Type:         ${widget.txnType}\n".codeUnits);
+      bytes.addAll("Txn Type:         ${widget.tranType.contains("CASH")?"CASH":"UPI"}\n".codeUnits);
       bytes.addAll("Amount:           Rs.${widget.amount}\n".codeUnits);
       bytes.addAll("Status:           Success\n".codeUnits);
       widget.txnId.isNotEmpty
@@ -409,6 +529,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
       widget.custPhone.isNotEmpty
           ? bytes.addAll("Customer Phone:   ${widget.custPhone}\n".codeUnits)
           : "";
+      bytes.addAll("Account No:            ${widget.accNo}\n".codeUnits);
       bytes.addAll("Agent:            ${widget.agentName}\n".codeUnits);
       bytes.addAll("Agent Phone:      ${widget.agentPhone}\n".codeUnits);
       bytes.addAll("-----------------------------\n".codeUnits);
@@ -450,7 +571,8 @@ class _ReceiptPageState extends State<ReceiptPage> {
         setState(() => _isLoading = false);
       }
     }
-  }
+  }*/
+
   void _showPrinterSelectionDialog() {
     showModalBottomSheet(
       context: context,
@@ -868,7 +990,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
 
                           /// QR CONTAINER (FOCUS AREA)
                           Container(
-                            padding: const EdgeInsets.all(14),
+                            padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               color: Colors.grey.shade50,
                               borderRadius: BorderRadius.circular(16),
@@ -910,7 +1032,7 @@ Agent Phone: ${widget.agentPhone}
                     // Transaction Details
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: white,
                         borderRadius: BorderRadius.circular(12),
@@ -937,6 +1059,10 @@ Agent Phone: ${widget.agentPhone}
                           ),
                           const SizedBox(height: 16),
                           _buildDetailRow("Transaction ID:", widget.txnId),
+                          Divider(height: 24, color: home2.withOpacity(0.1)),
+                          _buildDetailRow("Transaction Type:", widget.tranType.contains("CASH")? "CASH":"UPI"),
+                          Divider(height: 24, color: home2.withOpacity(0.1)),
+                          _buildDetailRow("Customer Acc No:", widget.accNo),
                           Divider(height: 24, color: home2.withOpacity(0.1)),
                       _buildDetailRow("Date & Time",widget.dat.toString()),
                           // _buildDetailRow("Date & Time:",
@@ -1105,12 +1231,14 @@ Agent Phone: ${widget.agentPhone}
               ),
             ),
           ),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-              color: home2,
+          Flexible(
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: home2,
+              ),
             ),
           ),
         ],

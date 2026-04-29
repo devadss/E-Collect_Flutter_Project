@@ -28,6 +28,7 @@ class Order {
   double orderAmount;
   String orderCurrency;
   String orderStatus;
+  String customerAccNo;
   String customerId;
   String customerName;
   String customerPhone;
@@ -50,6 +51,8 @@ class Order {
     required this.cfOrderId,
     required this.orderAmount,
     required this.orderCurrency,
+    required this.customerAccNo,
+
     required this.orderStatus,
     required this.customerId,
     required this.customerName,
@@ -77,6 +80,7 @@ class Order {
       orderAmount: (json['OrderAmount'] as num).toDouble(),
       orderCurrency: json['OrderCurrency'],
       orderStatus: json['OrderStatus'],
+      customerAccNo: json['CustomerAccNo'],
       customerId: json['CustomerId'],
       customerName: json['CustomerName'],
       customerPhone: json['CustomerPhone'] ?? '',
@@ -101,6 +105,7 @@ class Order {
       'CFOrderId': cfOrderId,
       'OrderAmount': orderAmount,
       'OrderCurrency': orderCurrency,
+      'CustomerAccNo': customerAccNo,
       'OrderStatus': orderStatus,
       'CustomerId': customerId,
       'CustomerName': customerName,

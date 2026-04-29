@@ -1220,7 +1220,8 @@ class _HomePageState extends State<HomePage>
       getCustPhone: (t) => t.customerPhone.toString(),
       getTnxType: (t) => t.source.toString(),
       paymentMode:  (t) => t.paymentMode.toString(),
-      collectionType:  (t) => t.collectionType.toString(),
+      collectionType:  (t) => t.collectionType.toString(), getAccNo:
+        (t) => t.customerAccNo.toString(), getTranType:(t) =>t.paymentMode.toString(), getCustAccNo: (t) => t.customerAccNo.toString(),
     );
   }
 
@@ -1246,6 +1247,7 @@ class _HomePageState extends State<HomePage>
       getCustId: (t) => t.customerId.toString(),
       getCustPhone: (t) => t.customerPhone.toString(),
       getTnxType: (t) => t.source.toString(), paymentMode:(t)=> t.paymentMode.toString(), collectionType: (t)=> cashCollectionType.toString(),
+      getAccNo: (t) => t.customerAccNo.toString(), getTranType: (t) => t.source.toString(), getCustAccNo: (t) => t.customerAccNo.toString(),
     );
   }
 
@@ -1270,7 +1272,8 @@ class _HomePageState extends State<HomePage>
         getCustName: (t) => t.customerName.toString(),
         getCustId: (t) => t.customerId.toString(),
         getCustPhone: (t) => t.customerPhone.toString(),
-        getTnxType: (t) => t.source.toString(), paymentMode: (t)=> t.paymentMode.toString(), collectionType: (t)=> t.collectionType.toString()
+        getTnxType: (t) => t.source.toString(), paymentMode: (t)=> t.paymentMode.toString(), collectionType: (t)=> t.collectionType.toString(),
+        getAccNo: (t) => t.customerAccNo.toString(), getTranType:(t) => t.source.toString(), getCustAccNo: (t) => t.customerAccNo.toString()
     );
   }
 
@@ -1297,6 +1300,7 @@ class _HomePageState extends State<HomePage>
       getCustId: (t) => t.customerId.toString(),
       getCustPhone: (t) => t.customerPhone.toString(),
       getTnxType: (t) => t.source.toString(), paymentMode: (t)=> t.paymentMode, collectionType: (t)=> t.collectionType.toString(),
+      getAccNo: (t) => t.customerAccNo.toString(), getTranType: (t) => t.source.toString(), getCustAccNo:(t) => t.customerAccNo.toString(),
     );
   }
 
@@ -1322,6 +1326,7 @@ class _HomePageState extends State<HomePage>
       getCustId: (t) => t.customerId.toString(),
       getCustPhone: (t) => t.customerPhone.toString(),
       getTnxType: (t) => t.source.toString(), paymentMode: (t)=> t.paymentMode.toString(), collectionType: (t)=>t.collectionType.toString(),
+      getAccNo: (t) => t.customerAcctno.toString(), getTranType: (t) => t.source.toString(), getCustAccNo: (t) => t.customerAcctno.toString(),
     );
   }
 
@@ -1331,8 +1336,11 @@ class _HomePageState extends State<HomePage>
         required Color iconColor,
         required double Function(T) getAmount,
         required String Function(T) getStatus,
+        required String Function(T) getAccNo,
+        required String Function(T) getTranType,
         required String Function(T) getOrderId,
         required String Function(T) getCustName,
+        required String Function(T) getCustAccNo,
         required String Function(T) getCustId,
         required String Function(T) getCustPhone,
         required String Function(T) getTnxType,
@@ -1358,6 +1366,7 @@ class _HomePageState extends State<HomePage>
           transferId: getOrderId(transaction),
           customerNumber: getCustPhone(transaction),
           tnxType: getTnxType(transaction), paymentMode:paymentMode(transaction), collectionType: collectionType(transaction),
+          accountNumber: getCustAccNo(transaction), transactionType: paymentMode(transaction),
         )
             .animate(delay: (100 * index).ms);
       }).toList(),
@@ -1373,6 +1382,8 @@ class _HomePageState extends State<HomePage>
     required String status,
     required String transferId,
     required String agentName,
+    required String accountNumber,
+    required String transactionType,
     required String agentPhone,
     required String customerName,
     required String customerId,
@@ -1411,7 +1422,7 @@ class _HomePageState extends State<HomePage>
                   corpCode: corpCode ?? "",
                   tnxType: tnxType,
                   paymentMode: paymentMode,
-                  dat: date,
+                  dat: date, accountNumber: accountNumber, transactionType: transactionType,
                 ),
               ),
             );

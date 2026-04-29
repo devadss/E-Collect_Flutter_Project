@@ -35,6 +35,7 @@ class TransferTransaction {
   OrderCurrency? orderCurrency;
   String? orderStatus;
   String? customerId;
+  String? customerAccNo;
   String? customerName;
   String? customerPhone;
   CustomerEmail? customerEmail;
@@ -55,6 +56,7 @@ class TransferTransaction {
   TransferTransaction({
     this.orderId,
     this.cfOrderId,
+    this.customerAccNo,
     this.orderAmount,
     this.orderCurrency,
     this.orderStatus,
@@ -80,6 +82,7 @@ class TransferTransaction {
     orderAmount: json["OrderAmount"],
     orderCurrency: orderCurrencyValues.map[json["OrderCurrency"]],
     orderStatus:  json["OrderStatus"],
+    customerAccNo:  json["CustomerAccNo"],
     customerId: json["CustomerId"],
     customerName: json["CustomerName"],
     customerPhone: json["CustomerPhone"],
@@ -103,6 +106,7 @@ class TransferTransaction {
     "OrderCurrency": orderCurrencyValues.reverse[orderCurrency],
     "OrderStatus":  orderStatus,
     "CustomerId":  customerId,
+    "CustomerAccNo":  customerAccNo,
     "CustomerName": customerName,
     "CustomerPhone": customerPhone,
     "CustomerEmail": customerEmailValues.reverse[customerEmail],

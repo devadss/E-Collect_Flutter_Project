@@ -437,7 +437,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                   custPhone: custPhoneNumber!,
                   custId: custId!,
                   txnId: success.transactionId.toString(),
-                  txnType: "CASH", dat: '',
+                  txnType: "CASH", dat: '', tranType: '', accNo: '',
                 ),
               ),
             );

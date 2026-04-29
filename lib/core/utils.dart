@@ -80,7 +80,7 @@ String getBankNameFromCorpCode(String corpCode) {
     "BNKVLKD": "Vellarkkad SCB",
     "BNKMDS": "Medi Soft",
     "BNKPLSCB": "Pulakode service cooperative Bank",
-    "BNKMNCHL": "MEENACHIL SCB",
+    "BNKMNCHL": "MEENACHIL MSCS",
     "BNKOMSRY": "Omassery SCB",
     "BNKPTKL": "Pothukal SCB",
     "BNKFPMC": "FAPMCO MSCS",

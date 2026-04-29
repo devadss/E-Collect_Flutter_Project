@@ -570,7 +570,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                   custId: custId ?? "",
                   txnId: success.transactionId.toString(),
                   txnType: "CASH",
-                  dat: '',
+                  dat: '', tranType: '', accNo: '',
                 ),
               ),
             );

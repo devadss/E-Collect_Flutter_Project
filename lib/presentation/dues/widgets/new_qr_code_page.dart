@@ -333,7 +333,7 @@ ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(notificationTi
                                         custPhone: widget.custPhone,
                                         custId: widget.custId,
                                         txnId: "",
-                                        txnType: "QR", dat: '',
+                                        txnType: "QR", dat: '', tranType: '', accNo: '',
                                       )));
                         },
                         child: const Text(

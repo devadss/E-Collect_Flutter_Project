@@ -331,7 +331,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                   custPhone: custPhoneNumber!,
                   custId: custId!,
                   txnId: success.transactionId.toString(),
-                  txnType: "CASH", dat: '',
+                  txnType: "CASH", dat: '', tranType: '', accNo: '',
                 ),
               ),
             );

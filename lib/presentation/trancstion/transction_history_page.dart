@@ -1,245 +1,4 @@
-// import '../../core/colors.dart';
-// import '../../domain/model/agent_transction_model.dart';
-// import 'package:flutter/material.dart';
-// import 'package:google_fonts/google_fonts.dart';
-// import 'package:shimmer/shimmer.dart';
-//
-// class TransactionHistoryPage extends StatefulWidget {
-//   final AgentTransaction agentTransaction;
-//
-//   const TransactionHistoryPage({super.key, required this.agentTransaction});
-//
-//   @override
-//   State<TransactionHistoryPage> createState() => _TransactionHistoryPageState();
-// }
-//
-// class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
-//   bool isLoading = true; // Simulates loading state
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     // Simulate a delay before showing actual data
-//     Future.delayed(const Duration(seconds: 2), () {
-//       setState(() {
-//         isLoading = false;
-//       });
-//     });
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         centerTitle: true,
-//         title: Text(
-//           "Transaction Details",
-//           style: TextStyle(
-//             fontWeight: FontWeight.w700,
-//             fontSize: 23,
-//             color: deepTeal,
-//           ),
-//         ),
-//       ),
-//       backgroundColor: white,
-//       body: Column(
-//         children: [
-//           _buildGradientHeader(),
-//           const SizedBox(height: 20),
-//           _buildTransactionDetails(),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   Widget _buildGradientHeader() {
-//     return Container(
-//       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
-//       decoration: const BoxDecoration(
-//         gradient: LinearGradient(
-//           colors: [deepTeal, yellowGreen],
-//           begin: Alignment.topLeft,
-//           end: Alignment.bottomRight,
-//         ),
-//         borderRadius: BorderRadius.only(
-//           bottomLeft: Radius.circular(30),
-//           bottomRight: Radius.circular(30),
-//         ),
-//       ),
-//       child: Column(
-//         children: [
-//           Container(
-//             width: double.infinity,
-//             padding: const EdgeInsets.symmetric(vertical: 15),
-//             decoration: BoxDecoration(
-//               color: white,
-//               borderRadius: BorderRadius.circular(20),
-//               boxShadow: const [
-//                 BoxShadow(
-//                   color: black12,
-//                   blurRadius: 10,
-//                   spreadRadius: 2,
-//                 ),
-//               ],
-//             ),
-//             child: isLoading
-//                 ? _buildShimmerHeader() // Shimmer Effect for Header
-//                 : Column(
-//               children: [
-//                 Text(
-//                   "Your payment ${widget.agentTransaction.linkStatus.toString().replaceAll("Status.", "")}",
-//                   style: TextStyle(
-//                     color: black54,
-//                     fontSize: 16,
-//                   ),
-//                 ),
-//                 const SizedBox(height: 5),
-//                 Text(
-//                   "₹ ${widget.agentTransaction.linkAmount}",
-//                   style: TextStyle(
-//                     fontSize: 24,
-//                     fontWeight: FontWeight.bold,
-//                     color: teal700,
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   Widget _buildTransactionDetails() {
-//     return Expanded(
-//       child: Container(
-//         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-//         decoration: const BoxDecoration(
-//           color: white,
-//           borderRadius: BorderRadius.only(
-//             topLeft: Radius.circular(30),
-//             topRight: Radius.circular(30),
-//           ),
-//         ),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Text(
-//               "Payment Status",
-//               style: TextStyle(
-//                 fontSize: 20,
-//                 fontWeight: FontWeight.bold,
-//               ),
-//             ),
-//             const SizedBox(height: 15),
-//             isLoading
-//                 ? _buildShimmerDetails() // Shimmer Effect for Details
-//                 : Column(
-//               children: [
-//                 _buildDetailRow("Transfer ID", "${widget.agentTransaction.orderId}"),
-//                 _buildDetailRow("Status", widget.agentTransaction.linkStatus.toString().replaceAll("Status.", "")),
-//                 _buildDetailRow("Amount", "Rs.${widget.agentTransaction.linkAmount}"),
-//                 _buildDetailRow("Currency", widget.agentTransaction.linkCurrency.toString().replaceAll("LinkCurrency.", "")),
-//                 _buildDetailRow("Purpose", widget.agentTransaction.linkPurpose.toString().replaceAll("LinkPurpose.", "").replaceAll("_", " ")),
-//                 _buildDetailRow("Customer", widget.agentTransaction.customerName.toString().replaceAll("CustomerName.", "").replaceAll("_", " ")),
-//                 _buildDetailRow("Customer ID", "${widget.agentTransaction.customerId}"),
-//                 _buildDetailRow("Customer Phone", "${widget.agentTransaction.customerPhone}"),
-//               ],
-//             ),
-//             const Spacer(),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-//
-//   Widget _buildDetailRow(String label, String value) {
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(vertical: 5),
-//       child: Row(
-//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//         children: [
-//           Text(
-//             label,
-//             style: TextStyle(
-//               fontSize: 16,
-//               color: black87,
-//             ),
-//           ),
-//           Text(
-//             value,
-//             style: TextStyle(
-//               fontSize: 16,
-//               fontWeight: FontWeight.bold,
-//               color: black,
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   /// Shimmer Placeholder for Header
-//   Widget _buildShimmerHeader() {
-//     return Shimmer.fromColors(
-//       baseColor: Colors.grey[300]!,
-//       highlightColor: Colors.grey[100]!,
-//       child: Column(
-//         children: [
-//           Container(
-//             width: 180,
-//             height: 20,
-//             decoration: BoxDecoration(
-//               color: Colors.grey[300],
-//               borderRadius: BorderRadius.circular(4),
-//             ),
-//           ),
-//           const SizedBox(height: 10),
-//           Container(
-//             width: 100,
-//             height: 30,
-//             decoration: BoxDecoration(
-//               color: Colors.grey[300],
-//               borderRadius: BorderRadius.circular(4),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   /// Shimmer Placeholder for Details
-//   Widget _buildShimmerDetails() {
-//     return Column(
-//       children: List.generate(7, (index) {
-//         return Padding(
-//           padding: const EdgeInsets.symmetric(vertical: 8),
-//           child: Row(
-//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//             children: [
-//               Container(
-//                 width: 120,
-//                 height: 16,
-//                 decoration: BoxDecoration(
-//                   color: Colors.grey[300],
-//                   borderRadius: BorderRadius.circular(4),
-//                 ),
-//               ),
-//               Container(
-//                 width: 100,
-//                 height: 16,
-//                 decoration: BoxDecoration(
-//                   color: Colors.grey[300],
-//                   borderRadius: BorderRadius.circular(4),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         );
-//       }),
-//     );
-//   }
-// }
+
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -253,6 +12,8 @@ class TransactionHistoryPage extends StatefulWidget {
   final String paymentStatus;
   final double amount;
   final String dat;
+  final String accountNumber;
+  final String transactionType;
   final String transferId;
   final String agentName;
   final String agentPhone;
@@ -274,7 +35,7 @@ class TransactionHistoryPage extends StatefulWidget {
     required this.customerId,
     required this.customerNumber, required this.corpCode,
     required this.tnxType,
-    required this.paymentMode, required this.dat,
+    required this.paymentMode, required this.dat, required this.accountNumber, required this.transactionType,
     // required this.agentTransaction
   });
 
@@ -476,7 +237,7 @@ print("isSuccess : $isSuccess");
   Widget _buildDetailsSection() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 24),
       decoration: BoxDecoration(
         color: white,
         borderRadius: const BorderRadius.only(
@@ -560,7 +321,7 @@ print("isSuccess : $isSuccess");
       //       ),
       SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -612,13 +373,14 @@ print("isSuccess : $isSuccess");
                           amount: "${widget.amount}",
                           bankName: getBankNameFromCorpCode(widget.corpCode).toString(),
                           agentName: widget.agentName,
+
                           agentPhone: widget.agentPhone,
                           custName: widget.customerName,
                           custPhone: widget.customerNumber,
                           custId: widget.customerId,
                           txnId: widget.transferId.replaceAll("_MERCHANT", ""),
                           txnType: widget.tnxType,
-                          dat: widget.dat,
+                          dat: widget.dat, tranType: widget.transactionType, accNo: widget.accountNumber,
                         ),
                       ),
                     );
@@ -693,6 +455,7 @@ print("isSuccess : $isSuccess");
               // "Transfer ID", widget.agentTransaction.orderId ?? "N/A"
               "Transfer ID",
               widget.transferId.replaceAll("_MERCHANT", "")),
+          _buildDetailItem("Transaction Type ", widget.transactionType.contains("CASH")? "CASH":"UPI"),
           _buildDetailItem("Amount", "₹${widget.amount}"),
           _buildDetailItem(
               "Agent Name",
@@ -715,7 +478,7 @@ print("isSuccess : $isSuccess");
 
   Widget _buildCustomerCard() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: white,
         borderRadius: BorderRadius.circular(12),
@@ -736,6 +499,7 @@ print("isSuccess : $isSuccess");
               //     .replaceAll("CustomerName.", "")
               //     .replaceAll("_", " ")
               ),
+          _buildDetailItem("Customer Acc No", widget.accountNumber),
           _buildDetailItem("Customer ID", widget.customerId
               // widget.agentTransaction.customerId ?? "N/A"
               ),

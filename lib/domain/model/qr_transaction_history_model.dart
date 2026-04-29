@@ -34,6 +34,7 @@ class QrTransaction {
   double? orderAmount;
   OrderCurrency? orderCurrency;
   String? orderStatus;
+  String? customerAccNo;
   String? customerId;
   String? customerName;
   String? customerPhone;
@@ -54,6 +55,7 @@ class QrTransaction {
 
   QrTransaction({
     this.orderId,
+    this.customerAccNo,
     this.cfOrderId,
     this.orderAmount,
     this.orderCurrency,
@@ -78,6 +80,7 @@ class QrTransaction {
     orderId: json["OrderId"],
     cfOrderId: json["CFOrderId"],
     orderAmount: json["OrderAmount"],
+    customerAccNo: json["CustomerAccNo"],
     orderCurrency: orderCurrencyValues.map[json["OrderCurrency"]],
     orderStatus:  json["OrderStatus"],
     customerId: json["CustomerId"],
@@ -102,6 +105,7 @@ class QrTransaction {
     "OrderAmount": orderAmount,
     "OrderCurrency": orderCurrencyValues.reverse[orderCurrency],
     "OrderStatus":  orderStatus,
+    "CustomerAccNo":  customerAccNo,
     "CustomerId":  customerId,
     "CustomerName": customerName,
     "CustomerPhone": customerPhone,
