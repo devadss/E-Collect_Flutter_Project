@@ -35,6 +35,7 @@ import 'package:collection_qr_flutter/domain/model/collection_base_url_model.dar
 import 'package:fpdart/src/either.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import '../../core/constants.dart';
+import '../../core/utils.dart';
 import '../../domain/interface/collection_base_url_interface.dart';
 import 'package:http/http.dart' as http;
 
@@ -44,15 +45,20 @@ class CollectionBaseUrlRepo implements CollectionBaseUrlInterface{
     bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     parentMobNum!.startsWith("+91") ?parentMobNum.replaceAll("+91", "") : parentMobNum;
    final url = Uri.parse("$dopBaseUrl$parentMobNum");
-   // final url = Uri.parse("${dopBaseUrl}+918905564553");
-    print("vendor url $url");
+    if(printStatementStatus ){
+      print("vendor url $url");
+    }
+
     if(checkConnection){
       final response = await http.get(url);
       if(response.statusCode ==200 || response.statusCode == 201){
-        printLog("-----------------------------LOAD VENDER URL STATUS CODE-------------------------");
-        printLog(response.statusCode);
-        printLog("-----------------------------LOAD VENDER URL Body-------------------------");
-        printLog(response.body);
+        if(printStatementStatus ){
+          printLog("-----------------------------LOAD VENDER URL STATUS CODE-------------------------");
+          printLog(response.statusCode);
+          printLog("-----------------------------LOAD VENDER URL Body-------------------------");
+          printLog(response.body);
+        }
+
         try{
           return Right(CollectionBaseUrlModel.fromJson(jsonDecode(response.body)));
         }catch(e){

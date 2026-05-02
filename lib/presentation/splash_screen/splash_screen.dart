@@ -4,6 +4,7 @@ import '../../core/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import '../../core/utils.dart';
 import '../../data/provider/token_expiry_provider.dart';
 import '../../data/provider/token_request_provider.dart';
 import '../../data/service/notification_service/notification_service.dart';
@@ -61,17 +62,26 @@ class _SplashScreenState extends State<SplashScreen> {
     tokenValidateResponse.fold(
           (error) {
         // Navigator.pop(context);
-        print("Token Validation Error: $error");
+            if(printStatementStatus){
+              print("Token Validation Error: $error");
+            }
+
         showInSnackBar(error, "RED");
       },
           (data) async {
-        print("Token Validation ${data.isExpired}");
+            if(printStatementStatus){
+              print("Token Validation ${data.isExpired}");
+            }
+
         if(data.isExpired == false){
           if (loginStatus == true) {
             if (fcmToken.isNotEmpty) {
               Future.delayed(const Duration(milliseconds: 100), () {
                 if (mounted) {
-                  print("Gpin page from validateToken data.isExpired == false");
+                  if(printStatementStatus){
+                    print("Gpin page from validateToken data.isExpired == false");
+                  }
+
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -103,7 +113,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
           requestNewTokenResponse.fold(
                 (error) {
-              print("Error: $error");
+if(printStatementStatus){
+  print("Error: $error");
+}
+
               if (mounted) {
                 Navigator.pushReplacement(
                   context,
@@ -114,13 +127,19 @@ class _SplashScreenState extends State<SplashScreen> {
               }
             },
                 (data) {
-              print("Token Response : $data");
+                  if(printStatementStatus){
+                    print("Token Response : $data");
+                  }
+
               SharedPref.shared.setTokenValue(data);
               if (loginStatus == true) {
                 if (fcmToken.isNotEmpty) {
                   Future.delayed(const Duration(milliseconds: 100), () {
                     if (mounted) {
-                      print("Gpin page from validateToken data.isExpired == true");
+                      if(printStatementStatus){
+                        print("Gpin page from validateToken data.isExpired == true");
+                      }
+
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -182,8 +201,11 @@ class _SplashScreenState extends State<SplashScreen> {
     setState(() {
       loginStatus = lgStatus;
     });
-    print("Login status = $loginStatus");
-    print("token  = $token");
+    if(printStatementStatus == true){
+      print("Login status = $loginStatus");
+      print("token  = $token");
+    }
+
     if(loginStatus == true){
       validateToken(token,
           username , password,mobnum.replaceAll("+91", "") ,"Mob"
@@ -213,7 +235,10 @@ class _SplashScreenState extends State<SplashScreen> {
       // Trigger navigation based on login status
       if (loginStatus) {
         if (fcmToken.isNotEmpty) {
-          print("Gpin page from _onAnimationsComplete");
+          if(printStatementStatus ){
+            print("Gpin page from _onAnimationsComplete");
+          }
+
          // _navigateAfterAnimations(const GooglePinCodePage());
         }
       } else {
@@ -297,7 +322,7 @@ class _SplashScreenState extends State<SplashScreen> {
               
                   // App Name with Typing Animation
                   _TypingText(
-                    text: "QR Collection",
+                    text: "Collection QR",
                     style: GoogleFonts.poppins(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -326,8 +351,8 @@ class _SplashScreenState extends State<SplashScreen> {
                     width: 30,
                     height: 30,
                     child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(home2),
+                      strokeWidth: 10,
+                      valueColor: AlwaysStoppedAnimation<Color>(home1),
                     ),
                   ),
                 ],

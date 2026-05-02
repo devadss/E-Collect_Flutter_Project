@@ -693,19 +693,22 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
           success: success,
           onViewReceipt: () {
             Navigator.pop(context);
+            var receiptModel = ReceiptDataModel(
+              amount: success.amount.toString(),
+              bankName: getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
+              agentName: agentName ?? "Name",
+              agentPhone: phoneNumber ?? "agentPhone",
+              custName: customerName!,
+              custPhone: custPhoneNumber!,
+              custId: custId!,
+              txnId: success.transactionId.toString(),
+              txnType: "CASH", dat: '', tranType: '', accNo: '',
+            );
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => ReceiptPage(
-                  amount: success.amount.toString(),
-                  bankName: getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
-                  agentName: agentName ?? "Name",
-                  agentPhone: phoneNumber ?? "agentPhone",
-                  custName: customerName!,
-                  custPhone: custPhoneNumber!,
-                  custId: custId!,
-                  txnId: success.transactionId.toString(),
-                  txnType: "CASH", dat: '', tranType: '', accNo: '',
+               receiptDataModel: receiptModel,
                 ),
               ),
             );

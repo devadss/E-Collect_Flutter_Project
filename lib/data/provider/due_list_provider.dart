@@ -1,3 +1,5 @@
+import 'package:collection_qr_flutter/core/utils.dart';
+
 import '../../core/general.dart';
 import '../../data/repository/due_list_repository.dart';
 import '../../domain/model/due_list_model.dart';
@@ -11,19 +13,28 @@ class DueListProvider with ChangeNotifier{
    DueListModel? get dueListModel => _dueListModel;
    Future<void>getDueList(
        String accountNumber, String onDate) async{
-     printLog("-----------------------------GET DUE LIST MODEL---------------------");
-     printLog(dueListModel);
+     if(printStatementStatus){
+       printLog("-----------------------------GET DUE LIST MODEL---------------------");
+       printLog(dueListModel);
+     }
+
      final result = await _dueListRepository.getDueList(accountNumber, onDate);
      result.fold(
          (error){
-           printLog("----------------------ERROR-------------------");
-           printLog(error);
+           if(printStatementStatus){
+             printLog("----------------------ERROR-------------------");
+             printLog(error);
+           }
+
          },
          (data){
            _dueListModel = data;
-           printLog("--------------------------DATA-----------------");
-           printLog(data);
-           notifyListeners();
+           if(printStatementStatus){
+             printLog("--------------------------DATA-----------------");
+             printLog(data);
+             notifyListeners();
+           }
+
          }
      );
    }

@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import '../../core/constants.dart';
 import '../../core/general.dart';
+import '../../core/utils.dart';
 import '../../domain/interface/cash_transcation_history_interface.dart';
 import '../../domain/model/qr_transaction_history_model.dart';
 import '../service/error_handler.dart';
@@ -26,16 +27,22 @@ class CashTransactionHistoryRepository
 
     bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     if (checkConnection) {
-      print(url);
+      if(printStatementStatus){
+        print(url);
+      }
+
       final response = await http.get(url);
       if (response.statusCode == 200 || response.statusCode == 201) {
         try {
-          printLog(
-              "==================================QR TRANSACTION STATUS CODE=================================");
-          printLog(response.statusCode);
-          printLog(
-              "==================================QR TRANSACTION STATUS CODE=================================");
-          printLog(response.body);
+          if(printStatementStatus){
+            printLog(
+                "==================================QR TRANSACTION STATUS CODE=================================");
+            printLog(response.statusCode);
+            printLog(
+                "==================================QR TRANSACTION STATUS CODE=================================");
+            printLog(response.body);
+          }
+
           if (response.body.contains("OrderId")) {
             return Right(
                 QrTranscationHistoryModel.fromJson(jsonDecode(response.body)));

@@ -613,10 +613,8 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
   Future<void> performLogout(BuildContext context) async {
     String entityId = await SharedPref.shared.getSubAgentId();
     String token = await SharedPref.shared.getTokenValue();
-
     final fcmProvider = Provider.of<DeleteFcmProvider>(context, listen: false);
     await fcmProvider.deleteFirebaseToken(entityId, token);
-
     await SharedPref.shared.setLogin(false);
     await SharedPref.shared.setCustId("");
     await SharedPref.shared.setAgentName("");
@@ -627,7 +625,6 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
     await SharedPref.shared.setSubAgentCode("");
     await SharedPref.shared.setUserType("");
     await SharedPref.shared.setUserType("");
-
     await SharedPref.shared.setRdclCustomerVendorUrl("");
     await SharedPref.shared.setDueListRdclUrl("");
     await SharedPref.shared.setCustomerRdUrl("");
@@ -635,7 +632,6 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
     await SharedPref.shared.setCustomerLoanUrl("");
     await SharedPref.shared.setDueListLoanUrl("");
     await SharedPref.shared.setLoanAccountHolderUrl("");
-
     await SharedPref.shared.setSubAgentName("");
     await SharedPref.shared.setSubAgentMobNum("");
     await SharedPref.shared.setSubAgentCodeNew("");

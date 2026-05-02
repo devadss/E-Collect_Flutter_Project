@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
+import '../../../core/utils.dart';
 import '../../../domain/model/customer_list_model/customer_list_fail_model.dart';
 import '../../../domain/model/customer_list_model/customer_list_model.dart';
 import 'package:http/http.dart'as http;
@@ -19,13 +20,18 @@ class CustomerListRepo {
     final vendorUrl = await loadVendorUrl();
     //final uri = Uri.parse("https://doorstepmeenachilmscs.digicob.in/getRdclCustomerunderAgentList");
     final uri = Uri.parse(vendorUrl);
-    final request = await http.post(uri, body: jsonEncode({"agent_id": agentId,
-      "branch_id": branchId, "PageNumber": pageNo, "PageSize": pageSize, "cust_name":custName}
+    final request = await http.post(uri, body: jsonEncode(
+        {"agent_id": agentId,
+      "branch_id": branchId, "PageNumber": pageNo, "PageSize": pageSize, "cust_name":custName
+        }
     ),
     headers: {"Content-Type":"application/json"}
     );
-print(uri);
-    print(request.body);
+    if(printStatementStatus ){
+      print(uri);
+      print(request.body);
+    }
+
     if(request.statusCode == 200){  final successResponse =
     await compute(parseCustomerSuccess, request.body);
 

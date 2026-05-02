@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/colors.dart';
 import '../../core/constants.dart';
+import '../../core/utils.dart';
 import '../account_dues/account_list_home_page.dart';
 import '../account_dues/rdcl_cust_list_bloc/customer _list.dart';
 import '../dues/dues_home_page.dart';
@@ -43,9 +44,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     var loggedInUserType = await SharedPref.shared.getLoggedInUserType();
     var corpCode = await SharedPref.shared.getCorpCode();
     final branchID = await SharedPref().getSubAgentCodeNew();
-     print("getUserType value = $loggedInUserType");
-    // print("getLoggedInUserType value = $loggedInUserType");
-    // print("corpCode value = $corpCode");
+
     setState(() {
       _branchID = branchID;
       _corpCode = corpCode;
@@ -74,7 +73,6 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   }
 
   Widget _getSelectedPage(int index) {
-    //print("Inside _getSelectedPage");
     switch (index) {
       case 0:
         return HomePage(
@@ -125,21 +123,30 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     try {
       // Check if index is valid
       if (_selectedIndex < 0 || _selectedIndex >= _tabKeys.length) {
-        debugPrint('Invalid index: $_selectedIndex');
+        if(printStatementStatus ){
+          debugPrint('Invalid index: $_selectedIndex');
+        }
+
         return;
       }
 
       // Get the key
       final key = _tabKeys[_selectedIndex];
       if (key.currentContext == null) {
-        debugPrint('No context for index $_selectedIndex');
+        if(printStatementStatus ){
+          debugPrint('No context for index $_selectedIndex');
+        }
+
         return;
       }
 
       // Get render object
       final renderObject = key.currentContext!.findRenderObject();
       if (renderObject == null || renderObject is! RenderBox) {
-        debugPrint('No RenderBox for index $_selectedIndex');
+        if(printStatementStatus ){
+          debugPrint('No RenderBox for index $_selectedIndex');
+        }
+
         return;
       }
 
@@ -147,7 +154,10 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
 
       // Check if widget is still in the tree
       if (!renderBox.attached) {
-        debugPrint('RenderBox not attached for index $_selectedIndex');
+        if(printStatementStatus ){
+          debugPrint('RenderBox not attached for index $_selectedIndex');
+        }
+
         return;
       }
 
@@ -165,7 +175,10 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         if (mounted) setState(() {});
       }
     } catch (e) {
-      debugPrint('Error in _updateIndicatorPosition: $e');
+      if(printStatementStatus ){
+        debugPrint('Error in _updateIndicatorPosition: $e');
+      }
+
       // Set a default position or skip
       _indicatorPosition = 0.0;
       if (mounted) setState(() {});

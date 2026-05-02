@@ -1,6 +1,7 @@
 import 'dart:convert';
 import '../../core/constants.dart';
 import '../../core/general.dart';
+import '../../core/utils.dart';
 import '../../data/service/error_handler.dart';
 import '../../domain/interface/payment_link_interface.dart';
 import '../../domain/model/payment_link_model.dart';
@@ -70,10 +71,13 @@ class PaymentLinkRepository implements IPaymentLinkRepository {
       printLog(response.body);
       printLog("body = $body");
       if (response.statusCode == 200 || response.statusCode == 201) {
-        printLog("---------------------body----------------------");
-        printLog(response.body);
-        printLog("-----------------------BODY-----------------------");
-        printLog(body);
+        if(printStatementStatus){
+          printLog("---------------------body----------------------");
+          printLog(response.body);
+          printLog("-----------------------BODY-----------------------");
+          printLog(body);
+        }
+
         return Right(PaymentLinkModel.fromJson(jsonDecode(response.body)));
       } else {
         return Left(FetchDataError("Failed to fetch data: ${response.statusCode}"));

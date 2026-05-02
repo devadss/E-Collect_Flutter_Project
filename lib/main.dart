@@ -39,6 +39,7 @@ import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'core/utils.dart';
 import 'data/customer_list_bloc/customer_list_bloc.dart';
 import 'data/provider/aadhaar_otp_request_provider.dart';
 import 'data/provider/auth_provider.dart';
@@ -116,7 +117,10 @@ import 'data/repository/cust_reg_repository.dart';
 final GlobalKey<ScaffoldMessengerState> snackBarKey =
     GlobalKey<ScaffoldMessengerState>();
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  log("Handling a background message: ${message.messageId}");
+  if(printStatementStatus){
+    log("Handling a background message: ${message.messageId}");
+  }
+
 }
 
 void main() async {
@@ -137,7 +141,10 @@ void main() async {
   }
   catch (e) {
     // Handle already initialized or any Firebase-related error
-    debugPrint("Firebase initialization error: $e");
+    if(printStatementStatus ){
+      debugPrint("Firebase initialization error: $e");
+    }
+
   }
 
   await requestLocationPermission();
@@ -155,7 +162,10 @@ void main() async {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     await NotificationServiceQrCode().initialize();
   } catch (e) {
-    debugPrint("Firebase Messaging error: $e");
+    if(printStatementStatus ){
+      debugPrint("Firebase Messaging error: $e");
+    }
+
   }
 
 

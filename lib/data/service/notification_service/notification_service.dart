@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'package:collection_qr_flutter/core/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
@@ -18,7 +19,10 @@ class NotificationService {
   FlutterLocalNotificationsPlugin();
 
   static Future<void> initialize(VoidCallback onSuccessfulPayment) async {
-    print("Notification service initialized.");
+    if(printStatementStatus){
+      print("Notification service initialized.");
+    }
+
     // Initialize Flutter Local Notifications
     const AndroidInitializationSettings initializationSettingsAndroid =
     AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -50,7 +54,10 @@ class NotificationService {
           message.notification!.title,
           message.notification!.body,
         );
-        print("NotificationService ${message.notification!.body}");
+        if(printStatementStatus){
+          print("NotificationService ${message.notification!.body}");
+        }
+
         // Check for successful payment message
         if (message.notification!.body
             ?.toLowerCase()
@@ -125,21 +132,28 @@ class NotificationService {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
+if(printStatementStatus){
+  print('addFcmToken body = $body');
+  print('addFcmToken response = ${response.body}');
+  print('statusCode: ${response.statusCode}');
+}
 
-    print('addFcmToken body = $body');
-    print('addFcmToken response = ${response.body}');
-    print('statusCode: ${response.statusCode}');
     if (response.statusCode == 200) {
-      print('stnavPageatusCode: $navPage');
+
+        print('stnavPageatusCode: $navPage');
+      }
+
       if (navPage == 'GPIN') {
-        print("calling Gpin from notification service");
+        if(printStatementStatus){
+          print("calling Gpin from notification service");}
+
         Navigator.push(context, MaterialPageRoute(builder: (context)=>
             const GooglePinCodePage()));
 
       }
     }
   }
-}
+
 bool _isRequestingPermission = false;
 
 
@@ -152,8 +166,11 @@ Future<String?> fetchFcmTokenWithRetries({int maxRetries = 3}) async {
         return token;
       }
     } catch (e) {
-      print('Attempt $attempt: Error fetching FCM token: $e');
-      log('Attempt $attempt: Error fetching FCM token: $e');
+      if(printStatementStatus){
+        print('Attempt $attempt: Error fetching FCM token: $e');
+        log('Attempt $attempt: Error fetching FCM token: $e');
+      }
+
     }
     await Future.delayed(
         const Duration(seconds: 2)); // Small delay before retrying
@@ -166,7 +183,10 @@ Future<void> saveFcmToken(
     String navPage, String tok, String mob, String mpin) async
 {
   if (_isRequestingPermission) {
-    print("Permission request is already in progress.");
+    if(printStatementStatus){
+      print("Permission request is already in progress.");
+    }
+
     return; // Exit if a request is already in progress
   }
 
@@ -184,8 +204,11 @@ Future<void> saveFcmToken(
         Future.delayed(const Duration(seconds: 5),
                 () => throw TimeoutException("Server call timed out"))
       ]);
-      print('FCM token saved successfully');
-      log('FCM token saved successfully');
+      if (_isRequestingPermission) {
+        print('FCM token saved successfully');
+        log('FCM token saved successfully');
+      }
+
        SharedPref.shared.setFcmToken(fcmToken);
       Navigator.pushAndRemoveUntil(
         context,
@@ -198,13 +221,25 @@ Future<void> saveFcmToken(
         MaterialPageRoute(builder: (context) => const BottomNavScreen()),
             (route) => false,
       );
-      print('Failed to fetch FCM token after retries');
-      log('Failed to fetch FCM token after retries');
+      if (_isRequestingPermission) {
+        if(printStatementStatus){
+          print('Failed to fetch FCM token after retries');
+          log('Failed to fetch FCM token after retries');
+        }
+
+      }
+
     }
   } catch (e, stacktrace) {
-    print('Error in saving FCM token: $e');
-    log('Error in saving FCM token: $e');
-    log('Stacktrace: $stacktrace');
+    if (_isRequestingPermission) {
+      if(printStatementStatus){
+        print('Error in saving FCM token: $e');
+        log('Error in saving FCM token: $e');
+        log('Stacktrace: $stacktrace');
+      }
+
+    }
+
   } finally {
     _isRequestingPermission = false; // Reset the flag
   }

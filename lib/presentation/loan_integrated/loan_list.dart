@@ -35,8 +35,11 @@ class _LoanListState extends State<LoanList> {
       _branchId = branchId;
       _subAgentId= subAgentId;
     });
-    print("Loan _branchId = $_branchId");
-    print("Loan _subAgentId = $_subAgentId");
+    if(printStatementStatus ){
+      print("Loan _branchId = $_branchId");
+      print("Loan _subAgentId = $_subAgentId");
+    }
+
     fetchIntegratedLoans();
   }
   Future<void> fetchIntegratedLoans() async {

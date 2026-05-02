@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:collection_qr_flutter/core/utils.dart';
+
 import '../../core/constants.dart';
 import '../../data/service/error_handler.dart';
 import '../../domain/interface/payment_session_id_interface.dart';
@@ -13,8 +15,8 @@ class CreatePaymentSessionIdRepository
   @override
   Future<Either<ErrorHandler, PaymentSessionIdModel>>
   getPaymentSessionId({
-    required String? token,
-    required String? agentName,
+      required String? token,
+      required String? agentName,
       required String? agentId,
       required String? agentOriginId,
       required String? agentPhone,
@@ -33,7 +35,10 @@ class CreatePaymentSessionIdRepository
       required String? collectionType,
 
   }) async {
-    print("collectionType = $collectionType");
+    if(printStatementStatus){
+      print("collectionType = $collectionType");
+    }
+
     String endPoint = "";
     //final url = Uri.parse("${baseUrl}api/Cashfree/MerchantOrderCreate");
    // collectionType == "LOAN"? endPoint = "LoanOrderCreate":
@@ -71,9 +76,12 @@ class CreatePaymentSessionIdRepository
       // "EntityId": entityId,
       // "Note": note,
       // "SubAgentId":subAgentID
-    print("Body payment session= $url");
-    print("Body payment session= $body");
-    print("Body payment session= $endPoint");
+    if(printStatementStatus){
+      print("Body payment session= $url");
+      print("Body payment session= $body");
+      print("Body payment session= $endPoint");
+    }
+
 
     bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
     if (checkConnection) {
@@ -85,8 +93,11 @@ class CreatePaymentSessionIdRepository
             'Content-Type': 'application/json',
           }
       );
-      print("Body = ${response.body}");
-      print("status = ${response.statusCode}");
+      if(printStatementStatus){
+        print("Body = ${response.body}");
+        print("status = ${response.statusCode}");
+      }
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         try {
           return Right(

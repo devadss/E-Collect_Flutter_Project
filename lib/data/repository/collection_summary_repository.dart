@@ -1,3 +1,5 @@
+import 'package:collection_qr_flutter/core/utils.dart';
+
 import '../../core/constants.dart';
 import '../../data/service/error_handler.dart';
 import '../../domain/interface/collection_summary_interface.dart';
@@ -23,11 +25,14 @@ class CollectionSummaryRepository implements ICollectionSummaryRepository {
          "Content-Type": "application/json",
        },
      );
-     print("CollectionSummaryRepository : ${response.body}");
-     print("agentId=$agentId");
-     print("startDate=$startDate");
-     print("endDate=$endDate");
-     print("token=$token");
+     if(printStatementStatus){
+       print("CollectionSummaryRepository : ${response.body}");
+       print("agentId=$agentId");
+       print("startDate=$startDate");
+       print("endDate=$endDate");
+       print("token=$token");
+     }
+
      if(response.statusCode == 200 || response.statusCode == 201){
        try{
          return Right(CollectionSummaryModel.fromJson(jsonDecode(response.body)));

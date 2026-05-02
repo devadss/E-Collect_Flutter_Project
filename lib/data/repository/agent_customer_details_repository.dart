@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import '../../core/general.dart';
+import '../../core/utils.dart';
 import '../../data/service/error_handler.dart';
 import '../../domain/interface/agent_customer_details_interface.dart';
 import '../../domain/model/agent_customer_details_model.dart';
@@ -36,10 +37,13 @@ class AgentCustomerDetailsRepository
     if (checkConnection) {
      final response = await http.post(url, body:{"agent_Id": agentId},);
      // final response = await http.post(url, body:{"agent_Id": "1002"},);
-      printLog("------------------------AGENT CUSTOMER DETAILS STATUSCODE-------------------");
-      printLog(response.statusCode);
-      printLog("------------------------AGENT CUSTOMER DETAILS BODY RD--------------------------");
-      printLog(response.body);
+     if(printStatementStatus){
+       printLog("------------------------AGENT CUSTOMER DETAILS STATUSCODE-------------------");
+       printLog(response.statusCode);
+       printLog("------------------------AGENT CUSTOMER DETAILS BODY RD--------------------------");
+       printLog(response.body);
+     }
+
       if (response.statusCode == 200 ) {
         try {
           return Right(

@@ -11,31 +11,15 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../core/utils.dart';
+
 class ReceiptPage extends StatefulWidget {
-  final String amount;
-  final String dat;
-  final String bankName;
-  final String agentName;
-  final String agentPhone;
-  final String custName;
-  final String custPhone;
-  final String custId;
-  final String txnId;
-  final String txnType;
-  final String tranType;
-  final String accNo;
+  final ReceiptDataModel receiptDataModel;
+
 
   const ReceiptPage(
       {super.key,
-      required this.amount,
-      required this.bankName,
-      required this.agentName,
-      required this.agentPhone,
-      required this.custName,
-      required this.custPhone,
-      required this.custId,
-      required this.txnId,
-      required this.txnType, required this.dat, required this.tranType, required this.accNo});
+      required this.receiptDataModel});
 
   @override
   State<ReceiptPage> createState() => _ReceiptPageState();
@@ -292,29 +276,29 @@ class _ReceiptPageState extends State<ReceiptPage> {
     try {
       // Generate QR code data with all transaction details
 
-      final qrData = widget.custPhone.isNotEmpty
+      final qrData = widget.receiptDataModel.custPhone.isNotEmpty
           ? '''
-      Transaction ID: ${widget.txnId}
-      Amount: Rs.${widget.amount}
+      Transaction ID: ${widget.receiptDataModel.txnId}
+      Amount: Rs.${widget.receiptDataModel.amount}
       Date: ${DateFormat('dd-MMM-yyyy').format(DateTime.now())}
-      Bank: ${widget.bankName}
-      Customer: ${widget.custName}
-      Customer ID: ${widget.custId}
-      Customer Phone: ${widget.custPhone}
-      Agent: ${widget.agentName}
-      Agent Phone: ${widget.agentPhone}
-      Transaction Type: ${widget.txnType}
+      Bank: ${widget.receiptDataModel.bankName}
+      Customer: ${widget.receiptDataModel.custName}
+      Customer ID: ${widget.receiptDataModel.custId}
+      Customer Phone: ${widget.receiptDataModel.custPhone}
+      Agent: ${widget.receiptDataModel.agentName}
+      Agent Phone: ${widget.receiptDataModel.agentPhone}
+      Transaction Type: ${widget.receiptDataModel.txnType}
       '''
           : '''
-      Transaction ID: ${widget.txnId}
-      Amount: Rs.${widget.amount}
+      Transaction ID: ${widget.receiptDataModel.txnId}
+      Amount: Rs.${widget.receiptDataModel.amount}
       Date: ${DateFormat('dd-MMM-yyyy').format(DateTime.now())}
-      Bank: ${widget.bankName}
-      Customer: ${widget.custName}
-      Customer ID: ${widget.custId}
-      Agent: ${widget.agentName}
-      Agent Phone: ${widget.agentPhone}
-      Transaction Type: ${widget.txnType}
+      Bank: ${widget.receiptDataModel.bankName}
+      Customer: ${widget.receiptDataModel.custName}
+      Customer ID: ${widget.receiptDataModel.custId}
+      Agent: ${widget.receiptDataModel.agentName}
+      Agent Phone: ${widget.receiptDataModel.agentPhone}
+      Transaction Type: ${widget.receiptDataModel.txnType}
       ''';
 
       final qrImage = await QrPainter(
@@ -358,7 +342,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
       // ===== HEADER =====
       bytes.addAll([0x1B, 0x61, 0x01]); // Center
       bytes.addAll([0x1B, 0x21, 0x30]); // Big + Bold
-      bytes.addAll("${widget.bankName}\n".codeUnits);
+      bytes.addAll("${widget.receiptDataModel.bankName}\n".codeUnits);
 
       bytes.addAll([0x1B, 0x21, 0x00]);
       bytes.addAll("Transaction Receipt\n".codeUnits);
@@ -378,13 +362,13 @@ class _ReceiptPageState extends State<ReceiptPage> {
       bytes.addAll("TRANSACTION\n".codeUnits);
       bytes.addAll([0x1B, 0x21, 0x00]);
 
-      String txnType = widget.tranType.contains("CASH") ? "CASH" : "UPI";
+      String txnType = widget.receiptDataModel.tranType.contains("CASH") ? "CASH" : "UPI";
 
       bytes.addAll("Type     : $txnType\n".codeUnits);
       bytes.addAll("Status   : SUCCESS\n".codeUnits);
 
-      if (widget.txnId.isNotEmpty) {
-        bytes.addAll("Txn ID   : ${widget.txnId}\n".codeUnits);
+      if (widget.receiptDataModel.txnId.isNotEmpty) {
+        bytes.addAll("Txn ID   : ${widget.receiptDataModel.txnId}\n".codeUnits);
       }
 
       bytes.addAll("\n".codeUnits);
@@ -392,7 +376,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
       // ===== AMOUNT (Highlight) =====
       bytes.addAll([0x1B, 0x61, 0x01]); // Center
       bytes.addAll([0x1B, 0x21, 0x30]); // Large
-      bytes.addAll("Rs. ${widget.amount}\n".codeUnits);
+      bytes.addAll("Rs. ${widget.receiptDataModel.amount}\n".codeUnits);
 
       bytes.addAll([0x1B, 0x21, 0x00]);
       bytes.addAll([0x1B, 0x61, 0x00]);
@@ -404,13 +388,13 @@ class _ReceiptPageState extends State<ReceiptPage> {
       bytes.addAll("CUSTOMER\n".codeUnits);
       bytes.addAll([0x1B, 0x21, 0x00]);
 
-      bytes.addAll("Name     : ${widget.custName}\n".codeUnits);
+      bytes.addAll("Name     : ${widget.receiptDataModel.custName}\n".codeUnits);
 
-      if (widget.custPhone.isNotEmpty) {
-        bytes.addAll("Phone    : ${widget.custPhone}\n".codeUnits);
+      if (widget.receiptDataModel.custPhone.isNotEmpty) {
+        bytes.addAll("Phone    : ${widget.receiptDataModel.custPhone}\n".codeUnits);
       }
 
-      bytes.addAll("A/C No   : ${widget.accNo}\n".codeUnits);
+      bytes.addAll("A/C No   : ${widget.receiptDataModel.accNo}\n".codeUnits);
 
       bytes.addAll("------------------------------\n".codeUnits);
 
@@ -419,8 +403,8 @@ class _ReceiptPageState extends State<ReceiptPage> {
       bytes.addAll("AGENT\n".codeUnits);
       bytes.addAll([0x1B, 0x21, 0x00]);
 
-      bytes.addAll("Name     : ${widget.agentName}\n".codeUnits);
-      bytes.addAll("Phone    : ${widget.agentPhone}\n".codeUnits);
+      bytes.addAll("Name     : ${widget.receiptDataModel.agentName}\n".codeUnits);
+      bytes.addAll("Phone    : ${widget.receiptDataModel.agentPhone}\n".codeUnits);
 
       bytes.addAll("------------------------------\n".codeUnits);
 
@@ -496,7 +480,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
 
       // Header (double height + bold)
       bytes.addAll([0x1B, 0x21, 0x30]); // Text size big
-      bytes.addAll("${widget.bankName}\n".codeUnits);
+      bytes.addAll("${widget.receiptDataModel.bankName}\n".codeUnits);
       bytes.addAll([0x1B, 0x21, 0x00]); // Reset style
 
       bytes.addAll("Transaction Receipt\n".codeUnits);
@@ -519,19 +503,19 @@ class _ReceiptPageState extends State<ReceiptPage> {
       bytes.addAll("Transaction Details:\n".codeUnits);
       bytes.addAll([0x1B, 0x21, 0x00]); // Reset
 
-      bytes.addAll("Txn Type:         ${widget.tranType.contains("CASH")?"CASH":"UPI"}\n".codeUnits);
-      bytes.addAll("Amount:           Rs.${widget.amount}\n".codeUnits);
+      bytes.addAll("Txn Type:         ${widget.receiptDataModel.tranType.contains("CASH")?"CASH":"UPI"}\n".codeUnits);
+      bytes.addAll("Amount:           Rs.${widget.receiptDataModel.amount}\n".codeUnits);
       bytes.addAll("Status:           Success\n".codeUnits);
-      widget.txnId.isNotEmpty
-          ? bytes.addAll("Txn ID:           ${widget.txnId}\n".codeUnits)
+      widget.receiptDataModel.txnId.isNotEmpty
+          ? bytes.addAll("Txn ID:           ${widget.receiptDataModel.txnId}\n".codeUnits)
           : "";
-      bytes.addAll("Customer:         ${widget.custName}\n".codeUnits);
-      widget.custPhone.isNotEmpty
-          ? bytes.addAll("Customer Phone:   ${widget.custPhone}\n".codeUnits)
+      bytes.addAll("Customer:         ${widget.receiptDataModel.custName}\n".codeUnits);
+      widget.receiptDataModel.custPhone.isNotEmpty
+          ? bytes.addAll("Customer Phone:   ${widget.receiptDataModel.custPhone}\n".codeUnits)
           : "";
-      bytes.addAll("Account No:            ${widget.accNo}\n".codeUnits);
-      bytes.addAll("Agent:            ${widget.agentName}\n".codeUnits);
-      bytes.addAll("Agent Phone:      ${widget.agentPhone}\n".codeUnits);
+      bytes.addAll("Account No:            ${widget.receiptDataModel.accNo}\n".codeUnits);
+      bytes.addAll("Agent:            ${widget.receiptDataModel.agentName}\n".codeUnits);
+      bytes.addAll("Agent Phone:      ${widget.receiptDataModel.agentPhone}\n".codeUnits);
       bytes.addAll("-----------------------------\n".codeUnits);
 
       // Print QR Code
@@ -881,7 +865,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                     Column(
                       children: [
                         Text(
-                          widget.bankName,
+                          widget.receiptDataModel.bankName,
                           style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -929,14 +913,14 @@ class _ReceiptPageState extends State<ReceiptPage> {
                             child: QrImageView(
                               data: '''
                               Transaction ID: 1234567890
-                              Amount: Rs.${widget.amount}
+                              Amount: Rs.${widget.receiptDataModel.amount}
                               Date: ${DateFormat('dd-MMM-yyyy').format(DateTime.now())}
-                              Bank: ${widget.bankName}
-                              Customer: ${widget.custName}
-                              Customer ID: ${widget.custId}
-                              Customer Phone: ${widget.custPhone}
-                              Agent: ${widget.agentName}
-                              Agent Phone: ${widget.agentPhone}
+                              Bank: ${widget.receiptDataModel.bankName}
+                              Customer: ${widget.receiptDataModel.custName}
+                              Customer ID: ${widget.receiptDataModel.custId}
+                              Customer Phone: ${widget.receiptDataModel.custPhone}
+                              Agent: ${widget.receiptDataModel.agentName}
+                              Agent Phone: ${widget.receiptDataModel.agentPhone}
                               ''',
                               version: QrVersions.auto,
                               size: 120,
@@ -998,14 +982,14 @@ class _ReceiptPageState extends State<ReceiptPage> {
                             child: QrImageView(
                               data: '''
 Transaction ID: 1234567890
-Amount: Rs.${widget.amount}
+Amount: Rs.${widget.receiptDataModel.amount}
 Date: ${DateFormat('dd-MMM-yyyy').format(DateTime.now())}
-Bank: ${widget.bankName}
-Customer: ${widget.custName}
-Customer ID: ${widget.custId}
-Customer Phone: ${widget.custPhone}
-Agent: ${widget.agentName}
-Agent Phone: ${widget.agentPhone}
+Bank: ${widget.receiptDataModel.bankName}
+Customer: ${widget.receiptDataModel.custName}
+Customer ID: ${widget.receiptDataModel.custId}
+Customer Phone: ${widget.receiptDataModel.custPhone}
+Agent: ${widget.receiptDataModel.agentName}
+Agent Phone: ${widget.receiptDataModel.agentPhone}
 ''',
                               version: QrVersions.auto,
                               size: 140,
@@ -1058,28 +1042,28 @@ Agent Phone: ${widget.agentPhone}
                             ),
                           ),
                           const SizedBox(height: 16),
-                          _buildDetailRow("Transaction ID:", widget.txnId),
+                          _buildDetailRow("Transaction ID:", widget.receiptDataModel.txnId),
                           Divider(height: 24, color: home2.withOpacity(0.1)),
-                          _buildDetailRow("Transaction Type:", widget.tranType.contains("CASH")? "CASH":"UPI"),
+                          _buildDetailRow("Transaction Type:", widget.receiptDataModel.tranType.contains("CASH")? "CASH":"UPI"),
                           Divider(height: 24, color: home2.withOpacity(0.1)),
-                          _buildDetailRow("Customer Acc No:", widget.accNo),
+                          _buildDetailRow("Customer Acc No:", widget.receiptDataModel.accNo),
                           Divider(height: 24, color: home2.withOpacity(0.1)),
-                      _buildDetailRow("Date & Time",widget.dat.toString()),
+                      _buildDetailRow("Date & Time",widget.receiptDataModel.dat.toString()),
                           // _buildDetailRow("Date & Time:",
                           //     "${DateFormat('dd-MMM-yyyy').format(DateTime.now())} - ${DateFormat('hh:mm a').format(DateTime.now())}"),
                           Divider(height: 24, color: home2.withOpacity(0.1)),
-                          _buildDetailRow("Amount:", "Rs.${widget.amount}"),
+                          _buildDetailRow("Amount:", "Rs.${widget.receiptDataModel.amount}"),
                           Divider(height: 24, color: home2.withOpacity(0.1)),
-                          _buildDetailRow("Customer Name:", widget.custName),
+                          _buildDetailRow("Customer Name:", widget.receiptDataModel.custName),
                           Divider(height: 24, color: home2.withOpacity(0.1)),
-                          _buildDetailRow("Agent Name:", widget.agentName),
+                          _buildDetailRow("Agent Name:", widget.receiptDataModel.agentName),
                           Divider(height: 24, color: home2.withOpacity(0.1)),
-                          _buildDetailRow("Agent Phone:", widget.agentPhone),
+                          _buildDetailRow("Agent Phone:", widget.receiptDataModel.agentPhone),
                           Divider(height: 24, color: home2.withOpacity(0.1)),
 
-                          widget.custPhone.isNotEmpty
+                          widget.receiptDataModel.custPhone.isNotEmpty
                               ? _buildDetailRow(
-                                  "Customer Phone:", widget.custPhone)
+                                  "Customer Phone:", widget.receiptDataModel.custPhone)
                               : const SizedBox.shrink(),
                           Divider(height: 24, color: home2.withOpacity(0.1)),
                         ],
@@ -1471,14 +1455,14 @@ Agent Phone: ${widget.agentPhone}
 //       // Generate QR code data with all transaction details
 //       final qrData = '''
 //       Transaction ID: 1234567890
-//       Amount: Rs.${widget.amount}
+//       Amount: Rs.${widget.receiptDataModel.amount}
 //       Date: ${DateFormat('dd-MMM-yyyy').format(DateTime.now())}
-//       Bank: ${widget.bankName}
-//       Customer: ${widget.custName}
-//       Customer ID: ${widget.custId}
-//       Customer Phone: ${widget.custPhone}
-//       Agent: ${widget.agentName}
-//       Agent Phone: ${widget.agentPhone}
+//       Bank: ${widget.receiptDataModel.bankName}
+//       Customer: ${widget.receiptDataModel.custName}
+//       Customer ID: ${widget.receiptDataModel.custId}
+//       Customer Phone: ${widget.receiptDataModel.custPhone}
+//       Agent: ${widget.receiptDataModel.agentName}
+//       Agent Phone: ${widget.receiptDataModel.agentPhone}
 //       ''';
 //
 //       final qrImage = await QrPainter(
@@ -1521,7 +1505,7 @@ Agent Phone: ${widget.agentPhone}
 //
 //       // Header (double height + bold)
 //       bytes.addAll([0x1B, 0x21, 0x30]); // Text size big
-//       bytes.addAll("${widget.bankName}\n".codeUnits);
+//       bytes.addAll("${widget.receiptDataModel.bankName}\n".codeUnits);
 //       bytes.addAll([0x1B, 0x21, 0x00]); // Reset style
 //
 //       bytes.addAll("Transaction Receipt\n".codeUnits);
@@ -1544,13 +1528,13 @@ Agent Phone: ${widget.agentPhone}
 //       bytes.addAll("Transaction Details:\n".codeUnits);
 //       bytes.addAll([0x1B, 0x21, 0x00]); // Reset
 //
-//       bytes.addAll("Amount:           Rs.${widget.amount}\n".codeUnits);
+//       bytes.addAll("Amount:           Rs.${widget.receiptDataModel.amount}\n".codeUnits);
 //       bytes.addAll("Status:           Success\n".codeUnits);
-//       bytes.addAll("Customer:         ${widget.custName}\n".codeUnits);
-//       // bytes.addAll("Customer ID:      ${widget.custId}\n".codeUnits);
-//       bytes.addAll("Customer Phone:   ${widget.custPhone}\n".codeUnits);
-//       bytes.addAll("Agent:            ${widget.agentName}\n".codeUnits);
-//       bytes.addAll("Agent Phone:      ${widget.agentPhone}\n".codeUnits);
+//       bytes.addAll("Customer:         ${widget.receiptDataModel.custName}\n".codeUnits);
+//       // bytes.addAll("Customer ID:      ${widget.receiptDataModel.custId}\n".codeUnits);
+//       bytes.addAll("Customer Phone:   ${widget.receiptDataModel.custPhone}\n".codeUnits);
+//       bytes.addAll("Agent:            ${widget.receiptDataModel.agentName}\n".codeUnits);
+//       bytes.addAll("Agent Phone:      ${widget.receiptDataModel.agentPhone}\n".codeUnits);
 //       // bytes.addAll("Reference:        Invoice #4567\n".codeUnits);
 //       bytes.addAll("-----------------------------\n".codeUnits);
 //
@@ -1682,7 +1666,7 @@ Agent Phone: ${widget.agentPhone}
 //                   Column(
 //                     children: [
 //                       Text(
-//                         widget.bankName,
+//                         widget.receiptDataModel.bankName,
 //                         style: TextStyle(
 //                           fontSize: 24,
 //                           fontWeight: FontWeight.bold,
@@ -1730,14 +1714,14 @@ Agent Phone: ${widget.agentPhone}
 //                           child: QrImageView(
 //                             data: '''
 //                             Transaction ID: 1234567890
-//                             Amount: Rs.${widget.amount}
+//                             Amount: Rs.${widget.receiptDataModel.amount}
 //                             Date: ${DateFormat('dd-MMM-yyyy').format(DateTime.now())}
-//                             Bank: ${widget.bankName}
-//                             Customer: ${widget.custName}
-//                             Customer ID: ${widget.custId}
-//                             Customer Phone: ${widget.custPhone}
-//                             Agent: ${widget.agentName}
-//                             Agent Phone: ${widget.agentPhone}
+//                             Bank: ${widget.receiptDataModel.bankName}
+//                             Customer: ${widget.receiptDataModel.custName}
+//                             Customer ID: ${widget.receiptDataModel.custId}
+//                             Customer Phone: ${widget.receiptDataModel.custPhone}
+//                             Agent: ${widget.receiptDataModel.agentName}
+//                             Agent Phone: ${widget.receiptDataModel.agentPhone}
 //                             ''',
 //                             version: QrVersions.auto,
 //                             size: 120,
@@ -1792,17 +1776,17 @@ Agent Phone: ${widget.agentPhone}
 //                         _buildDetailRow(
 //                             "Date & Time:", "${DateFormat('dd-MMM-yyyy').format(DateTime.now())} - ${DateFormat('hh:mm a').format(DateTime.now())}"),
 //                         Divider(height: 24, color: home2.withOpacity(0.1)),
-//                         _buildDetailRow("Amount:", "Rs.${widget.amount}"),
+//                         _buildDetailRow("Amount:", "Rs.${widget.receiptDataModel.amount}"),
 //                         Divider(height: 24, color: home2.withOpacity(0.1)),
-//                         _buildDetailRow("Customer Name:", widget.custName),
+//                         _buildDetailRow("Customer Name:", widget.receiptDataModel.custName),
 //                         // Divider(height: 24, color: home2.withOpacity(0.1)),
-//                         // _buildDetailRow("Customer ID:", widget.custId),
+//                         // _buildDetailRow("Customer ID:", widget.receiptDataModel.custId),
 //                         Divider(height: 24, color: home2.withOpacity(0.1)),
-//                         _buildDetailRow("Customer Phone:", widget.custPhone),
+//                         _buildDetailRow("Customer Phone:", widget.receiptDataModel.custPhone),
 //                         Divider(height: 24, color: home2.withOpacity(0.1)),
-//                         _buildDetailRow("Agent Name:", widget.agentName),
+//                         _buildDetailRow("Agent Name:", widget.receiptDataModel.agentName),
 //                         Divider(height: 24, color: home2.withOpacity(0.1)),
-//                         _buildDetailRow("Agent Phone:", widget.agentPhone),
+//                         _buildDetailRow("Agent Phone:", widget.receiptDataModel.agentPhone),
 //                         Divider(height: 24, color: home2.withOpacity(0.1)),
 //                         // _buildDetailRow("Reference:", "Invoice #4567"),
 //                       ],

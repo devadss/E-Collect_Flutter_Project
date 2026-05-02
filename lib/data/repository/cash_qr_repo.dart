@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:collection_qr_flutter/core/constants.dart';
+import 'package:collection_qr_flutter/core/utils.dart';
 import 'package:collection_qr_flutter/domain/interface/cash_qr_combined_interface.dart';
 import 'package:collection_qr_flutter/domain/model/qr_cash_combined_response.dart';
 import 'package:dartz/dartz.dart';
@@ -19,7 +20,10 @@ class CashQrRepository implements CashQrCombinedInterface {
        // "${baseUrl}api/GetMerchantOrders?dateFilterType=$filterType&startDate=$startDate&endDate=$endDate&Source=ALL&CorpCode=$corpCode&agentOrginId=$agentOrginId");
         "${baseUrl}api/GetMerchantOrders?dateFilterType=$filterType&startDate=$startDate&endDate=$endDate&Source=ALL&CorpCode=$corpCode&agentOrginId=$agentOrginId");
     final request = await http.get(uri);
-print("QR+CASH $uri");
+    if(printStatementStatus){
+      print("QR+CASH $uri");
+    }
+
     if (request.statusCode == 200) {
       return Right(CashQrCombinedResponse.fromJson(jsonDecode(request.body)));
     } else {

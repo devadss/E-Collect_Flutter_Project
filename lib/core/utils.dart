@@ -10,6 +10,25 @@ import '../domain/model/registered_cust_model.dart';
 import '../presentation/auth/login/otp_verification/otp_verification.dart';
 import 'colors.dart';
 
+const bool printStatementStatus = false;
+
+String isRunningLiveBaseUrl(bool status){
+  if(status){
+    return "https://adsspay.aanvinsolutions.com:8444/";
+  }else{
+    return "https://adsspayweb.digicob.in/";
+  }
+}
+
+String isRunningLiveDopBaseUrl(bool status){
+  if(status){
+    return "https://mydop.in/api/fetch/vendor/urls/";
+  }else{
+    return "https://devops.mydop.in/api/fetch/vendor/urls/";
+  }
+}
+
+
 String getBankNameFromCorpCode(String corpCode) {
   //print("getBankNameFromCorpCode $corpCode");
   // Map corpcode to bank name
@@ -90,6 +109,7 @@ String getBankNameFromCorpCode(String corpCode) {
   // Return the bank name if found, otherwise return a default value
   return corpCodeToBankName[corpCode] ?? "Unknown Bank";
 }
+
 Map<String, String?> splitName(String fullName) {
   List<String> parts = fullName.trim().split(RegExp(r'\s+'));
 
@@ -129,6 +149,7 @@ void checkForUpdate() async {
     //print("Update check failed: $e");
   }
 }
+
 void showInSnackBar(String value, BuildContext context) {
   var snackBar = SnackBar(
     content: Text(
@@ -154,7 +175,7 @@ void showProgressDialog(BuildContext context) {
             child: Dialog(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)),
-              child:const Padding(
+              child: const Padding(
                 padding: EdgeInsets.all(50),
                 child: Column(
                   children: [
@@ -162,7 +183,7 @@ void showProgressDialog(BuildContext context) {
                     SizedBox(
                       height: 10,
                     ),
-                     Text(
+                    Text(
                       "Please wait....",
                       style: TextStyle(
                         fontSize: 17,
@@ -177,56 +198,234 @@ void showProgressDialog(BuildContext context) {
       });
 }
 
-
-void insertCollectionAgentIntegrationY(RegistedCustomerModel customer){
-  SharedPref.shared.setEmail(customer.response!.data!['emailId'].toString(),);
-  SharedPref.shared.setCorpCode(customer.response!.data!['CorpCode'].toString(),);
-  SharedPref.shared.setBranchCode(customer.response!.data!['BranchCode'].toString(),);
+void insertCollectionAgentIntegrationY(RegistedCustomerModel customer) {
+  SharedPref.shared.setEmail(
+    customer.response!.data!['emailId'].toString(),
+  );
+  SharedPref.shared.setCorpCode(
+    customer.response!.data!['CorpCode'].toString(),
+  );
+  SharedPref.shared.setBranchCode(
+    customer.response!.data!['BranchCode'].toString(),
+  );
   SharedPref.shared.setMpinValue(customer.mpin.toString());
 }
 
-void insertCollectionAgentIntegrationN(RegistedCustomerModel customer){
-  SharedPref.shared.setCustId(customer.response!.data!['CustId'].toString(),);
-  SharedPref.shared.setEmail(customer.response!.data!['emailId'].toString(),);
-  SharedPref.shared.setCorpCode(customer.response!.data!['CorpCode'].toString(),);
-  SharedPref.shared.setBranchCode(customer.response!.data!['BranchCode'].toString(),);
+void insertCollectionAgentIntegrationN(RegistedCustomerModel customer) {
+  SharedPref.shared.setCustId(
+    customer.response!.data!['CustId'].toString(),
+  );
+  SharedPref.shared.setEmail(
+    customer.response!.data!['emailId'].toString(),
+  );
+  SharedPref.shared.setCorpCode(
+    customer.response!.data!['CorpCode'].toString(),
+  );
+  SharedPref.shared.setBranchCode(
+    customer.response!.data!['BranchCode'].toString(),
+  );
   SharedPref.shared.setMpinValue(customer.mpin.toString());
 }
 
-
-void insertCustRegister(RegistedCustomerModel customer){
-  SharedPref.shared.setEmail(customer.response!.data!['emailId'].toString(),);
-  SharedPref.shared.setCustId(customer.response!.data!['CustId'].toString(),);
-  SharedPref.shared.setCorpCode(customer.response!.data!['CorpCode'].toString(),);
-  SharedPref.shared.setBranchCode(customer.response!.data!['BranchCode'].toString(),);
-  SharedPref.shared.setSubAgentMobNum(customer.response!.data!['contactNo'].toString(),);
-  SharedPref.shared.setAgentName(customer.response!.data!['firstName'].toString(),);
+void insertCustRegister(RegistedCustomerModel customer) {
+  SharedPref.shared.setEmail(
+    customer.response!.data!['emailId'].toString(),
+  );
+  SharedPref.shared.setCustId(
+    customer.response!.data!['CustId'].toString(),
+  );
+  SharedPref.shared.setCorpCode(
+    customer.response!.data!['CorpCode'].toString(),
+  );
+  SharedPref.shared.setBranchCode(
+    customer.response!.data!['BranchCode'].toString(),
+  );
+  SharedPref.shared.setSubAgentMobNum(
+    customer.response!.data!['contactNo'].toString(),
+  );
+  SharedPref.shared.setAgentName(
+    customer.response!.data!['firstName'].toString(),
+  );
   SharedPref.shared.setMpinValue(customer.mpin.toString());
 }
 
-void insertCollectionBaseUrl(CollectionBaseUrlProvider vendorBaseUrlProvider){
-  SharedPref.shared.setRdclCustomerVendorUrl(vendorBaseUrlProvider.collectionBaseUrlModel!.getCustomerRdclUrl.toString());
-  SharedPref.shared.setDueListRdclUrl(vendorBaseUrlProvider.collectionBaseUrlModel!.getDueListRdclUrl.toString());
-  SharedPref.shared.setCustomerRdUrl(vendorBaseUrlProvider.collectionBaseUrlModel!.getCustomerRdUrl.toString());
-  SharedPref.shared.setDueListRdUrl(vendorBaseUrlProvider.collectionBaseUrlModel!.getDueListRdUrl.toString());
-  SharedPref.shared.setCustomerLoanUrl(vendorBaseUrlProvider.collectionBaseUrlModel!.getCustomerLoanUrl.toString());
-  SharedPref.shared.setDueListLoanUrl(vendorBaseUrlProvider.collectionBaseUrlModel!.getDueListLoanUrl.toString());
-  SharedPref.shared.setLoanAccountHolderUrl(vendorBaseUrlProvider.collectionBaseUrlModel!.getLoanAccountHolderUrl.toString());
-  SharedPref.shared.setUserType(vendorBaseUrlProvider.collectionBaseUrlModel!.userType.toString());
+void insertCollectionBaseUrl(CollectionBaseUrlProvider vendorBaseUrlProvider) {
+  SharedPref.shared.setRdclCustomerVendorUrl(vendorBaseUrlProvider
+      .collectionBaseUrlModel!.getCustomerRdclUrl
+      .toString());
+  SharedPref.shared.setDueListRdclUrl(vendorBaseUrlProvider
+      .collectionBaseUrlModel!.getDueListRdclUrl
+      .toString());
+  SharedPref.shared.setCustomerRdUrl(vendorBaseUrlProvider
+      .collectionBaseUrlModel!.getCustomerRdUrl
+      .toString());
+  SharedPref.shared.setDueListRdUrl(
+      vendorBaseUrlProvider.collectionBaseUrlModel!.getDueListRdUrl.toString());
+  SharedPref.shared.setCustomerLoanUrl(vendorBaseUrlProvider
+      .collectionBaseUrlModel!.getCustomerLoanUrl
+      .toString());
+  SharedPref.shared.setDueListLoanUrl(vendorBaseUrlProvider
+      .collectionBaseUrlModel!.getDueListLoanUrl
+      .toString());
+  SharedPref.shared.setLoanAccountHolderUrl(vendorBaseUrlProvider
+      .collectionBaseUrlModel!.getLoanAccountHolderUrl
+      .toString());
+  SharedPref.shared.setUserType(
+      vendorBaseUrlProvider.collectionBaseUrlModel!.userType.toString());
+}
+
+Future<void> insertParentDetailAgent(
+    ParentDetailAgentProvider parentAgentDetailProvider) async {
+  await SharedPref.shared.setAgentId(
+    parentAgentDetailProvider.subAgent!.data.parentAgentId.toString(),
+  );
+  await SharedPref.shared.setParentAgentMobNum(
+    parentAgentDetailProvider.subAgent!.data.parentAgentMobNo.toString(),
+  );
+  await SharedPref.shared.setSubAgentName(
+    parentAgentDetailProvider.subAgent!.data.subAgentName.toString(),
+  );
+  await SharedPref.shared.setSubAgentMobNum(
+    parentAgentDetailProvider.subAgent!.data.mobileNumber.toString(),
+  );
+  await SharedPref.shared.setAgentOriginId(
+      parentAgentDetailProvider.subAgent!.data.subAgentOriginId.toString());
+  await SharedPref.shared.setSubAgentCode(
+    parentAgentDetailProvider.subAgent!.data.subAgentOriginId.toString(),
+  );
+  await SharedPref.shared.setSubAgentCodeNew(
+    parentAgentDetailProvider.subAgent!.data.subAgentCode.toString(),
+  );
+  await SharedPref.shared.setSubAgentId(
+    parentAgentDetailProvider.subAgent!.data.subAgentId.toString(),
+  );
+}
+class HomeVariablesModel{
+  int todaysCount;
+  String? userName;
+  String? entityId;
+  String? token;
+  String? cashCollectionType;
+  String? userType;
+  String? corpCode;
+  String? agentOriginId;
+  String? mobNum;
+  String? subAgentID;
+  String? customerRdUrl;
+  bool forceLogout;
+  int selectedTabIndex;
+  bool isFilterApplied;
+  String currentFilterPeriod; // Track current filter period
+  String currentFromDate; // Track current from date
+  String currentToDate; // Track current to date
+  int currentBannerIndex;
+  HomeVariablesModel({
+    required this.todaysCount,
+    required this.userName,
+    required this.entityId,
+    required this.token,
+    required this.cashCollectionType,
+    required this.userType,
+    required this.corpCode,
+    required this.agentOriginId,
+    required this.mobNum,
+    required this.subAgentID,
+    required this.customerRdUrl,
+    required this.forceLogout,
+    required this.selectedTabIndex,
+    required this.isFilterApplied,
+    required this.currentFilterPeriod,
+    required this.currentFromDate,
+    required this.currentToDate,
+    required this.currentBannerIndex,
+
+});
+
 }
 
 
-Future<void> insertParentDetailAgent(ParentDetailAgentProvider parentAgentDetailProvider) async {
-  await SharedPref.shared.setAgentId(parentAgentDetailProvider.subAgent!.data.parentAgentId.toString(),);
-  await SharedPref.shared.setParentAgentMobNum(parentAgentDetailProvider.subAgent!.data.parentAgentMobNo.toString(),);
-  await SharedPref.shared.setSubAgentName(parentAgentDetailProvider.subAgent!.data.subAgentName.toString(),);
-  await SharedPref.shared.setSubAgentMobNum(parentAgentDetailProvider.subAgent!.data.mobileNumber.toString(),);
-  await SharedPref.shared.setAgentOriginId(parentAgentDetailProvider.subAgent!.data.subAgentOriginId.toString());
-  await SharedPref.shared.setSubAgentCode(parentAgentDetailProvider.subAgent!.data.subAgentOriginId.toString(),);
-  await SharedPref.shared.setSubAgentCodeNew(parentAgentDetailProvider.subAgent!.data.subAgentCode.toString(),);
-  await SharedPref.shared.setSubAgentId(parentAgentDetailProvider.subAgent!.data.subAgentId.toString(),);
+class LoanRequestModel {
+  final String? customerName;
+  final String? accountNo;
+  final String? status;
+  final String? scheme;
+  final String? agent;
+  final String? corpCode;
+  final int? page;
+  final int? pageSize;
+  LoanRequestModel(
+      {required this.customerName,
+        required  this.accountNo,
+        required   this.status,
+        required   this.scheme,
+        required   this.agent,
+        required  this.corpCode,
+        required    this.page,
+        required   this.pageSize});
 }
-class LoanDetailsModel{
+
+class TransactionHistoryModel {
+  final String paymentStatus;
+  final double amount;
+  final String dat;
+  final String accountNumber;
+  final String transactionType;
+  final String transferId;
+  final String agentName;
+  final String agentPhone;
+  final String customerName;
+  final String customerId;
+  final String customerNumber;
+  final String corpCode;
+  final String tnxType;
+  final String paymentMode;
+
+  TransactionHistoryModel(
+      {required this.paymentStatus,
+      required this.amount,
+      required this.dat,
+      required this.accountNumber,
+      required this.transactionType,
+      required this.transferId,
+      required this.agentName,
+      required this.agentPhone,
+      required this.customerName,
+      required this.customerId,
+      required this.customerNumber,
+      required this.corpCode,
+      required this.tnxType,
+      required this.paymentMode});
+}
+
+class ReceiptDataModel {
+  final String amount;
+  final String dat;
+  final String bankName;
+  final String agentName;
+  final String agentPhone;
+  final String custName;
+  final String custPhone;
+  final String custId;
+  final String txnId;
+  final String txnType;
+  final String tranType;
+  final String accNo;
+  ReceiptDataModel(
+      {required this.amount,
+      required this.dat,
+      required this.bankName,
+      required this.agentName,
+      required this.agentPhone,
+      required this.custName,
+      required this.custPhone,
+      required this.custId,
+      required this.txnId,
+      required this.txnType,
+      required this.tranType,
+      required this.accNo});
+}
+
+class LoanDetailsModel {
   final String customerName;
   final String customerPhoneNumber;
   final String loanNumber;
@@ -242,6 +441,7 @@ class LoanDetailsModel{
   final String assignedAgent;
   final String custId;
   final String createdAt;
+
   LoanDetailsModel({
     required this.customerName,
     required this.customerPhoneNumber,
@@ -254,12 +454,14 @@ class LoanDetailsModel{
     required this.paymentDate,
     required this.collectionFrequency,
     required this.email,
-    required this.custId, required this.dueDate, required this.assignedAgent, required this.createdAt,
-
-
+    required this.custId,
+    required this.dueDate,
+    required this.assignedAgent,
+    required this.createdAt,
   });
 }
-class OtpPageData{
+
+class OtpPageData {
   final String subAgentmobNum;
   final String parentAgentMobNum;
   final String userName;
@@ -268,20 +470,19 @@ class OtpPageData{
   final String loggedInUserType;
   OtpPageData(
       {required this.subAgentmobNum,
-        required this.parentAgentMobNum,
-        required this.userName,
-        required this.password,
-        required this.tokenStatus,
-        required this.loggedInUserType});
-
-
+      required this.parentAgentMobNum,
+      required this.userName,
+      required this.password,
+      required this.tokenStatus,
+      required this.loggedInUserType});
 }
 
-void otpPageNavigation(BuildContext context, OtpPageData otpData){
+void otpPageNavigation(BuildContext context, OtpPageData otpData) {
   Navigator.push(
     context,
     MaterialPageRoute(
-      builder: (context) => OtpRequestVerificationPage(otpPageData: otpData,
+      builder: (context) => OtpRequestVerificationPage(
+        otpPageData: otpData,
       ),
     ),
   );
@@ -295,6 +496,7 @@ Uint8List padPKCS7(Uint8List input) {
   }
   return output;
 }
+
 Future<void> resetInitialData() async {
   SharedPref.shared.setEmail("");
   SharedPref.shared.setCorpCode("");

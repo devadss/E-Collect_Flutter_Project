@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:collection_qr_flutter/core/utils.dart';
 import 'package:dartz/dartz.dart';
 import "package:http/http.dart" as http;
 import '../../core/constants.dart';
@@ -18,10 +19,12 @@ class DeleteFcmTokenRepository extends DeleteFcmTokenInterface {
           },
          // body: json.encode({"EntityId": entityID}));
           body: json.encode({"agentId": entityID}));
+if(printStatementStatus){
+  print("Delete Fcm EntityId : ${entityID}");
+  print("Delete Fcm Response : ${request.body}");
+  print("Delete Fcm statusCode : ${request.statusCode}");
+}
 
-      print("Delete Fcm EntityId : ${entityID}");
-      print("Delete Fcm Response : ${request.body}");
-      print("Delete Fcm statusCode : ${request.statusCode}");
       if(request.statusCode == 200){
         return Right(request.body);
       }else{

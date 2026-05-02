@@ -1,3 +1,4 @@
+import 'package:collection_qr_flutter/core/utils.dart';
 import 'package:flutter/material.dart';
 import '../../core/general.dart';
 import '../../domain/model/all_trans_data.dart';
@@ -23,14 +24,20 @@ class LinkTransactionHistoryProvider with ChangeNotifier{
           _linkTranscationHistoryModel = null;
           _erResposne = error.message;
           _showProgressDialog = false;
-          printLog("---------------------------ERROR LINK------------------");
-          printLog(error);
+          if(printStatementStatus){
+            printLog("---------------------------ERROR LINK------------------");
+            printLog(error);
+          }
+
         },
         (data){
           _erResposne= null;
          _linkTranscationHistoryModel = data;
-          printLog("-----------------------DATA---------------");
-          printLog(data);
+         if(printStatementStatus){
+           printLog("-----------------------DATA---------------");
+           printLog(data);
+         }
+
           _showProgressDialog = false;
         }
 

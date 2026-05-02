@@ -4,6 +4,7 @@ import 'package:collection_qr_flutter/domain/interface/sub_agent/parent_agent_da
 import 'package:collection_qr_flutter/domain/model/subagent/agent_subagent_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
+import '../../../core/utils.dart';
 import '../../../domain/model/subagent/detail_fetch/agent_subagent_faill.dart';
 
 class ParentAgentDetailRepository implements ParentDataDetailInterface {
@@ -14,8 +15,11 @@ class ParentAgentDetailRepository implements ParentDataDetailInterface {
         "${baseUrl}api/SubAgent/AgentMobNumBySubAgentMobNum?mobileNumber=%2B91$mobNum");
     final request =
         await http.get(uri, headers: {'Content-Type': 'application/json'});
-    print(uri);
-    print('ParentAgentDetailRepository : ${request.body}');
+    if(printStatementStatus ){
+      print(uri);
+      print('ParentAgentDetailRepository : ${request.body}');
+    }
+
     if (request.statusCode == 200) {
       return Right(SubAgentResponse.fromJson(jsonDecode(request.body)));
     } else {

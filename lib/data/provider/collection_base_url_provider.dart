@@ -23,6 +23,7 @@
 // }
 
 import 'package:collection_qr_flutter/core/general.dart';
+import 'package:collection_qr_flutter/core/utils.dart';
 import 'package:collection_qr_flutter/data/repository/collection_base_url_repo.dart';
 import 'package:flutter/material.dart';
 
@@ -40,18 +41,27 @@ class CollectionBaseUrlProvider with ChangeNotifier{
 
 
   Future<void> getCollectionUrl(String? parentMobNum)async{
-    printLog("-------------------------------GET COLLECTION URL-------------------");
-    printLog(collectionBaseUrlModel);
+    if(printStatementStatus){
+      printLog("-------------------------------GET COLLECTION URL-------------------");
+      printLog(collectionBaseUrlModel);
+    }
+
     final result = await _collectionBaseUrlRepo.getCollectionUrl(parentMobNum);
     result.fold(
         (error){
-          printLog("-------------------------------GET COLLECTION URL ERROR-------------------");
-          printLog(error);
+          if(printStatementStatus){
+            printLog("-------------------------------GET COLLECTION URL ERROR-------------------");
+            printLog(error);
+          }
+
         },
         (data){
           _collectionBaseUrlModel = data;
-          printLog("-------------------------------GET COLLECTION URL DATA-------------------");
-          printLog(data);
+          if(printStatementStatus){
+            printLog("-------------------------------GET COLLECTION URL DATA-------------------");
+            printLog(data);
+          }
+
           notifyListeners();
         }
     );

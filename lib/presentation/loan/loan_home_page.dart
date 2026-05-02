@@ -34,15 +34,23 @@ class _LoanHomePageState extends State<LoanHomePage>
   Future<void> loadSharedPrefs() async {
     final custID = await SharedPref().getSubAgentId();
     final corpCode = await SharedPref().getBranchCode();
-print("corpCode =$corpCode");
+    if(printStatementStatus){
+      print("corpCode =$corpCode");
+    }
+
     setState(() {
       agentId = custID;
       _corpCode = corpCode;
     });
+    LoanRequestModel loanRequestModel = LoanRequestModel(
+        customerName: '', accountNo: '', status: '',
+        scheme: '', agent: agentId, corpCode: _corpCode, page: 1, pageSize: 10
+    );
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _animationController.forward();
       final provider = Provider.of<GetLoanProvider>(context, listen: false);
-      provider.getLoans("", "", "", "",_corpCode, agentId,1, 10).then((_) {
+
+      provider.getLoans(loanRequestModel).then((_) {
         if (mounted) {
           setState(() {
             _isLoading = false;
@@ -117,8 +125,8 @@ print("corpCode =$corpCode");
 
   @override
   Widget build(BuildContext context) {
-   // final loanProvider = Provider.of<GetLoanProvider>(context);
-   // final loans = loanProvider.collectionLoanModel?.data ?? [];
+    // final loanProvider = Provider.of<GetLoanProvider>(context);
+    // final loans = loanProvider.collectionLoanModel?.data ?? [];
 
     return Scaffold(
       appBar: AppBar(
@@ -341,12 +349,12 @@ print("corpCode =$corpCode");
       ],
     );
   }
+
   Widget _buildLoanItem(Datum loan, int index) {
     final statusColor = _getStatusColor(loan.status);
     final formattedAmount =
         '₹${loan.outstandingAmount?.toStringAsFixed(2) ?? '0.00'}';
-    final formattedDate =
-        loan.createdAt?.toString().substring(0, 10) ?? 'N/A';
+    final formattedDate = loan.createdAt?.toString().substring(0, 10) ?? 'N/A';
 
     return FadeTransition(
       opacity: _fadeAnimation,
@@ -372,26 +380,28 @@ print("corpCode =$corpCode");
                 loanSchm = "weeks";
               }
 
-var loanModel = LoanDetailsModel(
-  customerName: loan.customerName ?? "Name",
-  loanNumber: loan.accountNo ?? "Loan Number",
-  emiAmount: loan.collectionAmount ?? 0,
-  loanTerm: loan.tenorDays ?? 0,
-  loanStatus: loan.status ?? "",
-  loanAmount: loan.outstandingAmount ?? 0,
-  scheme: loan.scheme ?? "",
-  paymentDate: loan.lastRepaymentDate.toString(),
-  collectionFrequency: loanSchm,
-  email: loan.customerEmail ?? "",
-  customerPhoneNumber: loan.phoneNumber ?? "",
-  custId: loan.loanId.toString(), dueDate: loan.lastRepaymentDate.toString(), assignedAgent: loan.assignedAgent.toString(), createdAt: loan.createdAt.toString(),
-);
+              LoanDetailsModel loanModel = LoanDetailsModel(
+                customerName: loan.customerName ?? "Name",
+                loanNumber: loan.accountNo ?? "Loan Number",
+                emiAmount: loan.collectionAmount ?? 0,
+                loanTerm: loan.tenorDays ?? 0,
+                loanStatus: loan.status ?? "",
+                loanAmount: loan.outstandingAmount ?? 0,
+                scheme: loan.scheme ?? "",
+                paymentDate: loan.lastRepaymentDate.toString(),
+                collectionFrequency: loanSchm,
+                email: loan.customerEmail ?? "",
+                customerPhoneNumber: loan.phoneNumber ?? "",
+                custId: loan.loanId.toString(),
+                dueDate: loan.lastRepaymentDate.toString(),
+                assignedAgent: loan.assignedAgent.toString(),
+                createdAt: loan.createdAt.toString(),
+              );
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => LoanDetailsPage(
                     loanDetailsModel: loanModel,
-
                   ),
                 ),
               );
@@ -523,6 +533,7 @@ var loanModel = LoanDetailsModel(
       ),
     );
   }
+
   Widget _modernDetail({
     required IconData icon,
     required String label,

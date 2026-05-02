@@ -1,3 +1,4 @@
+import 'package:collection_qr_flutter/core/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:collection_qr_flutter/core/constants.dart';
 
@@ -13,11 +14,20 @@ class ApiService {
 
   //A common api get request
   Future<dynamic> getApiData(String endPoint) async {
-    print("Inside ApiService");
+    if(printStatementStatus){
+      print("Inside ApiService");
+    }
+
     final uri = Uri.parse("$_baseUrl$endPoint");
-    print("$_baseUrl$endPoint");
+    if(printStatementStatus){
+      print("$_baseUrl$endPoint");
+    }
+
     final response = await http.get(uri, headers: _headers());
-    print(response.body);
+    if(printStatementStatus){
+      print(response.body);
+    }
+
     if (response.statusCode == 200) {
       return response.body;
     } else {

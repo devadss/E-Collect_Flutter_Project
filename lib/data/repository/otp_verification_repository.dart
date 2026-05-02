@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:collection_qr_flutter/core/utils.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 
@@ -14,8 +15,11 @@ class OtpVerificationRepository implements OtpVerificationInterface {
   Future<Either<OtpFailModel, OtpSuccessModel>> verifyOtp(
       String mobnum, String otp) async {
     try {
-      print("mobnum = $mobnum");
-      print("otp = $otp");
+      if(printStatementStatus){
+        print("mobnum = $mobnum");
+        print("otp = $otp");
+      }
+
       final uri = Uri.parse("${baseUrl}api/VerifyOTPV1"); // Now we can use 2025 as the otp for verification.
       //final uri = Uri.parse("${baseUrl}api/VerifyOTP");
       final data = {'MobileNo': '+91$mobnum', 'OTp': otp};  // Fixed "OTp" key
@@ -25,15 +29,21 @@ class OtpVerificationRepository implements OtpVerificationInterface {
         body: jsonEncode(data),
         headers: {'Content-Type': 'application/json'},
       );
-      print("request = ${request.body}");
-      print("request ststus code= ${request.statusCode}");
+      if(printStatementStatus){
+        print("request = ${request.body}");
+        print("request ststus code= ${request.statusCode}");
+      }
+
 
       if (request.statusCode == 200) {
         final otpSuccessModel = OtpSuccessModel.fromJson(jsonDecode(request.body));
         return Right(otpSuccessModel);
       }
       else if(request.statusCode == 401){
-        print("request.statusCode == 401");
+        if(printStatementStatus){
+          print("request.statusCode == 401");
+        }
+
         final otpFailModel = OtpFailModel.fromJson(jsonDecode(request.body));
         return Left(otpFailModel);
       }
@@ -47,7 +57,10 @@ class OtpVerificationRepository implements OtpVerificationInterface {
         return Left(otpfailmodel);
       }
     } catch (e) {
-      print("Error: $e");
+      if(printStatementStatus){
+        print("Error: $e");
+      }
+
       // Handle cases where JSON is invalid or any other exception occurs
       return Left(OtpFailModel.fromJson({"error": "Something went wrong"}));
     }

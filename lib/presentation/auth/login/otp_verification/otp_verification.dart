@@ -224,7 +224,10 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
   }
 
   void startTimer() {
-    printLog('Starting the timer');
+    if(printStatementStatus){
+      printLog('Starting the timer');
+    }
+
     const oneSec = Duration(seconds: 1);
     _timer = Timer.periodic(oneSec, (Timer timer) {
       if (_start == 0) {

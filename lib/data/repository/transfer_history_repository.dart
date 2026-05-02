@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:collection_qr_flutter/core/utils.dart';
 import 'package:collection_qr_flutter/domain/interface/transfer_transaction_interface.dart';
 import 'package:collection_qr_flutter/domain/model/transfer_history_model.dart';
 import 'package:dartz/dartz.dart';
@@ -20,10 +21,13 @@ class TransferHistoryRepository implements TransferTransactionInterface{
       final response = await http.get(url);
       if(response.statusCode == 200 || response.statusCode == 201){
         try{
-          printLog("==================================ALL TRANSACTION STATUS CODE=================================");
-          printLog(response.statusCode);
-          printLog("==================================ALL TRANSFER TRANSACTION STATUS CODE=================================");
-          printLog(response.body);
+          if(printStatementStatus){
+            printLog("==================================ALL TRANSACTION STATUS CODE=================================");
+            printLog(response.statusCode);
+            printLog("==================================ALL TRANSFER TRANSACTION STATUS CODE=================================");
+            printLog(response.body);
+          }
+
           if(response.body.contains("OrderId")){
             return Right(TransferHistoryModel.fromJson(jsonDecode(response.body)));
 

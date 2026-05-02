@@ -100,14 +100,17 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
         phoneNumber = mobile;
         email = emailId;
       });
-      printLog("---------------ENTITY ID----------------");
-      printLog(entityId);
-      printLog("---------------USERNAME---------------");
-      printLog(userName);
-      printLog("---------------PHONE NUMBER----------------");
-      printLog(phoneNumber);
-      printLog("---------------EMAIL----------------");
-      printLog(email);
+      if(printStatementStatus){
+        printLog("---------------ENTITY ID----------------");
+        printLog(entityId);
+        printLog("---------------USERNAME---------------");
+        printLog(userName);
+        printLog("---------------PHONE NUMBER----------------");
+        printLog(phoneNumber);
+        printLog("---------------EMAIL----------------");
+        printLog(email);
+      }
+
       _fetchBalance();
     }
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/general.dart';
+import '../../core/utils.dart';
 import '../../domain/model/qr_transaction_history_model.dart';
 import '../repository/qr_transcation_history_repository.dart';
 
@@ -22,12 +23,18 @@ class QRTransactionHistoryProvider with ChangeNotifier {
     String? corpCode,
     String? agentOriginId,
   ) async {
-    printLog(
-      "==================================QR TRANSACTION MODEL=================================",
-    );
+    if(printStatementStatus){
+      printLog(
+        "==================================QR TRANSACTION MODEL=================================",
+      );
+    }
+
     _showProgressDialog = true; // ✅ Add this line!
 notifyListeners();
-    printLog(qrTranscationHistoryModel);
+if(printStatementStatus){
+  printLog(qrTranscationHistoryModel);
+}
+
     final result = await _qrTransactionHistoryRepository
         .getQrTranscationHistory(dateFilterType, startDate, endDate, source,corpCode,agentOriginId);
 
@@ -35,8 +42,11 @@ notifyListeners();
       (error) {
         _errResponse = error.message;
         _qrTranscationHistoryModel = null;
-        printLog("-------------Error QR Transcation-------------");
-        printLog(error);
+        if(printStatementStatus){
+          printLog("-------------Error QR Transcation-------------");
+          printLog(error);
+        }
+
         _showProgressDialog = false;
         notifyListeners();
       },
@@ -44,8 +54,11 @@ notifyListeners();
         _qrTranscationHistoryModel = data;
         _errResponse = null;
         _showProgressDialog = false;
-        printLog("-------------------DATA QR TRANS-----------------");
-        printLog(data);
+        if(printStatementStatus){
+          printLog("-------------------DATA QR TRANS-----------------");
+          printLog(data);
+        }
+
         notifyListeners();
       },
 

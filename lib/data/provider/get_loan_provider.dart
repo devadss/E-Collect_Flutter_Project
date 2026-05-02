@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/utils.dart';
 import '../../domain/model/loan_model.dart';
 import '../repository/get_loan_repository.dart';
 
@@ -7,17 +8,20 @@ class GetLoanProvider with ChangeNotifier {
   GetLoanProvider(this._getLoanRepository);
   CollectionLoanModel? _collectionLoanModel;
   CollectionLoanModel? get collectionLoanModel => _collectionLoanModel;
-  Future<void> getLoans(String? customerName, String? accountNo, String? status,
-      String? scheme, String? agent,String? corpCode, int? page, int? pageSize) async {
-    final result = await _getLoanRepository.getLoans(
-        customerName, accountNo, status, scheme, agent,corpCode, page, pageSize);
+  Future<void> getLoans(
+      LoanRequestModel loanRequestModel
+      ) async {
+    final result = await _getLoanRepository.getLoans(loanRequestModel);
     result.fold((error) {
       print("---------------------------ERROR------------------");
       print(error);
     }, (data) {
       _collectionLoanModel = data;
-      print("---------------------DATA---------------");
-      print(data);
+      if(printStatementStatus){
+        print("---------------------DATA---------------");
+        print(data);
+      }
+
       notifyListeners();
     });
   }

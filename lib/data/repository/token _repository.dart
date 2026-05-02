@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:collection_qr_flutter/core/utils.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -18,9 +19,12 @@ class TokenExpiryRepository implements TokenExpiryInterface {
           uri,
           headers: {'Content-Type': 'application/json'},
         );
-        print("validateToken");
-        print("request.statusCode ${request.statusCode}");
-        print(request.body);
+        if(printStatementStatus){
+          print("validateToken");
+          print("request.statusCode ${request.statusCode}");
+          print(request.body);
+        }
+
 
         if (request.statusCode == 200) {
           TokenExpireModel tokenExpireModel =
@@ -34,7 +38,10 @@ class TokenExpiryRepository implements TokenExpiryInterface {
         return const Left("CHECK INTERNET CONNECTION");
       }
     } catch (e) {
-      print("validateToken $e");
+      if(printStatementStatus){
+        print("validateToken $e");
+      }
+
     }
     throw UnimplementedError();
   }

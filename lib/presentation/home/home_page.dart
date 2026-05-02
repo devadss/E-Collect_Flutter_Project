@@ -1,12 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:collection_qr_flutter/data/provider/cash_qr_provider.dart';
-import 'package:collection_qr_flutter/data/provider/link_transcation_history_provider.dart';
 import 'package:collection_qr_flutter/domain/model/all_trans_data.dart';
 import 'package:collection_qr_flutter/domain/model/qr_cash_combined_response.dart';
 import 'package:collection_qr_flutter/domain/model/transfer_history_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:in_app_update/in_app_update.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/colors.dart';
@@ -23,78 +21,71 @@ import '../trancstion/transction_history_page.dart';
 
 class HomePage extends StatefulWidget {
   final String userType;
-
   const HomePage({super.key, required this.userType});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
-  int test = 0;
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   int todaysCount = 0;
   String? userName;
   String? entityId;
   String? token;
-  String? fd;
   String? cashCollectionType;
   String? userType;
   String? corpCode;
   String? agentOriginId;
   String? mobNum;
   String? subAgentID;
-  String? _customerRdUrl;
-  bool? isBannerAvailable;
-  bool _forceLogout = false;
-  int _selectedTabIndex = 0;
+  String? customerRdUrl;
+  bool forceLogout = false;
+  int selectedTabIndex = 0;
+  bool isFilterApplied = false;
+  String currentFilterPeriod = 'Today'; // Track current filter period
+  String currentFromDate = ''; // Track current from date
+  String currentToDate = ''; // Track current to date
+  int currentBannerIndex = 0;
+
+  static const Color whiteColor = Colors.white;
+
   final List<String> bannerImages = [
     "assets/images/collection_splash_screen.jpg",
     "assets/images/collection_splash_screen.jpg",
     "assets/images/doodle.jpeg",
   ];
+  final CarouselSliderController _carouselController = CarouselSliderController();
   DateTime startDate = DateTime.now().subtract(const Duration(days: 30));
   DateTime endDate = DateTime.now();
-  final CarouselSliderController _carouselController =
-  CarouselSliderController();
-  int _currentBannerIndex = 0;
   late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
-  late Animation<double> _scaleAnimation;
-  bool _isFilterApplied = false;
-  String _currentFilterPeriod = 'Today'; // Track current filter period
-  String _currentFromDate = ''; // Track current from date
-  String _currentToDate = ''; // Track current to date
+  late Animation<double> fadeAnimation;
+  late Animation<double> scaleAnimation;
 
-  void checkForUpdate() async {
-    try {
-      AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
-      if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
-        InAppUpdate.performImmediateUpdate(); // or .startFlexibleUpdate()
-      }
-    } catch (e) {
-      //print("Update check failed: $e");
-    }
-  }
 
-  @override
-  void initState() {
-    super.initState();
-    checkForUpdate();
-    loadSharedPrefs(context);
+  // void checkForUpdate() async {
+  //   try {
+  //     AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
+  //     if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
+  //       InAppUpdate.performImmediateUpdate(); // or .startFlexibleUpdate()
+  //     }
+  //   } catch (e) {
+  //   }
+  // }
+
+  void animationController(){
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
 
-    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
+    fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: _animationController,
         curve: Curves.easeInOut,
       ),
     );
 
-    _scaleAnimation = Tween<double>(begin: 0.95, end: 1).animate(
+    scaleAnimation = Tween<double>(begin: 0.95, end: 1).animate(
       CurvedAnimation(
         parent: _animationController,
         curve: Curves.easeOutBack,
@@ -104,10 +95,18 @@ class _HomePageState extends State<HomePage>
     _animationController.forward();
   }
 
+
+  @override
+  void initState() {
+    super.initState();
+    checkForUpdate();
+    loadSharedPrefs(context);
+    animationController();
+  }
+
   @override
   void dispose() {
     _animationController.dispose();
-
     super.dispose();
   }
 
@@ -246,7 +245,7 @@ class _HomePageState extends State<HomePage>
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: home1,
-                        foregroundColor: Colors.white,
+                        foregroundColor: whiteColor,
                         minimumSize: const Size.fromHeight(48),
                       ),
                       onPressed: () async {
@@ -337,10 +336,10 @@ class _HomePageState extends State<HomePage>
 
                         // ✅ Update parent state
                         setState(() {
-                          _isFilterApplied = true;
-                          _currentFilterPeriod = period;
-                          _currentFromDate = from;
-                          _currentToDate = to;
+                          isFilterApplied = true;
+                          currentFilterPeriod = period;
+                          currentFromDate = from;
+                          currentToDate = to;
                         });
                         if (qrProvider.showProgressDialog == false) {
                           if (mounted) {
@@ -364,7 +363,6 @@ class _HomePageState extends State<HomePage>
   }
 
 
-
   Future<void> fetchTransaction() async {
     if (!mounted) return;
     final provider = Provider.of<AgentTransactionProvider>(
@@ -375,10 +373,6 @@ class _HomePageState extends State<HomePage>
   }
 
 
-  String formatTimestamp(DateTime? timestamp) {
-    if (timestamp == null) return "Invalid Date";
-    return DateFormat('MMM dd, yyyy • hh:mm a').format(timestamp);
-  }
 
   Future<void> loadSharedPrefs(BuildContext context) async {
     final name = await SharedPref().getSubAgentName();
@@ -393,8 +387,7 @@ class _HomePageState extends State<HomePage>
 
     if (mounted) {
       setState(() {
-        _forceLogout = forceLogout;
-        //print("user type = ${widget.userType}");
+        this.forceLogout = forceLogout;
         widget.userType == "AGENT_LOAN"
             ? userType = "LOAN_COLLECTION"
             : userType = "COLLECTION";
@@ -403,7 +396,7 @@ class _HomePageState extends State<HomePage>
             ? cashCollectionType = "LOAN_COLLECTION_CASH"
             : cashCollectionType = "COLLECTION_CASH";
 
-        _customerRdUrl = customerRdUrl;
+        this.customerRdUrl = customerRdUrl;
         userName = name;
         entityId = entId;
         token = tok;
@@ -422,10 +415,10 @@ class _HomePageState extends State<HomePage>
     try {
       // Load data for ALL providers, not just QR transactions
       final qrProvider = Provider.of<QRTransactionHistoryProvider>(context, listen: false);
-      final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
       final cashQrProvider = Provider.of<CashQrProvider>(context, listen: false);
       final cashProvider = Provider.of<CashTransactionHistoryProvider>(context, listen: false);
-      final transferProvider = Provider.of<TransferHistoryProvider>(context, listen: false);
+      // final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
+      //final transferProvider = Provider.of<TransferHistoryProvider>(context, listen: false);
 
       // Load QR transactions
       await qrProvider.getQrTranscationHistory(
@@ -528,55 +521,6 @@ class _HomePageState extends State<HomePage>
       }
     }
   }
-/*  Future<void> performLogout(BuildContext context) async {
-    String entityId = await SharedPref.shared.getSubAgentId();
-    String token = await SharedPref.shared.getTokenValue();
-
-    final fcmProvider = Provider.of<DeleteFcmProvider>(context, listen: false);
-    await fcmProvider.deleteFirebaseToken(entityId, token);
-
-    await SharedPref.shared.setLogin(false);
-    await SharedPref.shared.setCustId("");
-    await SharedPref.shared.setAgentName("");
-    await SharedPref.shared.setParentAgentName("");
-    await SharedPref.shared.setParentAgentPassword("");
-    await SharedPref.shared.setParentAgentMobNum("");
-    await SharedPref.shared.setSubAgentId("");
-    await SharedPref.shared.setSubAgentCode("");
-    await SharedPref.shared.setUserType("");
-    await SharedPref.shared.setRdclCustomerVendorUrl("");
-    await SharedPref.shared.setDueListRdclUrl("");
-    await SharedPref.shared.setCustomerRdUrl("");
-    await SharedPref.shared.setDueListRdUrl("");
-    await SharedPref.shared.setCustomerLoanUrl("");
-    await SharedPref.shared.setDueListLoanUrl("");
-    await SharedPref.shared.setLoanAccountHolderUrl("");
-    await SharedPref.shared.setSubAgentName("");
-    await SharedPref.shared.setSubAgentMobNum("");
-    await SharedPref.shared.setSubAgentCodeNew("");
-    await SharedPref.shared.setFcmToken("");
-    await SharedPref.shared.setAgentId("");
-    await SharedPref.shared.setPassword("");
-    await SharedPref.shared.setMpinValue("");
-    await SharedPref.shared.setMpinStatus("");
-    await SharedPref.shared.setTokenValue("");
-    await SharedPref.shared.setMobNum("");
-    await SharedPref.shared.setBranchCode("");
-    await SharedPref.shared.setAgentOriginId("");
-    await SharedPref.shared.setCorpCode("");
-    await SharedPref.shared.setCardRefNum("");
-    await SharedPref.shared.setEmail("");
-    await SharedPref.shared.setLoggedInUserType("");
-
-
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const SplashScreen()),
-          (route) => false,
-    );
-  }*/
-
-
 
   Widget _buildShimmerSummaryCard() {
     return Container(
@@ -639,7 +583,7 @@ class _HomePageState extends State<HomePage>
                   Text(
                     "Welcome back",
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
+                      color: whiteColor.withOpacity(0.8),
                       fontSize: 13,
                       fontWeight: FontWeight.w400,
                     ),
@@ -650,10 +594,10 @@ class _HomePageState extends State<HomePage>
                   /// USER NAME
                   Text(
                     "Hi, $formattedName ",
-                    style: const TextStyle(
+                    style:  TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                      color: whiteColor,
                       letterSpacing: 0.3,
                     ),
                   )
@@ -667,7 +611,7 @@ class _HomePageState extends State<HomePage>
                   Text(
                     "Here's your collection overview",
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.75),
+                      color: whiteColor.withOpacity(0.75),
                       fontSize: 12,
                     ),
                   ),
@@ -703,7 +647,7 @@ class _HomePageState extends State<HomePage>
               autoPlayAnimationDuration: 800.ms,
               onPageChanged: (index, reason) {
                 setState(() {
-                  _currentBannerIndex = index;
+                  currentBannerIndex = index;
                 });
               },
             ),
@@ -737,12 +681,12 @@ class _HomePageState extends State<HomePage>
               children: bannerImages.asMap().entries.map((entry) {
                 return AnimatedContainer(
                   duration: 300.ms,
-                  width: _currentBannerIndex == entry.key ? 20 : 8,
+                  width: currentBannerIndex == entry.key ? 20 : 8,
                   height: 15,
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50),
-                    color: _currentBannerIndex == entry.key
+                    color: currentBannerIndex == entry.key
                         ? Colors.red
                         : Colors.red.withOpacity(0.5),
                   ),
@@ -758,9 +702,9 @@ class _HomePageState extends State<HomePage>
   Widget _buildTotalCollectionCard() {
     // Helper function to format the filter period for display
     String getFilterDisplayText() {
-      if (!_isFilterApplied) return 'TODAY ';
+      if (!isFilterApplied) return 'TODAY ';
 
-      switch (_currentFilterPeriod) {
+      switch (currentFilterPeriod) {
         case 'TODAY':
           return 'Today';
         case 'THIS_WEEK':
@@ -770,7 +714,7 @@ class _HomePageState extends State<HomePage>
         case 'LAST_MONTH':
           return 'Last Month';
         case 'CUSTOM':
-          return 'Custom ($_currentFromDate to $_currentToDate)';
+          return 'Custom ($currentFromDate to $currentToDate)';
         default:
           return 'Filtered';
       }
@@ -820,18 +764,18 @@ class _HomePageState extends State<HomePage>
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      _selectedTabIndex == 0
+                      selectedTabIndex == 0
                           ? userType == "COLLECTION"
                           ? "All"
-                        //  : 'Link'
+                        //: 'Link'
                           : 'All'
-                          : _selectedTabIndex == 1
+                          : selectedTabIndex == 1
                           ? 'QR Code'
-                          : _selectedTabIndex == 2
+                          : selectedTabIndex == 2
                           ? 'Cash'
                           : "Transfer",
                       style: TextStyle(
-                        color: Colors.white,
+                        color: whiteColor,
                         fontWeight: FontWeight.w600,
                         fontSize: 11,
                       ),
@@ -890,7 +834,7 @@ class _HomePageState extends State<HomePage>
               /// BUTTONS
               Row(
                 children: [
-                  if (_isFilterApplied)
+                  if (isFilterApplied)
                     Expanded(
                       child: OutlinedButton(
                         onPressed: _clearFilters,
@@ -909,14 +853,14 @@ class _HomePageState extends State<HomePage>
                       ),
                     ),
 
-                  if (_isFilterApplied)
+                  if (isFilterApplied)
                     const SizedBox(width: 10),
 
                   Expanded(
                     child: ElevatedButton(
                       onPressed: showDateRangeFilter,
                       style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
+                        foregroundColor: whiteColor,
                         backgroundColor: home1,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
@@ -945,9 +889,9 @@ class _HomePageState extends State<HomePage>
 
     final qrProvider = context.read<QRTransactionHistoryProvider>();
     final cashTransProvider = context.read<CashTransactionHistoryProvider>();
-    final linkProvider = context.read<LinkTransactionHistoryProvider>();
     final cashQrProvider = context.read<CashQrProvider>();
-    final transferProvider = context.read<TransferHistoryProvider>();
+    // final linkProvider = context.read<LinkTransactionHistoryProvider>();
+   // final transferProvider = context.read<TransferHistoryProvider>();
 
     // Reset to default period
     final now = DateTime.now();
@@ -1020,10 +964,10 @@ class _HomePageState extends State<HomePage>
 
 
       setState(() {
-        _isFilterApplied = false;
-        _currentFilterPeriod = 'TODAY';
-        _currentFromDate = '';
-        _currentToDate = '';
+        isFilterApplied = false;
+        currentFilterPeriod = 'TODAY';
+        currentFromDate = '';
+        currentToDate = '';
       });
 
     } catch (e) {
@@ -1044,7 +988,7 @@ class _HomePageState extends State<HomePage>
       child: Container(
         height: 80,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: whiteColor,
           border: Border.all(color: home1, width: 1),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
@@ -1066,10 +1010,11 @@ class _HomePageState extends State<HomePage>
     if (isAgentLoan) {
       // AGENT_LOAN - Show all 4 tabs
       return [
-       // _buildAnimatedTabItem(0, Icons.link_outlined, "Link"),
+
         _buildAnimatedTabItem(0, Icons.all_out_rounded, "All"),
         _buildAnimatedTabItem(1, Icons.qr_code, "QR"),
         _buildAnimatedTabItem(2, Icons.currency_rupee, "Cash"),
+        // _buildAnimatedTabItem(0, Icons.link_outlined, "Link"),
         //  _buildAnimatedTabItem(3, Icons.account_balance_sharp, "Transfer"),
       ];
     } else {
@@ -1082,14 +1027,14 @@ class _HomePageState extends State<HomePage>
     }
   }
   Widget _buildAnimatedTabItem(int index, IconData icon, String label) {
-    final isSelected = _selectedTabIndex == index;
+    final isSelected = selectedTabIndex == index;
 
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 2),
         child: InkWell(
           borderRadius: BorderRadius.circular(14),
-          onTap: () => setState(() => _selectedTabIndex = index),
+          onTap: () => setState(() => selectedTabIndex = index),
           child: AnimatedContainer(margin: EdgeInsets.all(7),
             duration: const Duration(milliseconds: 250),
             curve: Curves.easeInOut,
@@ -1140,7 +1085,7 @@ class _HomePageState extends State<HomePage>
                   child: Icon(
                     icon,
                     key: ValueKey(isSelected),
-                    color: isSelected ? Colors.white : home1,
+                    color: isSelected ? whiteColor : home1,
                     size: 20,
                   ),
                 ),
@@ -1151,7 +1096,7 @@ class _HomePageState extends State<HomePage>
                 Text(
                   label,
                   style: TextStyle(
-                    color: isSelected ? Colors.white : home1,
+                    color: isSelected ? whiteColor : home1,
                     fontWeight: FontWeight.w600,
                     fontSize: 11,
                   ),
@@ -1164,7 +1109,6 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-
   Widget _buildContentCollectionSection(
       QRTransactionHistoryProvider qrProvider,
       CashTransactionHistoryProvider cashTranProvider,
@@ -1173,41 +1117,13 @@ class _HomePageState extends State<HomePage>
     return SliverList(
       delegate: SliverChildBuilderDelegate(
             (context, index) {
-          switch (_selectedTabIndex) {
+          switch (selectedTabIndex) {
             case 0:
               return _buildCashWithQrTransactionContent(cashQrProvider);
             case 1:
               return _buildQRTransactionContent(qrProvider);
             case 2:
               return _buildCashTransactionContent(cashTranProvider);
-            default:
-              return const SizedBox();
-          }
-        },
-        childCount: 1,
-      ),
-    );
-  }
-
-  Widget _buildContentSection(
-      QRTransactionHistoryProvider qrProvider,
-      CashTransactionHistoryProvider cashTranProvider,
-      LinkTransactionHistoryProvider linkProvider,
-      TransferHistoryProvider transferHistoryProvider,
-      ) {
-    return SliverList(
-      delegate: SliverChildBuilderDelegate(
-            (context, index) {
-          switch (_selectedTabIndex) {
-            case 0:
-              return _buildLinkTransactionContent(linkProvider);
-            case 1:
-              return _buildQRTransactionContent(qrProvider);
-            case 2:
-              return _buildCashTransactionContent(cashTranProvider);
-            case 3:
-              return _buildAccTransTransactionContent(transferHistoryProvider);
-
             default:
               return const SizedBox();
           }
@@ -1244,41 +1160,19 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget _buildAccTransTransactionContent(
-      TransferHistoryProvider cashProvider) {
-    if (cashProvider.errResponse != null) {
-      return _buildEmptyState(
-        icon: Icons.account_balance_sharp,
-        title: "No Account Transactions",
-        message: "Your Account payment transactions will appear here",
-      );
-    } else if (cashProvider.qrTranscationHistoryModel == null) {
-      return _buildLoadingList();
-    }
-    return _buildTransactionList(
-      transactions: cashProvider.qrTranscationHistoryModel!.data!,
-      icon: Icons.account_balance,
-      iconColor: Colors.orange,
-      getAmount: (t) => t.orderAmount ?? 0,
-      getStatus: (t) => t.orderStatus.toString(),
-      getOrderId: (t) => t.orderId.toString(),
-      getCustName: (t) => t.customerName.toString(),
-      getCustId: (t) => t.customerId.toString(),
-      getCustPhone: (t) => t.customerPhone.toString(),
-      getTnxType: (t) => t.source.toString(), paymentMode:(t)=> t.paymentMode.toString(), collectionType: (t)=> cashCollectionType.toString(),
-      getAccNo: (t) => t.customerAccNo.toString(), getTranType: (t) => t.source.toString(), getCustAccNo: (t) => t.customerAccNo.toString(),
-    );
-  }
+
 
   Widget _buildCashTransactionContent(
-      CashTransactionHistoryProvider cashProvider) {
+      CashTransactionHistoryProvider cashProvider)
+  {
     if (cashProvider.errResponse != null) {
       return _buildEmptyState(
         icon: Icons.monetization_on_outlined,
         title: "No Cash Transactions",
         message: "Your cash payment transactions will appear here",
       );
-    } else if (cashProvider.qrTranscationHistoryModel == null) {
+    }
+    else if (cashProvider.qrTranscationHistoryModel == null) {
       return _buildLoadingList();
     }
     return _buildTransactionList(
@@ -1320,32 +1214,6 @@ class _HomePageState extends State<HomePage>
       getCustPhone: (t) => t.customerPhone.toString(),
       getTnxType: (t) => t.source.toString(), paymentMode: (t)=> t.paymentMode, collectionType: (t)=> t.collectionType.toString(),
       getAccNo: (t) => t.customerAccNo.toString(), getTranType: (t) => t.source.toString(), getCustAccNo:(t) => t.customerAccNo.toString(),
-    );
-  }
-
-  Widget _buildLinkTransactionContent(
-      LinkTransactionHistoryProvider linkProvider) {
-    if (linkProvider.erResposne != null) {
-      return _buildEmptyState(
-        icon: Icons.link_outlined,
-        title: "No Link Transactions",
-        message: "Your link transactions will appear here",
-      );
-    } else if (linkProvider.linkTranscationHistoryModel == null) {
-      return _buildLoadingList();
-    }
-    return _buildTransactionList(
-      transactions: linkProvider.linkTranscationHistoryModel!.data!,
-      icon: Icons.link_outlined,
-      iconColor: Colors.blue,
-      getAmount: (t) => t.linkAmount ?? 0,
-      getStatus: (t) => t.linkStatus.toString(),
-      getOrderId: (t) => t.orderId.toString(),
-      getCustName: (t) => t.customerName.toString(),
-      getCustId: (t) => t.customerId.toString(),
-      getCustPhone: (t) => t.customerPhone.toString(),
-      getTnxType: (t) => t.source.toString(), paymentMode: (t)=> t.paymentMode.toString(), collectionType: (t)=>t.collectionType.toString(),
-      getAccNo: (t) => t.customerAcctno.toString(), getTranType: (t) => t.source.toString(), getCustAccNo: (t) => t.customerAcctno.toString(),
     );
   }
 
@@ -1426,22 +1294,25 @@ class _HomePageState extends State<HomePage>
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
           onTap: () {
+            var transModel = TransactionHistoryModel(
+              paymentStatus: status,
+              amount: amount,
+              transferId: transferId,
+              agentName: agentName,
+              agentPhone: agentPhone,
+              customerName: customerName,
+              customerId: customerId,
+              customerNumber: customerNumber,
+              corpCode: corpCode ?? "",
+              tnxType: tnxType,
+              paymentMode: paymentMode,
+              dat: date, accountNumber: accountNumber, transactionType: transactionType,
+            );
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => TransactionHistoryPage(
-                  paymentStatus: status,
-                  amount: amount,
-                  transferId: transferId,
-                  agentName: agentName,
-                  agentPhone: agentPhone,
-                  customerName: customerName,
-                  customerId: customerId,
-                  customerNumber: customerNumber,
-                  corpCode: corpCode ?? "",
-                  tnxType: tnxType,
-                  paymentMode: paymentMode,
-                  dat: date, accountNumber: accountNumber, transactionType: transactionType,
+              transactionHistoryModel: transModel,
                 ),
               ),
             );
@@ -1636,10 +1507,7 @@ class _HomePageState extends State<HomePage>
 
   // Helper methods to get transaction details
   String _getTransactionTitle(dynamic transaction) {
-    //print("_getTransactionTitle $transaction");
     if (transaction is QrTransaction) {
-      //print("_getTransactionTitle ${transaction.customerPhone}");
-
       return transaction.customerName.toString();
     }
     if (transaction is AllTransactionHistoryModel) {
@@ -1671,8 +1539,8 @@ class _HomePageState extends State<HomePage>
     final qrProvider = Provider.of<QRTransactionHistoryProvider>(context);
     final cashTranProvider = Provider.of<CashTransactionHistoryProvider>(context);
     final cashQrProvider = Provider.of<CashQrProvider>(context);
-    final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context);
-    final transferProvider = Provider.of<TransferHistoryProvider>(context);
+   // final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context);
+    //final transferProvider = Provider.of<TransferHistoryProvider>(context);
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -1726,9 +1594,9 @@ class _HomePageState extends State<HomePage>
     double total = 0;
 
     // Calculate based on selected tab
-    switch (_selectedTabIndex) {
+    switch (selectedTabIndex) {
       case 0: // All Code tab
-        final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
+       // final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
         final cashQrProvider = Provider.of<CashQrProvider>(context, listen: false);
         if(userType != "COLLECTION"){
           if (cashQrProvider.cashQrCombinedResponse != null) {
@@ -1814,4 +1682,61 @@ class _DatePickerButton extends StatelessWidget {
     );
   }
 }
+
+// String formatTimestamp(DateTime? timestamp) {
+//   if (timestamp == null) return "Invalid Date";
+//   return DateFormat('MMM dd, yyyy • hh:mm a').format(timestamp);
+// }
+/*  Widget _buildAccTransTransactionContent(
+      TransferHistoryProvider cashProvider)
+  {
+    if (cashProvider.errResponse != null) {
+      return _buildEmptyState(
+        icon: Icons.account_balance_sharp,
+        title: "No Account Transactions",
+        message: "Your Account payment transactions will appear here",
+      );
+    } else if (cashProvider.qrTranscationHistoryModel == null) {
+      return _buildLoadingList();
+    }
+    return _buildTransactionList(
+      transactions: cashProvider.qrTranscationHistoryModel!.data!,
+      icon: Icons.account_balance,
+      iconColor: Colors.orange,
+      getAmount: (t) => t.orderAmount ?? 0,
+      getStatus: (t) => t.orderStatus.toString(),
+      getOrderId: (t) => t.orderId.toString(),
+      getCustName: (t) => t.customerName.toString(),
+      getCustId: (t) => t.customerId.toString(),
+      getCustPhone: (t) => t.customerPhone.toString(),
+      getTnxType: (t) => t.source.toString(), paymentMode:(t)=> t.paymentMode.toString(), collectionType: (t)=> cashCollectionType.toString(),
+      getAccNo: (t) => t.customerAccNo.toString(), getTranType: (t) => t.source.toString(), getCustAccNo: (t) => t.customerAccNo.toString(),
+    );
+  }*/
+/*  Widget _buildLinkTransactionContent(
+      LinkTransactionHistoryProvider linkProvider)
+  {
+    if (linkProvider.erResposne != null) {
+      return _buildEmptyState(
+        icon: Icons.link_outlined,
+        title: "No Link Transactions",
+        message: "Your link transactions will appear here",
+      );
+    } else if (linkProvider.linkTranscationHistoryModel == null) {
+      return _buildLoadingList();
+    }
+    return _buildTransactionList(
+      transactions: linkProvider.linkTranscationHistoryModel!.data!,
+      icon: Icons.link_outlined,
+      iconColor: Colors.blue,
+      getAmount: (t) => t.linkAmount ?? 0,
+      getStatus: (t) => t.linkStatus.toString(),
+      getOrderId: (t) => t.orderId.toString(),
+      getCustName: (t) => t.customerName.toString(),
+      getCustId: (t) => t.customerId.toString(),
+      getCustPhone: (t) => t.customerPhone.toString(),
+      getTnxType: (t) => t.source.toString(), paymentMode: (t)=> t.paymentMode.toString(), collectionType: (t)=>t.collectionType.toString(),
+      getAccNo: (t) => t.customerAcctno.toString(), getTranType: (t) => t.source.toString(), getCustAccNo: (t) => t.customerAcctno.toString(),
+    );
+  }*/
 

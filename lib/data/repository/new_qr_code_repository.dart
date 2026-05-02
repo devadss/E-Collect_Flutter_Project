@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:collection_qr_flutter/core/utils.dart';
+
 import '../../core/constants.dart';
 import '../../data/service/error_handler.dart';
 import '../../domain/interface/new_qr_code_interface.dart';
@@ -33,15 +35,19 @@ class NewQrCodeRepository implements INewQrCodeRepository {
             'Content-Type': 'application/json',
           }
       );
-      print("NewQrCodeRepository = ${response.statusCode}");
-      print("NewQrCodeRepository = ${response.body}");
-      print({
-        "payment_session_id": paymentSessionId,
-        "payment_method": {
-          "upi": {"channel": "qrcode"},
-          //"upi": {"channel": "podQrCode"},
-        },
-      });
+      if(printStatementStatus){
+        print("NewQrCodeRepository = ${response.statusCode}");
+        print("NewQrCodeRepository = ${response.body}");
+        print({
+          "payment_session_id": paymentSessionId,
+          "payment_method": {
+            "upi": {"channel": "qrcode"},
+            //"upi": {"channel": "podQrCode"},
+          },
+        });
+      }
+
+
       if(response.statusCode == 200 || response.statusCode == 201){
         try{
           return Right(NewQrCodeModel.fromJson(jsonDecode(response.body)));

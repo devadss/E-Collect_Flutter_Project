@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:collection_qr_flutter/core/utils.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 import '../../core/constants.dart';
@@ -27,9 +28,11 @@ class TransactionRepository implements TransactionInterface {
           'Authorization': 'Bearer $token',
         },
       );
+if(printStatementStatus){
+  print("request.body = ${request.body}");
+  print(request.statusCode);
+}
 
-      print("request.body = ${request.body}");
-      print(request.statusCode);
 
       if (request.statusCode == 200) {
         TransactionModel transactionModel =

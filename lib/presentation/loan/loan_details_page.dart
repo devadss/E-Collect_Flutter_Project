@@ -1,11 +1,9 @@
 import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:collection_qr_flutter/data/provider/loan_cash_coolection_provider.dart';
-import 'package:collection_qr_flutter/data/provider/whatsapp_share_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../data/provider/cash_transcation_provider.dart';
-import '../../data/repository/payment_link_repository.dart';
 import '../../data/repository/payment_session_id_repository.dart';
 import '../../data/storage/shared_pref_helper.dart';
 import '../account_dues/widgets/rdcl_account_due_detail_page.dart';
@@ -16,12 +14,7 @@ import 'package:collection_qr_flutter/core/utils.dart' as utl;
 class LoanDetailsPage extends StatefulWidget {
   final utl.LoanDetailsModel loanDetailsModel;
 
-
-  const LoanDetailsPage(
-      {super.key,
-        required this.loanDetailsModel
-
-      });
+  const LoanDetailsPage({super.key, required this.loanDetailsModel});
 
   @override
   State<LoanDetailsPage> createState() => _LoanDetailsPageState();
@@ -51,7 +44,6 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
   String? selectedAccNumber;
   TextEditingController editAmountController = TextEditingController();
   TextEditingController utrController = TextEditingController();
-
 
   @override
   void initState() {
@@ -109,8 +101,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
 
   Future<void> accTrans() async {
     utl.showProgressDialog(context);
-    final loanCashProvider =
-    Provider.of<LoanCashCollectionProvider>(context, listen: false);
+    final loanCashProvider = Provider.of<LoanCashCollectionProvider>(context, listen: false);
     await loanCashProvider.submitCashCollection(
         agentName.toString(),
         agentId.toString(),
@@ -130,14 +121,20 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
         corpCode.toString(),
         branchCode.toString(),
         "",
-        "MOB", "TRANSFER",utrController.text , "LOAN");
+        "MOB",
+        "TRANSFER",
+        utrController.text,
+        "LOAN");
     if (loanCashProvider.loanCashCollectionResponse != null) {
       Navigator.pop(context);
       //print(loanCashProvider.loanCashCollectionResponse?.message.toString());
       showDialog(
           context: context,
           builder: (BuildContext context) {
-            return linkShareAlert(context, loanCashProvider.loanCashCollectionResponse!.status == "Y" ? true
+            return linkShareAlert(
+                context,
+                loanCashProvider.loanCashCollectionResponse!.status == "Y"
+                    ? true
                     : false,
                 loanCashProvider.loanCashCollectionResponse!.message
                     .toString());
@@ -152,7 +149,6 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
           });
     }
   }
-
 
   Future<void> loanCashCollection() async {
     utl.showProgressDialog(context);
@@ -177,7 +173,10 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
         corpCode.toString(),
         branchCode.toString(),
         "",
-        "MOB", "CASH", "", "LOAN");
+        "MOB",
+        "CASH",
+        "",
+        "LOAN");
     if (loanCashProvider.loanCashCollectionResponse != null) {
       Navigator.pop(context);
       //print(loanCashProvider.loanCashCollectionResponse?.message.toString());
@@ -213,9 +212,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
       required String? amount,
       required String? phoneNumber,
       required String? entityId,
-      required String? note})
-  async {
-
+      required String? note}) async {
     final cashPaymentProvider =
         Provider.of<CashTranscationProvider>(context, listen: false);
     final cash = await cashPaymentProvider.getTranscations(
@@ -236,7 +233,8 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
         cardRefNum: "",
         token: token,
         subagentBranchCode: subAgentCodeNew,
-        branchCode: branchCode, collectionType: 'LOAN');
+        branchCode: branchCode,
+        collectionType: 'LOAN');
     cash.fold((err) {
       //print("getCashTrans $err");
     }, (success) {
@@ -247,20 +245,27 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
           success: success,
           onViewReceipt: () {
             Navigator.pop(context);
+
+            var receiptModel = utl.ReceiptDataModel(
+              amount: success.amount.toString(),
+              bankName: utl.getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
+              agentName: agentName ?? "Name",
+              agentPhone: agentMobile ?? "agentPhone",
+              custName: customerName!,
+              custPhone: custPhoneNumber!,
+              custId: custId!,
+              txnId: success.transactionId.toString(),
+              txnType: "CASH",
+              dat: '',
+              tranType: '',
+              accNo: '',
+            );
+
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => ReceiptPage(
-                  amount: success.amount.toString(),
-                  bankName:
-                      utl.getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
-                  agentName: agentName ?? "Name",
-                  agentPhone: agentMobile ?? "agentPhone",
-                  custName: customerName!,
-                  custPhone: custPhoneNumber!,
-                  custId: custId!,
-                  txnId: success.transactionId.toString(),
-                  txnType: "CASH", dat: '', tranType: '', accNo: '',
+                  receiptDataModel: receiptModel,
                 ),
               ),
             );
@@ -276,8 +281,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
     String accNo,
     String custId,
     String amt,
-  )
-  async {
+  ) async {
     return await showDialog<bool>(
       context: context,
       barrierDismissible: false, // Prevent closing by tapping outside
@@ -374,13 +378,13 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                           loanCashCollection();
                         },
                         style: ElevatedButton.styleFrom(
-        elevation: 0,
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-        ),
-        backgroundColor: home1,
-        ),
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          backgroundColor: home1,
+                        ),
                         child: Text(
                           "Yes",
                           style: GoogleFonts.poppins(
@@ -417,8 +421,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
           fontWeight: FontWeight.bold,
         ),
       ),
-      body:
-      AnimatedBuilder(
+      body: AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) {
           return SingleChildScrollView(
@@ -429,92 +432,93 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                 FadeTransition(
                   opacity: _fadeAnimation,
                   child: SlideTransition(
-                    position: Tween<Offset>(
-                      begin: const Offset(0, 0.2),
-                      end: Offset.zero,
-                    ).animate(_animationController),
-                    child:
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.04),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),   child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 28,
-                            backgroundColor: home1.withOpacity(0.1),
-                            child: Text(
-                              widget.loanDetailsModel.customerName[0],
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: home1,
-                                fontSize: 20,
-                              ),
+                      position: Tween<Offset>(
+                        begin: const Offset(0, 0.2),
+                        end: Offset.zero,
+                      ).animate(_animationController),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.04),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
                             ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  widget.loanDetailsModel.customerName,
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 28,
+                                backgroundColor: home1.withOpacity(0.1),
+                                child: Text(
+                                  widget.loanDetailsModel.customerName[0],
                                   style: const TextStyle(
-                                    fontSize: 18,
                                     fontWeight: FontWeight.bold,
-                                    color: home2,
+                                    color: home1,
+                                    fontSize: 20,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Loan #${widget.loanDetailsModel.loanNumber.replaceAll("LOAN-", "")}',
-                                  style: const TextStyle(
-                                    color: Colors.grey,
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      widget.loanDetailsModel.customerName,
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: home2,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      'Loan #${widget.loanDetailsModel.loanNumber.replaceAll("LOAN-", "")}',
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: widget.loanDetailsModel.loanStatus ==
+                                          'Active'
+                                      ? Colors.green.withOpacity(0.1)
+                                      : Colors.orange.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: widget.loanDetailsModel.loanStatus ==
+                                            'Active'
+                                        ? Colors.green
+                                        : Colors.orange,
+                                    width: 1,
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: widget.loanDetailsModel.loanStatus == 'Active'
-                                  ? Colors.green.withOpacity(0.1)
-                                  : Colors.orange.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: widget.loanDetailsModel.loanStatus == 'Active'
-                                    ? Colors.green
-                                    : Colors.orange,
-                                width: 1,
+                                child: Text(
+                                  widget.loanDetailsModel.loanStatus,
+                                  style: TextStyle(
+                                    color: widget.loanDetailsModel.loanStatus ==
+                                            'Active'
+                                        ? Colors.green
+                                        : Colors.orange,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
-                            ),
-                            child: Text(
-                              widget.loanDetailsModel.loanStatus,
-                              style: TextStyle(
-                                color: widget.loanDetailsModel.loanStatus == 'Active'
-                                    ? Colors.green
-                                    : Colors.orange,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                    )
-
-                  ),
+                        ),
+                      )),
                 ),
 
                 const SizedBox(height: 20),
@@ -555,95 +559,98 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                 FadeTransition(
                   opacity: _fadeAnimation,
                   child: SlideTransition(
-                    position: Tween<Offset>(
-                      begin: const Offset(0, 0.4),
-                      end: Offset.zero,
-                    ).animate(_animationController),
-                    child:
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.04),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ), child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                              color: home1.withAlpha(20)
+                      position: Tween<Offset>(
+                        begin: const Offset(0, 0.4),
+                        end: Offset.zero,
+                      ).animate(_animationController),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.04),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
                             ),
-                            child:  Text(
-                              'Loan Details',
-                              style: TextStyle(
-                                fontSize: 18,
-                                letterSpacing: -0.5,
-                                fontWeight: FontWeight.bold,
-                                color: home2.withAlpha(170),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 10),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16),
+                                    color: home1.withAlpha(20)),
+                                child: Text(
+                                  'Loan Details',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    letterSpacing: -0.5,
+                                    fontWeight: FontWeight.bold,
+                                    color: home2.withAlpha(170),
+                                  ),
+                                ),
                               ),
-                            ),
+                              Divider(
+                                color: Colors.grey.shade100,
+                              ),
+                              //  const SizedBox(height: 12),
+                              // _buildDetailItem(
+                              //   Icons.percent,
+                              //   'Interest Rate',
+                              //   '${loanDetails['interestRate']}%',
+                              // ),
+                              _buildDetailItem(
+                                  Icons.calendar_today,
+                                  'Loan Term',
+                                  "${widget.loanDetailsModel.loanTerm} ${widget.loanDetailsModel.collectionFrequency}"),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 40),
+                                child: Divider(color: Colors.grey.shade200),
+                              ),
+                              _buildDetailItem(
+                                Icons.payment,
+                                'Monthly Payment',
+                                '₹${widget.loanDetailsModel.emiAmount}',
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 40),
+                                child: Divider(color: Colors.grey.shade200),
+                              ),
+                              _buildDetailItem(
+                                Icons.date_range,
+                                'Scheme',
+                                widget.loanDetailsModel.scheme,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 40),
+                                child: Divider(color: Colors.grey.shade200),
+                              ),
+                              _buildDetailItem(
+                                Icons.event_available,
+                                'Collection Frequency',
+                                widget.loanDetailsModel.collectionFrequency,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 40),
+                                child: Divider(
+                                  color: Colors.grey.shade200,
+                                ),
+                              ),
+                              _buildDetailItem(
+                                Icons.event_available,
+                                'Agent ID',
+                                widget.loanDetailsModel.assignedAgent,
+                              ),
+                            ],
                           ),
-                          Divider(color: Colors.grey.shade100,),
-                        //  const SizedBox(height: 12),
-                          // _buildDetailItem(
-                          //   Icons.percent,
-                          //   'Interest Rate',
-                          //   '${loanDetails['interestRate']}%',
-                          // ),
-                          _buildDetailItem(
-                              Icons.calendar_today,
-                              'Loan Term',
-                              "${widget.loanDetailsModel.loanTerm} ${widget.loanDetailsModel.collectionFrequency}"),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 40),
-                            child: Divider(color: Colors.grey.shade200),
-                          ),
-                          _buildDetailItem(
-                            Icons.payment,
-                            'Monthly Payment',
-                            '₹${widget.loanDetailsModel.emiAmount}',
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 40),
-                            child: Divider(color: Colors.grey.shade200),
-                          ),
-                          _buildDetailItem(
-                            Icons.date_range,
-                            'Scheme',
-                            widget.loanDetailsModel.scheme,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 40),
-                            child: Divider(color: Colors.grey.shade200),
-                          ),
-                          _buildDetailItem(
-                            Icons.event_available,
-                            'Collection Frequency',
-                            widget.loanDetailsModel.collectionFrequency,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 40),
-                            child: Divider(color: Colors.grey.shade200,),
-                          ),
-                          _buildDetailItem(
-                            Icons.event_available,
-                            'Agent ID',
-                            widget.loanDetailsModel.assignedAgent,
-                          ),
-                        ],
-                      ),
-                    ) ,
-                    )
-                  ),
+                        ),
+                      )),
                 ),
 
                 const SizedBox(height: 20),
@@ -652,61 +659,63 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                 FadeTransition(
                   opacity: _fadeAnimation,
                   child: SlideTransition(
-                    position: Tween<Offset>(
-                      begin: const Offset(0, 0.5),
-                      end: Offset.zero,
-                    ).animate(_animationController),
-                    child:
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.04),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
+                      position: Tween<Offset>(
+                        begin: const Offset(0, 0.5),
+                        end: Offset.zero,
+                      ).animate(_animationController),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.04),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 10),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16),
+                                    color: home1.withAlpha(20)),
+                                child: Text(
+                                  'Payment Information',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    letterSpacing: -0.5,
+                                    fontWeight: FontWeight.bold,
+                                    color: home2.withAlpha(170),
+                                  ),
+                                ),
+                              ),
+                              Divider(
+                                color: Colors.grey.shade200,
+                              ),
+                              const SizedBox(height: 12),
+                              _buildDetailItem(
+                                Icons.history,
+                                'Last Payment Date',
+                                widget.loanDetailsModel.paymentDate
+                                    .replaceAll("00:00:00.000", ""),
+                              ),
+                              _buildDetailItem(
+                                Icons.next_plan,
+                                'Created At',
+                                widget.loanDetailsModel.createdAt
+                                    .replaceAll("00:00:00.000", ""),
+                              ),
+                            ],
                           ),
-                        ],
-                      ), child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-
-                           Container(
-                             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                             decoration: BoxDecoration(
-                               borderRadius: BorderRadius.circular(16),
-                               color: home1.withAlpha(20)),
-                             child: Text(
-                              'Payment Information',
-                              style: TextStyle(
-                                                     fontSize: 18,
-                                                     letterSpacing: -0.5,
-                                                     fontWeight: FontWeight.bold,
-                                                     color: home2.withAlpha(170),
-                                                   ),
-                                                       ),
-                           ),
-                          Divider(color: Colors.grey.shade200,),
-                          const SizedBox(height: 12),
-                          _buildDetailItem(
-                            Icons.history,
-                            'Last Payment Date',
-                            widget.loanDetailsModel.paymentDate.replaceAll("00:00:00.000", ""),
-                          ),
-                          _buildDetailItem(
-                            Icons.next_plan,
-                            'Created At',
-                            widget.loanDetailsModel.createdAt.replaceAll("00:00:00.000", ""),
-                          ),
-                        ],
-                      ),
-                    ),
-                    )
-
-                  ),
+                        ),
+                      )),
                 ),
 
                 const SizedBox(height: 24),
@@ -725,8 +734,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                           width: double.infinity,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 16),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -751,8 +759,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                       child: Column(
                                         children: [
                                           Padding(
-                                            padding:
-                                                const EdgeInsets.all(8.0),
+                                            padding: const EdgeInsets.all(8.0),
                                             child: Row(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
@@ -773,9 +780,9 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                                 InkWell(
                                                   onTap: () {
                                                     Navigator.pop(context);
-                                                    editAmountController
-                                                            .text =
-                                                        widget.loanDetailsModel.emiAmount
+                                                    editAmountController.text =
+                                                        widget.loanDetailsModel
+                                                            .emiAmount
                                                             .toString();
                                                   },
                                                   child: const Icon(
@@ -788,29 +795,24 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                             ),
                                           ),
                                           Padding(
-                                            padding:
-                                                const EdgeInsets.symmetric(
-                                                    horizontal: 20,
-                                                    vertical: 10),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 20, vertical: 10),
                                             child: TextField(
                                               keyboardType:
                                                   TextInputType.number,
-                                              controller:
-                                                  editAmountController,
-                                              decoration:
-                                                  const InputDecoration(
-                                                      prefixIcon: Icon(
-                                                        Icons.currency_rupee,
-                                                        color: home1,
-                                                      ),
-                                                      border: OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          10))),
-                                                      labelText:
-                                                          "Enter collection amount"),
+                                              controller: editAmountController,
+                                              decoration: const InputDecoration(
+                                                  prefixIcon: Icon(
+                                                    Icons.currency_rupee,
+                                                    color: home1,
+                                                  ),
+                                                  border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10))),
+                                                  labelText:
+                                                      "Enter collection amount"),
                                             ),
                                           ),
                                           ElevatedButton(
@@ -819,14 +821,17 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                                 generateQrPaymentSession();
                                               },
                                               style: ElevatedButton.styleFrom(
-                                                elevation: 0,
-                                                padding: const EdgeInsets.symmetric(vertical: 16),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(14),
-                                                ),
-                                                backgroundColor: home1,
-                                                foregroundColor: Colors.white
-                                              ),
+                                                  elevation: 0,
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 16),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            14),
+                                                  ),
+                                                  backgroundColor: home1,
+                                                  foregroundColor:
+                                                      Colors.white),
                                               child: const Text("Submit"))
                                         ],
                                       ),
@@ -857,11 +862,12 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                   context: context,
                                   isScrollControlled: true,
                                   shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                                    borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(24)),
                                   ),
                                   builder: (context) {
                                     return Padding(
-                                        padding: const EdgeInsets.all(20),
+                                      padding: const EdgeInsets.all(20),
                                       child: SizedBox(
                                         height: 200,
                                         // You can make it dynamic if needed
@@ -870,13 +876,13 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                           children: [
                                             Padding(
                                               padding:
-                                              const EdgeInsets.all(8.0),
+                                                  const EdgeInsets.all(8.0),
                                               child: Row(
                                                 crossAxisAlignment:
-                                                CrossAxisAlignment.center,
+                                                    CrossAxisAlignment.center,
                                                 mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .spaceBetween,
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
                                                 children: [
                                                   const Spacer(flex: 1),
                                                   const Text(
@@ -885,15 +891,17 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                                         color: home1,
                                                         fontSize: 18,
                                                         fontWeight:
-                                                        FontWeight.w700),
+                                                            FontWeight.w700),
                                                   ),
                                                   const Spacer(flex: 1),
                                                   InkWell(
                                                     onTap: () {
                                                       Navigator.pop(context);
                                                       editAmountController
-                                                          .text =
-                                                          widget.loanDetailsModel.emiAmount
+                                                              .text =
+                                                          widget
+                                                              .loanDetailsModel
+                                                              .emiAmount
                                                               .toString();
                                                     },
                                                     child: const Icon(
@@ -907,43 +915,47 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                             ),
                                             Padding(
                                               padding:
-                                              const EdgeInsets.symmetric(
-                                                  horizontal: 20,
-                                                  vertical: 10),
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 10),
                                               child: TextField(
                                                 keyboardType:
-                                                TextInputType.number,
+                                                    TextInputType.number,
                                                 controller:
-                                                editAmountController,
+                                                    editAmountController,
                                                 decoration:
-                                                const InputDecoration(
-                                                    prefixIcon: Icon(
-                                                      Icons
-                                                          .currency_rupee,
-                                                      color: home1,
-                                                    ),
-                                                    border: OutlineInputBorder(
-                                                        borderRadius: BorderRadius
-                                                            .all(Radius
-                                                            .circular(
-                                                            10))),
-                                                    labelText:
-                                                    "Enter collection amount"),
+                                                    const InputDecoration(
+                                                        prefixIcon: Icon(
+                                                          Icons.currency_rupee,
+                                                          color: home1,
+                                                        ),
+                                                        border: OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            10))),
+                                                        labelText:
+                                                            "Enter collection amount"),
                                               ),
                                             ),
                                             ElevatedButton(
                                                 onPressed: () {
                                                   Navigator.pop(context);
-                                                  paymentConfirmation(context, agentName!,
-                                                      widget.loanDetailsModel.loanNumber, widget.loanDetailsModel.custId, editAmountController.text);
-
+                                                  paymentConfirmation(
+                                                      context,
+                                                      agentName!,
+                                                      widget.loanDetailsModel
+                                                          .loanNumber,
+                                                      widget.loanDetailsModel
+                                                          .custId,
+                                                      editAmountController
+                                                          .text);
                                                 },
-                                                style:
-                                                ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                    home1,
+                                                style: ElevatedButton.styleFrom(
+                                                    backgroundColor: home1,
                                                     foregroundColor:
-                                                    Colors.white),
+                                                        Colors.white),
                                                 child: const Text("Submit"))
                                           ],
                                         ),
@@ -956,8 +968,8 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                 //     widget.loanDetailsModel.loanNumber, widget.loanDetailsModel.custId, "1");
                               },
                               style: OutlinedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 16),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 16),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),
@@ -965,17 +977,18 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                               child: const Text(
                                 "Collect Cash",
                                 style: TextStyle(
-                                    color: home1,
-                                    fontWeight: FontWeight.bold),
+                                    color: home1, fontWeight: FontWeight.bold),
                               )),
                         ),
                         const SizedBox(
                           height: 15,
                         ),
-
-                        const SizedBox(height: 10,),
-
-                       const SizedBox(height: 10,)
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        )
                       ],
                     ),
                   ),
@@ -1021,58 +1034,6 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
     editAmountController.addListener(validateInput);
   }
 
-  Future<void> sendLinkFunction() async {
-    final send = await PaymentLinkRepository().getPaymentLink(
-        agentName: agentName!,
-        agentId: cid!.toString(),
-        agentOriginId: agentOriginId!,
-        agentPhone: agentMobile!,
-        agentEmail: agentEmail!,
-        customerName: widget.loanDetailsModel.customerName,
-        customerPhone: widget.loanDetailsModel.customerPhoneNumber,
-        customerAccountNumber: widget.loanDetailsModel.loanNumber,
-        customerEmail: "",
-        customerId: widget.loanDetailsModel.custId.toString(),
-        linkAmount: int.parse(editAmountController.text),
-        note: "Payment for Order #12345",
-        corpCode: corpCode!,
-        cardRefNum: "",
-        token: token.toString(),
-        subAgentId: subagentId!.toString());
-
-    send.fold(
-      (error) {
-       // print("-------------------ERROR---------------------");
-        //print(error);
-      },
-      (sendLink) async {
-        if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
-          ///the link
-          var whatsAppProvider =
-              Provider.of<WhatsAppShareProvider>(context, listen: false);
-          await whatsAppProvider.sendPaymentLinkViaWhatsApp(
-             widget.loanDetailsModel.customerPhoneNumber,
-              widget.loanDetailsModel.customerName,
-              widget.loanDetailsModel.loanNumber,
-              editAmountController.text,
-              sendLink.linkUrl.toString());
-          if (whatsAppProvider.whatsAppResponse != null) {
-            Navigator.pop(context);
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return linkShareAlert(
-                      context,
-                      whatsAppProvider.whatsAppResponse!.success,
-                      "Message send success");
-                });
-          }
-        } else {
-          //print("Payment link is empty or null");
-        }
-      },
-    );
-  }
 
   AlertDialog linkShareAlert(BuildContext context, bool status, String msg) {
     return AlertDialog(
@@ -1124,27 +1085,32 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
     );
   }
 
-   Future<SizedBox> showAccTransDialog() async {
-   return SizedBox(
+  Future<SizedBox> showAccTransDialog() async {
+    return SizedBox(
       height: 100,
       child: await showModalBottomSheet(
           backgroundColor: Colors.white,
           context: context,
           builder: (BuildContext context) {
-            return  const SizedBox(
+            return const SizedBox(
               width: double.infinity,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                Center(child: Text("Collect Amount", style: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w700),)),
-
-
-              ],),
+                  Center(
+                      child: Text(
+                    "Collect Amount",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700),
+                  )),
+                ],
+              ),
             );
           }),
     );
-
   }
 
   Future<void> generateQrPaymentSession() async {
@@ -1280,4 +1246,59 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
         ],
       ),
     );
-  }}
+  }
+}
+
+
+// Future<void> sendLinkFunction() async {
+//   final send = await PaymentLinkRepository().getPaymentLink(
+//       agentName: agentName!,
+//       agentId: cid!.toString(),
+//       agentOriginId: agentOriginId!,
+//       agentPhone: agentMobile!,
+//       agentEmail: agentEmail!,
+//       customerName: widget.loanDetailsModel.customerName,
+//       customerPhone: widget.loanDetailsModel.customerPhoneNumber,
+//       customerAccountNumber: widget.loanDetailsModel.loanNumber,
+//       customerEmail: "",
+//       customerId: widget.loanDetailsModel.custId.toString(),
+//       linkAmount: int.parse(editAmountController.text),
+//       note: "Payment for Order #12345",
+//       corpCode: corpCode!,
+//       cardRefNum: "",
+//       token: token.toString(),
+//       subAgentId: subagentId!.toString());
+//
+//   send.fold(
+//     (error) {
+//       // print("-------------------ERROR---------------------");
+//       //print(error);
+//     },
+//     (sendLink) async {
+//       if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
+//         ///the link
+//         var whatsAppProvider =
+//             Provider.of<WhatsAppShareProvider>(context, listen: false);
+//         await whatsAppProvider.sendPaymentLinkViaWhatsApp(
+//             widget.loanDetailsModel.customerPhoneNumber,
+//             widget.loanDetailsModel.customerName,
+//             widget.loanDetailsModel.loanNumber,
+//             editAmountController.text,
+//             sendLink.linkUrl.toString());
+//         if (whatsAppProvider.whatsAppResponse != null) {
+//           Navigator.pop(context);
+//           showDialog(
+//               context: context,
+//               builder: (BuildContext context) {
+//                 return linkShareAlert(
+//                     context,
+//                     whatsAppProvider.whatsAppResponse!.success,
+//                     "Message send success");
+//               });
+//         }
+//       } else {
+//         //print("Payment link is empty or null");
+//       }
+//     },
+//   );
+// }

@@ -1,13 +1,21 @@
 // Production
 import 'dart:io';
 import 'package:collection_qr_flutter/core/colors.dart';
+import 'package:collection_qr_flutter/core/utils.dart';
 import 'package:flutter/material.dart';
 
 //******************************************************************
+//*******true : Production base url is used******
+//******false : Uat base url is used******
+final String baseUrl = isRunningLiveBaseUrl(true).toString();
+final String dopBaseUrl = isRunningLiveDopBaseUrl(true).toString();
+//******************************************************************
+
+//******************************************************************
 //const String baseUrl = "https://adsspay.aanvinsolutions.com:8444/";///LIVE
-const String baseUrl = "https://adsspayweb.digicob.in/"; //TEST
+//const String baseUrl = "https://adsspayweb.digicob.in/"; //TEST
 //*******************************************************************
-const String dopBaseUrl = "https://devops.mydop.in/api/fetch/vendor/urls/"; //UAT
+//const String dopBaseUrl = "https://devops.mydop.in/api/fetch/vendor/urls/"; //UAT
 //const String dopBaseUrl = "https://mydop.in/api/fetch/vendor/urls/"; //LIVE
 
 const String port = ":8444/";

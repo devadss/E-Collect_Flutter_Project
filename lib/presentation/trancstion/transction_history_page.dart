@@ -9,33 +9,12 @@ import '../profile/widgets/recipect_page.dart';
 
 class TransactionHistoryPage extends StatefulWidget {
   //final AgentTransaction agentTransaction;
-  final String paymentStatus;
-  final double amount;
-  final String dat;
-  final String accountNumber;
-  final String transactionType;
-  final String transferId;
-  final String agentName;
-  final String agentPhone;
-  final String customerName;
-  final String customerId;
-  final String customerNumber;
-  final String corpCode;
-  final String tnxType;
-  final String paymentMode;
+  final TransactionHistoryModel transactionHistoryModel;
+
 
   const TransactionHistoryPage({
-    super.key,
-    required this.paymentStatus,
-    required this.amount,
-    required this.transferId,
-    required this.agentName,
-    required this.agentPhone,
-    required this.customerName,
-    required this.customerId,
-    required this.customerNumber, required this.corpCode,
-    required this.tnxType,
-    required this.paymentMode, required this.dat, required this.accountNumber, required this.transactionType,
+    super.key, required this.transactionHistoryModel,
+
     // required this.agentTransaction
   });
 
@@ -48,7 +27,10 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
 
   @override
   void initState() {
-    print("status : ${widget.paymentStatus}");
+    if(printStatementStatus ){
+      print("status : ${widget.transactionHistoryModel.paymentStatus}");
+    }
+
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
       setState(() => isLoading = false);
@@ -88,10 +70,13 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
     );
   }
   Widget _buildHeaderSection() {
-    final isSuccess = widget.paymentStatus.toString().toLowerCase().contains("success")
-    || widget.paymentStatus.toString().toLowerCase().contains("paid")
+    final isSuccess = widget.transactionHistoryModel.paymentStatus.toString().toLowerCase().contains("success")
+    || widget.transactionHistoryModel.paymentStatus.toString().toLowerCase().contains("paid")
     ;
-print("isSuccess : $isSuccess");
+    if(printStatementStatus ){
+      print("isSuccess : $isSuccess");
+    }
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(16, 32, 16, 24),
@@ -157,7 +142,7 @@ print("isSuccess : $isSuccess");
 
             /// STATUS TEXT
             Text(
-              "Payment ${widget.paymentStatus.toString().replaceAll("Status.", "")}",
+              "Payment ${widget.transactionHistoryModel.paymentStatus.toString().replaceAll("Status.", "")}",
               style: GoogleFonts.poppins(
                 color: Colors.black,
                 fontSize: 14,
@@ -169,7 +154,7 @@ print("isSuccess : $isSuccess");
 
             /// AMOUNT
             Text(
-              "₹ ${widget.amount}",
+              "₹ ${widget.transactionHistoryModel.amount}",
               style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontSize: 30,
@@ -211,8 +196,8 @@ print("isSuccess : $isSuccess");
   //           : Column(
   //               children: [
   //                 Text(
-  //                   // "Payment ${widget.agentTransaction.linkStatus.toString().replaceAll("Status.", "")}",
-  //                   "Payment ${widget.paymentStatus.toString().replaceAll("Status.", "")}",
+  //                   // "Payment ${widget.transactionHistoryModel.agentTransaction.linkStatus.toString().replaceAll("Status.", "")}",
+  //                   "Payment ${widget.transactionHistoryModel.paymentStatus.toString().replaceAll("Status.", "")}",
   //                   style: GoogleFonts.poppins(
   //                     color: Colors.grey[600],
   //                     fontSize: 16,
@@ -220,8 +205,8 @@ print("isSuccess : $isSuccess");
   //                 ),
   //                 const SizedBox(height: 8),
   //                 Text(
-  //                   // "₹${widget.agentTransaction.linkAmount}",
-  //                   "₹${widget.amount}",
+  //                   // "₹${widget.transactionHistoryModel.agentTransaction.linkAmount}",
+  //                   "₹${widget.transactionHistoryModel.amount}",
   //                   style: GoogleFonts.poppins(
   //                     color: home1,
   //                     fontSize: 28,
@@ -286,15 +271,15 @@ print("isSuccess : $isSuccess");
       //               child: GestureDetector(
       //                 onTap: (){
       //                   Navigator.push(context, MaterialPageRoute(builder: (context)=> ReceiptPage(
-      //                     amount: "${widget.amount}",
-      //                     bankName: getBankNameFromCorpCode(widget.corpCode).toString(),
-      //                     agentName: widget.agentName,
-      //                     agentPhone: widget.agentPhone,
-      //                     custName: widget.customerName,
-      //                     custPhone: widget.customerNumber,
-      //                     custId: widget.customerId,
-      //                     txnId: widget.transferId.replaceAll("_MERCHANT", ""),
-      //                     txnType: widget.tnxType, dat: widget.dat,
+      //                     amount: "${widget.transactionHistoryModel.amount}",
+      //                     bankName: getBankNameFromCorpCode(widget.transactionHistoryModel.corpCode).toString(),
+      //                     agentName: widget.transactionHistoryModel.agentName,
+      //                     agentPhone: widget.transactionHistoryModel.agentPhone,
+      //                     custName: widget.transactionHistoryModel.customerName,
+      //                     custPhone: widget.transactionHistoryModel.customerNumber,
+      //                     custId: widget.transactionHistoryModel.customerId,
+      //                     txnId: widget.transactionHistoryModel.transferId.replaceAll("_MERCHANT", ""),
+      //                     txnType: widget.transactionHistoryModel.tnxType, dat: widget.transactionHistoryModel.dat,
       //                   )));
       //                 },
       //                 child: Container(
@@ -366,21 +351,24 @@ print("isSuccess : $isSuccess");
                 child: InkWell(
                   borderRadius: BorderRadius.circular(14),
                   onTap: () {
+                    var receiptModel = ReceiptDataModel(
+                      amount: "${widget.transactionHistoryModel.amount}",
+                      bankName: getBankNameFromCorpCode(widget.transactionHistoryModel.corpCode).toString(),
+                      agentName: widget.transactionHistoryModel.agentName,
+
+                      agentPhone: widget.transactionHistoryModel.agentPhone,
+                      custName: widget.transactionHistoryModel.customerName,
+                      custPhone: widget.transactionHistoryModel.customerNumber,
+                      custId: widget.transactionHistoryModel.customerId,
+                      txnId: widget.transactionHistoryModel.transferId.replaceAll("_MERCHANT", ""),
+                      txnType: widget.transactionHistoryModel.tnxType,
+                      dat: widget.transactionHistoryModel.dat, tranType: widget.transactionHistoryModel.transactionType, accNo: widget.transactionHistoryModel.accountNumber,
+                    );
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => ReceiptPage(
-                          amount: "${widget.amount}",
-                          bankName: getBankNameFromCorpCode(widget.corpCode).toString(),
-                          agentName: widget.agentName,
-
-                          agentPhone: widget.agentPhone,
-                          custName: widget.customerName,
-                          custPhone: widget.customerNumber,
-                          custId: widget.customerId,
-                          txnId: widget.transferId.replaceAll("_MERCHANT", ""),
-                          txnType: widget.tnxType,
-                          dat: widget.dat, tranType: widget.transactionType, accNo: widget.accountNumber,
+                 receiptDataModel: receiptModel,
                         ),
                       ),
                     );
@@ -452,21 +440,21 @@ print("isSuccess : $isSuccess");
       child: Column(
         children: [
           _buildDetailItem(
-              // "Transfer ID", widget.agentTransaction.orderId ?? "N/A"
+              // "Transfer ID", widget.transactionHistoryModel.agentTransaction.orderId ?? "N/A"
               "Transfer ID",
-              widget.transferId.replaceAll("_MERCHANT", "")),
-          _buildDetailItem("Transaction Type ", widget.transactionType.contains("CASH")? "CASH":"UPI"),
-          _buildDetailItem("Amount", "₹${widget.amount}"),
+              widget.transactionHistoryModel.transferId.replaceAll("_MERCHANT", "")),
+          _buildDetailItem("Transaction Type ", widget.transactionHistoryModel.transactionType.contains("CASH")? "CASH":"UPI"),
+          _buildDetailItem("Amount", "₹${widget.transactionHistoryModel.amount}"),
           _buildDetailItem(
               "Agent Name",
-              // widget.agentTransaction.linkCurrency
+              // widget.transactionHistoryModel.agentTransaction.linkCurrency
               //     .toString()
               //     .replaceAll("LinkCurrency.", "")
-              widget.agentName),
+              widget.transactionHistoryModel.agentName),
           _buildDetailItem(
             "Agent Phone",
-            widget.agentPhone,
-            // widget.agentTransaction.linkPurpose
+            widget.transactionHistoryModel.agentPhone,
+            // widget.transactionHistoryModel.agentTransaction.linkPurpose
             //     .toString()
             //     .replaceAll("LinkPurpose.", "")
             //     .replaceAll("_", " "),
@@ -493,18 +481,18 @@ print("isSuccess : $isSuccess");
       ),
       child: Column(
         children: [
-          _buildDetailItem("Customer Name", widget.customerName
-              // widget.agentTransaction.customerName
+          _buildDetailItem("Customer Name", widget.transactionHistoryModel.customerName
+              // widget.transactionHistoryModel.agentTransaction.customerName
               //     .toString()
               //     .replaceAll("CustomerName.", "")
               //     .replaceAll("_", " ")
               ),
-          _buildDetailItem("Customer Acc No", widget.accountNumber),
-          _buildDetailItem("Customer ID", widget.customerId
-              // widget.agentTransaction.customerId ?? "N/A"
+          _buildDetailItem("Customer Acc No", widget.transactionHistoryModel.accountNumber),
+          _buildDetailItem("Customer ID", widget.transactionHistoryModel.customerId
+              // widget.transactionHistoryModel.agentTransaction.customerId ?? "N/A"
               ),
-          _buildDetailItem("Phone Number", widget.customerNumber
-              // widget.agentTransaction.customerPhone ?? "N/A"
+          _buildDetailItem("Phone Number", widget.transactionHistoryModel.customerNumber
+              // widget.transactionHistoryModel.agentTransaction.customerPhone ?? "N/A"
               ),
         ],
       ),

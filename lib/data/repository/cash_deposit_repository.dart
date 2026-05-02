@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:collection_qr_flutter/core/utils.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 import '../../domain/interface/cash_deposit_interface.dart';
@@ -32,9 +33,11 @@ class CashDepositRepository implements CashDepositInterface {
       }),
       headers: {'Content-Type': 'application/json'},
     );
+if(printStatementStatus){
+  print(request.statusCode);
+  print(request.body);
+}
 
-    print(request.statusCode);
-    print(request.body);
 
     if(request.statusCode == 200){
       CashDepositModel cashDepositModel = CashDepositModel.fromJson(jsonDecode(request.body));

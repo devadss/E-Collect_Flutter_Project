@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:collection_qr_flutter/core/utils.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -22,14 +23,20 @@ class QRTransactionHistoryRepository implements IQRTransactionHistoryRepository{
 
     bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
    if(checkConnection){
-     print(url);
+     if(printStatementStatus){
+       print(url);
+     }
+
      final response = await http.get(url);
      if(response.statusCode == 200 || response.statusCode == 201){
        try{
-         printLog("==================================QR TRANSACTION STATUS CODE=================================");
-         printLog(response.statusCode);
-         printLog("==================================QR TRANSACTION STATUS CODE=================================");
-         printLog("QR TRANSACTION ${response.body}");
+         if(printStatementStatus){
+           printLog("==================================QR TRANSACTION STATUS CODE=================================");
+           printLog(response.statusCode);
+           printLog("==================================QR TRANSACTION STATUS CODE=================================");
+           printLog("QR TRANSACTION ${response.body}");
+         }
+
          if(response.body.contains("OrderId")){
            return Right(QrTranscationHistoryModel.fromJson(jsonDecode(response.body)));
 

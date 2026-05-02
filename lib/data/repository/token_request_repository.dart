@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:collection_qr_flutter/core/utils.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 import '../../core/constants.dart';
@@ -10,9 +11,12 @@ class TokenRequestRepository implements TokenRequestInterface {
       String userName, String password, String mobNum, String type) async {
     try {
       final uri = Uri.parse("${baseUrl}api/APILogin");
-      print("UserName = $userName");
-      print("Password = $password");
-      print("PhoneNumber = $mobNum");
+      if(printStatementStatus){
+        print("UserName = $userName");
+        print("Password = $password");
+        print("PhoneNumber = $mobNum");
+      }
+
       final data = {
         'UserName': userName,
         "Password": password,
@@ -26,9 +30,12 @@ class TokenRequestRepository implements TokenRequestInterface {
         body: json.encode(data),
         headers: {'Content-Type': 'application/json'},
       );
-      print("Inside TokenRequestRepository");
-      print("Token Request Data $data");
-      print("token Request body = ${response.body}");
+      if(printStatementStatus){
+        print("Inside TokenRequestRepository");
+        print("Token Request Data $data");
+        print("token Request body = ${response.body}");
+      }
+
       if (response.statusCode == 200) {
         final responseBody = response.body;
         if (responseBody.isNotEmpty) {

@@ -425,64 +425,29 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
           success: success,
           onViewReceipt: () {
             Navigator.pop(context);
+            var receiptModel = ReceiptDataModel(
+              amount: success.amount.toString(),
+              bankName: getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
+              agentName: agentName ?? "Name",
+              agentPhone: agentPhoneNumber ?? "agentPhone",
+              custName: customerName!,
+              custPhone: custPhoneNumber!,
+              custId: custId!,
+              txnId: success.transactionId.toString(),
+              txnType: "CASH", dat: '', tranType: '', accNo: '',
+            );
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => ReceiptPage(
-                  amount: success.amount.toString(),
-                  bankName: getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
-                  agentName: agentName ?? "Name",
-                  agentPhone: agentPhoneNumber ?? "agentPhone",
-                  custName: customerName!,
-                  custPhone: custPhoneNumber!,
-                  custId: custId!,
-                  txnId: success.transactionId.toString(),
-                  txnType: "CASH", dat: '', tranType: '', accNo: '',
+                receiptDataModel: receiptModel,
                 ),
               ),
             );
           },
         ),
       );
-      // showDialog(
-      //   context: context,
-      //   builder: (context) {
-      //     return AlertDialog(
-      //       title: const Text("Transaction Result"),
-      //       content: Column(
-      //         mainAxisSize: MainAxisSize.min,
-      //         crossAxisAlignment: CrossAxisAlignment.start,
-      //         children: [
-      //           Text("Status: ${success.status ?? 'N/A'}"),
-      //           const SizedBox(height: 8),
-      //           Text("Transaction ID: ${success.transactionId ?? 'N/A'}"),
-      //           const SizedBox(height: 8),
-      //           Text("Message: ${success.message ?? 'N/A'}"),
-      //         ],
-      //       ),
-      //       actions: [
-      //         TextButton(
-      //
-      //           onPressed: () => {Navigator.pop(context),
-      //     Navigator.push(
-      //         context,
-      //         MaterialPageRoute(
-      //             builder: (context) => ReceiptPage(
-      //               amount: success.amount.toString(),
-      //               bankName: _getBankNameFromCorpCode(corpCode!)?? "XYZ BANK",
-      //               agentName: agentName ?? "Name",
-      //               agentPhone:
-      //               agentPhoneNumber ?? "agentPhone",
-      //               custName: customerName!,
-      //               custPhone: custPhoneNumber!,
-      //               custId: custId!, txnId: success.transactionId.toString(), txnType: "CASH",
-      //             )))},
-      //           child: const Text("OK"),
-      //         ),
-      //       ],
-      //     );
-      //   },
-      // );
+
     });
   }
 
@@ -695,61 +660,6 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                       });
                     },
                     child:
-                        // TextField(
-                        //   controller: _searchController,
-                        //   decoration: InputDecoration(
-                        //     hintText: 'Search accounts...',
-                        //     hintStyle: TextStyle(
-                        //       color: Colors.grey[600],
-                        //       fontSize: 14,
-                        //     ),
-                        //     prefixIcon: AnimatedSwitcher(
-                        //       duration: const Duration(milliseconds: 300),
-                        //       child: _isSearchFocused
-                        //           ? const Icon(Icons.search, color: home2, size: 24)
-                        //           : Icon(
-                        //               Icons.search_rounded,
-                        //               color: home2.withOpacity(0.7),
-                        //               size: 24,
-                        //             ),
-                        //     ),
-                        //     suffixIcon: _searchController.text.isNotEmpty
-                        //         ? FadeTransition(
-                        //             opacity: _fadeAnimation,
-                        //             child: ScaleTransition(
-                        //               scale: _scaleAnimation,
-                        //               child: IconButton(
-                        //                 icon: const Icon(Icons.close, color: home2),
-                        //                 onPressed: _clearSearch,
-                        //               ),
-                        //             ),
-                        //           )
-                        //         : AnimatedSwitcher(
-                        //             duration: const Duration(milliseconds: 300),
-                        //             child: _isSearchFocused
-                        //                 ? IconButton(
-                        //                     icon: const Icon(Icons.tune_rounded,
-                        //                         color: home2),
-                        //                     onPressed: () {},
-                        //                   )
-                        //                 : const SizedBox.shrink(),
-                        //           ),
-                        //     border: InputBorder.none,
-                        //     contentPadding:
-                        //         const EdgeInsets.symmetric(vertical: 18),
-                        //   ),
-                        //   style: const TextStyle(
-                        //     color: Colors.black87,
-                        //     fontSize: 15,
-                        //     fontWeight: FontWeight.w500,
-                        //   ),
-                        //   onChanged: (value) async {
-                        //     _filterDues(provider.rdclDueUnderAgentModel!.data,value);
-                        //     // if (value.length == 8) {
-                        //     //   await _searchMethod(value);
-                        //     // }
-                        //   },
-                        // ),
                         TextField(
                       controller: _searchController,
                       focusNode: _searchFocusNode,

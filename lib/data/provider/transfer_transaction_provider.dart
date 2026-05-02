@@ -1,3 +1,4 @@
+import 'package:collection_qr_flutter/core/utils.dart';
 import 'package:collection_qr_flutter/data/repository/transfer_history_repository.dart';
 import 'package:collection_qr_flutter/domain/model/transfer_history_model.dart';
 import 'package:flutter/material.dart';
@@ -22,12 +23,18 @@ class TransferHistoryProvider with ChangeNotifier {
       String? corpCode,
       String? agentOriginId,
       ) async {
-    printLog(
-      "==================================QR TRANSACTION MODEL=================================",
-    );
+    if(printStatementStatus){
+      printLog(
+        "==================================QR TRANSACTION MODEL=================================",
+      );
+    }
+
     _showProgressDialog = true; // ✅ Add this line!
     notifyListeners();
-    printLog(qrTranscationHistoryModel);
+    if(printStatementStatus){
+      printLog(qrTranscationHistoryModel);
+    }
+
     final result = await _qrTransactionHistoryRepository
         .getTransferTranscationHistory(dateFilterType, startDate, endDate, source,corpCode,agentOriginId);
 
@@ -35,8 +42,11 @@ class TransferHistoryProvider with ChangeNotifier {
           (error) {
         _errResponse = error.message;
         _qrTranscationHistoryModel = null;
-        printLog("-------------Error QR Transcation-------------");
-        printLog(error);
+        if(printStatementStatus){
+          printLog("-------------Error QR Transcation-------------");
+          printLog(error);
+        }
+
         _showProgressDialog = false;
         notifyListeners();
       },
@@ -44,8 +54,11 @@ class TransferHistoryProvider with ChangeNotifier {
         _qrTranscationHistoryModel = data;
         _errResponse = null;
         _showProgressDialog = false;
-        printLog("-------------------DATA QR TRANS-----------------");
-        printLog(data);
+        if(printStatementStatus){
+          printLog("-------------------DATA QR TRANS-----------------");
+          printLog(data);
+        }
+
         notifyListeners();
       },
 

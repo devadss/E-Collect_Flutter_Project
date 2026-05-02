@@ -7,6 +7,8 @@ import 'package:collection_qr_flutter/domain/model/subagent/fetch_parent_credent
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../../core/utils.dart';
+
 class ParentAgentCredentialRepository
     implements ParentAgentCredentialInterface {
   @override
@@ -14,7 +16,10 @@ class ParentAgentCredentialRepository
       fetchParentAgentCredentials(String mobileNumber) async {
     final uri = Uri.parse(
         "${baseUrl}api/GetMerchantCardCredentials?phoneNumber=%2B91$mobileNumber");
-    print("uri $uri");
+    if(printStatementStatus ){
+      print("uri $uri");
+    }
+
     final request =
         await http.get(uri, headers: {'Content-Type': 'application/json'});
     if (request.statusCode == 200) {

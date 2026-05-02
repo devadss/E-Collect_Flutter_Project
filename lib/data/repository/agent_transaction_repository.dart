@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:collection_qr_flutter/core/utils.dart';
+
 import '../../core/constants.dart';
 import '../../data/service/error_handler.dart';
 import '../../domain/interface/agent_trancstion_interface.dart';
@@ -20,8 +22,11 @@ class AgentTransactionRepository implements IAgentTransactionRepository{
      },);
      if(response.statusCode == 200 || response.statusCode == 201){
        try{
-         print("------------------------BODY AGENT PAYMENT TRANSCATION MODEL-------------------------");
-         print(response.body);
+         if(printStatementStatus){
+           print("------------------------BODY AGENT PAYMENT TRANSCATION MODEL-------------------------");
+           print(response.body);
+         }
+
          return Right(AgentPaymentTransctionModel.fromJson(jsonDecode(response.body)));
        }catch(e){
          return Left(DataParsingException(e));

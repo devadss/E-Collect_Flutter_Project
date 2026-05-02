@@ -1,6 +1,6 @@
 import 'dart:io';
 
-checkInternetConnection()async{
+Future<bool> checkInternetConnection()async{
   try{
     final result = await InternetAddress.lookup('google.com');
     if(result.isEmpty && result[0].rawAddress.isNotEmpty){
@@ -12,12 +12,12 @@ checkInternetConnection()async{
     return false;
   }
 }
-printLog(msg){
+void printLog(msg){
 
     print(msg);
 
 }
-launchUrl(String url)async{
+Future<void> launchUrl(String url)async{
   final Uri uri = Uri.parse(url);
   await launchUrl(uri.toString());
 }

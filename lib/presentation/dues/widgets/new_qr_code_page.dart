@@ -127,7 +127,10 @@ class _NewQrCodePageState extends State<NewQrCodePage>
 
 //9745228327
   void _listenForFirebaseMessages() {
-    print("_listenForFirebaseMessages");
+    if(printStatementStatus){
+      print("_listenForFirebaseMessages");
+    }
+
     _firebaseMessageSubscription?.cancel(); // ✅ Ensure only one listener
 
     _firebaseMessageSubscription = FirebaseMessaging.onMessage.listen((
@@ -136,8 +139,10 @@ class _NewQrCodePageState extends State<NewQrCodePage>
       if (message.notification != null) {
         final String? notificationTitle = message.notification?.title;
         final String? notificationBody = message.notification?.body;
+        if(printStatementStatus){
+          print("📩 Foreground Notification: $notificationTitle");
+        }
 
-        print("📩 Foreground Notification: $notificationTitle");
 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(notificationTitle.toString())));
         if (notificationTitle == "Wallet Load Successful 🎉"||notificationTitle == "Amount Collected Successfully" ) {
          // if (mounted) {
@@ -145,7 +150,10 @@ ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(notificationTi
          // }
         }
       } else {
-        print("⚠️ Empty Message Received: ${message.data}");
+        if(printStatementStatus){
+          print("⚠️ Empty Message Received: ${message.data}");
+        }
+
       }
     });
 
@@ -320,20 +328,23 @@ ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(notificationTi
                         ),
                         onPressed: () {
                           Navigator.pop(context); // Close this dialog
+                          var receiptModel = ReceiptDataModel(
+                            amount: widget.amount,
+                            bankName: bankName ?? "XYZ BANK",
+                            agentName: agentName ?? "Name",
+                            agentPhone:
+                            agentPhoneNumber ?? "agentPhone",
+                            custName: widget.custName,
+                            custPhone: widget.custPhone,
+                            custId: widget.custId,
+                            txnId: "",
+                            txnType: "QR", dat: '', tranType: '', accNo: '',
+                          );
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ReceiptPage(
-                                        amount: widget.amount,
-                                        bankName: bankName ?? "XYZ BANK",
-                                        agentName: agentName ?? "Name",
-                                        agentPhone:
-                                            agentPhoneNumber ?? "agentPhone",
-                                        custName: widget.custName,
-                                        custPhone: widget.custPhone,
-                                        custId: widget.custId,
-                                        txnId: "",
-                                        txnType: "QR", dat: '', tranType: '', accNo: '',
+                                  receiptDataModel: receiptModel,
                                       )));
                         },
                         child: const Text(
@@ -622,11 +633,13 @@ ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(notificationTi
         bankName = getBankNameFromCorpCode(code ?? ""); // Set bank name here
       });
     }
+    if(printStatementStatus){
+      printLog("------------------------------CORP CODE--------------------");
+      printLog(corpCode);
+      printLog("------------------------------Agent Number-------------------");
+      printLog(agentPhoneNumber);
+    }
 
-    printLog("------------------------------CORP CODE--------------------");
-    printLog(corpCode);
-    printLog("------------------------------Agent Number-------------------");
-    printLog(agentPhoneNumber);
 
     generateQr(widget.amount, widget.paymentSessionId, widget.token);
   }

@@ -133,19 +133,22 @@ class _RdclDueListBlocPageState extends State<RdclDueListBlocPage> {
           success: success,
           onViewReceipt: () {
             Navigator.pop(context);
+            var receiptModel = ReceiptDataModel(
+              amount: success.amount.toString(),
+              bankName: getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
+              agentName: agentName ?? "Name",
+              agentPhone: agentPhoneNumber ?? "agentPhone",
+              custName: customerName!,
+              custPhone: custPhoneNumber!,
+              custId: custId!,
+              txnId: success.transactionId.toString(),
+              txnType: "CASH", dat: '', tranType: '', accNo: '',
+            );
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => ReceiptPage(
-                  amount: success.amount.toString(),
-                  bankName: getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
-                  agentName: agentName ?? "Name",
-                  agentPhone: agentPhoneNumber ?? "agentPhone",
-                  custName: customerName!,
-                  custPhone: custPhoneNumber!,
-                  custId: custId!,
-                  txnId: success.transactionId.toString(),
-                  txnType: "CASH", dat: '', tranType: '', accNo: '',
+          receiptDataModel: receiptModel,
                 ),
               ),
             );

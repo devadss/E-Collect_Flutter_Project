@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/general.dart';
+import '../../core/utils.dart';
 import '../../domain/model/qr_transaction_history_model.dart';
 import '../repository/cash_transcation_history_repository.dart';
 
@@ -22,10 +23,14 @@ class CashTransactionHistoryProvider with ChangeNotifier {
     String? corpCode,
     String? agentOriginId,
   ) async {
-    printLog(
-      "==================================QR TRANSACTION MODEL=================================",
-    );
-    printLog(qrTranscationHistoryModel);
+    if(printStatementStatus){
+      printLog(
+        "==================================QR TRANSACTION MODEL=================================",
+      );
+      printLog(qrTranscationHistoryModel);
+    }
+
+
     final result = await _qrTransactionHistoryRepository
         .getCashTranscationHistory(dateFilterType, startDate, endDate, source,subAgentId,corpCode,agentOriginId);
     _showProgressDialog = true;
@@ -35,14 +40,20 @@ class CashTransactionHistoryProvider with ChangeNotifier {
         _errResponse = error.message;
         _qrTranscationHistoryModel = null;
         _showProgressDialog = false;
-        printLog("-------------Error QR Transcation-------------");
-        printLog(error);
+        if(printStatementStatus){
+          printLog("-------------Error QR Transcation-------------");
+          printLog(error);
+        }
+
       },
       (data) {
         _qrTranscationHistoryModel = data;
         _errResponse = null;
-        printLog("-------------------DATA QR TRANS-----------------");
-        printLog(data);
+        if(printStatementStatus){
+          printLog("-------------------DATA QR TRANS-----------------");
+          printLog(data);
+        }
+
         _showProgressDialog = false;
 
       },

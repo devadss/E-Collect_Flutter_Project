@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:local_auth/local_auth.dart';
 
 import '../../../core/colors.dart';
+import '../../../core/utils.dart';
 import '../../../data/service/notification_service/notification_service.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../app/bottom_nav_bar_page.dart';
@@ -62,7 +63,10 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       final isDeviceSupported = await auth.isDeviceSupported();
 
       if (!canCheckBiometrics && !isDeviceSupported) {
-        debugPrint('No biometric or device auth support');
+        if(printStatementStatus ){
+          debugPrint('No biometric or device auth support');
+        }
+
         return;
       }
 
@@ -76,7 +80,10 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
 
       // ❌ STOP immediately if widget disposed or auth failed
       if (!mounted || result != true) {
-        debugPrint('Authentication canceled or failed');
+        if(printStatementStatus ){
+          debugPrint('Authentication canceled or failed');
+        }
+
         return;
       }
 
@@ -88,10 +95,16 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
     } on PlatformException catch (e) {
       // ❌ NEVER allow navigation on exception
       authenticated = false;
-      debugPrint('PlatformException during biometric auth: ${e.code} - ${e.message}');
+      if(printStatementStatus ){
+        debugPrint('PlatformException during biometric auth: ${e.code} - ${e.message}');
+      }
+
     } catch (e) {
       authenticated = false;
-      debugPrint('Exception during biometric authentication: $e');
+      if(printStatementStatus ){
+        debugPrint('Exception during biometric authentication: $e');
+      }
+
     }
   }
 
