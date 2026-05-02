@@ -20,8 +20,8 @@ class OtpVerificationRepository implements OtpVerificationInterface {
         print("otp = $otp");
       }
 
-      final uri = Uri.parse("${baseUrl}api/VerifyOTPV1"); // Now we can use 2025 as the otp for verification.
-      //final uri = Uri.parse("${baseUrl}api/VerifyOTP");
+      final uri = uatTestMobileNumber == mobnum? Uri.parse("${baseUrl}api/VerifyOTPV1"):Uri.parse("${baseUrl}api/VerifyOTP"); // Now we can use 2025 as the otp for verification.
+
       final data = {'MobileNo': '+91$mobnum', 'OTp': otp};  // Fixed "OTp" key
 
       final request = await http.post(

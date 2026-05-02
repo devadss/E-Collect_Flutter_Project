@@ -7,8 +7,13 @@ import 'package:flutter/material.dart';
 //******************************************************************
 //*******true : Production base url is used******
 //******false : Uat base url is used******
-final String baseUrl = isRunningLiveBaseUrl(true).toString();
-final String dopBaseUrl = isRunningLiveDopBaseUrl(true).toString();
+
+
+ // String baseUrl = isRunningLiveBaseUrl(true).toString();
+ // String dopBaseUrl = isRunningLiveDopBaseUrl(true).toString();
+String baseUrl = "";
+String dopBaseUrl = "";
+
 //******************************************************************
 
 //******************************************************************
@@ -17,6 +22,9 @@ final String dopBaseUrl = isRunningLiveDopBaseUrl(true).toString();
 //*******************************************************************
 //const String dopBaseUrl = "https://devops.mydop.in/api/fetch/vendor/urls/"; //UAT
 //const String dopBaseUrl = "https://mydop.in/api/fetch/vendor/urls/"; //LIVE
+
+const String uatTestMobileNumber = "7663220991"; ///Currently this number is provided for appstore...
+
 
 const String port = ":8444/";
 const String agentIdLive = "ADSS20231011";
@@ -127,6 +135,8 @@ class SharedPrefKeys {
   static const String LoanCustomerVendorUrl = "getCustomerLoanUrl";//
   static const String LoanDueVendorUrl = "getDueListLoanUrl";
   static const String LoanAccountHolderVendorUrl = "getLoanAccountHolderUrl";
+
+  static const String IOSNUMBERVALIDATOR = "ios_number_validator";
 
   //----------------------------------------------------------------------------
   static const String force_logout = "FORCE_LOGOUT";

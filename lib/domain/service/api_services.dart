@@ -2,6 +2,8 @@ import 'package:collection_qr_flutter/core/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:collection_qr_flutter/core/constants.dart';
 
+import '../../data/storage/shared_pref_helper.dart';
+
 //This class will be used for all api request
 
 class ApiService {
@@ -17,10 +19,14 @@ class ApiService {
     if(printStatementStatus){
       print("Inside ApiService");
     }
-
-    final uri = Uri.parse("$_baseUrl$endPoint");
+    var mobnum = await SharedPref.shared.getParentAgentMobNum();
+    isRunningLiveBaseUrl(true , mobnum);
+    isRunningLiveDopBaseUrl(true, mobnum);
+   // final uri = Uri.parse("$_baseUrl$endPoint");
+    final uri = Uri.parse("$baseUrl$endPoint");
     if(printStatementStatus){
-      print("$_baseUrl$endPoint");
+     // print("$_baseUrl$endPoint");
+      print("$baseUrl$endPoint");
     }
 
     final response = await http.get(uri, headers: _headers());

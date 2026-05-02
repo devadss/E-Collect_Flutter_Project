@@ -1167,7 +1167,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   {
     if (cashProvider.errResponse != null) {
       return _buildEmptyState(
-        icon: Icons.monetization_on_outlined,
+        icon: Icons.currency_rupee_rounded,
         title: "No Cash Transactions",
         message: "Your cash payment transactions will appear here",
       );
@@ -1177,7 +1177,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     }
     return _buildTransactionList(
         transactions: cashProvider.qrTranscationHistoryModel!.data!,
-        icon: Icons.monetization_on,
+        icon: Icons.currency_rupee_rounded,
         iconColor: Colors.orange,
         getAmount: (t) => t.orderAmount ?? 0,
         getStatus: (t) => t.orderStatus.toString(),

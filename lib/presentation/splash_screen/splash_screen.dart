@@ -48,38 +48,38 @@ class _SplashScreenState extends State<SplashScreen> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  Future<void> validateToken(String token,
-      String userName,
-      String password,
-      String mobNum,
-      String type,
-
-      ) async
-  {
+  Future<void> validateToken(
+    String token,
+    String userName,
+    String password,
+    String mobNum,
+    String type,
+  ) async {
     final provider = Provider.of<TokenExpiryProvider>(context, listen: false);
     final tokenValidateResponse = await provider.validateToken(token);
 
     tokenValidateResponse.fold(
-          (error) {
+      (error) {
         // Navigator.pop(context);
-            if(printStatementStatus){
-              print("Token Validation Error: $error");
-            }
+        if (printStatementStatus) {
+          print("Token Validation Error: $error");
+        }
 
         showInSnackBar(error, "RED");
       },
-          (data) async {
-            if(printStatementStatus){
-              print("Token Validation ${data.isExpired}");
-            }
+      (data) async {
+        if (printStatementStatus) {
+          print("Token Validation ${data.isExpired}");
+        }
 
-        if(data.isExpired == false){
+        if (data.isExpired == false) {
           if (loginStatus == true) {
             if (fcmToken.isNotEmpty) {
               Future.delayed(const Duration(milliseconds: 100), () {
                 if (mounted) {
-                  if(printStatementStatus){
-                    print("Gpin page from validateToken data.isExpired == false");
+                  if (printStatementStatus) {
+                    print(
+                        "Gpin page from validateToken data.isExpired == false");
                   }
 
                   Navigator.push(
@@ -88,34 +88,35 @@ class _SplashScreenState extends State<SplashScreen> {
                           builder: (context) => const GooglePinCodePage()));
                 }
               });
-            }
-            else {
+            } else {
               if (mounted) {
-                saveFcmToken(subAgentid, context, "GPIN", token, subAgentmobnum, mpin);
+                saveFcmToken(
+                    subAgentid, context, "GPIN", token, subAgentmobnum, mpin);
               }
             }
-          }
-          else {
+          } else {
             Future.delayed(const Duration(milliseconds: 100), () {
               // Do something
               if (mounted) {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const MobileNumberVerificationPage()));
+                        builder: (context) =>
+                            const MobileNumberVerificationPage()));
               }
             });
           }
-        }else{
-          final tokenRequest = Provider.of<TokenRequestProvider>(context , listen: false);
-          final requestNewTokenResponse = await tokenRequest.requestToken(userName, password, mobNum, type);
-
+        } else {
+          final tokenRequest =
+              Provider.of<TokenRequestProvider>(context, listen: false);
+          final requestNewTokenResponse =
+              await tokenRequest.requestToken(userName, password, mobNum, type);
 
           requestNewTokenResponse.fold(
-                (error) {
-if(printStatementStatus){
-  print("Error: $error");
-}
+            (error) {
+              if (printStatementStatus) {
+                print("Error: $error");
+              }
 
               if (mounted) {
                 Navigator.pushReplacement(
@@ -126,18 +127,19 @@ if(printStatementStatus){
                 );
               }
             },
-                (data) {
-                  if(printStatementStatus){
-                    print("Token Response : $data");
-                  }
+            (data) {
+              if (printStatementStatus) {
+                print("Token Response : $data");
+              }
 
               SharedPref.shared.setTokenValue(data);
               if (loginStatus == true) {
                 if (fcmToken.isNotEmpty) {
                   Future.delayed(const Duration(milliseconds: 100), () {
                     if (mounted) {
-                      if(printStatementStatus){
-                        print("Gpin page from validateToken data.isExpired == true");
+                      if (printStatementStatus) {
+                        print(
+                            "Gpin page from validateToken data.isExpired == true");
                       }
 
                       Navigator.push(
@@ -146,32 +148,29 @@ if(printStatementStatus){
                               builder: (context) => const GooglePinCodePage()));
                     }
                   });
-                }
-                else {
+                } else {
                   if (mounted) {
-                    saveFcmToken(subAgentid, context, "GPIN", token, subAgentmobnum, mpin);
+                    saveFcmToken(subAgentid, context, "GPIN", token,
+                        subAgentmobnum, mpin);
                   }
                 }
-              }
-              else {
+              } else {
                 Future.delayed(const Duration(milliseconds: 100), () {
                   // Do something
                   if (mounted) {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const MobileNumberVerificationPage()));
+                            builder: (context) =>
+                                const MobileNumberVerificationPage()));
                   }
                 });
               }
             },
           );
         }
-
-
       },
     );
-
   }
 
   void _navigateAfterAnimations(Widget page) {
@@ -179,8 +178,7 @@ if(printStatementStatus){
       Future.delayed(const Duration(milliseconds: 500), () {
         if (mounted) {
           Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => page));
+              context, MaterialPageRoute(builder: (context) => page));
         }
       });
     }
@@ -191,26 +189,27 @@ if(printStatementStatus){
     fcmToken = await SharedPref.shared.getFcmToken();
 
     entityid = await SharedPref.shared.getAgentId();
-   subAgentid = await SharedPref.shared.getSubAgentId();
+    subAgentid = await SharedPref.shared.getSubAgentId();
     token = await SharedPref.shared.getTokenValue();
     mobnum = await SharedPref.shared.getParentAgentMobNum();
     subAgentmobnum = await SharedPref.shared.getSubAgentMobNum();
     mpin = await SharedPref.shared.getMpinValue();
     String username = await SharedPref.shared.getParentAgentName();
     String password = await SharedPref.shared.getParentAgentPassword();
+    isRunningLiveBaseUrl(true , mobnum);
+    isRunningLiveDopBaseUrl(true, mobnum);
     setState(() {
       loginStatus = lgStatus;
     });
-    if(printStatementStatus == true){
+    if (printStatementStatus == true) {
       print("Login status = $loginStatus");
       print("token  = $token");
     }
 
-    if(loginStatus == true){
-      validateToken(token,
-          username , password,mobnum.replaceAll("+91", "") ,"Mob"
-      );
-    }else{
+    if (loginStatus == true) {
+      validateToken(
+          token, username, password, mobnum.replaceAll("+91", ""), "Mob");
+    } else {
       Future.delayed(const Duration(milliseconds: 100), () {
         // Do something
         if (mounted) {
@@ -221,9 +220,6 @@ if(printStatementStatus){
         }
       });
     }
-
-
-
   }
 
   void _onAnimationsComplete() {
@@ -235,11 +231,11 @@ if(printStatementStatus){
       // Trigger navigation based on login status
       if (loginStatus) {
         if (fcmToken.isNotEmpty) {
-          if(printStatementStatus ){
+          if (printStatementStatus) {
             print("Gpin page from _onAnimationsComplete");
           }
 
-         // _navigateAfterAnimations(const GooglePinCodePage());
+          // _navigateAfterAnimations(const GooglePinCodePage());
         }
       } else {
         _navigateAfterAnimations(const MobileNumberVerificationPage());
@@ -310,16 +306,15 @@ if(printStatementStatus){
                     tag: 'splash-logo',
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.7,
-                      child:
-                      SvgPicture.asset(
+                      child: SvgPicture.asset(
                         "assets/svg/QR Code-bro.svg",
                         fit: BoxFit.contain,
                       ),
                     ),
                   ),
-              
+
                   const SizedBox(height: 40),
-              
+
                   // App Name with Typing Animation
                   _TypingText(
                     text: "Collection QR",
@@ -330,9 +325,9 @@ if(printStatementStatus){
                     ),
                     onComplete: _onAnimationsComplete,
                   ),
-              
+
                   const SizedBox(height: 10),
-              
+
                   // Subtitle with Fade Animation
                   _FadeInText(
                     text: "Scan. Collect. Secure.",
@@ -343,9 +338,9 @@ if(printStatementStatus){
                     ),
                     onComplete: _onAnimationsComplete,
                   ),
-              
+
                   const SizedBox(height: 30),
-              
+
                   // Loading Indicator
                   const SizedBox(
                     width: 30,
@@ -438,20 +433,20 @@ class __FloatingParticleState extends State<_FloatingParticle>
         curve: Curves.easeInOut,
       ),
     )..addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        _controller.reverse();
-      } else if (status == AnimationStatus.dismissed) {
-        _controller.forward();
-      }
-    });
+        if (status == AnimationStatus.completed) {
+          _controller.reverse();
+        } else if (status == AnimationStatus.dismissed) {
+          _controller.forward();
+        }
+      });
 
     Future.delayed(
       Duration(milliseconds: (widget.delay * 1000).round()),
-          () {
+      () {
         if (mounted) _controller.forward();
       },
     );
-    }
+  }
 
   @override
   void dispose() {
@@ -512,17 +507,18 @@ class __TypingTextState extends State<_TypingText>
       vsync: this,
     );
 
-    _animation = IntTween(begin: 0, end: widget.text.length).animate(_controller)
-      ..addListener(() {
-        setState(() {
-          _displayText = widget.text.substring(0, _animation.value);
-        });
-      })
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          widget.onComplete();
-        }
-      });
+    _animation =
+        IntTween(begin: 0, end: widget.text.length).animate(_controller)
+          ..addListener(() {
+            setState(() {
+              _displayText = widget.text.substring(0, _animation.value);
+            });
+          })
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              widget.onComplete();
+            }
+          });
 
     _controller.forward();
   }
@@ -574,10 +570,10 @@ class __FadeInTextState extends State<_FadeInText>
       parent: _controller,
       curve: Curves.easeIn,
     )..addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        widget.onComplete();
-      }
-    });
+        if (status == AnimationStatus.completed) {
+          widget.onComplete();
+        }
+      });
 
     Future.delayed(const Duration(milliseconds: 800), () {
       if (mounted) _controller.forward();

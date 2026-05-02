@@ -31,6 +31,21 @@ class SharedPref {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.fcm_token) ?? '';
   }
+
+  Future<Future<bool>> setIosNumberValidator(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.IOSNUMBERVALIDATOR, value);
+  }
+
+  Future<String> getIosNumberValidator() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.IOSNUMBERVALIDATOR) ?? '';
+  }
+
+
+
+
+
   Future<Future<bool>> setAgentId(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.userId, value);

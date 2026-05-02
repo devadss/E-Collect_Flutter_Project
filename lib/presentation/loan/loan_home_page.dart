@@ -77,18 +77,7 @@ class _LoanHomePageState extends State<LoanHomePage>
       ),
     );
 
-    /* SchedulerBinding.instance.addPostFrameCallback((_) {
-      _animationController.forward();
-      final provider = Provider.of<GetLoanProvider>(context, listen: false);
-      provider.getLoans("", "", "", "", agentId, 1, 58).then((_) {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-            _filteredLoans = provider.collectionLoanModel?.data ?? [];
-          });
-        }
-      });
-    });*/
+
 
     _searchController.addListener(() {
       _filterLoans(_searchController.text);
@@ -395,7 +384,7 @@ class _LoanHomePageState extends State<LoanHomePage>
                 custId: loan.loanId.toString(),
                 dueDate: loan.lastRepaymentDate.toString(),
                 assignedAgent: loan.assignedAgent.toString(),
-                createdAt: loan.createdAt.toString(),
+                createdAt: loan.createdAt.toString(), dueAmount: loan.dueAmount ?? 0,
               );
               Navigator.push(
                 context,
@@ -730,3 +719,16 @@ class _LoanHomePageState extends State<LoanHomePage>
     }
   }
 }
+
+/* SchedulerBinding.instance.addPostFrameCallback((_) {
+      _animationController.forward();
+      final provider = Provider.of<GetLoanProvider>(context, listen: false);
+      provider.getLoans("", "", "", "", agentId, 1, 58).then((_) {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+            _filteredLoans = provider.collectionLoanModel?.data ?? [];
+          });
+        }
+      });
+    });*/

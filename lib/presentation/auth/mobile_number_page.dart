@@ -522,11 +522,14 @@ class _MobileNumberVerificationPageState extends State<MobileNumberVerificationP
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        await SharedPref.shared.setIosNumberValidator(_mobileNumberController.text);
                         if (!isChecked) {
                           showInSnackBar("Please accept Terms & Conditions", context);
                           return;
                         }
+                        isRunningLiveBaseUrl(true , _mobileNumberController.text);
+                        isRunningLiveDopBaseUrl(true, _mobileNumberController.text);
                         checkMobileNumber();
                       },
                       style: ElevatedButton.styleFrom(

@@ -9,22 +9,23 @@ import '../data/storage/shared_pref_helper.dart';
 import '../domain/model/registered_cust_model.dart';
 import '../presentation/auth/login/otp_verification/otp_verification.dart';
 import 'colors.dart';
+import 'constants.dart';
 
-const bool printStatementStatus = false;
+const bool printStatementStatus = true;
 
-String isRunningLiveBaseUrl(bool status){
-  if(status){
-    return "https://adsspay.aanvinsolutions.com:8444/";
+void isRunningLiveBaseUrl(bool status, String mobile) async {
+  if (status && mobile != null && mobile != uatTestMobileNumber){
+    baseUrl = "https://adsspay.aanvinsolutions.com:8444/";
   }else{
-    return "https://adsspayweb.digicob.in/";
+   baseUrl ="https://adsspayweb.digicob.in/";
   }
 }
 
-String isRunningLiveDopBaseUrl(bool status){
-  if(status){
-    return "https://mydop.in/api/fetch/vendor/urls/";
+void isRunningLiveDopBaseUrl(bool status, String mobile) async {
+  if (status && mobile != null && mobile != uatTestMobileNumber){
+    dopBaseUrl =  "https://mydop.in/api/fetch/vendor/urls/";
   }else{
-    return "https://devops.mydop.in/api/fetch/vendor/urls/";
+    dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";
   }
 }
 
@@ -437,6 +438,7 @@ class LoanDetailsModel {
   final String paymentDate;
   final String collectionFrequency;
   final String email;
+  final double dueAmount;
   final String dueDate;
   final String assignedAgent;
   final String custId;
@@ -447,6 +449,7 @@ class LoanDetailsModel {
     required this.customerPhoneNumber,
     required this.loanNumber,
     required this.loanStatus,
+    required this.dueAmount,
     required this.emiAmount,
     required this.loanTerm,
     required this.loanAmount,

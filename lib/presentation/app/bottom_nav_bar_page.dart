@@ -346,8 +346,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                                   _buildNavItem(
                                       key: _tabKeys[1],
                                       index: 1,
-                                      icon: Icons.paid_outlined,
-                                      activeIcon: Icons.paid,
+                                      icon: Icons.currency_rupee_outlined,
+                                      activeIcon: Icons.currency_rupee_rounded,
                                       label: "Loan"),
                                   _buildNavItem(
                                     key: _tabKeys[2],
