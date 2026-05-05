@@ -26,8 +26,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   String? _corpCode;
   String? loggedInUserTPYE;
   String? _branchID;
-  double _indicatorPosition = 0.0;
-  final List<GlobalKey> _tabKeys = List.generate(5, (index) => GlobalKey());
+  double indicatorPosition = 0.0;
+  final List<GlobalKey> tabKeys = List.generate(5, (index) => GlobalKey());
 
   @override
   void initState() {
@@ -53,25 +53,21 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     });
   }
 
+
   Widget loanPages(int index) {
     switch (index) {
       case 0:
-        return HomePage(
-          userType: loggedInUserTPYE.toString(),
-        );
+        return HomePage(userType: loggedInUserTPYE.toString());
       case 1:
         return const LoanHomePage();
-      // return const LoanList();
       case 2:
         return const ProfileHomePage();
-      // return const TestProfilePage();
       default:
         return HomePage(
           userType: loggedInUserTPYE.toString(),
         );
     }
   }
-
   Widget _getSelectedPage(int index) {
     switch (index) {
       case 0:
@@ -81,14 +77,12 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       case 1:
         return userTPYE?.contains("RDCL") == true
             ? RdclDueListBlocPage(branchCode: _branchID.toString(),)
-            // :_corpCode != "BNKVENAD" ? const DuesHomePage(): UAT This was on uat on live the below one is used....
             : _corpCode != "BNKVND"
             ? const DuesHomePage()
             : SizedBox();
 
       case 2:
         return userTPYE?.contains("RDCL") == true
-            //  ? const RdclAccountListHomePage()
             ? const CustomerList()
             : const AccountListHomePage();
       case 3:
@@ -99,18 +93,11 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         );
     }
   }
-
   Widget _getNonAgentSelectedPage(int index) {
     switch (index) {
       case 0:
-      // return const FeeHomePage();
-      //return const GroupHomePage();
       case 1:
-      //return const AllGroupsPage();
       case 2:
-
-        /// return const ProfileHomePage();
-        //return const BankDetailsScreen();
         return const PaymentLinkHomePage();
       default:
         return HomePage(
@@ -122,7 +109,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   void _updateIndicatorPosition({bool animate = true}) {
     try {
       // Check if index is valid
-      if (_selectedIndex < 0 || _selectedIndex >= _tabKeys.length) {
+      if (_selectedIndex < 0 || _selectedIndex >= tabKeys.length) {
         if(printStatementStatus ){
           debugPrint('Invalid index: $_selectedIndex');
         }
@@ -131,7 +118,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       }
 
       // Get the key
-      final key = _tabKeys[_selectedIndex];
+      final key = tabKeys[_selectedIndex];
       if (key.currentContext == null) {
         if(printStatementStatus ){
           debugPrint('No context for index $_selectedIndex');
@@ -167,11 +154,11 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       if (animate) {
         if (mounted) {
           setState(() {
-            _indicatorPosition = newPosition;
+            indicatorPosition = newPosition;
           });
         }
       } else {
-        _indicatorPosition = newPosition;
+        indicatorPosition = newPosition;
         if (mounted) setState(() {});
       }
     } catch (e) {
@@ -180,26 +167,11 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       }
 
       // Set a default position or skip
-      _indicatorPosition = 0.0;
+      indicatorPosition = 0.0;
       if (mounted) setState(() {});
     }
   }
-  // void _updateIndicatorPosition({bool animate = true}) {
-  //   final RenderBox renderBox = _tabKeys[_selectedIndex]
-  //       .currentContext
-  //       ?.findRenderObject() as RenderBox;
-  //   final position = renderBox.localToGlobal(Offset.zero);
-  //   final newPosition = position.dx + (renderBox.size.width / 2) - 20;
-  //
-  //   if (animate) {
-  //     setState(() {
-  //       _indicatorPosition = newPosition;
-  //     });
-  //   } else {
-  //     _indicatorPosition = newPosition;
-  //     if (mounted) setState(() {});
-  //   }
-  // }
+
 
   void _onItemTapped(int index) {
     if (_selectedIndex != index) {
@@ -248,7 +220,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                 AnimatedPositioned(
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeOutQuad,
-                  left: _indicatorPosition,
+                  left: indicatorPosition,
                   bottom: 20,
                   child: Container(
                     width: 40,
@@ -287,7 +259,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               _buildNavItem(
-                                key: _tabKeys[0],
+                                key: tabKeys[0],
                                 index: 0,
                                 icon: Icons.home_outlined,
                                 activeIcon: Icons.home,
@@ -296,7 +268,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                               // _corpCode != "BNKVENAD"?
                               _corpCode != "BNKVND"
                                   ? _buildNavItem(
-                                      key: _tabKeys[1],
+                                      key: tabKeys[1],
                                       index: 1,
                                       icon: Icons.receipt_long_outlined,
                                       activeIcon: Icons.receipt_long,
@@ -305,7 +277,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                                   : SizedBox(),
                             //uncomment the below after cashfree uat
                               _buildNavItem(
-                                key: _tabKeys[2],
+                                key: tabKeys[2],
                                 index: 2,
                                 icon: Icons.list_alt_outlined,
                                 activeIcon: Icons.list_alt,
@@ -323,7 +295,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                               //       : 'Accounts',
                               // ),
                               _buildNavItem(
-                                key: _tabKeys[3],
+                                key: tabKeys[3],
                                 index: 3,
                                 icon: Icons.person_outline,
                                 activeIcon: Icons.person,
@@ -337,20 +309,20 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                                     MainAxisAlignment.spaceAround,
                                 children: [
                                   _buildNavItem(
-                                    key: _tabKeys[0],
+                                    key: tabKeys[0],
                                     index: 0,
                                     icon: Icons.home_outlined,
                                     activeIcon: Icons.home,
                                     label: 'Home',
                                   ),
                                   _buildNavItem(
-                                      key: _tabKeys[1],
+                                      key: tabKeys[1],
                                       index: 1,
                                       icon: Icons.currency_rupee_outlined,
                                       activeIcon: Icons.currency_rupee_rounded,
                                       label: "Loan"),
                                   _buildNavItem(
-                                    key: _tabKeys[2],
+                                    key: tabKeys[2],
                                     index: 2,
                                     icon: Icons.person_outline,
                                     activeIcon: Icons.person,
@@ -362,11 +334,9 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
                                 children: [
-                                  // _buildGroupNavItem(0, Icons.home_rounded, Icons.home_outlined),
-                                  // _buildGroupNavItem(1, Icons.groups, Icons.groups_outlined),
-                                  // _buildGroupNavItem(2, Icons.person_rounded, Icons.person_outline),
+
                                   _buildNavItem(
-                                    key: _tabKeys[0],
+                                    key: tabKeys[0],
                                     index: 0,
                                     icon: Icons.home_outlined,
                                     activeIcon: Icons.home,
@@ -374,14 +344,14 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                                   ),
 
                                   _buildNavItem(
-                                    key: _tabKeys[1],
+                                    key: tabKeys[1],
                                     index: 1,
                                     icon: Icons.group_add_outlined,
                                     activeIcon: Icons.group_add,
                                     label: 'Groups',
                                   ),
                                   _buildNavItem(
-                                    key: _tabKeys[2],
+                                    key: tabKeys[2],
                                     index: 2,
                                     icon: Icons.history_toggle_off,
                                     activeIcon: Icons.history,
@@ -451,3 +421,68 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     );
   }
 }
+
+// Widget loanPages(int index) {
+//   switch (index) {
+//     case 0:
+//       return HomePage(
+//         userType: loggedInUserTPYE.toString(),
+//       );
+//     case 1:
+//       return const LoanHomePage();
+//   // return const LoanList();
+//     case 2:
+//       return const ProfileHomePage();
+//   // return const TestProfilePage();
+//     default:
+//       return HomePage(
+//         userType: loggedInUserTPYE.toString(),
+//       );
+//   }
+// }
+
+// Widget _getSelectedPage(int index) {
+//   switch (index) {
+//     case 0:
+//       return HomePage(
+//         userType: loggedInUserTPYE.toString(),
+//       );
+//     case 1:
+//       return userTPYE?.contains("RDCL") == true
+//           ? RdclDueListBlocPage(branchCode: _branchID.toString(),)
+//       // :_corpCode != "BNKVENAD" ? const DuesHomePage(): UAT This was on uat on live the below one is used....
+//           : _corpCode != "BNKVND"
+//           ? const DuesHomePage()
+//           : SizedBox();
+//
+//     case 2:
+//       return userTPYE?.contains("RDCL") == true
+//       //  ? const RdclAccountListHomePage()
+//           ? const CustomerList()
+//           : const AccountListHomePage();
+//     case 3:
+//       return const ProfileHomePage();
+//     default:
+//       return HomePage(
+//         userType: loggedInUserTPYE.toString(),
+//       );
+//   }
+// }
+// Widget _getNonAgentSelectedPage(int index) {
+//   switch (index) {
+//     case 0:
+//     // return const FeeHomePage();
+//     //return const GroupHomePage();
+//     case 1:
+//     //return const AllGroupsPage();
+//     case 2:
+//
+//       /// return const ProfileHomePage();
+//       //return const BankDetailsScreen();
+//       return const PaymentLinkHomePage();
+//     default:
+//       return HomePage(
+//         userType: loggedInUserTPYE.toString(),
+//       );
+//   }
+// }

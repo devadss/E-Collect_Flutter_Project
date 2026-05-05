@@ -52,3 +52,7 @@ var teal600 = Colors.teal[600];
 const black12 = Colors.black12;
 const home1 = Color(0xFFEA307B);
 const home2 = Color(0xFF470952);
+
+final Color backgroundColor = const Color(0xFFF5F6FA);
+final Color cardColor = Colors.white;
+final Color textColor = const Color(0xFF2D3436);

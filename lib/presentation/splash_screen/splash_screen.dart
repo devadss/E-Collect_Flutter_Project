@@ -82,7 +82,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         "Gpin page from validateToken data.isExpired == false");
                   }
 
-                  Navigator.push(
+                  Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                           builder: (context) => const GooglePinCodePage()));
@@ -98,7 +98,7 @@ class _SplashScreenState extends State<SplashScreen> {
             Future.delayed(const Duration(milliseconds: 100), () {
               // Do something
               if (mounted) {
-                Navigator.push(
+                Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
@@ -142,7 +142,7 @@ class _SplashScreenState extends State<SplashScreen> {
                             "Gpin page from validateToken data.isExpired == true");
                       }
 
-                      Navigator.push(
+                      Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const GooglePinCodePage()));
@@ -158,7 +158,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 Future.delayed(const Duration(milliseconds: 100), () {
                   // Do something
                   if (mounted) {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
@@ -177,7 +177,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (_animationsCompleted) {
       Future.delayed(const Duration(milliseconds: 500), () {
         if (mounted) {
-          Navigator.push(
+          Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => page));
         }
       });
@@ -213,7 +213,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Future.delayed(const Duration(milliseconds: 100), () {
         // Do something
         if (mounted) {
-          Navigator.push(
+          Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => const MobileNumberVerificationPage()));
