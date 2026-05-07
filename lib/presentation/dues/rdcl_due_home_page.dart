@@ -18,6 +18,7 @@ import '../../data/repository/payment_session_id_repository.dart';
 import '../../data/storage/shared_pref_helper.dart';
 import '../../domain/model/account_list_model.dart';
 import '../../domain/model/cash_transcation_model.dart';
+import '../paymentlink_request_ui.dart';
 import '../profile/widgets/recipect_page.dart';
 //   Future<void> paymentConfirmation(
 //     BuildContext context,
@@ -1771,7 +1772,11 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
       },
       (sendLink) {
         if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
-          Share.share("Here is your payment link: ${sendLink.linkUrl}");
+          print("6");
+          //Share.share("Here is your payment link: ${sendLink.linkUrl}");
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>
+              PaymentLinkRequestUi(customerMobileNumber: agentPhoneNumber.toString(), paymentLink: sendLink.linkUrl.toString(),)
+          ));
         } else {
           //print("Payment link is empty or null");
         }

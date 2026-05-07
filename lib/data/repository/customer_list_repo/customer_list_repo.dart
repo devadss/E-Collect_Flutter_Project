@@ -29,6 +29,9 @@ class CustomerListRepo {
     );
     if(printStatementStatus ){
       print(uri);
+      print( {"agent_id": agentId,
+        "branch_id": branchId, "PageNumber": pageNo, "PageSize": pageSize, "cust_name":custName
+      });
       print(request.body);
     }
 

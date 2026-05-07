@@ -425,6 +425,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:collection_qr_flutter/core/alerts.dart';
+import 'package:collection_qr_flutter/presentation/paymentlink_request_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -655,7 +656,10 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
       },
           (sendLink) {
         if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
-          Share.share("Here is your payment link: ${sendLink.linkUrl}");
+          print("1");
+          //Share.share("Here is your payment link: ${sendLink.linkUrl}");
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>PaymentLinkRequestUi(customerMobileNumber: customerNumber.toString(),
+              paymentLink: sendLink.linkUrl.toString())));
         } else {
           print("Payment link is empty or null");
         }

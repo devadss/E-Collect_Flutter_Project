@@ -3,18 +3,15 @@ import 'dart:io';
 import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
 import '../../../core/alerts.dart';
 import '../../../core/utils.dart';
 import '../../../data/provider/cash_transcation_provider.dart';
 import '../../../data/repository/payment_link_repository.dart';
-import '../../../data/repository/payment_session_id_repository.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../dues/rdcl_due_home_page.dart';
-import '../../dues/widgets/new_qr_code_page.dart';
+import '../../paymentlink_request_ui.dart';
 import '../../profile/widgets/recipect_page.dart';
 
 class AccountDetailNew extends StatefulWidget {
@@ -268,90 +265,90 @@ loadSharedPrefs();
               const SizedBox(height: 24),
 
              // Payment options buttons
-              _buildPaymentOptionButton(
-                icon: Icons.qr_code,
-                label: "Pay via QR Code",
-                onPressed: () async {
-                  // print("--------------------TOKEN---------------------");
-                  // print(token);
-                  // print("---------------------AMOUNT--------------------");
-                  // print(amountController.text);
-                  // print("---------------------PHONENUMBER--------------------");
-                  // print(agentMobile);
-                  // print("---------------------ENTITYID--------------------");
-                  // print(agentId);
-                  // print("AccountDetailNew");
-                  showProgressDialog(context);
-                  final paymentSession =
-                      await CreatePaymentSessionIdRepository()
-                          .getPaymentSessionId(
-                              agentOriginId: agentOriginId,
-                              agentEmail: agentEmail,
-                              customerName: widget.custName,
-                              customerPhone: "",
-                              customerAccno: widget.accNo,
-                              customerId: widget.custId,
-                              customerEmail: "",
-                              corpCode: corpCode,
-                              cardRefNum: "",
-                              token: token,
-                              amount: amountController.text,
-                              agentPhone: agentMobile,
-                              agentId: agentId,
-                              note: "Payment For Agent $agentName",
-                              subAgentId: subagentId,
-                              agentName: agentName,
-                              subAgentBranchCode: subAgentCodeNew, collectionType: 'RD');
-                  paymentSession.fold((error) {
-                    print(
-                        "---------------------------------ERROR PAYMENT---------------------------");
-                    print(error);
-                  },
-                          (sessionId)
-                  async {
-                    paymentSessionId = sessionId.paymentSessionId ?? "";
-                    if (paymentSessionId!.isNotEmpty &&
-                        paymentSessionId != null &&
-                        paymentSessionId != "") {
-                      if (!mounted) return;
-                      Navigator.pop(context);
+             //  _buildPaymentOptionButton(
+             //    icon: Icons.qr_code,
+             //    label: "Pay via QR Code",
+             //    onPressed: () async {
+             //      // print("--------------------TOKEN---------------------");
+             //      // print(token);
+             //      // print("---------------------AMOUNT--------------------");
+             //      // print(amountController.text);
+             //      // print("---------------------PHONENUMBER--------------------");
+             //      // print(agentMobile);
+             //      // print("---------------------ENTITYID--------------------");
+             //      // print(agentId);
+             //      // print("AccountDetailNew");
+             //      showProgressDialog(context);
+             //      final paymentSession =
+             //          await CreatePaymentSessionIdRepository()
+             //              .getPaymentSessionId(
+             //                  agentOriginId: agentOriginId,
+             //                  agentEmail: agentEmail,
+             //                  customerName: widget.custName,
+             //                  customerPhone: "",
+             //                  customerAccno: widget.accNo,
+             //                  customerId: widget.custId,
+             //                  customerEmail: "",
+             //                  corpCode: corpCode,
+             //                  cardRefNum: "",
+             //                  token: token,
+             //                  amount: amountController.text,
+             //                  agentPhone: agentMobile,
+             //                  agentId: agentId,
+             //                  note: "Payment For Agent $agentName",
+             //                  subAgentId: subagentId,
+             //                  agentName: agentName,
+             //                  subAgentBranchCode: subAgentCodeNew, collectionType: 'RD');
+             //      paymentSession.fold((error) {
+             //        print(
+             //            "---------------------------------ERROR PAYMENT---------------------------");
+             //        print(error);
+             //      },
+             //              (sessionId)
+             //      async {
+             //        paymentSessionId = sessionId.paymentSessionId ?? "";
+             //        if (paymentSessionId!.isNotEmpty &&
+             //            paymentSessionId != null &&
+             //            paymentSessionId != "") {
+             //          if (!mounted) return;
+             //          Navigator.pop(context);
+             //
+             //          if (!mounted) return;
+             //          final result = await Navigator.push(
+             //            context,
+             //            MaterialPageRoute(
+             //              builder: (context) => NewQrCodePage(
+             //                paymentSessionId: paymentSessionId!,
+             //                amount: amountController.text ?? "",
+             //                token: token!,
+             //                custName: customerName ?? "custName",
+             //                custPhone: "",
+             //                custId: widget.custId,
+             //              ),
+             //            ),
+             //          );
+             //          if (!mounted) return;
+             //          if (result == "fetch_balance") {
+             //            Navigator.pop(context);
+             //          }
+             //        } else {
+             //          if (!mounted) return;
+             //          Navigator.pop(context);
+             //          EasyLoading.showToast("Session id is null");
+             //        }
+             //      });
+             //    },
+             //  ),
+             //  const SizedBox(height: 12),
 
-                      if (!mounted) return;
-                      final result = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => NewQrCodePage(
-                            paymentSessionId: paymentSessionId!,
-                            amount: amountController.text ?? "",
-                            token: token!,
-                            custName: customerName ?? "custName",
-                            custPhone: "",
-                            custId: widget.custId,
-                          ),
-                        ),
-                      );
-                      if (!mounted) return;
-                      if (result == "fetch_balance") {
-                        Navigator.pop(context);
-                      }
-                    } else {
-                      if (!mounted) return;
-                      Navigator.pop(context);
-                      EasyLoading.showToast("Session id is null");
-                    }
-                  });
+              _buildPaymentOptionButton(
+                icon: Icons.link,
+                label: "Send Payment Link",
+                onPressed: () {
+                  Navigator.pop(context);
+                  sendLinkFunction();
                 },
               ),
-              // const SizedBox(height: 12),
-              //
-              // _buildPaymentOptionButton(
-              //   icon: Icons.link,
-              //   label: "Send Payment Link",
-              //   onPressed: () {
-              //     Navigator.pop(context);
-              //     sendLinkFunction();
-              //   },
-              // ),
               const SizedBox(height: 12),
 
               _buildPaymentOptionButton(
@@ -572,14 +569,18 @@ loadSharedPrefs();
         token: token.toString(),
         subAgentId: subagentId!);
 
-    send.fold(
+         send.fold(
           (error) {
         //print("-------------------ERROR---------------------");
        // print(error);
       },
           (sendLink) {
         if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
-          Share.share("Here is your payment link: ${sendLink.linkUrl}");
+          //Share.share("Here is your payment link: ${sendLink.linkUrl}");
+          print("3");
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>
+              PaymentLinkRequestUi(customerMobileNumber: customerNumber.toString(), paymentLink: sendLink.linkUrl.toString(),)
+          ));
         } else {
          // print("Payment link is empty or null");
         }

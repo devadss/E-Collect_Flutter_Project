@@ -5,9 +5,11 @@ import 'package:provider/provider.dart';
 
 import '../../core/utils.dart' as utl;
 import '../../data/provider/loan_cash_coolection_provider.dart';
+import '../../data/repository/payment_link_repository.dart';
 import '../../data/repository/payment_session_id_repository.dart';
 import '../../data/storage/shared_pref_helper.dart';
 import '../dues/widgets/new_qr_code_page.dart';
+import '../paymentlink_request_ui.dart';
 //THE LOAN CUSTOMER DETAILS PAGE 2 OF 2....
 
 class IntegratedLoanDetail extends StatefulWidget {
@@ -478,8 +480,8 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
               children: [
                 Expanded(
                   child: _buildModernButton(
-                    text: "Generate QR",
-                    icon: Icons.qr_code_scanner,
+                    text: "Payment Link",
+                    icon: Icons.link,
                     onPressed: () {
                       showModalBottomSheet(
                         isScrollControlled: true,
@@ -561,7 +563,8 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                                     width: double.infinity,
                                     child: ElevatedButton(
                                       onPressed: () {
-                                        generateQrPaymentSession();
+                                       /// generateQrPaymentSession();
+                                        sendLinkFunction();
                                       },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: home1,
@@ -572,7 +575,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                                         ),
                                       ),
                                       child: const Text(
-                                        "Generate QR Code",
+                                        "Send Payment Link",
                                         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                                       ),
                                     ),
@@ -588,6 +591,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                   ),
                 ),
                 const SizedBox(width: 12),
+
                 Expanded(
                   child: _buildModernButton(
                     text: "Collect Cash",
@@ -706,6 +710,8 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                     isOutlined: true,
                   ),
                 ),
+                const SizedBox(width: 12),
+
               ],
             ),
           ],
@@ -760,6 +766,44 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
           offset: const Offset(0, 4),
         ),
       ],
+    );
+  }
+
+  Future<void> sendLinkFunction() async {
+    final send = await PaymentLinkRepository().getPaymentLink(
+        agentName: agentName!,
+        agentId: agentId!,
+        agentOriginId: agentOriginId!,
+        agentPhone: agentMobile!,
+        agentEmail: agentEmail!,
+        customerName: widget.name,
+        customerPhone: widget.custNo,
+        customerAccountNumber: widget.loanNumber,
+        customerEmail: "",
+        customerId: cid!,
+        linkAmount: num.parse(editAmountController.text),
+        note: "Payment for Order #12345",
+        corpCode: corpCode!,
+        cardRefNum: "",
+        token: token.toString(),
+        subAgentId: subagentId!);
+
+    send.fold(
+          (error) {
+        //print("-------------------ERROR---------------------");
+        // print(error);
+      },
+          (sendLink) {
+        if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
+          //Share.share("Here is your payment link: ${sendLink.linkUrl}");
+          print("3");
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>
+              PaymentLinkRequestUi(customerMobileNumber: widget.custNo, paymentLink: sendLink.linkUrl.toString(),)
+          ));
+        } else {
+          // print("Payment link is empty or null");
+        }
+      },
     );
   }
   Widget _buildHeaderCard() {

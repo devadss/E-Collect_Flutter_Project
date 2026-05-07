@@ -18,12 +18,12 @@ Future<String> loadVendorUrl()async{
       String accNo,
       String custName,
       ) async {
-  final vendorUrl = await loadVendorUrl();
+    final vendorUrl = await loadVendorUrl();
     final uri = Uri.parse("$vendorUrl?agent_id=$agentId&br_code=$branchCode&acc_no=$accNo&PageNumber=0&PageSize=0&CustName=$custName");
     final request =  await http.get(uri , headers: {"Content-Type":"application/json"});
     if(printStatementStatus ){
       print("Uri = $uri");
-      print(request.body);
+      print("RdclDueListRepo ${request.body}");
       print(request.statusCode);
     }
 

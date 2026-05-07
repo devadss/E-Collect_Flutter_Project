@@ -11,6 +11,7 @@ import '../../core/alerts.dart' as EasyLoading;
 import '../../data/repository/payment_link_repository.dart';
 import '../../data/storage/shared_pref_helper.dart';
 import '../../domain/model/due_under_agent_model.dart';
+import '../paymentlink_request_ui.dart';
 
 class DuesHomePage extends StatefulWidget {
   const DuesHomePage({super.key});
@@ -868,7 +869,11 @@ class _DuesHomePageState extends State<DuesHomePage> {
       },
       (sendLink) {
         if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
-          Share.share("Here is your payment link: ${sendLink.linkUrl}");
+          print("5");
+          //Share.share("Here is your payment link: ${sendLink.linkUrl}");
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>
+              PaymentLinkRequestUi(customerMobileNumber: agentPhoneNumber.toString(), paymentLink: sendLink.linkUrl.toString(),)
+          ));
         } else {
           //print("Payment link is empty or null");
         }

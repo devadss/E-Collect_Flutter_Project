@@ -13,6 +13,7 @@ import '../../core/utils.dart';
 import '../../data/provider/agent_transaction_provider.dart';
 import '../../data/provider/cash_transcation_history_provider.dart';
 import '../../data/provider/collection_summary_provider.dart';
+import '../../data/provider/link_transcation_history_provider.dart';
 import '../../data/provider/qr_transcation_history_provider.dart';
 import '../../data/provider/transfer_transaction_provider.dart';
 import '../../domain/model/link_transaction_history_model.dart';
@@ -114,7 +115,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     final cashQrProvider = context.read<CashQrProvider>();
     final qrProvider = context.read<QRTransactionHistoryProvider>();
     final cashTransProvider = context.read<CashTransactionHistoryProvider>();
-  //  final linkProvider = context.read<LinkTransactionHistoryProvider>();
+    final linkProvider = context.read<LinkTransactionHistoryProvider>();
   // final transferProvider = context.read<TransferHistoryProvider>();
 
     DateTime? fromDate;
@@ -293,15 +294,23 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                         }
                         showProgressDialog(context);
                         // Call providers
-                        await qrProvider.getQrTranscationHistory(
+                        // await qrProvider.getQrTranscationHistory(
+                        //     period,
+                        //     from,
+                        //     to,
+                        //     // userType,
+                        //     "ALL",
+                        //
+                        //     corpCode,
+                        //     agentOriginId);
+                        await linkProvider.getLinkTransactionHistory(
                             period,
                             from,
                             to,
-                            // userType,
-                            "ALL",
-
-                            corpCode,
-                            agentOriginId);
+                            subAgentID!,
+                            corpCode!,
+                            agentOriginId!
+                        );
                         // await transferProvider.getQrTranscationHistory(
                         //     period,
                         //     from,
@@ -320,8 +329,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                             subAgentID,
                             corpCode,
                             agentOriginId);
-                        // await linkProvider.getLinkTransactionHistory(period,
-                        //     from, to, subAgentID!, corpCode!, agentOriginId!);
+                        await linkProvider.getLinkTransactionHistory(period,
+                            from, to, subAgentID!, corpCode!, agentOriginId!);
                         await cashQrProvider.getCombinedResponse(period, from,
                             to, subAgentID!, corpCode!, agentOriginId!);
 
@@ -341,7 +350,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                           currentFromDate = from;
                           currentToDate = to;
                         });
-                        if (qrProvider.showProgressDialog == false) {
+                        if (qrProvider.showProgressDialog == false || cashTransProvider.showProgressDialog == false || linkProvider.showProgressDialog == false) {
                           if (mounted) {
                             Navigator.of(context, rootNavigator: true).pop();
                             Navigator.of(context, rootNavigator: true).pop();
@@ -417,34 +426,46 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       final qrProvider = Provider.of<QRTransactionHistoryProvider>(context, listen: false);
       final cashQrProvider = Provider.of<CashQrProvider>(context, listen: false);
       final cashProvider = Provider.of<CashTransactionHistoryProvider>(context, listen: false);
-      // final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
+      final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
       //final transferProvider = Provider.of<TransferHistoryProvider>(context, listen: false);
 
       // Load QR transactions
-      await qrProvider.getQrTranscationHistory(
-        //"THIS_WEEK",
-        "TODAY",
-        fromDate,
-        toDate,
-        // userType!,
-        'ALL',
-        corpCode!,
-        agentOriginId!,
-
-      );
+      // await qrProvider.getQrTranscationHistory(
+      //   //"THIS_WEEK",
+      //   "TODAY",
+      //   fromDate,
+      //   toDate,
+      //   // userType!,
+      //   'ALL',
+      //   corpCode!,
+      //   agentOriginId!,
+      //
+      // );
 
       // Load Link transactions (for AGENT_LOAN)
-      // if (userType == "LOAN_COLLECTION") {
-      //   await linkProvider.getLinkTransactionHistory(
-      //      // "THIS_WEEK",
-      //       "TODAY",
-      //       fromDate,
-      //       toDate,
-      //       subAgentID!,
-      //       corpCode!,
-      //       agentOriginId!
-      //   );
-      // }
+      print("userType : ${userType}");
+      if (userType == "LOAN_COLLECTION") {
+        await linkProvider.getLinkTransactionHistory(
+           // "THIS_WEEK",
+            "TODAY",
+            fromDate,
+            toDate,
+            subAgentID!,
+            corpCode!,
+            agentOriginId!
+        );
+      }
+      else if(userType == "COLLECTION"){
+        await linkProvider.getLinkTransactionHistory(
+          // "THIS_WEEK",
+            "TODAY",
+            fromDate,
+            toDate,
+            subAgentID!,
+            corpCode!,
+            agentOriginId!
+        );
+      }
 
       // Load Cash transactions
       await cashProvider.getCashTranscationHistory(
@@ -770,7 +791,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                         //: 'Link'
                           : 'All'
                           : selectedTabIndex == 1
-                          ? 'QR Code'
+                          //? 'QR Code'
+                          ? 'Link'
                           : selectedTabIndex == 2
                           ? 'Cash'
                           : "Transfer",
@@ -886,11 +908,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   Future<void> _clearFilters() async {
     showProgressDialog(context);
-
+print("_clearFilters 1");
     final qrProvider = context.read<QRTransactionHistoryProvider>();
     final cashTransProvider = context.read<CashTransactionHistoryProvider>();
     final cashQrProvider = context.read<CashQrProvider>();
-    // final linkProvider = context.read<LinkTransactionHistoryProvider>();
+     final linkProvider = context.read<LinkTransactionHistoryProvider>();
    // final transferProvider = context.read<TransferHistoryProvider>();
 
     // Reset to default period
@@ -902,14 +924,24 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
     try {
       // Load data for ALL transaction types
-      await qrProvider.getQrTranscationHistory(
+      // await qrProvider.getQrTranscationHistory(
+      //   "TODAY",
+      //   formattedFdate,
+      //   formattedTdate,
+      //   // userType!,
+      //   "ALL",
+      //   corpCode!,
+      //   agentOriginId!,
+      // );
+
+      await linkProvider.getLinkTransactionHistory(
+
         "TODAY",
-        formattedFdate,
-        formattedTdate,
-        // userType!,
-        "ALL",
-        corpCode!,
-        agentOriginId!,
+          formattedFdate,
+          formattedTdate,
+          subAgentID!,
+          corpCode!,
+          agentOriginId!
       );
 
       await cashTransProvider.getCashTranscationHistory(
@@ -973,8 +1005,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     } catch (e) {
       //print("Error clearing filters: $e");
     } finally {
-      if (mounted && qrProvider.showProgressDialog == false) {
+      print("_clearFilters 2");
+      if ( mounted && cashTransProvider.showProgressDialog == false && linkProvider.showProgressDialog == false ) {
+        print("_clearFilters 3");
         Navigator.pop(context);
+      }else{
+        print("_clearFilters 4");
       }
     }
   }
@@ -1012,7 +1048,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       return [
 
         _buildAnimatedTabItem(0, Icons.all_out_rounded, "All"),
-        _buildAnimatedTabItem(1, Icons.qr_code, "QR"),
+        //_buildAnimatedTabItem(1, Icons.qr_code, "QR"),
+        _buildAnimatedTabItem(1, Icons.link_outlined, "Link"),
         _buildAnimatedTabItem(2, Icons.currency_rupee, "Cash"),
         // _buildAnimatedTabItem(0, Icons.link_outlined, "Link"),
         //  _buildAnimatedTabItem(3, Icons.account_balance_sharp, "Transfer"),
@@ -1021,7 +1058,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       // Regular AGENT - Show only 3 tabs
       return [
         _buildAnimatedTabItem(0, Icons.all_out_rounded, "All"),
-        _buildAnimatedTabItem(1, Icons.qr_code, "QR"),
+       // _buildAnimatedTabItem(1, Icons.qr_code, "QR"),
+        _buildAnimatedTabItem(1, Icons.link_outlined, "Link"),
         _buildAnimatedTabItem(2, Icons.currency_rupee, "Cash"),
       ];
     }
@@ -1110,9 +1148,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   }
 
   Widget _buildContentCollectionSection(
-      QRTransactionHistoryProvider qrProvider,
-      CashTransactionHistoryProvider cashTranProvider,
+      //QRTransactionHistoryProvider qrProvider,
       CashQrProvider cashQrProvider,
+      CashTransactionHistoryProvider cashTranProvider,
+      LinkTransactionHistoryProvider linkProvider,
+
+
       ) {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
@@ -1121,7 +1162,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             case 0:
               return _buildCashWithQrTransactionContent(cashQrProvider);
             case 1:
-              return _buildQRTransactionContent(qrProvider);
+             // return _buildQRTransactionContent(qrProvider);
+              return _buildLinkTransactionContent(linkProvider);
             case 2:
               return _buildCashTransactionContent(cashTranProvider);
             default:
@@ -1160,6 +1202,32 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
 
+  Widget _buildLinkTransactionContent(LinkTransactionHistoryProvider linkProvider) {
+
+    if (linkProvider.erResposne != null) {
+      return _buildEmptyState(
+        icon: Icons.link,
+        title: "No Link Transactions",
+        message: "Your Link payment transactions will appear here",
+      );
+    } else if (linkProvider.linkTranscationHistoryModel == null) {
+      return _buildLoadingList();
+    }
+
+    return _buildTransactionList(
+      transactions: linkProvider.linkTranscationHistoryModel!.data!,
+      icon: Icons.link_outlined,
+      iconColor: Colors.blue,
+      getAmount: (t) => t.linkAmount ?? 0,
+      getStatus: (t) => t.linkStatus.toString(),
+      getOrderId: (t) => t.orderId.toString(),
+      getCustName: (t) => t.customerName.toString(),
+      getCustId: (t) => t.customerId.toString(),
+      getCustPhone: (t) => t.customerPhone.toString(),
+      getTnxType: (t) => t.source.toString(), paymentMode: (t)=> t.paymentMode.toString(), collectionType: (t)=>t.collectionType.toString(),
+      getAccNo: (t) => t.customerAcctno.toString(), getTranType: (t) => t.source.toString(), getCustAccNo: (t) => t.customerAcctno.toString(),
+    );
+  }
 
 
   Widget _buildCashTransactionContent(
@@ -1177,7 +1245,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     }
     return _buildTransactionList(
         transactions: cashProvider.qrTranscationHistoryModel!.data!,
-        icon: Icons.currency_rupee_rounded,
+        icon: Icons.dangerous_outlined,
         iconColor: Colors.orange,
         getAmount: (t) => t.orderAmount ?? 0,
         getStatus: (t) => t.orderStatus.toString(),
@@ -1279,7 +1347,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     required String paymentMode,
     required String collectionType,
   }) {
-    //print("payment mode : $paymentMode");
+    // print("payment mode : $paymentMode");
+    // print("collectionType : $collectionType");
+    //print("status : $status");
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child:
@@ -1331,8 +1401,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
-                    paymentMode == "QR"
-                        ? Icons.qr_code_rounded
+                    paymentMode == "PAYMENTLINK"
+                        ? Icons.link
                         : Icons.currency_rupee_rounded,
                     color: iconColor,
                     size: 20,
@@ -1372,7 +1442,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                       const SizedBox(height: 6),
 
                       /// COLLECTION TYPE TAG
-                      if (collectionType.isNotEmpty)
+                      if (collectionType.isNotEmpty && !collectionType.contains("null"))
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 3),
@@ -1381,7 +1451,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            collectionType,
+                             collectionType,
                             style: TextStyle(
                               fontSize: 11,
                               color: home1,
@@ -1529,9 +1599,13 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       return transaction.createdAt.toString().substring(0,16).toString()?? "";
     } else if (transaction is Order) {
       return transaction.createdAt.toString().substring(0,16).toString() ?? "";
-
     }
-    return DateTime.now().toString();
+    else if (transaction is LinkTransactions) {
+      return transaction.createdAt.toString().substring(0,16).toString() ?? "";
+    }
+
+    return transaction.createdAt.toString().substring(0,10).toString() ?? "";
+    //return DateTime.now().toString();
   }
 
   @override
@@ -1539,7 +1613,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     final qrProvider = Provider.of<QRTransactionHistoryProvider>(context);
     final cashTranProvider = Provider.of<CashTransactionHistoryProvider>(context);
     final cashQrProvider = Provider.of<CashQrProvider>(context);
-   // final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context);
+   final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context);
     //final transferProvider = Provider.of<TransferHistoryProvider>(context);
     final size = MediaQuery.of(context).size;
 
@@ -1581,9 +1655,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           SliverPadding(
             padding: const EdgeInsets.only(top: 1, left: 16, right: 16),
             sliver: userType == "COLLECTION"
-                ? _buildContentCollectionSection(qrProvider, cashTranProvider, cashQrProvider)
+               // ? _buildContentCollectionSection(qrProvider, cashTranProvider, cashQrProvider)
+                ? _buildContentCollectionSection(cashQrProvider, cashTranProvider,linkProvider)
                // : _buildContentSection(qrProvider, cashTranProvider, linkProvider,  transferProvider),
-                : _buildContentCollectionSection(qrProvider, cashTranProvider, cashQrProvider)
+               // : _buildContentCollectionSection(qrProvider, cashTranProvider, cashQrProvider)
+                : _buildContentCollectionSection(cashQrProvider, cashTranProvider,linkProvider)
           ),
         ],
       ),
@@ -1596,7 +1672,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     // Calculate based on selected tab
     switch (selectedTabIndex) {
       case 0: // All Code tab
-       // final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
+        final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
         final cashQrProvider = Provider.of<CashQrProvider>(context, listen: false);
         if(userType != "COLLECTION"){
           if (cashQrProvider.cashQrCombinedResponse != null) {
@@ -1624,11 +1700,16 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         break;
 
       case 1: // Qr tab
-        final qrProvider =
-        Provider.of<QRTransactionHistoryProvider>(context, listen: false);
-        if (qrProvider.qrTranscationHistoryModel != null) {
-          total = qrProvider.qrTranscationHistoryModel!.data!
-              .fold(0, (sum, item) => sum + (item.orderAmount ?? 0));
+        // final qrProvider =
+        // Provider.of<QRTransactionHistoryProvider>(context, listen: false);
+        // if (qrProvider.qrTranscationHistoryModel != null) {
+        //   total = qrProvider.qrTranscationHistoryModel!.data!
+        //       .fold(0, (sum, item) => sum + (item.orderAmount ?? 0));
+        final linkProvider =
+        Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
+        if (linkProvider.linkTranscationHistoryModel != null) {
+          total = linkProvider.linkTranscationHistoryModel!.data!
+              .fold(0, (sum, item) => sum + (item.linkAmount ?? 0));
         }
         break;
 
@@ -1713,30 +1794,30 @@ class _DatePickerButton extends StatelessWidget {
       getAccNo: (t) => t.customerAccNo.toString(), getTranType: (t) => t.source.toString(), getCustAccNo: (t) => t.customerAccNo.toString(),
     );
   }*/
-/*  Widget _buildLinkTransactionContent(
-      LinkTransactionHistoryProvider linkProvider)
-  {
-    if (linkProvider.erResposne != null) {
-      return _buildEmptyState(
-        icon: Icons.link_outlined,
-        title: "No Link Transactions",
-        message: "Your link transactions will appear here",
-      );
-    } else if (linkProvider.linkTranscationHistoryModel == null) {
-      return _buildLoadingList();
-    }
-    return _buildTransactionList(
-      transactions: linkProvider.linkTranscationHistoryModel!.data!,
-      icon: Icons.link_outlined,
-      iconColor: Colors.blue,
-      getAmount: (t) => t.linkAmount ?? 0,
-      getStatus: (t) => t.linkStatus.toString(),
-      getOrderId: (t) => t.orderId.toString(),
-      getCustName: (t) => t.customerName.toString(),
-      getCustId: (t) => t.customerId.toString(),
-      getCustPhone: (t) => t.customerPhone.toString(),
-      getTnxType: (t) => t.source.toString(), paymentMode: (t)=> t.paymentMode.toString(), collectionType: (t)=>t.collectionType.toString(),
-      getAccNo: (t) => t.customerAcctno.toString(), getTranType: (t) => t.source.toString(), getCustAccNo: (t) => t.customerAcctno.toString(),
-    );
-  }*/
+ // Widget _buildLinkTransactionContent(
+ //      LinkTransactionHistoryProvider linkProvider)
+ //  {
+ //    if (linkProvider.erResposne != null) {
+ //      return _buildEmptyState(
+ //        icon: Icons.link_outlined,
+ //        title: "No Link Transactions",
+ //        message: "Your link transactions will appear here",
+ //      );
+ //    } else if (linkProvider.linkTranscationHistoryModel == null) {
+ //      return _buildLoadingList();
+ //    }
+ //    return _buildTransactionList(
+ //      transactions: linkProvider.linkTranscationHistoryModel!.data!,
+ //      icon: Icons.link_outlined,
+ //      iconColor: Colors.blue,
+ //      getAmount: (t) => t.linkAmount ?? 0,
+ //      getStatus: (t) => t.linkStatus.toString(),
+ //      getOrderId: (t) => t.orderId.toString(),
+ //      getCustName: (t) => t.customerName.toString(),
+ //      getCustId: (t) => t.customerId.toString(),
+ //      getCustPhone: (t) => t.customerPhone.toString(),
+ //      getTnxType: (t) => t.source.toString(), paymentMode: (t)=> t.paymentMode.toString(), collectionType: (t)=>t.collectionType.toString(),
+ //      getAccNo: (t) => t.customerAcctno.toString(), getTranType: (t) => t.source.toString(), getCustAccNo: (t) => t.customerAcctno.toString(),
+ //    );
+ //  }
 

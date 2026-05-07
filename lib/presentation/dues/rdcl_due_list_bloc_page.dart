@@ -3,15 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../core/alerts.dart';
 import '../../core/utils.dart';
 import '../../data/provider/cash_transcation_provider.dart';
 import '../../data/rdcl_duelist_bloc/rdcl_duelist_bloc.dart';
+import '../../data/repository/payment_link_repository.dart';
 import '../../data/repository/payment_session_id_repository.dart';
 import '../../data/storage/shared_pref_helper.dart';
 import '../account_dues/widgets/rdcl_account_due_detail_page.dart';
+import '../paymentlink_request_ui.dart';
 import '../profile/widgets/recipect_page.dart';
 import '../qr_code/widgets/generate_qr_code_page.dart';
 
@@ -1274,7 +1277,7 @@ bool chekValue(String value){
                                                                   subAgentBranchCode:
                                                                       subAgentCodeNew,
                                                                 );
-                                                              },*//*
+                                                              },
                                                               ),
                                                             ],
                                                           ),
@@ -1860,7 +1863,7 @@ bool chekValue(String value){
                                                                                   ),
                                                                                   const SizedBox(height: 16),
                                                                                   const Divider(indent: 16, endIndent: 16),
-                                                                                  ListTile(
+                                                                               /*   ListTile(
                                                                                     leading: const Icon(Icons.qr_code, color: Colors.green),
                                                                                     title: const Text(
                                                                                       "QR Code",
@@ -1875,7 +1878,7 @@ bool chekValue(String value){
                                                                                       Navigator.pop(ctx);
                                                                                     },
                                                                                   ),
-                                                                                  const Divider(indent: 16, endIndent: 16),
+                                                                                  const Divider(indent: 16, endIndent: 16),*/
                                                                                   ListTile(
                                                                                     leading: const Icon(Icons.money, color: Colors.deepOrange),
                                                                                     title: const Text(
@@ -1888,6 +1891,23 @@ bool chekValue(String value){
                                                                                     trailing: const Icon(Icons.chevron_right),
                                                                                     onTap: () {
                                                                                       setModalState(() => selectedMethod = "Cash");
+                                                                                      Navigator.pop(ctx);
+                                                                                    },
+                                                                                  ),
+
+                                                                                  const Divider(indent: 16, endIndent: 16),
+                                                                                  ListTile(
+                                                                                    leading: const Icon(Icons.link, color: Colors.deepOrange),
+                                                                                    title: const Text(
+                                                                                      "Link",
+                                                                                      style: TextStyle(
+                                                                                        fontWeight: FontWeight.w600,
+                                                                                        fontSize: 16,
+                                                                                      ),
+                                                                                    ),
+                                                                                    trailing: const Icon(Icons.chevron_right),
+                                                                                    onTap: () {
+                                                                                      setModalState(() => selectedMethod = "Link");
                                                                                       Navigator.pop(ctx);
                                                                                     },
                                                                                   ),
@@ -1952,7 +1972,7 @@ bool chekValue(String value){
                                                                   TextFormField(
                                                                     controller: controller,
                                                                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                                                    decoration: InputDecoration(
+                                                                        decoration: InputDecoration(
                                                                       filled: true,
                                                                       fillColor: home2,
                                                                       border: OutlineInputBorder(
@@ -1977,7 +1997,7 @@ bool chekValue(String value){
                                                                   CustomSliderButton(
                                                                     token: token ?? "",
                                                                     label: "Slide to Collect Using $selectedMethod",
-                                                                    backgroundColor: home2,
+                                                                    backgroundColor: home1,
                                                                     buttonColor: Colors.white,
                                                                     onConfirmed: () async {
                                                                       if (selectedMethod == "Cash") {
@@ -1989,7 +2009,23 @@ bool chekValue(String value){
                                                                           controller.text,
                                                                         );
                                                                         if (!confirmed) return;
-                                                                      } else {
+                                                                      }
+                                                                      else if(selectedMethod == "Link"){
+                                                                        sendLinkFunction(
+                                                                          context,
+                                                                          agentName!, agentId!, agentOriginId!, agentPhoneNumber!,
+                                                                          agentEmail!,state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].name,
+                                                                            agentPhoneNumber!,
+                                                                            state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].accNo,
+                                                                            "",
+                                                                            state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].custId,
+                                                                            int.parse(controller.text),'',
+                                                                          corpCode!, '', token!, subagentId!
+                                                                        );
+                                                                      }
+
+
+                                                                      else {
                                                                         getPaymentSessionId(
                                                                           token: token,
                                                                           customerName: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].name,
@@ -2069,6 +2105,63 @@ bool chekValue(String value){
     );
   }
 }
+
+Future<void> sendLinkFunction(
+    BuildContext context,
+     String agentName,
+     String agentId,
+      String agentOriginId,
+      String agentPhone,
+      String agentEmail,
+      String customerName,
+      String customerPhone,
+      String customerAccountNumber,
+      String customerEmail,
+      String customerId,
+      num linkAmount,
+      String note,
+      String corpCode,
+      String cardRefNum,
+      String token,
+      String subAgentid
+    ) async {
+  final send = await PaymentLinkRepository().getPaymentLink(
+      agentName: agentName,
+      agentId: agentId,
+      agentOriginId: agentOriginId,
+      agentPhone: agentPhone,
+      agentEmail: agentEmail,
+      customerName: customerName,
+      customerPhone: customerPhone,
+      customerAccountNumber: customerAccountNumber,
+      customerEmail: "",
+      customerId: customerId,
+      linkAmount: linkAmount,
+      note: "Payment for Order #12345",
+      corpCode: corpCode,
+      cardRefNum: "",
+      token: token.toString(),
+      subAgentId: subAgentid);
+
+  send.fold(
+        (error) {
+      //print("-------------------ERROR---------------------");
+      // print(error);
+    },
+        (sendLink) {
+      if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
+        print("7");
+        //Share.share("Here is your payment link: ${sendLink.linkUrl}");
+        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>
+        PaymentLinkRequestUi(customerMobileNumber: customerPhone, paymentLink: sendLink.linkUrl.toString(),)
+        ));
+      } else {
+        // print("Payment link is empty or null");
+      }
+    },
+  );
+}
+
 
 class CustomSliderButton extends StatefulWidget {
   final Future<void> Function() onConfirmed;

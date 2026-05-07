@@ -16,7 +16,9 @@ class AgentTransactionRepository implements IAgentTransactionRepository{
    final url = Uri.parse("${baseUrl}api/Cashfree/GetPaymentLinksQrTransactions");
    bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
    if(checkConnection){
-     final response = await http.get(url,headers: {
+     final response = await http.get(
+       url,
+       headers: {
        'Authorization': 'Bearer $token', // Add token here
        'Content-Type': 'application/json',
      },);

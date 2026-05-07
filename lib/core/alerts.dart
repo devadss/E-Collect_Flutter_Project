@@ -4,7 +4,7 @@ import '../main.dart';
 import 'colors.dart';
 
 
-showToast({required String message, required Color color}) {
+void showToast({required String message, required Color color}) {
   Fluttertoast.showToast(
       msg: message,
       toastLength: Toast.LENGTH_SHORT,

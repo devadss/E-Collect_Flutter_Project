@@ -71,9 +71,11 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   Widget _getSelectedPage(int index) {
     switch (index) {
       case 0:
-        return HomePage(
+        return
+          HomePage(
           userType: loggedInUserTPYE.toString(),
-        );
+        )
+        ;
       case 1:
         return userTPYE?.contains("RDCL") == true
             ? RdclDueListBlocPage(branchCode: _branchID.toString(),)

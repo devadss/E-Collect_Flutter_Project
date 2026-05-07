@@ -22,6 +22,7 @@ import '../../../data/repository/payment_session_id_repository.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../../domain/model/cash_transcation_model.dart';
 import '../../dues/widgets/new_qr_code_page.dart';
+import '../../paymentlink_request_ui.dart';
 import '../../profile/widgets/recipect_page.dart';
 
 class RdclAccountDueDetailsPage extends StatefulWidget {
@@ -219,7 +220,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
               // Payment options buttons
               _buildPaymentOptionButton(
                 icon: Icons.qr_code,
-                label: "Pay via QR Code",
+                label: "Pay via QRa Code",
                 onPressed: () async {
                   print("--------------------TOKEN---------------------");
                   print(token);
@@ -289,16 +290,16 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
                   });
                 },
               ),
-              // const SizedBox(height: 12),
-              //
-              // _buildPaymentOptionButton(
-              //   icon: Icons.link,
-              //   label: "Send Payment Link",
-              //   onPressed: () {
-              //     Navigator.pop(context);
-              //     sendLinkFunction();
-              //   },
-              // ),
+              const SizedBox(height: 12),
+
+              _buildPaymentOptionButton(
+                icon: Icons.link,
+                label: "Send Payment Link",
+                onPressed: () {
+                  Navigator.pop(context);
+                  sendLinkFunction();
+                },
+              ),
               const SizedBox(height: 12),
 
               _buildPaymentOptionButton(
@@ -527,7 +528,11 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
       },
       (sendLink) {
         if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
-          Share.share("Here is your payment link: ${sendLink.linkUrl}");
+          print("4");
+          //Share.share("Here is your payment link: ${sendLink.linkUrl}");
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>
+              PaymentLinkRequestUi(customerMobileNumber: customerNumber.toString(), paymentLink: sendLink.linkUrl.toString(),)
+          ));
         } else {
           print("Payment link is empty or null");
         }

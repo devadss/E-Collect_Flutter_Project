@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../core/colors.dart';
 import '../../../core/utils.dart';
 import '../../../data/provider/cash_transcation_provider.dart';
 import '../../../data/rdcl_duelist_bloc/rdcl_duelist_bloc.dart';
+import '../../../data/repository/payment_link_repository.dart';
 import '../../../data/repository/payment_session_id_repository.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../dues/rdcl_due_home_page.dart';
 import '../../dues/widgets/new_qr_code_page.dart';
+import '../../paymentlink_request_ui.dart';
 import '../../profile/widgets/recipect_page.dart';
 
 class RdclDueDetail extends StatefulWidget {
@@ -239,7 +242,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                 const SizedBox(height: 24),
 
                 // Payment options
-                _buildPaymentOptionButton(
+         /*       _buildPaymentOptionButton(
                   icon: Icons.qr_code_scanner,
                   label: "Pay via QR Code",
                   onPressed: () async {
@@ -298,7 +301,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                     });
                   },
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 12),*/
 
                 _buildPaymentOptionButton(
                   icon: Icons.payments,
@@ -314,11 +317,59 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                         amountController.text);
                   },
                 ),
-                const SizedBox(height: 24),
+                //const SizedBox(height: 24),
+                              const SizedBox(height: 12),
+
+              _buildPaymentOptionButton(
+                icon: Icons.link,
+                label: "Send Payment Link",
+                onPressed: () {
+                  Navigator.pop(context);
+                  sendLinkFunction();
+                },
+              ),
+                const SizedBox(height: 12),
               ],
             ),
           ),
         );
+      },
+    );
+  }
+  Future<void> sendLinkFunction() async {
+    final send = await PaymentLinkRepository().getPaymentLink(
+        agentName: agentName!,
+        agentId: agentId!,
+        agentOriginId: agentOriginId!,
+        agentPhone: agentMobile!,
+        agentEmail: agentEmail!,
+        customerName: widget.customeName,
+        customerPhone: agentMobile!,
+        customerAccountNumber: widget.custAcNumber,
+        customerEmail: "",
+        customerId: widget.custId,
+        linkAmount: num.parse(amountController.text),
+        note: "Payment for Order #12345",
+        corpCode: corpCode!,
+        cardRefNum: "",
+        token: token.toString(),
+        subAgentId: subagentId!);
+
+    send.fold(
+          (error) {
+        //print("-------------------ERROR---------------------");
+        // print(error);
+      },
+          (sendLink) {
+        if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
+          print("2");
+          //Share.share("Here is your payment link: ${sendLink.linkUrl}");
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>
+              PaymentLinkRequestUi(customerMobileNumber: agentMobile.toString(), paymentLink: sendLink.linkUrl.toString(),)
+          ));
+        } else {
+          // print("Payment link is empty or null");
+        }
       },
     );
   }
