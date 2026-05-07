@@ -116,7 +116,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     final qrProvider = context.read<QRTransactionHistoryProvider>();
     final cashTransProvider = context.read<CashTransactionHistoryProvider>();
     final linkProvider = context.read<LinkTransactionHistoryProvider>();
-  // final transferProvider = context.read<TransferHistoryProvider>();
+  //final transferProvider = context.read<TransferHistoryProvider>();
 
     DateTime? fromDate;
     DateTime? toDate;
@@ -393,6 +393,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     final crpCode = await SharedPref().getCorpCode();
     final forceLogout = await SharedPref().getForceLogout();
     final customerRdUrl = await SharedPref().getCustomerRdUrl();
+    final subAgentmobnum = await SharedPref.shared.getSubAgentMobNum();
+
+    isRunningLiveBaseUrl(true , subAgentmobnum);
+    isRunningLiveDopBaseUrl(true, subAgentmobnum);
 
     if (mounted) {
       setState(() {

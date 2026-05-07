@@ -196,8 +196,8 @@ class _SplashScreenState extends State<SplashScreen> {
     mpin = await SharedPref.shared.getMpinValue();
     String username = await SharedPref.shared.getParentAgentName();
     String password = await SharedPref.shared.getParentAgentPassword();
-    isRunningLiveBaseUrl(false , mobnum);
-    isRunningLiveDopBaseUrl(false, mobnum);
+    isRunningLiveBaseUrl(false , subAgentmobnum);
+    isRunningLiveDopBaseUrl(false, subAgentmobnum);
     setState(() {
       loginStatus = lgStatus;
     });

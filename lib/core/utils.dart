@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../data/provider/collection_base_url_provider.dart';
 import '../data/provider/parent_agent_detail_provider/parent_agent_detil_provider.dart';
@@ -14,21 +15,24 @@ import 'constants.dart';
 const bool printStatementStatus = true;
 
 void isRunningLiveBaseUrl(bool status, String mobile) async {
-  if (status && mobile != null && mobile != uatTestMobileNumber){
+  if (status==true && mobile != null && mobile != uatTestMobileNumber){
+    print("STATUS :$status");
+    print("mobile :$mobile");
+    print("returning live url");
     baseUrl = "https://adsspay.aanvinsolutions.com:8444/";
   }else{
    baseUrl ="https://adsspayweb.digicob.in/";
+   print("returning UAT url");
   }
 }
 
 void isRunningLiveDopBaseUrl(bool status, String mobile) async {
-  if (status && mobile != null && mobile != uatTestMobileNumber){
+  if (status== true && mobile != null && mobile != uatTestMobileNumber){
     dopBaseUrl =  "https://mydop.in/api/fetch/vendor/urls/";
   }else{
     dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";
   }
 }
-
 
 String getBankNameFromCorpCode(String corpCode) {
   //print("getBankNameFromCorpCode $corpCode");
@@ -521,4 +525,14 @@ Future<void> resetInitialData() async {
   SharedPref.shared.setDueListLoanUrl('');
   SharedPref.shared.setLoanAccountHolderUrl('');
   SharedPref.shared.setUserType('');
+}
+
+
+Future<void> openGoogleMaps(double latitude , double longitude) async {
+  final googleMapUri = Uri.parse("https://www.google.com/maps/dir/?api=1&destination=$latitude,$longitude&travelmode=driving");
+  if(await canLaunchUrl(googleMapUri)){
+    launchUrl(googleMapUri,mode: LaunchMode.externalApplication);
+  }else{
+    throw 'Could not open Google Maps';
+  }
 }

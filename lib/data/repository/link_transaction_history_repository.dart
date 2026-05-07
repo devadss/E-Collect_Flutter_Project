@@ -17,7 +17,7 @@ class LinkTransactionHistoryRepository implements ILinkTransactionHistoryReposit
      // final url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$filterType&startDate=$startDate&endDate=$endDate&Source=ALL&CorpCode=$corpCode&agentOrginId=$agentOrginId&PaymentMode=PAYMENTLINK");
       final url = Uri.parse("${baseUrl}api/Cashfree/GetPaymentLinksQrTransactions?filterType=$filterType&startDate=$startDate&endDate=$endDate&subAgentId=$subAgentId&paymentMode=PAYMENTLINK&corpCode=$corpCode");
 
-  printLog("https://adsspayweb.digicob.in/api/Cashfree/GetPaymentLinksQrTransactions?filterType=$filterType&startDate=$startDate&endDate=$endDate&subAgentId=$subAgentId&paymentMode=PAYMENTLINK&corpCode=$corpCode");
+  printLog("${baseUrl}api/Cashfree/GetPaymentLinksQrTransactions?filterType=$filterType&startDate=$startDate&endDate=$endDate&subAgentId=$subAgentId&paymentMode=PAYMENTLINK&corpCode=$corpCode");
 
    bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
    if(checkConnection){

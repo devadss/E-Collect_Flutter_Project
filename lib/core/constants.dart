@@ -1,30 +1,12 @@
-// Production
+
 import 'dart:io';
 import 'package:collection_qr_flutter/core/colors.dart';
-import 'package:collection_qr_flutter/core/utils.dart';
 import 'package:flutter/material.dart';
 
-//******************************************************************
-//*******true : Production base url is used******
-//******false : Uat base url is used******
-
-
- // String baseUrl = isRunningLiveBaseUrl(true).toString();
- // String dopBaseUrl = isRunningLiveDopBaseUrl(true).toString();
 String baseUrl = "";
 String dopBaseUrl = "";
 
-//******************************************************************
-
-//******************************************************************
-//const String baseUrl = "https://adsspay.aanvinsolutions.com:8444/";///LIVE
-//const String baseUrl = "https://adsspayweb.digicob.in/"; //TEST
-//*******************************************************************
-//const String dopBaseUrl = "https://devops.mydop.in/api/fetch/vendor/urls/"; //UAT
-//const String dopBaseUrl = "https://mydop.in/api/fetch/vendor/urls/"; //LIVE
-
-const String uatTestMobileNumber = "7663220991"; ///Currently this number is provided for appstore...
-
+const String uatTestMobileNumber = "+917663220991"; ///Currently this number is provided for appstore...
 
 const String port = ":8444/";
 const String agentIdLive = "ADSS20231011";
@@ -140,7 +122,6 @@ class SharedPrefKeys {
 
   //----------------------------------------------------------------------------
   static const String force_logout = "FORCE_LOGOUT";
-
   static const String vendorUrlTest = "VENDOR_TEST_URL";
   static const String userType = "USER_TYPE";
   static const String subAgent_username = "SUB_AGENT_USERNAME";
@@ -205,3 +186,19 @@ String capitalizeFirstLetter(String? input){
   if(input == null || input.isEmpty) return '';
   return input[0].toUpperCase()+input.substring(1);
 }
+
+//******************************************************************
+//*******true : Production base url is used******
+//******false : Uat base url is used******
+
+
+// String baseUrl = isRunningLiveBaseUrl(true).toString();
+// String dopBaseUrl = isRunningLiveDopBaseUrl(true).toString();
+//******************************************************************
+
+//******************************************************************
+//const String baseUrl = "https://adsspay.aanvinsolutions.com:8444/";///LIVE
+//const String baseUrl = "https://adsspayweb.digicob.in/"; //TEST
+//*******************************************************************
+//const String dopBaseUrl = "https://devops.mydop.in/api/fetch/vendor/urls/"; //UAT
+//const String dopBaseUrl = "https://mydop.in/api/fetch/vendor/urls/"; //LIVE
