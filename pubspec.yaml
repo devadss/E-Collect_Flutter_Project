@@ -29,6 +29,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   fluttertoast: ^9.0.0
+  palette_generator_master: ^1.1.0
   url_launcher: ^6.3.2
   provider: ^6.1.5+1
   flutter_longpress_preview: ^0.1.9

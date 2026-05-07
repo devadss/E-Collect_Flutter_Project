@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:collection_qr_flutter/data/provider/cash_qr_provider.dart';
 import 'package:collection_qr_flutter/domain/model/all_trans_data.dart';
@@ -6,6 +8,7 @@ import 'package:collection_qr_flutter/domain/model/transfer_history_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
+import 'package:palette_generator_master/palette_generator_master.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/colors.dart';
 import '../../../data/storage/shared_pref_helper.dart';
@@ -47,13 +50,17 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   String currentFromDate = ''; // Track current from date
   String currentToDate = ''; // Track current to date
   int currentBannerIndex = 0;
-
+  Color? dominantColor;
   static const Color whiteColor = Colors.white;
-
+var bannerImagesColorPallet = [];
   final List<String> bannerImages = [
-    "assets/images/collection_splash_screen.jpg",
-    "assets/images/collection_splash_screen.jpg",
-    "assets/images/doodle.jpeg",
+    "assets/images/cq1.png",
+    "assets/images/cq2.png",
+    "assets/images/cq3.png",
+    "assets/images/cq4.png",
+    "assets/images/cq5.png",
+    "assets/images/cq6.png",
+    "assets/images/cq7.png",
   ];
   final CarouselSliderController _carouselController = CarouselSliderController();
   DateTime startDate = DateTime.now().subtract(const Duration(days: 30));
@@ -61,7 +68,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   late AnimationController _animationController;
   late Animation<double> fadeAnimation;
   late Animation<double> scaleAnimation;
-
+  int index = 0;
 
   // void checkForUpdate() async {
   //   try {
@@ -72,6 +79,33 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   //   } catch (e) {
   //   }
   // }
+
+  Future<void> createColorPallet() async {
+    for(var clr in bannerImages){
+      final ImageProvider imageProvider = AssetImage(clr);
+      final PaletteGeneratorMaster paletteGenerator =
+      await PaletteGeneratorMaster.fromImageProvider(
+        imageProvider,
+        maximumColorCount: 16,
+        generateHarmony: true,      // Generate color harmony
+      );
+     bannerImagesColorPallet.add(paletteGenerator.dominantColor?.color);
+     //dominantColor = paletteGenerator.dominantColor?.color;
+
+      print("dominantColor = $dominantColor");
+      final Color? vibrantColor = paletteGenerator.vibrantColor?.color;
+      final Color? mutedColor = paletteGenerator.mutedColor?.color;
+
+
+    }
+    Timer.periodic(const Duration(seconds: 3), (timer) {
+      setState(() {
+        index = (index + 1) % bannerImagesColorPallet.length;
+      });
+    });
+
+
+  }
 
   void animationController(){
     _animationController = AnimationController(
@@ -100,7 +134,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
+    createColorPallet();
     checkForUpdate();
+
     loadSharedPrefs(context);
     animationController();
   }
@@ -583,27 +619,25 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         ? userName![0].toUpperCase() + userName!.substring(1)
         : "";
 
-    return Container(
+    return AnimatedContainer(
+      duration: 500.ms,
+      curve: Curves.easeInOut,
       width: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [home1, home2],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+      decoration: BoxDecoration(
+        color: bannerImagesColorPallet[index],
       ),
       child: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
+      
             /// HEADER TEXT
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
+      
                   /// GREETING SMALL
                   Text(
                     "Welcome back",
@@ -613,9 +647,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-
+      
                   const SizedBox(height: 4),
-
+      
                   /// USER NAME
                   Text(
                     "Hi, $formattedName ",
@@ -629,9 +663,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                       .animate()
                       .fadeIn(duration: 400.ms)
                       .slideY(begin: -0.2),
-
+      
                   const SizedBox(height: 6),
-
+      
                   /// OPTIONAL SUBTEXT
                   Text(
                     "Here's your collection overview",
@@ -643,12 +677,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 ],
               ),
             ),
-
-
-
+      
+      
+      
             /// BANNER / CAROUSEL
             _buildAnimatedBannerCarousel(size),
-
+      
             const SizedBox(height: 10),
           ],
         ),

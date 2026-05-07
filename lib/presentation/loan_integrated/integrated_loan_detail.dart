@@ -2,6 +2,7 @@ import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_longpress_preview/flutter_longpress_preview.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:palette_generator_master/palette_generator_master.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/utils.dart' as utl;
@@ -79,13 +80,14 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
   String? branchCode;
   String? selectedAccNumber;
   TextEditingController editAmountController = TextEditingController();
-
+   Color? dominantColor;
 
   @override
   void initState() {
 
     super.initState();
     loadSharedPrefs();
+    createColorPallet("assets/images/person.png");
    // editAmountController.text = widget.loanAmount .toString();
     editAmountController.text = (widget.principalAmountBalance+widget.interestAmountBalance+widget.penalInterestAmountBalance).toString();
   }
@@ -488,7 +490,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
   }*/
   BoxDecoration _modernCardDecoration() {
     return BoxDecoration(
-      color: Colors.white,
+      color: dominantColor?.withAlpha(150),
       borderRadius: BorderRadius.circular(20),
       boxShadow: [
         BoxShadow(
@@ -542,6 +544,22 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
       },
     );
   }
+  Future<void> createColorPallet(String imageStr) async {
+    final ImageProvider imageProvider = AssetImage(imageStr);
+    final PaletteGeneratorMaster paletteGenerator =
+        await PaletteGeneratorMaster.fromImageProvider(
+      imageProvider,
+      maximumColorCount: 16,
+      generateHarmony: true,      // Generate color harmony
+    );
+    setState(() {
+      dominantColor = paletteGenerator.dominantColor?.color;
+    });
+    print("dominantColor = $dominantColor");
+
+    final Color? vibrantColor = paletteGenerator.vibrantColor?.color;
+    final Color? mutedColor = paletteGenerator.mutedColor?.color;
+  }
   Widget _buildHeaderCard() {
     return Container(
       padding: const EdgeInsets.all(20),
@@ -553,15 +571,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
             imageProvider: AssetImage("assets/images/person.png"),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
-                // gradient: LinearGradient(
-                //   begin: Alignment.topLeft,
-                //   end: Alignment.bottomRight,
-                //   colors: [
-                //     home1,
-                //     home1.withAlpha(3),
-                //   ],
-                // ),
+                color: dominantColor,
                 borderRadius: BorderRadius.circular(100),
                 boxShadow: [
                   BoxShadow(
@@ -576,13 +586,6 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                 child: CircleAvatar(
                   radius: 40,
                  backgroundImage: AssetImage("assets/images/person.png"),
-                 // backgroundColor: Colors.transparent,
-                 // child: Image.asset("assets/images/person.png",fit: BoxFit.fill,)
-                  // const Icon(
-                  //   Icons.person_outline_rounded,
-                  //   color: Colors.white,
-                  //   size: 28,
-                  // ),
                 ),
               ),
             ),

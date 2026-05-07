@@ -11,6 +11,7 @@ import '../dues/rdcl_due_list_bloc_page.dart';
 import '../home/home_page.dart';
 import '../loan/loan_home_page.dart';
 import '../profile/profile_home_page.dart';
+import '../ptp_bucket/ptp_bucket_ui.dart';
 import '../trancstion/payment_link_home_page.dart';
 
 class BottomNavScreen extends StatefulWidget {
@@ -88,7 +89,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
             ? const CustomerList()
             : const AccountListHomePage();
       case 3:
-        return const ProfileHomePage();
+       // return const ProfileHomePage();
+        return const PtpBucketUi();
       default:
         return HomePage(
           userType: loggedInUserTPYE.toString(),
