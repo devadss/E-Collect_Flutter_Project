@@ -16,13 +16,18 @@ const bool printStatementStatus = true;
 
 void isRunningLiveBaseUrl(bool status, String mobile) async {
   if (status==true && mobile != null && mobile != uatTestMobileNumber){
-    print("STATUS :$status");
-    print("mobile :$mobile");
-    print("returning live url");
+    if(printStatementStatus){
+      print("STATUS :$status");
+      print("mobile :$mobile");
+      print("returning live url");
+    }
+
     baseUrl = "https://adsspay.aanvinsolutions.com:8444/";
   }else{
    baseUrl ="https://adsspayweb.digicob.in/";
-   print("returning UAT url");
+   if(printStatementStatus){
+     print("returning UAT url");
+   }
   }
 }
 
@@ -527,6 +532,25 @@ Future<void> resetInitialData() async {
   SharedPref.shared.setUserType('');
 }
 
+void showNotification(BuildContext context , String content, Color color, Color txtColor){
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(content, style: TextStyle(color: txtColor, fontWeight: FontWeight.w700),), backgroundColor: color));
+
+}
+
+
+
+AppBar ptp_bucket_appbar(String appBarName) {
+  return AppBar(
+    centerTitle: true,
+    title:  Text(
+      appBarName,
+
+      style: TextStyle(
+          color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
+    ),
+    backgroundColor: home1.withAlpha(180),
+  );
+}
 
 Future<void> openGoogleMaps(double latitude , double longitude) async {
   final googleMapUri = Uri.parse("https://www.google.com/maps/dir/?api=1&destination=$latitude,$longitude&travelmode=driving");

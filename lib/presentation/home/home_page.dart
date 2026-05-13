@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:collection_qr_flutter/data/provider/cash_qr_provider.dart';
 import 'package:collection_qr_flutter/domain/model/all_trans_data.dart';
@@ -52,7 +51,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   int currentBannerIndex = 0;
   Color? dominantColor;
   static const Color whiteColor = Colors.white;
-var bannerImagesColorPallet = [];
+
   final List<String> bannerImages = [
     "assets/images/cq1.png",
     "assets/images/cq2.png",
@@ -62,6 +61,8 @@ var bannerImagesColorPallet = [];
     "assets/images/cq6.png",
     "assets/images/cq7.png",
   ];
+  var bannerImagesColorPallet = [];
+  var initalColor = Color.fromARGB( 1, 0,   0,  0,  );
   final CarouselSliderController _carouselController = CarouselSliderController();
   DateTime startDate = DateTime.now().subtract(const Duration(days: 30));
   DateTime endDate = DateTime.now();
@@ -92,11 +93,9 @@ var bannerImagesColorPallet = [];
      bannerImagesColorPallet.add(paletteGenerator.dominantColor?.color);
      //dominantColor = paletteGenerator.dominantColor?.color;
 
-      print("dominantColor = $dominantColor");
+      print("dominantColor = ${paletteGenerator.dominantColor?.color}");
       final Color? vibrantColor = paletteGenerator.vibrantColor?.color;
       final Color? mutedColor = paletteGenerator.mutedColor?.color;
-
-
     }
     Timer.periodic(const Duration(seconds: 3), (timer) {
       setState(() {
@@ -134,11 +133,12 @@ var bannerImagesColorPallet = [];
   @override
   void initState() {
     super.initState();
+    animationController();
     createColorPallet();
     checkForUpdate();
 
     loadSharedPrefs(context);
-    animationController();
+
   }
 
   @override
@@ -483,7 +483,10 @@ var bannerImagesColorPallet = [];
       // );
 
       // Load Link transactions (for AGENT_LOAN)
-      print("userType : ${userType}");
+      if(printStatementStatus){
+        print("userType : $userType");
+      }
+
       if (userType == "LOAN_COLLECTION") {
         await linkProvider.getLinkTransactionHistory(
            // "THIS_WEEK",
@@ -615,16 +618,22 @@ var bannerImagesColorPallet = [];
   }
 
   Widget _buildAnimatedHeader(BuildContext context, Size size) {
+
     final formattedName = (userName != null && userName!.isNotEmpty)
         ? userName![0].toUpperCase() + userName!.substring(1)
         : "";
+   // SAFE COLOR
+   final headerColor = bannerImagesColorPallet.isNotEmpty &&
+       index < bannerImagesColorPallet.length
+       ? bannerImagesColorPallet[index]
+       : Colors.blue; // fallback color
 
     return AnimatedContainer(
       duration: 500.ms,
       curve: Curves.easeInOut,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: bannerImagesColorPallet[index],
+        color: headerColor,
       ),
       child: SafeArea(
         child: Column(
@@ -639,6 +648,7 @@ var bannerImagesColorPallet = [];
                 children: [
       
                   /// GREETING SMALL
+
                   Text(
                     "Welcome back",
                     style: TextStyle(
@@ -651,18 +661,24 @@ var bannerImagesColorPallet = [];
                   const SizedBox(height: 4),
       
                   /// USER NAME
+
+
                   Text(
+
                     "Hi, $formattedName ",
+
                     style:  TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
                       color: whiteColor,
                       letterSpacing: 0.3,
+
+
                     ),
                   )
                       .animate()
-                      .fadeIn(duration: 400.ms)
-                      .slideY(begin: -0.2),
+                      .fadeIn(duration: 900.ms)
+                      .slideX(begin: -0.9),
       
                   const SizedBox(height: 6),
       
@@ -673,7 +689,7 @@ var bannerImagesColorPallet = [];
                       color: whiteColor.withOpacity(0.75),
                       fontSize: 12,
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
@@ -702,8 +718,8 @@ var bannerImagesColorPallet = [];
               autoPlay: true,
               enlargeCenterPage: true,
               viewportFraction: 0.8,
-              autoPlayInterval: 2.seconds,
-              autoPlayAnimationDuration: 800.ms,
+              autoPlayInterval: 3.seconds,
+              autoPlayAnimationDuration: 1200.ms,
               onPageChanged: (index, reason) {
                 setState(() {
                   currentBannerIndex = index;
@@ -1656,7 +1672,7 @@ print("_clearFilters 1");
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.white,
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [

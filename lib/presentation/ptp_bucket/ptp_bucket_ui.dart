@@ -1,84 +1,115 @@
 import 'package:collection_qr_flutter/core/colors.dart';
+import 'package:collection_qr_flutter/presentation/ptp_bucket/ptp_page.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../core/utils.dart';
 
 class PtpBucketUi extends StatefulWidget {
-  const PtpBucketUi({super.key});
 
+  const PtpBucketUi({super.key});
   @override
   State<PtpBucketUi> createState() => _PtpBucketUiState();
+
 }
 
 class _PtpBucketUiState extends State<PtpBucketUi> {
-  Map<String, List<dynamic>> headerContent = {
-    "Due Customers": ["120", Colors.orange.shade100],
-    "Total PTP": ["315", Colors.yellow.shade100],
-    "Broken PTP": ["102", Colors.cyan.shade100]
+  TextEditingController amountController = TextEditingController();
+
+  final Map<String, List<dynamic>> headerContent = {
+    "Due Customers": ["5", Colors.deepOrange],
+    "Total PTP": ["315", Colors.amber],
+    "Broken PTP": ["102", Colors.cyan],
+    "Kept PTP": ["2", Colors.green],
   };
-  List<String> bucketFilterCode = ["All", "B1", "B2", "B3", "B4"];
+final Map<String , dynamic> bfc = {
+  "All":Colors.white,
+  "B1(1-30 DPD)":Colors.orange,
+  "B2(31-60 DPD)":Colors.amber,
+  "B3(61-90 DPD)":Colors.red.shade300,
+  "B4(91+ DPD)":Colors.red,
+};
+
   int? selectedIndex;
   int? selectedCodeIndex;
+
+  Future<void> _makePhoneCall(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    selectedCodeIndex = 0;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text(
-          "PTP-BUCKET",
-          style: TextStyle(
-              color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
-        ),
-        backgroundColor: home1.withAlpha(180),
-      ),
+      backgroundColor: const Color(0xffF4F7FC),
+      appBar:ptp_bucket_appbar("LOAN-BUCKET"),
+
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(14),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 100,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: headerContent.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return headerWidget(
-                          headerContent.keys.elementAt(index),
-                          headerContent.values.elementAt(index).first,
-                          headerContent.values.elementAt(index).last);
-                    },
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Text(
-                "Bucket Filters",
-                style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
-              ),
-              SizedBox(
-                height: 10,
-              ),
+
+              /// HEADER CARDS
               SizedBox(
                 width: double.infinity,
-                height: 50,
+                height: 110,
                 child: ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
                   scrollDirection: Axis.horizontal,
-                  itemCount: bucketFilterCode.length,
+                  itemCount: headerContent.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return bucketWidgetCodes(bucketFilterCode[index], index);
+                    return headerWidget(
+                      headerContent.keys.elementAt(index),
+                      headerContent.values.elementAt(index).first,
+                      headerContent.values.elementAt(index).last,
+                    );
                   },
                 ),
               ),
-              SizedBox(
-                height: 20,
+
+              const SizedBox(height: 10 ),
+              const Divider(),
+              const Padding(
+                padding: EdgeInsets.only(left: 4),
+                child: Text(
+                  "Bucket Filters",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                  ),
+                ),
               ),
+
+              const SizedBox(height: 14),
+
+              /// FILTER CHIPS
+              SizedBox(
+                width: double.infinity,
+                height: 45,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: bfc.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return bucketWidgetCodes(
+                      index,bfc
+                    );
+                  },
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              /// LIST
               Expanded(
                 child: contentListWidget(),
               )
@@ -91,149 +122,380 @@ class _PtpBucketUiState extends State<PtpBucketUi> {
 
   ListView contentListWidget() {
     return ListView.builder(
-                itemCount: 4,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child:
-                    InkWell(
-                      onTap: (){
-                        setState(() {
-                          selectedIndex = index;
-                        });
+      itemCount: 5,
+      itemBuilder: (BuildContext context, int index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(24),
+            onTap: () {
+              setState(() {
+                selectedIndex = index;
+              });
+            },
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                color: Colors.white,
+                border: Border.all(
+                  color: selectedIndex == index
+                      ? home1.withAlpha(70)
+                      : Colors.transparent,
+                  width: 1.5,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(.04),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  )
+                ],
+              ),
 
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(16),
+              child: Column(
+                children: [
+
+                  /// TOP SECTION
+                  Row(
+                    children: [
+
+                      Container(
+                        padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-
-                            border: Border.all(color: Colors.grey.shade200),
-                            color: selectedIndex == index? grey.shade200:Colors.white,
-                            // boxShadow: [
-                            //   BoxShadow(
-                            //       color: selectedIndex == index?Colors.white:Colors.black12,
-                            //       blurRadius: 3,
-                            //       spreadRadius: 2),
-                            // ]
+                          shape: BoxShape.circle,
+                          color: Colors.indigo.shade50,
                         ),
+                        child: const Icon(
+                          Icons.person,
+                          color: Colors.indigo,
+                          size: 24,
+                        ),
+                      ),
+
+                      const SizedBox(width: 14),
+
+                      Expanded(
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Customer name",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 17),
-                                ),
-                                Container(
-                                    padding: EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.orange.shade100),
-                                    child: Text(
-                                      "B1",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w700),
-                                    )),
-                              ],
+                          crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                          children: const [
+
+                            Text(
+                              "Ravi Kumar",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 17,
+                              ),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("Due Amount"),
-                                Text("PTP"),
-                              ],
+
+                             SizedBox(height: 4),
+
+                            Text(
+                              "PTP : 19-01-2026",
+                              style: TextStyle(
+                                color: home1,
+                                fontSize: 13,
+                              ),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Rs 2,450.00",
-                                  style: TextStyle(
-                                      color: Colors.orange,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                Text("19-01-2026"),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(backgroundColor: home1,
-                                      foregroundColor: Colors.white,
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                                    onPressed: () {}, child: Text("Call")),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(backgroundColor: home2,
-                                      foregroundColor: Colors.white,
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                                    onPressed: () {}, child: Text("PTP")),
-                              ],
-                            )
+
                           ],
                         ),
                       ),
+
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius:
+                          BorderRadius.circular(30),
+                          color: Colors.orange.shade100,
+                        ),
+                        child:  Text(
+                          bfc.keys.elementAt(index),
+                          style: TextStyle(
+                            color: Colors.deepOrange,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  /// DUE AMOUNT BOX
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      borderRadius:
+                      BorderRadius.circular(18),
+                      color: Colors.orange.shade50,
                     ),
-                  );
-                },
-              );
+
+                    child: Row(
+                      mainAxisAlignment:
+                      MainAxisAlignment.spaceBetween,
+                      children: [
+
+                        Row(
+                          children: [
+
+                            Container(
+                              padding:
+                              const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.red.shade100,
+                                borderRadius:
+                                BorderRadius.circular(12),
+                              ),
+                              child: Icon(
+                                Icons.currency_rupee,
+                                color: Colors.red.shade700,
+                                size: 20,
+                              ),
+                            ),
+
+                            const SizedBox(width: 10),
+
+                            const Text(
+                              "Due Amount",
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const Text(
+                          "₹ 2,450",
+                          style: TextStyle(
+                            color: Colors.deepOrange,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  /// BUTTONS
+                  Row(
+                    children: [
+
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            backgroundColor: home1,
+                            foregroundColor: Colors.white,
+                            padding:
+                            const EdgeInsets.symmetric(
+                              vertical: 14,
+                            ),
+                            shape:
+                            RoundedRectangleBorder(
+                              borderRadius:
+                              BorderRadius.circular(16),
+                            ),
+                          ),
+
+                          onPressed: () {
+                            _makePhoneCall(
+                                'tel:9090998987');
+                          },
+
+                          icon: const Icon(Icons.call),
+                          label: const Text(
+                            "Call",
+                            style: TextStyle(
+                              fontWeight:
+                              FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(width: 12),
+
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: home1,
+                            side: BorderSide(
+                              color: home1,
+                            ),
+                            padding:
+                            const EdgeInsets.symmetric(
+                              vertical: 14,
+                            ),
+                            shape:
+                            RoundedRectangleBorder(
+                              borderRadius:
+                              BorderRadius.circular(16),
+                            ),
+                          ),
+
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (BuildContext context) =>
+                                    PtpPage(),
+                              ),
+                            );
+                          },
+
+                          icon: const Icon(
+                            Icons.calendar_month,
+                          ),
+
+                          label: const Text(
+                            "PTP",
+                            style: TextStyle(
+                              fontWeight:
+                              FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
-  InkWell bucketWidgetCodes(String codes, int indexes) {
-    return InkWell(
+  GestureDetector bucketWidgetCodes(
+
+      int indexes,
+      Map<String , dynamic> bfc
+      ) {
+    return GestureDetector(
       onTap: () {
         setState(() {
           selectedCodeIndex = indexes;
         });
-
       },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-        margin: const EdgeInsets.only(right: 10),
+
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+
+        padding: const EdgeInsets.symmetric(
+          horizontal: 22,
+          vertical: 10,
+        ),
+
+        margin: const EdgeInsets.only(right: 12),
+
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: selectedCodeIndex == indexes?
-            Colors.grey:Colors.white,
-            border: Border.all(color: selectedCodeIndex == indexes?Colors.white:Colors.grey)),
-        child: Center(child: Text(codes, style: TextStyle(color: selectedCodeIndex == indexes?Colors.white:Colors.black, fontWeight: FontWeight.w700),)),
+          borderRadius: BorderRadius.circular(30),
+
+          color: selectedCodeIndex == indexes
+              ? home2
+              : bfc.values.elementAt(indexes),
+
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(.04),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            )
+          ],
+        ),
+
+        child: Center(
+          child: Text(
+            bfc.keys.elementAt(indexes),
+            style: TextStyle(
+              color: selectedCodeIndex == indexes
+                  ? Colors.white
+                  : bfc.keys.elementAt(indexes) =="All"?Colors.black:Colors.white,
+              fontWeight: selectedCodeIndex == indexes ?FontWeight.w800:FontWeight.w700,
+            ),
+          ),
+        ),
       ),
     );
   }
 
-  Padding headerWidget(String headOne, String headTwo, Color color) {
+  Padding headerWidget(
+      String headOne,
+      String headTwo,
+      Color color,
+      ) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(right: 14),
+
       child: Container(
-        padding: EdgeInsets.all(10),
+        width: MediaQuery.of(context).size.width * 0.38,
+
+        padding: const EdgeInsets.all(18),
+
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: color,
-            boxShadow: [
-              BoxShadow(color: Colors.black12, blurRadius: 3, spreadRadius: 2)
-            ]),
+          borderRadius: BorderRadius.circular(24),
+
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              color.withOpacity(.75),
+              color,
+            ],
+          ),
+
+          boxShadow: [
+            BoxShadow(
+              color: color.withOpacity(.25),
+              blurRadius: 12,
+              offset: const Offset(0, 5),
+            )
+          ],
+        ),
+
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment:
+          CrossAxisAlignment.start,
+
+          mainAxisAlignment:
+          MainAxisAlignment.spaceBetween,
+
           children: [
-            Text(headOne),
+
+            Text(
+              headOne,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+
             Text(
               headTwo,
-              style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 20),
-            )
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 28,
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
+

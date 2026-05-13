@@ -84,11 +84,9 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
 
   @override
   void initState() {
-
     super.initState();
     loadSharedPrefs();
     createColorPallet("assets/images/person.png");
-   // editAmountController.text = widget.loanAmount .toString();
     editAmountController.text = (widget.principalAmountBalance+widget.interestAmountBalance+widget.penalInterestAmountBalance).toString();
   }
 
@@ -112,7 +110,6 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
     final id = await SharedPref().getSubAgentCode();
     final agentid = await SharedPref().getAgentId();
     String custid = await SharedPref().getCustId();
-
     final crpCd = await SharedPref().getCorpCode();
     final tok = await SharedPref.shared.getTokenValue();
     final mail = await SharedPref().getEmail();
@@ -555,10 +552,11 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
     setState(() {
       dominantColor = paletteGenerator.dominantColor?.color;
     });
+
     print("dominantColor = $dominantColor");
 
-    final Color? vibrantColor = paletteGenerator.vibrantColor?.color;
-    final Color? mutedColor = paletteGenerator.mutedColor?.color;
+    //final Color? vibrantColor = paletteGenerator.vibrantColor?.color;
+   // final Color? mutedColor = paletteGenerator.mutedColor?.color;
   }
   Widget _buildHeaderCard() {
     return Container(

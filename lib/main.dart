@@ -125,6 +125,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 void main() async {
   final apiService = ApiService(baseUrl);
 
+
   WidgetsFlutterBinding.ensureInitialized();
   requestLocationPermission();
   try {

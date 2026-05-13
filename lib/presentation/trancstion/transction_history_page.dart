@@ -83,7 +83,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            home1,
+            home1.withOpacity(0.25),
             home2.withOpacity(0.85),
           ],
           begin: Alignment.topLeft,

@@ -32,6 +32,7 @@ dependencies:
   palette_generator_master: ^1.1.0
   url_launcher: ^6.3.2
   provider: ^6.1.5+1
+  glass: ^2.0.0+2
   flutter_longpress_preview: ^0.1.9
   iconsax_flutter: ^1.0.1
   http: ^1.6.0

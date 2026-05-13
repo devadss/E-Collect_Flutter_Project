@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:animated_segmented_tab_control/animated_segmented_tab_control.dart';
 import 'package:collection_qr_flutter/presentation/account_dues/widgets/account_detail_new.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../core/colors.dart';
 import '../../data/provider/agent_customer_details_provider.dart';
 import '../../data/storage/shared_pref_helper.dart';
@@ -216,12 +217,13 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
             ),
           );
         },
-      ),
+      )
     );
   }
 
   Widget _buildCustomerList(List<Customer> customers) {
     return Expanded(
+
       child: customers.isEmpty
           ? _buildEmptyState()
           : ListView.separated(
@@ -231,7 +233,9 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
                 final customer = customers[index];
                 return _buildCustomerItem(customer);
               },
-            ),
+            ).animate()
+          .fadeIn(duration: 500.ms)
+          .slideX(begin: -0.9),
     );
   }
 
