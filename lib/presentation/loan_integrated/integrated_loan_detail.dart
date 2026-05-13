@@ -454,37 +454,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
       )
     );
   }
-  /*Widget _buildHeaderCard() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: _cardDecoration(),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 24,
-            backgroundColor: home1.withOpacity(0.1),
-            child: Icon(Icons.person, color: home1),
-          ),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(widget.name,
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: home2)),
-              const SizedBox(height: 4),
-              Text("CUST NO: ${widget.custNo}",
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade600)),
-            ],
-          )
-        ],
-      ),
-    );
-  }*/
+
   BoxDecoration _modernCardDecoration() {
     return BoxDecoration(
       color: dominantColor?.withAlpha(150),
@@ -525,13 +495,15 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
 
     send.fold(
           (error) {
-        //print("-------------------ERROR---------------------");
-        // print(error);
+
       },
           (sendLink) {
         if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
           //Share.share("Here is your payment link: ${sendLink.linkUrl}");
-          print("3");
+          if(utl.printStatementStatus){
+            print("3");
+          }
+
           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>
               PaymentLinkRequestUi(customerMobileNumber: widget.custNo, paymentLink: sendLink.linkUrl.toString(),)
           ));
@@ -552,8 +524,10 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
     setState(() {
       dominantColor = paletteGenerator.dominantColor?.color;
     });
+if(utl.printStatementStatus){
+  print("dominantColor = $dominantColor");
+}
 
-    print("dominantColor = $dominantColor");
 
     //final Color? vibrantColor = paletteGenerator.vibrantColor?.color;
    // final Color? mutedColor = paletteGenerator.mutedColor?.color;

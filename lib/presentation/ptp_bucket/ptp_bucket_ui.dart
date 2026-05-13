@@ -33,8 +33,8 @@ final Map<String , dynamic> bfc = {
   int? selectedCodeIndex;
 
   Future<void> _makePhoneCall(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
     } else {
       throw 'Could not launch $url';
     }
