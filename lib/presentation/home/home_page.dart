@@ -431,8 +431,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     final customerRdUrl = await SharedPref().getCustomerRdUrl();
     final subAgentmobnum = await SharedPref.shared.getSubAgentMobNum();
 
-    isRunningLiveBaseUrl(true , subAgentmobnum);
-    isRunningLiveDopBaseUrl(true, subAgentmobnum);
+    isRunningLiveBaseUrl(false , subAgentmobnum);
+    isRunningLiveDopBaseUrl(false, subAgentmobnum);
 
     if (mounted) {
       setState(() {

@@ -196,8 +196,8 @@ class _SplashScreenState extends State<SplashScreen> {
     mpin = await SharedPref.shared.getMpinValue();
     String username = await SharedPref.shared.getParentAgentName();
     String password = await SharedPref.shared.getParentAgentPassword();
-    isRunningLiveBaseUrl(true , subAgentmobnum);
-    isRunningLiveDopBaseUrl(true, subAgentmobnum);
+    isRunningLiveBaseUrl(false , subAgentmobnum);
+    isRunningLiveDopBaseUrl(false, subAgentmobnum);
     setState(() {
       loginStatus = lgStatus;
     });
@@ -246,23 +246,24 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey.shade200,
       body: Stack(
         children: [
           // Animated Gradient Background
           AnimatedContainer(
             duration: const Duration(seconds: 2),
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  home1,
-                  home2,
-                  Colors.white,
-                ],
-                stops: [0.1, 0.5, 0.9],
-              ),
+            decoration:  BoxDecoration(
+              color: Colors.grey.shade200
+              // gradient: LinearGradient(
+              //   begin: Alignment.topLeft,
+              //   end: Alignment.bottomRight,
+              //   colors: [
+              //     home1,
+              //     home2,
+              //     Colors.white,
+              //   ],
+              //   stops: [0.1, 0.5, 0.9],
+              // ),
             ),
           ),
 
@@ -271,7 +272,7 @@ class _SplashScreenState extends State<SplashScreen> {
             top: 50,
             left: 30,
             child: _FloatingParticle(
-              color: home1.withOpacity(0.3),
+              color: green.withOpacity(0.3),
               size: 40,
               delay: 0,
             ),
@@ -280,7 +281,7 @@ class _SplashScreenState extends State<SplashScreen> {
             bottom: 100,
             right: 40,
             child: _FloatingParticle(
-              color: home2.withOpacity(0.3),
+              color: Colors.blue.withOpacity(0.3),
               size: 60,
               delay: 0.5,
             ),
@@ -289,7 +290,7 @@ class _SplashScreenState extends State<SplashScreen> {
             top: 150,
             right: 70,
             child: _FloatingParticle(
-              color: home1.withOpacity(0.2),
+              color: orange.withOpacity(0.2),
               size: 30,
               delay: 1,
             ),
@@ -302,26 +303,29 @@ class _SplashScreenState extends State<SplashScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // Animated QR Code SVG
-                  Hero(
-                    tag: 'splash-logo',
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.7,
-                      child: SvgPicture.asset(
-                        "assets/svg/QR Code-bro.svg",
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-
+                  // Hero(
+                  //   tag: 'splash-logo',
+                  //   child: SizedBox(
+                  //     width: MediaQuery.of(context).size.width * 0.7,
+                  //     child: SvgPicture.asset(
+                  //       //"assets/svg/QR Code-bro.svg",
+                  //       "assets/images/ecollect.jpg",
+                  //       fit: BoxFit.contain,
+                  //     ),
+                  //   ),
+                  // ),
+                  Image.asset("assets/images/ecollect.jpg"),
                   const SizedBox(height: 40),
 
                   // App Name with Typing Animation
                   _TypingText(
-                    text: "Collection QR",
+                    //text: "Collection QR",
+                    text: "SMART PAYMENT SOLUTION",
                     style: GoogleFonts.poppins(
-                      fontSize: 32,
+                     // fontSize: 32,
+                      fontSize: 25,
                       fontWeight: FontWeight.bold,
-                      color: white,
+                      color: Colors.grey,
                     ),
                     onComplete: _onAnimationsComplete,
                   ),
@@ -329,15 +333,15 @@ class _SplashScreenState extends State<SplashScreen> {
                   const SizedBox(height: 10),
 
                   // Subtitle with Fade Animation
-                  _FadeInText(
-                    text: "Scan. Collect. Secure.",
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      color: black,
-                      letterSpacing: 1.2,
-                    ),
-                    onComplete: _onAnimationsComplete,
-                  ),
+                  // _FadeInText(
+                  //   text: "SMART PAYMENT SOLUTION",
+                  //   style: GoogleFonts.poppins(
+                  //     fontSize: 16,
+                  //     color: black,
+                  //     letterSpacing: 1.2,
+                  //   ),
+                  //   onComplete: _onAnimationsComplete,
+                  // ),
 
                   const SizedBox(height: 30),
 
@@ -346,7 +350,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     width: 30,
                     height: 30,
                     child: CircularProgressIndicator(
-                      strokeWidth: 10,
+                      strokeWidth: 2,
                       valueColor: AlwaysStoppedAnimation<Color>(home1),
                     ),
                   ),

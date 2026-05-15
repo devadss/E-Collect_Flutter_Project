@@ -123,6 +123,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
 
     setState(() {
       cid = custid;
+
       subAgentCodeNew = sub_AgentCodeNew;
       branchCode = brCode;
       agent_Id = agentid;
@@ -527,7 +528,6 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
 if(utl.printStatementStatus){
   print("dominantColor = $dominantColor");
 }
-
 
     //final Color? vibrantColor = paletteGenerator.vibrantColor?.color;
    // final Color? mutedColor = paletteGenerator.mutedColor?.color;

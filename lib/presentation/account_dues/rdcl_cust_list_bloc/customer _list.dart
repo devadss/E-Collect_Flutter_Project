@@ -197,7 +197,7 @@ class _CustomerListState extends State<CustomerList> {
                                     custPhoneNumber: agentPhoneNumber.toString(),
                                     custIdNew: customer?.custId.toString() ?? "",
                                     custAcNumber: customer?.rdclGlobalAccNo.toString() ?? "",
-                                    custId: agentIdValue ?? "",
+                                    custId: customer?.custId.toString() ?? "",
                                   ),
                                 ),
                               );

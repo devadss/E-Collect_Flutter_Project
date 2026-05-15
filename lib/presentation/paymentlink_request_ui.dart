@@ -1,5 +1,6 @@
 import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 
 class PaymentLinkRequestUi extends StatefulWidget {
   final String customerMobileNumber;
@@ -132,7 +133,9 @@ class _PaymentLinkRequestUiState extends State<PaymentLinkRequestUi> {
               width: double.infinity,
               height: 55,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Share.share("Here is your payment link: ${widget.paymentLink}");
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: home1,
                   foregroundColor: Colors.white,
@@ -178,7 +181,9 @@ class _PaymentLinkRequestUiState extends State<PaymentLinkRequestUi> {
               width: double.infinity,
               height: 55,
               child: ElevatedButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  Share.share("Here is your payment link: ${widget.paymentLink}");
+                },
                 icon: const Icon(Icons.message),
                 label: const Text(
                   "Send via WhatsApp",

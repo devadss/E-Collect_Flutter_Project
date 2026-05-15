@@ -61,7 +61,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
   Future<void> loadSharedPrefs() async {
     final name = await SharedPref().getAgentName();
     final phone = await SharedPref().getParentAgentMobNum();
-    final agentid = await SharedPref().getSubAgentCode();
+    final id = await SharedPref().getAgentId();
     final custID = await SharedPref().getAgentId();
     final subAgentId = await SharedPref().getSubAgentId();
     final agentOrigin = await SharedPref().getAgentOriginId();
@@ -77,7 +77,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
         agentName = name;
         subagentId = subAgentId;
         agentMobile = phone;
-        agentId = agentid;
+        agentId = id;
         custid = custID;
         agentOriginId = agentOrigin;
         agentEmail = mail;
