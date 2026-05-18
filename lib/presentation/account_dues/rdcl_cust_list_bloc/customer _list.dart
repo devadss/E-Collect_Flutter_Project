@@ -36,8 +36,7 @@ class _CustomerListState extends State<CustomerList> {
       agentPhoneNumber = number;
       agentIdValue = custId;
     });
-
-  context.read<CustomerListBloc>().add(CustomerListFetchEvent("", branchid.toString(), "0", "0", ""),);
+    context.read<CustomerListBloc>().add(CustomerListFetchEvent("", branchid.toString(), "0", "0", ""),);
 
 
   }
