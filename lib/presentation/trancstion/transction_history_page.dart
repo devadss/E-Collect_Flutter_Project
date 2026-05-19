@@ -79,7 +79,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(16, 32, 16, 24),
+      padding: const EdgeInsets.fromLTRB(16, 15, 16, 24),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -93,7 +93,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
 
       /// FLOATING CARD
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 16),
         decoration: BoxDecoration(
           gradient: LinearGradient(colors: [
             Colors.white.withOpacity(0.65),
@@ -121,7 +121,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
 
             /// STATUS ICON
             Container(
-              height: 48,
+              height: 20,
               width: 48,
               decoration: BoxDecoration(
                 color: isSuccess
@@ -306,7 +306,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
       //       ),
       SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -321,7 +321,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
               ),
             ),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: 5),
 
             /// CARD
             _buildDetailCard(),
@@ -343,7 +343,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
             /// CARD
             _buildCustomerCard(),
 
-            const SizedBox(height: 28),
+            const SizedBox(height: 18),
             /// PRINT BUTTON
             Padding(
               padding: EdgeInsetsGeometry.all(10),
@@ -511,7 +511,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
               label,
               style: GoogleFonts.poppins(
                 color: Colors.grey[600],
-                fontSize: 14,
+                fontSize: 12,
               ),
             ),
           ),
@@ -522,7 +522,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
               textAlign: TextAlign.end,
               style: GoogleFonts.poppins(
                 color: home1,
-                fontSize: 14,
+                fontSize: 12,
                 fontWeight: FontWeight.w500,
               ),
             ),

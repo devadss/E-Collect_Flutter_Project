@@ -7,6 +7,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../core/alerts.dart';
+import '../../core/constants.dart';
 import '../../core/utils.dart';
 import '../../data/provider/cash_transcation_provider.dart';
 import '../../data/rdcl_duelist_bloc/rdcl_duelist_bloc.dart';
@@ -86,6 +87,10 @@ class _RdclDueListBlocPageState extends State<RdclDueListBlocPage> {
       subAgentCodeNew = subAgentCodeNewVal;
       subagentPhoneNumber = subagentNum;
     });
+    if(printStatementStatus){
+      print("agentPhoneNumber : $subagentPhoneNumber");
+    }
+
   }
 
 
@@ -1796,8 +1801,9 @@ bool chekValue(String value){
                                                                         height: 60,
                                                                         width: 60,
                                                                         decoration: BoxDecoration(
+                                                                          color: home2.withAlpha(50),
                                                                           borderRadius: BorderRadius.circular(10),
-                                                                          border: Border.all(color: Colors.black54, width: 1),
+                                                                         // border: Border.all(color: Colors.black54, width: 1),
                                                                         ),
                                                                         child: selectedMethod == "QR Code"
                                                                             ? Image.asset(
@@ -1814,6 +1820,7 @@ bool chekValue(String value){
                                                                       Expanded(
                                                                         child: Column(
                                                                           crossAxisAlignment: CrossAxisAlignment.start,
+                                                                          mainAxisAlignment: MainAxisAlignment.start,
                                                                           children: [
                                                                             FittedBox(
                                                                               fit: BoxFit.scaleDown,
@@ -1823,10 +1830,11 @@ bool chekValue(String value){
                                                                                 style: GoogleFonts.inter(
                                                                                   fontWeight: FontWeight.w500,
                                                                                   color: Colors.black87,
-                                                                                  fontSize: 15,
+                                                                                  fontSize: 12,
                                                                                 ),
                                                                               ),
                                                                             ),
+                                                                          Divider(),
                                                                             Text(
                                                                               selectedMethod,
                                                                               overflow: TextOverflow.ellipsis,
@@ -1880,7 +1888,7 @@ bool chekValue(String value){
                                                                                   ),
                                                                                   const Divider(indent: 16, endIndent: 16),*/
                                                                                   ListTile(
-                                                                                    leading: const Icon(Icons.money, color: Colors.deepOrange),
+                                                                                    leading: const Icon(Icons.currency_rupee_rounded, color: Colors.deepOrange),
                                                                                     title: const Text(
                                                                                       "Cash",
                                                                                       style: TextStyle(
@@ -1896,21 +1904,24 @@ bool chekValue(String value){
                                                                                   ),
 
                                                                                   const Divider(indent: 16, endIndent: 16),
-                                                                                  ListTile(
-                                                                                    leading: const Icon(Icons.link, color: Colors.deepOrange),
-                                                                                    title: const Text(
-                                                                                      "Link",
-                                                                                      style: TextStyle(
-                                                                                        fontWeight: FontWeight.w600,
-                                                                                        fontSize: 16,
-                                                                                      ),
-                                                                                    ),
-                                                                                    trailing: const Icon(Icons.chevron_right),
-                                                                                    onTap: () {
-                                                                                      setModalState(() => selectedMethod = "Link");
-                                                                                      Navigator.pop(ctx);
-                                                                                    },
-                                                                                  ),
+/// UNCOMMENT AFTER PAYMENT LINK LIVE....
+                                                                                  // uatTestMobileNumber.replaceAll("+91", "") != subagentPhoneNumber?.replaceAll("+91", "")?
+                                                                                  //
+                                                                                  // ListTile(
+                                                                                  //   leading: const Icon(Icons.link, color: Colors.deepOrange),
+                                                                                  //   title: const Text(
+                                                                                  //     "Link",
+                                                                                  //     style: TextStyle(
+                                                                                  //       fontWeight: FontWeight.w600,
+                                                                                  //       fontSize: 16,
+                                                                                  //     ),
+                                                                                  //   ),
+                                                                                  //   trailing: const Icon(Icons.chevron_right),
+                                                                                  //   onTap: () {
+                                                                                  //     setModalState(() => selectedMethod = "Link");
+                                                                                  //     Navigator.pop(ctx);
+                                                                                  //   },
+                                                                                  // ):SizedBox.shrink(),
                                                                                   const SizedBox(height: 12),
                                                                                 ],
                                                                               ),
@@ -1919,15 +1930,22 @@ bool chekValue(String value){
                                                                         },
                                                                         child: FittedBox(
                                                                           fit: BoxFit.scaleDown,
-                                                                          child: Text(
-                                                                            "Change Method >",
-                                                                            overflow: TextOverflow.ellipsis,
-                                                                            style: GoogleFonts.inter(
-                                                                              decoration: TextDecoration.underline,
-                                                                              decorationColor: home2,
-                                                                              fontWeight: FontWeight.w800,
-                                                                              color: home2,
-                                                                              fontSize: 12,
+                                                                          child: Container(
+                                                                            padding: EdgeInsets.all(10),
+                                                                            decoration: BoxDecoration(
+                                                                              borderRadius: BorderRadius.circular(16),
+                                                                              color: home2.withAlpha(40)
+                                                                            ),
+                                                                            child: Text(
+                                                                              "Change Method > ",
+                                                                              overflow: TextOverflow.ellipsis,
+                                                                              style: GoogleFonts.inter(
+                                                                                decoration: TextDecoration.underline,
+                                                                                decorationColor: home2,
+                                                                                fontWeight: FontWeight.w800,
+                                                                                color: home2,
+                                                                                fontSize: 12,
+                                                                              ),
                                                                             ),
                                                                           ),
                                                                         ),
@@ -1935,9 +1953,9 @@ bool chekValue(String value){
                                                                     ],
                                                                   ),
                                                                   const SizedBox(height: 15),
-
-                                                                  const FittedBox(
-                                                                    fit: BoxFit.scaleDown,
+Divider(),
+                                                                  SizedBox(
+                                                                    width: double.infinity,
                                                                     child: Text(
                                                                       "Installment Details",
                                                                       style: TextStyle(
@@ -1949,47 +1967,60 @@ bool chekValue(String value){
                                                                   ),
                                                                   const SizedBox(height: 12),
 
-                                                                  Text(
-                                                                    "Open Dates: ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].openDate.toString().substring(0, 11)}",
-                                                                    overflow: TextOverflow.ellipsis,
-                                                                  ),
-                                                                  Text(
-                                                                    "Paid Installments: ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].paidInstallments}",
-                                                                    overflow: TextOverflow.ellipsis,
-                                                                  ),
-                                                                  const SizedBox(height: 20),
-
-                                                                  Text(
-                                                                    "Edit Total Selected Amount",
-                                                                    style: TextStyle(
-                                                                      fontSize: 14,
-                                                                      fontWeight: FontWeight.w500,
-                                                                      color: Colors.grey[800],
+                                                                  SizedBox(
+                                                                    width: double.infinity,
+                                                                    child: Text(
+                                                                      "Open Date: ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].openDate.toString().substring(0, 11)}",
+                                                                      overflow: TextOverflow.ellipsis,
                                                                     ),
                                                                   ),
+                                                                  SizedBox(
+                                                                    width: double.infinity,
+                                                                    child: Text(
+                                                                      "Paid Installments: ${state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1?.data[index].paidInstallments} Nos",
+                                                                      overflow: TextOverflow.ellipsis,
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(height: 20),
+Divider(),
+                                                                  SizedBox(
+                                                                    width: double.infinity,
+                                                                    child: Text(
+                                                                      "Edit Total Selected Amount",
+                                                                      style: TextStyle(
+                                                                        fontSize: 18,
+                                                                        fontWeight: FontWeight.w600,
+                                                                        color: home2,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+
                                                                   const SizedBox(height: 8),
 
                                                                   TextFormField(
+
                                                                     controller: controller,
                                                                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
                                                                         decoration: InputDecoration(
                                                                       filled: true,
-                                                                      fillColor: home2,
+                                                                      fillColor: grey.shade200,
                                                                       border: OutlineInputBorder(
                                                                         borderRadius: BorderRadius.circular(10),
-                                                                        borderSide: const BorderSide(color: deepTeal),
+
+                                                                        borderSide: BorderSide.none,
                                                                       ),
                                                                       focusedBorder: OutlineInputBorder(
                                                                         borderRadius: BorderRadius.circular(10),
-                                                                        borderSide: const BorderSide(color: deepTeal, width: 1.5),
+                                                                       // borderSide: const BorderSide(color: deepTeal, width: 1.5),
+                                                                        borderSide: BorderSide.none,
                                                                       ),
                                                                       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                                                                      prefixIcon: const Icon(Icons.currency_rupee, color: Colors.white),
+                                                                      prefixIcon: const Icon(Icons.currency_rupee, color: home2),
                                                                     ),
                                                                     style: const TextStyle(
                                                                       fontSize: 16,
                                                                       fontWeight: FontWeight.w600,
-                                                                      color: Colors.white,
+                                                                      color: Colors.black,
                                                                     ),
                                                                   ),
                                                                   const SizedBox(height: 20),

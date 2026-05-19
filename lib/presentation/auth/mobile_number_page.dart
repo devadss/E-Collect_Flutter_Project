@@ -528,8 +528,8 @@ class _MobileNumberVerificationPageState extends State<MobileNumberVerificationP
                           showInSnackBar("Please accept Terms & Conditions", context);
                           return;
                         }
-                        isRunningLiveBaseUrl(false , _mobileNumberController.text);
-                        isRunningLiveDopBaseUrl(false, _mobileNumberController.text);
+                        isRunningLiveBaseUrl(true , _mobileNumberController.text);
+                        isRunningLiveDopBaseUrl(true, _mobileNumberController.text);
                         checkMobileNumber();
                       },
                       style: ElevatedButton.styleFrom(

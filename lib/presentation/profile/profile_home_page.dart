@@ -467,7 +467,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                               textAlign: TextAlign.center,
                               style: GoogleFonts.inter(
                                 color: Colors.grey[600],
-                                fontSize: 14,
+                                fontSize: 11,
                                 height: 1.4,
                               ),
                             ),

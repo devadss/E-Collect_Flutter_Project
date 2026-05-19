@@ -12,7 +12,7 @@ import '../presentation/auth/login/otp_verification/otp_verification.dart';
 import 'colors.dart';
 import 'constants.dart';
 
-const bool printStatementStatus = true;
+const bool printStatementStatus = false;
 
 void isRunningLiveBaseUrl(bool status, String mobile) async {
   if (status==true && mobile != null && mobile != uatTestMobileNumber){
@@ -183,21 +183,17 @@ void showProgressDialog(BuildContext context) {
         return Center(
           child: SingleChildScrollView(
             child: Dialog(
+              backgroundColor: Colors.grey.shade200,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)),
-              child: const Padding(
-                padding: EdgeInsets.all(50),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
                 child: Column(
                   children: [
-                    CircularProgressIndicator(color: home2),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      "Please wait....",
-                      style: TextStyle(
-                        fontSize: 17,
-                      ),
+                    Image.asset("assets/images/ecollect.jpg", scale: 10,),
+                    const CircularProgressIndicator(color: home1),
+                    const SizedBox(height: 10,),
+                    const Text("Please wait....", style: TextStyle(fontSize: 17,),
                     )
                   ],
                 ),
@@ -510,6 +506,7 @@ Uint8List padPKCS7(Uint8List input) {
 }
 
 Future<void> resetInitialData() async {
+
   SharedPref.shared.setEmail("");
   SharedPref.shared.setCorpCode("");
   SharedPref.shared.setBranchCode("");
@@ -530,6 +527,7 @@ Future<void> resetInitialData() async {
   SharedPref.shared.setDueListLoanUrl('');
   SharedPref.shared.setLoanAccountHolderUrl('');
   SharedPref.shared.setUserType('');
+
 }
 
 void showNotification(BuildContext context , String content, Color color, Color txtColor){

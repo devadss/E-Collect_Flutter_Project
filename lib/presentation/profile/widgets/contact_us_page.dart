@@ -54,7 +54,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
               "Reach out to our support team with your inquiries.",
               style: GoogleFonts.poppins(
                 color: Colors.grey[600],
-                fontSize: 14,
+                fontSize: 12,
               ),
             ),
             const SizedBox(height: 32),

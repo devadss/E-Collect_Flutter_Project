@@ -20,8 +20,8 @@ class ApiService {
       print("Inside ApiService");
     }
     var mobnum = await SharedPref.shared.getParentAgentMobNum();
-    isRunningLiveBaseUrl(false , mobnum);
-    isRunningLiveDopBaseUrl(false, mobnum);
+    isRunningLiveBaseUrl(true , mobnum);
+    isRunningLiveDopBaseUrl(true, mobnum);
    // final uri = Uri.parse("$_baseUrl$endPoint");
     final uri = Uri.parse("$baseUrl$endPoint");
     if(printStatementStatus){

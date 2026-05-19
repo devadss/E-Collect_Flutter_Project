@@ -92,12 +92,15 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       );
      bannerImagesColorPallet.add(paletteGenerator.dominantColor?.color);
      //dominantColor = paletteGenerator.dominantColor?.color;
+if(printStatementStatus){
+  print("dominantColor = ${paletteGenerator.dominantColor?.color}");
+}
 
-      print("dominantColor = ${paletteGenerator.dominantColor?.color}");
-      final Color? vibrantColor = paletteGenerator.vibrantColor?.color;
-      final Color? mutedColor = paletteGenerator.mutedColor?.color;
+      // final Color? vibrantColor = paletteGenerator.vibrantColor?.color;
+      // final Color? mutedColor = paletteGenerator.mutedColor?.color;
     }
     Timer.periodic(const Duration(seconds: 3), (timer) {
+      if (!mounted) return;
       setState(() {
         index = (index + 1) % bannerImagesColorPallet.length;
       });
@@ -159,6 +162,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     int selectedIndex = 0; // 0=Today,1=This Week,...4=Custom
 
     showModalBottomSheet(
+      backgroundColor: whiteColor,
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
@@ -174,6 +178,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 return Row(
                   children: [
                     Expanded(
+
                       child: _DatePickerButton(
                         label: fromDate != null ? fmt(fromDate!) : 'From',
                         icon: Icons.calendar_today_outlined,
@@ -213,7 +218,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               }
 
               return Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(5),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -250,17 +255,17 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 12),
-                            child: Text('This Week',
+                            child: Text('This\nWeek',
                                 style: TextStyle(color: Colors.black)),
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 12),
-                            child: Text('This Month',
+                            child: Text('This\nMonth',
                                 style: TextStyle(color: Colors.black)),
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 12),
-                            child: Text('Last Month',
+                            child: Text('Last\nMonth',
                                 style: TextStyle(color: Colors.black)),
                           ),
                           Padding(
@@ -277,124 +282,129 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     // Show date pickers for custom range
                     if (selectedIndex == 4) buildDatePickers(),
 
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 10),
 
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: home1,
-                        foregroundColor: whiteColor,
-                        minimumSize: const Size.fromHeight(48),
-                      ),
-                      onPressed: () async {
-                        //  Navigator.pop(context);
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: ElevatedButton(
 
-                        // Variables
-                        late String period;
-                        String from = '', to = '';
-                        final now = DateTime.now();
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          backgroundColor: home1,
+                          foregroundColor: whiteColor,
+                          minimumSize: const Size.fromHeight(48),
+                        ),
+                        onPressed: () async {
+                          //  Navigator.pop(context);
 
-                        switch (selectedIndex) {
-                          case 0: // Today
-                            period = 'TODAY';
-                            from = to = DateFormat('yyyy-MM-dd').format(now);
-                            break;
-                          case 1: // This Week
-                            period = 'THIS_WEEK';
-                            final end = now.add(const Duration(days: 7));
-                            from = DateFormat('yyyy-MM-dd').format(now);
-                            to = DateFormat('yyyy-MM-dd').format(end);
-                            break;
-                          case 2: // This Month (last 30 days)
-                            period = 'THIS_MONTH';
-                            from = DateFormat('yyyy-MM-dd')
-                                .format(now.subtract(const Duration(days: 30)));
-                            to = DateFormat('yyyy-MM-dd').format(now);
-                            break;
-                          case 3: // Last Month
-                            period = 'LAST_MONTH';
-                            final firstDayLastMonth =
-                            DateTime(now.year, now.month - 1, 1);
-                            final lastDayLastMonth =
-                            DateTime(now.year, now.month, 1)
-                                .subtract(const Duration(days: 1));
-                            from = DateFormat('yyyy-MM-dd')
-                                .format(firstDayLastMonth);
-                            to = DateFormat('yyyy-MM-dd')
-                                .format(lastDayLastMonth);
-                            break;
-                          case 4: // Custom
-                            period = 'CUSTOM';
-                            from = DateFormat('yyyy-MM-dd').format(fromDate!);
-                            to = DateFormat('yyyy-MM-dd').format(toDate!);
-                            break;
-                        }
-                        showProgressDialog(context);
-                        // Call providers
-                        // await qrProvider.getQrTranscationHistory(
-                        //     period,
-                        //     from,
-                        //     to,
-                        //     // userType,
-                        //     "ALL",
-                        //
-                        //     corpCode,
-                        //     agentOriginId);
-                        await linkProvider.getLinkTransactionHistory(
-                            period,
-                            from,
-                            to,
-                            subAgentID!,
-                            corpCode!,
-                            agentOriginId!
-                        );
-                        // await transferProvider.getQrTranscationHistory(
-                        //     period,
-                        //     from,
-                        //     to,
-                        //     userType,
-                        //     //'COLLECTION',
-                        //     corpCode,
-                        //     agentOriginId);
+                          // Variables
+                          late String period;
+                          String from = '', to = '';
+                          final now = DateTime.now();
 
-                        await cashTransProvider.getCashTranscationHistory(
-                            period,
-                            from,
-                            to,
-                            //cashCollectionType,
-                            "ALL",
-                            subAgentID,
-                            corpCode,
-                            agentOriginId);
-                        await linkProvider.getLinkTransactionHistory(period,
-                            from, to, subAgentID!, corpCode!, agentOriginId!);
-                        await cashQrProvider.getCombinedResponse(period, from,
-                            to, subAgentID!, corpCode!, agentOriginId!);
-
-                        await cashTransProvider.getCashTranscationHistory(
-                            period,
-                            from,
-                            to,
-                            "ALL",
-                            subAgentID!,
-                            corpCode,
-                            agentOriginId);
-
-                        // ✅ Update parent state
-                        setState(() {
-                          isFilterApplied = true;
-                          currentFilterPeriod = period;
-                          currentFromDate = from;
-                          currentToDate = to;
-                        });
-                        if (qrProvider.showProgressDialog == false || cashTransProvider.showProgressDialog == false || linkProvider.showProgressDialog == false) {
-                          if (mounted) {
-                            Navigator.of(context, rootNavigator: true).pop();
-                            Navigator.of(context, rootNavigator: true).pop();
+                          switch (selectedIndex) {
+                            case 0: // Today
+                              period = 'TODAY';
+                              from = to = DateFormat('yyyy-MM-dd').format(now);
+                              break;
+                            case 1: // This Week
+                              period = 'THIS_WEEK';
+                              final end = now.add(const Duration(days: 7));
+                              from = DateFormat('yyyy-MM-dd').format(now);
+                              to = DateFormat('yyyy-MM-dd').format(end);
+                              break;
+                            case 2: // This Month (last 30 days)
+                              period = 'THIS_MONTH';
+                              from = DateFormat('yyyy-MM-dd')
+                                  .format(now.subtract(const Duration(days: 30)));
+                              to = DateFormat('yyyy-MM-dd').format(now);
+                              break;
+                            case 3: // Last Month
+                              period = 'LAST_MONTH';
+                              final firstDayLastMonth =
+                              DateTime(now.year, now.month - 1, 1);
+                              final lastDayLastMonth =
+                              DateTime(now.year, now.month, 1)
+                                  .subtract(const Duration(days: 1));
+                              from = DateFormat('yyyy-MM-dd')
+                                  .format(firstDayLastMonth);
+                              to = DateFormat('yyyy-MM-dd')
+                                  .format(lastDayLastMonth);
+                              break;
+                            case 4: // Custom
+                              period = 'CUSTOM';
+                              from = DateFormat('yyyy-MM-dd').format(fromDate!);
+                              to = DateFormat('yyyy-MM-dd').format(toDate!);
+                              break;
                           }
-                        }
-                      },
-                      child:
-                      Text(selectedIndex == 4 ? 'Apply Filter' : 'Apply'),
+                          showProgressDialog(context);
+                          // Call providers
+                          // await qrProvider.getQrTranscationHistory(
+                          //     period,
+                          //     from,
+                          //     to,
+                          //     // userType,
+                          //     "ALL",
+                          //
+                          //     corpCode,
+                          //     agentOriginId);
+                          await linkProvider.getLinkTransactionHistory(
+                              period,
+                              from,
+                              to,
+                              subAgentID!,
+                              corpCode!,
+                              agentOriginId!
+                          );
+                          // await transferProvider.getQrTranscationHistory(
+                          //     period,
+                          //     from,
+                          //     to,
+                          //     userType,
+                          //     //'COLLECTION',
+                          //     corpCode,
+                          //     agentOriginId);
+
+                          await cashTransProvider.getCashTranscationHistory(
+                              period,
+                              from,
+                              to,
+                              //cashCollectionType,
+                              "ALL",
+                              subAgentID,
+                              corpCode,
+                              agentOriginId);
+                          await linkProvider.getLinkTransactionHistory(period,
+                              from, to, subAgentID!, corpCode!, agentOriginId!);
+                          await cashQrProvider.getCombinedResponse(period, from,
+                              to, subAgentID!, corpCode!, agentOriginId!);
+
+                          await cashTransProvider.getCashTranscationHistory(
+                              period,
+                              from,
+                              to,
+                              "ALL",
+                              subAgentID!,
+                              corpCode,
+                              agentOriginId);
+
+                          // ✅ Update parent state
+                          setState(() {
+                            isFilterApplied = true;
+                            currentFilterPeriod = period;
+                            currentFromDate = from;
+                            currentToDate = to;
+                          });
+                          if (qrProvider.showProgressDialog == false || cashTransProvider.showProgressDialog == false || linkProvider.showProgressDialog == false) {
+                            if (mounted) {
+                              Navigator.of(context, rootNavigator: true).pop();
+                              Navigator.of(context, rootNavigator: true).pop();
+                            }
+                          }
+                        },
+                        child:
+                        Text(selectedIndex == 4 ? 'Apply Filter' : 'Apply'),
+                      ),
                     ),
                     const SizedBox(height: 12),
                   ],
@@ -431,8 +441,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     final customerRdUrl = await SharedPref().getCustomerRdUrl();
     final subAgentmobnum = await SharedPref.shared.getSubAgentMobNum();
 
-    isRunningLiveBaseUrl(false , subAgentmobnum);
-    isRunningLiveDopBaseUrl(false, subAgentmobnum);
+    isRunningLiveBaseUrl(true , subAgentmobnum);
+    isRunningLiveDopBaseUrl(true, subAgentmobnum);
 
     if (mounted) {
       setState(() {
@@ -558,6 +568,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           agentOriginId!,
         );
       }
+      if (mounted) return;
       setState(() {
         //print("Total count : ${cashQrProvider.cashQrCombinedResponse?.filteredCount}");
         todaysCount = cashQrProvider.cashQrCombinedResponse?.filteredCount ??0;
@@ -962,7 +973,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   Future<void> _clearFilters() async {
     showProgressDialog(context);
-print("_clearFilters 1");
+    if(printStatementStatus){
+      print("_clearFilters 1");
+    }
+
     final qrProvider = context.read<QRTransactionHistoryProvider>();
     final cashTransProvider = context.read<CashTransactionHistoryProvider>();
     final cashQrProvider = context.read<CashQrProvider>();
@@ -1059,12 +1073,21 @@ print("_clearFilters 1");
     } catch (e) {
       //print("Error clearing filters: $e");
     } finally {
-      print("_clearFilters 2");
+if(printStatementStatus){
+  print("_clearFilters 2");
+}
+
       if ( mounted && cashTransProvider.showProgressDialog == false && linkProvider.showProgressDialog == false ) {
-        print("_clearFilters 3");
+if(printStatementStatus){
+  print("_clearFilters 3");
+}
+
         Navigator.pop(context);
       }else{
-        print("_clearFilters 4");
+if(printStatementStatus){
+  print("_clearFilters 4");
+}
+
       }
     }
   }
@@ -1807,12 +1830,18 @@ class _DatePickerButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton.icon(
-      onPressed: onTap,
-      icon: Icon(icon),
-      label: Text(label),
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 14),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: OutlinedButton.icon(
+
+        onPressed: onTap,
+        icon: Icon(icon),
+        label: Text(label),
+        style: OutlinedButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          padding: const EdgeInsets.symmetric(vertical: 14),
+        ),
       ),
     );
   }

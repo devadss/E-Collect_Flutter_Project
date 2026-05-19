@@ -16,10 +16,7 @@ import '../../../core/utils.dart';
 class ReceiptPage extends StatefulWidget {
   final ReceiptDataModel receiptDataModel;
 
-
-  const ReceiptPage(
-      {super.key,
-      required this.receiptDataModel});
+  const ReceiptPage({super.key, required this.receiptDataModel});
 
   @override
   State<ReceiptPage> createState() => _ReceiptPageState();
@@ -71,7 +68,10 @@ class _ReceiptPageState extends State<ReceiptPage> {
       final bool isBluetoothEnabled =
           await PrintBluetoothThermal.bluetoothEnabled;
       if (!isBluetoothEnabled) {
-        print("Bluetooth is disabled");
+        if(printStatementStatus){
+          print("Bluetooth is disabled");
+        }
+
         return;
       }
 
@@ -93,7 +93,10 @@ class _ReceiptPageState extends State<ReceiptPage> {
         _backgroundConnectToPrinter(firstDevice.macAdress);
       }
     } catch (e) {
-      print('Background Bluetooth setup error: $e');
+      if (printStatementStatus){
+        print('Background Bluetooth setup error: $e');
+      }
+
     }
   }
 
@@ -116,7 +119,10 @@ class _ReceiptPageState extends State<ReceiptPage> {
         });
       }
     } catch (e) {
-      print('Background connection failed: $e');
+if (printStatementStatus){
+  print('Background connection failed: $e');
+}
+
     }
   }
 
@@ -132,7 +138,11 @@ class _ReceiptPageState extends State<ReceiptPage> {
         });
       }
     } catch (e) {
-      print('Connection check error: $e');
+if (printStatementStatus){
+
+  print('Connection check error: $e');
+}
+
     }
   }
 
@@ -147,16 +157,26 @@ class _ReceiptPageState extends State<ReceiptPage> {
       final allGranted = statuses.values.every((status) => status.isGranted);
 
       if (!allGranted) {
-        print("Some permissions were denied");
+if (printStatementStatus){
+  print("Some permissions were denied");
+}
+
       }
 
       statuses.forEach((perm, status) {
-        print('$perm: ${status.isGranted}');
+
+if (printStatementStatus){
+  print('$perm: ${status.isGranted}');
+}
+
       });
 
       return allGranted;
     } catch (e) {
-      print("Permission error: ${e.toString()}");
+if (printStatementStatus){
+  print("Permission error: ${e.toString()}");
+}
+
       return false;
     }
   }
@@ -188,9 +208,15 @@ class _ReceiptPageState extends State<ReceiptPage> {
     final List<BluetoothInfo> result =
         await PrintBluetoothThermal.pairedBluetooths;
 
-    print("Found devices: ${result.length}");
+if (printStatementStatus){
+  print("Found devices: ${result.length}");
+}
+
     for (var d in result) {
-      print('Device: ${d.name} - ${d.macAdress}');
+if (printStatementStatus){
+  print('Device: ${d.name} - ${d.macAdress}');
+}
+
     }
 
     try {
@@ -310,10 +336,14 @@ class _ReceiptPageState extends State<ReceiptPage> {
 
       return qrImage!.buffer.asUint8List();
     } catch (e) {
-      print('QR generation error: $e');
+if (printStatementStatus){
+  print('QR generation error: $e');
+}
+
       throw Exception('Failed to generate QR code');
     }
   }
+
   Future<void> _printReceipt() async {
     if (selectedMac == null) {
       _showPrinterSelectionDialog();
@@ -362,7 +392,8 @@ class _ReceiptPageState extends State<ReceiptPage> {
       bytes.addAll("TRANSACTION\n".codeUnits);
       bytes.addAll([0x1B, 0x21, 0x00]);
 
-      String txnType = widget.receiptDataModel.tranType.contains("CASH") ? "CASH" : "UPI";
+      String txnType =
+          widget.receiptDataModel.tranType.contains("CASH") ? "CASH" : "UPI";
 
       bytes.addAll("Type     : $txnType\n".codeUnits);
       bytes.addAll("Status   : SUCCESS\n".codeUnits);
@@ -388,10 +419,12 @@ class _ReceiptPageState extends State<ReceiptPage> {
       bytes.addAll("CUSTOMER\n".codeUnits);
       bytes.addAll([0x1B, 0x21, 0x00]);
 
-      bytes.addAll("Name     : ${widget.receiptDataModel.custName}\n".codeUnits);
+      bytes
+          .addAll("Name     : ${widget.receiptDataModel.custName}\n".codeUnits);
 
       if (widget.receiptDataModel.custPhone.isNotEmpty) {
-        bytes.addAll("Phone    : ${widget.receiptDataModel.custPhone}\n".codeUnits);
+        bytes.addAll(
+            "Phone    : ${widget.receiptDataModel.custPhone}\n".codeUnits);
       }
 
       bytes.addAll("A/C No   : ${widget.receiptDataModel.accNo}\n".codeUnits);
@@ -403,8 +436,10 @@ class _ReceiptPageState extends State<ReceiptPage> {
       bytes.addAll("AGENT\n".codeUnits);
       bytes.addAll([0x1B, 0x21, 0x00]);
 
-      bytes.addAll("Name     : ${widget.receiptDataModel.agentName}\n".codeUnits);
-      bytes.addAll("Phone    : ${widget.receiptDataModel.agentPhone}\n".codeUnits);
+      bytes.addAll(
+          "Name     : ${widget.receiptDataModel.agentName}\n".codeUnits);
+      bytes.addAll(
+          "Phone    : ${widget.receiptDataModel.agentPhone}\n".codeUnits);
 
       bytes.addAll("------------------------------\n".codeUnits);
 
@@ -570,7 +605,6 @@ class _ReceiptPageState extends State<ReceiptPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-
               /// HANDLE BAR
               Container(
                 height: 4,
@@ -602,98 +636,89 @@ class _ReceiptPageState extends State<ReceiptPage> {
               /// CONTENT
               devices.isEmpty
                   ? Column(
-                children: [
-                  const SizedBox(height: 20),
-
-                  Icon(
-                    Icons.print_disabled,
-                    size: 48,
-                    color: Colors.grey.shade400,
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  const Text(
-                    "No printers found",
-                    style: TextStyle(fontWeight: FontWeight.w500),
-                  ),
-
-                  const SizedBox(height: 6),
-
-                  Text(
-                    "Make sure your printer is on and nearby",
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 13,
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      _scanDevices();
-                    },
-                    icon: const Icon(Icons.refresh),
-                    label: const Text("Scan for Printers"),
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(48),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
-                ],
-              )
+                      children: [
+                        const SizedBox(height: 20),
+                        Icon(
+                          Icons.print_disabled,
+                          size: 48,
+                          color: Colors.grey.shade400,
+                        ),
+                        const SizedBox(height: 12),
+                        const Text(
+                          "No printers found",
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          "Make sure your printer is on and nearby",
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 13,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            _scanDevices();
+                          },
+                          icon: const Icon(Icons.refresh),
+                          label: const Text("Scan for Printers"),
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(48),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
                   : Flexible(
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  itemCount: devices.length,
-                  separatorBuilder: (_, __) =>
-                      Divider(color: Colors.grey.shade200),
-                  itemBuilder: (context, index) {
-                    final device = devices[index];
-                    final isSelected =
-                        selectedMac == device.macAdress;
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        itemCount: devices.length,
+                        separatorBuilder: (_, __) =>
+                            Divider(color: Colors.grey.shade200),
+                        itemBuilder: (context, index) {
+                          final device = devices[index];
+                          final isSelected = selectedMac == device.macAdress;
 
-                    return ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: CircleAvatar(
-                        backgroundColor: isSelected
-                            ? Colors.blue.withOpacity(0.1)
-                            : Colors.grey.shade200,
-                        child: Icon(
-                          Icons.print,
-                          color:
-                          isSelected ? Colors.blue : Colors.grey,
-                        ),
+                          return ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: CircleAvatar(
+                              backgroundColor: isSelected
+                                  ? Colors.blue.withOpacity(0.1)
+                                  : Colors.grey.shade200,
+                              child: Icon(
+                                Icons.print,
+                                color: isSelected ? Colors.blue : Colors.grey,
+                              ),
+                            ),
+                            title: Text(
+                              device.name ?? "Unknown Device",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            subtitle: Text(
+                              device.macAdress ?? "No MAC Address",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                            trailing: isSelected
+                                ? const Icon(Icons.check_circle,
+                                    color: Colors.blue)
+                                : null,
+                            onTap: () {
+                              Navigator.pop(context);
+                              _connectToPrinter(device.macAdress);
+                            },
+                          );
+                        },
                       ),
-                      title: Text(
-                        device.name ?? "Unknown Device",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      subtitle: Text(
-                        device.macAdress ?? "No MAC Address",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
-                      trailing: isSelected
-                          ? const Icon(Icons.check_circle,
-                          color: Colors.blue)
-                          : null,
-                      onTap: () {
-                        Navigator.pop(context);
-                        _connectToPrinter(device.macAdress);
-                      },
-                    );
-                  },
-                ),
-              ),
+                    ),
 
               const SizedBox(height: 12),
 
@@ -825,7 +850,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
           children: [
             SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: const EdgeInsets.all(10.0),
                 child: Column(
                   children: [
                     // Connection status indicator
@@ -884,10 +909,10 @@ class _ReceiptPageState extends State<ReceiptPage> {
                       ],
                     ),
 
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 10),
 
                     // QR Code Section
-                   /* Container(
+                    /* Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         color: white,
@@ -939,7 +964,8 @@ class _ReceiptPageState extends State<ReceiptPage> {
                       ),
                     ),*/
                     Container(
-                      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 20, horizontal: 10),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(18),
@@ -953,7 +979,6 @@ class _ReceiptPageState extends State<ReceiptPage> {
                       ),
                       child: Column(
                         children: [
-
                           /// TITLE
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -970,7 +995,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                             ],
                           ),
 
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 10),
 
                           /// QR CONTAINER (FOCUS AREA)
                           Container(
@@ -1041,31 +1066,42 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
                               color: home2,
                             ),
                           ),
-                          const SizedBox(height: 16),
-                          _buildDetailRow("Transaction ID:", widget.receiptDataModel.txnId),
-                          Divider(height: 24, color: home2.withOpacity(0.1)),
-                          _buildDetailRow("Transaction Type:", widget.receiptDataModel.tranType.contains("CASH")? "CASH":"UPI"),
-                          Divider(height: 24, color: home2.withOpacity(0.1)),
-                          _buildDetailRow("Customer Acc No:", widget.receiptDataModel.accNo),
-                          Divider(height: 24, color: home2.withOpacity(0.1)),
-                      _buildDetailRow("Date & Time",widget.receiptDataModel.dat.toString()),
+                          const SizedBox(height: 10),
+                          _buildDetailRow(
+                              "Transaction ID:", widget.receiptDataModel.txnId),
+                          Divider(height: 10, color: home2.withOpacity(0.1)),
+                          _buildDetailRow(
+                              "Transaction Type:",
+                              widget.receiptDataModel.tranType.contains("CASH")
+                                  ? "CASH"
+                                  : "UPI"),
+                          Divider(height: 10, color: home2.withOpacity(0.1)),
+                          _buildDetailRow("Customer Acc No:",
+                              widget.receiptDataModel.accNo),
+                          Divider(height: 10, color: home2.withOpacity(0.1)),
+                          _buildDetailRow("Date & Time",
+                              widget.receiptDataModel.dat.toString()),
                           // _buildDetailRow("Date & Time:",
                           //     "${DateFormat('dd-MMM-yyyy').format(DateTime.now())} - ${DateFormat('hh:mm a').format(DateTime.now())}"),
-                          Divider(height: 24, color: home2.withOpacity(0.1)),
-                          _buildDetailRow("Amount:", "Rs.${widget.receiptDataModel.amount}"),
-                          Divider(height: 24, color: home2.withOpacity(0.1)),
-                          _buildDetailRow("Customer Name:", widget.receiptDataModel.custName),
-                          Divider(height: 24, color: home2.withOpacity(0.1)),
-                          _buildDetailRow("Agent Name:", widget.receiptDataModel.agentName),
-                          Divider(height: 24, color: home2.withOpacity(0.1)),
-                          _buildDetailRow("Agent Phone:", widget.receiptDataModel.agentPhone),
-                          Divider(height: 24, color: home2.withOpacity(0.1)),
+                          Divider(height: 10, color: home2.withOpacity(0.1)),
+                          _buildDetailRow("Amount:",
+                              "Rs.${widget.receiptDataModel.amount}"),
+                          Divider(height: 10, color: home2.withOpacity(0.1)),
+                          _buildDetailRow("Customer Name:",
+                              widget.receiptDataModel.custName),
+                          Divider(height: 10, color: home2.withOpacity(0.1)),
+                          _buildDetailRow(
+                              "Agent Name:", widget.receiptDataModel.agentName),
+                          Divider(height: 10, color: home2.withOpacity(0.1)),
+                          _buildDetailRow("Agent Phone:",
+                              widget.receiptDataModel.agentPhone),
+                          Divider(height: 10, color: home2.withOpacity(0.1)),
 
                           widget.receiptDataModel.custPhone.isNotEmpty
-                              ? _buildDetailRow(
-                                  "Customer Phone:", widget.receiptDataModel.custPhone)
+                              ? _buildDetailRow("Customer Phone:",
+                                  widget.receiptDataModel.custPhone)
                               : const SizedBox.shrink(),
-                          Divider(height: 24, color: home2.withOpacity(0.1)),
+                       //   Divider(height: 24, color: home2.withOpacity(0.1)),
                         ],
                       ),
                     ),
@@ -1083,7 +1119,8 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
                               icon: const Icon(Icons.print, size: 18),
                               label: const Text("Print"),
                               style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 14),
                                 side: BorderSide(color: home1.withOpacity(0.6)),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(14),
@@ -1105,11 +1142,19 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
                               onPressed: () {
                                 _takeScreenshotAndShare();
                               },
-                              icon: const Icon(Icons.share, size: 18, color: Colors.white,),
-                              label: const Text("Share", style: TextStyle(color: Colors.white),),
+                              icon: const Icon(
+                                Icons.share,
+                                size: 18,
+                                color: Colors.white,
+                              ),
+                              label: const Text(
+                                "Share",
+                                style: TextStyle(color: Colors.white),
+                              ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: home2,
-                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 14),
                                 elevation: 2,
                                 shadowColor: home2.withOpacity(0.3),
                                 shape: RoundedRectangleBorder(
@@ -1196,6 +1241,7 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
       ),
     );
   }
+
   Widget _buildDetailRow(String label, String value) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -1205,6 +1251,7 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
             child: Text(
@@ -1216,12 +1263,15 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
             ),
           ),
           Flexible(
-            child: Text(
-              value,
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                color: home2,
+            child: SizedBox(
+              width: double.infinity,
+              child: Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 12,
+                  //   fontWeight: FontWeight.w600,
+                  color: home2,
+                ),
               ),
             ),
           ),

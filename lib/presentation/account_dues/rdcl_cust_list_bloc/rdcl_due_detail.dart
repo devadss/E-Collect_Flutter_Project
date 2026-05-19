@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../core/colors.dart';
+import '../../../core/constants.dart';
 import '../../../core/utils.dart';
 import '../../../data/provider/cash_transcation_provider.dart';
 import '../../../data/rdcl_duelist_bloc/rdcl_duelist_bloc.dart';
@@ -231,7 +232,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
-                          Icons.account_balance_wallet,
+                          Icons.currency_rupee_rounded  ,
                           color: home1,
                           size: 30,
                         ),
@@ -304,7 +305,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                 const SizedBox(height: 12),*/
 
                 _buildPaymentOptionButton(
-                  icon: Icons.payments,
+                  icon: Icons.currency_rupee_rounded,
                   label: "Cash Payment",
                   onPressed: () {
                     Navigator.pop(context);
@@ -318,16 +319,17 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                   },
                 ),
                 //const SizedBox(height: 24),
-                              const SizedBox(height: 12),
-
-              _buildPaymentOptionButton(
-                icon: Icons.link,
-                label: "Send Payment Link",
-                onPressed: () {
-                  Navigator.pop(context);
-                  sendLinkFunction();
-                },
-              ),
+                //UNCOMMENT AFTER PAYMENT LINK IS LIVE....
+              //                 const SizedBox(height: 12),
+              //   uatTestMobileNumber.replaceAll("+91", "") != subagentPhoneNumber?.replaceAll("+91", "")?
+              // _buildPaymentOptionButton(
+              //   icon: Icons.link,
+              //   label: "Send Payment Link",
+              //   onPressed: () {
+              //     Navigator.pop(context);
+              //     sendLinkFunction();
+              //   },
+              // ):SizedBox.shrink(),
                 const SizedBox(height: 12),
               ],
             ),
@@ -540,16 +542,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Text(
-        //   label,
-        //   style: GoogleFonts.poppins(
-        //     color: Colors.grey[600],
-        //     fontSize: 14,
-        //   ),
-        // ),
-        //Spacer(flex: 1,),
-        // Expanded(
-        //   child:
+
       Text(
             value,
             overflow: TextOverflow.ellipsis,
@@ -749,7 +742,12 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: _proceedButtonClick,
+                      onPressed: ()
+                      {
+                        amountController.text.toString().isNotEmpty?
+                        _proceedButtonClick():
+                        Navigator.pop(context);
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: home1,
                         foregroundColor: white,

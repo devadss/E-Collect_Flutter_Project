@@ -15,8 +15,11 @@ class LinkTransactionHistoryProvider with ChangeNotifier{
   bool? get showProgressDialog  => _showProgressDialog;
   Future<void>getLinkTransactionHistory(String filterType, String startDate, String endDate, String subAgentId,String corpCode,String agentOrginId) async{
     final result = await _linkTransactionHistoryRepository.getLinkTransactionHistory(filterType, startDate, endDate, subAgentId,corpCode,agentOrginId);
-    printLog("---------------------------LINK TRANSACTION HISTORY MODEL------------------");
-    printLog(linkTranscationHistoryModel);
+    if(printStatementStatus){
+      printLog("---------------------------LINK TRANSACTION HISTORY MODEL------------------");
+      printLog(linkTranscationHistoryModel);
+    }
+
     _showProgressDialog = true;
     notifyListeners();
     result.fold(

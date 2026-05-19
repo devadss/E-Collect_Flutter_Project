@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection_qr_flutter/core/utils.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -16,18 +17,26 @@ class LinkTransactionHistoryRepository implements ILinkTransactionHistoryReposit
   // final url = Uri.parse("${baseUrl}api/Cashfree/GetPaymentLinksQrTransactions?filterType=$filterType&startDate=$startDate&endDate=$endDate&subAgentId=$subAgentId");
      // final url = Uri.parse("${baseUrl}api/GetMerchantOrders?dateFilterType=$filterType&startDate=$startDate&endDate=$endDate&Source=ALL&CorpCode=$corpCode&agentOrginId=$agentOrginId&PaymentMode=PAYMENTLINK");
       final url = Uri.parse("${baseUrl}api/Cashfree/GetPaymentLinksQrTransactions?filterType=$filterType&startDate=$startDate&endDate=$endDate&subAgentId=$subAgentId&paymentMode=PAYMENTLINK&corpCode=$corpCode");
-
+if(printStatementStatus){
   printLog("${baseUrl}api/Cashfree/GetPaymentLinksQrTransactions?filterType=$filterType&startDate=$startDate&endDate=$endDate&subAgentId=$subAgentId&paymentMode=PAYMENTLINK&corpCode=$corpCode");
+
+}
 
    bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
    if(checkConnection){
     final response = await http.get(url);
-    print(response.body);
+if(printStatementStatus){
+  print(response.body);
+}
+
     if(response.statusCode == 200 || response.statusCode == 201){
-      printLog("--------------------------------RESPONSE STATUS CODE LINK TRANSCATIONS---------------------------------");
-      printLog(response.statusCode);
-      printLog("--------------------------------RESPONSE BODY LINK TRANSCATIONS---------------------------------");
-      printLog(response.body);
+if(printStatementStatus){
+  printLog("--------------------------------RESPONSE STATUS CODE LINK TRANSCATIONS---------------------------------");
+  printLog(response.statusCode);
+  printLog("--------------------------------RESPONSE BODY LINK TRANSCATIONS---------------------------------");
+  printLog(response.body);
+}
+
       try{
         return Right(AllTransactionHistoryResponse.fromJson(jsonDecode(response.body)));
       }catch(e){

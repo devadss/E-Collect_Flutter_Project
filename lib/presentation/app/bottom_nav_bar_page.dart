@@ -89,8 +89,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
             ? const CustomerList()
             : const AccountListHomePage();
       case 3:
-       // return const ProfileHomePage();
-        return const PtpBucketUi();
+        return const ProfileHomePage();
+       // return const PtpBucketUi();
       default:
         return HomePage(
           userType: loggedInUserTPYE.toString(),
