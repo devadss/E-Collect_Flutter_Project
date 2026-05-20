@@ -12,11 +12,13 @@ Future<bool> checkInternetConnection()async{
     return false;
   }
 }
+
 void printLog(msg){
 
     print(msg);
 
 }
+
 Future<void> launchUrl(String url)async{
   final Uri uri = Uri.parse(url);
   await launchUrl(uri.toString());

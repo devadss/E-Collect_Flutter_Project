@@ -71,15 +71,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   late Animation<double> scaleAnimation;
   int index = 0;
 
-  // void checkForUpdate() async {
-  //   try {
-  //     AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
-  //     if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
-  //       InAppUpdate.performImmediateUpdate(); // or .startFlexibleUpdate()
-  //     }
-  //   } catch (e) {
-  //   }
-  // }
+
 
   Future<void> createColorPallet() async {
     for(var clr in bannerImages){
@@ -426,8 +418,6 @@ if(printStatementStatus){
     );
     await provider.getTransactions(token.toString());
   }
-
-
 
   Future<void> loadSharedPrefs(BuildContext context) async {
     final name = await SharedPref().getSubAgentName();
@@ -977,7 +967,7 @@ if(printStatementStatus){
       print("_clearFilters 1");
     }
 
-    final qrProvider = context.read<QRTransactionHistoryProvider>();
+    //final qrProvider = context.read<QRTransactionHistoryProvider>();
     final cashTransProvider = context.read<CashTransactionHistoryProvider>();
     final cashQrProvider = context.read<CashQrProvider>();
      final linkProvider = context.read<LinkTransactionHistoryProvider>();
@@ -1252,7 +1242,7 @@ if(printStatementStatus){
     );
   }
 
-  Widget _buildQRTransactionContent(QRTransactionHistoryProvider qrProvider) {
+ /* Widget _buildQRTransactionContent(QRTransactionHistoryProvider qrProvider) {
     if (qrProvider.errResponse != null) {
       return _buildEmptyState(
         icon: Icons.qr_code,
@@ -1277,7 +1267,7 @@ if(printStatementStatus){
       collectionType:  (t) => t.collectionType.toString(), getAccNo:
         (t) => t.customerAccNo.toString(), getTranType:(t) =>t.paymentMode.toString(), getCustAccNo: (t) => t.customerAccNo.toString(),
     );
-  }
+  }*/
 
   Widget _buildLinkTransactionContent(LinkTransactionHistoryProvider linkProvider) {
 
@@ -1847,60 +1837,5 @@ class _DatePickerButton extends StatelessWidget {
   }
 }
 
-// String formatTimestamp(DateTime? timestamp) {
-//   if (timestamp == null) return "Invalid Date";
-//   return DateFormat('MMM dd, yyyy • hh:mm a').format(timestamp);
-// }
-/*  Widget _buildAccTransTransactionContent(
-      TransferHistoryProvider cashProvider)
-  {
-    if (cashProvider.errResponse != null) {
-      return _buildEmptyState(
-        icon: Icons.account_balance_sharp,
-        title: "No Account Transactions",
-        message: "Your Account payment transactions will appear here",
-      );
-    } else if (cashProvider.qrTranscationHistoryModel == null) {
-      return _buildLoadingList();
-    }
-    return _buildTransactionList(
-      transactions: cashProvider.qrTranscationHistoryModel!.data!,
-      icon: Icons.account_balance,
-      iconColor: Colors.orange,
-      getAmount: (t) => t.orderAmount ?? 0,
-      getStatus: (t) => t.orderStatus.toString(),
-      getOrderId: (t) => t.orderId.toString(),
-      getCustName: (t) => t.customerName.toString(),
-      getCustId: (t) => t.customerId.toString(),
-      getCustPhone: (t) => t.customerPhone.toString(),
-      getTnxType: (t) => t.source.toString(), paymentMode:(t)=> t.paymentMode.toString(), collectionType: (t)=> cashCollectionType.toString(),
-      getAccNo: (t) => t.customerAccNo.toString(), getTranType: (t) => t.source.toString(), getCustAccNo: (t) => t.customerAccNo.toString(),
-    );
-  }*/
- // Widget _buildLinkTransactionContent(
- //      LinkTransactionHistoryProvider linkProvider)
- //  {
- //    if (linkProvider.erResposne != null) {
- //      return _buildEmptyState(
- //        icon: Icons.link_outlined,
- //        title: "No Link Transactions",
- //        message: "Your link transactions will appear here",
- //      );
- //    } else if (linkProvider.linkTranscationHistoryModel == null) {
- //      return _buildLoadingList();
- //    }
- //    return _buildTransactionList(
- //      transactions: linkProvider.linkTranscationHistoryModel!.data!,
- //      icon: Icons.link_outlined,
- //      iconColor: Colors.blue,
- //      getAmount: (t) => t.linkAmount ?? 0,
- //      getStatus: (t) => t.linkStatus.toString(),
- //      getOrderId: (t) => t.orderId.toString(),
- //      getCustName: (t) => t.customerName.toString(),
- //      getCustId: (t) => t.customerId.toString(),
- //      getCustPhone: (t) => t.customerPhone.toString(),
- //      getTnxType: (t) => t.source.toString(), paymentMode: (t)=> t.paymentMode.toString(), collectionType: (t)=>t.collectionType.toString(),
- //      getAccNo: (t) => t.customerAcctno.toString(), getTranType: (t) => t.source.toString(), getCustAccNo: (t) => t.customerAcctno.toString(),
- //    );
- //  }
+
 

@@ -12,31 +12,60 @@ import '../presentation/auth/login/otp_verification/otp_verification.dart';
 import 'colors.dart';
 import 'constants.dart';
 
-const bool printStatementStatus = false;
+const bool printStatementStatus = true;
 
 void isRunningLiveBaseUrl(bool status, String mobile) async {
-  if (status==true && mobile != null && mobile != uatTestMobileNumber){
-    if(printStatementStatus){
-      print("STATUS :$status");
-      print("mobile :$mobile");
-      print("returning live url");
-    }
+  if(mobile.startsWith("+91")){
+    if (status==true && mobile != null && mobile != uatTestMobileNumber){
+      if(printStatementStatus){
+        print("STATUS :$status");
+        print("mobile :$mobile");
+        print("returning live url");
+      }
 
-    baseUrl = "https://adsspay.aanvinsolutions.com:8444/";
+      baseUrl = "https://adsspay.aanvinsolutions.com:8444/";
+    }else{
+      baseUrl ="https://adsspayweb.digicob.in/";
+      if(printStatementStatus){
+        print("returning UAT url");
+      }
+    }
   }else{
-   baseUrl ="https://adsspayweb.digicob.in/";
-   if(printStatementStatus){
-     print("returning UAT url");
-   }
+    if (status==true && "+91${mobile}" != null && "+91${mobile}" != uatTestMobileNumber){
+      if(printStatementStatus){
+        print("STATUS :$status");
+        print("mobile :$mobile");
+        print("returning live url");
+      }
+
+      baseUrl = "https://adsspay.aanvinsolutions.com:8444/";
+    }else{
+      baseUrl ="https://adsspayweb.digicob.in/";
+      if(printStatementStatus){
+        print("returning UAT url");
+      }
+    }
   }
+
 }
 
 void isRunningLiveDopBaseUrl(bool status, String mobile) async {
-  if (status== true && mobile != null && mobile != uatTestMobileNumber){
-    dopBaseUrl =  "https://mydop.in/api/fetch/vendor/urls/";
+  if(mobile.startsWith("+91")){
+    if (status== true && "+91${mobile}" != null && "+91${mobile}" != uatTestMobileNumber){
+      dopBaseUrl =  "https://mydop.in/api/fetch/vendor/urls/";
+    }else{
+      dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";
+    }
   }else{
-    dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";
+    if (status== true && "+91${mobile}"!= null && "+91${mobile}" != uatTestMobileNumber){
+      dopBaseUrl =  "https://mydop.in/api/fetch/vendor/urls/";
+    }else{
+      dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";
+    }
+
+
   }
+
 }
 
 String getBankNameFromCorpCode(String corpCode) {
@@ -532,10 +561,7 @@ Future<void> resetInitialData() async {
 
 void showNotification(BuildContext context , String content, Color color, Color txtColor){
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(content, style: TextStyle(color: txtColor, fontWeight: FontWeight.w700),), backgroundColor: color));
-
 }
-
-
 
 AppBar ptp_bucket_appbar(String appBarName) {
   return AppBar(

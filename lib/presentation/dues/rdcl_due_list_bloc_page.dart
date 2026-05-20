@@ -1541,12 +1541,14 @@ bool chekValue(String value){
 
                                         // Expanded Details
                                         if (_showDrops[index]) ...[
-                                          const SizedBox(height: 16),
+                                          const SizedBox(height: 5),
                                           Divider(color: Colors.grey.shade200, height: 1),
-                                          const SizedBox(height: 16),
+                                          const SizedBox(height: 5),
 
                                           // Customer Name Row
                                           Row(
+
+                                            crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
                                               Container(
                                                 padding: const EdgeInsets.all(8),
@@ -1579,8 +1581,8 @@ bool chekValue(String value){
                                               ),
                                             ],
                                           ),
-                                          const SizedBox(height: 12),
-
+                                          const SizedBox(height: 5),
+Divider(color: Colors.grey.shade200,),
                                           // Open Date Row
                                           Row(
                                             children: [
@@ -1612,9 +1614,9 @@ bool chekValue(String value){
                                               ),
                                             ],
                                           ),
-                                          const SizedBox(height: 16),
+                                          const SizedBox(height: 5),
                                           Divider(color: Colors.grey.shade200, height: 1),
-                                          const SizedBox(height: 16),
+                                          const SizedBox(height: 5),
 
                                           // Installment Details Header
                                           Row(
@@ -1638,7 +1640,7 @@ bool chekValue(String value){
                                               ),
                                             ],
                                           ),
-                                          const SizedBox(height: 12),
+                                          const SizedBox(height: 5),
 
                                           // Installment Stats Row
                                           Row(
@@ -1647,7 +1649,7 @@ bool chekValue(String value){
                                                 child: Container(
                                                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                                                   decoration: BoxDecoration(
-                                                    color: Colors.green.withAlpha(8),
+                                                    color: Colors.green.withAlpha(35),
                                                     borderRadius: BorderRadius.circular(12),
                                                   ),
                                                   child: Column(
@@ -1678,7 +1680,7 @@ bool chekValue(String value){
                                                 child: Container(
                                                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                                                   decoration: BoxDecoration(
-                                                    color: Colors.orange.withAlpha(8),
+                                                    color: Colors.orange.withAlpha(35),
                                                     borderRadius: BorderRadius.circular(12),
                                                   ),
                                                   child: Column(
@@ -1709,7 +1711,7 @@ bool chekValue(String value){
                                                 child: Container(
                                                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                                                   decoration: BoxDecoration(
-                                                    color: Colors.blueGrey.withAlpha(8),
+                                                    color: Colors.blueGrey.withAlpha(35),
                                                     borderRadius: BorderRadius.circular(12),
                                                   ),
                                                   child: Column(
@@ -1737,9 +1739,9 @@ bool chekValue(String value){
                                               ),
                                             ],
                                           ),
-                                          const SizedBox(height: 16),
+                                          const SizedBox(height: 10),
                                           Divider(color: Colors.grey.shade200, height: 1),
-                                          const SizedBox(height: 16),
+                                          const SizedBox(height: 10),
 
                                           // Payment Selection Row
                                           Row(
