@@ -1,9 +1,7 @@
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../data/provider/collection_base_url_provider.dart';
 import '../data/provider/parent_agent_detail_provider/parent_agent_detil_provider.dart';
 import '../data/storage/shared_pref_helper.dart';
@@ -62,8 +60,6 @@ void isRunningLiveDopBaseUrl(bool status, String mobile) async {
     }else{
       dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";
     }
-
-
   }
 
 }

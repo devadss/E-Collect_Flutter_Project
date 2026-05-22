@@ -8,8 +8,6 @@ import '../../domain/interface/otp_verification_interface.dart';
 import '../../domain/model/otp_fail_model.dart';
 import '../../domain/model/otp_verification_success.dart';
 
-
-
 class OtpVerificationRepository implements OtpVerificationInterface {
   @override
   Future<Either<OtpFailModel, OtpSuccessModel>> verifyOtp(
@@ -20,7 +18,9 @@ class OtpVerificationRepository implements OtpVerificationInterface {
         print("otp = $otp");
       }
 
-      final uri = uatTestMobileNumber == mobnum? Uri.parse("${baseUrl}api/VerifyOTPV1"):Uri.parse("${baseUrl}api/VerifyOTP"); // Now we can use 2025 as the otp for verification.
+      final uri = uatTestMobileNumber.replaceAll("+91", "") == mobnum?
+      Uri.parse("${baseUrl}api/VerifyOTPV1"):
+      Uri.parse("${baseUrl}api/VerifyOTP"); // Now we can use 2025 as the otp for verification.
 
       final data = {'MobileNo': '+91$mobnum', 'OTp': otp};  // Fixed "OTp" key
 
@@ -29,6 +29,7 @@ class OtpVerificationRepository implements OtpVerificationInterface {
         body: jsonEncode(data),
         headers: {'Content-Type': 'application/json'},
       );
+
       if(printStatementStatus){
         print("request = ${request.body}");
         print("request ststus code= ${request.statusCode}");
@@ -66,44 +67,4 @@ class OtpVerificationRepository implements OtpVerificationInterface {
     }
   }
 }
-/*class OtpVerificationRepository implements OtpVerificationInterface {
-  @override
-  Future<Either<OtpFailModel, OtpSuccessModel>> verifyOtp(
-      String mobnum, String otp) async {
-    try {
-      print("mobnum = $mobnum");
-      print("OTp = $otp");
-      final uri = Uri.parse("${baseUrl}api/VerifyOTP");
-      final data = {'MobileNo': '+91$mobnum', 'OTp': otp};
 
-      final request = await http.post(
-        uri,
-        body: jsonEncode(data),
-        headers: {'Content-Type': 'application/json'},
-      );
-      print("request = ${request.body}");
-      if (request.statusCode == 200) {
-        OtpSuccessModel otpSuccessModel = OtpSuccessModel.fromJson(jsonDecode(request.body));
-        return Right(otpSuccessModel);
-      }else {
-        if(request.statusCode == 401){
-          OtpFailModel otpFailModel = OtpFailModel.fromJson(jsonDecode(request.body));
-          return Left(otpFailModel);
-        }else{
-          if(request.statusCode == 403){
-            OtpFailModel otpFailModel = OtpFailModel.fromJson(jsonDecode(request.body));
-            return Left(otpFailModel);
-          }else{
-            OtpFailModel otpFailModel = OtpFailModel.fromJson(jsonDecode(request.body));
-            return Left(otpFailModel);
-          }
-
-        }
-        
-      }
-    } catch (e) {
-      OtpFailModel otpFailModel = OtpFailModel.fromJson(jsonDecode("ERROR"));
-      return Left(otpFailModel);
-    }
-  }
-}*/

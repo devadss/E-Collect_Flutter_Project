@@ -2,18 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
-
 import '../../../core/colors.dart';
-import '../../../core/constants.dart';
 import '../../../core/utils.dart';
 import '../../../data/provider/cash_transcation_provider.dart';
 import '../../../data/rdcl_duelist_bloc/rdcl_duelist_bloc.dart';
 import '../../../data/repository/payment_link_repository.dart';
-import '../../../data/repository/payment_session_id_repository.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../dues/rdcl_due_home_page.dart';
-import '../../dues/widgets/new_qr_code_page.dart';
 import '../../paymentlink_request_ui.dart';
 import '../../profile/widgets/recipect_page.dart';
 

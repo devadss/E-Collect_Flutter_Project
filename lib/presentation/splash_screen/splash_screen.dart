@@ -59,7 +59,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     tokenValidateResponse.fold(
       (error) {
-        // Navigator.pop(context);
+
         if (printStatementStatus) {
           print("Token Validation Error: $error");
         }
@@ -103,7 +103,8 @@ class _SplashScreenState extends State<SplashScreen> {
                         builder: (context) =>
                             const MobileNumberVerificationPage()));
               }
-            });
+            }
+            );
           }
         } else {
           final tokenRequest =
@@ -155,7 +156,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 }
               } else {
                 Future.delayed(const Duration(milliseconds: 100), () {
-                  // Do something
+
                   if (mounted) {
                     Navigator.pushReplacement(
                         context,

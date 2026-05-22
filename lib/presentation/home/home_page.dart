@@ -31,6 +31,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+  static const Color whiteColor = Colors.white;
   int todaysCount = 0;
   String? userName;
   String? entityId;
@@ -50,7 +51,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   String currentToDate = ''; // Track current to date
   int currentBannerIndex = 0;
   Color? dominantColor;
-  static const Color whiteColor = Colors.white;
 
   final List<String> bannerImages = [
     "assets/images/cq1.png",
@@ -61,9 +61,17 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     "assets/images/cq6.png",
     "assets/images/cq7.png",
   ];
+
   var bannerImagesColorPallet = [];
-  var initalColor = Color.fromARGB( 1, 0,   0,  0,  );
-  final CarouselSliderController _carouselController = CarouselSliderController();
+
+  var initialColor = Color.fromARGB(
+    1,
+    0,
+    0,
+    0,
+  );
+  final CarouselSliderController _carouselController =
+      CarouselSliderController();
   DateTime startDate = DateTime.now().subtract(const Duration(days: 30));
   DateTime endDate = DateTime.now();
   late AnimationController _animationController;
@@ -71,23 +79,20 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   late Animation<double> scaleAnimation;
   int index = 0;
 
-
-
   Future<void> createColorPallet() async {
-    for(var clr in bannerImages){
+    for (var clr in bannerImages) {
       final ImageProvider imageProvider = AssetImage(clr);
       final PaletteGeneratorMaster paletteGenerator =
-      await PaletteGeneratorMaster.fromImageProvider(
+          await PaletteGeneratorMaster.fromImageProvider(
         imageProvider,
         maximumColorCount: 16,
-        generateHarmony: true,      // Generate color harmony
+        generateHarmony: true, // Generate color harmony
       );
-     bannerImagesColorPallet.add(paletteGenerator.dominantColor?.color);
-     //dominantColor = paletteGenerator.dominantColor?.color;
-if(printStatementStatus){
-  print("dominantColor = ${paletteGenerator.dominantColor?.color}");
-}
-
+      bannerImagesColorPallet.add(paletteGenerator.dominantColor?.color);
+      //dominantColor = paletteGenerator.dominantColor?.color;
+      if (printStatementStatus) {
+        print("dominantColor = ${paletteGenerator.dominantColor?.color}");
+      }
       // final Color? vibrantColor = paletteGenerator.vibrantColor?.color;
       // final Color? mutedColor = paletteGenerator.mutedColor?.color;
     }
@@ -97,11 +102,9 @@ if(printStatementStatus){
         index = (index + 1) % bannerImagesColorPallet.length;
       });
     });
-
-
   }
 
-  void animationController(){
+  void animationController() {
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -124,7 +127,6 @@ if(printStatementStatus){
     _animationController.forward();
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -133,7 +135,6 @@ if(printStatementStatus){
     checkForUpdate();
 
     loadSharedPrefs(context);
-
   }
 
   @override
@@ -147,11 +148,12 @@ if(printStatementStatus){
     final qrProvider = context.read<QRTransactionHistoryProvider>();
     final cashTransProvider = context.read<CashTransactionHistoryProvider>();
     final linkProvider = context.read<LinkTransactionHistoryProvider>();
-  //final transferProvider = context.read<TransferHistoryProvider>();
+    //final transferProvider = context.read<TransferHistoryProvider>();
 
     DateTime? fromDate;
     DateTime? toDate;
-    int selectedIndex = 0; // 0=Today,1=This Week,...4=Custom
+    int selectedIndex = 0;
+    // 0=Today,1=This Week,...4=Custom
 
     showModalBottomSheet(
       backgroundColor: whiteColor,
@@ -170,7 +172,6 @@ if(printStatementStatus){
                 return Row(
                   children: [
                     Expanded(
-
                       child: _DatePickerButton(
                         label: fromDate != null ? fmt(fromDate!) : 'From',
                         icon: Icons.calendar_today_outlined,
@@ -242,7 +243,7 @@ if(printStatementStatus){
                         children: const [
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 12),
-                            child:  Text('Today',
+                            child: Text('Today',
                                 style: TextStyle(color: Colors.black)),
                           ),
                           Padding(
@@ -279,9 +280,9 @@ if(printStatementStatus){
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: ElevatedButton(
-
                         style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
                           backgroundColor: home1,
                           foregroundColor: whiteColor,
                           minimumSize: const Size.fromHeight(48),
@@ -307,17 +308,17 @@ if(printStatementStatus){
                               break;
                             case 2: // This Month (last 30 days)
                               period = 'THIS_MONTH';
-                              from = DateFormat('yyyy-MM-dd')
-                                  .format(now.subtract(const Duration(days: 30)));
+                              from = DateFormat('yyyy-MM-dd').format(
+                                  now.subtract(const Duration(days: 30)));
                               to = DateFormat('yyyy-MM-dd').format(now);
                               break;
                             case 3: // Last Month
                               period = 'LAST_MONTH';
                               final firstDayLastMonth =
-                              DateTime(now.year, now.month - 1, 1);
+                                  DateTime(now.year, now.month - 1, 1);
                               final lastDayLastMonth =
-                              DateTime(now.year, now.month, 1)
-                                  .subtract(const Duration(days: 1));
+                                  DateTime(now.year, now.month, 1)
+                                      .subtract(const Duration(days: 1));
                               from = DateFormat('yyyy-MM-dd')
                                   .format(firstDayLastMonth);
                               to = DateFormat('yyyy-MM-dd')
@@ -340,14 +341,8 @@ if(printStatementStatus){
                           //
                           //     corpCode,
                           //     agentOriginId);
-                          await linkProvider.getLinkTransactionHistory(
-                              period,
-                              from,
-                              to,
-                              subAgentID!,
-                              corpCode!,
-                              agentOriginId!
-                          );
+                          await linkProvider.getLinkTransactionHistory(period,
+                              from, to, subAgentID!, corpCode!, agentOriginId!);
                           // await transferProvider.getQrTranscationHistory(
                           //     period,
                           //     from,
@@ -387,7 +382,9 @@ if(printStatementStatus){
                             currentFromDate = from;
                             currentToDate = to;
                           });
-                          if (qrProvider.showProgressDialog == false || cashTransProvider.showProgressDialog == false || linkProvider.showProgressDialog == false) {
+                          if (qrProvider.showProgressDialog == false ||
+                              cashTransProvider.showProgressDialog == false ||
+                              linkProvider.showProgressDialog == false) {
                             if (mounted) {
                               Navigator.of(context, rootNavigator: true).pop();
                               Navigator.of(context, rootNavigator: true).pop();
@@ -395,7 +392,7 @@ if(printStatementStatus){
                           }
                         },
                         child:
-                        Text(selectedIndex == 4 ? 'Apply Filter' : 'Apply'),
+                            Text(selectedIndex == 4 ? 'Apply Filter' : 'Apply'),
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -408,7 +405,6 @@ if(printStatementStatus){
       },
     );
   }
-
 
   Future<void> fetchTransaction() async {
     if (!mounted) return;
@@ -431,7 +427,7 @@ if(printStatementStatus){
     final customerRdUrl = await SharedPref().getCustomerRdUrl();
     final subAgentmobnum = await SharedPref.shared.getSubAgentMobNum();
 
-    isRunningLiveBaseUrl(true , subAgentmobnum);
+    isRunningLiveBaseUrl(true, subAgentmobnum);
     isRunningLiveDopBaseUrl(true, subAgentmobnum);
 
     if (mounted) {
@@ -457,62 +453,49 @@ if(printStatementStatus){
     }
 
     final now = DateTime.now();
-   // final fromDate = DateFormat('yyyy-MM-dd').format(now.subtract(const Duration(days: 30)));
-    final fromDate = DateFormat('yyyy-MM-dd').format(now.subtract(const Duration(days: 7)));
+    // final fromDate = DateFormat('yyyy-MM-dd').format(now.subtract(const Duration(days: 30)));
+    final fromDate =
+        DateFormat('yyyy-MM-dd').format(now.subtract(const Duration(days: 7)));
     final toDate = DateFormat('yyyy-MM-dd').format(now);
 
     try {
       // Load data for ALL providers, not just QR transactions
-      final qrProvider = Provider.of<QRTransactionHistoryProvider>(context, listen: false);
-      final cashQrProvider = Provider.of<CashQrProvider>(context, listen: false);
-      final cashProvider = Provider.of<CashTransactionHistoryProvider>(context, listen: false);
-      final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
-      //final transferProvider = Provider.of<TransferHistoryProvider>(context, listen: false);
+      final qrProvider =
+          Provider.of<QRTransactionHistoryProvider>(context, listen: false);
+      final cashQrProvider =
+          Provider.of<CashQrProvider>(context, listen: false);
+      final cashProvider =
+          Provider.of<CashTransactionHistoryProvider>(context, listen: false);
+      final linkProvider =
+          Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
 
-      // Load QR transactions
-      // await qrProvider.getQrTranscationHistory(
-      //   //"THIS_WEEK",
-      //   "TODAY",
-      //   fromDate,
-      //   toDate,
-      //   // userType!,
-      //   'ALL',
-      //   corpCode!,
-      //   agentOriginId!,
-      //
-      // );
-
-      // Load Link transactions (for AGENT_LOAN)
-      if(printStatementStatus){
+      if (printStatementStatus) {
         print("userType : $userType");
       }
 
       if (userType == "LOAN_COLLECTION") {
         await linkProvider.getLinkTransactionHistory(
-           // "THIS_WEEK",
+            // "THIS_WEEK",
             "TODAY",
             fromDate,
             toDate,
             subAgentID!,
             corpCode!,
-            agentOriginId!
-        );
-      }
-      else if(userType == "COLLECTION"){
+            agentOriginId!);
+      } else if (userType == "COLLECTION") {
         await linkProvider.getLinkTransactionHistory(
-          // "THIS_WEEK",
+            // "THIS_WEEK",
             "TODAY",
             fromDate,
             toDate,
             subAgentID!,
             corpCode!,
-            agentOriginId!
-        );
+            agentOriginId!);
       }
 
       // Load Cash transactions
       await cashProvider.getCashTranscationHistory(
-       // "THIS_WEEK",
+        // "THIS_WEEK",
         "TODAY",
         fromDate,
         toDate,
@@ -534,7 +517,7 @@ if(printStatementStatus){
           corpCode!,
           agentOriginId!,
         );
-      /*  await transferProvider.getQrTranscationHistory(
+        /*  await transferProvider.getQrTranscationHistory(
          // "THIS_WEEK",
           "TODAY",
           fromDate,
@@ -549,7 +532,7 @@ if(printStatementStatus){
       // Load Combined Cash+QR transactions (for regular AGENT)
       if (userType == "COLLECTION") {
         await cashQrProvider.getCombinedResponse(
-         // "THIS_WEEK",
+          // "THIS_WEEK",
           "TODAY",
           toDate,
           fromDate,
@@ -561,13 +544,11 @@ if(printStatementStatus){
       if (mounted) return;
       setState(() {
         //print("Total count : ${cashQrProvider.cashQrCombinedResponse?.filteredCount}");
-        todaysCount = cashQrProvider.cashQrCombinedResponse?.filteredCount ??0;
-
+        todaysCount = cashQrProvider.cashQrCombinedResponse?.filteredCount ?? 0;
       });
       // Final tasks
       fetchTransaction();
       fetchCollection();
-
     } catch (e) {
       //print("Error loading transaction data: $e");
       if (mounted) {
@@ -615,19 +596,17 @@ if(printStatementStatus){
       listen: false,
     );
     provider.getCollectionSummary("AGT12345", "$startDate", "$endDate", token!);
-
   }
 
   Widget _buildAnimatedHeader(BuildContext context, Size size) {
-
     final formattedName = (userName != null && userName!.isNotEmpty)
         ? userName![0].toUpperCase() + userName!.substring(1)
         : "";
-   // SAFE COLOR
-   final headerColor = bannerImagesColorPallet.isNotEmpty &&
-       index < bannerImagesColorPallet.length
-       ? bannerImagesColorPallet[index]
-       : Colors.blue; // fallback color
+    // SAFE COLOR
+    final headerColor = bannerImagesColorPallet.isNotEmpty &&
+            index < bannerImagesColorPallet.length
+        ? bannerImagesColorPallet[index]
+        : Colors.blue; // fallback color
 
     return AnimatedContainer(
       duration: 500.ms,
@@ -640,14 +619,12 @@ if(printStatementStatus){
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-      
             /// HEADER TEXT
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-      
                   /// GREETING SMALL
 
                   Text(
@@ -658,31 +635,23 @@ if(printStatementStatus){
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-      
+
                   const SizedBox(height: 4),
-      
+
                   /// USER NAME
 
-
                   Text(
-
                     "Hi, $formattedName ",
-
-                    style:  TextStyle(
+                    style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
                       color: whiteColor,
                       letterSpacing: 0.3,
-
-
                     ),
-                  )
-                      .animate()
-                      .fadeIn(duration: 900.ms)
-                      .slideX(begin: -0.9),
-      
+                  ).animate().fadeIn(duration: 900.ms).slideX(begin: -0.9),
+
                   const SizedBox(height: 6),
-      
+
                   /// OPTIONAL SUBTEXT
                   Text(
                     "Here's your collection overview",
@@ -694,18 +663,17 @@ if(printStatementStatus){
                 ],
               ),
             ),
-      
-      
-      
+
             /// BANNER / CAROUSEL
             _buildAnimatedBannerCarousel(size),
-      
+
             const SizedBox(height: 10),
           ],
         ),
       ),
     );
   }
+
   Widget _buildAnimatedBannerCarousel(Size size) {
     return SizedBox(
       height: size.height * 0.15,
@@ -745,9 +713,9 @@ if(printStatementStatus){
                   ],
                 ),
               ).animate().scale(
-                begin: const Offset(0.9, 0.9),
-                duration: 500.ms,
-              );
+                    begin: const Offset(0.9, 0.9),
+                    duration: 500.ms,
+                  );
             }).toList(),
           ),
           Positioned(
@@ -797,181 +765,177 @@ if(printStatementStatus){
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 16),
-      child:
-      Card(
-        elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        shadowColor: Colors.black.withOpacity(0.08),
-        child: Padding(
-          padding: const EdgeInsets.all(18),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-
-              /// HEADER
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Total Collection",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey.shade700,
-                    ),
-                  ),
-
-                  /// TAG
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      // color: home1.withOpacity(0.08),
-                      gradient: LinearGradient(
-                        colors: [
-                          home1.withOpacity(0.15),
-                          home1.withOpacity(0.5),
-                        ],begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,),
-
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      selectedTabIndex == 0
-                          ? userType == "COLLECTION"
-                          ? "All"
-                        //: 'Link'
-                          : 'All'
-                          : selectedTabIndex == 1
-                          //? 'QR Code'
-                          ? 'Link'
-                          : selectedTabIndex == 2
-                          ? 'Cash'
-                          : "Transfer",
+        padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 16),
+        child: Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          shadowColor: Colors.black.withOpacity(0.08),
+          child: Padding(
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// HEADER
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Total Collection",
                       style: TextStyle(
-                        color: whiteColor,
+                        fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        fontSize: 11,
+                        color: Colors.grey.shade700,
                       ),
                     ),
-                  ),
-                ],
-              ),
 
-              //const SizedBox(height: 10),
+                    /// TAG
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        // color: home1.withOpacity(0.08),
+                        gradient: LinearGradient(
+                          colors: [
+                            home1.withOpacity(0.15),
+                            home1.withOpacity(0.5),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
 
-              /// AMOUNT
-              Text(
-                "₹${calculateTotalAmount().toStringAsFixed(2)}",
-                style: const TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: home1,
-                  letterSpacing: 0.5,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        selectedTabIndex == 0
+                            ? userType == "COLLECTION"
+                                ? "All"
+                                //: 'Link'
+                                : 'All'
+                            : selectedTabIndex == 1
+                                //? 'QR Code'
+                                ? 'Link'
+                                : selectedTabIndex == 2
+                                    ? 'Cash'
+                                    : "Transfer",
+                        style: TextStyle(
+                          color: whiteColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
 
-             // const SizedBox(height: 4),
+                //const SizedBox(height: 10),
 
-              /// FILTER TEXT
-              // Text(
-              //   getFilterDisplayText(),
-              //   style: TextStyle(
-              //     fontSize: 12,
-              //     color: Colors.grey.shade600,
-              //     fontWeight: FontWeight.w500,
-              //   ),
-              // ),
-
-              const SizedBox(height: 8),
-
-              /// COUNT TEXT
-              Container(
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: home1.withAlpha(30)),
-                child: Text(
-                  "${getFilterDisplayText()} : $todaysCount Nos",
-                  style: TextStyle(
-                    fontSize: 12,
+                /// AMOUNT
+                Text(
+                  "₹${calculateTotalAmount().toStringAsFixed(2)}",
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
                     color: home1,
-                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.5,
                   ),
                 ),
-              ),
 
-             // const SizedBox(height: 14),
+                // const SizedBox(height: 4),
 
-              Divider(color: home1.withAlpha(50)),
+                /// FILTER TEXT
+                // Text(
+                //   getFilterDisplayText(),
+                //   style: TextStyle(
+                //     fontSize: 12,
+                //     color: Colors.grey.shade600,
+                //     fontWeight: FontWeight.w500,
+                //   ),
+                // ),
 
-              //const SizedBox(height: 10),
+                const SizedBox(height: 8),
 
-              /// BUTTONS
-              Row(
-                children: [
-                  if (isFilterApplied)
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: _clearFilters,
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.redAccent,
-                          side: BorderSide(
-                            color: Colors.redAccent.withOpacity(0.5),
+                /// COUNT TEXT
+                Container(
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: home1.withAlpha(30)),
+                  child: Text(
+                    "${getFilterDisplayText()} : $todaysCount Nos",
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: home1,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+
+                // const SizedBox(height: 14),
+
+                Divider(color: home1.withAlpha(50)),
+
+                //const SizedBox(height: 10),
+
+                /// BUTTONS
+                Row(
+                  children: [
+                    if (isFilterApplied)
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: _clearFilters,
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.redAccent,
+                            side: BorderSide(
+                              color: Colors.redAccent.withOpacity(0.5),
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
                           ),
+                          child: const Text("Clear"),
+                        ),
+                      ),
+                    if (isFilterApplied) const SizedBox(width: 10),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: showDateRangeFilter,
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: whiteColor,
+                          backgroundColor: home1,
+                          elevation: 0,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          padding:
-                          const EdgeInsets.symmetric(vertical: 12),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
-                        child: const Text("Clear"),
+                        child: const Text(
+                          "Filter",
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
                       ),
                     ),
-
-                  if (isFilterApplied)
-                    const SizedBox(width: 10),
-
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: showDateRangeFilter,
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: whiteColor,
-                        backgroundColor: home1,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding:
-                        const EdgeInsets.symmetric(vertical: 12),
-                      ),
-                      child: const Text(
-                        "Filter",
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-      )
-    );
+        ));
   }
 
   Future<void> _clearFilters() async {
     showProgressDialog(context);
-    if(printStatementStatus){
+    if (printStatementStatus) {
       print("_clearFilters 1");
     }
 
     //final qrProvider = context.read<QRTransactionHistoryProvider>();
     final cashTransProvider = context.read<CashTransactionHistoryProvider>();
     final cashQrProvider = context.read<CashQrProvider>();
-     final linkProvider = context.read<LinkTransactionHistoryProvider>();
-   // final transferProvider = context.read<TransferHistoryProvider>();
+    final linkProvider = context.read<LinkTransactionHistoryProvider>();
+    // final transferProvider = context.read<TransferHistoryProvider>();
 
     // Reset to default period
     final now = DateTime.now();
@@ -992,15 +956,8 @@ if(printStatementStatus){
       //   agentOriginId!,
       // );
 
-      await linkProvider.getLinkTransactionHistory(
-
-        "TODAY",
-          formattedFdate,
-          formattedTdate,
-          subAgentID!,
-          corpCode!,
-          agentOriginId!
-      );
+      await linkProvider.getLinkTransactionHistory("TODAY", formattedFdate,
+          formattedTdate, subAgentID!, corpCode!, agentOriginId!);
 
       await cashTransProvider.getCashTranscationHistory(
         "TODAY",
@@ -1015,14 +972,8 @@ if(printStatementStatus){
 
       // Load additional data based on user type
       if (userType == "LOAN_COLLECTION") {
-        await cashQrProvider.getCombinedResponse(
-            "TODAY",
-            formattedFdate,
-            formattedTdate,
-            subAgentID!,
-            corpCode!,
-            agentOriginId!
-        );
+        await cashQrProvider.getCombinedResponse("TODAY", formattedFdate,
+            formattedTdate, subAgentID!, corpCode!, agentOriginId!);
         // await transferProvider.getQrTranscationHistory(
         //     "TODAY",
         //     formattedFdate,
@@ -1042,16 +993,9 @@ if(printStatementStatus){
         //     agentOriginId!
         // );
       } else {
-        await cashQrProvider.getCombinedResponse(
-            "TODAY",
-            formattedFdate,
-            formattedTdate,
-            subAgentID!,
-            corpCode!,
-            agentOriginId!
-        );
+        await cashQrProvider.getCombinedResponse("TODAY", formattedFdate,
+            formattedTdate, subAgentID!, corpCode!, agentOriginId!);
       }
-
 
       setState(() {
         isFilterApplied = false;
@@ -1059,25 +1003,25 @@ if(printStatementStatus){
         currentFromDate = '';
         currentToDate = '';
       });
-
     } catch (e) {
       //print("Error clearing filters: $e");
     } finally {
-if(printStatementStatus){
-  print("_clearFilters 2");
-}
+      if (printStatementStatus) {
+        print("_clearFilters 2");
+      }
 
-      if ( mounted && cashTransProvider.showProgressDialog == false && linkProvider.showProgressDialog == false ) {
-if(printStatementStatus){
-  print("_clearFilters 3");
-}
+      if (mounted &&
+          cashTransProvider.showProgressDialog == false &&
+          linkProvider.showProgressDialog == false) {
+        if (printStatementStatus) {
+          print("_clearFilters 3");
+        }
 
         Navigator.pop(context);
-      }else{
-if(printStatementStatus){
-  print("_clearFilters 4");
-}
-
+      } else {
+        if (printStatementStatus) {
+          print("_clearFilters 4");
+        }
       }
     }
   }
@@ -1113,7 +1057,6 @@ if(printStatementStatus){
     if (isAgentLoan) {
       // AGENT_LOAN - Show all 4 tabs
       return [
-
         _buildAnimatedTabItem(0, Icons.all_out_rounded, "All"),
         //_buildAnimatedTabItem(1, Icons.qr_code, "QR"),
         _buildAnimatedTabItem(1, Icons.link_outlined, "Link"),
@@ -1125,12 +1068,13 @@ if(printStatementStatus){
       // Regular AGENT - Show only 3 tabs
       return [
         _buildAnimatedTabItem(0, Icons.all_out_rounded, "All"),
-       // _buildAnimatedTabItem(1, Icons.qr_code, "QR"),
+        // _buildAnimatedTabItem(1, Icons.qr_code, "QR"),
         _buildAnimatedTabItem(1, Icons.link_outlined, "Link"),
         _buildAnimatedTabItem(2, Icons.currency_rupee, "Cash"),
       ];
     }
   }
+
   Widget _buildAnimatedTabItem(int index, IconData icon, String label) {
     final isSelected = selectedTabIndex == index;
 
@@ -1140,25 +1084,29 @@ if(printStatementStatus){
         child: InkWell(
           borderRadius: BorderRadius.circular(14),
           onTap: () => setState(() => selectedTabIndex = index),
-          child: AnimatedContainer(margin: EdgeInsets.all(7),
+          child: AnimatedContainer(
+            margin: EdgeInsets.all(7),
             duration: const Duration(milliseconds: 250),
             curve: Curves.easeInOut,
             padding: const EdgeInsets.symmetric(vertical: 10),
             decoration: BoxDecoration(
-                gradient:
-                isSelected ?LinearGradient(colors: [
-                  home1.withOpacity(0.8),
-                  home1.withOpacity(0.03),
-                ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ):LinearGradient(colors: [
-                  Colors.transparent,
-                  Colors.transparent,
-                ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+              gradient: isSelected
+                  ? LinearGradient(
+                      colors: [
+                        home1.withOpacity(0.8),
+                        home1.withOpacity(0.03),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
+                  : LinearGradient(
+                      colors: [
+                        Colors.transparent,
+                        Colors.transparent,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
               borderRadius: BorderRadius.circular(16),
 
               /// subtle border for inactive
@@ -1171,19 +1119,17 @@ if(printStatementStatus){
               /// soft shadow when selected
               boxShadow: isSelected
                   ? [
-                BoxShadow(
-                  color: home1.withOpacity(0.25),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                )
-              ]
+                      BoxShadow(
+                        color: home1.withOpacity(0.25),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      )
+                    ]
                   : [],
             ),
-
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
                 /// ICON
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 200),
@@ -1215,21 +1161,19 @@ if(printStatementStatus){
   }
 
   Widget _buildContentCollectionSection(
-      //QRTransactionHistoryProvider qrProvider,
-      CashQrProvider cashQrProvider,
-      CashTransactionHistoryProvider cashTranProvider,
-      LinkTransactionHistoryProvider linkProvider,
-
-
-      ) {
+    //QRTransactionHistoryProvider qrProvider,
+    CashQrProvider cashQrProvider,
+    CashTransactionHistoryProvider cashTranProvider,
+    LinkTransactionHistoryProvider linkProvider,
+  ) {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
-            (context, index) {
+        (context, index) {
           switch (selectedTabIndex) {
             case 0:
               return _buildCashWithQrTransactionContent(cashQrProvider);
             case 1:
-             // return _buildQRTransactionContent(qrProvider);
+              // return _buildQRTransactionContent(qrProvider);
               return _buildLinkTransactionContent(linkProvider);
             case 2:
               return _buildCashTransactionContent(cashTranProvider);
@@ -1242,7 +1186,7 @@ if(printStatementStatus){
     );
   }
 
- /* Widget _buildQRTransactionContent(QRTransactionHistoryProvider qrProvider) {
+  /* Widget _buildQRTransactionContent(QRTransactionHistoryProvider qrProvider) {
     if (qrProvider.errResponse != null) {
       return _buildEmptyState(
         icon: Icons.qr_code,
@@ -1269,8 +1213,8 @@ if(printStatementStatus){
     );
   }*/
 
-  Widget _buildLinkTransactionContent(LinkTransactionHistoryProvider linkProvider) {
-
+  Widget _buildLinkTransactionContent(
+      LinkTransactionHistoryProvider linkProvider) {
     if (linkProvider.erResposne != null) {
       return _buildEmptyState(
         icon: Icons.link,
@@ -1291,23 +1235,24 @@ if(printStatementStatus){
       getCustName: (t) => t.customerName.toString(),
       getCustId: (t) => t.customerId.toString(),
       getCustPhone: (t) => t.customerPhone.toString(),
-      getTnxType: (t) => t.source.toString(), paymentMode: (t)=> t.paymentMode.toString(), collectionType: (t)=>t.collectionType.toString(),
-      getAccNo: (t) => t.customerAcctno.toString(), getTranType: (t) => t.source.toString(), getCustAccNo: (t) => t.customerAcctno.toString(),
+      getTnxType: (t) => t.source.toString(),
+      paymentMode: (t) => t.paymentMode.toString(),
+      collectionType: (t) => t.collectionType.toString(),
+      getAccNo: (t) => t.customerAcctno.toString(),
+      getTranType: (t) => t.source.toString(),
+      getCustAccNo: (t) => t.customerAcctno.toString(),
     );
   }
 
-
   Widget _buildCashTransactionContent(
-      CashTransactionHistoryProvider cashProvider)
-  {
+      CashTransactionHistoryProvider cashProvider) {
     if (cashProvider.errResponse != null) {
       return _buildEmptyState(
         icon: Icons.currency_rupee_rounded,
         title: "No Cash Transactions",
         message: "Your cash payment transactions will appear here",
       );
-    }
-    else if (cashProvider.qrTranscationHistoryModel == null) {
+    } else if (cashProvider.qrTranscationHistoryModel == null) {
       return _buildLoadingList();
     }
     return _buildTransactionList(
@@ -1320,13 +1265,17 @@ if(printStatementStatus){
         getCustName: (t) => t.customerName.toString(),
         getCustId: (t) => t.customerId.toString(),
         getCustPhone: (t) => t.customerPhone.toString(),
-        getTnxType: (t) => t.source.toString(), paymentMode: (t)=> t.paymentMode.toString(), collectionType: (t)=> t.collectionType.toString(),
-        getAccNo: (t) => t.customerAccNo.toString(), getTranType:(t) => t.source.toString(), getCustAccNo: (t) => t.customerAccNo.toString()
-    );
+        getTnxType: (t) => t.source.toString(),
+        paymentMode: (t) => t.paymentMode.toString(),
+        collectionType: (t) => t.collectionType.toString(),
+        getAccNo: (t) => t.customerAccNo.toString(),
+        getTranType: (t) => t.source.toString(),
+        getCustAccNo: (t) => t.customerAccNo.toString());
   }
 
   Widget _buildCashWithQrTransactionContent(CashQrProvider cashQrProvider) {
-    if (cashQrProvider.errResponse != null || cashQrProvider.cashQrCombinedResponse?.data.isEmpty== true) {
+    if (cashQrProvider.errResponse != null ||
+        cashQrProvider.cashQrCombinedResponse?.data.isEmpty == true) {
       return _buildEmptyState(
         icon: Icons.all_out,
         title: "No Transactions",
@@ -1337,9 +1286,7 @@ if(printStatementStatus){
     }
     return _buildTransactionList(
       transactions: cashQrProvider.cashQrCombinedResponse!.data,
-
-      icon:
-      Icons.all_out_rounded,
+      icon: Icons.all_out_rounded,
       iconColor: Colors.blue,
       getAmount: (t) => t.orderAmount ?? 0,
       getStatus: (t) => t.orderStatus.toString(),
@@ -1347,28 +1294,32 @@ if(printStatementStatus){
       getCustName: (t) => t.customerName.toString(),
       getCustId: (t) => t.customerId.toString(),
       getCustPhone: (t) => t.customerPhone.toString(),
-      getTnxType: (t) => t.source.toString(), paymentMode: (t)=> t.paymentMode, collectionType: (t)=> t.collectionType.toString(),
-      getAccNo: (t) => t.customerAccNo.toString(), getTranType: (t) => t.source.toString(), getCustAccNo:(t) => t.customerAccNo.toString(),
+      getTnxType: (t) => t.source.toString(),
+      paymentMode: (t) => t.paymentMode,
+      collectionType: (t) => t.collectionType.toString(),
+      getAccNo: (t) => t.customerAccNo.toString(),
+      getTranType: (t) => t.source.toString(),
+      getCustAccNo: (t) => t.customerAccNo.toString(),
     );
   }
 
-  Widget _buildTransactionList<T>(
-      {required List<T> transactions,
-        required IconData icon,
-        required Color iconColor,
-        required double Function(T) getAmount,
-        required String Function(T) getStatus,
-        required String Function(T) getAccNo,
-        required String Function(T) getTranType,
-        required String Function(T) getOrderId,
-        required String Function(T) getCustName,
-        required String Function(T) getCustAccNo,
-        required String Function(T) getCustId,
-        required String Function(T) getCustPhone,
-        required String Function(T) getTnxType,
-        required String Function(T) paymentMode,
-        required String Function(T) collectionType,
-      }) {
+  Widget _buildTransactionList<T>({
+    required List<T> transactions,
+    required IconData icon,
+    required Color iconColor,
+    required double Function(T) getAmount,
+    required String Function(T) getStatus,
+    required String Function(T) getAccNo,
+    required String Function(T) getTranType,
+    required String Function(T) getOrderId,
+    required String Function(T) getCustName,
+    required String Function(T) getCustAccNo,
+    required String Function(T) getCustId,
+    required String Function(T) getCustPhone,
+    required String Function(T) getTnxType,
+    required String Function(T) paymentMode,
+    required String Function(T) collectionType,
+  }) {
     return Column(
       children: transactions.asMap().entries.map((entry) {
         final index = entry.key;
@@ -1387,10 +1338,12 @@ if(printStatementStatus){
           customerId: getCustId(transaction),
           transferId: getOrderId(transaction),
           customerNumber: getCustPhone(transaction),
-          tnxType: getTnxType(transaction), paymentMode:paymentMode(transaction), collectionType: collectionType(transaction),
-          accountNumber: getCustAccNo(transaction), transactionType: paymentMode(transaction),
-        )
-            .animate(delay: (100 * index).ms);
+          tnxType: getTnxType(transaction),
+          paymentMode: paymentMode(transaction),
+          collectionType: collectionType(transaction),
+          accountNumber: getCustAccNo(transaction),
+          transactionType: paymentMode(transaction),
+        ).animate(delay: (100 * index).ms);
       }).toList(),
     );
   }
@@ -1418,177 +1371,170 @@ if(printStatementStatus){
     // print("collectionType : $collectionType");
     //print("status : $status");
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child:
-
-      Card(
-        elevation: 0,
-        margin: const EdgeInsets.symmetric(vertical: 6),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: Colors.grey.shade200),
-        ),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: () {
-            var transModel = TransactionHistoryModel(
-              paymentStatus: status,
-              amount: amount,
-              transferId: transferId,
-              agentName: agentName,
-              agentPhone: agentPhone,
-              customerName: customerName,
-              customerId: customerId,
-              customerNumber: customerNumber,
-              corpCode: corpCode ?? "",
-              tnxType: tnxType,
-              paymentMode: paymentMode,
-              dat: date, accountNumber: accountNumber, transactionType: transactionType,
-            );
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => TransactionHistoryPage(
-              transactionHistoryModel: transModel,
-                ),
-              ),
-            );
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(14),
-            child: Row(
-              children: [
-
-                /// ICON
-                Container(
-                  height: 42,
-                  width: 42,
-                  decoration: BoxDecoration(
-                    color: iconColor.withOpacity(0.08),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    paymentMode == "PAYMENTLINK"
-                        ? Icons.link
-                        : Icons.currency_rupee_rounded,
-                    color: iconColor,
-                    size: 20,
+        padding: const EdgeInsets.only(bottom: 12),
+        child: Card(
+          elevation: 0,
+          margin: const EdgeInsets.symmetric(vertical: 6),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: Colors.grey.shade200),
+          ),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: () {
+              var transModel = TransactionHistoryModel(
+                paymentStatus: status,
+                amount: amount,
+                transferId: transferId,
+                agentName: agentName,
+                agentPhone: agentPhone,
+                customerName: customerName,
+                customerId: customerId,
+                customerNumber: customerNumber,
+                corpCode: corpCode ?? "",
+                tnxType: tnxType,
+                paymentMode: paymentMode,
+                dat: date,
+                accountNumber: accountNumber,
+                transactionType: transactionType,
+              );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TransactionHistoryPage(
+                    transactionHistoryModel: transModel,
                   ),
                 ),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(14),
+              child: Row(
+                children: [
+                  /// ICON
+                  Container(
+                    height: 42,
+                    width: 42,
+                    decoration: BoxDecoration(
+                      color: iconColor.withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      paymentMode == "PAYMENTLINK"
+                          ? Icons.link
+                          : Icons.currency_rupee_rounded,
+                      color: iconColor,
+                      size: 20,
+                    ),
+                  ),
 
-                const SizedBox(width: 14),
+                  const SizedBox(width: 14),
 
-                /// LEFT CONTENT
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-
-                      /// TITLE
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
+                  /// LEFT CONTENT
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        /// TITLE
+                        Text(
+                          title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
 
-                      const SizedBox(height: 4),
+                        const SizedBox(height: 4),
 
-                      /// DATE
+                        /// DATE
+                        Text(
+                          date,
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 12,
+                          ),
+                        ),
+
+                        const SizedBox(height: 6),
+
+                        /// COLLECTION TYPE TAG
+                        if (collectionType.isNotEmpty &&
+                            !collectionType.contains("null"))
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: home1.withOpacity(0.08),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              collectionType,
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: home1,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      /// AMOUNT
                       Text(
-                        date,
-                        style: TextStyle(
-                          color: Colors.grey.shade600,
-                          fontSize: 12,
+                        "₹${amount.toStringAsFixed(2)}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15,
+                          color: home1,
                         ),
                       ),
 
                       const SizedBox(height: 6),
-
-                      /// COLLECTION TYPE TAG
-                      if (collectionType.isNotEmpty && !collectionType.contains("null"))
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 3),
-                          decoration: BoxDecoration(
-                            color: home1.withOpacity(0.08),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                             collectionType,
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: home1,
-                              fontWeight: FontWeight.w500,
-                            ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: status.toLowerCase().contains("success") ||
+                                  status.toLowerCase().contains("paid") ||
+                                  status.toLowerCase().contains("completed")
+                              ? Colors.green.withOpacity(0.08)
+                              : Colors.orange.withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          status,
+                          style: TextStyle(
+                            color: status.toLowerCase().contains("success") ||
+                                    status.toLowerCase().contains("paid") ||
+                                    status.toLowerCase().contains("completed")
+                                ? Colors.green.shade700
+                                : Colors.orange.shade700,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
+                      ),
                     ],
                   ),
-                ),
-
-                const SizedBox(width: 10),
-
-                /// RIGHT CONTENT
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-
-                    /// AMOUNT
-                    Text(
-                      "₹${amount.toStringAsFixed(2)}",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15,
-                        color: home1,
-                      ),
-                    ),
-
-                    const SizedBox(height: 6),
-
-                    /// STATUS TAG
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: status.toLowerCase().contains("success") ||
-                            status.toLowerCase().contains("paid") ||
-                            status.toLowerCase().contains("completed")
-                            ? Colors.green.withOpacity(0.08)
-                            : Colors.orange.withOpacity(0.08),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        status,
-                        style: TextStyle(
-                          color: status.toLowerCase().contains("success") ||
-                              status.toLowerCase().contains("paid") ||
-                              status.toLowerCase().contains("completed")
-                              ? Colors.green.shade700
-                              : Colors.orange.shade700,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      )
-    );
+        ));
   }
 
   Widget _buildLoadingList() {
     return Column(
       children: List.generate(
         5,
-            (index) => Padding(
+        (index) => Padding(
           padding: const EdgeInsets.only(bottom: 12),
           child: _buildShimmerSummaryCard(),
         ),
@@ -1663,24 +1609,24 @@ if(printStatementStatus){
 
   String _getTransactionDate(dynamic transaction) {
     if (transaction is QrTransaction) {
-      return transaction.createdAt.toString().substring(0,16).toString()?? "";
+      return transaction.createdAt.toString().substring(0, 16).toString() ?? "";
     } else if (transaction is Order) {
-      return transaction.createdAt.toString().substring(0,16).toString() ?? "";
-    }
-    else if (transaction is LinkTransactions) {
-      return transaction.createdAt.toString().substring(0,16).toString() ?? "";
+      return transaction.createdAt.toString().substring(0, 16).toString() ?? "";
+    } else if (transaction is LinkTransactions) {
+      return transaction.createdAt.toString().substring(0, 16).toString() ?? "";
     }
 
-    return transaction.createdAt.toString().substring(0,10).toString() ?? "";
+    return transaction.createdAt.toString().substring(0, 10).toString() ?? "";
     //return DateTime.now().toString();
   }
 
   @override
   Widget build(BuildContext context) {
-    final qrProvider = Provider.of<QRTransactionHistoryProvider>(context);
-    final cashTranProvider = Provider.of<CashTransactionHistoryProvider>(context);
+    // final qrProvider = Provider.of<QRTransactionHistoryProvider>(context);
+    final cashTranProvider =
+        Provider.of<CashTransactionHistoryProvider>(context);
     final cashQrProvider = Provider.of<CashQrProvider>(context);
-   final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context);
+    final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context);
     //final transferProvider = Provider.of<TransferHistoryProvider>(context);
     final size = MediaQuery.of(context).size;
 
@@ -1699,7 +1645,6 @@ if(printStatementStatus){
               background: _buildAnimatedHeader(context, size),
             ),
             bottom: PreferredSize(
-
               preferredSize: const Size.fromHeight(80),
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
@@ -1720,14 +1665,15 @@ if(printStatementStatus){
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.only(top: 1, left: 16, right: 16),
-            sliver: userType == "COLLECTION"
-               // ? _buildContentCollectionSection(qrProvider, cashTranProvider, cashQrProvider)
-                ? _buildContentCollectionSection(cashQrProvider, cashTranProvider,linkProvider)
-               // : _buildContentSection(qrProvider, cashTranProvider, linkProvider,  transferProvider),
-               // : _buildContentCollectionSection(qrProvider, cashTranProvider, cashQrProvider)
-                : _buildContentCollectionSection(cashQrProvider, cashTranProvider,linkProvider)
-          ),
+              padding: const EdgeInsets.only(top: 1, left: 16, right: 16),
+              sliver: userType == "COLLECTION"
+                  // ? _buildContentCollectionSection(qrProvider, cashTranProvider, cashQrProvider)
+                  ? _buildContentCollectionSection(
+                      cashQrProvider, cashTranProvider, linkProvider)
+                  // : _buildContentSection(qrProvider, cashTranProvider, linkProvider,  transferProvider),
+                  // : _buildContentCollectionSection(qrProvider, cashTranProvider, cashQrProvider)
+                  : _buildContentCollectionSection(
+                      cashQrProvider, cashTranProvider, linkProvider)),
         ],
       ),
     );
@@ -1739,30 +1685,33 @@ if(printStatementStatus){
     // Calculate based on selected tab
     switch (selectedTabIndex) {
       case 0: // All Code tab
-        final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
-        final cashQrProvider = Provider.of<CashQrProvider>(context, listen: false);
-        if(userType != "COLLECTION"){
+        final linkProvider =
+            Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
+        final cashQrProvider =
+            Provider.of<CashQrProvider>(context, listen: false);
+        if (userType != "COLLECTION") {
           if (cashQrProvider.cashQrCombinedResponse != null) {
-            total += cashQrProvider.cashQrCombinedResponse!.data.fold(0, (sum, item) => sum + (item.orderAmount ?? 0));
+            total += cashQrProvider.cashQrCombinedResponse!.data
+                .fold(0, (sum, item) => sum + (item.orderAmount ?? 0));
             setState(() {
-              todaysCount = cashQrProvider.cashQrCombinedResponse?.filteredCount ??0;
-
+              todaysCount =
+                  cashQrProvider.cashQrCombinedResponse?.filteredCount ?? 0;
             });
           }
           // if (linkProvider.linkTranscationHistoryModel != null) {
           //   total += linkProvider.linkTranscationHistoryModel!.data!
           //       .fold(0, (sum, item) => sum + (item.linkAmount ?? 0));
           // }
-        }else{
+        } else {
           if (cashQrProvider.cashQrCombinedResponse != null) {
-            total += cashQrProvider.cashQrCombinedResponse!.data.fold(0, (sum, item) => sum + (item.orderAmount ?? 0));
+            total += cashQrProvider.cashQrCombinedResponse!.data
+                .fold(0, (sum, item) => sum + (item.orderAmount ?? 0));
             setState(() {
-              todaysCount = cashQrProvider.cashQrCombinedResponse?.filteredCount ??0;
-
+              todaysCount =
+                  cashQrProvider.cashQrCombinedResponse?.filteredCount ?? 0;
             });
           }
         }
-
 
         break;
 
@@ -1773,7 +1722,7 @@ if(printStatementStatus){
         //   total = qrProvider.qrTranscationHistoryModel!.data!
         //       .fold(0, (sum, item) => sum + (item.orderAmount ?? 0));
         final linkProvider =
-        Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
+            Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
         if (linkProvider.linkTranscationHistoryModel != null) {
           total = linkProvider.linkTranscationHistoryModel!.data!
               .fold(0, (sum, item) => sum + (item.linkAmount ?? 0));
@@ -1781,9 +1730,9 @@ if(printStatementStatus){
         break;
 
       case 2: // Cash tab
-      // Cash transactions
+        // Cash transactions
         final cashProvider =
-        Provider.of<CashTransactionHistoryProvider>(context, listen: false);
+            Provider.of<CashTransactionHistoryProvider>(context, listen: false);
         if (cashProvider.qrTranscationHistoryModel != null) {
           total = cashProvider.qrTranscationHistoryModel!.data!
               .fold(0, (sum, item) => sum + (item.orderAmount ?? 0));
@@ -1792,9 +1741,9 @@ if(printStatementStatus){
         break;
 
       case 3: // Cash tab
-      // Cash transactions
+        // Cash transactions
         final transferProvider =
-        Provider.of<TransferHistoryProvider>(context, listen: false);
+            Provider.of<TransferHistoryProvider>(context, listen: false);
         if (transferProvider.qrTranscationHistoryModel != null) {
           total = transferProvider.qrTranscationHistoryModel!.data!
               .fold(0, (sum, item) => sum + (item.orderAmount ?? 0));
@@ -1823,7 +1772,6 @@ class _DatePickerButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: OutlinedButton.icon(
-
         onPressed: onTap,
         icon: Icon(icon),
         label: Text(label),
@@ -1837,5 +1785,19 @@ class _DatePickerButton extends StatelessWidget {
   }
 }
 
+//final transferProvider = Provider.of<TransferHistoryProvider>(context, listen: false);
 
+// Load QR transactions
+// await qrProvider.getQrTranscationHistory(
+//   //"THIS_WEEK",
+//   "TODAY",
+//   fromDate,
+//   toDate,
+//   // userType!,
+//   'ALL',
+//   corpCode!,
+//   agentOriginId!,
+//
+// );
 
+// Load Link transactions (for AGENT_LOAN)
