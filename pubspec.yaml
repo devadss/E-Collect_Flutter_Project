@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 4.4.3+47
+version: 4.4.4+48
 
 
 environment:
@@ -110,8 +110,7 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: true
-  #image_path: "assets/images/collection_qr_icon.png"  # path to your icon image
-  image_path: "assets/images/ecollect.jpg"  # path to your icon image
+  image_path: "assets/images/ecollect.webp"  # path to your icon image
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -127,18 +126,13 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
-    - assets/images/card_agent.png
-    - assets/images/person_icon.png
     - assets/images/india.png
     - assets/images/verify_otp.jpeg
     - assets/images/mobile_number.png
     - assets/images/reset-password.png
-    - assets/images/salary_17531132.png
     - assets/icons/
     - assets/svg/
-    - assets/images/new_profile_bg.png
     - assets/images/new_profile.png
-    - assets/images/otp_verify_img.jpg
     - assets/animations/
 
   #   - images/a_dot_burr.jpeg

@@ -30,7 +30,8 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   static const Color whiteColor = Colors.white;
   int todaysCount = 0;
   String? userName;
@@ -53,13 +54,13 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   Color? dominantColor;
 
   final List<String> bannerImages = [
-    "assets/images/cq1.png",
-    "assets/images/cq2.png",
-    "assets/images/cq3.png",
-    "assets/images/cq4.png",
-    "assets/images/cq5.png",
-    "assets/images/cq6.png",
-    "assets/images/cq7.png",
+    "assets/images/cq1.webp",
+    "assets/images/cq2.webp",
+    "assets/images/cq3.webp",
+    "assets/images/cq4.webp",
+    "assets/images/cq5.webp",
+    "assets/images/cq6.webp",
+    "assets/images/cq7.webp",
   ];
 
   var bannerImagesColorPallet = [];
@@ -460,14 +461,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
     try {
       // Load data for ALL providers, not just QR transactions
-      final qrProvider =
-          Provider.of<QRTransactionHistoryProvider>(context, listen: false);
-      final cashQrProvider =
-          Provider.of<CashQrProvider>(context, listen: false);
-      final cashProvider =
-          Provider.of<CashTransactionHistoryProvider>(context, listen: false);
-      final linkProvider =
-          Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
+      final qrProvider = Provider.of<QRTransactionHistoryProvider>(context, listen: false);
+      final cashQrProvider = Provider.of<CashQrProvider>(context, listen: false);
+      final cashProvider = Provider.of<CashTransactionHistoryProvider>(context, listen: false);
+      final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
 
       if (printStatementStatus) {
         print("userType : $userType");
@@ -1059,7 +1056,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       return [
         _buildAnimatedTabItem(0, Icons.all_out_rounded, "All"),
         //_buildAnimatedTabItem(1, Icons.qr_code, "QR"),
-        _buildAnimatedTabItem(1, Icons.link_outlined, "Link"),
+        //_buildAnimatedTabItem(1, Icons.link_outlined, "Link"),
         _buildAnimatedTabItem(2, Icons.currency_rupee, "Cash"),
         // _buildAnimatedTabItem(0, Icons.link_outlined, "Link"),
         //  _buildAnimatedTabItem(3, Icons.account_balance_sharp, "Transfer"),
@@ -1069,7 +1066,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       return [
         _buildAnimatedTabItem(0, Icons.all_out_rounded, "All"),
         // _buildAnimatedTabItem(1, Icons.qr_code, "QR"),
-        _buildAnimatedTabItem(1, Icons.link_outlined, "Link"),
+        // _buildAnimatedTabItem(1, Icons.link_outlined, "Link"),
         _buildAnimatedTabItem(2, Icons.currency_rupee, "Cash"),
       ];
     }

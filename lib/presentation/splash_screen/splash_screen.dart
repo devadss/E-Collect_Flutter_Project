@@ -59,7 +59,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
     tokenValidateResponse.fold(
       (error) {
-
         if (printStatementStatus) {
           print("Token Validation Error: $error");
         }
@@ -103,8 +102,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         builder: (context) =>
                             const MobileNumberVerificationPage()));
               }
-            }
-            );
+            });
           }
         } else {
           final tokenRequest =
@@ -156,7 +154,6 @@ class _SplashScreenState extends State<SplashScreen> {
                 }
               } else {
                 Future.delayed(const Duration(milliseconds: 100), () {
-
                   if (mounted) {
                     Navigator.pushReplacement(
                         context,
@@ -196,7 +193,7 @@ class _SplashScreenState extends State<SplashScreen> {
     mpin = await SharedPref.shared.getMpinValue();
     String username = await SharedPref.shared.getParentAgentName();
     String password = await SharedPref.shared.getParentAgentPassword();
-    isRunningLiveBaseUrl(true , subAgentmobnum);
+    isRunningLiveBaseUrl(true, subAgentmobnum);
     isRunningLiveDopBaseUrl(true, subAgentmobnum);
     setState(() {
       loginStatus = lgStatus;
@@ -252,19 +249,18 @@ class _SplashScreenState extends State<SplashScreen> {
           // Animated Gradient Background
           AnimatedContainer(
             duration: const Duration(seconds: 2),
-            decoration:  BoxDecoration(
-              color: Colors.grey.shade200
-              // gradient: LinearGradient(
-              //   begin: Alignment.topLeft,
-              //   end: Alignment.bottomRight,
-              //   colors: [
-              //     home1,
-              //     home2,
-              //     Colors.white,
-              //   ],
-              //   stops: [0.1, 0.5, 0.9],
-              // ),
-            ),
+            decoration: BoxDecoration(color: Colors.grey.shade200
+                // gradient: LinearGradient(
+                //   begin: Alignment.topLeft,
+                //   end: Alignment.bottomRight,
+                //   colors: [
+                //     home1,
+                //     home2,
+                //     Colors.white,
+                //   ],
+                //   stops: [0.1, 0.5, 0.9],
+                // ),
+                ),
           ),
 
           // Floating QR Code Particles
@@ -314,7 +310,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   //     ),
                   //   ),
                   // ),
-                  Image.asset("assets/images/ecollect.jpg"),
+                  Image.asset("assets/images/ecollect.webp"),
                   const SizedBox(height: 40),
 
                   // App Name with Typing Animation
@@ -322,7 +318,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     //text: "Collection QR",
                     text: "SMART PAYMENT SOLUTION",
                     style: GoogleFonts.poppins(
-                     // fontSize: 32,
+                      // fontSize: 32,
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
                       color: Colors.grey,
@@ -523,6 +519,7 @@ class __TypingTextState extends State<_TypingText>
               widget.onComplete();
             }
           });
+
 
     _controller.forward();
   }

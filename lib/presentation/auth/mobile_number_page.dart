@@ -21,24 +21,25 @@ class MobileNumberVerificationPage extends StatefulWidget {
       _MobileNumberVerificationPageState();
 }
 
-class _MobileNumberVerificationPageState extends State<MobileNumberVerificationPage> {
+class _MobileNumberVerificationPageState
+    extends State<MobileNumberVerificationPage> {
   bool isChecked = false;
   final String termsUrl = terms;
   final String privacyUrl = privacy;
   String? errorMsg;
   final TextEditingController _mobileNumberController = TextEditingController();
 
- 
   Future<void> checkMobileNumber() async {
     showProgressDialog(context);
     if (_mobileNumberController.text.isNotEmpty) {
-      final parentAgentDetailProvider = Provider.of<ParentDetailAgentProvider>(context, listen: false);
-      final vendorBaseUrlProvider = Provider.of<CollectionBaseUrlProvider>(context, listen: false);
+      final parentAgentDetailProvider =
+          Provider.of<ParentDetailAgentProvider>(context, listen: false);
+      final vendorBaseUrlProvider =
+          Provider.of<CollectionBaseUrlProvider>(context, listen: false);
       resetInitialData();
       parentAgentDetailProvider.clearData();
       vendorBaseUrlProvider.clearData();
       validateMobile(_mobileNumberController.text);
-
     } else {
       Navigator.pop(context);
       showInSnackBar("EMPTY FIELD NOT ALLOWED", context);
@@ -49,9 +50,7 @@ class _MobileNumberVerificationPageState extends State<MobileNumberVerificationP
   void initState() {
     super.initState();
     checkForUpdate();
-
   }
-
 
   Future<void> validateMobile(String value) async {
     if (value.isEmpty) {
@@ -59,24 +58,27 @@ class _MobileNumberVerificationPageState extends State<MobileNumberVerificationP
     } else if (!regExp.hasMatch(value)) {
       Navigator.pop(context);
       showInSnackBar(mobileNumEmptyMSG, context);
-    }
-    else {
-
-      final parentAgentDetailProvider = Provider.of<ParentDetailAgentProvider>(context, listen: false);
-      final vendorBaseUrlProvider = Provider.of<CollectionBaseUrlProvider>(context, listen: false);
-      final custRegisterProvider = Provider.of<CustRegisterProvider>(context, listen: false,);
+    } else {
+      final parentAgentDetailProvider =
+          Provider.of<ParentDetailAgentProvider>(context, listen: false);
+      final vendorBaseUrlProvider =
+          Provider.of<CollectionBaseUrlProvider>(context, listen: false);
+      final custRegisterProvider = Provider.of<CustRegisterProvider>(
+        context,
+        listen: false,
+      );
 
       //PROVIDER CALL 1......
       await parentAgentDetailProvider.fetchParentAgentDetails(value);
       if (parentAgentDetailProvider.subAgent != null) {
         //PROVIDER CALL 2......
-        await vendorBaseUrlProvider.getCollectionUrl(parentAgentDetailProvider.subAgent?.data.mobileNumber);
+        await vendorBaseUrlProvider.getCollectionUrl(
+            parentAgentDetailProvider.subAgent?.data.mobileNumber);
 
         if (vendorBaseUrlProvider.collectionBaseUrlModel != null) {
           insertCollectionBaseUrl(vendorBaseUrlProvider);
         }
         insertParentDetailAgent(parentAgentDetailProvider);
-
 
         final parentAgentCredentialProvider =
             Provider.of<ParentAgentCredentialProvider>(context, listen: false);
@@ -87,12 +89,16 @@ class _MobileNumberVerificationPageState extends State<MobileNumberVerificationP
                 .toString()
                 .replaceAll("+91", ""));
         if (parentAgentCredentialProvider.parentAgentCredentialModel != null) {
-          SharedPref.shared.setParentAgentName(parentAgentCredentialProvider.parentAgentCredentialModel!.b.userName);
-          SharedPref.shared.setParentAgentPassword(parentAgentCredentialProvider.parentAgentCredentialModel!.b.mobPassword);
-          SharedPref.shared.setAgentName(parentAgentCredentialProvider.parentAgentCredentialModel!.b.userName);
+          SharedPref.shared.setParentAgentName(parentAgentCredentialProvider
+              .parentAgentCredentialModel!.b.userName);
+          SharedPref.shared.setParentAgentPassword(parentAgentCredentialProvider
+              .parentAgentCredentialModel!.b.mobPassword);
+          SharedPref.shared.setAgentName(parentAgentCredentialProvider
+              .parentAgentCredentialModel!.b.userName);
 
           //PROVIDER CALL 5......
-          final response = await custRegisterProvider.checkRegCust(int.parse(parentAgentDetailProvider.subAgent!.data.parentAgentMobNo
+          final response = await custRegisterProvider.checkRegCust(int.parse(
+              parentAgentDetailProvider.subAgent!.data.parentAgentMobNo
                   .toString()
                   .replaceAll("+91", "")));
 
@@ -115,13 +121,17 @@ class _MobileNumberVerificationPageState extends State<MobileNumberVerificationP
             },
             (customer) {
               Navigator.pop(context);
-              if (customer.response!.data!['Customer_type'] != null || customer.response!.data!['Customer_type']?.isNotEmpty ==
+              if (customer.response!.data!['Customer_type'] != null ||
+                  customer.response!.data!['Customer_type']?.isNotEmpty ==
                       true) {
-                if (customer.response!.data!['Customer_type'] == "COLLECTION_AGENT"&& customer.response!.images!.integrationStaus=="Y") {
+                if (customer.response!.data!['Customer_type'] ==
+                        "COLLECTION_AGENT" &&
+                    customer.response!.images!.integrationStaus == "Y") {
                   insertCollectionAgentIntegrationY(customer);
                   var otpData = OtpPageData(
                     subAgentmobNum: _mobileNumberController.text,
-                    parentAgentMobNum: parentAgentCredentialProvider.parentAgentCredentialModel!.b.phoneNumber,
+                    parentAgentMobNum: parentAgentCredentialProvider
+                        .parentAgentCredentialModel!.b.phoneNumber,
                     userName: parentAgentCredentialProvider
                         .parentAgentCredentialModel!.b.userName,
                     password: parentAgentCredentialProvider
@@ -129,26 +139,29 @@ class _MobileNumberVerificationPageState extends State<MobileNumberVerificationP
                     tokenStatus: customer.status.toString(),
                     loggedInUserType: 'AGENT',
                   );
-                  otpPageNavigation(context,otpData );
-                }
-
-                else if(customer.response!.data!['Customer_type'] == "COLLECTION_AGENT"&& customer.response!.images!.integrationStaus=="N") {
+                  otpPageNavigation(context, otpData);
+                } else if (customer.response!.data!['Customer_type'] ==
+                        "COLLECTION_AGENT" &&
+                    customer.response!.images!.integrationStaus == "N") {
                   //print("Phase 2");
                   insertCollectionAgentIntegrationN(customer);
 
-                  var otpData = OtpPageData(subAgentmobNum: _mobileNumberController.text,
-                      parentAgentMobNum:parentAgentCredentialProvider.parentAgentCredentialModel!.b.phoneNumber,
-                      userName:parentAgentCredentialProvider.parentAgentCredentialModel!.b.userName
-                      , password: parentAgentCredentialProvider.parentAgentCredentialModel!.b.mobPassword,
-                      tokenStatus: customer.status.toString(),
-                      loggedInUserType: 'AGENT_LOAN',);
-                  otpPageNavigation(context,otpData );
-                }else{
-
+                  var otpData = OtpPageData(
+                    subAgentmobNum: _mobileNumberController.text,
+                    parentAgentMobNum: parentAgentCredentialProvider
+                        .parentAgentCredentialModel!.b.phoneNumber,
+                    userName: parentAgentCredentialProvider
+                        .parentAgentCredentialModel!.b.userName,
+                    password: parentAgentCredentialProvider
+                        .parentAgentCredentialModel!.b.mobPassword,
+                    tokenStatus: customer.status.toString(),
+                    loggedInUserType: 'AGENT_LOAN',
+                  );
+                  otpPageNavigation(context, otpData);
+                } else {
                   showInSnackBar("Not a valid collection agent", context);
                 }
               } else {
-
                 showInSnackBar("Not a valid collection agent", context);
               }
             },
@@ -158,8 +171,7 @@ class _MobileNumberVerificationPageState extends State<MobileNumberVerificationP
             null) {
           showInSnackBar("Not a registered user", context);
         }
-      }
-      else {
+      } else {
         //PROVIDER CALL 5......
         final response = await custRegisterProvider.checkRegCust(
             int.parse(_mobileNumberController.text.replaceAll("+91", "")));
@@ -170,27 +182,31 @@ class _MobileNumberVerificationPageState extends State<MobileNumberVerificationP
         }, (customer) async {
           Navigator.pop(context);
 
-          if (customer.response!.data!['CustId'] != null || customer.response!.data!['CustId']?.isNotEmpty == true) {
+          if (customer.response!.data!['CustId'] != null ||
+              customer.response!.data!['CustId']?.isNotEmpty == true) {
             insertCustRegister(customer);
 
-            Map<String, String?> nameParts = splitName(customer.response!.data!['firstName'].toString());
-            List<String> parts = customer.response!.data!['date'].toString().split('-');
+            Map<String, String?> nameParts =
+                splitName(customer.response!.data!['firstName'].toString());
+            List<String> parts =
+                customer.response!.data!['date'].toString().split('-');
             String year = parts[0];
             String? firstName = nameParts['first'];
 
-            var otpData = OtpPageData(subAgentmobNum: _mobileNumberController.text,
+            var otpData = OtpPageData(
+                subAgentmobNum: _mobileNumberController.text,
                 parentAgentMobNum: _mobileNumberController.text,
-                userName: firstName!, password: "$firstName@$year", tokenStatus: customer.status.toString(),
+                userName: firstName!,
+                password: "$firstName@$year",
+                tokenStatus: customer.status.toString(),
                 loggedInUserType: 'NOT_AN_AGENT');
-              otpPageNavigation(context,otpData );
-
+            otpPageNavigation(context, otpData);
           }
         });
       }
     }
   }
 
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -200,140 +216,135 @@ class _MobileNumberVerificationPageState extends State<MobileNumberVerificationP
           children: [
             // Hero Section with new color theme
             Container(
-              height: MediaQuery.of(context).size.height * 0.43,
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFFEA307B), Color(0xFF470952)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(30),
-                  bottomRight: Radius.circular(30),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 20,
-                    spreadRadius: 5,
+                height: MediaQuery.of(context).size.height * 0.43,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFEA307B), Color(0xFF470952)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                ],
-              ),
-              child:
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 20,
+                      spreadRadius: 5,
+                    ),
+                  ],
+                ),
+                child: Stack(
+                  children: [
+                    /// 🌈 BACKGROUND GRADIENT (PREMIUM LOOK)
+                    Container(
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            home1,
+                            home2,
+                          ],
+                        ),
+                      ),
+                    ),
 
-              Stack(
-                children: [
+                    /// 🧩 DOODLE BACKGROUND (SOFT)
+                    Positioned.fill(
+                      child: Opacity(
+                        opacity: 0.08,
+                        child: Image.asset(
+                          "assets/images/doodle.jpeg",
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
 
-                  /// 🌈 BACKGROUND GRADIENT (PREMIUM LOOK)
-                  Container(
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          home1,
-                          home2,
+                    /// 📱 FLOATING ICON (TOP RIGHT – MORE SUBTLE)
+                    const Positioned(
+                      top: 40,
+                      right: 30,
+                      child: Opacity(
+                        opacity: 0.08,
+                        child: Icon(
+                          Icons.phone_iphone,
+                          size: 120,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+
+                    /// 🎯 MAIN CONTENT
+                    Positioned(
+                      bottom: 60,
+                      left: 20,
+                      right: 20,
+                      child: Column(
+                        children: [
+                          /// 🔘 ICON CONTAINER (GLASS + GLOW EFFECT)
+                          Container(
+                            padding: const EdgeInsets.all(22),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white.withOpacity(0.15),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.3),
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: home1.withOpacity(0.4),
+                                  blurRadius: 25,
+                                  spreadRadius: 2,
+                                ),
+                              ],
+                            ),
+                            child: Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                              ),
+                              child: Image.asset(
+                                "assets/images/mobile_number.png",
+                                height: 60,
+                                width: 60,
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 28),
+
+                          /// 📝 TITLE
+                          Text(
+                            "Mobile Verification",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 26,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          /// 📄 SUBTITLE
+                          Text(
+                            "Enter your registered mobile number\nto continue securely",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(
+                              color: Colors.white.withOpacity(0.85),
+                              fontSize: 14,
+                              height: 1.5,
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                  ),
-
-                  /// 🧩 DOODLE BACKGROUND (SOFT)
-                  Positioned.fill(
-                    child: Opacity(
-                      opacity: 0.08,
-                      child: Image.asset(
-                        "assets/images/doodle.jpeg",
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-
-                  /// 📱 FLOATING ICON (TOP RIGHT – MORE SUBTLE)
-                  const Positioned(
-                    top: 40,
-                    right: 30,
-                    child: Opacity(
-                      opacity: 0.08,
-                      child: Icon(
-                        Icons.phone_iphone,
-                        size: 120,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-
-                  /// 🎯 MAIN CONTENT
-                  Positioned(
-                    bottom: 60,
-                    left: 20,
-                    right: 20,
-                    child: Column(
-                      children: [
-
-                        /// 🔘 ICON CONTAINER (GLASS + GLOW EFFECT)
-                        Container(
-                          padding: const EdgeInsets.all(22),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white.withOpacity(0.15),
-                            border: Border.all(
-                              color: Colors.white.withOpacity(0.3),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: home1.withOpacity(0.4),
-                                blurRadius: 25,
-                                spreadRadius: 2,
-                              ),
-                            ],
-                          ),
-                          child: Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
-                            ),
-                            child: Image.asset(
-                              "assets/images/mobile_number.png",
-                              height: 60,
-                              width: 60,
-                            ),
-                          ),
-                        ),
-
-                        const SizedBox(height: 28),
-
-                        /// 📝 TITLE
-                        Text(
-                          "Mobile Verification",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontSize: 26,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-
-                        const SizedBox(height: 10),
-
-                        /// 📄 SUBTITLE
-                        Text(
-                          "Enter your registered mobile number\nto continue securely",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.poppins(
-                            color: Colors.white.withOpacity(0.85),
-                            fontSize: 14,
-                            height: 1.5,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              )
-            ),
+                  ],
+                )),
 
             // Form Section
             Padding(
@@ -476,12 +487,9 @@ class _MobileNumberVerificationPageState extends State<MobileNumberVerificationP
                                 height: 1.4,
                               ),
                               children: [
-
                                 const TextSpan(
-
                                   text: "By continuing, you agree to our ",
                                 ),
-
                                 TextSpan(
                                   text: "Terms & Conditions",
                                   style: GoogleFonts.poppins(
@@ -523,13 +531,17 @@ class _MobileNumberVerificationPageState extends State<MobileNumberVerificationP
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () async {
-                        await SharedPref.shared.setIosNumberValidator(_mobileNumberController.text);
+                        await SharedPref.shared.setIosNumberValidator(
+                            _mobileNumberController.text);
                         if (!isChecked) {
-                          showInSnackBar("Please accept Terms & Conditions", context);
+                          showInSnackBar(
+                              "Please accept Terms & Conditions", context);
                           return;
                         }
-                        isRunningLiveBaseUrl(true , _mobileNumberController.text);
-                        isRunningLiveDopBaseUrl(true, _mobileNumberController.text);
+                        isRunningLiveBaseUrl(
+                            true, _mobileNumberController.text);
+                        isRunningLiveDopBaseUrl(
+                            true, _mobileNumberController.text);
                         checkMobileNumber();
                       },
                       style: ElevatedButton.styleFrom(

@@ -215,7 +215,7 @@ void showProgressDialog(BuildContext context) {
                 padding: const EdgeInsets.all(10),
                 child: Column(
                   children: [
-                    Image.asset("assets/images/ecollect.jpg", scale: 10,),
+                    Image.asset("assets/images/ecollect.webp", scale: 10,),
                     const CircularProgressIndicator(color: home1),
                     const SizedBox(height: 10,),
                     const Text("Please wait....", style: TextStyle(fontSize: 17,),

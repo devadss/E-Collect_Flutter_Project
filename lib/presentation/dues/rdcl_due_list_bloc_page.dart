@@ -1932,14 +1932,17 @@ Divider(color: Colors.grey.shade200,),
                                                                         },
                                                                         child: FittedBox(
                                                                           fit: BoxFit.scaleDown,
-                                                                          child: Container(
+                                                                          child:
+                                                                          Container(
                                                                             padding: EdgeInsets.all(10),
                                                                             decoration: BoxDecoration(
                                                                               borderRadius: BorderRadius.circular(16),
-                                                                              color: home2.withAlpha(40)
+                                                                             // color: home2.withAlpha(40)
+                                                                              color:Colors.white
                                                                             ),
                                                                             child: Text(
-                                                                              "Change Method > ",
+                                                                              "",
+                                                                            //  "Change Method > ",
                                                                               overflow: TextOverflow.ellipsis,
                                                                               style: GoogleFonts.inter(
                                                                                 decoration: TextDecoration.underline,
