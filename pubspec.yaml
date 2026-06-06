@@ -43,7 +43,6 @@ dependencies:
   flutter_animate: ^4.5.2
   qr_flutter: ^4.1.0
   internet_connection_checker: ^3.0.1
-  animated_notch_bottom_bar: ^1.0.3
   google_fonts: ^8.0.2
   pie_chart: ^5.4.0
   local_auth: ^2.3.0
