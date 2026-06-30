@@ -75,7 +75,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: home1.withOpacity(0.3),
+                  color: home1.withValues(alpha:0.3),
                   blurRadius: 20,
                   spreadRadius: 2,
                   offset: const Offset(0, 10),
@@ -99,7 +99,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                   left: 20,
                   child: Opacity(
                     opacity: 0.1,
-                    child: Icon(Icons.verified_user, size: 100, color: white),
+                    child:  Icon(Icons.verified_user, size: 100, color: white),
                   ),
                 ),
 
@@ -119,7 +119,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                             border: Border.all(color: white, width: 3),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
+                                color: Colors.black.withValues(alpha:0.2),
                                 blurRadius: 10,
                                 spreadRadius: 2,
                               ),
@@ -127,7 +127,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                           ),
                           child: ClipOval(
                             child: Material(
-                              color: home2.withOpacity(0.2),
+                              color: home2.withValues(alpha:0.2),
                               child: const Icon(Icons.person, size: 60, color: white),
                             ),
                           ),
@@ -205,7 +205,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
               separatorBuilder: (context, index) => const SizedBox(height: 16),
               itemBuilder: (context, index) {
                 final item = profileItems[index];
-                return AnimatedProfileCard(
+                return animatedProfileCard(
                   index: index,
                   image: item["image"],
                   label: item["label"],
@@ -222,7 +222,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
   }
 
   // Custom animated profile card widget
-  Widget AnimatedProfileCard({
+  Widget animatedProfileCard({
     required int index,
     required String image,
     required String label,
@@ -251,19 +251,19 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        shadowColor: color.withOpacity(0.2),
+        shadowColor: color.withValues(alpha:0.2),
         color: Colors.white,
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
           onTap: onTap,
-          splashColor: color.withOpacity(0.15),
-          highlightColor: color.withOpacity(0.05),
+          splashColor: color.withValues(alpha:0.15),
+          highlightColor: color.withValues(alpha:0.05),
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
+                  color: Colors.black.withValues(alpha:0.04),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -282,14 +282,14 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          color.withOpacity(0.2),
-                          color.withOpacity(0.1),
+                          color.withValues(alpha:0.2),
+                          color.withValues(alpha:0.1),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(18),
                       boxShadow: [
                         BoxShadow(
-                          color: color.withOpacity(0.2),
+                          color: color.withValues(alpha:0.2),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -332,7 +332,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: color.withOpacity(0.1),
+                        color: color.withValues(alpha:0.1),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Icon(
@@ -369,7 +369,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
               borderRadius: BorderRadius.circular(25),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black.withValues(alpha:0.2),
                   blurRadius: 20,
                   spreadRadius: 5,
                 ),
@@ -382,7 +382,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha:0.1),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -404,8 +404,8 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                              Colors.redAccent.withOpacity(0.1),
-                              Colors.redAccent.withOpacity(0.05),
+                              Colors.redAccent.withValues(alpha:0.1),
+                              Colors.redAccent.withValues(alpha:0.05),
                             ],
                           ),
                         ),
@@ -428,13 +428,13 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                                     end: Alignment.bottomRight,
                                     colors: [
                                       Colors.redAccent,
-                                      Colors.redAccent.withOpacity(0.7),
+                                      Colors.redAccent.withValues(alpha:0.7),
                                     ],
                                   ),
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.redAccent.withOpacity(0.3),
+                                      color: Colors.redAccent.withValues(alpha:0.3),
                                       blurRadius: 20,
                                       spreadRadius: 5,
                                     ),
@@ -540,7 +540,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                                           borderRadius: BorderRadius.circular(16),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: Colors.redAccent.withOpacity(0.4),
+                                              color: Colors.redAccent.withValues(alpha:0.4),
                                               blurRadius: 12,
                                               offset: const Offset(0, 4),
                                             ),

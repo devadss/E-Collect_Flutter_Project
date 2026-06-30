@@ -261,7 +261,7 @@ ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(notificationTi
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha:0.1),
                   blurRadius: 24,
                   spreadRadius: 0,
                 ),
@@ -274,7 +274,7 @@ ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(notificationTi
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.green.withOpacity(0.1),
+                    color: Colors.green.withValues(alpha:0.1),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -744,7 +744,7 @@ ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(notificationTi
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: deepTeal.withOpacity(0.3),
+              color: deepTeal.withValues(alpha:0.3),
               blurRadius: 20,
               spreadRadius: 2,
               offset: const Offset(0, 8),
@@ -790,7 +790,7 @@ ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(notificationTi
             height: 120,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: home1.withOpacity(0.05),
+              color: home1.withValues(alpha:0.05),
             ),
           ),
         ),
@@ -804,7 +804,7 @@ ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(notificationTi
             height: 160,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: home2.withOpacity(0.05),
+              color: home2.withValues(alpha:0.05),
             ),
           ),
         ),
@@ -823,7 +823,7 @@ ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(notificationTi
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black.withValues(alpha:0.1),
                         blurRadius: 30,
                         spreadRadius: 2,
                       ),
@@ -899,9 +899,9 @@ ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(notificationTi
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha:0.1),
             borderRadius: BorderRadius.circular(50),
-            border: Border.all(color: color.withOpacity(0.2), width: 1.5),
+            border: Border.all(color: color.withValues(alpha:0.2), width: 1.5),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -935,7 +935,7 @@ ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(notificationTi
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha:0.1),
             blurRadius: 20,
             spreadRadius: 5,
           ),
@@ -1653,7 +1653,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: deepTeal.withOpacity(0.3),
+              color: deepTeal.withValues(alpha:0.3),
               blurRadius: 20,
               spreadRadius: 2,
               offset: const Offset(0, 8),
@@ -1698,7 +1698,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
             height: 120,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: home1.withOpacity(0.05),
+              color: home1.withValues(alpha:0.05),
             ),
           ),
         ),
@@ -1712,7 +1712,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
             height: 160,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: home2.withOpacity(0.05),
+              color: home2.withValues(alpha:0.05),
             ),
           ),
         ),
@@ -1730,7 +1730,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha:0.1),
                       blurRadius: 30,
                       spreadRadius: 2,
                     ),
@@ -1806,9 +1806,9 @@ class _NewQrCodePageState extends State<NewQrCodePage>
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha:0.1),
             borderRadius: BorderRadius.circular(50),
-            border: Border.all(color: color.withOpacity(0.2), width: 1.5),
+            border: Border.all(color: color.withValues(alpha:0.2), width: 1.5),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -1841,7 +1841,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha:0.1),
             blurRadius: 20,
             spreadRadius: 5,
           ),

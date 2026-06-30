@@ -147,7 +147,7 @@ final Map<String , dynamic> bfc = {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(.04),
+                    color: Colors.black.withValues(alpha:.04),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   )
@@ -410,7 +410,7 @@ final Map<String , dynamic> bfc = {
 
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(.04),
+              color: Colors.black.withValues(alpha:.04),
               blurRadius: 8,
               offset: const Offset(0, 3),
             )
@@ -452,14 +452,14 @@ final Map<String , dynamic> bfc = {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              color.withOpacity(.75),
+              color.withValues(alpha:.75),
               color,
             ],
           ),
 
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(.25),
+              color: color.withValues(alpha:.25),
               blurRadius: 12,
               offset: const Offset(0, 5),
             )

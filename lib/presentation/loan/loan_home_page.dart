@@ -182,7 +182,7 @@ void animatorMethod(){
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha:0.05),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -280,7 +280,7 @@ void animatorMethod(){
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha:0.05),
                     blurRadius: 12,
                     offset: const Offset(0, 6),
                   ),
@@ -297,7 +297,7 @@ void animatorMethod(){
                         /// Avatar
                         CircleAvatar(
                           radius: 22,
-                          backgroundColor: home1.withOpacity(0.15),
+                          backgroundColor: home1.withValues(alpha:0.15),
                           child: Text(
                             (loan.customerName ?? "C")[0].toUpperCase(),
                             style: TextStyle(
@@ -339,7 +339,7 @@ void animatorMethod(){
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 5),
                           decoration: BoxDecoration(
-                            color: statusColor.withOpacity(0.12),
+                            color: statusColor.withValues(alpha:0.12),
                             borderRadius: BorderRadius.circular(30),
                           ),
                           child: Text(
@@ -541,7 +541,7 @@ void animatorMethod(){
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: home1.withOpacity(0.1),
+            color: home1.withValues(alpha:0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: home1, size: 24),
@@ -645,7 +645,7 @@ void animatorMethod(){
 //                         padding: const EdgeInsets.symmetric(
 //                             horizontal: 12, vertical: 6),
 //                         decoration: BoxDecoration(
-//                           color: statusColor.withOpacity(0.1),
+//                           color: statusColor.withValues(alpha:0.1),
 //                           borderRadius: BorderRadius.circular(20),
 //                         ),
 //                         child: Text(

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:local_auth/local_auth.dart';
-
 import '../../../core/colors.dart';
 import '../../../core/utils.dart';
 import '../../../data/service/notification_service/notification_service.dart';
@@ -26,8 +25,8 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   String contactNum = ""; // contains +91
   String subAgentContactNum = ""; // contains +91
   final LocalAuthentication auth = LocalAuthentication();
-  final String _sk = "770A8A65DA156D24EE2A093277530142";
-  final String _iv = "1234567890123456";
+  final String sk = "770A8A65DA156D24EE2A093277530142";
+  final String iv = "1234567890123456";
 
   @override
   void initState() {
@@ -163,7 +162,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
                       "Authenticate to Continue",
                       style: GoogleFonts.poppins(
                         fontSize: 18,
-                        color: home2.withOpacity(0.8),
+                        color: home2.withValues(alpha: 0.8),
                       ),
                     ),
                     const SizedBox(height: 30),
@@ -213,7 +212,6 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       ),
     );
   }
-
 }
 
 // Future<void> _openScreenLock() async {

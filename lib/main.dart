@@ -116,6 +116,7 @@ import 'data/repository/cust_reg_repository.dart';
 
 final GlobalKey<ScaffoldMessengerState> snackBarKey =
     GlobalKey<ScaffoldMessengerState>();
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   if (printStatementStatus) {
     log("Handling a background message: ${message.messageId}");
@@ -124,7 +125,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   final apiService = ApiService(baseUrl);
-
 
   WidgetsFlutterBinding.ensureInitialized();
   requestLocationPermission();
@@ -171,7 +171,6 @@ void main() async {
       providers: [
         RepositoryProvider(create: (_) => CustomerListRepo()),
         RepositoryProvider(create: (_) => RdclDueListRepo()),
-
         // Add all your existing repositories
         RepositoryProvider(create: (_) => CashTransactionHistoryRepository()),
         RepositoryProvider(create: (_) => CashTranscationRepository()),
@@ -225,14 +224,12 @@ void main() async {
       child: MultiBlocProvider(
         providers: [
           // Layer 2: All BLoCs
-
           BlocProvider(
               create: (context) =>
                   CustomerListBloc(context.read<CustomerListRepo>())),
           BlocProvider(
               create: (context) =>
                   RdclDuelistBloc(context.read<RdclDueListRepo>())),
-
           // Add BLoCs for your existing providers (if you migrate them)
           // Example: BlocProvider(create: (context) => AuthBloc(context.read<AuthRepository>())),
         ],

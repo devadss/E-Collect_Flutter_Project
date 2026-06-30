@@ -26,7 +26,7 @@ class AccountDetailNew extends StatefulWidget {
 }
 
 class _AccountDetailNewState extends State<AccountDetailNew> {
-  DateTime? _dateTime;
+  DateTime? dateTime;
   String? agentId;
   String? subagentId;
   String? agentOriginId;

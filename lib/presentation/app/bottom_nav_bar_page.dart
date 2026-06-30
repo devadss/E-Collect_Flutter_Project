@@ -11,7 +11,6 @@ import '../dues/rdcl_due_list_bloc_page.dart';
 import '../home/home_page.dart';
 import '../loan/loan_home_page.dart';
 import '../profile/profile_home_page.dart';
-import '../ptp_bucket/ptp_bucket_ui.dart';
 import '../trancstion/payment_link_home_page.dart';
 
 class BottomNavScreen extends StatefulWidget {
@@ -212,7 +211,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
               color: Colors.transparent,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 20,
                   spreadRadius: 2,
                 ),
@@ -234,7 +233,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: home2.withOpacity(0.4),
+                          color: home2.withValues(alpha: 0.4),
                           blurRadius: 12,
                           spreadRadius: 2,
                         ),
@@ -252,7 +251,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                       borderRadius: BorderRadius.circular(30),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withValues(alpha: 0.1),
                           blurRadius: 15,
                           spreadRadius: 1,
                         ),

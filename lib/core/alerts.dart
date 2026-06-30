@@ -3,7 +3,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../main.dart';
 import 'colors.dart';
 
-
 void showToast({required String message, required Color color}) {
   Fluttertoast.showToast(
       msg: message,
@@ -47,7 +46,8 @@ Future<dynamic> showAlertDialog(String message, BuildContext context) {
 }
 
 Future<void> showAlert(
-    String title, String message, BuildContext context) async {
+    String title, String message, BuildContext context)
+async {
   return showDialog<void>(
     context: context,
     barrierDismissible: false, // user must tap button!

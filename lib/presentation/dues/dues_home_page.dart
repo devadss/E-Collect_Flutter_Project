@@ -5,7 +5,6 @@ import '../../presentation/dues/widgets/new_qr_code_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../core/alerts.dart' as EasyLoading;
 import '../../data/repository/payment_link_repository.dart';
@@ -256,12 +255,12 @@ class _DuesHomePageState extends State<DuesHomePage> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   color: white,
-                  border: Border.all(color: home2.withOpacity(0.7), width: 1.5),
+                  border: Border.all(color: home2.withValues(alpha:0.7), width: 1.5),
                   boxShadow: [
                     BoxShadow(
                       offset: const Offset(0, 4),
                       blurRadius: 12,
-                      color: black.withOpacity(0.08),
+                      color: black.withValues(alpha:0.08),
                     ),
                   ],
                 ),
@@ -904,7 +903,7 @@ class CustomSliderButton extends StatefulWidget {
 
 class _CustomSliderButtonState extends State<CustomSliderButton> {
   double _dragPosition = 0.0;
-  bool _isConfirmed = false;
+  bool isConfirmed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -926,7 +925,7 @@ class _CustomSliderButtonState extends State<CustomSliderButton> {
           Center(
             child: Shimmer.fromColors(
               baseColor: Colors.white,
-              highlightColor: widget.buttonColor.withOpacity(0.25),
+              highlightColor: widget.buttonColor.withValues(alpha:0.25),
               child: Text(
                 widget.label,
                 style: const TextStyle(
@@ -949,7 +948,7 @@ class _CustomSliderButtonState extends State<CustomSliderButton> {
               onHorizontalDragEnd: (_) async {
                 if (_dragPosition > (width - 70) * 0.5) {
                   setState(() {
-                    _isConfirmed = true;
+                    isConfirmed = true;
                     _dragPosition = width - 70;
                   });
 
@@ -957,7 +956,7 @@ class _CustomSliderButtonState extends State<CustomSliderButton> {
 
                   setState(() {
                     _dragPosition = 0.0;
-                    _isConfirmed = false;
+                    isConfirmed = false;
                   });
                 } else {
                   setState(() {

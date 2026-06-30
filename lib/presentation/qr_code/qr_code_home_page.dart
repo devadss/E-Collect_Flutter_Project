@@ -182,7 +182,7 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
                                 const BorderSide(color: Colors.transparent),
                               ),
                               hintStyle: const TextStyle(color: black54),
-                              fillColor: deepTeal.withOpacity(0.25),
+                              fillColor: deepTeal.withValues(alpha: 0.25),
                               filled: true,
                             ),
                             inputFormatters: <TextInputFormatter>[

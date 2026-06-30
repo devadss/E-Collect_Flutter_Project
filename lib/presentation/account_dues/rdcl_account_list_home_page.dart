@@ -166,12 +166,12 @@ class _AccountListHomePageState extends State<RdclAccountListHomePage>
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
-            color: home2.withOpacity(0.1),
+            color: home2.withValues(alpha:0.1),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
         ],
-        border: Border.all(color: home1.withOpacity(0.5)),
+        border: Border.all(color: home1.withValues(alpha:0.5)),
       ),
       child: Center(
         child: SingleChildScrollView(
@@ -376,12 +376,12 @@ if(provider.rdclCustomerListModel != null || provider.rdclCustomerListError != n
                   borderRadius: BorderRadius.circular(30),
                   boxShadow: [
                     BoxShadow(
-                      color: home2.withOpacity(0.1),
+                      color: home2.withValues(alpha:0.1),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
                   ],
-                  border: Border.all(color: home2.withOpacity(0.2)),
+                  border: Border.all(color: home2.withValues(alpha:0.2)),
                 ),
                 child: Focus(
                   onFocusChange: (hasFocus) {
@@ -406,7 +406,7 @@ if(provider.rdclCustomerListModel != null || provider.rdclCustomerListError != n
                                 duration: const Duration(milliseconds: 1500),
                                 child: Icon(
                                   Icons.search_rounded,
-                                  color: home2.withOpacity(0.7),
+                                  color: home2.withValues(alpha:0.7),
                                   size: 24,
                                 ),
                               ),

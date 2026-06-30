@@ -83,8 +83,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            home1.withOpacity(0.25),
-            home2.withOpacity(0.85),
+            home1.withValues(alpha:0.25),
+            home2.withValues(alpha:0.85),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -96,17 +96,17 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 16),
         decoration: BoxDecoration(
           gradient: LinearGradient(colors: [
-            Colors.white.withOpacity(0.65),
-            Colors.white.withOpacity(0.05)
+            Colors.white.withValues(alpha:0.65),
+            Colors.white.withValues(alpha:0.05)
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           ),
-         // color: Colors.white.withOpacity(0.95),
+         // color: Colors.white.withValues(alpha:0.95),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha:0.1),
               blurRadius: 20,
               offset: const Offset(0, 2),
             ),
@@ -125,8 +125,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
               width: 48,
               decoration: BoxDecoration(
                 color: isSuccess
-                    ? Colors.green.withOpacity(0.3)
-                    : Colors.orange.withOpacity(0.3),
+                    ? Colors.green.withValues(alpha:0.3)
+                    : Colors.orange.withValues(alpha:0.3),
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -173,7 +173,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
   //     width: double.infinity,
   //     decoration: BoxDecoration(
   //       gradient: LinearGradient(
-  //         colors: [home1, home2.withOpacity(0.8)],
+  //         colors: [home1, home2.withValues(alpha:0.8)],
   //         begin: Alignment.topLeft,
   //         end: Alignment.bottomRight,
   //       ),
@@ -185,7 +185,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
   //         borderRadius: BorderRadius.circular(16),
   //         boxShadow: [
   //           BoxShadow(
-  //             color: Colors.black.withOpacity(0.1),
+  //             color: Colors.black.withValues(alpha:0.1),
   //             blurRadius: 12,
   //             offset: const Offset(0, 4),
   //           ),
@@ -231,7 +231,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha:0.05),
             blurRadius: 20,
             spreadRadius: 2,
           ),
@@ -383,13 +383,13 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                       gradient: LinearGradient(
                         colors: [
                           home1,
-                          home2.withOpacity(0.85),
+                          home2.withValues(alpha:0.85),
                         ],
                       ),
                 
                       boxShadow: [
                         BoxShadow(
-                          color: home1.withOpacity(0.25),
+                          color: home1.withValues(alpha:0.25),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         )
@@ -431,7 +431,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
         border: Border.all(color: Colors.grey[200]!),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha:0.03),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -473,7 +473,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
         border: Border.all(color: Colors.grey[200]!),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha:0.03),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -532,7 +532,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
     );
   }
 
-  Color _getStatusColor(String status) {
+  Color getStatusColor(String status) {
     switch (status) {
       case "Status.success":
         return Colors.green;

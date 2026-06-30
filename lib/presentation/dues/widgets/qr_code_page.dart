@@ -64,7 +64,7 @@ class _QrCodePageState extends State<QrCodePage>
       "770A8A65DA156D24EE2A093277530142"; // Must be 32 characters for AES-256
   static const String initialVector =
       "1234567890123456"; // Must be 16 characters for AES
-  StreamSubscription<RemoteMessage>? _messageSubscription;
+  StreamSubscription<RemoteMessage>? messageSubscription;
   Timer? _paymentVerificationTimer; // Timer for payment verification
   bool isPaymentVerified = false; // Flag to check payment status
   late AnimationController _animationController;

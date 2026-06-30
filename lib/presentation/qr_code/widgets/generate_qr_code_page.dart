@@ -64,7 +64,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
       "770A8A65DA156D24EE2A093277530142"; // Must be 32 characters for AES-256
   static const String initialVector =
       "1234567890123456"; // Must be 16 characters for AES
-  StreamSubscription<RemoteMessage>? _messageSubscription;
+  StreamSubscription<RemoteMessage>? messageSubscription;
   Timer? _paymentVerificationTimer; // Timer for payment verification
   bool isPaymentVerified = false; // Flag to check payment status
   late AnimationController _animationController;
@@ -251,7 +251,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha:0.1),
                   blurRadius: 24,
                   spreadRadius: 0,
                 ),
@@ -264,7 +264,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.green.withOpacity(0.1),
+                    color: Colors.green.withValues(alpha:0.1),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -728,7 +728,7 @@ if(printStatementStatus){
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: deepTeal.withOpacity(0.3),
+              color: deepTeal.withValues(alpha:0.3),
               blurRadius: 20,
               spreadRadius: 2,
               offset: const Offset(0, 8),
@@ -774,7 +774,7 @@ if(printStatementStatus){
             height: 120,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: home1.withOpacity(0.05),
+              color: home1.withValues(alpha:0.05),
             ),
           ),
         ),
@@ -788,7 +788,7 @@ if(printStatementStatus){
             height: 160,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: home2.withOpacity(0.05),
+              color: home2.withValues(alpha:0.05),
             ),
           ),
         ),
@@ -806,7 +806,7 @@ if(printStatementStatus){
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha:0.1),
                       blurRadius: 30,
                       spreadRadius: 2,
                     ),
@@ -881,9 +881,9 @@ if(printStatementStatus){
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha:0.1),
             borderRadius: BorderRadius.circular(50),
-            border: Border.all(color: color.withOpacity(0.2), width: 1.5),
+            border: Border.all(color: color.withValues(alpha:0.2), width: 1.5),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -916,7 +916,7 @@ if(printStatementStatus){
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha:0.1),
             blurRadius: 20,
             spreadRadius: 5,
           ),
@@ -1559,7 +1559,7 @@ if(printStatementStatus){
 //                         BoxShadow(
 //                           offset: const Offset(0, 1),
 //                           blurRadius: 10,
-//                           color: Colors.black.withOpacity(0.25),
+//                           color: Colors.black.withValues(alpha:0.25),
 //                         )
 //                       ],
 //                       gradient: const LinearGradient(

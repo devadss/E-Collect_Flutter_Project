@@ -23,7 +23,7 @@ class _OtpVerificationState extends State<OtpVerification> {
   List.generate(4, (_) => TextEditingController());
   var otpValue = '';
   Timer? _timer;
-  bool _canPop = false;
+  bool canPop = false;
   int _start = 120;
 
   @override
@@ -179,7 +179,7 @@ class _OtpVerificationState extends State<OtpVerification> {
 
   void _updateCanPop(bool value) {
     setState(() {
-      _canPop = value;
+      canPop = value;
     });
   }
 
@@ -242,7 +242,7 @@ class _OtpVerificationState extends State<OtpVerification> {
                               borderSide: BorderSide.none,
                             ),
                             filled: true,
-                            fillColor: deepTeal.withOpacity(0.4),
+                            fillColor: deepTeal.withValues(alpha: 0.4),
                           ),
                           onChanged: (value) {
                             if (value.length == 1) {

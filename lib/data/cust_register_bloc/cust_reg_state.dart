@@ -1,7 +1,6 @@
 
 part of 'cust_reg_bloc.dart';
 
-
 abstract class CustRegState {}
 
 

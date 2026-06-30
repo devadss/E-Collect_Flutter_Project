@@ -3,11 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
-
 import '../../core/alerts.dart';
-import '../../core/constants.dart';
 import '../../core/utils.dart';
 import '../../data/provider/cash_transcation_provider.dart';
 import '../../data/rdcl_duelist_bloc/rdcl_duelist_bloc.dart';
@@ -2221,7 +2218,7 @@ class CustomSliderButton extends StatefulWidget {
 
 class _CustomSliderButtonState extends State<CustomSliderButton> {
   double _dragPosition = 0.0;
-  bool _isConfirmed = false;
+  bool isConfirmed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -2269,7 +2266,7 @@ class _CustomSliderButtonState extends State<CustomSliderButton> {
               onHorizontalDragEnd: (_) async {
                 if (_dragPosition > (width - 70) * 0.5) {
                   setState(() {
-                    _isConfirmed = true;
+                    isConfirmed = true;
                     _dragPosition = width - 70;
                   });
 
@@ -2277,7 +2274,7 @@ class _CustomSliderButtonState extends State<CustomSliderButton> {
 
                   setState(() {
                     _dragPosition = 0.0;
-                    _isConfirmed = false;
+                    isConfirmed = false;
                   });
                 } else {
                   setState(() {

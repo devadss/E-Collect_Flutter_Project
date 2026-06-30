@@ -312,8 +312,8 @@ class _LoanListState extends State<LoanList> {
                               onTap: () {
                                 // Add tap handling if needed
                               },
-                              splashColor: home1.withOpacity(0.08),
-                              highlightColor: home1.withOpacity(0.04),
+                              splashColor: home1.withValues(alpha:0.08),
+                              highlightColor: home1.withValues(alpha:0.04),
                               child: Padding(
                                 padding: const EdgeInsets.all(18),
                                 child: Column(
@@ -336,8 +336,8 @@ class _LoanListState extends State<LoanList> {
                                                     begin: Alignment.topLeft,
                                                     end: Alignment.bottomRight,
                                                     colors: [
-                                                      home1.withOpacity(0.15),
-                                                      home1.withOpacity(0.05),
+                                                      home1.withValues(alpha:0.15),
+                                                      home1.withValues(alpha:0.05),
                                                     ],
                                                   ),
                                                   borderRadius: BorderRadius.circular(14),
@@ -346,7 +346,7 @@ class _LoanListState extends State<LoanList> {
                                                   child: _filteredList?[index].custName == null
                                                       ? _buildSkeleton(width: 24, height: 24)
                                                       : Text(
-                                                    _filteredList?[index].custName?.substring(0, 1).toUpperCase() ?? "?",
+                                                    _filteredList?[index].custName.substring(0, 1).toUpperCase() ?? "?",
                                                     style: TextStyle(
                                                       fontSize: 20,
                                                       fontWeight: FontWeight.w700,
@@ -433,12 +433,12 @@ class _LoanListState extends State<LoanList> {
                                           begin: Alignment.topLeft,
                                           end: Alignment.bottomRight,
                                           colors: [
-                                            home1.withOpacity(0.04),
-                                            home1.withOpacity(0.02),
+                                            home1.withValues(alpha:0.04),
+                                            home1.withValues(alpha:0.02),
                                           ],
                                         ),
                                         borderRadius: BorderRadius.circular(16),
-                                        border: Border.all(color: home1.withOpacity(0.08)),
+                                        border: Border.all(color: home1.withValues(alpha:0.08)),
                                       ),
                                       child: Row(
                                         children: [
@@ -492,7 +492,7 @@ class _LoanListState extends State<LoanList> {
                                             label: const Text('Details'),
                                             style: OutlinedButton.styleFrom(
                                               foregroundColor: home1,
-                                              side: BorderSide(color: home1.withOpacity(0.3)),
+                                              side: BorderSide(color: home1.withValues(alpha:0.3)),
                                               shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.circular(12),
                                               ),
@@ -550,7 +550,7 @@ Widget _buildModernMetric({
     children: [
       Row(
         children: [
-          Icon(icon, size: 12, color: home1.withOpacity(0.6)),
+          Icon(icon, size: 12, color: home1.withValues(alpha:0.6)),
           const SizedBox(width: 4),
           Text(
             label,
@@ -578,38 +578,38 @@ Widget _buildModernMetric({
     ],
   );
 }
-Widget _buildInfoChip({required String label, String? value}) {
-  return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-    decoration: BoxDecoration(
-      color: home1.withOpacity(0.08),
-      borderRadius: BorderRadius.circular(12),
-    ),
-    child: value == null
-        ? _buildSkeleton(width: 60, height: 12)
-        : Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 10,
-            color: Colors.grey.shade600,
-          ),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: home1,
-          ),
-        ),
-      ],
-    ),
-  );
-}
+// Widget _buildInfoChip({required String label, String? value}) {
+//   return Container(
+//     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+//     decoration: BoxDecoration(
+//       color: home1.withValues(alpha:0.08),
+//       borderRadius: BorderRadius.circular(12),
+//     ),
+//     child: value == null
+//         ? _buildSkeleton(width: 60, height: 12)
+//         : Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         Text(
+//           label,
+//           style: TextStyle(
+//             fontSize: 10,
+//             color: Colors.grey.shade600,
+//           ),
+//         ),
+//         const SizedBox(height: 2),
+//         Text(
+//           value,
+//           style: TextStyle(
+//             fontSize: 12,
+//             fontWeight: FontWeight.w600,
+//             color: home1,
+//           ),
+//         ),
+//       ],
+//     ),
+//   );
+// }
 Widget _buildSkeleton({double width = 100, double height = 12}) {
   return Container(
     width: width,

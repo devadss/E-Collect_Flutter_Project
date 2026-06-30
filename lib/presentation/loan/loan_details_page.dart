@@ -73,8 +73,8 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
     );
 
     colorAnimation = ColorTween(
-      begin: home1.withOpacity(0),
-      end: home1.withOpacity(0.1),
+      begin: home1.withValues(alpha:0),
+      end: home1.withValues(alpha:0.1),
     ).animate(
       CurvedAnimation(
         parent: _animationController,
@@ -304,7 +304,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
               borderRadius: BorderRadius.circular(25),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black.withValues(alpha:0.2),
                   blurRadius: 20,
                   spreadRadius: 5,
                 ),
@@ -324,7 +324,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                     width: 80,
                     height: 80,
                     decoration: BoxDecoration(
-                      color: Colors.redAccent.withOpacity(0.1),
+                      color: Colors.redAccent.withValues(alpha:0.1),
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -447,7 +447,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
+                              color: Colors.black.withValues(alpha:0.04),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -459,7 +459,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                             children: [
                               CircleAvatar(
                                 radius: 28,
-                                backgroundColor: home1.withOpacity(0.1),
+                                backgroundColor: home1.withValues(alpha:0.1),
                                 child: Text(
                                   widget.loanDetailsModel.customerName[0],
                                   style: const TextStyle(
@@ -498,8 +498,8 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                 decoration: BoxDecoration(
                                   color: widget.loanDetailsModel.loanStatus ==
                                           'Active'
-                                      ? Colors.green.withOpacity(0.1)
-                                      : Colors.orange.withOpacity(0.1),
+                                      ? Colors.green.withValues(alpha:0.1)
+                                      : Colors.orange.withValues(alpha:0.1),
                                   borderRadius: BorderRadius.circular(20),
                                   border: Border.all(
                                     color: widget.loanDetailsModel.loanStatus ==
@@ -574,7 +574,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
+                              color: Colors.black.withValues(alpha:0.04),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -674,7 +674,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
+                              color: Colors.black.withValues(alpha:0.04),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -1266,8 +1266,8 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
         borderRadius: BorderRadius.circular(20),
         gradient: LinearGradient(
           colors: [
-            home1.withOpacity(0.08),
-            home1.withOpacity(0.02),
+            home1.withValues(alpha:0.08),
+            home1.withValues(alpha:0.02),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -1307,7 +1307,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: home1.withOpacity(0.1),
+              color: home1.withValues(alpha:0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, size: 18, color: home1),

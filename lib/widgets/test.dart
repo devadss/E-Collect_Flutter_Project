@@ -1,7 +1,6 @@
 
 import 'dart:convert';
 import 'package:http/http.dart'as http;
-import 'package:collection_qr_flutter/core/constants.dart';
 
 import '../domain/model/customer_list_model/customer_list_fail_model.dart';
 import '../domain/model/customer_list_model/customer_list_success.dart';

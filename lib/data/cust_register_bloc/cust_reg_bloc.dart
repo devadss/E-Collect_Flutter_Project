@@ -4,8 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/model/cust_register_model/cust_register_model.dart';
 import '../repository/cust_reg_repo/cust_register_repo.dart';
 import '../storage/shared_pref_helper.dart';
+
 part 'cust_reg_event.dart';
 part 'cust_reg_state.dart';
+
 class CustRegBloc extends Bloc<CustRegEvent, CustRegState>{
   final CustRegisterRepo custRegisterRepo;
   CustRegBloc(this.custRegisterRepo):super(CustRegInitialState()){

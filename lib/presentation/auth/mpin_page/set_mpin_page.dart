@@ -271,7 +271,7 @@ class _SetMpinPageState extends State<SetMpinPage> {
                         borderSide: BorderSide.none,
                       ),
                       filled: true,
-                      fillColor: deepTeal.withOpacity(0.4),
+                      fillColor: deepTeal.withValues(alpha: 0.4),
                     ),
                     onChanged: (value) {
                       if (value.length == 1) {

@@ -95,7 +95,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
   TextStyle _labelTextStyle() =>
       const TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: black);
 
-  TextStyle _valueTextStyle() => const TextStyle(
+  TextStyle valueTextStyle() => const TextStyle(
       fontWeight: FontWeight.w500, fontSize: 16, color: black87);
 
   Widget _buildPaymentOptionButton({

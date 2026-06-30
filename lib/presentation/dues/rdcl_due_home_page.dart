@@ -8,7 +8,6 @@ import 'dart:math' as math;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pager/pager.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../core/alerts.dart';
 import '../../core/colors.dart';
@@ -43,7 +42,7 @@ import '../profile/widgets/recipect_page.dart';
 //               borderRadius: BorderRadius.circular(25),
 //               boxShadow: [
 //                 BoxShadow(
-//                   color: Colors.black.withOpacity(0.2),
+//                   color: Colors.black.withValues(alpha:0.2),
 //                   blurRadius: 20,
 //                   spreadRadius: 5,
 //                 ),
@@ -63,7 +62,7 @@ import '../profile/widgets/recipect_page.dart';
 //                     width: 80,
 //                     height: 80,
 //                     decoration: BoxDecoration(
-//                       color: Colors.redAccent.withOpacity(0.1),
+//                       color: Colors.redAccent.withValues(alpha:0.1),
 //                       shape: BoxShape.circle,
 //                     ),
 //                     // child: Lottie.asset("assets/animations/logout.json"),
@@ -175,7 +174,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
   String? agentId;
   String? selectedFilterType;
   String? subagentId;
-  RdclCustomerListModel? _rdclCustomerListModel;
+  RdclCustomerListModel? rdclCustomerListModel;
   String? agentPhoneNumber;
   String? subagentPhoneNumber;
   String? agentName;
@@ -647,12 +646,12 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                     borderRadius: BorderRadius.circular(30),
                     boxShadow: [
                       BoxShadow(
-                        color: home2.withOpacity(0.1),
+                        color: home2.withValues(alpha:0.1),
                         blurRadius: 20,
                         offset: const Offset(0, 10),
                       ),
                     ],
-                    border: Border.all(color: Colors.blue.withOpacity(0.2)),
+                    border: Border.all(color: Colors.blue.withValues(alpha:0.2)),
                   ),
                   child: Focus(
                     onFocusChange: (hasFocus) {
@@ -677,7 +676,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                               ? const Icon(Icons.search, color: home2, size: 24)
                               : Icon(
                                   Icons.search_rounded,
-                                  color: home2.withOpacity(0.7),
+                                  color: home2.withValues(alpha:0.7),
                                   size: 24,
                                 ),
                         ),
@@ -860,12 +859,12 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                         borderRadius: BorderRadius.circular(16),
                         color: white,
                         border: Border.all(
-                            color: home2.withOpacity(0.7), width: 1.5),
+                            color: home2.withValues(alpha:0.7), width: 1.5),
                         boxShadow: [
                           BoxShadow(
                             offset: const Offset(0, 4),
                             blurRadius: 12,
-                            color: black.withOpacity(0.08),
+                            color: black.withValues(alpha:0.08),
                           ),
                         ],
                       ),
@@ -1640,12 +1639,12 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
-            color: home2.withOpacity(0.1),
+            color: home2.withValues(alpha:0.1),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
         ],
-        border: Border.all(color: home1.withOpacity(0.5)),
+        border: Border.all(color: home1.withValues(alpha:0.5)),
       ),
       child: Center(
         child: SingleChildScrollView(
@@ -1693,12 +1692,12 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
   //       borderRadius: BorderRadius.circular(10),
   //       boxShadow: [
   //         BoxShadow(
-  //           color: home2.withOpacity(0.1),
+  //           color: home2.withValues(alpha:0.1),
   //           blurRadius: 20,
   //           offset: const Offset(0, 10),
   //         ),
   //       ],
-  //       border: Border.all(color: home1.withOpacity(0.5)),
+  //       border: Border.all(color: home1.withValues(alpha:0.5)),
   //     ),
   //     child: SingleChildScrollView(
   //       scrollDirection: Axis.horizontal,
@@ -1808,7 +1807,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
               borderRadius: BorderRadius.circular(25),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black.withValues(alpha:0.2),
                   blurRadius: 20,
                   spreadRadius: 5,
                 ),
@@ -1828,7 +1827,7 @@ class _DuesHomePageState extends State<RdclDuesHomePage>
                     width: 80,
                     height: 80,
                     decoration: BoxDecoration(
-                      color: Colors.redAccent.withOpacity(0.1),
+                      color: Colors.redAccent.withValues(alpha:0.1),
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -1950,7 +1949,7 @@ class CustomSliderButton extends StatefulWidget {
 
 class _CustomSliderButtonState extends State<CustomSliderButton> {
   double _dragPosition = 0.0;
-  bool _isConfirmed = false;
+  bool isConfirmed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -1972,7 +1971,7 @@ class _CustomSliderButtonState extends State<CustomSliderButton> {
           Center(
             child: Shimmer.fromColors(
               baseColor: Colors.white,
-              highlightColor: widget.buttonColor.withOpacity(0.25),
+              highlightColor: widget.buttonColor.withValues(alpha:0.25),
               child: FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
@@ -1998,7 +1997,7 @@ class _CustomSliderButtonState extends State<CustomSliderButton> {
               onHorizontalDragEnd: (_) async {
                 if (_dragPosition > (width - 70) * 0.5) {
                   setState(() {
-                    _isConfirmed = true;
+                    isConfirmed = true;
                     _dragPosition = width - 70;
                   });
 
@@ -2006,7 +2005,7 @@ class _CustomSliderButtonState extends State<CustomSliderButton> {
 
                   setState(() {
                     _dragPosition = 0.0;
-                    _isConfirmed = false;
+                    isConfirmed = false;
                   });
                 } else {
                   setState(() {
@@ -2125,7 +2124,7 @@ class TransactionSuccessDialog extends StatelessWidget {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 8,
-      shadowColor: Colors.black.withOpacity(0.2),
+      shadowColor: Colors.black.withValues(alpha:0.2),
       child: Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
@@ -2158,7 +2157,7 @@ class TransactionSuccessDialog extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.green.withOpacity(0.1),
+            color: Colors.green.withValues(alpha:0.1),
             shape: BoxShape.circle,
           ),
           child: const Icon(

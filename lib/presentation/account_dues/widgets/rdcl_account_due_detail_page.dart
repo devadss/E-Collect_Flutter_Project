@@ -1,22 +1,17 @@
 
 import 'dart:io';
-import 'dart:math';
 import 'package:collection_qr_flutter/core/alerts.dart';
 import 'package:collection_qr_flutter/data/provider/rdcl_due_under_agent_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../../core/colors.dart';
 import '../../../core/utils.dart';
 import '../../../data/provider/cash_transcation_provider.dart';
-import '../../../data/provider/transaction_provider.dart';
 import '../../../data/repository/payment_link_repository.dart';
 import '../../../data/repository/payment_session_id_repository.dart';
 import '../../../data/storage/shared_pref_helper.dart';

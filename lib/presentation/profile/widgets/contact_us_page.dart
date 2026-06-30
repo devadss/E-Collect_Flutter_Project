@@ -102,8 +102,8 @@ class _ContactUsPageState extends State<ContactUsPage> {
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () async {
-                          if (await canLaunch(terms)) {
-                            await launch(terms);
+                          if (await canLaunchUrl(Uri.parse(terms))) {
+                            await launchUrl(Uri.parse(terms));
                           }
                         },
                     ),
@@ -116,8 +116,8 @@ class _ContactUsPageState extends State<ContactUsPage> {
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () async {
-                          if (await canLaunch(privacy)) {
-                            await launch(privacy);
+                          if (await canLaunchUrl(Uri.parse(privacy))) {
+                            await launchUrl(Uri.parse(privacy));
                           }
                         },
                     ),
@@ -170,7 +170,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
           child: Row(
             children: [
               CircleAvatar(
-                backgroundColor: color.withOpacity(0.1),
+                backgroundColor: color.withValues(alpha: 0.1),
                 radius: 24,
                 child: Icon(icon, color: color, size: 24),
               ),
@@ -210,7 +210,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: color.withOpacity(0.1),
+                        color: color.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
@@ -266,8 +266,8 @@ class _ContactUsPageState extends State<ContactUsPage> {
 
   void _handlePhoneTap() async {
     const phoneNumber = 'tel:7597182222';
-    if (await canLaunch(phoneNumber)) {
-      await launch(phoneNumber);
+    if (await canLaunchUrl(Uri.parse(phoneNumber))) {
+      await launchUrl(Uri.parse(phoneNumber));
     } else {
       _showErrorSnackBar("Could not launch phone app");
     }
@@ -275,8 +275,8 @@ class _ContactUsPageState extends State<ContactUsPage> {
 
   void _handleEmailTap() async {
     const email = 'mailto:cards@transcorpint.com';
-    if (await canLaunch(email)) {
-      await launch(email);
+    if (await canLaunchUrl(Uri.parse(email))) {
+      await launchUrl(Uri.parse(email));
     } else {
       _showErrorSnackBar("Could not launch email app");
     }
@@ -284,8 +284,8 @@ class _ContactUsPageState extends State<ContactUsPage> {
 
   void _openUrl(String url) async {
     try {
-      if (await canLaunch(url)) {
-        await launch(url);
+      if (await canLaunchUrl(Uri.parse(url))) {
+        await launchUrl(Uri.parse(url));
       } else {
         throw 'Could not launch $url';
       }

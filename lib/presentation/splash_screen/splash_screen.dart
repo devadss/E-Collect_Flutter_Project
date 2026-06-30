@@ -268,7 +268,7 @@ class _SplashScreenState extends State<SplashScreen> {
             top: 50,
             left: 30,
             child: _FloatingParticle(
-              color: green.withOpacity(0.3),
+              color: green.withValues(alpha: 0.3),
               size: 40,
               delay: 0,
             ),
@@ -277,7 +277,7 @@ class _SplashScreenState extends State<SplashScreen> {
             bottom: 100,
             right: 40,
             child: _FloatingParticle(
-              color: Colors.blue.withOpacity(0.3),
+              color: Colors.blue.withValues(alpha: 0.3),
               size: 60,
               delay: 0.5,
             ),
@@ -286,7 +286,7 @@ class _SplashScreenState extends State<SplashScreen> {
             top: 150,
             right: 70,
             child: _FloatingParticle(
-              color: orange.withOpacity(0.2),
+              color: orange.withValues(alpha: 0.2),
               size: 30,
               delay: 1,
             ),

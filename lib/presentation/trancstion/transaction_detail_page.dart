@@ -39,7 +39,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
               width: double.infinity,
                height: 300,
               decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: Colors.grey.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10)),
               child: Padding(
                 padding: const EdgeInsets.all(20.0),

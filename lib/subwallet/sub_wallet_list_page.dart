@@ -32,7 +32,7 @@ class _SubWalletListPageState extends State< SubWalletListPage> {
 
             },
                 style: IconButton.styleFrom(backgroundColor: home1.withAlpha(170), foregroundColor: Colors.white),
-                icon: Icon(Icons.add))
+                icon: const Icon(Icons.add))
             ],),
           ),
           _subWalletList()
@@ -67,7 +67,7 @@ class _SubWalletListPageState extends State< SubWalletListPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(children: [
-                          Icon(Icons.flight),
+                          const Icon(Icons.flight),
                           Text("Travel", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),)
                         ],),
                         SizedBox(height: 10,),

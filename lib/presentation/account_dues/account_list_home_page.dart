@@ -148,7 +148,7 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
             borderSide: BorderSide(
-              color: home1.withOpacity(0.4),
+              color: home1.withValues(alpha:0.4),
               width: 1,
             ),
           ),
@@ -244,7 +244,7 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.search_off, size: 64, color: Colors.grey),
+           Icon(Icons.search_off, size: 64, color: Colors.grey),
           SizedBox(height: 16),
           Text("No customers found", style: TextStyle(fontSize: 18, color: Colors.grey),),
         ],
@@ -258,7 +258,7 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
         elevation: 2,
         borderRadius: BorderRadius.circular(18),
         color: Colors.white,
-        shadowColor: Colors.black.withOpacity(0.05),
+        shadowColor: Colors.black.withValues(alpha:0.05),
         child: InkWell(
           borderRadius: BorderRadius.circular(18),
           onTap: () => _navigateToCustomerDetails(customer),
@@ -273,8 +273,8 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
                     Container(
                       padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(borderRadius: BorderRadius.circular(16),
-                        color: home1.withOpacity(0.2)),
-                        child: Icon(Icons.person_rounded, size: 20, color: home1)),
+                        color: home1.withValues(alpha:0.2)),
+                        child: const Icon(Icons.person_rounded, size: 20, color: home1)),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
@@ -313,7 +313,7 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
-                        color: home1.withOpacity(0.1),
+                        color: home1.withValues(alpha:0.1),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -337,7 +337,7 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
                     Container(
                       padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
-                        color: home1.withOpacity(0.2)),
+                        color: home1.withValues(alpha:0.2)),
                         child: Icon(Icons.account_balance, size: 18, color: home1)),
                     const SizedBox(width: 10),
                     Expanded(
@@ -345,7 +345,7 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: home2.withOpacity(0.03)
+                          color: home2.withValues(alpha:0.03)
                         ),
                         child: Text(
                           customer.depGlobalAccNo,
@@ -415,7 +415,7 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
-                          side: BorderSide(color: home1.withOpacity(0.5)),
+                          side: BorderSide(color: home1.withValues(alpha:0.5)),
                         ),
                       ),
                     ),
@@ -502,19 +502,19 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
             Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: Colors.grey.shade200.withOpacity(0.6),
+                color: Colors.grey.shade200.withValues(alpha:0.6),
                 borderRadius: BorderRadius.circular(40),
               ),
               child: SegmentedTabControl(
                 indicatorPadding: const EdgeInsets.all(4),
                 indicatorDecoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [home1, home1.withOpacity(0.85)],
+                    colors: [home1, home1.withValues(alpha:0.85)],
                   ),
                   borderRadius: BorderRadius.circular(30),
                   boxShadow: [
                     BoxShadow(
-                      color: home1.withOpacity(0.9),
+                      color: home1.withValues(alpha:0.9),
                       blurRadius: 10,
                       offset: const Offset(0, 2),
                     ),

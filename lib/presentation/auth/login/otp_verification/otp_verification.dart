@@ -28,7 +28,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
   );
   int _start = 120;
   Timer? _timer;
-  bool _canPop = false;
+  bool canPop = false;
   String secretKey = "770A8A65DA156D24EE2A093277530142";
   String initialVector = "1234567890123456";
 
@@ -245,7 +245,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
 
   void _updateCanPop(bool value) {
     setState(() {
-      _canPop = value;
+      canPop = value;
     });
   }
 
@@ -323,7 +323,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
                   /// 💎 SHADOW
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.06),
+                      color: Colors.black.withValues(alpha: 0.06),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                     ),
@@ -332,7 +332,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(18),
                   child: Image.asset(
-                    "assets/images/otp_verify_img.jpg",
+                    "assets/images/verify_otp.jpeg",
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -362,7 +362,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
                     text: TextSpan(
                       text: 'We sent a code to ',
                       style: GoogleFonts.poppins(
-                        color: grey.withOpacity(0.6),
+                        color: grey.withValues(alpha: 0.6),
                         fontSize: 14,
                       ),
                       children: [
@@ -453,7 +453,7 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
                         text: TextSpan(
                           text: "Didn't receive code? ",
                           style: GoogleFonts.poppins(
-                            color: grey.withOpacity(0.6),
+                            color: grey.withValues(alpha: 0.6),
                           ),
                           children: [
                             TextSpan(

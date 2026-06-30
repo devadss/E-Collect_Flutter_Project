@@ -432,7 +432,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/colors.dart';
@@ -1103,7 +1102,7 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
     );
   }
 
-  Widget _buildBottomBar(StateSetter setStateModal) {
+  Widget buildBottomBar(StateSetter setStateModal) {
     return SingleChildScrollView(
       reverse: true, // Moves content up when keyboard opens
       child: Container(

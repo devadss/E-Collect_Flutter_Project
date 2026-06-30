@@ -29,7 +29,7 @@ void isRunningLiveBaseUrl(bool status, String mobile) async {
       }
     }
   }else{
-    if (status==true && "+91${mobile}" != null && "+91${mobile}" != uatTestMobileNumber){
+    if (status==true && "+91$mobile" != null && "+91$mobile" != uatTestMobileNumber){
       if(printStatementStatus){
         print("STATUS :$status");
         print("mobile :$mobile");
@@ -306,7 +306,8 @@ void insertCollectionBaseUrl(CollectionBaseUrlProvider vendorBaseUrlProvider) {
 }
 
 Future<void> insertParentDetailAgent(
-    ParentDetailAgentProvider parentAgentDetailProvider) async {
+    ParentDetailAgentProvider parentAgentDetailProvider) async
+{
   await SharedPref.shared.setAgentId(
     parentAgentDetailProvider.subAgent!.data.parentAgentId.toString(),
   );

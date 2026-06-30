@@ -229,8 +229,8 @@ class _HomePageState extends State<HomePage>
                       scrollDirection: Axis.horizontal,
                       child: ToggleButtons(
                         hoverColor: home2,
-                        splashColor: home1.withOpacity(0.7),
-                        fillColor: home1.withOpacity(0.1),
+                        splashColor: home1.withValues(alpha:0.7),
+                        fillColor: home1.withValues(alpha:0.1),
                         selectedBorderColor: home1,
                         isSelected: List.generate(5, (i) => i == selectedIndex),
                         onPressed: (i) => modalSetState(() {
@@ -627,7 +627,7 @@ class _HomePageState extends State<HomePage>
                   Text(
                     "Welcome back",
                     style: TextStyle(
-                      color: whiteColor.withOpacity(0.8),
+                      color: whiteColor.withValues(alpha:0.8),
                       fontSize: 13,
                       fontWeight: FontWeight.w400,
                     ),
@@ -653,7 +653,7 @@ class _HomePageState extends State<HomePage>
                   Text(
                     "Here's your collection overview",
                     style: TextStyle(
-                      color: whiteColor.withOpacity(0.75),
+                      color: whiteColor.withValues(alpha:0.75),
                       fontSize: 12,
                     ),
                   )
@@ -703,7 +703,7 @@ class _HomePageState extends State<HomePage>
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
+                      color: Colors.black.withValues(alpha:0.2),
                       blurRadius: 5,
                       spreadRadius: 2,
                     ),
@@ -729,7 +729,7 @@ class _HomePageState extends State<HomePage>
                     borderRadius: BorderRadius.circular(50),
                     color: currentBannerIndex == entry.key
                         ? Colors.red
-                        : Colors.red.withOpacity(0.5),
+                        : Colors.red.withValues(alpha:0.5),
                   ),
                 );
               }).toList(),
@@ -768,7 +768,7 @@ class _HomePageState extends State<HomePage>
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          shadowColor: Colors.black.withOpacity(0.08),
+          shadowColor: Colors.black.withValues(alpha:0.08),
           child: Padding(
             padding: const EdgeInsets.all(18),
             child: Column(
@@ -792,11 +792,11 @@ class _HomePageState extends State<HomePage>
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                        // color: home1.withOpacity(0.08),
+                        // color: home1.withValues(alpha:0.08),
                         gradient: LinearGradient(
                           colors: [
-                            home1.withOpacity(0.15),
-                            home1.withOpacity(0.5),
+                            home1.withValues(alpha:0.15),
+                            home1.withValues(alpha:0.5),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -885,7 +885,7 @@ class _HomePageState extends State<HomePage>
                           style: OutlinedButton.styleFrom(
                             foregroundColor: Colors.redAccent,
                             side: BorderSide(
-                              color: Colors.redAccent.withOpacity(0.5),
+                              color: Colors.redAccent.withValues(alpha:0.5),
                             ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -1037,7 +1037,7 @@ class _HomePageState extends State<HomePage>
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha:0.1),
               blurRadius: 10,
               offset: const Offset(0, -2),
             ),
@@ -1090,8 +1090,8 @@ class _HomePageState extends State<HomePage>
               gradient: isSelected
                   ? LinearGradient(
                       colors: [
-                        home1.withOpacity(0.8),
-                        home1.withOpacity(0.03),
+                        home1.withValues(alpha:0.8),
+                        home1.withValues(alpha:0.03),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -1110,14 +1110,14 @@ class _HomePageState extends State<HomePage>
               border: Border.all(
                 color: isSelected
                     ? home1.withAlpha(100)
-                    : Colors.grey.withOpacity(0.2),
+                    : Colors.grey.withValues(alpha:0.2),
               ),
 
               /// soft shadow when selected
               boxShadow: isSelected
                   ? [
                       BoxShadow(
-                        color: home1.withOpacity(0.25),
+                        color: home1.withValues(alpha:0.25),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       )
@@ -1413,7 +1413,7 @@ class _HomePageState extends State<HomePage>
                     height: 42,
                     width: 42,
                     decoration: BoxDecoration(
-                      color: iconColor.withOpacity(0.08),
+                      color: iconColor.withValues(alpha:0.08),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -1463,7 +1463,7 @@ class _HomePageState extends State<HomePage>
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 3),
                             decoration: BoxDecoration(
-                              color: home1.withOpacity(0.08),
+                              color: home1.withValues(alpha:0.08),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
@@ -1501,8 +1501,8 @@ class _HomePageState extends State<HomePage>
                           color: status.toLowerCase().contains("success") ||
                                   status.toLowerCase().contains("paid") ||
                                   status.toLowerCase().contains("completed")
-                              ? Colors.green.withOpacity(0.08)
-                              : Colors.orange.withOpacity(0.08),
+                              ? Colors.green.withValues(alpha:0.08)
+                              : Colors.orange.withValues(alpha:0.08),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(

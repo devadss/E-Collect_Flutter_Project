@@ -36,6 +36,7 @@ class _CustomerListState extends State<CustomerList> {
       agentPhoneNumber = number;
       agentIdValue = custId;
     });
+    if(!mounted) return;
     context.read<CustomerListBloc>().add(CustomerListFetchEvent("", branchid.toString(), "0", "0", ""),);
 
 
@@ -91,7 +92,7 @@ class _CustomerListState extends State<CustomerList> {
                             width: 80,
                             height: 80,
                             decoration: BoxDecoration(
-                              color: Colors.red.withOpacity(0.1),
+                              color: Colors.red.withValues(alpha: 0.1),
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
@@ -175,7 +176,7 @@ class _CustomerListState extends State<CustomerList> {
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withOpacity(0.1),
+                              color: Colors.grey.withValues(alpha: 0.1),
                               blurRadius: 12,
                               offset: const Offset(0, 4),
                             ),
@@ -213,7 +214,7 @@ class _CustomerListState extends State<CustomerList> {
                                          padding: const EdgeInsets.all(10),
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(14),
-                                          color: Colors.green.withOpacity(0.1),
+                                          color: Colors.green.withValues(alpha: 0.1),
                                         ),
                                         child: Icon(
                                           Icons.person_rounded,
@@ -246,7 +247,7 @@ class _CustomerListState extends State<CustomerList> {
                                         padding: const EdgeInsets.all(10),
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(14),
-                                          color: Colors.blue.withOpacity(0.1),
+                                          color: Colors.blue.withValues(alpha: 0.1),
                                         ),
                                         child: Icon(
                                           Icons.account_balance_rounded,
@@ -293,7 +294,7 @@ class _CustomerListState extends State<CustomerList> {
                                         padding: const EdgeInsets.all(10),
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(14),
-                                          color: Colors.orange.withOpacity(0.1),
+                                          color: Colors.orange.withValues(alpha: 0.1),
                                         ),
                                         child: Icon(
                                           Icons.category_rounded,
@@ -356,7 +357,7 @@ class _CustomerListState extends State<CustomerList> {
                         width: 60,
                         height: 60,
                         decoration: BoxDecoration(
-                          color: home1.withOpacity(0.1),
+                          color: home1.withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                         ),
                         child: Center(
@@ -386,7 +387,7 @@ class _CustomerListState extends State<CustomerList> {
             color: Colors.white,
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
+                color: Colors.grey.withValues(alpha: 0.1),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),

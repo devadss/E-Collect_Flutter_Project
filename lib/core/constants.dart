@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +13,7 @@ const String agentIdLive = "ADSS20231011";
 const String agentIdUat = "AANVIN20230627";
 //Collection type instead of description in loan...
 //1823 crpfwn
-final RegExp emailValidatorRegExp =
-RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+final RegExp emailValidatorRegExp = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
 final phoneRegex = RegExp("[0-9]");
 final nameRegex = RegExp("[a-zA-Z]");
 const String kEmailNullError = "Enter your email";
@@ -81,7 +79,6 @@ AlertDialog exitAlert(BuildContext context){
                 exit(0);
               }, child: const Text("YES")),
             ElevatedButton(
-
                 style: ElevatedButton.styleFrom(
                     backgroundColor: homeColor,
                     foregroundColor: Colors.white,
@@ -118,7 +115,6 @@ class SharedPrefKeys {
   static const String LoanCustomerVendorUrl = "getCustomerLoanUrl";//
   static const String LoanDueVendorUrl = "getDueListLoanUrl";
   static const String LoanAccountHolderVendorUrl = "getLoanAccountHolderUrl";
-
   static const String IOSNUMBERVALIDATOR = "ios_number_validator";
 
   //----------------------------------------------------------------------------
@@ -183,6 +179,7 @@ class SharedPrefKeys {
   static const String agentOriginId = "AGENT_ORIGIN_ID";
   static const String cardRefNum = "CARD_REF_NUM";
 }
+
 String capitalizeFirstLetter(String? input){
   if(input == null || input.isEmpty) return '';
   return input[0].toUpperCase()+input.substring(1);

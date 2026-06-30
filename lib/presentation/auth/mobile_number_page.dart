@@ -17,25 +17,21 @@ class MobileNumberVerificationPage extends StatefulWidget {
   const MobileNumberVerificationPage({super.key});
 
   @override
-  State<MobileNumberVerificationPage> createState() =>
-      _MobileNumberVerificationPageState();
+  State<MobileNumberVerificationPage> createState() => _MobileNumberVerificationPageState();
 }
 
-class _MobileNumberVerificationPageState
-    extends State<MobileNumberVerificationPage> {
+class _MobileNumberVerificationPageState extends State<MobileNumberVerificationPage> {
   bool isChecked = false;
   final String termsUrl = terms;
   final String privacyUrl = privacy;
-  String? errorMsg;
+   String? errorMsg;
   final TextEditingController _mobileNumberController = TextEditingController();
 
   Future<void> checkMobileNumber() async {
     showProgressDialog(context);
     if (_mobileNumberController.text.isNotEmpty) {
-      final parentAgentDetailProvider =
-          Provider.of<ParentDetailAgentProvider>(context, listen: false);
-      final vendorBaseUrlProvider =
-          Provider.of<CollectionBaseUrlProvider>(context, listen: false);
+      final parentAgentDetailProvider = Provider.of<ParentDetailAgentProvider>(context, listen: false);
+      final vendorBaseUrlProvider = Provider.of<CollectionBaseUrlProvider>(context, listen: false);
       resetInitialData();
       parentAgentDetailProvider.clearData();
       vendorBaseUrlProvider.clearData();
@@ -71,9 +67,9 @@ class _MobileNumberVerificationPageState
       //PROVIDER CALL 1......
       await parentAgentDetailProvider.fetchParentAgentDetails(value);
       if (parentAgentDetailProvider.subAgent != null) {
+
         //PROVIDER CALL 2......
-        await vendorBaseUrlProvider.getCollectionUrl(
-            parentAgentDetailProvider.subAgent?.data.mobileNumber);
+        await vendorBaseUrlProvider.getCollectionUrl(parentAgentDetailProvider.subAgent?.data.mobileNumber);
 
         if (vendorBaseUrlProvider.collectionBaseUrlModel != null) {
           insertCollectionBaseUrl(vendorBaseUrlProvider);
@@ -185,22 +181,20 @@ class _MobileNumberVerificationPageState
           if (customer.response!.data!['CustId'] != null ||
               customer.response!.data!['CustId']?.isNotEmpty == true) {
             insertCustRegister(customer);
-
-            Map<String, String?> nameParts =
-                splitName(customer.response!.data!['firstName'].toString());
-            List<String> parts =
-                customer.response!.data!['date'].toString().split('-');
-            String year = parts[0];
-            String? firstName = nameParts['first'];
-
-            var otpData = OtpPageData(
-                subAgentmobNum: _mobileNumberController.text,
-                parentAgentMobNum: _mobileNumberController.text,
-                userName: firstName!,
-                password: "$firstName@$year",
-                tokenStatus: customer.status.toString(),
-                loggedInUserType: 'NOT_AN_AGENT');
-            otpPageNavigation(context, otpData);
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Center(child: Text("Not a registered e-Collect User", style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),)),));
+            //Map<String, String?> nameParts = splitName(customer.response!.data!['firstName'].toString());
+            //List<String> parts = customer.response!.data!['date'].toString().split('-');
+           // String year = parts[0];
+           // String? firstName = nameParts['first'];
+            // var otpData = OtpPageData(
+            //     subAgentmobNum: _mobileNumberController.text,
+            //     parentAgentMobNum: _mobileNumberController.text,
+            //     userName: firstName!,
+            //     password: "$firstName@$year",
+            //     tokenStatus: customer.status.toString(),
+            //     loggedInUserType: 'NOT_AN_AGENT');
+            // otpPageNavigation(context, otpData);
           }
         });
       }
@@ -229,7 +223,7 @@ class _MobileNumberVerificationPageState
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha:0.1),
                       blurRadius: 20,
                       spreadRadius: 5,
                     ),
@@ -288,13 +282,13 @@ class _MobileNumberVerificationPageState
                             padding: const EdgeInsets.all(22),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Colors.white.withOpacity(0.15),
+                              color: Colors.white.withValues(alpha:0.15),
                               border: Border.all(
-                                color: Colors.white.withOpacity(0.3),
+                                color: Colors.white.withValues(alpha:0.3),
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: home1.withOpacity(0.4),
+                                  color: home1.withValues(alpha:0.4),
                                   blurRadius: 25,
                                   spreadRadius: 2,
                                 ),
@@ -335,7 +329,7 @@ class _MobileNumberVerificationPageState
                             "Enter your registered mobile number\nto continue securely",
                             textAlign: TextAlign.center,
                             style: GoogleFonts.poppins(
-                              color: Colors.white.withOpacity(0.85),
+                              color: Colors.white.withValues(alpha:0.85),
                               fontSize: 14,
                               height: 1.5,
                             ),
@@ -367,13 +361,13 @@ class _MobileNumberVerificationPageState
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.1),
+                          color: Colors.grey.withValues(alpha:0.1),
                           blurRadius: 10,
                           spreadRadius: 5,
                         ),
                       ],
                       border: Border.all(
-                        color: Colors.grey.withOpacity(0.2),
+                        color: Colors.grey.withValues(alpha:0.2),
                         width: 1,
                       ),
                     ),
@@ -395,7 +389,7 @@ class _MobileNumberVerificationPageState
                           Container(
                             height: 30,
                             width: 1,
-                            color: Colors.grey.withOpacity(0.3),
+                            color: Colors.grey.withValues(alpha:0.3),
                           ),
                           const SizedBox(width: 10),
                           Expanded(
@@ -410,7 +404,7 @@ class _MobileNumberVerificationPageState
                                 border: InputBorder.none,
                                 hintText: 'Enter 10 digit number',
                                 hintStyle: GoogleFonts.poppins(
-                                  color: Colors.grey.withOpacity(0.7),
+                                  color: Colors.grey.withValues(alpha:0.7),
                                 ),
                                 contentPadding: const EdgeInsets.symmetric(
                                   vertical: 15,
@@ -453,9 +447,9 @@ class _MobileNumberVerificationPageState
                   // Terms and Conditions with updated color theme
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.05),
+                      color: Colors.grey.withValues(alpha:0.05),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey.withOpacity(0.1)),
+                      border: Border.all(color: Colors.grey.withValues(alpha:0.1)),
                     ),
                     padding: const EdgeInsets.all(12),
                     child: Row(
@@ -498,8 +492,8 @@ class _MobileNumberVerificationPageState
                                   ),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () async {
-                                      if (await canLaunch(termsUrl)) {
-                                        await launch(termsUrl);
+                                      if (await canLaunchUrl(Uri.parse(termsUrl))) {
+                                        await launchUrl(Uri.parse(termsUrl));
                                       }
                                     },
                                 ),
@@ -512,8 +506,8 @@ class _MobileNumberVerificationPageState
                                   ),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () async {
-                                      if (await canLaunch(privacyUrl)) {
-                                        await launch(privacyUrl);
+                                      if (await canLaunchUrl(Uri.parse(privacyUrl))) {
+                                        await launchUrl(Uri.parse(privacyUrl));
                                       }
                                     },
                                 ),
@@ -552,7 +546,7 @@ class _MobileNumberVerificationPageState
                           borderRadius: BorderRadius.circular(12),
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        shadowColor: const Color(0xFFEA307B).withOpacity(0.3),
+                        shadowColor: const Color(0xFFEA307B).withValues(alpha:0.3),
                       ),
                       child: Text(
                         "CONFIRM",

@@ -61,7 +61,7 @@ class _PtpPageState extends State<PtpPage> {
                 boxShadow: [
                   BoxShadow(
                     color:
-                    Colors.black.withOpacity(.04),
+                    Colors.black.withValues(alpha:.04),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   )
@@ -219,10 +219,10 @@ class _PtpPageState extends State<PtpPage> {
                 borderRadius:
                 BorderRadius.circular(18),
 
-                color: home1.withOpacity(.08),
+                color: home1.withValues(alpha:.08),
 
                 border: Border.all(
-                  color: home1.withOpacity(.15),
+                  color: home1.withValues(alpha:.15),
                 ),
               ),
 
@@ -267,7 +267,7 @@ class _PtpPageState extends State<PtpPage> {
                 boxShadow: [
                   BoxShadow(
                     color:
-                    Colors.black.withOpacity(.04),
+                    Colors.black.withValues(alpha:.04),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   )

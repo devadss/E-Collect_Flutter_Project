@@ -298,7 +298,7 @@ if (printStatementStatus){
     }
   }
 
-  Future<Uint8List> _generateQrCodeImage() async {
+  Future<Uint8List> generateQrCodeImage() async {
     try {
       // Generate QR code data with all transaction details
 
@@ -628,7 +628,7 @@ if (printStatementStatus){
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: home1.withOpacity(.1),
+                        color: home1.withValues(alpha: .1),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Icon(
@@ -765,12 +765,12 @@ if (printStatementStatus){
                           duration: const Duration(milliseconds: 220),
                           decoration: BoxDecoration(
                             color: isSelected
-                                ? home1.withOpacity(.08)
+                                ? home1.withValues(alpha: .08)
                                 : Colors.grey.shade50,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
                               color: isSelected
-                                  ? home1.withOpacity(.35)
+                                  ? home1.withValues(alpha: .35)
                                   : Colors.grey.shade200,
                             ),
                           ),
@@ -784,7 +784,7 @@ if (printStatementStatus){
                               height: 52,
                               decoration: BoxDecoration(
                                 color: isSelected
-                                    ? home1.withOpacity(.15)
+                                    ? home1.withValues(alpha: .15)
                                     : Colors.white,
                                 borderRadius: BorderRadius.circular(16),
                               ),
@@ -987,7 +987,7 @@ if (printStatementStatus){
                             contentPadding: EdgeInsets.zero,
                             leading: CircleAvatar(
                               backgroundColor: isSelected
-                                  ? Colors.blue.withOpacity(0.1)
+                                  ? Colors.blue.withValues(alpha:0.1)
                                   : Colors.grey.shade200,
                               child: Icon(
                                 Icons.print,
@@ -1168,7 +1168,7 @@ if (printStatementStatus){
                         borderRadius: BorderRadius.circular(18),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
+                            color: Colors.black.withValues(alpha:0.05),
                             blurRadius: 16,
                             offset: const Offset(0, 6),
                           ),
@@ -1251,7 +1251,7 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(.04),
+                            color: Colors.black.withValues(alpha: .04),
                             blurRadius: 24,
                             spreadRadius: 0,
                             offset: const Offset(0, 10),
@@ -1267,10 +1267,10 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
                               vertical: 8,
                             ),
                             decoration: BoxDecoration(
-                              color: home2.withOpacity(.08),
+                              color: home2.withValues(alpha: .08),
                               borderRadius: BorderRadius.circular(100),
                               border: Border.all(
-                                color: home2.withOpacity(.15),
+                                color: home2.withValues(alpha: .15),
                               ),
                             ),
                             child: Row(
@@ -1316,7 +1316,7 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(.03),
+                                  color: Colors.black.withValues(alpha: .03),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 ),
@@ -1331,7 +1331,7 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
                                   height: 170,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: home2.withOpacity(.05),
+                                    color: home2.withValues(alpha:.05),
                                   ),
                                 ),
 
@@ -1389,7 +1389,7 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
                                 Container(
                                   padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
-                                    color: home2.withOpacity(.08),
+                                    color: home2.withValues(alpha:.08),
                                     borderRadius: BorderRadius.circular(14),
                                   ),
                                   child: Icon(
@@ -1439,10 +1439,10 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
                         decoration: BoxDecoration(
                           color: white,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: home2.withOpacity(0.1)),
+                          border: Border.all(color: home2.withValues(alpha:0.1)),
                           boxShadow: [
                             BoxShadow(
-                              color: home2.withOpacity(0.05),
+                              color: home2.withValues(alpha:0.05),
                               spreadRadius: 2,
                               blurRadius: 8,
                               offset: const Offset(0, 4),
@@ -1463,39 +1463,39 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
                             const SizedBox(height: 10),
                             _buildDetailRow(
                                 "Transaction ID:", widget.receiptDataModel.txnId),
-                            Divider(height: 10, color: home2.withOpacity(0.1)),
+                            Divider(height: 10, color: home2.withValues(alpha:0.1)),
                             _buildDetailRow(
                                 "Transaction Type:",
                                 widget.receiptDataModel.tranType.contains("CASH")
                                     ? "CASH"
                                     : "UPI"),
-                            Divider(height: 10, color: home2.withOpacity(0.1)),
+                            Divider(height: 10, color: home2.withValues(alpha:0.1)),
                             _buildDetailRow("Customer Acc No:",
                                 widget.receiptDataModel.accNo),
-                            Divider(height: 10, color: home2.withOpacity(0.1)),
+                            Divider(height: 10, color: home2.withValues(alpha:0.1)),
                             _buildDetailRow("Date & Time",
                                 widget.receiptDataModel.dat.toString()),
                             // _buildDetailRow("Date & Time:",
                             //     "${DateFormat('dd-MMM-yyyy').format(DateTime.now())} - ${DateFormat('hh:mm a').format(DateTime.now())}"),
-                            Divider(height: 10, color: home2.withOpacity(0.1)),
+                            Divider(height: 10, color: home2.withValues(alpha:0.1)),
                             _buildDetailRow("Amount:",
                                 "Rs.${widget.receiptDataModel.amount}"),
-                            Divider(height: 10, color: home2.withOpacity(0.1)),
+                            Divider(height: 10, color: home2.withValues(alpha:0.1)),
                             _buildDetailRow("Customer Name:",
                                 widget.receiptDataModel.custName),
-                            Divider(height: 10, color: home2.withOpacity(0.1)),
+                            Divider(height: 10, color: home2.withValues(alpha:0.1)),
                             _buildDetailRow(
                                 "Agent Name:", widget.receiptDataModel.agentName),
-                            Divider(height: 10, color: home2.withOpacity(0.1)),
+                            Divider(height: 10, color: home2.withValues(alpha:0.1)),
                             _buildDetailRow("Agent Phone:",
                                 widget.receiptDataModel.agentPhone),
-                            Divider(height: 10, color: home2.withOpacity(0.1)),
+                            Divider(height: 10, color: home2.withValues(alpha:0.1)),
 
                             widget.receiptDataModel.custPhone.isNotEmpty
                                 ? _buildDetailRow("Customer Phone:",
                                     widget.receiptDataModel.custPhone)
                                 : const SizedBox.shrink(),
-                         //   Divider(height: 24, color: home2.withOpacity(0.1)),
+                         //   Divider(height: 24, color: home2.withValues(alpha:0.1)),
                           ],
                         ),
                       ),*/
@@ -1513,11 +1513,11 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
                         ),
                         borderRadius: BorderRadius.circular(28),
                         border: Border.all(
-                          color: home2.withOpacity(.08),
+                          color: home2.withValues(alpha:.08),
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: home2.withOpacity(.06),
+                            color: home2.withValues(alpha:.06),
                             blurRadius: 24,
                             spreadRadius: 0,
                             offset: const Offset(0, 10),
@@ -1533,7 +1533,7 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
                               Container(
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  color: home2.withOpacity(.08),
+                                  color: home2.withValues(alpha:.08),
                                   borderRadius: BorderRadius.circular(18),
                                 ),
                                 child: const Icon(
@@ -1584,10 +1584,10 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
                               vertical: 14,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.green.withOpacity(.06),
+                              color: Colors.green.withValues(alpha:.06),
                               borderRadius: BorderRadius.circular(18),
                               border: Border.all(
-                                color: Colors.green.withOpacity(.12),
+                                color: Colors.green.withValues(alpha:.12),
                               ),
                             ),
                             child: Row(
@@ -1596,7 +1596,7 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
                                   width: 42,
                                   height: 42,
                                   decoration: BoxDecoration(
-                                    color: Colors.green.withOpacity(.12),
+                                    color: Colors.green.withValues(alpha:.12),
                                     shape: BoxShape.circle,
                                   ),
                                   child: const Icon(
@@ -1670,13 +1670,13 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
                               gradient: LinearGradient(
                                 colors: [
                                   home2,
-                                  home2.withOpacity(.85),
+                                  home2.withValues(alpha:.85),
                                 ],
                               ),
                               borderRadius: BorderRadius.circular(22),
                               boxShadow: [
                                 BoxShadow(
-                                  color: home2.withOpacity(.25),
+                                  color: home2.withValues(alpha:.25),
                                   blurRadius: 18,
                                   offset: const Offset(0, 8),
                                 ),
@@ -1687,7 +1687,7 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
                                 Container(
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(.15),
+                                    color: Colors.white.withValues(alpha:.15),
                                     borderRadius: BorderRadius.circular(16),
                                   ),
                                   child: const Icon(
@@ -1706,7 +1706,7 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
                                       Text(
                                         "Transaction Amount",
                                         style: TextStyle(
-                                          color: Colors.white.withOpacity(.8),
+                                          color: Colors.white.withValues(alpha:.8),
                                           fontSize: 12,
                                           fontWeight: FontWeight.w500,
                                         ),
@@ -1768,7 +1768,7 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
                               style: OutlinedButton.styleFrom(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 14),
-                                side: BorderSide(color: home1.withOpacity(0.6)),
+                                side: BorderSide(color: home1.withValues(alpha:0.6)),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(14),
                                 ),
@@ -1803,7 +1803,7 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 14),
                                 elevation: 2,
-                                shadowColor: home2.withOpacity(0.3),
+                                shadowColor: home2.withValues(alpha:0.3),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(14),
                                 ),
@@ -1871,7 +1871,7 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
             ),
             if (_isLoading || _isConnecting)
               Container(
-                color: Colors.black.withOpacity(0.5),
+                color: Colors.black.withValues(alpha:0.5),
                 child: const Center(
                   child: CircularProgressIndicator(),
                 ),
@@ -1880,7 +1880,7 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
             //   IgnorePointer(
             //     // Makes the flash layer non-interactive
             //     child: Container(
-            //       color: Colors.white.withOpacity(0.9), // Bright white flash
+            //       color: Colors.white.withValues(alpha:0.9), // Bright white flash
             //     ),
             //   ),
           ],
@@ -1903,7 +1903,7 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(.03),
+            color: Colors.black.withValues(alpha:.03),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -1934,7 +1934,7 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
                   width: 36,
                   height: 3,
                   decoration: BoxDecoration(
-                    color: home2.withOpacity(.25),
+                    color: home2.withValues(alpha:.25),
                     borderRadius: BorderRadius.circular(100),
                   ),
                 ),
@@ -2443,10 +2443,10 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
 //                     decoration: BoxDecoration(
 //                       color: white,
 //                       borderRadius: BorderRadius.circular(12),
-//                       border: Border.all(color: home1.withOpacity(0.3)),
+//                       border: Border.all(color: home1.withValues(alpha:0.3)),
 //                       boxShadow: [
 //                         BoxShadow(
-//                           color: home2.withOpacity(0.1),
+//                           color: home2.withValues(alpha:0.1),
 //                           spreadRadius: 2,
 //                           blurRadius: 8,
 //                           offset: const Offset(0, 4),
@@ -2483,7 +2483,7 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
 //                           "Scan to verify transaction",
 //                           style: TextStyle(
 //                             fontSize: 14,
-//                             color: home2.withOpacity(0.7),
+//                             color: home2.withValues(alpha:0.7),
 //                           ),
 //                         ),
 //                       ],
@@ -2499,10 +2499,10 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
 //                     decoration: BoxDecoration(
 //                       color: white,
 //                       borderRadius: BorderRadius.circular(12),
-//                       border: Border.all(color: home2.withOpacity(0.1)),
+//                       border: Border.all(color: home2.withValues(alpha:0.1)),
 //                       boxShadow: [
 //                         BoxShadow(
-//                           color: home2.withOpacity(0.05),
+//                           color: home2.withValues(alpha:0.05),
 //                           spreadRadius: 2,
 //                           blurRadius: 8,
 //                           offset: const Offset(0, 4),
@@ -2522,22 +2522,22 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
 //                         ),
 //                         const SizedBox(height: 16),
 //                         _buildDetailRow("Transaction ID:", "1234567890"),
-//                         Divider(height: 24, color: home2.withOpacity(0.1)),
+//                         Divider(height: 24, color: home2.withValues(alpha:0.1)),
 //                         _buildDetailRow(
 //                             "Date & Time:", "${DateFormat('dd-MMM-yyyy').format(DateTime.now())} - ${DateFormat('hh:mm a').format(DateTime.now())}"),
-//                         Divider(height: 24, color: home2.withOpacity(0.1)),
+//                         Divider(height: 24, color: home2.withValues(alpha:0.1)),
 //                         _buildDetailRow("Amount:", "Rs.${widget.receiptDataModel.amount}"),
-//                         Divider(height: 24, color: home2.withOpacity(0.1)),
+//                         Divider(height: 24, color: home2.withValues(alpha:0.1)),
 //                         _buildDetailRow("Customer Name:", widget.receiptDataModel.custName),
-//                         // Divider(height: 24, color: home2.withOpacity(0.1)),
+//                         // Divider(height: 24, color: home2.withValues(alpha:0.1)),
 //                         // _buildDetailRow("Customer ID:", widget.receiptDataModel.custId),
-//                         Divider(height: 24, color: home2.withOpacity(0.1)),
+//                         Divider(height: 24, color: home2.withValues(alpha:0.1)),
 //                         _buildDetailRow("Customer Phone:", widget.receiptDataModel.custPhone),
-//                         Divider(height: 24, color: home2.withOpacity(0.1)),
+//                         Divider(height: 24, color: home2.withValues(alpha:0.1)),
 //                         _buildDetailRow("Agent Name:", widget.receiptDataModel.agentName),
-//                         Divider(height: 24, color: home2.withOpacity(0.1)),
+//                         Divider(height: 24, color: home2.withValues(alpha:0.1)),
 //                         _buildDetailRow("Agent Phone:", widget.receiptDataModel.agentPhone),
-//                         Divider(height: 24, color: home2.withOpacity(0.1)),
+//                         Divider(height: 24, color: home2.withValues(alpha:0.1)),
 //                         // _buildDetailRow("Reference:", "Invoice #4567"),
 //                       ],
 //                     ),
@@ -2598,7 +2598,7 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
 //           ),
 //           if (_isLoading || _isConnecting)
 //             Container(
-//               color: Colors.black.withOpacity(0.5),
+//               color: Colors.black.withValues(alpha:0.5),
 //               child: const Center(
 //                 child: CircularProgressIndicator(),
 //               ),
@@ -2615,7 +2615,7 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
 //         Text(
 //           label,
 //           style: TextStyle(
-//             color: home2.withOpacity(0.7),
+//             color: home2.withValues(alpha:0.7),
 //             fontSize: 14,
 //           ),
 //         ),

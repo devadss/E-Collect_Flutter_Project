@@ -99,7 +99,7 @@
 //           borderRadius: BorderRadius.circular(12),
 //           boxShadow: [
 //             BoxShadow(
-//               color: Colors.black.withOpacity(0.1),
+//               color: Colors.black.withValues(alpha:0.1),
 //               blurRadius: 6,
 //               offset: const Offset(0, 2),
 //             ),
@@ -115,7 +115,7 @@
 //                   Container(
 //                     padding: const EdgeInsets.all(6),
 //                     decoration: BoxDecoration(
-//                       color: color.withOpacity(0.2),
+//                       color: color.withValues(alpha:0.2),
 //                       shape: BoxShape.circle,
 //                     ),
 //                     child: Icon(icon, color: color, size: 20),
@@ -172,7 +172,7 @@
 //           Container(
 //             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
 //             decoration: BoxDecoration(
-//               color: home1.withOpacity(0.1),
+//               color: home1.withValues(alpha:0.1),
 //               borderRadius: BorderRadius.circular(12),
 //             ),
 //             child: Text(
@@ -215,7 +215,7 @@
 //         borderRadius: BorderRadius.circular(12),
 //         boxShadow: [
 //           BoxShadow(
-//             color: Colors.black.withOpacity(0.05),
+//             color: Colors.black.withValues(alpha:0.05),
 //             blurRadius: 6,
 //             offset: const Offset(0, 2),
 //           ),
@@ -240,8 +240,8 @@
 //               height: 40,
 //               decoration: BoxDecoration(
 //                 color: isReceived
-//                     ? successColor.withOpacity(0.2)
-//                     : warningColor.withOpacity(0.2),
+//                     ? successColor.withValues(alpha:0.2)
+//                     : warningColor.withValues(alpha:0.2),
 //                 shape: BoxShape.circle,
 //               ),
 //               child: Center(
@@ -410,7 +410,7 @@
 //             borderRadius: BorderRadius.circular(24),
 //             boxShadow: [
 //               BoxShadow(
-//                 color: Colors.black.withOpacity(0.2),
+//                 color: Colors.black.withValues(alpha:0.2),
 //                 blurRadius: 30,
 //                 spreadRadius: 0,
 //                 offset: const Offset(0, 10),
@@ -441,7 +441,7 @@
 //                     Container(
 //                       padding: const EdgeInsets.all(12),
 //                       decoration: BoxDecoration(
-//                         color: Colors.white.withOpacity(0.2),
+//                         color: Colors.white.withValues(alpha:0.2),
 //                         shape: BoxShape.circle,
 //                       ),
 //                       child: Icon(
@@ -523,7 +523,7 @@
 //                               shape: RoundedRectangleBorder(
 //                                 borderRadius: BorderRadius.circular(12),
 //                               ),
-//                               side: BorderSide(color: home1.withOpacity(0.3)),
+//                               side: BorderSide(color: home1.withValues(alpha:0.3)),
 //                             ),
 //                             child: const Text(
 //                               'Close',
@@ -595,7 +595,7 @@
 //           Container(
 //             padding: const EdgeInsets.all(8),
 //             decoration: BoxDecoration(
-//               color: home1.withOpacity(0.1),
+//               color: home1.withValues(alpha:0.1),
 //               shape: BoxShape.circle,
 //             ),
 //             child: Icon(
@@ -911,7 +911,6 @@ import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/animation.dart';
 import 'package:lottie/lottie.dart';
 import '../../core/colors.dart';
 
@@ -1164,7 +1163,7 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage>
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.3),
+              color: color.withValues(alpha:0.3),
               blurRadius: 20,
               offset: const Offset(0, 8),
             ),
@@ -1178,7 +1177,7 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage>
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha:0.2),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Icon(icon, color: Colors.white, size: 24),
@@ -1242,7 +1241,7 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage>
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [home1.withOpacity(0.8), home2],
+                  colors: [home1.withValues(alpha:0.8), home2],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -1285,7 +1284,7 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage>
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha:0.05),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               ),
@@ -1333,7 +1332,7 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage>
           border: Border.all(color: black),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha:0.05),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -1384,8 +1383,8 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage>
         onPressed: _createNewPaymentLink,
         backgroundColor: home1,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: const Icon(Iconsax.add, color: Colors.white, size: 28),
         elevation: 8,
+        child: const Icon(Iconsax.add, color: Colors.white, size: 28),
       ),
     );
   }
@@ -1528,12 +1527,12 @@ class _AnimatedPaymentListItemState extends State<AnimatedPaymentListItem>
                       gradient: LinearGradient(
                         colors: widget.isReceived
                             ? [
-                                successColor.withOpacity(0.2),
-                                successColor.withOpacity(0.1)
+                                successColor.withValues(alpha:0.2),
+                                successColor.withValues(alpha:0.1)
                               ]
                             : [
-                                warningColor.withOpacity(0.2),
-                                warningColor.withOpacity(0.1)
+                                warningColor.withValues(alpha:0.2),
+                                warningColor.withValues(alpha:0.1)
                               ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -1541,8 +1540,8 @@ class _AnimatedPaymentListItemState extends State<AnimatedPaymentListItem>
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
                         color: widget.isReceived
-                            ? successColor.withOpacity(0.3)
-                            : warningColor.withOpacity(0.3),
+                            ? successColor.withValues(alpha:0.3)
+                            : warningColor.withValues(alpha:0.3),
                         width: 1.5,
                       ),
                     ),
@@ -1578,7 +1577,7 @@ class _AnimatedPaymentListItemState extends State<AnimatedPaymentListItem>
                               .format(widget.payment.date),
                           style: TextStyle(
                             fontSize: 13,
-                            color: textSecondary.withOpacity(0.7),
+                            color: textSecondary.withValues(alpha:0.7),
                           ),
                         ),
                       ],
@@ -1681,7 +1680,7 @@ class _AnimatedPaymentDetailsDialogState
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha:0.1),
                 blurRadius: 30,
                 spreadRadius: 0,
                 offset: const Offset(0, 10),
@@ -1712,7 +1711,7 @@ class _AnimatedPaymentDetailsDialogState
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha:0.2),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -1802,7 +1801,7 @@ class _AnimatedPaymentDetailsDialogState
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              side: BorderSide(color: home1.withOpacity(0.3)),
+                              side: BorderSide(color: home1.withValues(alpha:0.3)),
                             ),
                             child: const Text(
                               'Close',
@@ -1875,7 +1874,7 @@ class _AnimatedPaymentDetailsDialogState
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: home1.withOpacity(0.1),
+              color: home1.withValues(alpha:0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -1968,7 +1967,7 @@ class _NewPaymentLinkFormState extends State<NewPaymentLinkForm> {
             ),
             const SizedBox(height: 24),
             DropdownButtonFormField<String>(
-              value: _selectedRecipientType,
+              initialValue: _selectedRecipientType,
               items: const [
                 DropdownMenuItem(value: 'Member', child: Text('Member')),
                 DropdownMenuItem(value: 'Group', child: Text('Group')),
@@ -1994,7 +1993,7 @@ class _NewPaymentLinkFormState extends State<NewPaymentLinkForm> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
-              value: _selectedRecipient,
+              initialValue: _selectedRecipient,
               hint: const Text('Select Recipient'),
               items: _selectedRecipientType == 'Member'
                   ? ['John Doe', 'Jane Smith', 'Mike Johnson']
@@ -2233,7 +2232,7 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage> {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha:0.05),
               blurRadius: 16,
               offset: const Offset(0, 8),
             ),
@@ -2247,7 +2246,7 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage> {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withValues(alpha:0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(icon, color: color, size: 24),
@@ -2292,7 +2291,7 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: home1.withOpacity(0.1),
+            color: home1.withValues(alpha:0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
@@ -2317,7 +2316,7 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage> {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.03),
+              color: Colors.black.withValues(alpha:0.03),
               blurRadius: 12,
               offset: const Offset(0, 6),
             ),
@@ -2329,7 +2328,7 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage> {
               Icon(
                 Icons.payments_rounded,
                 size: 48,
-                color: textSecondary.withOpacity(0.5),
+                color: textSecondary.withValues(alpha:0.5),
               ),
               const SizedBox(height: 16),
               Text(
@@ -2351,7 +2350,7 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha:0.03),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
@@ -2377,8 +2376,8 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: isReceived
-                      ? [successColor.withOpacity(0.2), successColor.withOpacity(0.1)]
-                      : [warningColor.withOpacity(0.2), warningColor.withOpacity(0.1)],
+                      ? [successColor.withValues(alpha:0.2), successColor.withValues(alpha:0.1)]
+                      : [warningColor.withValues(alpha:0.2), warningColor.withValues(alpha:0.1)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -2499,7 +2498,7 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage> {
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha:0.1),
                 blurRadius: 30,
                 spreadRadius: 0,
                 offset: const Offset(0, 10),
@@ -2530,7 +2529,7 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha:0.2),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -2612,7 +2611,7 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              side: BorderSide(color: home1.withOpacity(0.3)),
+                              side: BorderSide(color: home1.withValues(alpha:0.3)),
                             ),
                             child: const Text(
                               'Close',
@@ -2684,7 +2683,7 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: home1.withOpacity(0.1),
+              color: home1.withValues(alpha:0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(

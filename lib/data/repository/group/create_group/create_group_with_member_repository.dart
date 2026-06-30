@@ -14,7 +14,8 @@ class CreateGroupWithMemberRepository
   Future<Either<ErrorHandler, CreateGroupWithMemberResponse>>
       createGroupWitMember(
     Map<String, dynamic> payload,
-  ) async {
+  )
+  async {
     final uri = Uri.parse("${baseUrl}api/CreateGroupWithMembers");
     bool checkInternetConnection =
         await InternetConnectionChecker.createInstance().hasConnection;

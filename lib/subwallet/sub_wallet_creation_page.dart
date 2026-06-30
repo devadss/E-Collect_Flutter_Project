@@ -40,7 +40,7 @@ class _SubWalletCreationPageState extends State<SubWalletCreationPage> {
             Text("Enter amount"),
             TextField(
               decoration: InputDecoration(
-                 prefixIcon: Icon(Icons.currency_rupee),
+                 prefixIcon: const Icon(Icons.currency_rupee),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
 
