@@ -175,6 +175,15 @@ class _MobileNumberVerificationPageState extends State<MobileNumberVerificationP
         response.fold((error) {
           Navigator.pop(context);
           showInSnackBar("Not a registered user", context);
+          var otpData = OtpPageData(
+            subAgentmobNum: _mobileNumberController.text,
+            parentAgentMobNum: "",
+            userName: "",
+            password: "",
+            tokenStatus: "",
+            loggedInUserType: 'MERCHANT',
+          );
+          otpPageNavigation(context, otpData);
         }, (customer) async {
           Navigator.pop(context);
 

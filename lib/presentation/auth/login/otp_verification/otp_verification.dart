@@ -10,6 +10,7 @@ import '../../../../data/provider/otp_request_provider.dart';
 import '../../../../data/provider/otp_verification_provider.dart';
 import '../../../../data/provider/token_request_provider.dart';
 import '../../../../data/storage/shared_pref_helper.dart';
+import '../../../merchant/onboarding_screen/onboarding_screen.dart';
 import '../../authetication_page/google_pin_code_page.dart';
 
 class OtpRequestVerificationPage extends StatefulWidget {
@@ -484,7 +485,13 @@ class _OtpRequestVerificationPageState extends State<OtpRequestVerificationPage>
                             _controllers
                                 .map((controller) => controller.text)
                                 .join();
-                        if (otp.length == 4) {
+                        if (otp.length == 4 && widget.otpPageData.loggedInUserType =="MERCHANT") {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder:
+                                  (BuildContext context )=>
+                          OnboardingScreen()));}
+                        else if(otp.length == 4 && widget.otpPageData.loggedInUserType !="MERCHANT"){
+
                           verifyOtp();
                         }else{
                           EasyLoading.showToast("Enter a valid OTP");
