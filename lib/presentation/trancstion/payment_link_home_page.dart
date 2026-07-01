@@ -1082,7 +1082,7 @@ class _PaymentLinkHomePageState extends State<PaymentLinkHomePage>
               FadeTransition(
                 opacity: _fadeController,
                 child: const Text(
-                  'Welcome back, Alex!',
+                  'Welcome back, Amal K!',
                   style: TextStyle(
                     fontSize: 16,
                     color: textSecondary,
