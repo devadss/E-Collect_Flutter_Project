@@ -1413,12 +1413,9 @@
 //   }
 // }
 //
-
 import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
-import '../../../core/utils.dart';
 import '../bottom_nav/bottom_nav_bar.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -1960,7 +1957,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: DropdownButtonFormField<String>(
-        value: value,
+        initialValue: value,
         decoration: InputDecoration(
           prefixIcon: icon != null ? Icon(icon, color: home1) : null,
           labelText: label,
