@@ -6,7 +6,6 @@ import '../data/provider/collection_base_url_provider.dart';
 import '../data/provider/parent_agent_detail_provider/parent_agent_detil_provider.dart';
 import '../data/storage/shared_pref_helper.dart';
 import '../domain/model/registered_cust_model.dart';
-import '../presentation/auth/login/otp_verification/otp_verification.dart';
 import 'colors.dart';
 import 'constants.dart';
 
@@ -45,6 +44,34 @@ void isRunningLiveBaseUrl(bool status, String mobile) async {
     }
   }
 
+}
+class Validators {
+  static String? pan(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Please enter PAN';
+    }
+
+    final panRegex = RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]{1}$');
+
+    if (!panRegex.hasMatch(value.trim().toUpperCase())) {
+      return 'Please enter a valid PAN';
+    }
+
+    return null;
+  }
+  static String? pinCode(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Please enter PIN Code';
+    }
+
+    final pinRegex = RegExp(r'^[1-9][0-9]{5}$');
+
+    if (!pinRegex.hasMatch(value.trim())) {
+      return 'Please enter a valid 6-digit PIN Code';
+    }
+
+    return null;
+  }
 }
 
 void isRunningLiveDopBaseUrl(bool status, String mobile) async {
@@ -511,16 +538,23 @@ class OtpPageData {
       required this.loggedInUserType});
 }
 
-void otpPageNavigation(BuildContext context, OtpPageData otpData) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => OtpRequestVerificationPage(
-        otpPageData: otpData,
-      ),
-    ),
-  );
+String extractOtp(List<TextEditingController> otpController){
+  var otpValue = "";
+  var otp = otpController.map((x)=>  x.value.text);
+  for(var x in otp){
+    otpValue += x;
+  }
+  print(otpValue);
+  if(otpValue.length !=4 && otpValue.isNotEmpty){
+    return "Enter 4 digit Otp";
+  }else if(otpValue.isEmpty){
+    return "Empty fields not allowed";
+  }else{
+    return otpValue;
+  }
+
 }
+
 
 Uint8List padPKCS7(Uint8List input) {
   final padLength = 16 - (input.length % 16);

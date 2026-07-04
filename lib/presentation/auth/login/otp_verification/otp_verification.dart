@@ -1,242 +1,27 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import '../../../../core/colors.dart';
-import '../../../../core/general.dart';
 import '../../../../core/utils.dart';
-import '../../../../data/provider/otp_request_provider.dart';
-import '../../../../data/provider/otp_verification_provider.dart';
-import '../../../../data/provider/token_request_provider.dart';
-import '../../../../data/storage/shared_pref_helper.dart';
-import '../../../member/member_page.dart';
 import '../../../merchant/onboarding_screen/onboarding_screen.dart';
-import '../../authetication_page/google_pin_code_page.dart';
 
 class OtpRequestVerificationPage extends StatefulWidget {
   final OtpPageData otpPageData;
-
   const OtpRequestVerificationPage({super.key, required this.otpPageData});
 
   @override
-  State<OtpRequestVerificationPage> createState() =>
-      _OtpRequestVerificationPageState();
+  State<OtpRequestVerificationPage> createState() => _OtpRequestVerificationPageState();
 }
 
 class _OtpRequestVerificationPageState
     extends State<OtpRequestVerificationPage> {
-  final List<TextEditingController> _controllers = List.generate(
-    4,
-    (_) => TextEditingController(),
-  );
+  final List<TextEditingController> _controllers = List.generate(4, (_) => TextEditingController(),);
   int _start = 120;
   Timer? _timer;
   bool canPop = false;
-  String secretKey = "770A8A65DA156D24EE2A093277530142";
-  String initialVector = "1234567890123456";
-
-  // Color palette
-  final Color primaryPink = const Color(0xFFEA307B);
-  final Color deepPurple = const Color(0xFF470952);
-  final Color lightPink = const Color(0xFFFFF0F5);
-  final Color white = Colors.white;
-  final Color black = Colors.black;
-  final Color grey = Colors.grey;
-
-  Future<void> tokenGeneration(String password) async {
-    //print("Inside token gen");
-    showProgressDialog(context);
-    final tokenRequestProvider =
-        Provider.of<TokenRequestProvider>(context, listen: false);
-    final response = await tokenRequestProvider.requestToken(
-        widget.otpPageData.userName,
-        password,
-        //  encryptString("adsspay@321", secretKey, initialVector)!,
-        widget.otpPageData.parentAgentMobNum.replaceAll("+91", ""),
-        "Mob");
-    response.fold(
-      (error) {
-        Navigator.pop(context);
-        //print("Inside tokenGeneration error");
-        if (error == "User not found") {
-          Navigator.pop(context);
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                "Incorrect Username or Password",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 17),
-              ),
-              backgroundColor: Colors.red,
-            ),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                "Error: $error",
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 17),
-              ),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      },
-      (data) async {
-        //print("Inside tokenGeneration data");
-        //print("setTokenValue $data");
-        Navigator.pop(context);
-        await SharedPref.shared.setTokenValue(data.toString());
-        await SharedPref.shared.setLogin(true);
-        await SharedPref.shared
-            .setLoggedInUserType(widget.otpPageData.loggedInUserType);
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const GooglePinCodePage()));
-      },
-    );
-  }
-
-  Future<void> verifyOtp() async {
-    String otpVal = _controllers.map((controller) => controller.text).join();
-    if (otpVal.isNotEmpty) {
-      if (otpVal.length == 4) {
-        showProgressDialog(context);
-        final provider = Provider.of<OtpVerificationProvider>(
-          context,
-          listen: false,
-        );
-        final data =
-            await provider.verifyOtp(widget.otpPageData.subAgentmobNum, otpVal);
-        data.fold(
-          (error) {
-            //print("request error= ${error.message}");
-
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  "Error: ${error.message}",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 17,
-                  ),
-                ),
-                backgroundColor: Colors.red,
-              ),
-            );
-            Navigator.pop(context);
-          },
-          (data) async {
-            Navigator.pop(context);
-            if (data.message == "OTP Verified" ||
-                data.message == "OTP Verified (Play Store)") {
-              SharedPref.shared.setLogin(true);
-              if (widget.otpPageData.loggedInUserType == "NOT_AN_AGENT") {
-//print("loggedInUserType = ${widget.loggedInUserType}");
-                await SharedPref.shared.setTokenValue(data.toString());
-                await SharedPref.shared.setLogin(true);
-                await SharedPref.shared
-                    .setLoggedInUserType(widget.otpPageData.loggedInUserType);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const GooglePinCodePage()));
-              } else {
-                tokenGeneration(widget.otpPageData.password);
-              }
-
-              //    if (widget.tokenStatus == "MPIN_N") {
-              //      Navigator.push(
-              //          context,
-              //          MaterialPageRoute(
-              //              builder: (context) => const GooglePinCodePage()));
-              // /*     Navigator.push(
-              //          context,
-              //          MaterialPageRoute(
-              //              builder: (context) => OtpVerification(
-              //                mobNum: widget.subAgentmobNum,
-              //              )));*/
-              //    } else {
-              //      SharedPref.shared.setLogin(true);
-              //      tokenGeneration();
-              //
-              //    }
-            }
-            //print("Otp request stst : ${data.message}");
-          },
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              "ENTER 4 DIGIT NUMBER",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-                fontSize: 17,
-              ),
-            ),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            "ENTER OTP",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
-              fontSize: 17,
-            ),
-          ),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
-
-  Future<void> otpRequest() async {
-    // showProgressDialog(context);
-    final provider = Provider.of<OtpRequestProvider>(context, listen: false);
-    final data = await provider.requestOtp(widget.otpPageData.subAgentmobNum);
-    data.fold(
-      (error) {
-        // Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              "Error: $error",
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-                fontSize: 17,
-              ),
-            ),
-            backgroundColor: Colors.red,
-          ),
-        );
-      },
-      (data) {
-        //Navigator.pop(context);
-        //print("Otp request stst : ${data.message.toString()}");
-      },
-    );
-  }
+  String otpValue = "";
 
   void startTimer() {
-    if (printStatementStatus) {
-      printLog('Starting the timer');
-    }
-
     const oneSec = Duration(seconds: 1);
     _timer = Timer.periodic(oneSec, (Timer timer) {
       if (_start == 0) {
@@ -258,38 +43,9 @@ class _OtpRequestVerificationPageState
     });
   }
 
-  void showProgressDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Center(
-          child: SingleChildScrollView(
-            child: Dialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Padding(
-                padding: EdgeInsets.all(50),
-                child: Column(
-                  children: [
-                    CircularProgressIndicator(color: home2),
-                    SizedBox(height: 10),
-                    Text("Please wait....", style: TextStyle(fontSize: 17)),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   @override
   void initState() {
     startTimer();
-    otpRequest();
     super.initState();
   }
 
@@ -393,7 +149,7 @@ class _OtpRequestVerificationPageState
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: List.generate(
                       4,
-                      (index) => SizedBox(
+                          (index) => SizedBox(
                         width: 64,
                         height: 64,
                         child: TextField(
@@ -439,23 +195,22 @@ class _OtpRequestVerificationPageState
                     child: GestureDetector(
                       onTap: _start == 0
                           ? () {
-                              otpRequest();
+                        setState(() {
+                          _start = 120;
+                        });
+                        _timer = Timer.periodic(
+                          const Duration(seconds: 1),
+                              (timer) {
+                            if (_start == 0) {
+                              timer.cancel();
+                            } else {
                               setState(() {
-                                _start = 120;
+                                _start--;
                               });
-                              _timer = Timer.periodic(
-                                const Duration(seconds: 1),
-                                (timer) {
-                                  if (_start == 0) {
-                                    timer.cancel();
-                                  } else {
-                                    setState(() {
-                                      _start--;
-                                    });
-                                  }
-                                },
-                              );
                             }
+                          },
+                        );
+                      }
                           : null,
                       child: RichText(
                         text: TextSpan(
@@ -485,29 +240,13 @@ class _OtpRequestVerificationPageState
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        String otp = _controllers
-                            .map((controller) => controller.text)
-                            .join();
-                        if (otp.length == 4 &&
-                            widget.otpPageData.loggedInUserType == "MERCHANT") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      OnboardingScreen()));
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (BuildContext context) => MemberBucketTrackingDashboard()));
+                      onPressed: () => {
 
-                        } else if (otp.length == 4 &&
-                            widget.otpPageData.loggedInUserType != "MERCHANT") {
-                          verifyOtp();
-                        } else {
-                          EasyLoading.showToast("Enter a valid OTP");
-                        }
-                      },
+                        extractOtp(_controllers).length==4?
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>
+                            OnboardingScreen())):
+                        showInSnackBar(extractOtp(_controllers), context)
+                        },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryPink,
                         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -536,28 +275,3 @@ class _OtpRequestVerificationPageState
     );
   }
 }
-// String? encryptString(
-//     String textToEncrypt, String? secretKey, String? initialVector)
-// {
-//   if (textToEncrypt.isEmpty || secretKey == null || initialVector == null) {
-//     return null;
-//   }
-//
-//   try {
-//     final secretKeyBytes = Uint8List.fromList(secretKey.codeUnits);
-//     final iv = Uint8List.fromList(initialVector.codeUnits);
-//     final key = pc.KeyParameter(secretKeyBytes);
-//     final params = pc.ParametersWithIV(key, iv);
-//     final cipher = pc.CBCBlockCipher(pc.AESFastEngine());
-//     cipher.init(true, params);
-//
-//     final textBytes = Uint8List.fromList(textToEncrypt.codeUnits);
-//     final paddedText = padPKCS7(textBytes);
-//
-//     final encryptedBytes = cipher.process(paddedText);
-//
-//     return base64.encode(encryptedBytes);
-//   } catch (e) {
-//     return null;
-//   }
-// }

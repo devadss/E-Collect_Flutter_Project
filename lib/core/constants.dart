@@ -7,7 +7,8 @@ String dopBaseUrl = "";
 
 //const String uatTestMobileNumber = "+916553453221"; ///Currently this number is provided for appstore...
 const String uatTestMobileNumber = "+917663220991"; ///Currently this number is provided for appstore...
-
+final String termsUrl = "https://your-terms-url.com";
+final String privacyUrl = "https://your-privacy-url.com";
 const String port = ":8444/";
 const String agentIdLive = "ADSS20231011";
 const String agentIdUat = "AANVIN20230627";
