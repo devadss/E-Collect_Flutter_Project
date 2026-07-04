@@ -12,6 +12,7 @@ import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../core/utils.dart';
+import '../../../data/storage/shared_pref_helper.dart';
 
 class ReceiptPage extends StatefulWidget {
   final ReceiptDataModel receiptDataModel;
@@ -34,14 +35,25 @@ class _ReceiptPageState extends State<ReceiptPage> {
   bool isFirstPrintAttempt = true;
   bool isBackgroundScanComplete = false;
   String? lastConnectedMac;
+  String? subagentPhoneNumber;
   bool isTakingSS = false;
   bool showFlash = false;
   final ScreenshotController _screenshotController = ScreenshotController();
 
+  Future<void> loadSharedPrefs() async {
+    final subagentNum = await SharedPref().getSubAgentMobNum();
+
+    if (mounted) {
+      setState(() {
+        subagentPhoneNumber = subagentNum;
+      });
+    }
+  }
   @override
   void initState() {
     super.initState();
     _initializePrinter();
+    loadSharedPrefs();
     _startBackgroundBluetoothSetup();
   }
 
@@ -312,7 +324,8 @@ if (printStatementStatus){
       Customer ID: ${widget.receiptDataModel.custId}
       Customer Phone: ${widget.receiptDataModel.custPhone}
       Agent: ${widget.receiptDataModel.agentName}
-      Agent Phone: ${widget.receiptDataModel.agentPhone}
+   
+      Agent Phone: ${subagentPhoneNumber}
       Transaction Type: ${widget.receiptDataModel.txnType}
       '''
           : '''
@@ -323,7 +336,8 @@ if (printStatementStatus){
       Customer: ${widget.receiptDataModel.custName}
       Customer ID: ${widget.receiptDataModel.custId}
       Agent: ${widget.receiptDataModel.agentName}
-      Agent Phone: ${widget.receiptDataModel.agentPhone}
+ 
+      Agent Phone: ${subagentPhoneNumber}
       Transaction Type: ${widget.receiptDataModel.txnType}
       ''';
 
@@ -345,6 +359,18 @@ if (printStatementStatus){
   }
 
   Future<void> _printReceipt() async {
+    debugPrint("========== RECEIPT DATA ==========");
+    debugPrint("Bank Name   : ${widget.receiptDataModel.bankName}");
+    debugPrint("Transaction : ${widget.receiptDataModel.tranType}");
+    debugPrint("Txn ID      : ${widget.receiptDataModel.txnId}");
+    debugPrint("Amount      : ${widget.receiptDataModel.amount}");
+    debugPrint("Customer    : ${widget.receiptDataModel.custName}");
+    debugPrint("Customer Ph : ${widget.receiptDataModel.custPhone}");
+    debugPrint("Account No  : ${widget.receiptDataModel.accNo}");
+    debugPrint("Agent Name  : ${widget.receiptDataModel.agentName}");
+   // debugPrint("Agent Phone : ${widget.receiptDataModel.agentPhone}");
+    debugPrint("Agent Phone : ${subagentPhoneNumber}");
+    debugPrint("=================================");
     if (selectedMac == null) {
       _showPrinterSelectionDialog();
       return;
@@ -468,129 +494,7 @@ if (printStatementStatus){
       }
     }
   }
-/*  Future<void> _printReceipt() async {
-    // First print attempt - try to use background connection
-    if (_isFirstPrintAttempt) {
-      setState(() {
-        _isFirstPrintAttempt = false;
-        _isLoading = true;
-      });
 
-      // If we have a previously connected printer, try to use it
-      if (_lastConnectedMac != null && !_isConnected) {
-        await _connectToPrinter(_lastConnectedMac!);
-      }
-
-      // If still not connected, show printer selection
-      if (!_isConnected) {
-        _showPrinterSelectionDialog();
-        setState(() => _isLoading = false);
-        return;
-      }
-    }
-
-    // If no printer is selected, show selection dialog
-    if (selectedMac == null) {
-      _showPrinterSelectionDialog();
-      return;
-    }
-
-    setState(() {
-      _isLoading = true;
-      _lastError = '';
-    });
-
-    try {
-      // Check connection status
-      if (!_isConnected) {
-        await _connectToPrinter(selectedMac!);
-      }
-
-      // Generate QR code image
-      final qrBytes = await _generateQrCodeImage();
-
-      final List<int> bytes = [];
-      bytes.addAll([0x1B, 0x40]); // Reset printer
-      bytes.addAll([0x1B, 0x61, 0x01]); // Center alignment
-
-      // Header (double height + bold)
-      bytes.addAll([0x1B, 0x21, 0x30]); // Text size big
-      bytes.addAll("${widget.receiptDataModel.bankName}\n".codeUnits);
-      bytes.addAll([0x1B, 0x21, 0x00]); // Reset style
-
-      bytes.addAll("Transaction Receipt\n".codeUnits);
-      bytes.addAll("-----------------------------\n".codeUnits);
-
-      // Set alignment left for details
-      bytes.addAll([0x1B, 0x61, 0x00]);
-
-      // Current date and time
-      final now = DateTime.now();
-      final formattedDate = DateFormat('dd-MMM-yyyy').format(now);
-      final formattedTime = DateFormat('hh:mm a').format(now);
-
-      bytes.addAll("Date: $formattedDate\n".codeUnits);
-      bytes.addAll("Time: $formattedTime\n".codeUnits);
-      bytes.addAll("-----------------------------\n".codeUnits);
-
-      // Transaction Details
-      bytes.addAll([0x1B, 0x21, 0x08]); // Bold
-      bytes.addAll("Transaction Details:\n".codeUnits);
-      bytes.addAll([0x1B, 0x21, 0x00]); // Reset
-
-      bytes.addAll("Txn Type:         ${widget.receiptDataModel.tranType.contains("CASH")?"CASH":"UPI"}\n".codeUnits);
-      bytes.addAll("Amount:           Rs.${widget.receiptDataModel.amount}\n".codeUnits);
-      bytes.addAll("Status:           Success\n".codeUnits);
-      widget.receiptDataModel.txnId.isNotEmpty
-          ? bytes.addAll("Txn ID:           ${widget.receiptDataModel.txnId}\n".codeUnits)
-          : "";
-      bytes.addAll("Customer:         ${widget.receiptDataModel.custName}\n".codeUnits);
-      widget.receiptDataModel.custPhone.isNotEmpty
-          ? bytes.addAll("Customer Phone:   ${widget.receiptDataModel.custPhone}\n".codeUnits)
-          : "";
-      bytes.addAll("Account No:            ${widget.receiptDataModel.accNo}\n".codeUnits);
-      bytes.addAll("Agent:            ${widget.receiptDataModel.agentName}\n".codeUnits);
-      bytes.addAll("Agent Phone:      ${widget.receiptDataModel.agentPhone}\n".codeUnits);
-      bytes.addAll("-----------------------------\n".codeUnits);
-
-      // Print QR Code
-      bytes.addAll([0x1B, 0x61, 0x01]); // Center alignment
-
-      // Print the QR code image
-      await PrintBluetoothThermal.writeBytes(bytes); // Print text first
-      // await PrintBluetoothThermal.writeBytes(qrBytes); // Then print QR code
-
-      // Continue with footer
-      final List<int> footerBytes = [];
-      footerBytes.addAll("\n-----------------------------\n".codeUnits);
-      footerBytes.addAll([0x1B, 0x61, 0x01]); // Center alignment
-      footerBytes.addAll("Thank you for banking with us!\n".codeUnits);
-
-      // Feed paper and cut
-      footerBytes.addAll([0x1D, 0x56, 0x41, 0x10]); // Partial cut
-      footerBytes.addAll([0x1B, 0x64, 0x03]); // Feed 3 lines
-
-      await PrintBluetoothThermal.writeBytes(footerBytes);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Receipt printed successfully!")),
-      );
-    } on TimeoutException {
-      setState(() => _lastError = 'Print job timed out');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Print job timed out")),
-      );
-    } catch (e) {
-      setState(() => _lastError = e.toString());
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Print failed: ${e.toString()}")),
-      );
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
-    }
-  }*/
 
   void _showPrinterSelectionDialog() {
     showModalBottomSheet(
@@ -1742,7 +1646,8 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
 
                           _buildDetailRow(
                             "Agent Phone",
-                            widget.receiptDataModel.agentPhone,
+                          //  widget.receiptDataModel.agentPhone,
+                            subagentPhoneNumber.toString(),
                           ),
 
                           if (widget.receiptDataModel.custPhone.isNotEmpty)

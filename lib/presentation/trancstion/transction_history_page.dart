@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../core/colors.dart';
 import '../../core/utils.dart';
+import '../../data/storage/shared_pref_helper.dart';
 import '../profile/widgets/recipect_page.dart';
 
 class TransactionHistoryPage extends StatefulWidget {
@@ -24,13 +25,23 @@ class TransactionHistoryPage extends StatefulWidget {
 
 class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
   bool isLoading = true;
+  String? subagentPhoneNumber;
 
+  Future<void> loadSharedPrefs() async {
+    final subagentNum = await SharedPref().getSubAgentMobNum();
+
+    if (mounted) {
+      setState(() {
+        subagentPhoneNumber = subagentNum;
+      });
+    }
+  }
   @override
   void initState() {
     if(printStatementStatus ){
       print("status : ${widget.transactionHistoryModel.paymentStatus}");
     }
-
+    loadSharedPrefs();
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
       setState(() => isLoading = false);
@@ -453,11 +464,8 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
               widget.transactionHistoryModel.agentName),
           _buildDetailItem(
             "Agent Phone",
-            widget.transactionHistoryModel.agentPhone,
-            // widget.transactionHistoryModel.agentTransaction.linkPurpose
-            //     .toString()
-            //     .replaceAll("LinkPurpose.", "")
-            //     .replaceAll("_", " "),
+           // widget.transactionHistoryModel.agentPhone,
+              subagentPhoneNumber.toString()
           ),
         ],
       ),
