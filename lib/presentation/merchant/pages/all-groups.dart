@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import '../bucket/creation/merchant_bucket_creation.dart';
 
 class AllGroupsPage extends StatefulWidget {

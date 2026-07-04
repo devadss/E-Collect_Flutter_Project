@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../../../../core/colors.dart';
@@ -38,6 +40,25 @@ class _MerchantBucketCreationPageState
     '2 weeks before',
     '1 month before',
   ];
+  void updateEmi(Member member) {
+    final amount = double.tryParse(member.amountController.text) ?? 0;
+    final interest = double.tryParse(member.interestController.text) ?? 0;
+    final tenure = int.tryParse(member.tenureController.text) ?? 0;
+
+    if (amount > 0 && interest > 0 && tenure > 0) {
+      final emi = calculateEmi(amount, interest, tenure);
+      member.emiController.text = emi.toStringAsFixed(2);
+    } else {
+      member.emiController.clear();
+    }
+  }
+  double calculateEmi(double principleAmount, double interestRate, int tenure) {
+    var monthlyInterest = (interestRate*0.01) / 12;
+    var emi = (principleAmount * monthlyInterest *
+        pow((1 + monthlyInterest), tenure))
+        / ((pow((1 + monthlyInterest), tenure)) - 1);
+    return emi;
+  }
 
   @override
   void dispose() {
@@ -85,6 +106,12 @@ class _MerchantBucketCreationPageState
   }
 
   void _submitGroup() {
+    var emi = calculateEmi(
+        double.parse(members[0].amountController.text),
+        double.parse(members[0].interestController.text),
+        int.parse(members[0].tenureController.text));
+    print(emi);
+    print("Total EMI : ${(emi)*int.parse(members[0].tenureController.text)-int.parse(members[0].amountController.text)}");
     // Validate
     if (groupNameController.text.isEmpty) {
       _showSnackBar('Please enter group name');
@@ -210,14 +237,15 @@ class _MerchantBucketCreationPageState
                       icon: Icons.group,
                     ),
                     const SizedBox(height: 12),
-                    isLoanEntity==false?
-                    _buildTextField(
-                      controller: groupAmountController,
-                      hintText: 'Enter default amount',
-                      label: 'Default Amount',
-                      icon: Icons.currency_rupee,
-                      keyboardType: TextInputType.number,
-                    ):SizedBox.shrink(),
+                    isLoanEntity == false
+                        ? _buildTextField(
+                            controller: groupAmountController,
+                            hintText: 'Enter default amount',
+                            label: 'Default Amount',
+                            icon: Icons.currency_rupee,
+                            keyboardType: TextInputType.number,
+                          )
+                        : SizedBox.shrink(),
                   ],
                 ),
               ),
@@ -660,7 +688,41 @@ class Member {
   void dispose() {
     nameController.dispose();
     amountController.dispose();
+    interestController.dispose();
+    tenureController.dispose();
+    emiController.dispose();
     phoneController.dispose();
     emailController.dispose();
+  }
+  Member() {
+    amountController.addListener(_updateEmi);
+    interestController.addListener(_updateEmi);
+    tenureController.addListener(_updateEmi);
+  }
+
+  void _updateEmi() {
+    final amount = double.tryParse(amountController.text) ?? 0;
+    final interest = double.tryParse(interestController.text) ?? 0;
+    final tenure = int.tryParse(tenureController.text) ?? 0;
+
+    if (amount > 0 && interest > 0 && tenure > 0) {
+      var monthlyInterest = (interest*0.01) / 12;
+      var emi = (amount * monthlyInterest *
+          pow((1 + monthlyInterest), tenure))
+          / ((pow((1 + monthlyInterest), tenure)) - 1);
+
+      emiController.text = emi.toString();
+    } else {
+      emiController.clear();
+    }
+  }
+    TextEditingController calculateEmiNew(double principleAmount, double interestRate, int tenure) {
+    var monthlyInterest = (interestRate*0.01) / 12;
+    var emi = (principleAmount * monthlyInterest *
+        pow((1 + monthlyInterest), tenure))
+        / ((pow((1 + monthlyInterest), tenure)) - 1);
+
+    emiController.text = emi.toString();
+    return emiController;
   }
 }

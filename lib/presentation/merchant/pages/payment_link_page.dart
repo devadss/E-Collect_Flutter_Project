@@ -371,8 +371,8 @@ class _SummaryCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const receivedAmount = "\₹800.00";
-    const dueAmount = "\₹690.00";
+    const receivedAmount = "₹ 800.00";
+    const dueAmount = "₹ 690.00";
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Row(
