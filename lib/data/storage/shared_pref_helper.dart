@@ -153,6 +153,15 @@ class SharedPref {
     return prefs.getString(SharedPrefKeys.parent_username) ?? '';
   }
 
+  Future<Future<bool>> setBusinessCategory(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.selectedBusinessCategory, value);
+  }
+  Future<String> getBusinessCategory() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.selectedBusinessCategory) ?? '';
+  }
+
   Future<Object> setLoggedInUserType(String value)async{
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.loggedInUserType, value) ?? '';

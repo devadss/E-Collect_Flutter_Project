@@ -1416,6 +1416,7 @@
 import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import '../../../data/storage/shared_pref_helper.dart';
 import '../bottom_nav/bottom_nav_bar.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -1499,8 +1500,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
   }
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
+      print(selectedBusinessCategory);
+
+      await SharedPref.shared.setBusinessCategory(selectedBusinessCategory.toString());
       // Log mandatory fields collected
       print('Onboarding completed with mandatory fields only');
 
@@ -1763,22 +1767,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             const SizedBox(height: 16),
 
             // Merchant Legal Name
-            _buildTextField(
-              controller: merchantLegalNameController,
-              label: 'Merchant Legal Name (Optional)',
-              hint: 'Enter legal name if different',
-              icon: Icons.person_outline,
-              isRequired: false,
-            ),
-
-            // Website URL
-            _buildTextField(
-              controller: websiteUrlController,
-              label: 'Website URL (Optional)',
-              hint: 'https://example.com',
-              icon: Icons.web,
-              isRequired: false,
-            ),
+            // _buildTextField(
+            //   controller: merchantLegalNameController,
+            //   label: 'Merchant Legal Name (Optional)',
+            //   hint: 'Enter legal name if different',
+            //   icon: Icons.person_outline,
+            //   isRequired: false,
+            // ),
+            //
+            // // Website URL
+            // _buildTextField(
+            //   controller: websiteUrlController,
+            //   label: 'Website URL (Optional)',
+            //   hint: 'https://example.com',
+            //   icon: Icons.web,
+            //   isRequired: false,
+            // ),
 
             // GST
             _buildTextField(
@@ -1799,73 +1803,73 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
 
             // Expected Volume & Transactions
-            const SizedBox(height: 8),
-            const Text(
-              'Business Projections',
-              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
-            ),
-            const SizedBox(height: 8),
-
-            _buildTextField(
-              controller: monthlyVolumeController,
-              label: 'Monthly Expected Volume (Optional)',
-              hint: 'Enter expected monthly volume',
-              icon: Icons.currency_rupee,
-              isRequired: false,
-              keyboardType: TextInputType.number,
-            ),
-
-            _buildTextField(
-              controller: monthlyTransactionsController,
-              label: 'Monthly Expected Transactions (Optional)',
-              hint: 'Enter expected number of transactions',
-              icon: Icons.transfer_within_a_station,
-              isRequired: false,
-              keyboardType: TextInputType.number,
-            ),
-
-            _buildTextField(
-              controller: averageTicketSizeController,
-              label: 'Average Ticket Size',
-              hint: 'Auto-calculated from above values',
-              icon: Icons.calculate,
-              readOnly: true,
-              isRequired: false,
-            ),
+            // const SizedBox(height: 8),
+            // const Text(
+            //   'Business Projections',
+            //   style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+            // ),
+            // const SizedBox(height: 8),
+            //
+            // _buildTextField(
+            //   controller: monthlyVolumeController,
+            //   label: 'Monthly Expected Volume (Optional)',
+            //   hint: 'Enter expected monthly volume',
+            //   icon: Icons.currency_rupee,
+            //   isRequired: false,
+            //   keyboardType: TextInputType.number,
+            // ),
+            //
+            // _buildTextField(
+            //   controller: monthlyTransactionsController,
+            //   label: 'Monthly Expected Transactions (Optional)',
+            //   hint: 'Enter expected number of transactions',
+            //   icon: Icons.transfer_within_a_station,
+            //   isRequired: false,
+            //   keyboardType: TextInputType.number,
+            // ),
+            //
+            // _buildTextField(
+            //   controller: averageTicketSizeController,
+            //   label: 'Average Ticket Size',
+            //   hint: 'Auto-calculated from above values',
+            //   icon: Icons.calculate,
+            //   readOnly: true,
+            //   isRequired: false,
+            // ),
 
             // Secondary Contact Details (Optional)
-            const SizedBox(height: 16),
-            const Text(
-              'Secondary Contact / Authorized Signatory (Optional)',
-              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
-            ),
-            const SizedBox(height: 8),
-
-            _buildTextField(
-              controller: secondaryContactNameController,
-              label: 'Name (Optional)',
-              hint: 'Enter contact person name',
-              icon: Icons.person_add,
-              isRequired: false,
-            ),
-
-            _buildTextField(
-              controller: secondaryContactPhoneController,
-              label: 'Phone (Optional)',
-              hint: 'Enter phone number',
-              icon: Icons.phone_android,
-              isRequired: false,
-              keyboardType: TextInputType.phone,
-            ),
-
-            _buildTextField(
-              controller: secondaryContactEmailController,
-              label: 'Email (Optional)',
-              hint: 'Enter email address',
-              icon: Icons.email_outlined,
-              isRequired: false,
-              keyboardType: TextInputType.emailAddress,
-            ),
+            // const SizedBox(height: 16),
+            // const Text(
+            //   'Secondary Contact / Authorized Signatory (Optional)',
+            //   style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+            // ),
+            // const SizedBox(height: 8),
+            //
+            // _buildTextField(
+            //   controller: secondaryContactNameController,
+            //   label: 'Name (Optional)',
+            //   hint: 'Enter contact person name',
+            //   icon: Icons.person_add,
+            //   isRequired: false,
+            // ),
+            //
+            // _buildTextField(
+            //   controller: secondaryContactPhoneController,
+            //   label: 'Phone (Optional)',
+            //   hint: 'Enter phone number',
+            //   icon: Icons.phone_android,
+            //   isRequired: false,
+            //   keyboardType: TextInputType.phone,
+            // ),
+            //
+            // _buildTextField(
+            //   controller: secondaryContactEmailController,
+            //   label: 'Email (Optional)',
+            //   hint: 'Enter email address',
+            //   icon: Icons.email_outlined,
+            //   isRequired: false,
+            //   keyboardType: TextInputType.emailAddress,
+            // ),
           ],
         ),
       ),

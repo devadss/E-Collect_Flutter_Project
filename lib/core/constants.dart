@@ -98,6 +98,8 @@ AlertDialog exitAlert(BuildContext context){
 
 class SharedPrefKeys {
   static const String guestCartCount = "GET_CART_COUNT";
+  static const String selectedBusinessCategory = "SELECTED_BUSINESS_CAT";
+  static const String eCollectName = "E_COLLECT_NAME";
   static const String userId = "USER_ID";
   static const String token = "TOKEN";
   static const String dob = "DOB";

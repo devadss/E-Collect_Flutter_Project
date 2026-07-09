@@ -188,7 +188,7 @@ class PaymentLinkHomePageMerchant extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const Text(
-            "Payment Links",
+            "Transactions",
             style: TextStyle(
               fontWeight: FontWeight.w800,
               color: Colors.white,
