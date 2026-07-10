@@ -217,11 +217,7 @@ class PaymentLinkHomePageMerchant extends StatelessWidget {
       ),
       flexibleSpace: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFFEA307B), Color(0xFF470952)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          color: Color(0xFFEA307B)
         ),
       ),
       automaticallyImplyLeading: false,

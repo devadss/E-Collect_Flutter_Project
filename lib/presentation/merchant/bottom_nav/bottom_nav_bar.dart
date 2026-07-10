@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../pages/all-groups.dart';
 import '../pages/group_home_page.dart';
 import '../pages/payment_link_page.dart';
+import '../pages/settlement_page.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
@@ -14,7 +15,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
   final pages = [
     const GroupHomePageUI(),
     const AllGroupsPage(),
-    const PaymentLinkHomePageMerchant()
+    const PaymentLinkHomePageMerchant(),
+    const SettlementPage(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -89,6 +91,17 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 ),
               ),
               label: 'History',
+            ),
+            BottomNavigationBarItem(
+              icon: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.only(bottom: 2),
+                child: Icon(
+                  _selectedIndex == 2 ? Icons.transfer_within_a_station_sharp : Icons.transfer_within_a_station,
+                  size: 24,
+                ),
+              ),
+              label: 'Settlement',
             ),
           ],
         ),
