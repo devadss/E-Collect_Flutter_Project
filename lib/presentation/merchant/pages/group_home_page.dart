@@ -1,5 +1,6 @@
 import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:graphic/graphic.dart';
 import 'package:intl/intl.dart';
 
 class GroupHomePageUI extends StatefulWidget {
@@ -17,6 +18,27 @@ class _GroupHomePageUIState extends State<GroupHomePageUI> {
   final int availableMembers = 25;
   final int selectedMonthIndex = DateTime.now().month - 1;
   final int currentYear = DateTime.now().year;
+  final data = [
+    {
+      'month': 'Jan',
+      'settlement': 50000,
+      'paid': 42000,
+      'due': 8000,
+    },
+    {
+      'month': 'Feb',
+      'settlement': 48000,
+      'paid': 45000,
+      'due': 3000,
+    },
+    {
+      'month': 'Mar',
+      'settlement': 53000,
+      'paid': 47000,
+      'due': 6000,
+    },
+  ];
+
   final List<String> months = [
     'Jan','Feb','Mar','Apr','May','Jun',
     'Jul','Aug','Sep','Oct','Nov','Dec'
@@ -85,51 +107,130 @@ class _GroupHomePageUIState extends State<GroupHomePageUI> {
 
               /// 🔹 Monthly Financial Summary (shown only when verified)
               if (isVerified) ...[
-                Text(
-                  "${months[selectedMonthIndex]} $currentYear Financials",
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
+                Container(
+                  height: 340,
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      // Legend
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _legendItem(Colors.blue, "Settlement"),
+                          const SizedBox(width: 20),
+                          _legendItem(Colors.green, "Paid"),
+                          const SizedBox(width: 20),
+                          _legendItem(Colors.red, "Due"),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Chart
+                      Expanded(
+                        child: Chart(
+                          data: data,
+                          variables: {
+                            'month': Variable(
+                              accessor: (Map map) => map['month'].toString(),
+                            ),
+                            'settlement': Variable(
+                              accessor: (Map map) => map['settlement'] as num,
+                            ),
+                            'paid': Variable(
+                              accessor: (Map map) => map['paid'] as num,
+                            ),
+                            'due': Variable(
+                              accessor: (Map map) => map['due'] as num,
+                            ),
+                          },
+                          marks: [
+                            LineMark(
+                              position: Varset('month') * Varset('settlement'),
+                              color: ColorEncode(value: Colors.blue),
+                            ),
+                            PointMark(
+                              position: Varset('month') * Varset('settlement'),
+                              color: ColorEncode(value: Colors.blue),
+                            ),
+                            LineMark(
+                              position: Varset('month') * Varset('paid'),
+                              color: ColorEncode(value: Colors.green),
+                            ),
+                            PointMark(
+                              position: Varset('month') * Varset('paid'),
+                              color: ColorEncode(value: Colors.green),
+                            ),
+                            LineMark(
+                              position: Varset('month') * Varset('paid'),
+                              color: ColorEncode(value: Colors.green),
+                            ),
+                            PointMark(
+                              position: Varset('month') * Varset('paid'),
+                              color: ColorEncode(value: Colors.green),
+                            ),
+                            LineMark(
+                              position: Varset('month') * Varset('due'),
+                              color: ColorEncode(value: Colors.red),
+                            ),
+                            PointMark(
+                              position: Varset('month') * Varset('due'),
+                              color: ColorEncode(value: Colors.red),
+                            ),
+                          ],
+                          axes: [
+                            Defaults.horizontalAxis,
+                            Defaults.verticalAxis,
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 16),
-
-                GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 2,
-                  childAspectRatio: 1.15,
-                  crossAxisSpacing: 14,
-                  mainAxisSpacing: 14,
-                  children: [
-                    _modernStatCard(
-                      title: "Total Collected",
-                      value: "₹${monthData["collected"]}",
-                      color: Colors.teal,
-                      icon: Icons.arrow_downward,
-                    ),
-                    _modernStatCard(
-                      title: "Pending Dues",
-                      value: "₹${monthData["due"]}",
-                      color: Colors.orange,
-                      icon: Icons.arrow_upward,
-                    ),
-                    _modernStatCard(
-                      title: "Active Groups",
-                      value: activeGroups.toString(),
-                      color: const Color(0xFF6C63FF),
-                      icon: Icons.group,
-                    ),
-                    _modernStatCard(
-                      title: "Active Members",
-                      value: availableMembers.toString(),
-                      color: const Color(0xFFEA307B),
-                      icon: Icons.groups,
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 24),
+                )
+                // Text(
+                //   "${months[selectedMonthIndex]} $currentYear Financials",
+                //   style: const TextStyle(
+                //     fontSize: 18,
+                //     fontWeight: FontWeight.w700,
+                //   ),
+                // ),
+                // const SizedBox(height: 16),
+                //
+                // GridView.count(
+                //   shrinkWrap: true,
+                //   physics: const NeverScrollableScrollPhysics(),
+                //   crossAxisCount: 2,
+                //   childAspectRatio: 1.15,
+                //   crossAxisSpacing: 14,
+                //   mainAxisSpacing: 14,
+                //   children: [
+                //     _modernStatCard(
+                //       title: "Total Collected",
+                //       value: "₹${monthData["collected"]}",
+                //       color: Colors.teal,
+                //       icon: Icons.arrow_downward,
+                //     ),
+                //     _modernStatCard(
+                //       title: "Pending Dues",
+                //       value: "₹${monthData["due"]}",
+                //       color: Colors.orange,
+                //       icon: Icons.arrow_upward,
+                //     ),
+                //     _modernStatCard(
+                //       title: "Active Groups",
+                //       value: activeGroups.toString(),
+                //       color: const Color(0xFF6C63FF),
+                //       icon: Icons.group,
+                //     ),
+                //     _modernStatCard(
+                //       title: "Active Members",
+                //       value: availableMembers.toString(),
+                //       color: const Color(0xFFEA307B),
+                //       icon: Icons.groups,
+                //     ),
+                //   ],
+                // ),
+                //
+                // const SizedBox(height: 24),
               ],
 
               /// 🔹 Cumulative Overview (shown only when verified)
@@ -308,7 +409,29 @@ class _GroupHomePageUIState extends State<GroupHomePageUI> {
       ),
     );
   }
-
+  Widget _legendItem(Color color, String label) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 6),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
   Widget _buildCumulativeOverview(int totalCollected, int totalDue) {
     return Container(
       padding: const EdgeInsets.all(20),
