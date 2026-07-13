@@ -1,21 +1,12 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/colors.dart';
 import '../../../../data/storage/shared_pref_helper.dart';
-
 enum ReminderType {
   relative,
   custom,
-}
-
-// View mode for member list display
-enum ViewMode {
-  card,
-  compact,
-  grid,
 }
 
 class MerchantBucketCreationPage extends StatefulWidget {
@@ -61,9 +52,6 @@ class _MerchantBucketCreationPageState
   // Member management
   List<Member> members = [];
   bool isLoanEntity = true;
-
-  // View mode (card / compact / grid)
-  ViewMode currentViewMode = ViewMode.card;
 
   void updateEmi(Member member) {
     final amount = double.tryParse(member.amountController.text) ?? 0;
@@ -319,11 +307,6 @@ class _MerchantBucketCreationPageState
                     ),
                     const SizedBox(height: 12),
 
-                    // View mode toggle
-                    _buildViewContent(),
-
-                    const SizedBox(height: 16),
-
                     // Member list
                     if (members.isEmpty)
                       Container(
@@ -353,7 +336,16 @@ class _MerchantBucketCreationPageState
                         ),
                       )
                     else
-                      _buildMemberListView(members),
+                      ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: members.length,
+                        separatorBuilder: (context, index) =>
+                        const Divider(height: 16),
+                        itemBuilder: (context, index) {
+                          return _buildMemberCard(index, members[index]);
+                        },
+                      ),
                   ],
                 ),
               ),
@@ -552,215 +544,6 @@ class _MerchantBucketCreationPageState
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildViewContent() {
-    return Container(
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildViewOption(Icons.view_agenda, 'Card', ViewMode.card),
-          _buildViewOption(Icons.view_list, 'Compact', ViewMode.compact),
-          _buildViewOption(Icons.grid_view, 'Grid', ViewMode.grid),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildViewOption(IconData icon, String label, ViewMode mode) {
-    final isSelected = currentViewMode == mode;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          setState(() {
-            currentViewMode = mode;
-          });
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            color: isSelected ? Colors.white : Colors.transparent,
-            borderRadius: BorderRadius.circular(6),
-            boxShadow: isSelected
-                ? [
-              BoxShadow(
-                color: Colors.grey.shade300,
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ]
-                : [],
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 18,
-                color: isSelected ? const Color(0xFF1A237E) : Colors.grey.shade600,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                  color: isSelected ? const Color(0xFF1A237E) : Colors.grey.shade600,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMemberListView(List<Member> displayMembers) {
-    switch (currentViewMode) {
-      case ViewMode.card:
-        return ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: displayMembers.length,
-          separatorBuilder: (context, index) => const Divider(height: 16),
-          itemBuilder: (context, index) {
-            return _buildMemberCard(index, displayMembers[index]);
-          },
-        );
-      case ViewMode.compact:
-        return ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: displayMembers.length,
-          separatorBuilder: (context, index) => const Divider(height: 8),
-          itemBuilder: (context, index) {
-            return _buildCompactMemberCard(index, displayMembers[index]);
-          },
-        );
-      case ViewMode.grid:
-        return GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 8,
-            mainAxisSpacing: 8,
-            childAspectRatio: 1.2,
-          ),
-          itemCount: displayMembers.length,
-          itemBuilder: (context, index) {
-            return _buildGridMemberCard(index, displayMembers[index]);
-          },
-        );
-      default:
-        return const SizedBox.shrink();
-    }
-  }
-
-  Widget _buildCompactMemberCard(int index, Member member) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            backgroundColor: const Color(0xFF1A237E),
-            radius: 16,
-            child: Text(
-              (index + 1).toString(),
-              style: const TextStyle(color: Colors.white, fontSize: 12),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  member.nameController.text.isEmpty ? 'Member ${index + 1}' : member.nameController.text,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 13,
-                  ),
-                ),
-                Text(
-                  '₹${member.amountController.text.isEmpty ? '0' : member.amountController.text}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          IconButton(
-            onPressed: () => _removeMember(index),
-            icon: Icon(Icons.delete_outline, color: Colors.red.shade400, size: 18),
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildGridMemberCard(int index, Member member) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircleAvatar(
-            backgroundColor: const Color(0xFF1A237E),
-            radius: 20,
-            child: Text(
-              (index + 1).toString(),
-              style: const TextStyle(color: Colors.white, fontSize: 14),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            member.nameController.text.isEmpty ? 'Member ${index + 1}' : member.nameController.text,
-            style: const TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 13,
-            ),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          Text(
-            '₹${member.amountController.text.isEmpty ? '0' : member.amountController.text}',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey.shade600,
-            ),
-          ),
-          const SizedBox(height: 4),
-          IconButton(
-            onPressed: () => _removeMember(index),
-            icon: Icon(Icons.delete_outline, color: Colors.red.shade400, size: 18),
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-          ),
-        ],
       ),
     );
   }
