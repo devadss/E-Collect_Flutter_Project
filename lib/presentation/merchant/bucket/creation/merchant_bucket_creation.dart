@@ -41,10 +41,12 @@ class _MerchantBucketCreationPageState
   Duration _playPosition = Duration.zero;
   Duration _playDuration = Duration.zero;
 
+
   final TextEditingController groupNameController = TextEditingController();
   final TextEditingController groupAmountController = TextEditingController();
   final TextEditingController dueDateController = TextEditingController();
   final TextEditingController reminderDateController = TextEditingController();
+  final TextEditingController debitDateController = TextEditingController();
   final List<Map<String, dynamic>> items = [
     {"title": "WHATS APP", "checked": false},
     {"title": "SMS", "checked": true},
@@ -742,7 +744,7 @@ class _MerchantBucketCreationPageState
                                 _isRecording ? Colors.red : Colors.blue,
                                 onPressed:
                                 _isRecording ? stopRecording : startRecording,
-                                child: Icon(
+                                child: Icon(color: Colors.white,
                                   _isRecording ? Icons.stop : Icons.mic,
                                 ),
                               ),
@@ -848,7 +850,7 @@ class _MerchantBucketCreationPageState
               _businessCat == "Chitty"?
               Expanded(
                 child: _buildSimpleTextField(
-                  controller: member.amountController,
+                  controller: member.chittyAmountController,
                   hintText: 'Enter Chitty Amount',
                   label: 'Chitty Amount',
                   keyboardType: TextInputType.number,
@@ -871,12 +873,36 @@ class _MerchantBucketCreationPageState
             children: [
               Expanded(
                 child: _buildSimpleTextField(
-                  controller: member.amountController,
+                  controller: member.chittyNumberController,
                   hintText: 'Enter Chitty Number',
                   label: 'Chitty Number',
                   keyboardType: TextInputType.number,
                 ),
               ),
+              SizedBox(width: 5,),
+              Expanded(
+                child: _buildSimpleTextField(
+                  controller: member.chittyTenureController,
+                  hintText: 'Enter Chitty Tenure',
+                  label: 'Chitty Tenure',
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+            ],
+          ):SizedBox.shrink(),
+          const SizedBox(height: 8),
+          _businessCat == "Chitty"?
+          Row(
+            children: [
+              Expanded(
+                child: _buildSimpleTextField(
+                  controller: member.chittyMonthlyInstallmentController,
+                  hintText: 'Enter Monthly Installment',
+                  label: 'Monthly Installment',
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+
             ],
           ):SizedBox.shrink(),
           _businessCat == "Chitty"?SizedBox.shrink(): const SizedBox(height: 8),
@@ -908,14 +934,14 @@ class _MerchantBucketCreationPageState
             children: [
               Expanded(
                 child: _buildSimpleTextField(
-                 controller: member.interestController,
+                 controller: member.accNoController,
                   hintText: 'Loan Account Number',
                   label: 'A/C No',
                 ),
               ),
             ],
           ):SizedBox.shrink(),
-        //  const SizedBox(height: 8),
+         const SizedBox(height: 8),
           isLoanEntity == true
               ? _buildSimpleTextField(
             controller: member.emiController,
@@ -946,6 +972,64 @@ class _MerchantBucketCreationPageState
             ],
           ),
           const SizedBox(height: 10),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(textAlign: TextAlign.start,"Auto Debit", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w700),),
+              Row(
+                children: [
+                  Checkbox(value: member.isAutoDebitEnabled, onChanged: (value){
+                    setState(() {
+                      member.isAutoDebitEnabled = value!;
+                    });
+
+                  }
+
+                  ),
+                  Expanded(child: Text("Enable Auto Debit", style: TextStyle(fontSize: 12),))
+                ],
+              ),
+              member.isAutoDebitEnabled?
+              _buildSimpleTextField(
+                controller: member.autoDebitAccNoController,
+                hintText: "Customer's account number",
+                label: "Customer's account number",
+                keyboardType: TextInputType.emailAddress,
+              ):SizedBox.shrink(),
+            ],
+          ),
+          SizedBox(height: 8,),
+          member.isAutoDebitEnabled?
+          Row(children: [
+            Text("Debit date"),
+            SizedBox(width: 10,),
+            Expanded(
+              child: _buildDateField(
+                controller: debitDateController,
+                label: '',
+                hintText: 'Debit date',
+                icon: Icons.auto_mode_outlined,
+                onTap: () => _selectDate(context, debitDateController),
+              ),
+            ),
+          ],):SizedBox.shrink(),
+          member.isAutoDebitEnabled?
+          Row(
+            children: [
+              Checkbox(value: member.isAutoDebitAuthorised, onChanged: (value){
+                setState(() {
+                  member.isAutoDebitAuthorised = value!;
+                });
+              
+              }
+              
+              ),
+              Expanded(child: Text("I authorize automatic deduction of my monthly installment", style: TextStyle(fontSize: 10),))
+            ],
+          ):SizedBox.shrink()
+
+
           // ElevatedButton(
           //   style: ElevatedButton.styleFrom(
           //       backgroundColor: home1,
@@ -1075,11 +1159,26 @@ class Member {
   final TextEditingController interestController = TextEditingController();
   final TextEditingController tenureController = TextEditingController();
   final TextEditingController emiController = TextEditingController();
+  final TextEditingController accNoController = TextEditingController();
+  final TextEditingController autoDebitAccNoController = TextEditingController();
+  final TextEditingController chittyMonthlyInstallmentController = TextEditingController();
+  final TextEditingController chittyNumberController = TextEditingController();
+  final TextEditingController chittyTenureController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
+  final TextEditingController loanAmountController = TextEditingController();
+  final TextEditingController chittyAmountController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-
+  bool isAutoDebitEnabled = false;
+  bool isAutoDebitAuthorised = false;
   void dispose() {
+    accNoController.dispose();
+    autoDebitAccNoController.dispose();
+    chittyMonthlyInstallmentController.dispose();
+    chittyTenureController.dispose();
+    chittyNumberController.dispose();
+    loanAmountController.dispose();
+    chittyAmountController.dispose();
     nameController.dispose();
     amountController.dispose();
     interestController.dispose();
