@@ -1,7 +1,10 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../../core/colors.dart';
 import '../../../../data/storage/shared_pref_helper.dart';
 enum ReminderType {
@@ -27,6 +30,17 @@ class MerchantBucketCreationPage extends StatefulWidget {
 class _MerchantBucketCreationPageState
     extends State<MerchantBucketCreationPage> {
   // Controllers for group info
+  final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
+  final FlutterSoundPlayer _player = FlutterSoundPlayer();
+  bool _isRecorderReady = false;
+  bool _isRecording = false;
+  bool _isPlaying = false;
+
+  String? _filePath;
+  Duration _recordDuration = Duration.zero;
+  Duration _playPosition = Duration.zero;
+  Duration _playDuration = Duration.zero;
+
   final TextEditingController groupNameController = TextEditingController();
   final TextEditingController groupAmountController = TextEditingController();
   final TextEditingController dueDateController = TextEditingController();
@@ -65,10 +79,104 @@ class _MerchantBucketCreationPageState
       member.emiController.clear();
     }
   }
+  Future<String> _getFilePath() async {
+    final dir = await getApplicationDocumentsDirectory();
+    return "${dir.path}/recording.aac";
+  }
+  Future<void> _init() async {
+    final mic = await Permission.microphone.request();
+    await Permission.storage.request(); // for Android
+
+    if (!mic.isGranted) return;
+
+    await _recorder.openRecorder();
+    await _player.openPlayer();
+
+    // Update every 100 ms
+    await _recorder.setSubscriptionDuration(
+      const Duration(milliseconds: 100),
+    );
+
+    await _player.setSubscriptionDuration(
+      const Duration(milliseconds: 100),
+    );
+
+    // Recording progress
+    _recorder.onProgress?.listen((event) {
+      setState(() {
+        _recordDuration = event.duration;
+      });
+    });
+
+    // Playback progress
+    _player.onProgress?.listen((event) {
+      setState(() {
+        _playPosition = event.position;
+        _playDuration = event.duration;
+      });
+    });
+
+    _isRecorderReady = true;
+    setState(() {});
+  }
+  Future<void> startRecording() async {
+    try {
+      if (!_isRecorderReady) return;
+
+      _filePath = await _getFilePath();
+      await _recorder.startRecorder(
+        toFile: _filePath,
+        codec: Codec.aacADTS,
+      );
+
+      setState(() {
+        _isRecording = true;
+      });
+    } catch (e) {
+      print('Error starting recording: $e');
+      // Show error to user
+    }
+  }
+
+  Future<void> stopRecording() async {
+    await _recorder.stopRecorder();
+    print(_filePath);
+    print(File(_filePath!).lengthSync());
+    setState(() {
+      _isRecording = false;
+    });
+  }
+
+  Future<void> playRecording() async {
+    if (_filePath == null) return;
+
+    await _player.startPlayer(
+      fromURI: _filePath!,
+      whenFinished: () {
+        setState(() {
+          _isPlaying = false;
+          _playPosition = Duration.zero;
+        });
+      },
+    );
+
+    setState(() {
+      _isPlaying = true;
+    });
+  }
+
+  Future<void> stopPlaying() async {
+    await _player.stopPlayer();
+
+    setState(() {
+      _isPlaying = false;
+    });
+  }
 
   @override
   void initState() {
     loadSharedPrefs();
+    _init();
     super.initState();
   }
 
@@ -83,6 +191,8 @@ class _MerchantBucketCreationPageState
 
   @override
   void dispose() {
+    _recorder.closeRecorder();
+    _player.closePlayer();
     groupNameController.dispose();
     groupAmountController.dispose();
     dueDateController.dispose();
@@ -98,7 +208,7 @@ class _MerchantBucketCreationPageState
     setState(() {
       _businessCat = businessCat;
       print("businessCat $businessCat");
-      if (businessCat == "Gold Loan" || businessCat == "Finance") {
+      if (businessCat == "Gold Loan") {
         isLoanEntity = true;
       } else {
         isLoanEntity = false;
@@ -198,7 +308,12 @@ class _MerchantBucketCreationPageState
       SnackBar(content: Text(message)),
     );
   }
+  String formatDuration(Duration duration) {
+    final minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
 
+    return '$minutes:$seconds';
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -491,6 +606,8 @@ class _MerchantBucketCreationPageState
                               ),
                             ),
                             onChanged: (value) {
+                              print("status : ${items[index]['title']}");
+                              print("status : ${items[index]["checked"]}");
                               setState(() {
                                 items[index]["checked"] = value!;
                               });
@@ -500,6 +617,9 @@ class _MerchantBucketCreationPageState
                       ),
                     ),
                     const SizedBox(height: 8),
+                    items[2]['title'] == "CALL"
+                        && items[2]["checked"]==true?
+                    audioCardUi():SizedBox.shrink(),
                     Text(
                       "Members will receive reminders through the selected channels.",
                       style: TextStyle(
@@ -548,6 +668,105 @@ class _MerchantBucketCreationPageState
     );
   }
 
+  Card audioCardUi() {
+    return Card(
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Recording timer
+                          if (_isRecording) ...[
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.mic, color: Colors.red),
+                                SizedBox(width: 8),
+                                Text(
+                                  "Recording...",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              formatDuration(_recordDuration),
+                              style: const TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                          ],
+
+                          // Timeline
+                          if (_filePath != null && !_isRecording) ...[
+                            Slider(
+                              value: _playPosition.inMilliseconds.toDouble(),
+                              max: _playDuration.inMilliseconds == 0
+                                  ? 1
+                                  : _playDuration.inMilliseconds.toDouble(),
+                              onChanged: (value) async {
+                                await _player.seekToPlayer(
+                                  Duration(milliseconds: value.toInt()),
+                                );
+                              },
+                            ),
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(formatDuration(_playPosition)),
+                                Text(formatDuration(_playDuration)),
+                              ],
+                            ),
+
+                            const SizedBox(height: 12),
+                          ],
+
+                          // Controls
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              FloatingActionButton(
+                                heroTag: "record",
+                                mini: true,
+                                backgroundColor:
+                                _isRecording ? Colors.red : Colors.blue,
+                                onPressed:
+                                _isRecording ? stopRecording : startRecording,
+                                child: Icon(
+                                  _isRecording ? Icons.stop : Icons.mic,
+                                ),
+                              ),
+
+                              const SizedBox(width: 24),
+
+                              if (_filePath != null)
+                                FloatingActionButton(
+                                  heroTag: "play",
+                                  mini: true,
+                                  onPressed:
+                                  _isPlaying ? stopPlaying : playRecording,
+                                  child: Icon(
+                                    _isPlaying ? Icons.stop : Icons.play_arrow,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+  }
+
   Widget _buildMemberCard(int index, Member member) {
     return Container(
       padding: const EdgeInsets.all(12),
@@ -581,6 +800,18 @@ class _MerchantBucketCreationPageState
               Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
+                    color: Colors.orange.shade50),
+                child: IconButton(
+                  onPressed: () => "",
+                  icon: Icon(Icons.notifications, color: Colors.orange.shade400),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
+              ),
+              SizedBox(width: 10,),
+              Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
                     color: Colors.red.shade50),
                 child: IconButton(
                   onPressed: () => _removeMember(index),
@@ -589,6 +820,8 @@ class _MerchantBucketCreationPageState
                   constraints: const BoxConstraints(),
                 ),
               ),
+
+
             ],
           ),
           const SizedBox(height: 12),
@@ -611,7 +844,18 @@ class _MerchantBucketCreationPageState
                   keyboardType: TextInputType.number,
                 ),
               )
-                  : Expanded(
+                  :
+              _businessCat == "Chitty"?
+              Expanded(
+                child: _buildSimpleTextField(
+                  controller: member.amountController,
+                  hintText: 'Enter Chitty Amount',
+                  label: 'Chitty Amount',
+                  keyboardType: TextInputType.number,
+                ),
+              )
+                  :
+              Expanded(
                 child: _buildSimpleTextField(
                   controller: member.amountController,
                   hintText: 'Amount',
@@ -622,6 +866,20 @@ class _MerchantBucketCreationPageState
             ],
           ),
           const SizedBox(height: 8),
+          _businessCat == "Chitty"?
+          Row(
+            children: [
+              Expanded(
+                child: _buildSimpleTextField(
+                  controller: member.amountController,
+                  hintText: 'Enter Chitty Number',
+                  label: 'Chitty Number',
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+            ],
+          ):SizedBox.shrink(),
+          _businessCat == "Chitty"?SizedBox.shrink(): const SizedBox(height: 8),
           isLoanEntity == true
               ? Row(
             children: [
@@ -644,7 +902,20 @@ class _MerchantBucketCreationPageState
             ],
           )
               : const SizedBox.shrink(),
-          const SizedBox(height: 8),
+          _businessCat == "Chitty"?SizedBox.shrink(): const SizedBox(height: 8),
+          isLoanEntity == true?
+          Row(
+            children: [
+              Expanded(
+                child: _buildSimpleTextField(
+                 controller: member.interestController,
+                  hintText: 'Loan Account Number',
+                  label: 'A/C No',
+                ),
+              ),
+            ],
+          ):SizedBox.shrink(),
+        //  const SizedBox(height: 8),
           isLoanEntity == true
               ? _buildSimpleTextField(
             controller: member.emiController,
@@ -675,15 +946,15 @@ class _MerchantBucketCreationPageState
             ],
           ),
           const SizedBox(height: 10),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: home1,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10))),
-            onPressed: () {},
-            child: const Text("Send Notification"),
-          ),
+          // ElevatedButton(
+          //   style: ElevatedButton.styleFrom(
+          //       backgroundColor: home1,
+          //       foregroundColor: Colors.white,
+          //       shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(10))),
+          //   onPressed: () {},
+          //   child: const Text("Send Notification"),
+          // ),
         ],
       ),
     );

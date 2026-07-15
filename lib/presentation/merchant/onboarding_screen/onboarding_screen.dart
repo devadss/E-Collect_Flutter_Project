@@ -1464,7 +1464,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<String> businessCategories = const [
     'Education', 'Tuition Centre', 'School', 'College', 'Gym',
-    'Healthcare', 'Retail', 'Restaurant', 'E-Commerce', 'Finance',
+    'Healthcare', 'Retail', 'Restaurant', 'E-Commerce', 'Finance',"Chitty",
     'NBFC', 'Gold Loan', 'Travel', 'Hotel', 'NGO', 'Others'
   ];
 
