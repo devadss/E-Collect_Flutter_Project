@@ -41,6 +41,8 @@ class _MerchantBucketCreationPageState
   Duration _playPosition = Duration.zero;
   Duration _playDuration = Duration.zero;
 
+  bool useDefaultAudio = false;
+  bool useCustomAudio = false;
 
   final TextEditingController groupNameController = TextEditingController();
   final TextEditingController groupAmountController = TextEditingController();
@@ -619,8 +621,38 @@ class _MerchantBucketCreationPageState
                       ),
                     ),
                     const SizedBox(height: 8),
-                    items[2]['title'] == "CALL"
-                        && items[2]["checked"]==true?
+                    items[2]['title'] == "CALL" && items[2]["checked"]==true?
+                        Row(
+                          children: [
+                            Row(
+                              children: [
+                                Checkbox(value: useDefaultAudio, onChanged: (value){
+                                  setState(() {
+                                    useCustomAudio == true?
+                                    useCustomAudio = false:
+                                    useDefaultAudio =value!;
+                                  });
+                                }),
+                                Text("DEFAULT VOICE",
+                                  style: TextStyle(fontWeight: FontWeight.w700, color: Colors.grey, fontSize: 12),)
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Checkbox(value: useCustomAudio, onChanged: (value){
+                                  setState(() {
+                                    useDefaultAudio == true?
+                                    useDefaultAudio = false:
+                                    useCustomAudio =value!;
+
+                                  });
+                                }),
+                                Text("CUSTOM VOICE",style: TextStyle(fontWeight: FontWeight.w700, color: Colors.grey, fontSize: 12),)
+                              ],
+                            )
+                          ],
+                        ):SizedBox.shrink(),
+                    useCustomAudio?
                     audioCardUi():SizedBox.shrink(),
                     Text(
                       "Members will receive reminders through the selected channels.",
