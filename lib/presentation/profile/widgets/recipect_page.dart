@@ -48,6 +48,9 @@ class _ReceiptPageState extends State<ReceiptPage> {
         subagentPhoneNumber = subagentNum;
       });
     }
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   debugPreviewReceiptPayload();
+    // });
   }
   @override
   void initState() {
@@ -55,6 +58,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
     _initializePrinter();
     loadSharedPrefs();
     _startBackgroundBluetoothSetup();
+
   }
 
   @override
@@ -357,7 +361,102 @@ if (printStatementStatus){
       throw Exception('Failed to generate QR code');
     }
   }
+  void debugPreviewReceiptPayload() {
+    final now = DateTime.now();
+    final formattedDate = DateFormat('dd MMM yyyy').format(now);
+    final formattedTime = DateFormat('hh:mm a').format(now);
 
+    final List<int> bytes = [];
+
+    bytes.addAll([0x1B, 0x40]);
+
+    bytes.addAll([0x1B, 0x61, 0x01]);
+    bytes.addAll([0x1B, 0x21, 0x30]);
+    bytes.addAll("${widget.receiptDataModel.bankName}\n".codeUnits);
+
+    bytes.addAll([0x1B, 0x21, 0x00]);
+    bytes.addAll("Transaction Receipt\n".codeUnits);
+    bytes.addAll("\n".codeUnits);
+    bytes.addAll("------------------------------\n".codeUnits);
+
+    bytes.addAll([0x1B, 0x61, 0x00]);
+    bytes.addAll("Date : $formattedDate\n".codeUnits);
+    bytes.addAll("Time : $formattedTime\n".codeUnits);
+    bytes.addAll("------------------------------\n".codeUnits);
+
+    bytes.addAll([0x1B, 0x21, 0x08]);
+    bytes.addAll("TRANSACTION\n".codeUnits);
+    bytes.addAll([0x1B, 0x21, 0x00]);
+
+    String txnType =
+    widget.receiptDataModel.tranType.contains("CASH") ? "CASH" : "UPI";
+    bytes.addAll("Type     : $txnType\n".codeUnits);
+    bytes.addAll("Status   : SUCCESS\n".codeUnits);
+
+    if (widget.receiptDataModel.txnId.isNotEmpty) {
+      bytes.addAll("Txn ID   : ${widget.receiptDataModel.txnId}\n".codeUnits);
+    }
+    bytes.addAll("\n".codeUnits);
+
+    bytes.addAll([0x1B, 0x61, 0x01]);
+    bytes.addAll([0x1B, 0x21, 0x30]);
+    bytes.addAll("Rs. ${widget.receiptDataModel.amount}\n".codeUnits);
+    bytes.addAll([0x1B, 0x21, 0x00]);
+    bytes.addAll([0x1B, 0x61, 0x00]);
+    bytes.addAll("------------------------------\n".codeUnits);
+
+    bytes.addAll([0x1B, 0x21, 0x08]);
+    bytes.addAll("CUSTOMER\n".codeUnits);
+    bytes.addAll([0x1B, 0x21, 0x00]);
+    bytes.addAll("Name     : ${widget.receiptDataModel.custName}\n".codeUnits);
+    if (widget.receiptDataModel.custPhone.isNotEmpty) {
+      bytes.addAll("Phone    : ${widget.receiptDataModel.custPhone}\n".codeUnits);
+    }
+    bytes.addAll("A/C No   : ${widget.receiptDataModel.accNo}\n".codeUnits);
+    bytes.addAll("------------------------------\n".codeUnits);
+
+    bytes.addAll([0x1B, 0x21, 0x08]);
+    bytes.addAll("AGENT\n".codeUnits);
+    bytes.addAll([0x1B, 0x21, 0x00]);
+    bytes.addAll("Name     : ${widget.receiptDataModel.agentName}\n".codeUnits);
+    bytes.addAll("Phone    : ${subagentPhoneNumber ?? ''}\n".codeUnits);
+    bytes.addAll("------------------------------\n".codeUnits);
+
+    bytes.addAll([0x1B, 0x61, 0x01]);
+    bytes.addAll("\nThank you for banking with us!\n".codeUnits);
+    bytes.addAll("\n\n".codeUnits);
+    bytes.addAll([0x1D, 0x56, 0x41, 0x10]);
+
+    // Decode and print — same logic as before
+    final buffer = StringBuffer();
+    for (int i = 0; i < bytes.length; i++) {
+      final b = bytes[i];
+      if (b == 0x1B) {
+        buffer.write('[ESC]');
+        if (i + 1 < bytes.length) {
+          final cmd = bytes[i + 1];
+          if (cmd == 0x21 || cmd == 0x61 || cmd == 0x64) {
+            i += 2;
+          } else {
+            i += 1;
+          }
+        }
+      } else if (b == 0x1D) {
+        buffer.write('[GS-CUT]');
+        i += 3;
+      } else if (b >= 32 && b <= 126) {
+        buffer.writeCharCode(b);
+      } else if (b == 0x0A) {
+        buffer.write('\n');
+      } else {
+        buffer.write('[0x${b.toRadixString(16).padLeft(2, '0')}]');
+      }
+    }
+
+    debugPrint("========== SIMULATED PRINTER PAYLOAD (no printer needed) ==========");
+    debugPrint(buffer.toString());
+    debugPrint("=====================================================================");
+  }
   Future<void> _printReceipt() async {
     debugPrint("========== RECEIPT DATA ==========");
     debugPrint("Bank Name   : ${widget.receiptDataModel.bankName}");
@@ -465,7 +564,7 @@ if (printStatementStatus){
       bytes.addAll(
           "Name     : ${widget.receiptDataModel.agentName}\n".codeUnits);
       bytes.addAll(
-          "Phone    : ${widget.receiptDataModel.agentPhone}\n".codeUnits);
+          "Phone    : ${subagentPhoneNumber ?? ''}\n".codeUnits);
 
       bytes.addAll("------------------------------\n".codeUnits);
 
@@ -1256,7 +1355,7 @@ Customer: ${widget.receiptDataModel.custName}
 Customer ID: ${widget.receiptDataModel.custId}
 Customer Phone: ${widget.receiptDataModel.custPhone}
 Agent: ${widget.receiptDataModel.agentName}
-Agent Phone: ${widget.receiptDataModel.agentPhone}
+Agent Phone: ${subagentPhoneNumber}
 ''',
                                     version: QrVersions.auto,
                                     size: 165,
