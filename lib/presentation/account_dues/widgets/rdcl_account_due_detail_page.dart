@@ -702,7 +702,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
               custPhone: custPhoneNumber!,
               custId: custId!,
               txnId: success.transactionId.toString(),
-              txnType: "CASH", dat: '', tranType: '', accNo: '',
+              txnType: "CASH", dat: '', tranType: 'CASH', accNo: custAcNumber.toString(),
             );
             Navigator.push(
               context,

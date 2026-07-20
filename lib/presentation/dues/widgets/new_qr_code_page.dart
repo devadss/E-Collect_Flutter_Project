@@ -332,13 +332,12 @@ ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(notificationTi
                             amount: widget.amount,
                             bankName: bankName ?? "XYZ BANK",
                             agentName: agentName ?? "Name",
-                            agentPhone:
-                            agentPhoneNumber ?? "agentPhone",
+                            agentPhone: agentPhoneNumber ?? "agentPhone",
                             custName: widget.custName,
                             custPhone: widget.custPhone,
                             custId: widget.custId,
                             txnId: "",
-                            txnType: "QR", dat: '', tranType: '', accNo: '',
+                            txnType: "QR", dat: '', tranType: 'CASH', accNo: '',
                           );
                           Navigator.push(
                               context,
@@ -612,7 +611,7 @@ ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(notificationTi
   }
 
   Future<void> loadSharedPrefs() async {
-    final name = await SharedPref().getAgentName();
+    final name = await SharedPref().getSubAgentName();
     final id = await SharedPref().getAgentId();
     final originId = await SharedPref().getAgentOriginId();
     final code = await SharedPref().getCorpCode();

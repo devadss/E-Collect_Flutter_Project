@@ -55,8 +55,8 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
   String? subagentPhoneNumber;
 
   Future<void> loadSharedPrefs() async {
-    final name = await SharedPref().getAgentName();
-    final phone = await SharedPref().getParentAgentMobNum();
+    final name = await SharedPref().getSubAgentName();
+    final phone = await SharedPref().getSubAgentMobNum();
     final id = await SharedPref().getAgentId();
     final custID = await SharedPref().getAgentId();
     final subAgentId = await SharedPref().getSubAgentId();
@@ -606,7 +606,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
               custId: custId ?? "",
               txnId: success.transactionId.toString(),
               txnType: "CASH",
-              dat: '', tranType: '', accNo: '',
+              dat: '', tranType: 'CASH', accNo: custAcNumber.toString(),
             );
             Navigator.push(
               context,

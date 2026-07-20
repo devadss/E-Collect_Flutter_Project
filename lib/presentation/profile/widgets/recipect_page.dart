@@ -48,15 +48,18 @@ class _ReceiptPageState extends State<ReceiptPage> {
         subagentPhoneNumber = subagentNum;
       });
     }
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   debugPreviewReceiptPayload();
-    // });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      debugPreviewReceiptPayload();
+    });
   }
   @override
   void initState() {
     super.initState();
     _initializePrinter();
     loadSharedPrefs();
+
+print(widget.receiptDataModel.agentName);
+print(widget.receiptDataModel.accNo);
     _startBackgroundBluetoothSetup();
 
   }
@@ -1139,9 +1142,10 @@ if (printStatementStatus){
                     Column(
                       children: [
                         Text(
+                          textAlign: TextAlign.center,
                           widget.receiptDataModel.bankName,
-                          style: const TextStyle(
-                            fontSize: 24,
+                          style: TextStyle(
+                            fontSize: widget.receiptDataModel.bankName.length >15 ?17:24,
                             fontWeight: FontWeight.bold,
                             color: home2,
                           ),

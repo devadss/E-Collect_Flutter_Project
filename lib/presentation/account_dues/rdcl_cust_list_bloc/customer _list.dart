@@ -188,6 +188,7 @@ class _CustomerListState extends State<CustomerList> {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(20),
                             onTap: () {
+                              print("customer?.rdclGlobalAccNo.toString() :${customer?.rdclGlobalAccNo.toString()}");
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

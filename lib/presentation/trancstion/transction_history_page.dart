@@ -373,7 +373,9 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                       custId: widget.transactionHistoryModel.customerId,
                       txnId: widget.transactionHistoryModel.transferId.replaceAll("_MERCHANT", ""),
                       txnType: widget.transactionHistoryModel.tnxType,
-                      dat: widget.transactionHistoryModel.dat, tranType: widget.transactionHistoryModel.transactionType, accNo: widget.transactionHistoryModel.accountNumber,
+                      dat: widget.transactionHistoryModel.dat,
+                      tranType: widget.transactionHistoryModel.transactionType,
+                      accNo: widget.transactionHistoryModel.accountNumber,
                     );
                     Navigator.push(
                       context,

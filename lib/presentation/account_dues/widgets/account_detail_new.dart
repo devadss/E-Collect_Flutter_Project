@@ -588,8 +588,8 @@ loadSharedPrefs();
     );
   }
   Future<void> loadSharedPrefs() async {
-    final name = await SharedPref().getAgentName();
-    final phone = await SharedPref().getParentAgentMobNum();
+    final name = await SharedPref().getSubAgentName();
+    final phone = await SharedPref().getSubAgentMobNum();
     final agentid = await SharedPref().getAgentId();
     final subAgentId = await SharedPref().getSubAgentId();
     final agentOrigin = await SharedPref().getSubAgentCode();
@@ -669,7 +669,7 @@ loadSharedPrefs();
               custPhone: custPhoneNumber ?? "",
               custId: custId!,
               txnId: success.transactionId.toString(),
-              txnType: "CASH", dat: '', tranType: '', accNo: '',
+              txnType: "CASH", dat: '', tranType: 'CASH', accNo: custAcNumber.toString(),
             );
             Navigator.push(
               context,

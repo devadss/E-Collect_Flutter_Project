@@ -57,14 +57,14 @@ class _RdclDueListBlocPageState extends State<RdclDueListBlocPage> {
   Future<void> loadSharedPrefs() async {
     final prefs = SharedPref();
 
-    final name = await prefs.getParentAgentName();
+    final name = await prefs.getSubAgentName();
     final id = await prefs.getAgentId();
     final originId = await prefs.getSubAgentCode();
     final subAgentID = await prefs.getSubAgentId();
     final code = await prefs.getCorpCode();
     final brCode = await prefs.getBranchCode();
     final email = await prefs.getEmail();
-    final number = await prefs.getParentAgentMobNum();
+    final number = await prefs.getSubAgentMobNum();
     final tok = await prefs.getTokenValue();
     final subAgentCodeNewVal = await prefs.getSubAgentCodeNew();
     final subagentNum = await prefs.getSubAgentMobNum();
@@ -147,7 +147,7 @@ class _RdclDueListBlocPageState extends State<RdclDueListBlocPage> {
               custPhone: custPhoneNumber!,
               custId: custId!,
               txnId: success.transactionId.toString(),
-              txnType: "CASH", dat: '', tranType: '', accNo: '',
+              txnType: "CASH", dat: '', tranType: 'CASH', accNo: custAcNumber.toString(),
             );
             Navigator.push(
               context,

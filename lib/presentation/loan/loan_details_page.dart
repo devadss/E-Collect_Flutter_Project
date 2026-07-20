@@ -262,8 +262,8 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
               txnId: success.transactionId.toString(),
               txnType: "CASH",
               dat: '',
-              tranType: '',
-              accNo: '',
+              tranType: 'CASH',
+              accNo: custAcNumber.toString(),
             );
 
             Navigator.push(
@@ -1097,8 +1097,8 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
     final custId = await SharedPref().getAgentId();
     final subAgentId = await SharedPref().getSubAgentId();
     final sub_AgentCodeNew = await SharedPref().getSubAgentCodeNew();
-    final phone = await SharedPref().getParentAgentMobNum();
-    final name = await SharedPref().getAgentName();
+    final phone = await SharedPref().getSubAgentMobNum();
+    final name = await SharedPref().getSubAgentName();
     final brCode = await SharedPref().getBranchCode();
 
     setState(() {

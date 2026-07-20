@@ -598,7 +598,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
   }
 
   Future<void> loadSharedPrefs() async {
-    final name = await SharedPref().getAgentName();
+    final name = await SharedPref().getSubAgentName();
     final id = await SharedPref().getAgentId();
     final originId = await SharedPref().getAgentOriginId();
     final code = await SharedPref().getCorpCode();
