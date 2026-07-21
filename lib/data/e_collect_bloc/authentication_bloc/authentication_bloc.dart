@@ -4,7 +4,6 @@ import '../../repository/e_collect_repository/authentication_repository/authenti
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
-///*********************MOB-NUM_VERIFICATION******************************
 class MobLoginBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationRepository authenticationRepository;
   MobLoginBloc(this.authenticationRepository) : super(MobLoginInitialState()) {

@@ -2,6 +2,9 @@ part of 'authentication_bloc.dart';
 
 abstract class  AuthenticationState {
   const AuthenticationState();
+  String printData(String data){
+    return "LALAL$data";
+  }
 }
 
 ///*********************MOB-NUM_VERIFICATION******************************

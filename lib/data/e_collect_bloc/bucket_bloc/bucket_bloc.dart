@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'bucket_event.dart';
 part 'bucket_state.dart';
 
-//******************BUCKET-CREATION*******************************
 class BucketCreationBloc extends Bloc<BucketEvent, BucketState> {
   BucketCreationBloc() : super(BucketCreationInitialState()) {
     on<BucketCreationEvent>((event, emit) {});
