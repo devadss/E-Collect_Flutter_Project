@@ -1518,6 +1518,26 @@ class _HomePageState extends State<HomePage>
                           ),
                         ),
                       ),
+                      const SizedBox(height: 6),
+                      Container(
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(color: whiteColor, blurRadius: 2, spreadRadius: 2)
+                          ],
+                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.orangeAccent.withValues(alpha: 0.3)
+                          
+                      ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.arrow_circle_down, color: Colors.red,size: 12,),
+                            SizedBox(width: 5,),
+                            Text("More details",style: TextStyle(color: Colors.black,
+
+                            fontSize: 10),),
+                          ],
+                        ),)
                     ],
                   ),
                 ],

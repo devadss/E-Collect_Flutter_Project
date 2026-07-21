@@ -605,7 +605,7 @@ class _AccountDueDetailsPageState extends State<RdclAccountDueDetailsPage> {
       "BNKVLKD": "Vellarkkad SCB",
       "BNKMDS": "Medi Soft",
       "BNKPLSCB": "Pulakode service cooperative Bank",
-      "BNKMNCHL": "MEENACHIL SCB",
+      "BNKMNCHL": "Multi State Agricultural Producers Processing And Marketing Co-operative Society Ltd",
       "BNKOMSRY": "Omassery SCB",
       "BNKPTKL": "Pothukal SCB",
       "BNKFPMC": "FAPMCO MSCS",
