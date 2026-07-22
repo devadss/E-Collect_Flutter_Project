@@ -138,6 +138,7 @@ flutter:
     - assets/images/reset-password.png
     - assets/icons/
     - assets/svg/
+    - assets/images/checklist.webp
     - assets/images/new_profile.png
     - assets/animations/
 

@@ -13,11 +13,17 @@ class EventMobOtpRequest extends AuthenticationEvent{
   final String mobileNumber;
   const EventMobOtpRequest(this.mobileNumber);
 }
+///*********************OTP-RESEND******************************
+class EventMobOtpResend extends AuthenticationEvent{
+  final int id;
+  const EventMobOtpResend(this.id);
+}
 ///********************OTP-VERIFICATION*******************************
 class EventMobOtpVerification extends AuthenticationEvent{
   final String mobileNumber;
   final String otp;
-  const EventMobOtpVerification(this.mobileNumber, this.otp);
+  final int id;
+  const EventMobOtpVerification(this.mobileNumber, this.id, this.otp,  );
 }
 ///**********************ONBOARDING*****************************
 class OnboardingEvent extends AuthenticationEvent{
@@ -29,4 +35,9 @@ class OnboardingEvent extends AuthenticationEvent{
 class OnboardingStatusEvent extends AuthenticationEvent{
   final String mobileNumber;
   const OnboardingStatusEvent(this.mobileNumber);
+}
+
+class BasicRegistrationEvent extends AuthenticationEvent{
+  final BasicUserRegisterModel basicUserRegisterModel;
+  const BasicRegistrationEvent(this.basicUserRegisterModel);
 }

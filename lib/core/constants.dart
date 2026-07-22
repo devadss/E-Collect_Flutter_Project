@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 String baseUrl = "";
 String dopBaseUrl = "";
+String eCollectBaseUrl = "https://dev.collect.org.in/";
 
 //const String uatTestMobileNumber = "+916553453221"; ///Currently this number is provided for appstore...
 const String uatTestMobileNumber = "+917663220991"; ///Currently this number is provided for appstore...

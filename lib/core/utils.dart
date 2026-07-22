@@ -545,8 +545,8 @@ String extractOtp(List<TextEditingController> otpController){
     otpValue += x;
   }
   print(otpValue);
-  if(otpValue.length !=4 && otpValue.isNotEmpty){
-    return "Enter 4 digit Otp";
+  if(otpValue.length !=6 && otpValue.isNotEmpty){
+    return "Enter 6 digit Otp";
   }else if(otpValue.isEmpty){
     return "Empty fields not allowed";
   }else{

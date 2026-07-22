@@ -2,13 +2,9 @@ part of 'authentication_bloc.dart';
 
 abstract class  AuthenticationState {
   const AuthenticationState();
-  String printData(String data){
-    return "LALAL$data";
-  }
 }
 
 ///*********************MOB-NUM_VERIFICATION******************************
-
 class MobLoginInitialState extends AuthenticationState{
   const MobLoginInitialState();
 }
@@ -29,10 +25,24 @@ class MobLoginRequestOtpLoaderState extends AuthenticationState{
   const MobLoginRequestOtpLoaderState();
 }
 class MobLoginRequestOtpSuccessState extends AuthenticationState{
-  const MobLoginRequestOtpSuccessState();
+  final OtpRequestSuccessModel otpRequestSuccessModel;
+  const MobLoginRequestOtpSuccessState(this.otpRequestSuccessModel);
 }
 class MobLoginRequestOtpFailureState extends AuthenticationState{
-  const MobLoginRequestOtpFailureState();
+  final OtpRequestFailureModel otpRequestFailureModel;
+  const MobLoginRequestOtpFailureState(this.otpRequestFailureModel);
+}
+///*********************RESEND-OTP******************************
+class MobLoginResendOtpLoaderState extends AuthenticationState{
+  const MobLoginResendOtpLoaderState();
+}
+class MobLoginResendOtpSuccessState extends AuthenticationState{
+  final OtpRequestSuccessModel otpRequestSuccessModel;
+  const MobLoginResendOtpSuccessState(this.otpRequestSuccessModel);
+}
+class MobLoginResendOtpFailureState extends AuthenticationState{
+  final OtpRequestFailureModel otpRequestFailureModel;
+  const MobLoginResendOtpFailureState(this.otpRequestFailureModel);
 }
 ///********************OTP-VERIFICATION*******************************
 class MobLoginVerifyOtpInitialState extends AuthenticationState{
@@ -42,10 +52,12 @@ class MobLoginVerifyOtpLoaderState extends AuthenticationState{
   const MobLoginVerifyOtpLoaderState();
 }
 class MobLoginVerifyOtpSuccessState extends AuthenticationState{
-  const MobLoginVerifyOtpSuccessState();
+  final OtpVerificationSuccessModel otpVerificationSuccessModel;
+  const MobLoginVerifyOtpSuccessState(this.otpVerificationSuccessModel);
 }
 class MobLoginVerifyOtpFailureState extends AuthenticationState{
-  const MobLoginVerifyOtpFailureState();
+  final OtpVerificationFailureModel otpVerificationFailureModel;
+  const MobLoginVerifyOtpFailureState(this.otpVerificationFailureModel);
 }
 
 ///**********************ONBOARDING*****************************
@@ -73,5 +85,20 @@ class OnboardingStatusSuccessState extends AuthenticationState{
 }
 class OnboardingStatusFailureState extends AuthenticationState{
   const OnboardingStatusFailureState();
+}
+///*********************BASIC-REGISTRATION******************************
+class BasicRegistrationInitialState extends AuthenticationState{
+  const BasicRegistrationInitialState();
+}
+class BasicRegistrationLoaderState extends AuthenticationState{
+  const BasicRegistrationLoaderState();
+}
+class BasicRegistrationSuccessState extends AuthenticationState{
+  final BasicRegistrationSuccessModel basicRegistrationSuccessModel;
+  const BasicRegistrationSuccessState(this.basicRegistrationSuccessModel);
+}
+class BasicRegistrationFailureState extends AuthenticationState{
+  final BasicRegistrationFailureModel basicRegistrationFailureModel;
+  const BasicRegistrationFailureState(this.basicRegistrationFailureModel);
 }
 

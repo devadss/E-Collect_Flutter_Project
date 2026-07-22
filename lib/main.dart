@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:collection_qr_flutter/core/constants.dart';
+import 'package:collection_qr_flutter/data/e_collect_bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:collection_qr_flutter/data/provider/cash_qr_provider.dart';
 import 'package:collection_qr_flutter/data/provider/integrated_loan_detail_provider.dart';
 import 'package:collection_qr_flutter/data/provider/integration_loan_list_provider.dart';
@@ -82,6 +83,7 @@ import 'data/repository/cash_transcation_repository.dart';
 import 'data/repository/collection_base_url_repo.dart';
 import 'data/repository/create_order_repository.dart';
 import 'data/repository/customer_list_repo/customer_list_repo.dart';
+import 'data/repository/e_collect_repository/authentication_repository/authentication_repository.dart';
 import 'data/repository/get_loan_repository.dart';
 import 'data/repository/group/bank_account_update_repository.dart';
 import 'data/repository/group/bank_detail_repository.dart';
@@ -169,6 +171,7 @@ void main() async {
     // Layer 1: All Repositories (Dependency Injection)
     MultiRepositoryProvider(
       providers: [
+        RepositoryProvider(create: (_) => AuthenticationRepository()),
         RepositoryProvider(create: (_) => CustomerListRepo()),
         RepositoryProvider(create: (_) => RdclDueListRepo()),
         // Add all your existing repositories
@@ -224,6 +227,9 @@ void main() async {
       child: MultiBlocProvider(
         providers: [
           // Layer 2: All BLoCs
+          BlocProvider(
+              create: (context) =>
+                  AuthenticationBloc(context.read<AuthenticationRepository>())),
           BlocProvider(
               create: (context) =>
                   CustomerListBloc(context.read<CustomerListRepo>())),
