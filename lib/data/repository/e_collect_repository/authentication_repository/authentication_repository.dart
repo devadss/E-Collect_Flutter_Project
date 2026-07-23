@@ -26,9 +26,8 @@ class AuthenticationRepository {
   ///*********************REQUEST-OTP******************************
   Future<AuthenticationModel> mobOtpRequestRepository(
       String mobileNumber) async {
-    final uri = Uri.parse("$eCollectBaseUrl$_requestOtpEndPoint");
-    final request = await http.post(uri,
-        body: jsonEncode({"mobileNumber": mobileNumber}), headers: contentType);
+    final Uri uri = Uri.parse("$eCollectBaseUrl$_requestOtpEndPoint");
+    final http.Response request = await http.post(uri, body: jsonEncode({"mobileNumber": mobileNumber}), headers: contentType);
     print(request.body);
     return request.statusCode == 200 ? OtpRequestSuccessModel(
           OtpRequestSuccessResponse.fromJson(jsonDecode(request.body))) :
@@ -38,8 +37,8 @@ class AuthenticationRepository {
 
   ///*********************RESEND-OTP******************************
   Future<AuthenticationModel> mobOtpResendRepository(int id) async {
-    final uri = Uri.parse("$eCollectBaseUrl$_resendOtpEndPoint");
-    final request = await http.post(uri,
+    final Uri uri = Uri.parse("$eCollectBaseUrl$_resendOtpEndPoint");
+    final http.Response request = await http.post(uri,
         body: jsonEncode({"userId": id}), headers: contentType);
     print(request.body);
     return request.statusCode == 200 ? OtpRequestSuccessModel(
@@ -49,8 +48,8 @@ class AuthenticationRepository {
   ///*********************OTP_VERIFICATION******************************
   Future<AuthenticationModel> mobOtpVerificationRepository(
       String mobileNumber, int id, String otp) async {
-    final uri = Uri.parse("$eCollectBaseUrl$_verifyOtpEndPoint");
-    final request = await http.post(uri,
+    final Uri uri = Uri.parse("$eCollectBaseUrl$_verifyOtpEndPoint");
+    final http.Response request = await http.post(uri,
         body: jsonEncode(
             {"userId": id, "mobileNumber": mobileNumber, "otp": otp}),
         headers: contentType);
@@ -69,8 +68,8 @@ class AuthenticationRepository {
   ///*********************BASIC-REGISTRATION******************************
   Future<AuthenticationModel> basicRegistrationRepository(
       BasicUserRegisterModel basicUserRegisterModel) async {
-    final uri = Uri.parse("$eCollectBaseUrl$_basicRegistrationEndPoint");
-    final request = await http.post(uri,
+    final Uri uri = Uri.parse("$eCollectBaseUrl$_basicRegistrationEndPoint");
+    final http.Response request = await http.post(uri,
         body: jsonEncode(basicUserRegisterModel), headers: contentType);
     print(request.body);
     return request.statusCode == 200 ? BasicRegistrationSuccessModel(
@@ -81,8 +80,8 @@ class AuthenticationRepository {
   ///*********************TOKEN-VERIFICATION******************************
   Future<AuthenticationModel> tokenVerificationRepository(
       String tokenValue) async {
-    final uri = Uri.parse("$eCollectBaseUrl$_tokenValidationEndPoint");
-    final request = await http.post(uri,
+    final Uri uri = Uri.parse("$eCollectBaseUrl$_tokenValidationEndPoint");
+    final http.Response request = await http.post(uri,
         body: jsonEncode({"token": tokenValue}), headers: contentType);
     return request.statusCode == 200
         ? TokenVerificationSuccessModel(

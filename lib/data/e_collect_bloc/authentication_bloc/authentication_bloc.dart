@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/model/e_collect/authentication_model.dart';
 import '../../../domain/model/e_collect/basic_registartion/request/basic_registration_request_model.dart';
 import '../../../domain/model/e_collect/merchant_registation_model/request/merchant_request_model.dart';
-import '../../../domain/model/e_collect/onboard/onboard_request_model.dart';
 import '../../repository/e_collect_repository/authentication_repository/authentication_repository.dart';
 part 'authentication_event.dart';
 part 'authentication_state.dart';

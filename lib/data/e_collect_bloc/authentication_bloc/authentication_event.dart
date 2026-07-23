@@ -22,7 +22,7 @@ class EventMobOtpVerification extends AuthenticationEvent{
   final String mobileNumber;
   final String otp;
   final int id;
-  const EventMobOtpVerification(this.mobileNumber, this.id, this.otp,  );
+  const EventMobOtpVerification(this.mobileNumber, this.id, this.otp);
 }
 ///**********************ONBOARDING*****************************
 class OnboardingEvent extends AuthenticationEvent{
