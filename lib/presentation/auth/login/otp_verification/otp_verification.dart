@@ -11,7 +11,9 @@ class OtpRequestVerificationPage extends StatefulWidget {
   final int userId;
   final String mobileNumber;
   final String testOtp;
-  const OtpRequestVerificationPage({super.key, required this.userId, required this.mobileNumber, required this.testOtp, });
+  const OtpRequestVerificationPage({super.key,
+    required this.userId, required this.mobileNumber,
+    required this.testOtp, });
 
   @override
   State<OtpRequestVerificationPage> createState() => _OtpRequestVerificationPageState();
@@ -21,10 +23,10 @@ class _OtpRequestVerificationPageState
     extends State<OtpRequestVerificationPage> {
   final List<TextEditingController> _controllers = List.generate(6, (_) => TextEditingController(),);
  // int _start = 120;
-  int _start = 30;
+   int _start = 30;
   Timer? _timer;
   bool canPop = false;
-  String otpValue = "";
+   String otpValue = "";
 
   void startTimer() {
     const oneSec = Duration(seconds: 1);
@@ -61,7 +63,6 @@ class _OtpRequestVerificationPageState
     for (var controller in _controllers) {
       controller.dispose();
     }
-
     super.dispose();
   }
 
@@ -148,14 +149,14 @@ class _OtpRequestVerificationPageState
 
                     RichText(
                       text: TextSpan(
-                        text: 'We sent a code to ',
+                        text: 'We sent a 6 digit code to ',
                         style: GoogleFonts.poppins(
                           color: grey.withValues(alpha: 0.6),
                           fontSize: 14,
                         ),
                         children: [
                           TextSpan(
-                            text: widget.mobileNumber,
+                            text: "+91 ${widget.mobileNumber}",
                             style: GoogleFonts.poppins(
                               color: deepPurple,
                               fontWeight: FontWeight.w600,
@@ -168,7 +169,7 @@ class _OtpRequestVerificationPageState
                     const SizedBox(height: 40),
 
                     // OTP Input Fields
-                    Row(
+                   /* Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List.generate(
                         6,
@@ -204,6 +205,58 @@ class _OtpRequestVerificationPageState
                             onChanged: (value) {
                               if (value.length == 1) {
                                 FocusScope.of(context).nextFocus();
+                              }
+                            },
+                          ),
+                        ),
+                      ),
+                    ),*/
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: List.generate(
+                        6,
+                            (index) => SizedBox(
+                          width: 50,
+                          height: 60,
+                          child: TextField(
+                            controller: _controllers[index],
+                            keyboardType: TextInputType.number,
+                            textAlign: TextAlign.center,
+                            maxLength: 1,
+                            style: GoogleFonts.poppins(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: deepPurple,
+                            ),
+                            decoration: InputDecoration(
+                              counterText: "",
+                              filled: true,
+                              fillColor: lightPink,
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: primaryPink,
+                                  width: 2,
+                                ),
+                              ),
+                            ),
+                            onChanged: (value) {
+                              if (value.isNotEmpty) {
+                                // Move to next field
+                                if (index < 5) {
+                                  FocusScope.of(context).nextFocus();
+                                } else {
+                                  FocusScope.of(context).unfocus();
+                                }
+                              } else {
+                                // Move to previous field on delete
+                                if (index > 0) {
+                                  FocusScope.of(context).previousFocus();
+                                }
                               }
                             },
                           ),

@@ -22,6 +22,8 @@ class _BasicRegistrationState extends State<BasicRegistration> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
   String? emailError;
+  String? lastNameError;
+  String? firstNameError;
   String? mobileError;
   bool _isPasswordHidden = true;
   bool _isConfirmPasswordHidden = true;
@@ -103,11 +105,11 @@ class _BasicRegistrationState extends State<BasicRegistration> {
               Center(
                 child: Container(
                   width: 200,
-                  height: 200,
+                  height: 190,
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(24),
-          
+
                     /// 🌈 SOFT BACKGROUND
                     gradient: LinearGradient(
                       colors: [
@@ -117,7 +119,7 @@ class _BasicRegistrationState extends State<BasicRegistration> {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
-          
+
                     /// 💎 SHADOW
                     boxShadow: [
                       BoxShadow(
@@ -154,7 +156,17 @@ class _BasicRegistrationState extends State<BasicRegistration> {
                   maxLength: 15,
                   keyboardType: TextInputType.name,
                   controller: firstNameController,
+                  onChanged: (value){
+                    setState(() {
+                      if(firstNameController.text.isEmpty){
+                        firstNameError = "First Name is required";
+                      }else{
+                        firstNameError = null;
+                      }
+                    });
+                  },
                   decoration: InputDecoration(
+                    errorText: firstNameError,
                       counterText: "",
                       prefixIcon: Padding(
                         padding: const EdgeInsets.all(10.0),
@@ -169,7 +181,7 @@ class _BasicRegistrationState extends State<BasicRegistration> {
                           ),
                         ),
                       ),
-                      fillColor: Colors.grey.shade100,
+                      fillColor: lightPink,
                       filled: true,
                       label: Text("First Name"),
                       hintText: "Enter First Name",
@@ -184,13 +196,26 @@ class _BasicRegistrationState extends State<BasicRegistration> {
                   maxLength: 15,
                   keyboardType: TextInputType.name,
                   controller: lastNameController,
+
+                    onChanged: (value){
+                      setState(() {
+                        if(lastNameController.text.isEmpty){
+                          lastNameError = "Last Name is required";
+                        }else{
+                          lastNameError = null;
+                        }
+                      });
+
+                  },
                   decoration: InputDecoration(
+                    errorText: lastNameError,
                       counterText: "",
                       prefixIcon: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Container(
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
+
                               color: Color(0xFFEA307B).withValues(alpha: 0.1)),
                           child: Icon(
                             size: 15,
@@ -199,13 +224,13 @@ class _BasicRegistrationState extends State<BasicRegistration> {
                           ),
                         ),
                       ),
-                      fillColor: Colors.grey.shade100,
+                      fillColor: lightPink,
                       filled: true,
                       label: Text("Last Name"),
                       hintText: "Enter Last Name",
                       border: OutlineInputBorder(
                           borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(10))),
+                          borderRadius: BorderRadius.circular(14))),
                 ),
               ),
               Padding(
@@ -239,7 +264,7 @@ class _BasicRegistrationState extends State<BasicRegistration> {
                           ),
                         ),
                       ),
-                      fillColor: Colors.grey.shade100,
+                      fillColor: lightPink,
                       filled: true,
                       label: const Text("Email"),
                       hintText: "Enter Email",
@@ -280,7 +305,7 @@ class _BasicRegistrationState extends State<BasicRegistration> {
                           ),
                         ),
                       ),
-                      fillColor: Colors.grey.shade100,
+                      fillColor: lightPink,
                       filled: true,
                       counterText: "",
                       label: const Text("Mobile number"),
@@ -326,7 +351,7 @@ class _BasicRegistrationState extends State<BasicRegistration> {
                               });
                             },
                           ),
-                          fillColor: Colors.grey.shade100,
+                          fillColor:lightPink,
                           filled: true,
                           label: const Text("Password", style: TextStyle(fontSize: 12),),
                           hintText: "Enter Password",
@@ -351,7 +376,7 @@ class _BasicRegistrationState extends State<BasicRegistration> {
                             padding: const EdgeInsets.all(10.0),
                             child: Container(
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(14),
                                   color: Color(0xFFEA307B).withValues(alpha: 0.1)),
                               child: Icon(
                                 size: 15,
@@ -373,7 +398,7 @@ class _BasicRegistrationState extends State<BasicRegistration> {
                               });
                             },
                           ),
-                          fillColor: Colors.grey.shade100,
+                          fillColor: lightPink,
                           filled: true,
                           counterText: "",
                           label: const Text("Confirm Password", style: TextStyle(fontSize: 12),),
@@ -428,6 +453,14 @@ class _BasicRegistrationState extends State<BasicRegistration> {
               branchId: 0,
               agentId: 0)));
     } else {
+      setState(() {
+        if(lastNameController.text.isEmpty){
+          lastNameError = "Last Name is required";
+        }
+        if(firstNameController.text.isEmpty){
+          firstNameError = "First Name is required";
+        }
+      });
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: const Text("Empty filed's not allowed")));
     }

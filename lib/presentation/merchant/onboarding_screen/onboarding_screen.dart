@@ -1577,7 +1577,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               controller: merchantNameController,
               label: 'Merchant Name *',
               hint: 'Enter merchant name',
-              icon: Icons.business,
+              icon: Icons.person,
             ),
 
             // Registered Phone Number

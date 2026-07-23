@@ -16,6 +16,8 @@ class MerchantRegistrationRequestModel {
   final int averageTicketSize;
   final int branchId;
   final int assignedAgentId;
+  final String adminEmail;
+  final String adminPhone;
   final ContactPerson contactPerson;
   final AuthorizedSignatory authorizedSignatory;
   final List<SettlementAccount> settlementAccounts;
@@ -38,6 +40,8 @@ class MerchantRegistrationRequestModel {
     required this.averageTicketSize,
     required this.branchId,
     required this.assignedAgentId,
+    required this.adminEmail,
+    required this.adminPhone,
     required this.contactPerson,
     required this.authorizedSignatory,
     required this.settlementAccounts,
@@ -45,29 +49,31 @@ class MerchantRegistrationRequestModel {
 
   factory MerchantRegistrationRequestModel.fromJson(Map<String, dynamic> json) {
     return MerchantRegistrationRequestModel(
-      merchantName: json['merchantName'] ?? '',
-      merchantLegalName: json['merchantLegalName'] ?? '',
-      registeredEmail: json['registeredEmail'] ?? '',
-      registeredPhone: json['registeredPhone'] ?? '',
-      businessCategory: json['businessCategory'] ?? '',
-      entityType: json['entityType'] ?? '',
-      websiteUrl: json['websiteUrl'] ?? '',
-      registeredAddress: json['registeredAddress'] ?? '',
-      entityPAN: json['entityPAN'] ?? '',
-      nameOnPAN: json['nameOnPAN'] ?? '',
-      gstNumber: json['gstNumber'] ?? '',
-      gstState: json['gstState'] ?? '',
-      monthlyExpectedVolume: json['monthlyExpectedVolume'] ?? 0,
+      merchantName: json['merchantName'],
+      merchantLegalName: json['merchantLegalName'],
+      registeredEmail: json['registeredEmail'],
+      registeredPhone: json['registeredPhone'],
+      businessCategory: json['businessCategory'],
+      entityType: json['entityType'],
+      websiteUrl: json['websiteUrl'],
+      registeredAddress: json['registeredAddress'],
+      entityPAN: json['entityPAN'],
+      nameOnPAN: json['nameOnPAN'],
+      gstNumber: json['gstNumber'],
+      gstState: json['gstState'],
+      monthlyExpectedVolume: json['monthlyExpectedVolume'],
       monthlyExpectedTransactionCount:
-      json['monthlyExpectedTransactionCount'] ?? 0,
-      averageTicketSize: json['averageTicketSize'] ?? 0,
-      branchId: json['branchId'] ?? 0,
-      assignedAgentId: json['assignedAgentId'] ?? 0,
+      json['monthlyExpectedTransactionCount'],
+      averageTicketSize: json['averageTicketSize'],
+      branchId: json['branchId'],
+      assignedAgentId: json['assignedAgentId'],
+      adminEmail: json['adminEmail'],
+      adminPhone: json['adminPhone'],
       contactPerson:
-      ContactPerson.fromJson(json['contactPerson'] ?? {}),
-      authorizedSignatory:
-      AuthorizedSignatory.fromJson(json['authorizedSignatory'] ?? {}),
-      settlementAccounts: (json['settlementAccounts'] as List<dynamic>? ?? [])
+      ContactPerson.fromJson(json['contactPerson']),
+      authorizedSignatory: AuthorizedSignatory.fromJson(
+          json['authorizedSignatory']),
+      settlementAccounts: (json['settlementAccounts'] as List)
           .map((e) => SettlementAccount.fromJson(e))
           .toList(),
     );
@@ -93,6 +99,8 @@ class MerchantRegistrationRequestModel {
       'averageTicketSize': averageTicketSize,
       'branchId': branchId,
       'assignedAgentId': assignedAgentId,
+      'adminEmail': adminEmail,
+      'adminPhone': adminPhone,
       'contactPerson': contactPerson.toJson(),
       'authorizedSignatory': authorizedSignatory.toJson(),
       'settlementAccounts':
@@ -114,17 +122,19 @@ class ContactPerson {
 
   factory ContactPerson.fromJson(Map<String, dynamic> json) {
     return ContactPerson(
-      name: json['name'] ?? '',
-      emailAddress: json['emailAddress'] ?? '',
-      phoneNumber: json['phoneNumber'] ?? '',
+      name: json['name'],
+      emailAddress: json['emailAddress'],
+      phoneNumber: json['phoneNumber'],
     );
   }
 
-  Map<String, dynamic> toJson() => {
-    'name': name,
-    'emailAddress': emailAddress,
-    'phoneNumber': phoneNumber,
-  };
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'emailAddress': emailAddress,
+      'phoneNumber': phoneNumber,
+    };
+  }
 }
 
 class AuthorizedSignatory {
@@ -144,21 +154,23 @@ class AuthorizedSignatory {
 
   factory AuthorizedSignatory.fromJson(Map<String, dynamic> json) {
     return AuthorizedSignatory(
-      name: json['name'] ?? '',
-      panNumber: json['panNumber'] ?? '',
-      phone: json['phone'] ?? '',
-      email: json['email'] ?? '',
-      designation: json['designation'] ?? '',
+      name: json['name'],
+      panNumber: json['panNumber'],
+      phone: json['phone'],
+      email: json['email'],
+      designation: json['designation'],
     );
   }
 
-  Map<String, dynamic> toJson() => {
-    'name': name,
-    'panNumber': panNumber,
-    'phone': phone,
-    'email': email,
-    'designation': designation,
-  };
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'panNumber': panNumber,
+      'phone': phone,
+      'email': email,
+      'designation': designation,
+    };
+  }
 }
 
 class SettlementAccount {
@@ -167,7 +179,7 @@ class SettlementAccount {
   final String accountType;
   final String bankName;
   final String bankBranch;
-  final String ifsCCode;
+  final String ifscCode;
   final bool isPrimary;
   final bool isActive;
 
@@ -177,32 +189,34 @@ class SettlementAccount {
     required this.accountType,
     required this.bankName,
     required this.bankBranch,
-    required this.ifsCCode,
+    required this.ifscCode,
     required this.isPrimary,
     required this.isActive,
   });
 
   factory SettlementAccount.fromJson(Map<String, dynamic> json) {
     return SettlementAccount(
-      accountHolderName: json['accountHolderName'] ?? '',
-      accountNumber: json['accountNumber'] ?? '',
-      accountType: json['accountType'] ?? '',
-      bankName: json['bankName'] ?? '',
-      bankBranch: json['bankBranch'] ?? '',
-      ifsCCode: json['ifsC_Code'] ?? '',
-      isPrimary: json['isPrimary'] ?? false,
-      isActive: json['isActive'] ?? false,
+      accountHolderName: json['accountHolderName'],
+      accountNumber: json['accountNumber'],
+      accountType: json['accountType'],
+      bankName: json['bankName'],
+      bankBranch: json['bankBranch'],
+      ifscCode: json['ifsc_Code'],
+      isPrimary: json['isPrimary'],
+      isActive: json['isActive'],
     );
   }
 
-  Map<String, dynamic> toJson() => {
-    'accountHolderName': accountHolderName,
-    'accountNumber': accountNumber,
-    'accountType': accountType,
-    'bankName': bankName,
-    'bankBranch': bankBranch,
-    'ifsC_Code': ifsCCode,
-    'isPrimary': isPrimary,
-    'isActive': isActive,
-  };
+  Map<String, dynamic> toJson() {
+    return {
+      'accountHolderName': accountHolderName,
+      'accountNumber': accountNumber,
+      'accountType': accountType,
+      'bankName': bankName,
+      'bankBranch': bankBranch,
+      'ifsc_Code': ifscCode,
+      'isPrimary': isPrimary,
+      'isActive': isActive,
+    };
+  }
 }

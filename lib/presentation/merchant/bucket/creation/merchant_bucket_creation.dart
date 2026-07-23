@@ -75,7 +75,6 @@ class _MerchantBucketCreationPageState
     final amount = double.tryParse(member.amountController.text) ?? 0;
     final interest = double.tryParse(member.interestController.text) ?? 0;
     final tenure = int.tryParse(member.tenureController.text) ?? 0;
-
     if (amount > 0 && interest > 0 && tenure > 0) {
       final emi = calculateEmi(amount, interest, tenure);
       member.emiController.text = emi.toStringAsFixed(2);
@@ -83,10 +82,12 @@ class _MerchantBucketCreationPageState
       member.emiController.clear();
     }
   }
+
   Future<String> _getFilePath() async {
     final dir = await getApplicationDocumentsDirectory();
     return "${dir.path}/recording.aac";
   }
+
   Future<void> _init() async {
     final mic = await Permission.microphone.request();
     await Permission.storage.request(); // for Android
@@ -123,6 +124,7 @@ class _MerchantBucketCreationPageState
     _isRecorderReady = true;
     setState(() {});
   }
+
   Future<void> startRecording() async {
     try {
       if (!_isRecorderReady) return;
@@ -187,8 +189,8 @@ class _MerchantBucketCreationPageState
   double calculateEmi(double principleAmount, double interestRate, int tenure) {
     var monthlyInterest = (interestRate * 0.01) / 12;
     var emi = (principleAmount *
-        monthlyInterest *
-        pow((1 + monthlyInterest), tenure)) /
+            monthlyInterest *
+            pow((1 + monthlyInterest), tenure)) /
         ((pow((1 + monthlyInterest), tenure)) - 1);
     return emi;
   }
@@ -312,12 +314,14 @@ class _MerchantBucketCreationPageState
       SnackBar(content: Text(message)),
     );
   }
+
   String formatDuration(Duration duration) {
     final minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
     final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
 
     return '$minutes:$seconds';
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -460,7 +464,7 @@ class _MerchantBucketCreationPageState
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: members.length,
                         separatorBuilder: (context, index) =>
-                        const Divider(height: 16),
+                            const Divider(height: 16),
                         itemBuilder: (context, index) {
                           return _buildMemberCard(index, members[index]);
                         },
@@ -515,6 +519,7 @@ class _MerchantBucketCreationPageState
                             value: ReminderType.relative,
                             groupValue: reminderType,
                             dense: true,
+                            activeColor: Color(0xFFEA307B),
                             contentPadding: EdgeInsets.zero,
                             title: const Text(
                               "Before Due Date",
@@ -532,6 +537,7 @@ class _MerchantBucketCreationPageState
                             value: ReminderType.custom,
                             groupValue: reminderType,
                             dense: true,
+                            activeColor: Color(0xFFEA307B),
                             contentPadding: EdgeInsets.zero,
                             title: const Text(
                               "Custom Date",
@@ -556,6 +562,8 @@ class _MerchantBucketCreationPageState
                         ),
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton<String>(
+                            borderRadius: BorderRadius.circular(16),
+                            dropdownColor: lightPink,
                             value: selectedReminderOption,
                             isExpanded: true,
                             items: reminderOptions.map((option) {
@@ -578,7 +586,8 @@ class _MerchantBucketCreationPageState
                         label: 'Reminder Date',
                         hintText: 'Select reminder date',
                         icon: Icons.notifications_active_outlined,
-                        onTap: () => _selectDate(context, reminderDateController),
+                        onTap: () =>
+                            _selectDate(context, reminderDateController),
                       ),
                     const SizedBox(height: 20),
                     const Text(
@@ -601,7 +610,7 @@ class _MerchantBucketCreationPageState
                             value: items[index]["checked"],
                             dense: true,
                             controlAffinity: ListTileControlAffinity.leading,
-                            activeColor: const Color(0xFF1A237E),
+                            activeColor: const Color(0xFFEA307B),
                             title: Text(
                               items[index]["title"],
                               style: const TextStyle(
@@ -621,39 +630,55 @@ class _MerchantBucketCreationPageState
                       ),
                     ),
                     const SizedBox(height: 8),
-                    items[2]['title'] == "CALL" && items[2]["checked"]==true?
-                        Row(
-                          children: [
-                            Row(
-                              children: [
-                                Checkbox(value: useDefaultAudio, onChanged: (value){
-                                  setState(() {
-                                    useCustomAudio == true?
-                                    useCustomAudio = false:
-                                    useDefaultAudio =value!;
-                                  });
-                                }),
-                                Text("DEFAULT VOICE",
-                                  style: TextStyle(fontWeight: FontWeight.w700, color: Colors.grey, fontSize: 12),)
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Checkbox(value: useCustomAudio, onChanged: (value){
-                                  setState(() {
-                                    useDefaultAudio == true?
-                                    useDefaultAudio = false:
-                                    useCustomAudio =value!;
-
-                                  });
-                                }),
-                                Text("CUSTOM VOICE",style: TextStyle(fontWeight: FontWeight.w700, color: Colors.grey, fontSize: 12),)
-                              ],
-                            )
-                          ],
-                        ):SizedBox.shrink(),
-                    useCustomAudio?
-                    audioCardUi():SizedBox.shrink(),
+                    items[2]['title'] == "CALL" && items[2]["checked"] == true
+                        ? Row(
+                            children: [
+                              Row(
+                                children: [
+                                  Checkbox(
+                                      value: useDefaultAudio,
+                                      activeColor: Color(0xFFEA307B),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          useCustomAudio == true
+                                              ? useCustomAudio = false
+                                              : useDefaultAudio = value!;
+                                        });
+                                      }),
+                                  Text(
+                                    "DEFAULT VOICE",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.grey,
+                                        fontSize: 12),
+                                  )
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Checkbox(
+                                      value: useCustomAudio,
+                                      activeColor: Color(0xFFEA307B),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          useDefaultAudio == true
+                                              ? useDefaultAudio = false
+                                              : useCustomAudio = value!;
+                                        });
+                                      }),
+                                  Text(
+                                    "CUSTOM VOICE",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.grey,
+                                        fontSize: 12),
+                                  )
+                                ],
+                              )
+                            ],
+                          )
+                        : SizedBox.shrink(),
+                    useCustomAudio ? audioCardUi() : SizedBox.shrink(),
                     Text(
                       "Members will receive reminders through the selected channels.",
                       style: TextStyle(
@@ -704,101 +729,95 @@ class _MerchantBucketCreationPageState
 
   Card audioCardUi() {
     return Card(
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Recording timer
+            if (_isRecording) ...[
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.mic, color: Colors.red),
+                  SizedBox(width: 8),
+                  Text(
+                    "Recording...",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.red,
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Recording timer
-                          if (_isRecording) ...[
-                            const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.mic, color: Colors.red),
-                                SizedBox(width: 8),
-                                Text(
-                                  "Recording...",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              formatDuration(_recordDuration),
-                              style: const TextStyle(
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                          ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                formatDuration(_recordDuration),
+                style: const TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
 
-                          // Timeline
-                          if (_filePath != null && !_isRecording) ...[
-                            Slider(
-                              value: _playPosition.inMilliseconds.toDouble(),
-                              max: _playDuration.inMilliseconds == 0
-                                  ? 1
-                                  : _playDuration.inMilliseconds.toDouble(),
-                              onChanged: (value) async {
-                                await _player.seekToPlayer(
-                                  Duration(milliseconds: value.toInt()),
-                                );
-                              },
-                            ),
-
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(formatDuration(_playPosition)),
-                                Text(formatDuration(_playDuration)),
-                              ],
-                            ),
-
-                            const SizedBox(height: 12),
-                          ],
-
-                          // Controls
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              FloatingActionButton(
-                                heroTag: "record",
-                                mini: true,
-                                backgroundColor:
-                                _isRecording ? Colors.red : Colors.blue,
-                                onPressed:
-                                _isRecording ? stopRecording : startRecording,
-                                child: Icon(color: Colors.white,
-                                  _isRecording ? Icons.stop : Icons.mic,
-                                ),
-                              ),
-
-                              const SizedBox(width: 24),
-
-                              if (_filePath != null)
-                                FloatingActionButton(
-                                  heroTag: "play",
-                                  mini: true,
-                                  onPressed:
-                                  _isPlaying ? stopPlaying : playRecording,
-                                  child: Icon(
-                                    _isPlaying ? Icons.stop : Icons.play_arrow,
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+            // Timeline
+            if (_filePath != null && !_isRecording) ...[
+              Slider(
+                value: _playPosition.inMilliseconds.toDouble(),
+                max: _playDuration.inMilliseconds == 0
+                    ? 1
+                    : _playDuration.inMilliseconds.toDouble(),
+                onChanged: (value) async {
+                  await _player.seekToPlayer(
+                    Duration(milliseconds: value.toInt()),
                   );
+                },
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(formatDuration(_playPosition)),
+                  Text(formatDuration(_playDuration)),
+                ],
+              ),
+              const SizedBox(height: 12),
+            ],
+
+            // Controls
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FloatingActionButton(
+                  heroTag: "record",
+                  mini: true,
+                  backgroundColor: _isRecording ? Colors.red : Colors.blue,
+                  onPressed: _isRecording ? stopRecording : startRecording,
+                  child: Icon(
+                    color: Colors.white,
+                    _isRecording ? Icons.stop : Icons.mic,
+                  ),
+                ),
+                const SizedBox(width: 24),
+                if (_filePath != null)
+                  FloatingActionButton(
+                    heroTag: "play",
+                    mini: true,
+                    onPressed: _isPlaying ? stopPlaying : playRecording,
+                    child: Icon(
+                      _isPlaying ? Icons.stop : Icons.play_arrow,
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildMemberCard(int index, Member member) {
@@ -814,7 +833,7 @@ class _MerchantBucketCreationPageState
           Row(
             children: [
               CircleAvatar(
-                backgroundColor: const Color(0xFF1A237E),
+                backgroundColor: const Color(0xFFEA307B),
                 radius: 18,
                 child: Text(
                   (index + 1).toString(),
@@ -837,12 +856,15 @@ class _MerchantBucketCreationPageState
                     color: Colors.orange.shade50),
                 child: IconButton(
                   onPressed: () => "",
-                  icon: Icon(Icons.notifications, color: Colors.orange.shade400),
+                  icon:
+                      Icon(Icons.notifications, color: Colors.orange.shade400),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
                 ),
               ),
-              SizedBox(width: 10,),
+              SizedBox(
+                width: 10,
+              ),
               Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
@@ -854,8 +876,6 @@ class _MerchantBucketCreationPageState
                   constraints: const BoxConstraints(),
                 ),
               ),
-
-
             ],
           ),
           const SizedBox(height: 12),
@@ -871,115 +891,121 @@ class _MerchantBucketCreationPageState
               const SizedBox(width: 8),
               isLoanEntity == true
                   ? Expanded(
-                child: _buildSimpleTextField(
-                  controller: member.amountController,
-                  hintText: 'Enter Loan Amount',
-                  label: 'Loan Amount',
-                  keyboardType: TextInputType.number,
-                ),
-              )
-                  :
-              _businessCat == "Chitty"?
-              Expanded(
-                child: _buildSimpleTextField(
-                  controller: member.chittyAmountController,
-                  hintText: 'Enter Chitty Amount',
-                  label: 'Chitty Amount',
-                  keyboardType: TextInputType.number,
-                ),
-              )
-                  :
-              Expanded(
-                child: _buildSimpleTextField(
-                  controller: member.amountController,
-                  hintText: 'Amount',
-                  label: 'Amount',
-                  keyboardType: TextInputType.number,
-                ),
-              ),
+                      child: _buildSimpleTextField(
+                        controller: member.amountController,
+                        hintText: 'Enter Loan Amount',
+                        label: 'Loan Amount',
+                        keyboardType: TextInputType.number,
+                      ),
+                    )
+                  : _businessCat == "Chitty"
+                      ? Expanded(
+                          child: _buildSimpleTextField(
+                            controller: member.chittyAmountController,
+                            hintText: 'Enter Chitty Amount',
+                            label: 'Chitty Amount',
+                            keyboardType: TextInputType.number,
+                          ),
+                        )
+                      : Expanded(
+                          child: _buildSimpleTextField(
+                            controller: member.amountController,
+                            hintText: 'Amount',
+                            label: 'Amount',
+                            keyboardType: TextInputType.number,
+                          ),
+                        ),
             ],
           ),
           const SizedBox(height: 8),
-          _businessCat == "Chitty"?
-          Row(
-            children: [
-              Expanded(
-                child: _buildSimpleTextField(
-                  controller: member.chittyNumberController,
-                  hintText: 'Enter Chitty Number',
-                  label: 'Chitty Number',
-                  keyboardType: TextInputType.number,
-                ),
-              ),
-              SizedBox(width: 5,),
-              Expanded(
-                child: _buildSimpleTextField(
-                  controller: member.chittyTenureController,
-                  hintText: 'Enter Chitty Tenure',
-                  label: 'Chitty Tenure',
-                  keyboardType: TextInputType.number,
-                ),
-              ),
-            ],
-          ):SizedBox.shrink(),
+          _businessCat == "Chitty"
+              ? Row(
+                  children: [
+                    Expanded(
+                      child: _buildSimpleTextField(
+                        controller: member.chittyNumberController,
+                        hintText: 'Enter Chitty Number',
+                        label: 'Chitty Number',
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Expanded(
+                      child: _buildSimpleTextField(
+                        controller: member.chittyTenureController,
+                        hintText: 'Enter Chitty Tenure',
+                        label: 'Chitty Tenure',
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
+                  ],
+                )
+              : SizedBox.shrink(),
           const SizedBox(height: 8),
-          _businessCat == "Chitty"?
-          Row(
-            children: [
-              Expanded(
-                child: _buildSimpleTextField(
-                  controller: member.chittyMonthlyInstallmentController,
-                  hintText: 'Enter Monthly Installment',
-                  label: 'Monthly Installment',
-                  keyboardType: TextInputType.number,
-                ),
-              ),
-
-            ],
-          ):SizedBox.shrink(),
-          _businessCat == "Chitty"?SizedBox.shrink(): const SizedBox(height: 8),
+          _businessCat == "Chitty"
+              ? Row(
+                  children: [
+                    Expanded(
+                      child: _buildSimpleTextField(
+                        controller: member.chittyMonthlyInstallmentController,
+                        hintText: 'Enter Monthly Installment',
+                        label: 'Monthly Installment',
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
+                  ],
+                )
+              : SizedBox.shrink(),
+          _businessCat == "Chitty"
+              ? SizedBox.shrink()
+              : const SizedBox(height: 8),
           isLoanEntity == true
               ? Row(
-            children: [
-              Expanded(
-                child: _buildSimpleTextField(
-                  controller: member.interestController,
-                  hintText: '% Interest Rate',
-                  label: 'Interest Rate',
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: _buildSimpleTextField(
-                  controller: member.tenureController,
-                  hintText: 'Enter Loan Tenure',
-                  label: 'Loan Tenure',
-                  keyboardType: TextInputType.number,
-                ),
-              )
-            ],
-          )
+                  children: [
+                    Expanded(
+                      child: _buildSimpleTextField(
+                        controller: member.interestController,
+                        hintText: '% Interest Rate',
+                        label: 'Interest Rate',
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _buildSimpleTextField(
+                        controller: member.tenureController,
+                        hintText: 'Enter Loan Tenure',
+                        label: 'Loan Tenure',
+                        keyboardType: TextInputType.number,
+                      ),
+                    )
+                  ],
+                )
               : const SizedBox.shrink(),
-          _businessCat == "Chitty"?SizedBox.shrink(): const SizedBox(height: 8),
-          isLoanEntity == true?
-          Row(
-            children: [
-              Expanded(
-                child: _buildSimpleTextField(
-                 controller: member.accNoController,
-                  hintText: 'Loan Account Number',
-                  label: 'A/C No',
-                ),
-              ),
-            ],
-          ):SizedBox.shrink(),
-         const SizedBox(height: 8),
+          _businessCat == "Chitty"
+              ? SizedBox.shrink()
+              : const SizedBox(height: 8),
+          isLoanEntity == true
+              ? Row(
+                  children: [
+                    Expanded(
+                      child: _buildSimpleTextField(
+                        controller: member.accNoController,
+                        hintText: 'Loan Account Number',
+                        label: 'A/C No',
+                      ),
+                    ),
+                  ],
+                )
+              : SizedBox.shrink(),
+          const SizedBox(height: 8),
           isLoanEntity == true
               ? _buildSimpleTextField(
-            controller: member.emiController,
-            hintText: 'EMI Amount',
-            label: 'EMI Amount',
-          )
+                  controller: member.emiController,
+                  hintText: 'EMI Amount',
+                  label: 'EMI Amount',
+                )
               : const SizedBox.shrink(),
           const SizedBox(height: 8),
           Row(
@@ -1008,69 +1034,80 @@ class _MerchantBucketCreationPageState
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(textAlign: TextAlign.start,"Auto Debit", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w700),),
+              Text(
+                textAlign: TextAlign.start,
+                "Auto Debit",
+                style:
+                    TextStyle(color: Colors.grey, fontWeight: FontWeight.w700),
+              ),
               Row(
                 children: [
-                  Checkbox(value: member.isAutoDebitEnabled, onChanged: (value){
-                    setState(() {
-                      member.isAutoDebitEnabled = value!;
-                    });
-
-                  }
-
-                  ),
-                  Expanded(child: Text("Enable Auto Debit", style: TextStyle(fontSize: 12),))
+                  Checkbox(
+                      value: member.isAutoDebitEnabled,
+                      activeColor: Color(0xFFEA307B),
+                      onChanged: (value) {
+                        setState(() {
+                          member.isAutoDebitEnabled = value!;
+                        });
+                      }),
+                  Expanded(
+                      child: Text(
+                    "Enable Auto Debit",
+                    style: TextStyle(fontSize: 12),
+                  ))
                 ],
               ),
-              member.isAutoDebitEnabled?
-              _buildSimpleTextField(
-                controller: member.autoDebitAccNoController,
-                hintText: "Customer's account number",
-                label: "Customer's account number",
-                keyboardType: TextInputType.emailAddress,
-              ):SizedBox.shrink(),
+              member.isAutoDebitEnabled
+                  ? _buildSimpleTextField(
+                      controller: member.autoDebitAccNoController,
+                      hintText: "Customer's account number",
+                      label: "Customer's account number",
+                      keyboardType: TextInputType.emailAddress,
+                    )
+                  : SizedBox.shrink(),
             ],
           ),
-          SizedBox(height: 8,),
-          member.isAutoDebitEnabled?
-          Row(children: [
-            Text("Debit date"),
-            SizedBox(width: 10,),
-            Expanded(
-              child: _buildDateField(
-                controller: debitDateController,
-                label: '',
-                hintText: 'Debit date',
-                icon: Icons.auto_mode_outlined,
-                onTap: () => _selectDate(context, debitDateController),
-              ),
-            ),
-          ],):SizedBox.shrink(),
-          member.isAutoDebitEnabled?
-          Row(
-            children: [
-              Checkbox(value: member.isAutoDebitAuthorised, onChanged: (value){
-                setState(() {
-                  member.isAutoDebitAuthorised = value!;
-                });
-              
-              }
-              
-              ),
-              Expanded(child: Text("I authorize automatic deduction of my monthly installment", style: TextStyle(fontSize: 10),))
-            ],
-          ):SizedBox.shrink()
-
-
-          // ElevatedButton(
-          //   style: ElevatedButton.styleFrom(
-          //       backgroundColor: home1,
-          //       foregroundColor: Colors.white,
-          //       shape: RoundedRectangleBorder(
-          //           borderRadius: BorderRadius.circular(10))),
-          //   onPressed: () {},
-          //   child: const Text("Send Notification"),
-          // ),
+          SizedBox(
+            height: 8,
+          ),
+          member.isAutoDebitEnabled
+              ? Row(
+                  children: [
+                    Text("Debit date"),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: _buildDateField(
+                        controller: debitDateController,
+                        label: '',
+                        hintText: 'Debit date',
+                        icon: Icons.auto_mode_outlined,
+                        onTap: () => _selectDate(context, debitDateController),
+                      ),
+                    ),
+                  ],
+                )
+              : SizedBox.shrink(),
+          member.isAutoDebitEnabled
+              ? Row(
+                  children: [
+                    Checkbox(
+                        value: member.isAutoDebitAuthorised,
+                        activeColor: Color(0xFFEA307B),
+                        onChanged: (value) {
+                          setState(() {
+                            member.isAutoDebitAuthorised = value!;
+                          });
+                        }),
+                    Expanded(
+                        child: Text(
+                      "I authorize automatic deduction of my monthly installment",
+                      style: TextStyle(fontSize: 10),
+                    ))
+                  ],
+                )
+              : SizedBox.shrink()
         ],
       ),
     );
@@ -1123,7 +1160,7 @@ class _MerchantBucketCreationPageState
       decoration: InputDecoration(
         hintText: hintText,
         labelText: label,
-        prefixIcon: Icon(icon, color: const Color(0xFF1A237E), size: 20),
+        prefixIcon: Icon(icon, color: const Color(0xFFEA307B), size: 20),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(color: Colors.grey.shade300),
@@ -1134,10 +1171,10 @@ class _MerchantBucketCreationPageState
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Color(0xFF1A237E)),
+          borderSide: const BorderSide(color: Color(0xFFEA307B)),
         ),
         contentPadding:
-        const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         isDense: true,
       ),
     );
@@ -1155,7 +1192,7 @@ class _MerchantBucketCreationPageState
       child: InputDecorator(
         decoration: InputDecoration(
           labelText: label,
-          prefixIcon: Icon(icon, color: const Color(0xFF1A237E), size: 20),
+          prefixIcon: Icon(icon, color: const Color(0xFFEA307B), size: 20),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide(color: Colors.grey.shade300),
@@ -1166,17 +1203,17 @@ class _MerchantBucketCreationPageState
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Color(0xFF1A237E)),
+            borderSide: const BorderSide(color: Color(0xFFEA307B)),
           ),
           contentPadding:
-          const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           isDense: true,
         ),
         child: Text(
           controller.text.isEmpty ? hintText : controller.text,
           style: TextStyle(
             color:
-            controller.text.isEmpty ? Colors.grey.shade400 : Colors.black87,
+                controller.text.isEmpty ? Colors.grey.shade400 : Colors.black87,
             fontSize: 14,
           ),
         ),
@@ -1192,8 +1229,10 @@ class Member {
   final TextEditingController tenureController = TextEditingController();
   final TextEditingController emiController = TextEditingController();
   final TextEditingController accNoController = TextEditingController();
-  final TextEditingController autoDebitAccNoController = TextEditingController();
-  final TextEditingController chittyMonthlyInstallmentController = TextEditingController();
+  final TextEditingController autoDebitAccNoController =
+      TextEditingController();
+  final TextEditingController chittyMonthlyInstallmentController =
+      TextEditingController();
   final TextEditingController chittyNumberController = TextEditingController();
   final TextEditingController chittyTenureController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
@@ -1247,8 +1286,8 @@ class Member {
       double principleAmount, double interestRate, int tenure) {
     var monthlyInterest = (interestRate * 0.01) / 12;
     var emi = (principleAmount *
-        monthlyInterest *
-        pow((1 + monthlyInterest), tenure)) /
+            monthlyInterest *
+            pow((1 + monthlyInterest), tenure)) /
         ((pow((1 + monthlyInterest), tenure)) - 1);
 
     emiController.text = emi.toString();
@@ -3050,5 +3089,13 @@ class Member {
 //     return emiController;
 //   }
 // }
-//
-//
+
+// ElevatedButton(
+//   style: ElevatedButton.styleFrom(
+//       backgroundColor: home1,
+//       foregroundColor: Colors.white,
+//       shape: RoundedRectangleBorder(
+//           borderRadius: BorderRadius.circular(10))),
+//   onPressed: () {},
+//   child: const Text("Send Notification"),
+// ),

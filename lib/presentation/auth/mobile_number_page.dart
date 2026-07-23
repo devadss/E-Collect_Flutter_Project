@@ -61,8 +61,8 @@ class _MobileNumberVerificationPageState
                     .toUpperCase(),
                 style:
                     TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-              ),
-              backgroundColor: Colors.orange,
+              ), backgroundColor: Colors.red,
+
             ));
           }
         },
@@ -429,7 +429,8 @@ class _MobileNumberVerificationPageState
         if (!isChecked) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text("Please accept Terms & Conditions"),
+              content: Text(textAlign: TextAlign.center,"Please accept Terms & Conditions",
+                style: TextStyle(fontWeight: FontWeight.w700),),
               backgroundColor: Colors.red,
             ),
           );
@@ -438,7 +439,7 @@ class _MobileNumberVerificationPageState
         if (_mobileNumberController.text.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text("Please enter a mobile number"),
+              content: Text(textAlign: TextAlign.center,"Please enter a mobile number",style: TextStyle(fontWeight: FontWeight.w700),),
               backgroundColor: Colors.red,
             ),
           );
@@ -447,7 +448,7 @@ class _MobileNumberVerificationPageState
         if (_mobileNumberController.text.length != 10) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text("Please enter a valid 10-digit mobile number"),
+              content: Text(textAlign: TextAlign.center,"Please enter a valid 10-digit mobile number",style: TextStyle(fontWeight: FontWeight.w700),),
               backgroundColor: Colors.red,
             ),
           );
