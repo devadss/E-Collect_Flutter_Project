@@ -145,7 +145,11 @@ class _BasicRegistrationState extends State<BasicRegistration> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Divider(),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 15),
                 child: TextField(
                   maxLength: 15,
                   keyboardType: TextInputType.name,
@@ -175,7 +179,7 @@ class _BasicRegistrationState extends State<BasicRegistration> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 15),
                 child: TextField(
                   maxLength: 15,
                   keyboardType: TextInputType.name,
@@ -205,7 +209,7 @@ class _BasicRegistrationState extends State<BasicRegistration> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 15),
                 child: TextField(
                   onChanged: (value) {
                     setState(() {
@@ -245,7 +249,7 @@ class _BasicRegistrationState extends State<BasicRegistration> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 15),
                 child: TextField(
                   onChanged: (value) {
                     setState(() {
@@ -289,7 +293,7 @@ class _BasicRegistrationState extends State<BasicRegistration> {
               Row(children: [
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.all(12.0),
+                    padding: const EdgeInsets.only(left: 20, top: 15,right: 5),
                     child: TextField(
                       obscureText: _isPasswordHidden,
                       maxLength: 6,
@@ -335,7 +339,7 @@ class _BasicRegistrationState extends State<BasicRegistration> {
                 ),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.all(12.0),
+                    padding: const EdgeInsets.only( right: 20, top: 15),
                     child: TextField(
                       obscureText: _isConfirmPasswordHidden,
                       keyboardType: TextInputType.text,
@@ -383,7 +387,10 @@ class _BasicRegistrationState extends State<BasicRegistration> {
                   ),
                 ),
               ],),
-          
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Divider(),
+              ),
               Spacer(
                 flex: 1,
               ),

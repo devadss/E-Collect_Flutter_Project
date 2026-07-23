@@ -29,7 +29,6 @@ class OnboardingEvent extends AuthenticationEvent{
   final MerchantRegistrationRequestModel merchantRegistrationRequestModel;
   const OnboardingEvent(this.merchantRegistrationRequestModel);
 }
-
 ///**********************ONBOARDING STATUS*****************************
 class OnboardingStatusEvent extends AuthenticationEvent{
   final String mobileNumber;

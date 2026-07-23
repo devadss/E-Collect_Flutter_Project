@@ -1,8 +1,6 @@
 part of 'authentication_bloc.dart';
 
-abstract class AuthenticationState {
-  const AuthenticationState();
-}
+abstract class AuthenticationState {const AuthenticationState();}
 
 ///*********************MOB-NUM_VERIFICATION******************************
 class MobLoginInitialState extends AuthenticationState {
