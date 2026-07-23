@@ -24,6 +24,13 @@ class _MobileNumberVerificationPageState
   String? errorMsg;
   final TextEditingController _mobileNumberController = TextEditingController();
 
+
+  @override
+  void dispose() {
+    _mobileNumberController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +49,7 @@ class _MobileNumberVerificationPageState
                         OtpRequestVerificationPage(
                           userId: state.otpRequestSuccessModel
                               .otpRequestSuccessResponse.userId,
-                          mobileNumber: _mobileNumberController.text,
+                          mobileNumber: _mobileNumberController.text, testOtp: state.otpRequestSuccessModel.otpRequestSuccessResponse.otp,
                         )));
           }
           else if (state is MobLoginRequestOtpFailureState) {

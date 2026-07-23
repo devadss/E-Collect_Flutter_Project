@@ -8,10 +8,10 @@ import '../../../../core/utils.dart';
 import '../../../merchant/onboarding_screen/onboarding_screen.dart';
 
 class OtpRequestVerificationPage extends StatefulWidget {
-
   final int userId;
   final String mobileNumber;
-  const OtpRequestVerificationPage({super.key, required this.userId, required this.mobileNumber, });
+  final String testOtp;
+  const OtpRequestVerificationPage({super.key, required this.userId, required this.mobileNumber, required this.testOtp, });
 
   @override
   State<OtpRequestVerificationPage> createState() => _OtpRequestVerificationPageState();
@@ -51,6 +51,7 @@ class _OtpRequestVerificationPageState
   @override
   void initState() {
     startTimer();
+
     super.initState();
   }
 
@@ -60,6 +61,7 @@ class _OtpRequestVerificationPageState
     for (var controller in _controllers) {
       controller.dispose();
     }
+
     super.dispose();
   }
 

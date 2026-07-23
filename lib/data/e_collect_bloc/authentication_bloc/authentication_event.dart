@@ -1,4 +1,3 @@
-
 part of 'authentication_bloc.dart';
 
 abstract class AuthenticationEvent{const AuthenticationEvent();}
@@ -27,8 +26,8 @@ class EventMobOtpVerification extends AuthenticationEvent{
 }
 ///**********************ONBOARDING*****************************
 class OnboardingEvent extends AuthenticationEvent{
-  final OnboardRequestModel onboardRequestModel;
-  const OnboardingEvent(this.onboardRequestModel);
+  final MerchantRegistrationRequestModel merchantRegistrationRequestModel;
+  const OnboardingEvent(this.merchantRegistrationRequestModel);
 }
 
 ///**********************ONBOARDING STATUS*****************************
@@ -36,8 +35,13 @@ class OnboardingStatusEvent extends AuthenticationEvent{
   final String mobileNumber;
   const OnboardingStatusEvent(this.mobileNumber);
 }
-
+///**********************Basic Registration*****************************
 class BasicRegistrationEvent extends AuthenticationEvent{
   final BasicUserRegisterModel basicUserRegisterModel;
   const BasicRegistrationEvent(this.basicUserRegisterModel);
+}
+///**********************TOKEN_VERIFICATION*****************************
+class TokenVerificationEvent extends AuthenticationEvent{
+  final String token;
+  const TokenVerificationEvent(this.token);
 }

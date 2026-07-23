@@ -1,104 +1,143 @@
 part of 'authentication_bloc.dart';
 
-abstract class  AuthenticationState {
+abstract class AuthenticationState {
   const AuthenticationState();
 }
 
 ///*********************MOB-NUM_VERIFICATION******************************
-class MobLoginInitialState extends AuthenticationState{
+class MobLoginInitialState extends AuthenticationState {
   const MobLoginInitialState();
 }
-class MobLoginLoaderState extends AuthenticationState{
+
+class MobLoginLoaderState extends AuthenticationState {
   const MobLoginLoaderState();
 }
-class MobLoginSuccessState extends AuthenticationState{
+
+class MobLoginSuccessState extends AuthenticationState {
   const MobLoginSuccessState();
 }
-class MobLoginFailureState extends AuthenticationState{
+
+class MobLoginFailureState extends AuthenticationState {
   const MobLoginFailureState();
 }
+
 ///*********************OTP-REQUEST******************************
-class MobLoginRequestOtpInitialState extends AuthenticationState{
+class MobLoginRequestOtpInitialState extends AuthenticationState {
   const MobLoginRequestOtpInitialState();
 }
-class MobLoginRequestOtpLoaderState extends AuthenticationState{
+
+class MobLoginRequestOtpLoaderState extends AuthenticationState {
   const MobLoginRequestOtpLoaderState();
 }
-class MobLoginRequestOtpSuccessState extends AuthenticationState{
+
+class MobLoginRequestOtpSuccessState extends AuthenticationState {
   final OtpRequestSuccessModel otpRequestSuccessModel;
   const MobLoginRequestOtpSuccessState(this.otpRequestSuccessModel);
 }
-class MobLoginRequestOtpFailureState extends AuthenticationState{
+
+class MobLoginRequestOtpFailureState extends AuthenticationState {
   final OtpRequestFailureModel otpRequestFailureModel;
   const MobLoginRequestOtpFailureState(this.otpRequestFailureModel);
 }
+
 ///*********************RESEND-OTP******************************
-class MobLoginResendOtpLoaderState extends AuthenticationState{
+class MobLoginResendOtpLoaderState extends AuthenticationState {
   const MobLoginResendOtpLoaderState();
 }
-class MobLoginResendOtpSuccessState extends AuthenticationState{
+
+class MobLoginResendOtpSuccessState extends AuthenticationState {
   final OtpRequestSuccessModel otpRequestSuccessModel;
   const MobLoginResendOtpSuccessState(this.otpRequestSuccessModel);
 }
-class MobLoginResendOtpFailureState extends AuthenticationState{
+
+class MobLoginResendOtpFailureState extends AuthenticationState {
   final OtpRequestFailureModel otpRequestFailureModel;
   const MobLoginResendOtpFailureState(this.otpRequestFailureModel);
 }
+
 ///********************OTP-VERIFICATION*******************************
-class MobLoginVerifyOtpInitialState extends AuthenticationState{
+class MobLoginVerifyOtpInitialState extends AuthenticationState {
   const MobLoginVerifyOtpInitialState();
 }
-class MobLoginVerifyOtpLoaderState extends AuthenticationState{
+
+class MobLoginVerifyOtpLoaderState extends AuthenticationState {
   const MobLoginVerifyOtpLoaderState();
 }
-class MobLoginVerifyOtpSuccessState extends AuthenticationState{
+
+class MobLoginVerifyOtpSuccessState extends AuthenticationState {
   final OtpVerificationSuccessModel otpVerificationSuccessModel;
   const MobLoginVerifyOtpSuccessState(this.otpVerificationSuccessModel);
 }
-class MobLoginVerifyOtpFailureState extends AuthenticationState{
+
+class MobLoginVerifyOtpFailureState extends AuthenticationState {
   final OtpVerificationFailureModel otpVerificationFailureModel;
   const MobLoginVerifyOtpFailureState(this.otpVerificationFailureModel);
 }
 
 ///**********************ONBOARDING*****************************
-class OnboardingInitialState extends AuthenticationState{
+class OnboardingInitialState extends AuthenticationState {
   const OnboardingInitialState();
 }
-class OnboardingLoaderState extends AuthenticationState{
+
+class OnboardingLoaderState extends AuthenticationState {
   const OnboardingLoaderState();
 }
-class OnboardingSuccessState extends AuthenticationState{
+
+class OnboardingSuccessState extends AuthenticationState {
   const OnboardingSuccessState();
 }
-class OnboardingFailureState extends AuthenticationState{
+
+class OnboardingFailureState extends AuthenticationState {
   const OnboardingFailureState();
 }
+
 ///**********************ONBOARDING-STATUS*****************************
-class OnboardingStatusInitialState extends AuthenticationState{
+class OnboardingStatusInitialState extends AuthenticationState {
   const OnboardingStatusInitialState();
 }
-class OnboardingStatusLoaderState extends AuthenticationState{
+
+class OnboardingStatusLoaderState extends AuthenticationState {
   const OnboardingStatusLoaderState();
 }
-class OnboardingStatusSuccessState extends AuthenticationState{
+
+class OnboardingStatusSuccessState extends AuthenticationState {
   const OnboardingStatusSuccessState();
 }
-class OnboardingStatusFailureState extends AuthenticationState{
+
+class OnboardingStatusFailureState extends AuthenticationState {
   const OnboardingStatusFailureState();
 }
+
 ///*********************BASIC-REGISTRATION******************************
-class BasicRegistrationInitialState extends AuthenticationState{
+class BasicRegistrationInitialState extends AuthenticationState {
   const BasicRegistrationInitialState();
 }
-class BasicRegistrationLoaderState extends AuthenticationState{
+
+class BasicRegistrationLoaderState extends AuthenticationState {
   const BasicRegistrationLoaderState();
 }
-class BasicRegistrationSuccessState extends AuthenticationState{
+
+class BasicRegistrationSuccessState extends AuthenticationState {
   final BasicRegistrationSuccessModel basicRegistrationSuccessModel;
   const BasicRegistrationSuccessState(this.basicRegistrationSuccessModel);
 }
-class BasicRegistrationFailureState extends AuthenticationState{
+
+class BasicRegistrationFailureState extends AuthenticationState {
   final BasicRegistrationFailureModel basicRegistrationFailureModel;
   const BasicRegistrationFailureState(this.basicRegistrationFailureModel);
 }
 
+///*********************TOKEN_VERIFICATION******************************
+class TokenVerificationLoaderState extends AuthenticationState {
+  const TokenVerificationLoaderState();
+}
+
+class TokenVerificationSuccessState extends AuthenticationState {
+  final TokenVerificationSuccessModel tokenVerificationSuccessModel;
+  const TokenVerificationSuccessState(this.tokenVerificationSuccessModel);
+}
+
+class TokenVerificationFailureState extends AuthenticationState {
+  final TokenVerificationFailureModel tokenVerificationFailureModel;
+  const TokenVerificationFailureState(this.tokenVerificationFailureModel);
+}

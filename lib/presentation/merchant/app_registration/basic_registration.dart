@@ -20,13 +20,28 @@ class _BasicRegistrationState extends State<BasicRegistration> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController mobileNumberController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-  TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
   String? emailError;
   String? mobileError;
   bool _isPasswordHidden = true;
   bool _isConfirmPasswordHidden = true;
   String? confirmPasswordError;
+
+  @override
+  void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    emailController.dispose();
+    mobileNumberController.dispose();
+    confirmPasswordController.dispose();
+    passwordController.dispose();
+    emailError = "";
+    mobileError = "";
+    confirmPasswordError = "";
+
+    super.dispose();
+  }
+
 /////*****************VALIDATION LOGIC***********
   void validateConfirmPassword() {
     setState(() {
@@ -66,12 +81,14 @@ class _BasicRegistrationState extends State<BasicRegistration> {
                   MaterialPageRoute(
                       builder: (BuildContext cotext) =>
                           OtpRequestVerificationPage(
+                            testOtp: state.basicRegistrationSuccessModel.basicRegistrationSuccessResponse.otp,
                             userId: state.basicRegistrationSuccessModel
                                 .basicRegistrationSuccessResponse.userId,
                             mobileNumber: mobileNumberController.text,
                           )));
             }
-          } else if (state is BasicRegistrationFailureState) {
+          }
+          else if (state is BasicRegistrationFailureState) {
             Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text(state.basicRegistrationFailureModel

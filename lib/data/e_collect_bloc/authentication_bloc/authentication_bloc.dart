@@ -1,23 +1,23 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/model/e_collect/authentication_model.dart';
 import '../../../domain/model/e_collect/basic_registartion/request/basic_registration_request_model.dart';
+import '../../../domain/model/e_collect/merchant_registation_model/request/merchant_request_model.dart';
 import '../../../domain/model/e_collect/onboard/onboard_request_model.dart';
 import '../../repository/e_collect_repository/authentication_repository/authentication_repository.dart';
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
-class AuthenticationBloc
-    extends Bloc<AuthenticationEvent, AuthenticationState> {
+class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationRepository authenticationRepository;
-  AuthenticationBloc(this.authenticationRepository)
-      : super(MobLoginInitialState()) {
+  AuthenticationBloc(this.authenticationRepository) : super(MobLoginInitialState()) {
+    ///********************LOGIN******************************
     on<MobLoginVerificationEvent>((event, emit) async {
       await authenticationRepository.mobLoginRepository();
     });
     ///*********************REQUEST-OTP******************************
     on<EventMobOtpRequest>((event, emit) async {
       emit(MobLoginRequestOtpLoaderState());
-      var data = await authenticationRepository
+      final AuthenticationModel data = await authenticationRepository
           .mobOtpRequestRepository(event.mobileNumber);
       if (data is OtpRequestSuccessModel) {
         emit(MobLoginRequestOtpSuccessState(data));
@@ -28,7 +28,7 @@ class AuthenticationBloc
     ///*********************RESEND-OTP******************************
     on<EventMobOtpResend>((event, emit) async {
       emit(MobLoginResendOtpLoaderState());
-      var data =
+      final AuthenticationModel data =
           await authenticationRepository.mobOtpResendRepository(event.id);
       if (data is OtpRequestSuccessModel) {
         emit(MobLoginResendOtpSuccessState(data));
@@ -39,7 +39,7 @@ class AuthenticationBloc
     ///*********************OTP_VERIFICATION******************************
     on<EventMobOtpVerification>((event, emit) async {
       emit(MobLoginVerifyOtpLoaderState());
-      var data = await authenticationRepository.mobOtpVerificationRepository(
+      final AuthenticationModel data = await authenticationRepository.mobOtpVerificationRepository(
           event.mobileNumber, event.id, event.otp);
       if (data is OtpVerificationSuccessModel) {
         emit(MobLoginVerifyOtpSuccessState(data));
@@ -58,14 +58,16 @@ class AuthenticationBloc
     ///*********************BASIC-REGISTRATION******************************
     on<BasicRegistrationEvent>((event, emit) async {
       emit(BasicRegistrationLoaderState());
-      var data = await authenticationRepository
-          .basicRegistrationRepository(event.basicUserRegisterModel);
+      final AuthenticationModel data = await authenticationRepository.basicRegistrationRepository(event.basicUserRegisterModel);
       if (data is BasicRegistrationSuccessModel) {
         emit(BasicRegistrationSuccessState(data));
       } else if (data is BasicRegistrationFailureModel) {
         emit(BasicRegistrationFailureState(data));
       }
     });
-    //--------------------------------------------------------------
+    ///*********************TOKEN_VERIFICATION******************************
+    on<TokenVerificationEvent>((event, emit) async {
+      await authenticationRepository.tokenVerificationRepository(event.token);
+    });
   }
 }
