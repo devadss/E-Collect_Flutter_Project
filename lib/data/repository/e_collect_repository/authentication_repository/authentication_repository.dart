@@ -13,6 +13,7 @@ import '../../../../domain/model/e_collect/token_validation/token_validation_fai
 import '../../../../domain/model/e_collect/token_validation/token_validation_success.dart';
 
 class AuthenticationRepository {
+  
   final String _requestOtpEndPoint = "api/Auth/request-otp";
   final String _resendOtpEndPoint = "api/Auth/resend-otp";
   final String _verifyOtpEndPoint = "api/Auth/verify-otp";
@@ -21,7 +22,9 @@ class AuthenticationRepository {
   final Map<String, String> contentType = {"Content-Type": "application/json"};
 
   ///*********************LOGIN******************************
-  Future<void> mobLoginRepository() async {}
+  Future<void> mobLoginRepository() async {
+
+  }
 
   ///*********************REQUEST-OTP******************************
   Future<AuthenticationModel> mobOtpRequestRepository(
