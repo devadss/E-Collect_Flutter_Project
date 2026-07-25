@@ -337,7 +337,7 @@ ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(notificationTi
                             custPhone: widget.custPhone,
                             custId: widget.custId,
                             txnId: "",
-                            txnType: "QR", dat: '', tranType: 'CASH', accNo: '',
+                            txnType: "QR", dat: '', tranType: 'CASH', accNo: '', vendorPostTransId:"",
                           );
                           Navigator.push(
                               context,

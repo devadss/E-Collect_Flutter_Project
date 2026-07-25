@@ -39,6 +39,7 @@ class AllTransactionHistoryModel {
   String? agentMail;
   String? loadStatus;
   String? transId;
+  String? vendorPostTransId;
   String? exTransId;
   String? cardRefNum;
   String? linkUrl;
@@ -68,6 +69,7 @@ class AllTransactionHistoryModel {
     this.agentMail,
     this.loadStatus,
     this.transId,
+    this.vendorPostTransId,
     this.exTransId,
     this.cardRefNum,
     this.linkUrl,
@@ -101,6 +103,7 @@ class AllTransactionHistoryModel {
         agentMail: json["agent_mail"],
         loadStatus: json["Load_Status"],
         transId: json["TransId"],
+        vendorPostTransId: json["VendorPostTransId"],
         exTransId: json["ExTransId"],
         cardRefNum: json["CardRefNum"],
         collectionType: json["CollectionType"],
@@ -132,6 +135,7 @@ class AllTransactionHistoryModel {
     "Load_Status": loadStatus,
     "CollectionType": collectionType,
     "TransId": transId,
+    "VendorPostTransId": vendorPostTransId,
     "ExTransId": exTransId,
     "CardRefNum": cardRefNum,
     "link_url": linkUrl,

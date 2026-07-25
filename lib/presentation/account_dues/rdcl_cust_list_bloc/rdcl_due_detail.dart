@@ -606,7 +606,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
               custId: custId ?? "",
               txnId: success.transactionId.toString(),
               txnType: "CASH",
-              dat: '', tranType: 'CASH', accNo: custAcNumber.toString(),
+              dat: '', tranType: 'CASH', accNo: custAcNumber.toString(), vendorPostTransId: success.transactionId.toString(),
             );
             Navigator.push(
               context,

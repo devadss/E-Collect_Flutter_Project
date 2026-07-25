@@ -323,7 +323,7 @@ if (printStatementStatus){
 
       final qrData = widget.receiptDataModel.custPhone.isNotEmpty
           ? '''
-      Transaction ID: ${widget.receiptDataModel.txnId}
+      Transaction ID: ${widget.receiptDataModel.vendorPostTransId}
       Amount: Rs.${widget.receiptDataModel.amount}
       Date: ${DateFormat('dd-MMM-yyyy').format(DateTime.now())}
       Bank: ${widget.receiptDataModel.bankName}
@@ -336,7 +336,7 @@ if (printStatementStatus){
       Transaction Type: ${widget.receiptDataModel.txnType}
       '''
           : '''
-      Transaction ID: ${widget.receiptDataModel.txnId}
+      Transaction ID: ${widget.receiptDataModel.vendorPostTransId}
       Amount: Rs.${widget.receiptDataModel.amount}
       Date: ${DateFormat('dd-MMM-yyyy').format(DateTime.now())}
       Bank: ${widget.receiptDataModel.bankName}
@@ -397,7 +397,7 @@ if (printStatementStatus){
     bytes.addAll("Status   : SUCCESS\n".codeUnits);
 
     if (widget.receiptDataModel.txnId.isNotEmpty) {
-      bytes.addAll("Txn ID   : ${widget.receiptDataModel.txnId}\n".codeUnits);
+      bytes.addAll("Txn ID   : ${widget.receiptDataModel.vendorPostTransId}\n".codeUnits);
     }
     bytes.addAll("\n".codeUnits);
 
@@ -464,10 +464,10 @@ if (printStatementStatus){
     debugPrint("========== RECEIPT DATA ==========");
     debugPrint("Bank Name   : ${widget.receiptDataModel.bankName}");
     debugPrint("Transaction : ${widget.receiptDataModel.tranType}");
-    debugPrint("Txn ID      : ${widget.receiptDataModel.txnId}");
+    debugPrint("Txn ID      : ${widget.receiptDataModel.vendorPostTransId}");
     debugPrint("Amount      : ${widget.receiptDataModel.amount}");
     debugPrint("Customer    : ${widget.receiptDataModel.custName}");
-    debugPrint("Customer Ph : ${widget.receiptDataModel.custPhone}");
+    debugPrint("Customer Ph : ${widget.receiptDataModel.custPhone ?? "Nil"}");
     debugPrint("Account No  : ${widget.receiptDataModel.accNo}");
     debugPrint("Agent Name  : ${widget.receiptDataModel.agentName}");
    // debugPrint("Agent Phone : ${widget.receiptDataModel.agentPhone}");
@@ -499,7 +499,8 @@ if (printStatementStatus){
 
       // ===== HEADER =====
       bytes.addAll([0x1B, 0x61, 0x01]); // Center
-      bytes.addAll([0x1B, 0x21, 0x30]); // Big + Bold
+    //  bytes.addAll([0x1B, 0x21, 0x30]); // Big + Bold
+      bytes.addAll([0x1B, 0x21, 0x00]); // Normal size
       bytes.addAll("${widget.receiptDataModel.bankName}\n".codeUnits);
 
       bytes.addAll([0x1B, 0x21, 0x00]);
@@ -534,7 +535,8 @@ if (printStatementStatus){
 
       // ===== AMOUNT (Highlight) =====
       bytes.addAll([0x1B, 0x61, 0x01]); // Center
-      bytes.addAll([0x1B, 0x21, 0x30]); // Large
+    //  bytes.addAll([0x1B, 0x21, 0x30]); // Large
+      bytes.addAll([0x1B, 0x21, 0x08]); // Bold only
       bytes.addAll("Rs. ${widget.receiptDataModel.amount}\n".codeUnits);
 
       bytes.addAll([0x1B, 0x21, 0x00]);
@@ -572,6 +574,7 @@ if (printStatementStatus){
       bytes.addAll("------------------------------\n".codeUnits);
 
       // ===== FOOTER =====
+      bytes.addAll([0x1B, 0x21, 0x00]); // Reset to normal
       bytes.addAll([0x1B, 0x61, 0x01]); // Center
       bytes.addAll("\nThank you for banking with us!\n".codeUnits);
 
@@ -1145,7 +1148,7 @@ if (printStatementStatus){
                           textAlign: TextAlign.center,
                           widget.receiptDataModel.bankName,
                           style: TextStyle(
-                            fontSize: widget.receiptDataModel.bankName.length >15 ?17:24,
+                            fontSize: widget.receiptDataModel.bankName.length >15 ?11:20,
                             fontWeight: FontWeight.bold,
                             color: home2,
                           ),
@@ -1351,7 +1354,7 @@ Agent Phone: ${widget.receiptDataModel.agentPhone}
                                   ),
                                   child: QrImageView(
                                     data: '''
-Transaction ID: 1234567890
+Transaction ID: ${widget.receiptDataModel.vendorPostTransId}
 Amount: Rs.${widget.receiptDataModel.amount}
 Date: ${DateFormat('dd-MMM-yyyy').format(DateTime.now())}
 Bank: ${widget.receiptDataModel.bankName}
@@ -1646,7 +1649,7 @@ Agent Phone: ${subagentPhoneNumber}
                           /// DETAILS
                           _buildDetailRow(
                             "Transaction ID",
-                            widget.receiptDataModel.txnId,
+                            widget.receiptDataModel.vendorPostTransId,
                           ),
 
                           _buildDetailRow(

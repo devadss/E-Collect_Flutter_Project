@@ -47,6 +47,7 @@ class QrTransaction {
   String? corpCode;
   //Code? branchCode;
   String? branchCode;
+  String? vendorPostTransId;
   //CorpName? corpName;
   String? corpName;
   String? shopName;
@@ -68,6 +69,7 @@ class QrTransaction {
     this.source,
     this.corpCode,
     this.branchCode,
+    this.vendorPostTransId,
     this.corpName,
     this.shopName,
     this.gsttin,
@@ -91,6 +93,7 @@ class QrTransaction {
     source: json["Source"] ,
     corpCode: json["CorpCode"],
     branchCode:json["BranchCode"],
+    vendorPostTransId:json["VendorPostTransId"],
     corpName: json["CorpName"],
     shopName: json["ShopName"],
     collectionType: json["CollectionType"],
@@ -114,6 +117,7 @@ class QrTransaction {
     "Source":  source,
     "CorpCode": corpCode,
     "BranchCode": branchCode,
+    "VendorPostTransId": vendorPostTransId,
     "CorpName": corpName,
     "ShopName":  shopName,
     "CollectionType":  collectionType,

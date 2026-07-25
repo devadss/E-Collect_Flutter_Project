@@ -669,7 +669,7 @@ loadSharedPrefs();
               custPhone: custPhoneNumber ?? "",
               custId: custId!,
               txnId: success.transactionId.toString(),
-              txnType: "CASH", dat: '', tranType: 'CASH', accNo: custAcNumber.toString(),
+              txnType: "CASH", dat: '', tranType: 'CASH', accNo: custAcNumber.toString(), vendorPostTransId: success.transactionId.toString(),
             );
             Navigator.push(
               context,

@@ -364,7 +364,6 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                       amount: "${widget.transactionHistoryModel.amount}",
                       bankName: getBankNameFromCorpCode(widget.transactionHistoryModel.corpCode).toString(),
                       agentName: widget.transactionHistoryModel.agentName,
-
                       agentPhone: widget.transactionHistoryModel.agentPhone,
                       custName: widget.transactionHistoryModel.customerName,
                       custPhone: widget.transactionHistoryModel.customerNumber,
@@ -373,7 +372,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                       txnType: widget.transactionHistoryModel.tnxType,
                       dat: widget.transactionHistoryModel.dat,
                       tranType: widget.transactionHistoryModel.transactionType,
-                      accNo: widget.transactionHistoryModel.accountNumber,
+                      accNo: widget.transactionHistoryModel.accountNumber, vendorPostTransId: widget.transactionHistoryModel.vendorPostTransId,
                     );
                     Navigator.push(
                       context,
@@ -452,10 +451,11 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
         children: [
           _buildDetailItem(
               // "Transfer ID", widget.transactionHistoryModel.agentTransaction.orderId ?? "N/A"
-              "Transfer ID",
-              widget.transactionHistoryModel.transferId.replaceAll("_MERCHANT", "")),
+              "Txn ID",
+            //  widget.transactionHistoryModel.transferId.replaceAll("_MERCHANT", "")),
+              widget.transactionHistoryModel.vendorPostTransId),
           _buildDetailItem("Transaction Type ", widget.transactionHistoryModel.transactionType.contains("CASH")? "CASH":"UPI"),
-          _buildDetailItem("Amount", "₹${widget.transactionHistoryModel.amount}"),
+          _buildDetailItem("Amount", "₹ ${widget.transactionHistoryModel.amount}"),
           _buildDetailItem(
               "Agent Name",
               // widget.transactionHistoryModel.agentTransaction.linkCurrency

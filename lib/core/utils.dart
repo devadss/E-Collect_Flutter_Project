@@ -422,6 +422,7 @@ class TransactionHistoryModel {
   final String transactionType;
   final String transferId;
   final String agentName;
+  final String vendorPostTransId;
   final String agentPhone;
   final String customerName;
   final String customerId;
@@ -444,6 +445,7 @@ class TransactionHistoryModel {
       required this.customerNumber,
       required this.corpCode,
       required this.tnxType,
+      required this.vendorPostTransId,
       required this.paymentMode});
 }
 
@@ -458,6 +460,7 @@ class ReceiptDataModel {
   final String custId;
   final String txnId;
   final String txnType;
+  final String vendorPostTransId;
   final String tranType;
   final String accNo;
   ReceiptDataModel(
@@ -471,6 +474,7 @@ class ReceiptDataModel {
       required this.custId,
       required this.txnId,
       required this.txnType,
+      required this.vendorPostTransId,
       required this.tranType,
       required this.accNo});
 }

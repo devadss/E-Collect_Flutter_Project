@@ -263,7 +263,7 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
               txnType: "CASH",
               dat: '',
               tranType: 'CASH',
-              accNo: custAcNumber.toString(),
+              accNo: custAcNumber.toString(), vendorPostTransId: success.transactionId.toString(),
             );
 
             Navigator.push(

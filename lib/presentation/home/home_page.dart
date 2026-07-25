@@ -1234,10 +1234,13 @@ class _HomePageState extends State<HomePage>
       getCustPhone: (t) => t.customerPhone.toString(),
       getTnxType: (t) => t.source.toString(),
       paymentMode: (t) => t.paymentMode.toString(),
+
       collectionType: (t) => t.collectionType.toString(),
       getAccNo: (t) => t.customerAcctno.toString(),
       getTranType: (t) => t.source.toString(),
       getCustAccNo: (t) => t.customerAcctno.toString(),
+      getVendorPostTransId: (t) => t.vendorPostTransId.toString(),
+
     );
   }
 
@@ -1267,7 +1270,8 @@ class _HomePageState extends State<HomePage>
         collectionType: (t) => t.collectionType.toString(),
         getAccNo: (t) => t.customerAccNo.toString(),
         getTranType: (t) => t.source.toString(),
-        getCustAccNo: (t) => t.customerAccNo.toString());
+        getCustAccNo: (t) => t.customerAccNo.toString(),
+        getVendorPostTransId: (t) => t.vendorPostTransId.toString());
   }
 
   Widget _buildCashWithQrTransactionContent(CashQrProvider cashQrProvider) {
@@ -1297,6 +1301,7 @@ class _HomePageState extends State<HomePage>
       getAccNo: (t) => t.customerAccNo.toString(),
       getTranType: (t) => t.source.toString(),
       getCustAccNo: (t) => t.customerAccNo.toString(),
+      getVendorPostTransId: (t) => t.vendorPostTransId.toString(),
     );
   }
 
@@ -1305,6 +1310,7 @@ class _HomePageState extends State<HomePage>
     required IconData icon,
     required Color iconColor,
     required double Function(T) getAmount,
+    required String Function(T) getVendorPostTransId,
     required String Function(T) getStatus,
     required String Function(T) getAccNo,
     required String Function(T) getTranType,
@@ -1336,6 +1342,7 @@ class _HomePageState extends State<HomePage>
           transferId: getOrderId(transaction),
           customerNumber: getCustPhone(transaction),
           tnxType: getTnxType(transaction),
+          vendorPostTransId: getVendorPostTransId(transaction),
           paymentMode: paymentMode(transaction),
           collectionType: collectionType(transaction),
           accountNumber: getCustAccNo(transaction),
@@ -1350,6 +1357,7 @@ class _HomePageState extends State<HomePage>
     required Color iconColor,
     required String title,
     required String date,
+    required String vendorPostTransId,
     required double amount,
     required String status,
     required String transferId,
@@ -1390,6 +1398,7 @@ class _HomePageState extends State<HomePage>
                 customerNumber: customerNumber,
                 corpCode: corpCode ?? "",
                 tnxType: tnxType,
+                vendorPostTransId: vendorPostTransId,
                 paymentMode: paymentMode,
                 dat: date,
                 accountNumber: accountNumber,

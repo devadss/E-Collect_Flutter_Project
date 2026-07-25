@@ -326,7 +326,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
                             agentPhoneNumber ?? "agentPhone",
                             custName: widget.custName,
                             custPhone: widget.custPhone,
-                            custId: widget.custId, txnId: "", txnType: "QR", dat: '', tranType: '', accNo: '',
+                            custId: widget.custId, txnId: "", txnType: "QR", dat: '', tranType: '', accNo: '', vendorPostTransId: "",
                           );
                           Navigator.push(
                               context,
