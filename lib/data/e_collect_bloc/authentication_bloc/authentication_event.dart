@@ -44,3 +44,8 @@ class TokenVerificationEvent extends AuthenticationEvent{
   final String token;
   const TokenVerificationEvent(this.token);
 }
+///**********************IFSC*****************************
+class IfscBranchEvent extends AuthenticationEvent{
+  final String ifscCode;
+  const IfscBranchEvent(this.ifscCode);
+}

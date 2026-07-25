@@ -1,3 +1,4 @@
+import 'package:collection_qr_flutter/domain/model/e_collect/ifsc_model/ifsc_success_model.dart';
 import 'package:collection_qr_flutter/domain/model/e_collect/token_validation/token_validation_fail.dart';
 import 'package:collection_qr_flutter/domain/model/e_collect/token_validation/token_validation_success.dart';
 import 'basic_registartion/basic_registration_failure_response.dart';
@@ -51,5 +52,16 @@ class TokenVerificationSuccessModel extends AuthenticationModel{
 class TokenVerificationFailureModel extends AuthenticationModel{
   final TokenValidationFailureResponse tokenValidationFailureResponse;
   const TokenVerificationFailureModel(this.tokenValidationFailureResponse);
+}
+
+///********************IfscCode******************************
+class IfscCodeOkModel extends AuthenticationModel{
+  final BankIfscSuccessModel bankIfscSuccessModel;
+  const IfscCodeOkModel(this.bankIfscSuccessModel);
+}
+
+class IfscCodeFailModel extends AuthenticationModel{
+  final String ifscCodeFail;
+  const IfscCodeFailModel(this.ifscCodeFail);
 }
 

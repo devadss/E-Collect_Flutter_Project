@@ -139,3 +139,19 @@ class TokenVerificationFailureState extends AuthenticationState {
   final TokenVerificationFailureModel tokenVerificationFailureModel;
   const TokenVerificationFailureState(this.tokenVerificationFailureModel);
 }
+
+///*********************IFSC******************************
+class IfscBranchLoaderState extends AuthenticationState {
+  const IfscBranchLoaderState();
+}
+
+class IfscBranchSuccessState extends AuthenticationState {
+  final IfscCodeOkModel ifscCodeOkModel;
+  const IfscBranchSuccessState(this.ifscCodeOkModel);
+}
+
+class IfscBranchFailureState extends AuthenticationState {
+  final IfscCodeFailModel ifscCodeFailModel;
+  const IfscBranchFailureState(this.ifscCodeFailModel);
+}
+

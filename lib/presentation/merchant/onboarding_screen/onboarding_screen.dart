@@ -1413,9 +1413,12 @@
 //   }
 // }
 //
+import 'package:collection_qr_flutter/core/alerts.dart';
 import 'package:collection_qr_flutter/core/colors.dart';
+import 'package:collection_qr_flutter/data/e_collect_bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../bottom_nav/bottom_nav_bar.dart';
 
@@ -1429,29 +1432,40 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   // ==================== MANDATORY FIELDS ====================
   final TextEditingController merchantNameController = TextEditingController();
-  final TextEditingController registeredPhoneController = TextEditingController();
-  final TextEditingController registeredEmailController = TextEditingController();
-  final TextEditingController businessAddressController = TextEditingController();
+  final TextEditingController registeredPhoneController =
+      TextEditingController();
+  final TextEditingController registeredEmailController =
+      TextEditingController();
+  final TextEditingController businessAddressController =
+      TextEditingController();
   final TextEditingController entityPanController = TextEditingController();
 
   // Settlement Account (Mandatory)
-  final TextEditingController accountHolderNameController = TextEditingController();
+  final TextEditingController accountHolderNameController =
+      TextEditingController();
   final TextEditingController accountNumberController = TextEditingController();
   final TextEditingController ifscCodeController = TextEditingController();
 
   // ==================== OPTIONAL FIELDS ====================
-  final TextEditingController merchantLegalNameController = TextEditingController();
+  final TextEditingController merchantLegalNameController =
+      TextEditingController();
   final TextEditingController websiteUrlController = TextEditingController();
   final TextEditingController gstController = TextEditingController();
-  final TextEditingController registrationNumberController = TextEditingController();
+  final TextEditingController registrationNumberController =
+      TextEditingController();
   final TextEditingController monthlyVolumeController = TextEditingController();
-  final TextEditingController monthlyTransactionsController = TextEditingController();
-  final TextEditingController averageTicketSizeController = TextEditingController();
+  final TextEditingController monthlyTransactionsController =
+      TextEditingController();
+  final TextEditingController averageTicketSizeController =
+      TextEditingController();
 
   // Optional: Secondary Contact / Authorized Signatory
-  final TextEditingController secondaryContactNameController = TextEditingController();
-  final TextEditingController secondaryContactPhoneController = TextEditingController();
-  final TextEditingController secondaryContactEmailController = TextEditingController();
+  final TextEditingController secondaryContactNameController =
+      TextEditingController();
+  final TextEditingController secondaryContactPhoneController =
+      TextEditingController();
+  final TextEditingController secondaryContactEmailController =
+      TextEditingController();
 
   String? selectedBusinessCategory;
   String? selectedEntityType;
@@ -1463,13 +1477,33 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final List<String> businessCategories = const [
-    'Education', 'Tuition Centre', 'School', 'College', 'Gym',
-    'Healthcare', 'Retail', 'Restaurant', 'E-Commerce', 'Finance',"Chitty",
-    'NBFC', 'Gold Loan', 'Travel', 'Hotel', 'NGO', 'Others'
+    'Education',
+    'Tuition Centre',
+    'School',
+    'College',
+    'Gym',
+    'Healthcare',
+    'Retail',
+    'Restaurant',
+    'E-Commerce',
+    'Finance',
+    "Chitty",
+    'NBFC',
+    'Gold Loan',
+    'Travel',
+    'Hotel',
+    'NGO',
+    'Others'
   ];
 
   final List<String> entityTypes = const [
-    'Individual', 'Proprietorship', 'Partnership', 'Private Limited', 'LLP', 'Trust', 'Society'
+    'Individual',
+    'Proprietorship',
+    'Partnership',
+    'Private Limited',
+    'LLP',
+    'Trust',
+    'Society'
   ];
 
   final List<String> accountTypes = const ['Savings', 'Current'];
@@ -1485,7 +1519,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final volume = double.tryParse(monthlyVolumeController.text) ?? 0;
     final transactions = int.tryParse(monthlyTransactionsController.text) ?? 0;
     if (transactions > 0) {
-      averageTicketSizeController.text = (volume / transactions).toStringAsFixed(2);
+      averageTicketSizeController.text =
+          (volume / transactions).toStringAsFixed(2);
     } else {
       averageTicketSizeController.clear();
     }
@@ -1504,7 +1539,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     if (_formKey.currentState!.validate()) {
       print(selectedBusinessCategory);
 
-      await SharedPref.shared.setBusinessCategory(selectedBusinessCategory.toString());
+      await SharedPref.shared
+          .setBusinessCategory(selectedBusinessCategory.toString());
       // Log mandatory fields collected
       print('Onboarding completed with mandatory fields only');
 
@@ -1514,7 +1550,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           backgroundColor: Colors.green,
         ),
       );
-      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> BottomNavBar()));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (BuildContext context) => BottomNavBar()));
     }
   }
 
@@ -1523,7 +1560,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: const Text('Merchant Onboarding', style: TextStyle(fontWeight: FontWeight.w700)),
+        title: const Text('Merchant Onboarding',
+            style: TextStyle(fontWeight: FontWeight.w700)),
         centerTitle: true,
         elevation: 12,
         backgroundColor: home1,
@@ -1535,7 +1573,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           key: _formKey,
           child: Column(
             children: [
-              _buildMandatorySection(),
+              BlocListener<AuthenticationBloc, AuthenticationState>(
+                  listener: (BuildContext context, AuthenticationState state) {
+                    if (state is IfscBranchSuccessState) {
+                      print(state.ifscCodeOkModel.bankIfscSuccessModel.bank);
+                      print(state.ifscCodeOkModel.bankIfscSuccessModel.branch);
+                    } else if (state is IfscBranchFailureState) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                        state.ifscCodeFailModel.ifscCodeFail,
+                      )));
+                    }
+                  },
+                  child: _buildMandatorySection()),
               const SizedBox(height: 24),
               _buildOptionalSection(),
               const SizedBox(height: 24),
@@ -1610,7 +1660,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 if (value == null || value.trim().isEmpty) {
                   return 'Please enter email';
                 }
-                final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+                final emailRegex =
+                    RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
                 if (!emailRegex.hasMatch(value.trim())) {
                   return 'Please enter a valid email';
                 }
@@ -1624,7 +1675,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               items: businessCategories,
               label: 'Business Category *',
               icon: Icons.category,
-              onChanged: (value) => setState(() => selectedBusinessCategory = value),
+              onChanged: (value) =>
+                  setState(() => selectedBusinessCategory = value),
             ),
 
             // Entity Type
@@ -1658,7 +1710,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 if (value == null || value.trim().isEmpty) {
                   return 'Please enter PAN';
                 }
-                if (!RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]$').hasMatch(value.trim().toUpperCase())) {
+                if (!RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]$')
+                    .hasMatch(value.trim().toUpperCase())) {
                   return 'Please enter a valid PAN (e.g., ABCDE1234F)';
                 }
                 return null;
@@ -1705,8 +1758,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 if (value == null || value.trim().isEmpty) {
                   return 'Please enter IFSC Code';
                 }
-                if (!RegExp(r'^[A-Z]{4}0[A-Z0-9]{6}$').hasMatch(value.trim().toUpperCase())) {
+                if (!RegExp(r'^[A-Z]{4}0[A-Z0-9]{6}$')
+                    .hasMatch(value.trim().toUpperCase())) {
                   return 'Please enter a valid IFSC Code';
+                } else {
+                  print("match");
+                  context
+                      .read<AuthenticationBloc>()
+                      .add(IfscBranchEvent(value));
                 }
                 return null;
               },
@@ -1751,12 +1810,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.lightbulb_outline, color: Colors.blue[700], size: 20),
+                  Icon(Icons.lightbulb_outline,
+                      color: Colors.blue[700], size: 20),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       'These fields are optional and can be completed later. '
-                          'Providing them now helps us serve you better.',
+                      'Providing them now helps us serve you better.',
                       style: TextStyle(fontSize: 13, color: Colors.blue[700]),
                     ),
                   ),
@@ -1900,7 +1960,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
             const Divider(),
             const SizedBox(height: 16),
-
             ..._getDocumentKeys().map((key) => _buildUploadTile(key, key)),
           ],
         ),
@@ -1941,12 +2000,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ),
           filled: true,
           fillColor: readOnly ? Colors.grey[100] : Colors.white,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         ),
-        validator: validator ?? (isRequired ? (value) {
-          if (value == null || value.isEmpty) return 'Please enter $label';
-          return null;
-        } : null),
+        validator: validator ??
+            (isRequired
+                ? (value) {
+                    if (value == null || value.isEmpty)
+                      return 'Please enter $label';
+                    return null;
+                  }
+                : null),
       ),
     );
   }
@@ -1976,7 +2040,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ),
           filled: true,
           fillColor: Colors.white,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         ),
         items: items.map((String item) {
           return DropdownMenuItem<String>(
@@ -2012,7 +2077,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               color: const Color(0xFFEA307B).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(Icons.upload_file, color: const Color(0xFFEA307B), size: 20),
+            child: Icon(Icons.upload_file,
+                color: const Color(0xFFEA307B), size: 20),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -2021,7 +2087,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w500, fontSize: 14),
                 ),
                 if (uploadedFiles[key] != null)
                   Text(
@@ -2037,7 +2104,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFEA307B),
               foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
               minimumSize: const Size(80, 32),
             ),
             child: Text(uploadedFiles[key] != null ? 'Update' : 'Upload'),
@@ -2090,7 +2158,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFFEA307B),
           foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           elevation: 4,
         ),
         child: const Text(

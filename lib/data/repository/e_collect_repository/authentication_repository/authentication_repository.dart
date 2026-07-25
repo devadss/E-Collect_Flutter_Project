@@ -5,6 +5,7 @@ import '../../../../domain/model/e_collect/authentication_model.dart';
 import '../../../../domain/model/e_collect/basic_registartion/basic_registration_failure_response.dart';
 import '../../../../domain/model/e_collect/basic_registartion/basic_registration_success_response.dart';
 import '../../../../domain/model/e_collect/basic_registartion/request/basic_registration_request_model.dart';
+import '../../../../domain/model/e_collect/ifsc_model/ifsc_success_model.dart';
 import '../../../../domain/model/e_collect/otp_request/otp_request_fail.dart';
 import '../../../../domain/model/e_collect/otp_request/otp_request_success.dart';
 import '../../../../domain/model/e_collect/otp_verification/otp_verification_fail.dart';
@@ -19,6 +20,7 @@ class AuthenticationRepository {
   final String _verifyOtpEndPoint = "api/Auth/verify-otp";
   final String _basicRegistrationEndPoint = "api/Auth/register";
   final String _tokenValidationEndPoint = "api/Auth/validate-token";
+  final String _ifscBranchApiUrl = "https://ifsc.razorpay.com/";
   final Map<String, String> contentType = {"Content-Type": "application/json"};
 
   ///*********************LOGIN******************************
@@ -92,4 +94,18 @@ class AuthenticationRepository {
         : TokenVerificationFailureModel(
             TokenValidationFailureResponse.fromJson(jsonDecode(request.body)));
   }
+
+
+  ///*********************IFSC******************************
+  Future<AuthenticationModel> ifscBranchRepository(
+      String ifscCode) async {
+    final Uri uri = Uri.parse("$_ifscBranchApiUrl$ifscCode");
+    final http.Response request = await http.get(uri, headers: contentType);
+    print(request.body);
+    return request.statusCode == 200
+        ? IfscCodeOkModel(
+        BankIfscSuccessModel.fromJson(jsonDecode(request.body)))
+        : IfscCodeFailModel(request.body);
+  }
+
 }

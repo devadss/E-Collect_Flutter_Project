@@ -68,5 +68,16 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     on<TokenVerificationEvent>((event, emit) async {
       await authenticationRepository.tokenVerificationRepository(event.token);
     });
+
+
+    ///*********************IFSC******************************
+    on<IfscBranchEvent>((event, emit) async {
+      final AuthenticationModel data = await authenticationRepository.ifscBranchRepository(event.ifscCode);
+      if(data is IfscCodeOkModel){
+        emit(IfscBranchSuccessState(data));
+      }else if(data is IfscCodeFailModel){
+        emit(IfscBranchFailureState(data));
+      }
+    });
   }
 }
