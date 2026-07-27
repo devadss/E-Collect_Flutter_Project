@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
 import 'package:intl/intl.dart';
 
+import '../../../data/storage/shared_pref_helper.dart';
+
 class GroupHomePageUI extends StatefulWidget {
   const GroupHomePageUI({super.key});
 
@@ -13,7 +15,7 @@ class GroupHomePageUI extends StatefulWidget {
 class _GroupHomePageUIState extends State<GroupHomePageUI> {
   String userBranchCode = "BR001";
   String userCorpCode = "CORP001";
-  String groupUserName = "Amal K";
+  String groupUserName = "";
   bool isExpanded = false;
   final int availableMembers = 25;
   final int selectedMonthIndex = DateTime.now().month - 1;
@@ -49,7 +51,7 @@ class _GroupHomePageUIState extends State<GroupHomePageUI> {
   };
 
   // 🔹 VERIFICATION STATE - Change this to true/false to test
-  bool isVerified = true; // Set to false for unverified state
+  bool isVerified = false; // Set to false for unverified state
 
   // Dummy groups data
   final List<Map<String, dynamic>> groups = [
@@ -82,7 +84,21 @@ class _GroupHomePageUIState extends State<GroupHomePageUI> {
       "createdDate": DateTime.now().subtract(const Duration(days: 60))
     },
   ];
+  void getSharedData() async {
+    var name  = await SharedPref.shared.getECollectUserName();
+setState(() {
+  groupUserName  = name;
+});
 
+
+
+  }
+
+  @override
+  void initState() {
+    getSharedData();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     const totalCollected = 100;
@@ -256,11 +272,11 @@ class _GroupHomePageUIState extends State<GroupHomePageUI> {
           ),
         ),
       ),
-      bottomSheet: Container(decoration: BoxDecoration(
-
-        borderRadius: BorderRadius.circular(10),
-        color: Colors.white
-      ),),
+      // bottomSheet: Container(decoration: BoxDecoration(
+      //
+      //   borderRadius: BorderRadius.circular(10),
+      //   color: Colors.white
+      // ),),
     );
   }
 

@@ -17,7 +17,7 @@ class _AllGroupsPageState extends State<AllGroupsPage> {
   String cc = "CORP001";
 
   // 🔹 VERIFICATION STATE - Change this to true/false to test
-  bool isVerified = true; // Set to false for unverified state
+  bool isVerified = false; // Set to false for unverified state
 
   // 🔹 BUSINESS CATEGORY - drives whether filters are shown
   String _businessCat = "";

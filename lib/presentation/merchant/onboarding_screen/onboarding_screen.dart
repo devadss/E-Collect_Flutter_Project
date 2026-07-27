@@ -1413,9 +1413,14 @@
 //   }
 // }
 //
+import 'dart:math';
+
 import 'package:collection_qr_flutter/core/alerts.dart';
 import 'package:collection_qr_flutter/core/colors.dart';
+import 'package:collection_qr_flutter/core/utils.dart';
 import 'package:collection_qr_flutter/data/e_collect_bloc/authentication_bloc/authentication_bloc.dart';
+import 'package:collection_qr_flutter/domain/model/e_collect/merchant_registation_model/request/merchant_request_model.dart';
+import 'package:collection_qr_flutter/presentation/auth/mobile_number_page.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -1439,6 +1444,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final TextEditingController businessAddressController =
       TextEditingController();
   final TextEditingController entityPanController = TextEditingController();
+  final TextEditingController nameOnPanController = TextEditingController();
 
   // Settlement Account (Mandatory)
   final TextEditingController accountHolderNameController =
@@ -1470,6 +1476,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   String? selectedBusinessCategory;
   String? selectedEntityType;
   String? selectedAccountType;
+  String? selectedBankName;
+  String? selectedBranchName;
+  String? ifscStored;
+  bool ifscCalled = false;
 
   // Document Uploads (Mandatory based on entity type)
   final Map<String, String?> uploadedFiles = {};
@@ -1544,14 +1554,39 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       // Log mandatory fields collected
       print('Onboarding completed with mandatory fields only');
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Merchant onboarded successfully!'),
-          backgroundColor: Colors.green,
-        ),
-      );
+      var settModel = SettlementAccount(
+          accountHolderName: accountHolderNameController.text,
+          accountNumber: accountNumberController.text,
+          accountType: selectedAccountType!,
+          bankName: selectedBankName!,
+          bankBranch: selectedBranchName!,
+          ifsCCode: ifscCodeController.text,
+          isPrimary: true,
+          isActive: true);
+
+      var merchRegReqModel = MerchantRegistrationRequestModel(
+          merchantName: merchantNameController.text,
+          merchantLegalName: merchantNameController.text,
+          registeredEmail: registeredEmailController.text,
+          registeredPhone: registeredPhoneController.text,
+          businessCategory: selectedBusinessCategory!,
+          entityType: selectedEntityType!,
+          registeredAddress: businessAddressController.text,
+          entityPAN: entityPanController.text,
+          nameOnPAN: nameOnPanController.text,
+          gstNumber: gstController.text.isEmpty
+              ? generateRandomGST()
+              : gstController.text,
+          gstState: "KERALA",
+          username: merchantNameController.text,
+          password: "${merchantNameController.text}@1234",
+          confirmPassword: "${merchantNameController.text}@1234",
+          settlementAccounts: [settModel]);
+      merchRegReqModel.printValues();
+      if (!mounted) return;
+      context.read<AuthenticationBloc>().add(OnboardingEvent(merchRegReqModel));
       Navigator.push(context,
-          MaterialPageRoute(builder: (BuildContext context) => BottomNavBar()));
+          MaterialPageRoute(builder: (BuildContext context) => MobileNumberVerificationPage()));
     }
   }
 
@@ -1571,34 +1606,115 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
-          child: Column(
-            children: [
+          child: MultiBlocListener(
+            listeners: [
               BlocListener<AuthenticationBloc, AuthenticationState>(
-                  listener: (BuildContext context, AuthenticationState state) {
-                    if (state is IfscBranchSuccessState) {
-                      print(state.ifscCodeOkModel.bankIfscSuccessModel.bank);
-                      print(state.ifscCodeOkModel.bankIfscSuccessModel.branch);
-                    } else if (state is IfscBranchFailureState) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(
-                        state.ifscCodeFailModel.ifscCodeFail,
-                      )));
-                    }
-                  },
-                  child: _buildMandatorySection()),
-              const SizedBox(height: 24),
-              _buildOptionalSection(),
-              const SizedBox(height: 24),
-              _buildDocumentUploadSection(),
-              const SizedBox(height: 24),
-              _buildSubmitButton(),
+                listener: (BuildContext context, AuthenticationState state) {
+                  if(state is OnboardingStatusLoaderState){
+                    showProgressDialog(context);
+                  }
+                  if (state is OnboardingStatusSuccessState) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(state.iOnboardOkModel
+                            .merchantRegistrationSuccess.message)));
+                    merchantNameController.clear();
+                    registeredPhoneController.clear();
+                    registeredEmailController.clear();
+                    businessAddressController.clear();
+                    entityPanController.clear();
+                    nameOnPanController.clear();
+                    accountHolderNameController.clear();
+                    accountNumberController.clear();
+                    ifscCodeController.clear();
+                    merchantLegalNameController.clear();
+                    websiteUrlController.clear();
+                    gstController.clear();
+                    registrationNumberController.clear();
+                    monthlyVolumeController.clear();
+                    monthlyTransactionsController.clear();
+                    averageTicketSizeController.clear();
+                    secondaryContactNameController.clear();
+                    secondaryContactPhoneController.clear();
+                    secondaryContactEmailController.clear();
+                  }else if (state is OnboardingStatusFailureState){
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(state.onboardFailModel.merchantRegistrationFailResponse.message)));
+                  }
+                },
+              ),
+              BlocListener<AuthenticationBloc, AuthenticationState>(
+                listener: (BuildContext context, AuthenticationState state) {
+                  if (state is IfscBranchLoaderState) {
+                    showProgressDialog(context);
+                  }
+                  if (state is IfscBranchSuccessState) {
+                    Navigator.pop(context);
+                    print(state.ifscCodeOkModel.bankIfscSuccessModel.bank);
+                    print(state.ifscCodeOkModel.bankIfscSuccessModel.branch);
+
+                    setState(() {
+                      ifscStored =
+                          state.ifscCodeOkModel.bankIfscSuccessModel.ifsc;
+                      selectedBranchName =
+                          state.ifscCodeOkModel.bankIfscSuccessModel.branch;
+                      selectedBankName =
+                          state.ifscCodeOkModel.bankIfscSuccessModel.bank;
+                    });
+                  } else if (state is IfscBranchFailureState) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                      state.ifscCodeFailModel.ifscCodeFail,
+                    )));
+                  }
+                },
+              ),
             ],
+            child: Column(
+              children: [
+                _buildMandatorySection(),
+                const SizedBox(height: 24),
+                _buildOptionalSection(),
+                const SizedBox(height: 24),
+                _buildDocumentUploadSection(),
+                const SizedBox(height: 24),
+                _buildSubmitButton(),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+  String generateRandomGST() {
+    final random = Random();
 
+    // 1. Random State Code (01 to 37)
+    final stateCode = (random.nextInt(37) + 1).toString().padLeft(2, '0');
+
+    // 2. Random PAN Structure (5 Letters + 4 Digits + 1 Letter)
+    final panLetters = List.generate(5, (_) => _randomChar('ABCDEFGHIJKLMNOPQRSTUVWXYZ', random)).join();
+    final panDigits = List.generate(4, (_) => _randomChar('0123456789', random)).join();
+    final panLastLetter = _randomChar('ABCDEFGHIJKLMNOPQRSTUVWXYZ', random);
+    final pan = '$panLetters$panDigits$panLastLetter';
+
+    // 3. Random Entity Code (1-9 or A-Z)
+    final entityCode = _randomChar('123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', random);
+
+    // 4. Default Character
+    const defaultZ = 'Z';
+
+    // 5. Random Checksum Character
+    final checksum = _randomChar('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', random);
+
+    return '$stateCode$pan$entityCode$defaultZ$checksum';
+  }
+
+  String _randomChar(String pool, Random random) {
+    return pool[random.nextInt(pool.length)];
+  }
   // ==================== SECTION 1: MANDATORY FIELDS ====================
   Widget _buildMandatorySection() {
     return Card(
@@ -1717,6 +1833,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 return null;
               },
             ),
+            _buildTextField(
+              controller: nameOnPanController,
+              label: 'Name as on PAN',
+              hint: 'Enter Name',
+              icon: Icons.personal_injury_outlined,
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Please enter Name as on PAN';
+                }
+                return null;
+              },
+            ),
 
             // Settlement Bank Account
             const SizedBox(height: 8),
@@ -1763,9 +1891,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   return 'Please enter a valid IFSC Code';
                 } else {
                   print("match");
-                  context
-                      .read<AuthenticationBloc>()
-                      .add(IfscBranchEvent(value));
+                  print("ifscStored?.isEmpty ${ifscStored?.isEmpty}");
+                  print("ifscStored != value ${ifscStored != value}");
+                  if (ifscStored?.isNotEmpty == null) {
+                    context
+                        .read<AuthenticationBloc>()
+                        .add(IfscBranchEvent(value));
+                  }
+                  if (ifscStored?.isNotEmpty == true) {
+                    if (!ifscStored!.contains(value) == true) {
+                      context
+                          .read<AuthenticationBloc>()
+                          .add(IfscBranchEvent(value));
+                    }
+                  }
                 }
                 return null;
               },
@@ -2178,6 +2317,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     registeredEmailController.dispose();
     businessAddressController.dispose();
     entityPanController.dispose();
+    nameOnPanController.dispose();
     accountHolderNameController.dispose();
     accountNumberController.dispose();
     ifscCodeController.dispose();

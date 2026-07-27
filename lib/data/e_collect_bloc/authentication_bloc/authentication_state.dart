@@ -99,11 +99,13 @@ class OnboardingStatusLoaderState extends AuthenticationState {
 }
 
 class OnboardingStatusSuccessState extends AuthenticationState {
-  const OnboardingStatusSuccessState();
+  final OnboardOkModel iOnboardOkModel;
+  const OnboardingStatusSuccessState(this.iOnboardOkModel);
 }
 
 class OnboardingStatusFailureState extends AuthenticationState {
-  const OnboardingStatusFailureState();
+  final OnboardFailModel onboardFailModel;
+  const OnboardingStatusFailureState(this.onboardFailModel);
 }
 
 ///*********************BASIC-REGISTRATION******************************

@@ -3,6 +3,7 @@ import '../../../domain/model/e_collect/authentication_model.dart';
 import '../../../domain/model/e_collect/basic_registartion/request/basic_registration_request_model.dart';
 import '../../../domain/model/e_collect/merchant_registation_model/request/merchant_request_model.dart';
 import '../../repository/e_collect_repository/authentication_repository/authentication_repository.dart';
+import '../../storage/shared_pref_helper.dart';
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
@@ -42,13 +43,28 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
           event.mobileNumber, event.id, event.otp);
       if (data is OtpVerificationSuccessModel) {
         emit(MobLoginVerifyOtpSuccessState(data));
+        SharedPref.shared.setECollectUserName(data.loginResponse.fullName);
+        SharedPref.shared.setECollectToken(data.loginResponse.token);
+        SharedPref.shared.setECollectRefreshToken(data.loginResponse.refreshToken);
+        SharedPref.shared.setECollectRefreshToken(data.loginResponse.refreshToken);
+        SharedPref.shared.setECollectUserNumber(data.loginResponse.phone);
+        SharedPref.shared.setECollectMerchantID(data.loginResponse.merchantId.toString());
+        SharedPref.shared.setECollectUserID(data.loginResponse.userId.toString());
+        SharedPref.shared.setECollectLoginStatus(data.loginResponse.isAuthenticated);
+
       } else if (data is OtpVerificationFailureModel) {
         emit(MobLoginVerifyOtpFailureState(data));
       }
     });
     ///*********************MERCHANT-ONBOARDING******************************
     on<OnboardingEvent>((event, emit) async {
-      await authenticationRepository.merchantOnboardingRepository();
+      emit(OnboardingStatusLoaderState());
+      final AuthenticationModel data = await authenticationRepository.merchantOnboardingRepository(event.merchantRegistrationRequestModel);
+      if(data is OnboardOkModel){
+        emit(OnboardingStatusSuccessState(data));
+      }else if(data is OnboardFailModel){
+        emit(OnboardingStatusFailureState(data));
+      }
     });
     ///*********************MERCHANT-ONBOARDING-STATUS******************************
     on<OnboardingStatusEvent>((event, emit) async {
@@ -66,12 +82,18 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     });
     ///*********************TOKEN_VERIFICATION******************************
     on<TokenVerificationEvent>((event, emit) async {
-      await authenticationRepository.tokenVerificationRepository(event.token);
+      var data = await authenticationRepository.tokenVerificationRepository(event.token);
+      if(data is TokenVerificationSuccessModel){
+        emit(TokenVerificationSuccessState(data));
+      }else if(data is TokenVerificationFailureModel){
+        emit(TokenVerificationFailureState(data));
+      }
     });
 
 
     ///*********************IFSC******************************
     on<IfscBranchEvent>((event, emit) async {
+      emit(IfscBranchLoaderState());
       final AuthenticationModel data = await authenticationRepository.ifscBranchRepository(event.ifscCode);
       if(data is IfscCodeOkModel){
         emit(IfscBranchSuccessState(data));

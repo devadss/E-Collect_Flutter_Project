@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'package:collection_qr_flutter/data/e_collect_bloc/authentication_bloc/authentication_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../core/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,8 +11,10 @@ import '../../data/provider/token_expiry_provider.dart';
 import '../../data/provider/token_request_provider.dart';
 import '../../data/service/notification_service/notification_service.dart';
 import '../../data/storage/shared_pref_helper.dart';
+import '../app/bottom_nav_bar_page.dart';
 import '../auth/authetication_page/google_pin_code_page.dart';
 import '../auth/mobile_number_page.dart';
+import '../merchant/bottom_nav/bottom_nav_bar.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -47,13 +52,14 @@ class _SplashScreenState extends State<SplashScreen> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  Future<void> validateToken(
+/*  Future<void> validateToken(
     String token,
     String userName,
     String password,
     String mobNum,
     String type,
-  ) async {
+  ) async
+  {
     final provider = Provider.of<TokenExpiryProvider>(context, listen: false);
     final tokenValidateResponse = await provider.validateToken(token);
 
@@ -168,7 +174,7 @@ class _SplashScreenState extends State<SplashScreen> {
         }
       },
     );
-  }
+  }*/
 
   void _navigateAfterAnimations(Widget page) {
     if (_animationsCompleted) {
@@ -182,12 +188,12 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void getSharedData() async {
-    bool lgStatus = await SharedPref.shared.getLogin();
+    bool lgStatus = await SharedPref.shared.getECollectLoginStatus();
     fcmToken = await SharedPref.shared.getFcmToken();
 
     entityid = await SharedPref.shared.getAgentId();
     subAgentid = await SharedPref.shared.getSubAgentId();
-    token = await SharedPref.shared.getTokenValue();
+    token = await SharedPref.shared.getECollectUserToken();
     mobnum = await SharedPref.shared.getParentAgentMobNum();
     subAgentmobnum = await SharedPref.shared.getSubAgentMobNum();
     mpin = await SharedPref.shared.getMpinValue();
@@ -204,8 +210,10 @@ class _SplashScreenState extends State<SplashScreen> {
     }
 
     if (loginStatus == true) {
-      validateToken(
-          token, username, password, mobnum.replaceAll("+91", ""), "Mob");
+      if(!mounted) return;
+      context.read<AuthenticationBloc>().add(TokenVerificationEvent(token));
+      // validateToken(
+      //     token, username, password, mobnum.replaceAll("+91", ""), "Mob");
     } else {
       Future.delayed(const Duration(milliseconds: 100), () {
         // Do something
@@ -250,16 +258,6 @@ class _SplashScreenState extends State<SplashScreen> {
           AnimatedContainer(
             duration: const Duration(seconds: 2),
             decoration: BoxDecoration(color: Colors.grey.shade200
-                // gradient: LinearGradient(
-                //   begin: Alignment.topLeft,
-                //   end: Alignment.bottomRight,
-                //   colors: [
-                //     home1,
-                //     home2,
-                //     Colors.white,
-                //   ],
-                //   stops: [0.1, 0.5, 0.9],
-                // ),
                 ),
           ),
 
@@ -293,64 +291,85 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
 
           // Main Content
-          Center(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Animated QR Code SVG
-                  // Hero(
-                  //   tag: 'splash-logo',
-                  //   child: SizedBox(
-                  //     width: MediaQuery.of(context).size.width * 0.7,
-                  //     child: SvgPicture.asset(
-                  //       //"assets/svg/QR Code-bro.svg",
-                  //       "assets/images/ecollect.jpg",
-                  //       fit: BoxFit.contain,
-                  //     ),
-                  //   ),
-                  // ),
-                  Image.asset("assets/images/ecollect.webp"),
-                  const SizedBox(height: 40),
+          BlocListener<AuthenticationBloc, AuthenticationState>(
+            listener: (BuildContext context, AuthenticationState state) {
 
-                  // App Name with Typing Animation
-                  _TypingText(
-                    //text: "Collection QR",
-                    text: "SMART PAYMENT SOLUTION",
-                    style: GoogleFonts.poppins(
-                      // fontSize: 32,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey,
+              if(state is TokenVerificationSuccessState){
+                var data = state.tokenVerificationSuccessModel.tokenValidationSuccessResponse;
+                data.isValid == true?
+
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const BottomNavBar())):
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MobileNumberVerificationPage()));
+
+              }else if(state is TokenVerificationFailureState){
+                print(state.tokenVerificationFailureModel.tokenValidationFailureResponse.message);
+              }
+            },
+            child: Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Animated QR Code SVG
+                    // Hero(
+                    //   tag: 'splash-logo',
+                    //   child: SizedBox(
+                    //     width: MediaQuery.of(context).size.width * 0.7,
+                    //     child: SvgPicture.asset(
+                    //       //"assets/svg/QR Code-bro.svg",
+                    //       "assets/images/ecollect.jpg",
+                    //       fit: BoxFit.contain,
+                    //     ),
+                    //   ),
+                    // ),
+                    Image.asset("assets/images/ecollect.webp"),
+                    const SizedBox(height: 40),
+
+                    // App Name with Typing Animation
+                    _TypingText(
+                      //text: "Collection QR",
+                      text: "SMART PAYMENT SOLUTION",
+                      style: GoogleFonts.poppins(
+                        // fontSize: 32,
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                      ),
+                      onComplete: _onAnimationsComplete,
                     ),
-                    onComplete: _onAnimationsComplete,
-                  ),
 
-                  const SizedBox(height: 10),
+                    const SizedBox(height: 10),
 
-                  // Subtitle with Fade Animation
-                  // _FadeInText(
-                  //   text: "SMART PAYMENT SOLUTION",
-                  //   style: GoogleFonts.poppins(
-                  //     fontSize: 16,
-                  //     color: black,
-                  //     letterSpacing: 1.2,
-                  //   ),
-                  //   onComplete: _onAnimationsComplete,
-                  // ),
+                    // Subtitle with Fade Animation
+                    // _FadeInText(
+                    //   text: "SMART PAYMENT SOLUTION",
+                    //   style: GoogleFonts.poppins(
+                    //     fontSize: 16,
+                    //     color: black,
+                    //     letterSpacing: 1.2,
+                    //   ),
+                    //   onComplete: _onAnimationsComplete,
+                    // ),
 
-                  const SizedBox(height: 30),
+                    const SizedBox(height: 30),
 
-                  // Loading Indicator
-                  const SizedBox(
-                    width: 30,
-                    height: 30,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(home1),
+                    // Loading Indicator
+                    const SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(home1),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

@@ -110,6 +110,12 @@ class SharedPrefKeys {
   static const String nearestPinCode = "NEAREST_PIN_CODE";
   static const String pinCodeText = "PIN_CODE_TEXT";
   static const String username = "USER_NAME";
+  static const String eCollectUsername = "E-COLLECT_USER_NAME";
+  static const String eCollectUserNumber= "E-COLLECT_USER_NUMBER";
+  static const String eCollectMerchantId= "E-COLLECT_MERCHANT_ID";
+  static const String eCollectUserId= "E-COLLECT_USER_ID";
+  static const String eCollectToken = "E-COLLECT_TOKEN";
+  static const String eCollectRefreshToken = "E-COLLECT_REFRESH_TOKEN";
   static const String parent_username = "PARENT_USERNAME";
   //----------------------------------------------------------------------------
   static const String RdclCustomervendorUrl = "getCustomerRdclUrl"; //
@@ -133,6 +139,7 @@ class SharedPrefKeys {
   static const String parent_agent_password = "PARENT_AGENT_PASSWORD";
   static const String encryptedPassword = "ENCRYPTED_PASSWORD";
   final String login = "LOGIN";
+  final String eCollectLoginStatus = "E-COLLECT_LOGIN_STATUS";
   final String cartLogin = "CART_LOGIN";
   final String cardLimit = "SET_CARDLIMIT";
   static const String fullName = "FULL_NAME";

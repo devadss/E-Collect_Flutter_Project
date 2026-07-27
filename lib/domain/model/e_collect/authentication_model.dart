@@ -3,6 +3,8 @@ import 'package:collection_qr_flutter/domain/model/e_collect/token_validation/to
 import 'package:collection_qr_flutter/domain/model/e_collect/token_validation/token_validation_success.dart';
 import 'basic_registartion/basic_registration_failure_response.dart';
 import 'basic_registartion/basic_registration_success_response.dart';
+import 'merchant_registation_model/merchant_registration_success.dart';
+import 'merchant_registation_model/merchat_registration_fail.dart';
 import 'otp_request/otp_request_fail.dart';
 import 'otp_request/otp_request_success.dart';
 import 'otp_verification/otp_verification_fail.dart';
@@ -63,5 +65,15 @@ class IfscCodeOkModel extends AuthenticationModel{
 class IfscCodeFailModel extends AuthenticationModel{
   final String ifscCodeFail;
   const IfscCodeFailModel(this.ifscCodeFail);
+}
+///********************ONBAORDING******************************
+class OnboardOkModel extends AuthenticationModel{
+  final MerchantRegistrationSuccess merchantRegistrationSuccess;
+  const OnboardOkModel(this.merchantRegistrationSuccess);
+}
+
+class OnboardFailModel extends AuthenticationModel{
+  final MerchantRegistrationFailResponse merchantRegistrationFailResponse;
+  const OnboardFailModel(this.merchantRegistrationFailResponse);
 }
 

@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/colors.dart';
 import '../../../../core/utils.dart';
+import '../../../app/bottom_nav_bar_page.dart';
+import '../../../merchant/bottom_nav/bottom_nav_bar.dart';
 import '../../../merchant/onboarding_screen/onboarding_screen.dart';
 
 class OtpRequestVerificationPage extends StatefulWidget {
@@ -80,8 +82,9 @@ class _OtpRequestVerificationPageState
             if(state is MobLoginVerifyOtpSuccessState){
               Navigator.pop(context);
               print(state.otpVerificationSuccessModel.loginResponse.username);
+
               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>
-              OnboardingScreen()));
+                  BottomNavBar()));
             }else if (state is MobLoginVerifyOtpFailureState){
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.otpVerificationFailureModel.otpVerificationErrorResponse.message)));

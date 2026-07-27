@@ -15,6 +15,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   final pages = [
     const GroupHomePageUI(),
     const AllGroupsPage(),
+
     const PaymentLinkHomePageMerchant(),
     const SettlementPage(),
   ];

@@ -5,21 +5,14 @@ class MerchantRegistrationRequestModel {
   final String registeredPhone;
   final String businessCategory;
   final String entityType;
-  final String websiteUrl;
   final String registeredAddress;
   final String entityPAN;
   final String nameOnPAN;
   final String gstNumber;
   final String gstState;
-  final int monthlyExpectedVolume;
-  final int monthlyExpectedTransactionCount;
-  final int averageTicketSize;
-  final int branchId;
-  final int assignedAgentId;
-  final String adminEmail;
-  final String adminPhone;
-  final ContactPerson contactPerson;
-  final AuthorizedSignatory authorizedSignatory;
+  final String username;
+  final String password;
+  final String confirmPassword;
   final List<SettlementAccount> settlementAccounts;
 
   MerchantRegistrationRequestModel({
@@ -29,51 +22,34 @@ class MerchantRegistrationRequestModel {
     required this.registeredPhone,
     required this.businessCategory,
     required this.entityType,
-    required this.websiteUrl,
     required this.registeredAddress,
     required this.entityPAN,
     required this.nameOnPAN,
     required this.gstNumber,
     required this.gstState,
-    required this.monthlyExpectedVolume,
-    required this.monthlyExpectedTransactionCount,
-    required this.averageTicketSize,
-    required this.branchId,
-    required this.assignedAgentId,
-    required this.adminEmail,
-    required this.adminPhone,
-    required this.contactPerson,
-    required this.authorizedSignatory,
+    required this.username,
+    required this.password,
+    required this.confirmPassword,
     required this.settlementAccounts,
   });
 
   factory MerchantRegistrationRequestModel.fromJson(Map<String, dynamic> json) {
     return MerchantRegistrationRequestModel(
-      merchantName: json['merchantName'],
-      merchantLegalName: json['merchantLegalName'],
-      registeredEmail: json['registeredEmail'],
-      registeredPhone: json['registeredPhone'],
-      businessCategory: json['businessCategory'],
-      entityType: json['entityType'],
-      websiteUrl: json['websiteUrl'],
-      registeredAddress: json['registeredAddress'],
-      entityPAN: json['entityPAN'],
-      nameOnPAN: json['nameOnPAN'],
-      gstNumber: json['gstNumber'],
-      gstState: json['gstState'],
-      monthlyExpectedVolume: json['monthlyExpectedVolume'],
-      monthlyExpectedTransactionCount:
-      json['monthlyExpectedTransactionCount'],
-      averageTicketSize: json['averageTicketSize'],
-      branchId: json['branchId'],
-      assignedAgentId: json['assignedAgentId'],
-      adminEmail: json['adminEmail'],
-      adminPhone: json['adminPhone'],
-      contactPerson:
-      ContactPerson.fromJson(json['contactPerson']),
-      authorizedSignatory: AuthorizedSignatory.fromJson(
-          json['authorizedSignatory']),
-      settlementAccounts: (json['settlementAccounts'] as List)
+      merchantName: json['merchantName'] ?? '',
+      merchantLegalName: json['merchantLegalName'] ?? '',
+      registeredEmail: json['registeredEmail'] ?? '',
+      registeredPhone: json['registeredPhone'] ?? '',
+      businessCategory: json['businessCategory'] ?? '',
+      entityType: json['entityType'] ?? '',
+      registeredAddress: json['registeredAddress'] ?? '',
+      entityPAN: json['entityPAN'] ?? '',
+      nameOnPAN: json['nameOnPAN'] ?? '',
+      gstNumber: json['gstNumber'] ?? '',
+      gstState: json['gstState'] ?? '',
+      username: json['username'] ?? '',
+      password: json['password'] ?? '',
+      confirmPassword: json['confirmPassword'] ?? '',
+      settlementAccounts: (json['settlementAccounts'] as List<dynamic>? ?? [])
           .map((e) => SettlementAccount.fromJson(e))
           .toList(),
     );
@@ -87,89 +63,39 @@ class MerchantRegistrationRequestModel {
       'registeredPhone': registeredPhone,
       'businessCategory': businessCategory,
       'entityType': entityType,
-      'websiteUrl': websiteUrl,
       'registeredAddress': registeredAddress,
       'entityPAN': entityPAN,
       'nameOnPAN': nameOnPAN,
       'gstNumber': gstNumber,
       'gstState': gstState,
-      'monthlyExpectedVolume': monthlyExpectedVolume,
-      'monthlyExpectedTransactionCount':
-      monthlyExpectedTransactionCount,
-      'averageTicketSize': averageTicketSize,
-      'branchId': branchId,
-      'assignedAgentId': assignedAgentId,
-      'adminEmail': adminEmail,
-      'adminPhone': adminPhone,
-      'contactPerson': contactPerson.toJson(),
-      'authorizedSignatory': authorizedSignatory.toJson(),
+      'username': username,
+      'password': password,
+      'confirmPassword': confirmPassword,
       'settlementAccounts':
       settlementAccounts.map((e) => e.toJson()).toList(),
     };
   }
-}
+  void printValues() {
+    print('Merchant Name: $merchantName');
+    print('Merchant Legal Name: $merchantLegalName');
+    print('Registered Email: $registeredEmail');
+    print('Registered Phone: $registeredPhone');
+    print('Business Category: $businessCategory');
+    print('Entity Type: $entityType');
+    print('Registered Address: $registeredAddress');
+    print('Entity PAN: $entityPAN');
+    print('Name on PAN: $nameOnPAN');
+    print('GST Number: $gstNumber');
+    print('GST State: $gstState');
+    print('Username: $username');
+    print('Password: $password');
+    print('Confirm Password: $confirmPassword');
 
-class ContactPerson {
-  final String name;
-  final String emailAddress;
-  final String phoneNumber;
-
-  ContactPerson({
-    required this.name,
-    required this.emailAddress,
-    required this.phoneNumber,
-  });
-
-  factory ContactPerson.fromJson(Map<String, dynamic> json) {
-    return ContactPerson(
-      name: json['name'],
-      emailAddress: json['emailAddress'],
-      phoneNumber: json['phoneNumber'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'emailAddress': emailAddress,
-      'phoneNumber': phoneNumber,
-    };
-  }
-}
-
-class AuthorizedSignatory {
-  final String name;
-  final String panNumber;
-  final String phone;
-  final String email;
-  final String designation;
-
-  AuthorizedSignatory({
-    required this.name,
-    required this.panNumber,
-    required this.phone,
-    required this.email,
-    required this.designation,
-  });
-
-  factory AuthorizedSignatory.fromJson(Map<String, dynamic> json) {
-    return AuthorizedSignatory(
-      name: json['name'],
-      panNumber: json['panNumber'],
-      phone: json['phone'],
-      email: json['email'],
-      designation: json['designation'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'panNumber': panNumber,
-      'phone': phone,
-      'email': email,
-      'designation': designation,
-    };
+    print('Settlement Accounts:');
+    for (int i = 0; i < settlementAccounts.length; i++) {
+      print('--- Account ${i + 1} ---');
+      settlementAccounts[i].printValues();
+    }
   }
 }
 
@@ -179,7 +105,7 @@ class SettlementAccount {
   final String accountType;
   final String bankName;
   final String bankBranch;
-  final String ifscCode;
+  final String ifsCCode;
   final bool isPrimary;
   final bool isActive;
 
@@ -189,21 +115,21 @@ class SettlementAccount {
     required this.accountType,
     required this.bankName,
     required this.bankBranch,
-    required this.ifscCode,
+    required this.ifsCCode,
     required this.isPrimary,
     required this.isActive,
   });
 
   factory SettlementAccount.fromJson(Map<String, dynamic> json) {
     return SettlementAccount(
-      accountHolderName: json['accountHolderName'],
-      accountNumber: json['accountNumber'],
-      accountType: json['accountType'],
-      bankName: json['bankName'],
-      bankBranch: json['bankBranch'],
-      ifscCode: json['ifsc_Code'],
-      isPrimary: json['isPrimary'],
-      isActive: json['isActive'],
+      accountHolderName: json['accountHolderName'] ?? '',
+      accountNumber: json['accountNumber'] ?? '',
+      accountType: json['accountType'] ?? '',
+      bankName: json['bankName'] ?? '',
+      bankBranch: json['bankBranch'] ?? '',
+      ifsCCode: json['ifsC_Code'] ?? '',
+      isPrimary: json['isPrimary'] ?? false,
+      isActive: json['isActive'] ?? false,
     );
   }
 
@@ -214,9 +140,20 @@ class SettlementAccount {
       'accountType': accountType,
       'bankName': bankName,
       'bankBranch': bankBranch,
-      'ifsc_Code': ifscCode,
+      'ifsC_Code': ifsCCode,
       'isPrimary': isPrimary,
       'isActive': isActive,
     };
   }
+  void printValues() {
+    print('Account Holder Name: $accountHolderName');
+    print('Account Number: $accountNumber');
+    print('Account Type: $accountType');
+    print('Bank Name: $bankName');
+    print('Bank Branch: $bankBranch');
+    print('IFSC Code: $ifsCCode');
+    print('Is Primary: $isPrimary');
+    print('Is Active: $isActive');
+  }
 }
+

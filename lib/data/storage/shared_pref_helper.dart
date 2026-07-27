@@ -192,6 +192,85 @@ class SharedPref {
     return prefs.getString(SharedPrefKeys.username) ?? '';
   }
 
+  //e-Collect////////
+  Future<Future<bool>> setECollectUserName(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.eCollectUsername, value);
+  }
+
+  Future<String> getECollectUserName() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.eCollectUsername) ?? '';
+  }
+
+  Future<Future<bool>> setECollectToken(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.eCollectToken, value);
+  }
+
+  Future<String> getECollectUserToken() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.eCollectToken) ?? '';
+  }
+  Future<Future<bool>> setECollectRefreshToken(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.eCollectRefreshToken, value);
+  }
+
+  Future<String> getECollectRefreshToken() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.eCollectRefreshToken) ?? '';
+  }
+  Future<Future<bool>> setECollectUserNumber(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.eCollectUserNumber, value);
+  }
+
+  Future<String> getECollectUserNumber() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.eCollectUserNumber) ?? '';
+  }
+
+  Future<Future<bool>> setECollectMerchantID(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.eCollectMerchantId, value);
+  }
+
+  Future<String> getECollectMerchantID() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.eCollectMerchantId) ?? '';
+  }
+
+  Future<Future<bool>> setECollectUserID(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.eCollectUserId, value);
+  }
+
+  Future<String> getECollectUserID() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.eCollectUserId) ?? '';
+  }
+
+  Future<bool> getECollectLoginStatus() async {
+    final prefs = await _getPrefs();
+    return prefs.getBool(SharedPrefKeys().eCollectLoginStatus) ?? false;
+  }
+
+  Future<bool> setECollectLoginStatus(bool value) async {
+    final prefs = await _getPrefs();
+    return prefs.setBool(SharedPrefKeys().eCollectLoginStatus, value);
+  }
+
+
+
+  //e-Collect////////
+
+
+
+
+
+
+
   Future<Future<bool>> setMpinValue(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.mpin_value, value);
