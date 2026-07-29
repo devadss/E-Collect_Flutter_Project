@@ -253,17 +253,20 @@ if (printStatementStatus){
       setState(() => devices = result);
 
       if (devices.isEmpty) {
+        if(!mounted)return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("No Bluetooth printers found")),
         );
       }
     } on TimeoutException {
       setState(() => lastError = 'Device scan timed out');
+      if(!mounted)return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Device scan timed out")),
       );
     } catch (e) {
       setState(() => lastError = e.toString());
+      if(!mounted)return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Scan failed: ${e.toString()}")),
       );
@@ -302,11 +305,13 @@ if (printStatementStatus){
       }
     } on TimeoutException {
       setState(() => lastError = 'Connection timed out');
+      if(!mounted)return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Connection timed out")),
       );
     } catch (e) {
       setState(() => lastError = e.toString());
+      if(!mounted)return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Connection failed: ${e.toString()}")),
       );
@@ -332,7 +337,7 @@ if (printStatementStatus){
       Customer Phone: ${widget.receiptDataModel.custPhone}
       Agent: ${widget.receiptDataModel.agentName}
    
-      Agent Phone: ${subagentPhoneNumber}
+      Agent Phone: ${subagentPhoneNumber?.replaceRange(3, 10, "******")}
       Transaction Type: ${widget.receiptDataModel.txnType}
       '''
           : '''
@@ -344,7 +349,7 @@ if (printStatementStatus){
       Customer ID: ${widget.receiptDataModel.custId}
       Agent: ${widget.receiptDataModel.agentName}
  
-      Agent Phone: ${subagentPhoneNumber}
+      Agent Phone: ${subagentPhoneNumber?.replaceRange(3, 10, "******")}
       Transaction Type: ${widget.receiptDataModel.txnType}
       ''';
 
@@ -422,7 +427,7 @@ if (printStatementStatus){
     bytes.addAll("AGENT\n".codeUnits);
     bytes.addAll([0x1B, 0x21, 0x00]);
     bytes.addAll("Name     : ${widget.receiptDataModel.agentName}\n".codeUnits);
-    bytes.addAll("Phone    : ${subagentPhoneNumber ?? ''}\n".codeUnits);
+    bytes.addAll("Phone    : ${subagentPhoneNumber?.replaceRange(3, 10, "******") ?? ''}\n".codeUnits);
     bytes.addAll("------------------------------\n".codeUnits);
 
     bytes.addAll([0x1B, 0x61, 0x01]);
@@ -471,7 +476,7 @@ if (printStatementStatus){
     debugPrint("Account No  : ${widget.receiptDataModel.accNo}");
     debugPrint("Agent Name  : ${widget.receiptDataModel.agentName}");
    // debugPrint("Agent Phone : ${widget.receiptDataModel.agentPhone}");
-    debugPrint("Agent Phone : ${subagentPhoneNumber}");
+    debugPrint("Agent Phone : ${subagentPhoneNumber?.replaceRange(3, 10, "******")}");
     debugPrint("=================================");
     if (selectedMac == null) {
       _showPrinterSelectionDialog();
@@ -569,7 +574,7 @@ if (printStatementStatus){
       bytes.addAll(
           "Name     : ${widget.receiptDataModel.agentName}\n".codeUnits);
       bytes.addAll(
-          "Phone    : ${subagentPhoneNumber ?? ''}\n".codeUnits);
+          "Phone    : ${subagentPhoneNumber?.replaceRange(3, 10, "******") ?? ''}\n".codeUnits);
 
       bytes.addAll("------------------------------\n".codeUnits);
 
@@ -584,7 +589,7 @@ if (printStatementStatus){
       bytes.addAll([0x1D, 0x56, 0x41, 0x10]);
 
       await PrintBluetoothThermal.writeBytes(bytes);
-
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Receipt printed successfully!")),
       );
@@ -1362,7 +1367,7 @@ Customer: ${widget.receiptDataModel.custName}
 Customer ID: ${widget.receiptDataModel.custId}
 Customer Phone: ${widget.receiptDataModel.custPhone}
 Agent: ${widget.receiptDataModel.agentName}
-Agent Phone: ${subagentPhoneNumber}
+Agent Phone: ${subagentPhoneNumber?.replaceRange(3, 10, "******")}
 ''',
                                     version: QrVersions.auto,
                                     size: 165,
@@ -1753,7 +1758,7 @@ Agent Phone: ${subagentPhoneNumber}
                           _buildDetailRow(
                             "Agent Phone",
                           //  widget.receiptDataModel.agentPhone,
-                            subagentPhoneNumber.toString(),
+                            subagentPhoneNumber.toString().replaceRange(3, 10, "******"),
                           ),
 
                           if (widget.receiptDataModel.custPhone.isNotEmpty)

@@ -465,7 +465,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
           _buildDetailItem(
             "Agent Phone",
            // widget.transactionHistoryModel.agentPhone,
-              subagentPhoneNumber.toString()
+              subagentPhoneNumber.toString().replaceRange(3, 10, "******")
           ),
         ],
       ),
