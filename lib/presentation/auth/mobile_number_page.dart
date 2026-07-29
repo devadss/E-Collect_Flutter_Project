@@ -1,5 +1,4 @@
 import 'package:collection_qr_flutter/core/utils.dart';
-import 'package:collection_qr_flutter/presentation/merchant/app_registration/basic_registration.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
