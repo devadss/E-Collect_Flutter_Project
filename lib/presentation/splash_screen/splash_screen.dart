@@ -1,18 +1,11 @@
 import 'dart:async';
 import 'package:collection_qr_flutter/data/e_collect_bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../core/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import '../../core/utils.dart';
-import '../../data/provider/token_expiry_provider.dart';
-import '../../data/provider/token_request_provider.dart';
-import '../../data/service/notification_service/notification_service.dart';
 import '../../data/storage/shared_pref_helper.dart';
-import '../app/bottom_nav_bar_page.dart';
-import '../auth/authetication_page/google_pin_code_page.dart';
 import '../auth/mobile_number_page.dart';
 import '../merchant/bottom_nav/bottom_nav_bar.dart';
 
@@ -52,136 +45,12 @@ class _SplashScreenState extends State<SplashScreen> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-/*  Future<void> validateToken(
-    String token,
-    String userName,
-    String password,
-    String mobNum,
-    String type,
-  ) async
-  {
-    final provider = Provider.of<TokenExpiryProvider>(context, listen: false);
-    final tokenValidateResponse = await provider.validateToken(token);
-
-    tokenValidateResponse.fold(
-      (error) {
-        if (printStatementStatus) {
-          print("Token Validation Error: $error");
-        }
-
-        showInSnackBar(error, "RED");
-      },
-      (data) async {
-        if (printStatementStatus) {
-          print("Token Validation ${data.isExpired}");
-        }
-
-        if (data.isExpired == false) {
-          if (loginStatus == true) {
-            if (fcmToken.isNotEmpty) {
-              Future.delayed(const Duration(milliseconds: 100), () {
-                if (mounted) {
-                  if (printStatementStatus) {
-                    print(
-                        "Gpin page from validateToken data.isExpired == false");
-                  }
-
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const GooglePinCodePage()));
-                }
-              });
-            } else {
-              if (mounted) {
-                saveFcmToken(
-                    subAgentid, context, "GPIN", token, subAgentmobnum, mpin);
-              }
-            }
-          } else {
-            Future.delayed(const Duration(milliseconds: 100), () {
-              // Do something
-              if (mounted) {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            const MobileNumberVerificationPage()));
-              }
-            });
-          }
-        } else {
-          final tokenRequest =
-              Provider.of<TokenRequestProvider>(context, listen: false);
-          final requestNewTokenResponse =
-              await tokenRequest.requestToken(userName, password, mobNum, type);
-
-          requestNewTokenResponse.fold(
-            (error) {
-              if (printStatementStatus) {
-                print("Error: $error");
-              }
-
-              if (mounted) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const MobileNumberVerificationPage(),
-                  ),
-                );
-              }
-            },
-            (data) {
-              if (printStatementStatus) {
-                print("Token Response : $data");
-              }
-
-              SharedPref.shared.setTokenValue(data);
-              if (loginStatus == true) {
-                if (fcmToken.isNotEmpty) {
-                  Future.delayed(const Duration(milliseconds: 100), () {
-                    if (mounted) {
-                      if (printStatementStatus) {
-                        print(
-                            "Gpin page from validateToken data.isExpired == true");
-                      }
-
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const GooglePinCodePage()));
-                    }
-                  });
-                } else {
-                  if (mounted) {
-                    saveFcmToken(subAgentid, context, "GPIN", token,
-                        subAgentmobnum, mpin);
-                  }
-                }
-              } else {
-                Future.delayed(const Duration(milliseconds: 100), () {
-                  if (mounted) {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                const MobileNumberVerificationPage()));
-                  }
-                });
-              }
-            },
-          );
-        }
-      },
-    );
-  }*/
 
   void _navigateAfterAnimations(Widget page) {
     if (_animationsCompleted) {
       Future.delayed(const Duration(milliseconds: 500), () {
         if (mounted) {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => page));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => page));
         }
       });
     }
@@ -190,23 +59,22 @@ class _SplashScreenState extends State<SplashScreen> {
   void getSharedData() async {
     bool lgStatus = await SharedPref.shared.getECollectLoginStatus();
     fcmToken = await SharedPref.shared.getFcmToken();
-
     entityid = await SharedPref.shared.getAgentId();
     subAgentid = await SharedPref.shared.getSubAgentId();
     token = await SharedPref.shared.getECollectUserToken();
     mobnum = await SharedPref.shared.getParentAgentMobNum();
     subAgentmobnum = await SharedPref.shared.getSubAgentMobNum();
     mpin = await SharedPref.shared.getMpinValue();
-    String username = await SharedPref.shared.getParentAgentName();
-    String password = await SharedPref.shared.getParentAgentPassword();
+   // String username = await SharedPref.shared.getParentAgentName();
+   // String password = await SharedPref.shared.getParentAgentPassword();
     isRunningLiveBaseUrl(true, subAgentmobnum);
     isRunningLiveDopBaseUrl(true, subAgentmobnum);
     setState(() {
       loginStatus = lgStatus;
     });
     if (printStatementStatus == true) {
-      print("Login status = $loginStatus");
-      print("token  = $token");
+      // print("Login status = $loginStatus");
+      // print("token  = $token");
     }
 
     if (loginStatus == true) {
@@ -296,6 +164,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
               if(state is TokenVerificationSuccessState){
                 var data = state.tokenVerificationSuccessModel.tokenValidationSuccessResponse;
+                print(data.message);
                 data.isValid == true?
 
                   Navigator.push(
@@ -316,18 +185,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Animated QR Code SVG
-                    // Hero(
-                    //   tag: 'splash-logo',
-                    //   child: SizedBox(
-                    //     width: MediaQuery.of(context).size.width * 0.7,
-                    //     child: SvgPicture.asset(
-                    //       //"assets/svg/QR Code-bro.svg",
-                    //       "assets/images/ecollect.jpg",
-                    //       fit: BoxFit.contain,
-                    //     ),
-                    //   ),
-                    // ),
+
                     Image.asset("assets/images/ecollect.webp"),
                     const SizedBox(height: 40),
 
@@ -617,3 +475,139 @@ class __FadeInTextState extends State<_FadeInText>
     );
   }
 }
+// Animated QR Code SVG
+// Hero(
+//   tag: 'splash-logo',
+//   child: SizedBox(
+//     width: MediaQuery.of(context).size.width * 0.7,
+//     child: SvgPicture.asset(
+//       //"assets/svg/QR Code-bro.svg",
+//       "assets/images/ecollect.jpg",
+//       fit: BoxFit.contain,
+//     ),
+//   ),
+// ),
+/*  Future<void> validateToken(
+    String token,
+    String userName,
+    String password,
+    String mobNum,
+    String type,
+  ) async
+  {
+    final provider = Provider.of<TokenExpiryProvider>(context, listen: false);
+    final tokenValidateResponse = await provider.validateToken(token);
+
+    tokenValidateResponse.fold(
+      (error) {
+        if (printStatementStatus) {
+          print("Token Validation Error: $error");
+        }
+
+        showInSnackBar(error, "RED");
+      },
+      (data) async {
+        if (printStatementStatus) {
+          print("Token Validation ${data.isExpired}");
+        }
+
+        if (data.isExpired == false) {
+          if (loginStatus == true) {
+            if (fcmToken.isNotEmpty) {
+              Future.delayed(const Duration(milliseconds: 100), () {
+                if (mounted) {
+                  if (printStatementStatus) {
+                    print(
+                        "Gpin page from validateToken data.isExpired == false");
+                  }
+
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const GooglePinCodePage()));
+                }
+              });
+            } else {
+              if (mounted) {
+                saveFcmToken(
+                    subAgentid, context, "GPIN", token, subAgentmobnum, mpin);
+              }
+            }
+          } else {
+            Future.delayed(const Duration(milliseconds: 100), () {
+              // Do something
+              if (mounted) {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            const MobileNumberVerificationPage()));
+              }
+            });
+          }
+        } else {
+          final tokenRequest =
+              Provider.of<TokenRequestProvider>(context, listen: false);
+          final requestNewTokenResponse =
+              await tokenRequest.requestToken(userName, password, mobNum, type);
+
+          requestNewTokenResponse.fold(
+            (error) {
+              if (printStatementStatus) {
+                print("Error: $error");
+              }
+
+              if (mounted) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MobileNumberVerificationPage(),
+                  ),
+                );
+              }
+            },
+            (data) {
+              if (printStatementStatus) {
+                print("Token Response : $data");
+              }
+
+              SharedPref.shared.setTokenValue(data);
+              if (loginStatus == true) {
+                if (fcmToken.isNotEmpty) {
+                  Future.delayed(const Duration(milliseconds: 100), () {
+                    if (mounted) {
+                      if (printStatementStatus) {
+                        print(
+                            "Gpin page from validateToken data.isExpired == true");
+                      }
+
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const GooglePinCodePage()));
+                    }
+                  });
+                } else {
+                  if (mounted) {
+                    saveFcmToken(subAgentid, context, "GPIN", token,
+                        subAgentmobnum, mpin);
+                  }
+                }
+              } else {
+                Future.delayed(const Duration(milliseconds: 100), () {
+                  if (mounted) {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const MobileNumberVerificationPage()));
+                  }
+                });
+              }
+            },
+          );
+        }
+      },
+    );
+  }*/
+

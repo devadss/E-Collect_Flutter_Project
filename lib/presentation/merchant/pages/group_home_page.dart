@@ -1,4 +1,6 @@
+import 'package:collection_qr_flutter/core/alerts.dart';
 import 'package:collection_qr_flutter/core/colors.dart';
+import 'package:collection_qr_flutter/presentation/auth/mobile_number_page.dart';
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
 import 'package:intl/intl.dart';
@@ -354,7 +356,17 @@ setState(() {
             ),
             child: IconButton(
               icon: const Icon(Icons.settings_outlined),
-              onPressed: () {},
+              onPressed: () {
+                SharedPref.shared.setECollectUserName("");
+                SharedPref.shared.setECollectToken("");
+                SharedPref.shared.setECollectRefreshToken("");
+                SharedPref.shared.setECollectRefreshToken("");
+                SharedPref.shared.setECollectUserNumber("");
+                SharedPref.shared.setECollectMerchantID("");
+                SharedPref.shared.setECollectUserID("");
+                SharedPref.shared.setECollectLoginStatus(false);
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context)=> MobileNumberVerificationPage()));
+              },
             ),
           ),
         ],

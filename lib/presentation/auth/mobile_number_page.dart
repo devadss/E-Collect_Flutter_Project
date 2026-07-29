@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants.dart';
 import '../../data/e_collect_bloc/authentication_bloc/authentication_bloc.dart';
+import '../merchant/onboarding_screen/onboarding_screen.dart';
 import 'login/otp_verification/otp_verification.dart';
 
 class MobileNumberVerificationPage extends StatefulWidget {
@@ -402,7 +403,7 @@ class _MobileNumberVerificationPageState
                               context,
                               MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      BasicRegistration()));
+                                      OnboardingScreen()));
                         },
                         child: Center(
                           child: Text(

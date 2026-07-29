@@ -1,7 +1,4 @@
-
-import 'package:collection_qr_flutter/data/cust_register_bloc/cust_reg_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../domain/model/parent_credential_model/parent_credential_model.dart';
 import '../repository/parent_credentail_repo/parent_credentail_repo.dart' show ParentCredentialRepo;
 import '../storage/shared_pref_helper.dart';
