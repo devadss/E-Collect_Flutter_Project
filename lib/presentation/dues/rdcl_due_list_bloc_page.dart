@@ -2157,7 +2157,8 @@ Future<void> sendLinkFunction(
       String cardRefNum,
       String token,
       String subAgentid
-    ) async {
+    )
+async {
   final send = await PaymentLinkRepository().getPaymentLink(
       agentName: agentName,
       agentId: agentId,

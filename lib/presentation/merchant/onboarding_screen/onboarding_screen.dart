@@ -1581,7 +1581,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           username: merchantNameController.text,
           password: "${merchantNameController.text}@1234",
           confirmPassword: "${merchantNameController.text}@1234",
-          settlementAccounts: [settModel]);
+          settlementAccounts: [settModel], integrationStatus: 'Y');
       merchRegReqModel.printValues();
       if (!mounted) return;
       context.read<AuthenticationBloc>().add(OnboardingEvent(merchRegReqModel));

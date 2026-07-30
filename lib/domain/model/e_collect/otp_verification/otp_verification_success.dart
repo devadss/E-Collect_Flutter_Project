@@ -17,11 +17,14 @@ class LoginResponse {
   final bool isPhoneVerified;
   final List<dynamic> permissions;
   final List<dynamic> menus;
-  final int? merchantId;
-  final int? branchId;
+  final int merchantId;
+  final int branchId;
   final int? agentId;
-  final String? merchantName;
+  final String merchantName;
   final String? branchName;
+  final String branchCode;
+  final String integrationStatus;
+  final List<String> listUrl;
 
   LoginResponse({
     required this.isAuthenticated,
@@ -42,11 +45,14 @@ class LoginResponse {
     required this.isPhoneVerified,
     required this.permissions,
     required this.menus,
-    this.merchantId,
-    this.branchId,
+    required this.merchantId,
+    required this.branchId,
     this.agentId,
-    this.merchantName,
+    required this.merchantName,
     this.branchName,
+    required this.branchCode,
+    required this.integrationStatus,
+    required this.listUrl,
   });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
@@ -69,11 +75,16 @@ class LoginResponse {
       isPhoneVerified: json['isPhoneVerified'] ?? false,
       permissions: List<dynamic>.from(json['permissions'] ?? []),
       menus: List<dynamic>.from(json['menus'] ?? []),
-      merchantId: json['merchantId'],
-      branchId: json['branchId'],
+      merchantId: json['merchantId'] ?? 0,
+      branchId: json['branchId'] ?? 0,
       agentId: json['agentId'],
-      merchantName: json['merchantName'],
+      merchantName: json['merchantName'] ?? '',
       branchName: json['branchName'],
+      branchCode: json['branchCode'] ?? '',
+      integrationStatus: json['integrationStatus'] ?? '',
+      listUrl: (json['listUrl'] as List<dynamic>? ?? [])
+          .map((e) => e.toString().trim())
+          .toList(),
     );
   }
 
@@ -102,6 +113,9 @@ class LoginResponse {
       'agentId': agentId,
       'merchantName': merchantName,
       'branchName': branchName,
+      'branchCode': branchCode,
+      'integrationStatus': integrationStatus,
+      'listUrl': listUrl,
     };
   }
 }

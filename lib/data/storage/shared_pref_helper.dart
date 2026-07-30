@@ -193,6 +193,26 @@ class SharedPref {
   }
 
   //e-Collect////////
+  Future<Future<bool>> setECollectMerchantBranchCode(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.eCollectMerchantBranchCode, value);
+  }
+
+  Future<String> getECollectMerchantBranchCode() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.eCollectMerchantBranchCode) ?? '';
+  }
+
+  Future<Future<bool>> setECollectMerchantIntegrationStatus(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.eCollectMerchantBranchCode, value);
+  }
+
+  Future<String> getECollectMerchantIntegrationStatus() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.eCollectMerchantBranchCode) ?? '';
+  }
+
   Future<Future<bool>> setECollectUserName(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.eCollectUsername, value);
@@ -202,6 +222,28 @@ class SharedPref {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.eCollectUsername) ?? '';
   }
+
+
+  Future<Future<bool>> setECollectRdclCustomerunderAgentListUrl(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.eCollectRdclCustomerunderAgentList, value);
+  }
+
+  Future<String> getECollectRdclCustomerunderAgentListUrl() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.eCollectRdclCustomerunderAgentList) ?? '';
+  }
+
+  Future<Future<bool>> setECollectRdclDuesListunderAgentUrl(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.eCollectRdclDueLisUnderAgent, value);
+  }
+  Future<String> getECollectRdclDuesListunderAgentUrl() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.eCollectRdclDueLisUnderAgent) ?? '';
+  }
+
+
 
   Future<Future<bool>> setECollectToken(String value) async {
     final prefs = await _getPrefs();
