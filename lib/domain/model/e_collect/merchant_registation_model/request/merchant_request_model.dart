@@ -13,6 +13,7 @@ class MerchantRegistrationRequestModel {
   final String username;
   final String password;
   final String confirmPassword;
+  final String integrationStatus;
   final List<SettlementAccount> settlementAccounts;
 
   MerchantRegistrationRequestModel({
@@ -30,7 +31,7 @@ class MerchantRegistrationRequestModel {
     required this.username,
     required this.password,
     required this.confirmPassword,
-    required this.settlementAccounts,
+    required this.settlementAccounts, required this.integrationStatus,
   });
 
   factory MerchantRegistrationRequestModel.fromJson(Map<String, dynamic> json) {
@@ -48,6 +49,7 @@ class MerchantRegistrationRequestModel {
       gstState: json['gstState'] ?? '',
       username: json['username'] ?? '',
       password: json['password'] ?? '',
+      integrationStatus: json['integrationStatus'] ?? '',
       confirmPassword: json['confirmPassword'] ?? '',
       settlementAccounts: (json['settlementAccounts'] as List<dynamic>? ?? [])
           .map((e) => SettlementAccount.fromJson(e))
@@ -71,6 +73,7 @@ class MerchantRegistrationRequestModel {
       'username': username,
       'password': password,
       'confirmPassword': confirmPassword,
+      'integrationStatus': integrationStatus,
       'settlementAccounts':
       settlementAccounts.map((e) => e.toJson()).toList(),
     };
@@ -90,6 +93,7 @@ class MerchantRegistrationRequestModel {
     print('Username: $username');
     print('Password: $password');
     print('Confirm Password: $confirmPassword');
+    print('integrationStatus: $integrationStatus');
 
     print('Settlement Accounts:');
     for (int i = 0; i < settlementAccounts.length; i++) {

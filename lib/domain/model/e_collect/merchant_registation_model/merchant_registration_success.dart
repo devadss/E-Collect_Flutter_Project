@@ -15,11 +15,11 @@ class MerchantRegistrationSuccess {
 
   factory MerchantRegistrationSuccess.fromJson(Map<String, dynamic> json) {
     return MerchantRegistrationSuccess(
-      success: json['success'],
-      message: json['message'],
-      merchantId: json['merchantId'],
-      status: json['status'],
-      data: MerchantData.fromJson(json['data']),
+      success: json['success'] as bool,
+      message: json['message'] as String,
+      merchantId: json['merchantId'] as int,
+      status: json['status'] as String,
+      data: MerchantData.fromJson(json['data'] as Map<String, dynamic>),
     );
   }
 
@@ -46,17 +46,17 @@ class MerchantData {
   final String nameOnPAN;
   final String gstNumber;
   final String gstState;
-  final double? monthlyExpectedVolume;
-  final int? monthlyExpectedTransactionCount;
-  final double? averageTicketSize;
+  final double monthlyExpectedVolume;
+  final int monthlyExpectedTransactionCount;
+  final double averageTicketSize;
   final String status;
   final bool isActive;
   final bool isApproved;
   final String? rejectionReason;
-  final int? userId;
-  final int? branchId;
-  final int? assignedAgentId;
-  final int? approvedBy;
+  final int userId;
+  final int branchId;
+  final int assignedAgentId;
+  final int approvedBy;
   final DateTime createdAt;
   final DateTime? updatedAt;
   final DateTime? approvedAt;
@@ -84,17 +84,17 @@ class MerchantData {
     required this.nameOnPAN,
     required this.gstNumber,
     required this.gstState,
-    this.monthlyExpectedVolume,
-    this.monthlyExpectedTransactionCount,
-    this.averageTicketSize,
+    required this.monthlyExpectedVolume,
+    required this.monthlyExpectedTransactionCount,
+    required this.averageTicketSize,
     required this.status,
     required this.isActive,
     required this.isApproved,
     this.rejectionReason,
-    this.userId,
-    this.branchId,
-    this.assignedAgentId,
-    this.approvedBy,
+    required this.userId,
+    required this.branchId,
+    required this.assignedAgentId,
+    required this.approvedBy,
     required this.createdAt,
     this.updatedAt,
     this.approvedAt,
@@ -111,52 +111,62 @@ class MerchantData {
 
   factory MerchantData.fromJson(Map<String, dynamic> json) {
     return MerchantData(
-      id: json['id'],
-      merchantName: json['merchantName'],
-      merchantLegalName: json['merchantLegalName'],
-      registeredEmail: json['registeredEmail'],
-      registeredPhone: json['registeredPhone'],
-      businessCategory: json['businessCategory'],
-      entityType: json['entityType'],
-      websiteUrl: json['websiteUrl'],
-      registeredAddress: json['registeredAddress'],
-      entityPAN: json['entityPAN'],
-      nameOnPAN: json['nameOnPAN'],
-      gstNumber: json['gstNumber'],
-      gstState: json['gstState'],
+      id: json['id'] as int,
+      merchantName: json['merchantName'] as String,
+      merchantLegalName: json['merchantLegalName'] as String,
+      registeredEmail: json['registeredEmail'] as String,
+      registeredPhone: json['registeredPhone'] as String,
+      businessCategory: json['businessCategory'] as String,
+      entityType: json['entityType'] as String,
+      websiteUrl: json['websiteUrl'] as String?,
+      registeredAddress: json['registeredAddress'] as String,
+      entityPAN: json['entityPAN'] as String,
+      nameOnPAN: json['nameOnPAN'] as String,
+      gstNumber: json['gstNumber'] as String,
+      gstState: json['gstState'] as String,
       monthlyExpectedVolume:
-      (json['monthlyExpectedVolume'] as num?)?.toDouble(),
+      (json['monthlyExpectedVolume'] as num).toDouble(),
       monthlyExpectedTransactionCount:
-      json['monthlyExpectedTransactionCount'],
+      json['monthlyExpectedTransactionCount'] as int,
       averageTicketSize:
-      (json['averageTicketSize'] as num?)?.toDouble(),
-      status: json['status'],
-      isActive: json['isActive'],
-      isApproved: json['isApproved'],
-      rejectionReason: json['rejectionReason'],
-      userId: json['userId'],
-      branchId: json['branchId'],
-      assignedAgentId: json['assignedAgentId'],
-      approvedBy: json['approvedBy'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: json['updatedAt'] != null
-          ? DateTime.parse(json['updatedAt'])
-          : null,
-      approvedAt: json['approvedAt'] != null
-          ? DateTime.parse(json['approvedAt'])
-          : null,
+      (json['averageTicketSize'] as num).toDouble(),
+      status: json['status'] as String,
+      isActive: json['isActive'] as bool,
+      isApproved: json['isApproved'] as bool,
+      rejectionReason: json['rejectionReason'] as String?,
+      userId: json['userId'] as int,
+      branchId: json['branchId'] as int,
+      assignedAgentId: json['assignedAgentId'] as int,
+      approvedBy: json['approvedBy'] as int,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: _parseDate(json['updatedAt']),
+      approvedAt: _parseDate(json['approvedAt']),
       user: json['user'],
       branch: json['branch'],
       assignedAgent: json['assignedAgent'],
-      settlementAccounts: (json['settlementAccounts'] as List)
-          .map((e) => SettlementAccount.fromJson(e))
-          .toList(),
+      settlementAccounts: (json['settlementAccounts'] as List<dynamic>?)
+          ?.map((e) =>
+          SettlementAccount.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+          [],
       stats: json['stats'],
-      branchName: json['branchName'],
-      assignedAgentName: json['assignedAgentName'],
-      integrationStatus: json['integrationStatus'],
-      userType: json['userType'],
+      branchName: json['branchName'] as String?,
+      assignedAgentName: json['assignedAgentName'] as String?,
+      integrationStatus: json['integrationStatus'] as String?,
+      userType: json['userType'] as String?,
     );
+  }
+
+  static DateTime? _parseDate(dynamic value) {
+    if (value == null) return null;
+
+    final str = value.toString();
+
+    if (str.isEmpty || str.startsWith('0001-01-01')) {
+      return null;
+    }
+
+    return DateTime.parse(str);
   }
 
   Map<String, dynamic> toJson() => {
@@ -224,14 +234,15 @@ class SettlementAccount {
 
   factory SettlementAccount.fromJson(Map<String, dynamic> json) {
     return SettlementAccount(
-      accountHolderName: json['accountHolderName'],
-      accountNumber: json['accountNumber'],
-      accountType: json['accountType'],
-      bankName: json['bankName'],
-      bankBranch: json['bankBranch'],
-      ifscCode: json['ifsC_Code'],
-      isPrimary: json['isPrimary'],
-      isActive: json['isActive'],
+      accountHolderName: json['accountHolderName'] as String,
+      accountNumber: json['accountNumber'] as String,
+      accountType: json['accountType'] as String,
+      bankName: json['bankName'] as String,
+      bankBranch: json['bankBranch'] as String,
+      ifscCode:
+      (json['ifsC_Code'] ?? json['ifscCode']) as String,
+      isPrimary: json['isPrimary'] as bool,
+      isActive: json['isActive'] as bool,
     );
   }
 
@@ -245,6 +256,4 @@ class SettlementAccount {
     'isPrimary': isPrimary,
     'isActive': isActive,
   };
-
-
 }
