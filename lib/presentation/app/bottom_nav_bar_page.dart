@@ -53,7 +53,6 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     });
   }
 
-
   Widget loanPages(int index) {
     switch (index) {
       case 0:
@@ -68,6 +67,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         );
     }
   }
+
   Widget _getSelectedPage(int index) {
     switch (index) {
       case 0:
@@ -96,6 +96,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         );
     }
   }
+
   Widget _getNonAgentSelectedPage(int index) {
     switch (index) {
       case 0:
@@ -174,7 +175,6 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       if (mounted) setState(() {});
     }
   }
-
 
   void _onItemTapped(int index) {
     if (_selectedIndex != index) {
