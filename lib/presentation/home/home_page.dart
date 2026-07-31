@@ -417,11 +417,11 @@ class _HomePageState extends State<HomePage>
   }
 
   Future<void> loadSharedPrefs(BuildContext context) async {
-    final name = await SharedPref().getSubAgentName();
+    final name = await SharedPref().getECollectUserName();
     final entId = await SharedPref().getAgentId();
     final tok = await SharedPref().getTokenValue();
     final agentOrgID = await SharedPref().getAgentOriginId();
-    final mobnum = await SharedPref().getParentAgentMobNum();
+    final mobnum = await SharedPref().getECollectUserNumber();
     final subAgID = await SharedPref().getSubAgentId();
     final crpCode = await SharedPref().getCorpCode();
     final forceLogout = await SharedPref().getForceLogout();

@@ -111,6 +111,7 @@ class SharedPrefKeys {
   static const String pinCodeText = "PIN_CODE_TEXT";
   static const String username = "USER_NAME";
   static const String eCollectUsername = "E-COLLECT_USER_NAME";
+  static const String eCollectUserType = "E-COLLECT_USER_TYPE";
   static const String eCollectRdclCustomerunderAgentList = "E-COLLECT_RDCL_CUSTOMER_UNDER_AGENT_LIST";
   static const String eCollectRdclDueLisUnderAgent = "E-COLLECT_RDCL_DUE_LIST_UNDER_AGENT";
   static const String eCollectMerchantBranchCode = "E-COLLECT_MERCHANT_BRANCH_CODE";

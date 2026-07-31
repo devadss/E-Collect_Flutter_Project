@@ -27,7 +27,7 @@ class _CustomerListState extends State<CustomerList> {
   }
 
   Future<void> loadSharedPrefs() async {
-    final branchID = await SharedPref().getSubAgentCodeNew();
+    final branchID = await SharedPref().getECollectMerchantBranchCode();
     final number = await SharedPref().getParentAgentMobNum();
     final custId = await SharedPref().getAgentId();
 

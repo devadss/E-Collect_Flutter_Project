@@ -24,6 +24,7 @@ class LoginResponse {
   final String? branchName;
   final String branchCode;
   final String integrationStatus;
+  final String productType;
   final List<String> listUrl;
 
   LoginResponse({
@@ -52,7 +53,7 @@ class LoginResponse {
     this.branchName,
     required this.branchCode,
     required this.integrationStatus,
-    required this.listUrl,
+    required this.listUrl, required this.productType,
   });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
@@ -81,6 +82,7 @@ class LoginResponse {
       merchantName: json['merchantName'] ?? '',
       branchName: json['branchName'],
       branchCode: json['branchCode'] ?? '',
+      productType: json['productType'] ?? '',
       integrationStatus: json['integrationStatus'] ?? '',
       listUrl: (json['listUrl'] as List<dynamic>? ?? [])
           .map((e) => e.toString().trim())
@@ -114,6 +116,7 @@ class LoginResponse {
       'merchantName': merchantName,
       'branchName': branchName,
       'branchCode': branchCode,
+      'productType': productType,
       'integrationStatus': integrationStatus,
       'listUrl': listUrl,
     };

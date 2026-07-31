@@ -12,7 +12,7 @@ import '../../storage/shared_pref_helper.dart';
 
 class CustomerListRepo {
   Future<String> loadVendorUrl()async{
-    return await SharedPref().getRdclCustomerVendorUrl();
+    return await SharedPref().getECollectRdclCustomerunderAgentListUrl();
   }
   Future<CustomerListModel> fetchCustList(
       String agentId, String branchId, String pageNo, String pageSize , String custName

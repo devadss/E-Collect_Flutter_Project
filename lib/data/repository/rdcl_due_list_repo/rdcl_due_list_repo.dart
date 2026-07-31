@@ -10,7 +10,7 @@ import '../../../domain/model/rdcl_duelist_model/rdcl_due_list_success.dart';
 
 class RdclDueListRepo {
 Future<String> loadVendorUrl()async{
-  return await SharedPref().getDueListRdclUrl();
+  return await SharedPref().getECollectRdclDuesListunderAgentUrl();
 }
   Future<RdclDueListModel> fetchRdclDueList(
       String agentId,

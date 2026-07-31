@@ -43,8 +43,8 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
   }
 
   Future<void> loadSharedData() async {
-    String? username = await SharedPref.shared.getSubAgentName();
-    String? usermobNum = await SharedPref.shared.getSubAgentMobNum();
+    String? username = await SharedPref.shared.getECollectUserName();
+    String? usermobNum = await SharedPref.shared.getECollectUserNumber();
 
     if (mounted) {
       setState(() {
@@ -75,15 +75,14 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: home1.withValues(alpha:0.3),
+                  color: home1.withValues(alpha: 0.3),
                   blurRadius: 20,
                   spreadRadius: 2,
                   offset: const Offset(0, 10),
                 ),
               ],
             ),
-            child:
-            Stack(
+            child: Stack(
               children: [
                 // Decorative elements
                 const Positioned(
@@ -99,7 +98,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                   left: 20,
                   child: Opacity(
                     opacity: 0.1,
-                    child:  Icon(Icons.verified_user, size: 100, color: white),
+                    child: Icon(Icons.verified_user, size: 100, color: white),
                   ),
                 ),
 
@@ -119,7 +118,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                             border: Border.all(color: white, width: 3),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withValues(alpha:0.2),
+                                color: Colors.black.withValues(alpha: 0.2),
                                 blurRadius: 10,
                                 spreadRadius: 2,
                               ),
@@ -127,8 +126,9 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                           ),
                           child: ClipOval(
                             child: Material(
-                              color: home2.withValues(alpha:0.2),
-                              child: const Icon(Icons.person, size: 60, color: white),
+                              color: home2.withValues(alpha: 0.2),
+                              child: const Icon(Icons.person,
+                                  size: 60, color: white),
                             ),
                           ),
                         ),
@@ -251,19 +251,19 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        shadowColor: color.withValues(alpha:0.2),
+        shadowColor: color.withValues(alpha: 0.2),
         color: Colors.white,
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
           onTap: onTap,
-          splashColor: color.withValues(alpha:0.15),
-          highlightColor: color.withValues(alpha:0.05),
+          splashColor: color.withValues(alpha: 0.15),
+          highlightColor: color.withValues(alpha: 0.05),
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha:0.04),
+                  color: Colors.black.withValues(alpha: 0.04),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -282,14 +282,14 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          color.withValues(alpha:0.2),
-                          color.withValues(alpha:0.1),
+                          color.withValues(alpha: 0.2),
+                          color.withValues(alpha: 0.1),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(18),
                       boxShadow: [
                         BoxShadow(
-                          color: color.withValues(alpha:0.2),
+                          color: color.withValues(alpha: 0.2),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -332,7 +332,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: color.withValues(alpha:0.1),
+                        color: color.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Icon(
@@ -363,225 +363,230 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
           elevation: 0,
           backgroundColor: Colors.transparent,
           child: Container(
-            padding: const EdgeInsets.all(25),
-            decoration: BoxDecoration(
-              color: white,
-              borderRadius: BorderRadius.circular(25),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha:0.2),
-                  blurRadius: 20,
-                  spreadRadius: 5,
-                ),
-              ],
-            ),
-            child:
-            Container(
+              padding: const EdgeInsets.all(25),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(28),
-                color: Colors.white,
+                color: white,
+                borderRadius: BorderRadius.circular(25),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha:0.1),
+                    color: Colors.black.withValues(alpha: 0.2),
                     blurRadius: 20,
-                    offset: const Offset(0, 10),
+                    spreadRadius: 5,
                   ),
                 ],
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(28),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Modern gradient header
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(24),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Colors.redAccent.withValues(alpha:0.1),
-                              Colors.redAccent.withValues(alpha:0.05),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(28),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(28),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 0, sigmaY: 0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Modern gradient header
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(24),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                Colors.redAccent.withValues(alpha: 0.1),
+                                Colors.redAccent.withValues(alpha: 0.05),
+                              ],
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              // Animated icon with modern design
+                              TweenAnimationBuilder(
+                                duration: const Duration(milliseconds: 500),
+                                tween: Tween<double>(begin: 0, end: 1),
+                                curve: Curves.elasticOut,
+                                builder: (context, value, child) {
+                                  return Transform.scale(
+                                      scale: value, child: child);
+                                },
+                                child: Container(
+                                  width: 100,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Colors.redAccent,
+                                        Colors.redAccent.withValues(alpha: 0.7),
+                                      ],
+                                    ),
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.redAccent
+                                            .withValues(alpha: 0.3),
+                                        blurRadius: 20,
+                                        spreadRadius: 5,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Lottie.asset(
+                                    "assets/animations/logout.json",
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              Text(
+                                "Ready to Leave?",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w700,
+                                  foreground: Paint()
+                                    ..shader = LinearGradient(
+                                      colors: [
+                                        Colors.redAccent,
+                                        Colors.redAccent.shade700,
+                                      ],
+                                    ).createShader(
+                                        Rect.fromLTWH(0, 0, 200, 50)),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                "You'll need to sign in again to access your account",
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.inter(
+                                  color: Colors.grey[600],
+                                  fontSize: 11,
+                                  height: 1.4,
+                                ),
+                              ),
                             ],
                           ),
                         ),
-                        child: Column(
-                          children: [
-                            // Animated icon with modern design
-                            TweenAnimationBuilder(
-                              duration: const Duration(milliseconds: 500),
-                              tween: Tween<double>(begin: 0, end: 1),
-                              curve: Curves.elasticOut,
-                              builder: (context, value, child) {
-                                return Transform.scale(scale: value, child: child);
-                              },
-                              child: Container(
-                                width: 100,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      Colors.redAccent,
-                                      Colors.redAccent.withValues(alpha:0.7),
-                                    ],
-                                  ),
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.redAccent.withValues(alpha:0.3),
-                                      blurRadius: 20,
-                                      spreadRadius: 5,
-                                    ),
-                                  ],
-                                ),
-                                child: Lottie.asset(
-                                  "assets/animations/logout.json",
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            Text(
-                              "Ready to Leave?",
-                              style: GoogleFonts.poppins(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w700,
-                                foreground: Paint()
-                                  ..shader = LinearGradient(
-                                    colors: [
-                                      Colors.redAccent,
-                                      Colors.redAccent.shade700,
-                                    ],
-                                  ).createShader(Rect.fromLTWH(0, 0, 200, 50)),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              "You'll need to sign in again to access your account",
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.inter(
-                                color: Colors.grey[600],
-                                fontSize: 11,
-                                height: 1.4,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
 
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 24),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 24),
 
-                            // Modern buttons
-                            Row(
-                              children: [
-                                // Cancel button
-                                Expanded(
-                                  child: Material(
-                                    elevation: 0,
-                                    borderRadius: BorderRadius.circular(16),
-                                    child: InkWell(
-                                      onTap: () => Navigator.pop(context),
+                              // Modern buttons
+                              Row(
+                                children: [
+                                  // Cancel button
+                                  Expanded(
+                                    child: Material(
+                                      elevation: 0,
                                       borderRadius: BorderRadius.circular(16),
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(vertical: 14),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(16),
-                                          border: Border.all(
-                                            color: Colors.grey[300]!,
-                                            width: 1.5,
+                                      child: InkWell(
+                                        onTap: () => Navigator.pop(context),
+                                        borderRadius: BorderRadius.circular(16),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 14),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            border: Border.all(
+                                              color: Colors.grey[300]!,
+                                              width: 1.5,
+                                            ),
                                           ),
-                                        ),
-                                        child: Text(
-                                          "Cancel",
-                                          textAlign: TextAlign.center,
-                                          style: GoogleFonts.inter(
-                                            color: Colors.grey[700],
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 15,
+                                          child: Text(
+                                            "Cancel",
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.inter(
+                                              color: Colors.grey[700],
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 15,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(width: 12),
+                                  const SizedBox(width: 12),
 
-                                // Logout button with modern gradient
-                                Expanded(
-                                  child: Material(
-                                    elevation: 0,
-                                    borderRadius: BorderRadius.circular(16),
-                                    child: InkWell(
-                                      onTap: () async {
-                                        await performLogout(context);
-                                      },
+                                  // Logout button with modern gradient
+                                  Expanded(
+                                    child: Material(
+                                      elevation: 0,
                                       borderRadius: BorderRadius.circular(16),
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(vertical: 14),
-                                        decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                            begin: Alignment.centerLeft,
-                                            end: Alignment.centerRight,
-                                            colors: [
-                                              Colors.redAccent,
-                                              Colors.redAccent.shade700,
+                                      child: InkWell(
+                                        onTap: () async {
+                                          await performLogout(context);
+                                        },
+                                        borderRadius: BorderRadius.circular(16),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 14),
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              begin: Alignment.centerLeft,
+                                              end: Alignment.centerRight,
+                                              colors: [
+                                                Colors.redAccent,
+                                                Colors.redAccent.shade700,
+                                              ],
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.redAccent
+                                                    .withValues(alpha: 0.4),
+                                                blurRadius: 12,
+                                                offset: const Offset(0, 4),
+                                              ),
                                             ],
                                           ),
-                                          borderRadius: BorderRadius.circular(16),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.redAccent.withValues(alpha:0.4),
-                                              blurRadius: 12,
-                                              offset: const Offset(0, 4),
+                                          child: Text(
+                                            "Logout",
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.inter(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 15,
                                             ),
-                                          ],
-                                        ),
-                                        child: Text(
-                                          "Logout",
-                                          textAlign: TextAlign.center,
-                                          style: GoogleFonts.inter(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 15,
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-
-                            const SizedBox(height: 12),
-
-                            // Additional subtle hint
-                            Text(
-                              "Session will be terminated immediately",
-                              style: GoogleFonts.inter(
-                                color: Colors.grey[500],
-                                fontSize: 11,
+                                ],
                               ),
-                            ),
-                          ],
+
+                              const SizedBox(height: 12),
+
+                              // Additional subtle hint
+                              Text(
+                                "Session will be terminated immediately",
+                                style: GoogleFonts.inter(
+                                  color: Colors.grey[500],
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            )
-
-          ),
+              )),
         );
       },
     );
@@ -594,8 +599,8 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
       Navigator.push(
         context,
         PageRouteBuilder(
-          pageBuilder:
-              (context, animation, secondaryAnimation) => const ContactUsPage(),
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              const ContactUsPage(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return SlideTransition(
               position: Tween<Offset>(
@@ -610,6 +615,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
       );
     }
   }
+
   Future<void> performLogout(BuildContext context) async {
     String entityId = await SharedPref.shared.getSubAgentId();
     String token = await SharedPref.shared.getTokenValue();
@@ -649,13 +655,24 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
     await SharedPref.shared.setEmail("");
     await SharedPref.shared.setLoggedInUserType("");
 
+    await SharedPref.shared.setECollectLoginStatus(false);
+    await SharedPref.shared.setECollectMerchantBranchCode('');
+    await SharedPref.shared.setECollectMerchantIntegrationStatus('');
+    await SharedPref.shared.setECollectRdclCustomerunderAgentListUrl('');
+    await SharedPref.shared.setECollectRdclDuesListunderAgentUrl('');
+    await SharedPref.shared.setECollectUserName('');
+    await SharedPref.shared.setECollectUserType('');
+    await SharedPref.shared.setECollectToken('');
+    await SharedPref.shared.setECollectRefreshToken('');
+    await SharedPref.shared.setECollectRefreshToken('');
+    await SharedPref.shared.setECollectUserNumber('');
+    await SharedPref.shared.setECollectMerchantID('');
+    await SharedPref.shared.setECollectUserID('');
 
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => const SplashScreen()),
-          (route) => false,
+      (route) => false,
     );
   }
-
-
 }

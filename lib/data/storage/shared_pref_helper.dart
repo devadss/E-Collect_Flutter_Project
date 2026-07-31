@@ -205,12 +205,12 @@ class SharedPref {
 
   Future<Future<bool>> setECollectMerchantIntegrationStatus(String value) async {
     final prefs = await _getPrefs();
-    return prefs.setString(SharedPrefKeys.eCollectMerchantBranchCode, value);
+    return prefs.setString(SharedPrefKeys.eCollectMerchantIntegrationStatus, value);
   }
 
   Future<String> getECollectMerchantIntegrationStatus() async {
     final prefs = await _getPrefs();
-    return prefs.getString(SharedPrefKeys.eCollectMerchantBranchCode) ?? '';
+    return prefs.getString(SharedPrefKeys.eCollectMerchantIntegrationStatus) ?? '';
   }
 
   Future<Future<bool>> setECollectUserName(String value) async {
@@ -222,6 +222,17 @@ class SharedPref {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.eCollectUsername) ?? '';
   }
+
+  Future<Future<bool>> setECollectUserType(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.eCollectUserType, value);
+  }
+
+  Future<String> getECollectUserType() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.eCollectUserType) ?? '';
+  }
+
 
 
   Future<Future<bool>> setECollectRdclCustomerunderAgentListUrl(String value) async {

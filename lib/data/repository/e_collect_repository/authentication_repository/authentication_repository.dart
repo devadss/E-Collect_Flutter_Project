@@ -63,6 +63,7 @@ class AuthenticationRepository {
             {"userId": id, "mobileNumber": mobileNumber, "otp": otp}),
         headers: contentType);
     print(request.body);
+    print(uri);
     return request.statusCode != 200 ? OtpVerificationFailureModel(
           OtpVerificationErrorResponse.fromJson(jsonDecode(request.body))) : OtpVerificationSuccessModel(
           LoginResponse.fromJson(jsonDecode(request.body)));
