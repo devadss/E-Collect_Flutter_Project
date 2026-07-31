@@ -8,13 +8,13 @@ class QRTransactionHistoryProvider with ChangeNotifier {
   final QRTransactionHistoryRepository _qrTransactionHistoryRepository;
   QRTransactionHistoryProvider(this._qrTransactionHistoryRepository);
   String? _errResponse;
-  String? get errResponse  => _errResponse;
+  String? get errResponse => _errResponse;
   QrTranscationHistoryModel? _qrTranscationHistoryModel;
   QrTranscationHistoryModel? get qrTranscationHistoryModel =>
       _qrTranscationHistoryModel;
 
   bool? _showProgressDialog;
-  bool? get showProgressDialog  => _showProgressDialog;
+  bool? get showProgressDialog => _showProgressDialog;
   Future<void> getQrTranscationHistory(
     String? dateFilterType,
     String? startDate,
@@ -23,26 +23,32 @@ class QRTransactionHistoryProvider with ChangeNotifier {
     String? corpCode,
     String? agentOriginId,
   ) async {
-    if(printStatementStatus){
+    if (printStatementStatus) {
       printLog(
         "==================================QR TRANSACTION MODEL=================================",
       );
     }
 
     _showProgressDialog = true; // ✅ Add this line!
-notifyListeners();
-if(printStatementStatus){
-  printLog(qrTranscationHistoryModel);
-}
+    notifyListeners();
+    if (printStatementStatus) {
+      printLog(qrTranscationHistoryModel);
+    }
 
-    final result = await _qrTransactionHistoryRepository
-        .getQrTranscationHistory(dateFilterType, startDate, endDate, source,corpCode,agentOriginId);
+    final result =
+        await _qrTransactionHistoryRepository.getQrTranscationHistory(
+            dateFilterType,
+            startDate,
+            endDate,
+            source,
+            corpCode,
+            agentOriginId);
 
     result.fold(
       (error) {
         _errResponse = error.message;
         _qrTranscationHistoryModel = null;
-        if(printStatementStatus){
+        if (printStatementStatus) {
           printLog("-------------Error QR Transcation-------------");
           printLog(error);
         }
@@ -54,14 +60,13 @@ if(printStatementStatus){
         _qrTranscationHistoryModel = data;
         _errResponse = null;
         _showProgressDialog = false;
-        if(printStatementStatus){
+        if (printStatementStatus) {
           printLog("-------------------DATA QR TRANS-----------------");
           printLog(data);
         }
 
         notifyListeners();
       },
-
     );
     notifyListeners();
   }

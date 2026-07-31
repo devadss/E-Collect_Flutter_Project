@@ -12,7 +12,8 @@ class CashQrProvider with ChangeNotifier {
 
   CashQrCombinedResponse? get cashQrCombinedResponse => _cashQrCombinedResponse;
 
-
+  bool? _showProgressDialog;
+  bool? get showProgressDialog  => _showProgressDialog;
   String? _errResponse;
   String? get errResponse => _errResponse;
 
@@ -28,7 +29,9 @@ class CashQrProvider with ChangeNotifier {
     data.fold((err) {
       _errResponse = err;
       _cashQrCombinedResponse = null;
+      _showProgressDialog = false;
     }, (success) {
+      _showProgressDialog = false;
       _errResponse = null;
       _cashQrCombinedResponse = success;
     });

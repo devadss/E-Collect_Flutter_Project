@@ -15,8 +15,6 @@ import '../../core/utils.dart';
 import '../../data/provider/agent_transaction_provider.dart';
 import '../../data/provider/cash_transcation_history_provider.dart';
 import '../../data/provider/collection_summary_provider.dart';
-import '../../data/provider/link_transcation_history_provider.dart';
-import '../../data/provider/qr_transcation_history_provider.dart';
 import '../../data/provider/transfer_transaction_provider.dart';
 import '../../domain/model/link_transaction_history_model.dart';
 import '../../domain/model/qr_transaction_history_model.dart';
@@ -146,9 +144,9 @@ class _HomePageState extends State<HomePage>
 
   void showDateRangeFilter() {
     final cashQrProvider = context.read<CashQrProvider>();
-    final qrProvider = context.read<QRTransactionHistoryProvider>();
+   // final qrProvider = context.read<QRTransactionHistoryProvider>();
     final cashTransProvider = context.read<CashTransactionHistoryProvider>();
-    final linkProvider = context.read<LinkTransactionHistoryProvider>();
+  //  final linkProvider = context.read<LinkTransactionHistoryProvider>();
     //final transferProvider = context.read<TransferHistoryProvider>();
 
     DateTime? fromDate;
@@ -342,8 +340,9 @@ class _HomePageState extends State<HomePage>
                           //
                           //     corpCode,
                           //     agentOriginId);
-                          await linkProvider.getLinkTransactionHistory(period,
-                              from, to, subAgentID!, corpCode!, agentOriginId!);
+                          // await linkProvider.getLinkTransactionHistory(period,
+                          //     from, to, subAgentID!, corpCode!, agentOriginId!);
+
                           // await transferProvider.getQrTranscationHistory(
                           //     period,
                           //     from,
@@ -353,17 +352,17 @@ class _HomePageState extends State<HomePage>
                           //     corpCode,
                           //     agentOriginId);
 
-                          await cashTransProvider.getCashTranscationHistory(
-                              period,
-                              from,
-                              to,
-                              //cashCollectionType,
-                              "ALL",
-                              subAgentID,
-                              corpCode,
-                              agentOriginId);
-                          await linkProvider.getLinkTransactionHistory(period,
-                              from, to, subAgentID!, corpCode!, agentOriginId!);
+                          // await cashTransProvider.getCashTranscationHistory(
+                          //     period,
+                          //     from,
+                          //     to,
+                          //     //cashCollectionType,
+                          //     "ALL",
+                          //     subAgentID,
+                          //     corpCode,
+                          //     agentOriginId);
+                          // await linkProvider.getLinkTransactionHistory(period,
+                          //     from, to, subAgentID!, corpCode!, agentOriginId!);
                           await cashQrProvider.getCombinedResponse(period, from,
                               to, subAgentID!, corpCode!, agentOriginId!);
 
@@ -375,7 +374,13 @@ class _HomePageState extends State<HomePage>
                               subAgentID!,
                               corpCode,
                               agentOriginId);
-
+                          if (
+                          cashTransProvider.showProgressDialog == false
+                          ) {
+                            if(!mounted)return;
+                            Navigator.of(context, rootNavigator: true).pop();
+                            Navigator.of(context, rootNavigator: true).pop();
+                          }
                           // ✅ Update parent state
                           setState(() {
                             isFilterApplied = true;
@@ -383,14 +388,7 @@ class _HomePageState extends State<HomePage>
                             currentFromDate = from;
                             currentToDate = to;
                           });
-                          if (qrProvider.showProgressDialog == false ||
-                              cashTransProvider.showProgressDialog == false ||
-                              linkProvider.showProgressDialog == false) {
-                            if (mounted) {
-                              Navigator.of(context, rootNavigator: true).pop();
-                              Navigator.of(context, rootNavigator: true).pop();
-                            }
-                          }
+
                         },
                         child:
                             Text(selectedIndex == 4 ? 'Apply Filter' : 'Apply'),
@@ -461,33 +459,33 @@ class _HomePageState extends State<HomePage>
 
     try {
       // Load data for ALL providers, not just QR transactions
-      final qrProvider = Provider.of<QRTransactionHistoryProvider>(context, listen: false);
+     // final qrProvider = Provider.of<QRTransactionHistoryProvider>(context, listen: false);
       final cashQrProvider = Provider.of<CashQrProvider>(context, listen: false);
       final cashProvider = Provider.of<CashTransactionHistoryProvider>(context, listen: false);
-      final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
+     // final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
 
       if (printStatementStatus) {
         print("userType : $userType");
       }
 
       if (userType == "LOAN_COLLECTION") {
-        await linkProvider.getLinkTransactionHistory(
-            // "THIS_WEEK",
-            "TODAY",
-            fromDate,
-            toDate,
-            subAgentID!,
-            corpCode!,
-            agentOriginId!);
+        // await linkProvider.getLinkTransactionHistory(
+        //     // "THIS_WEEK",
+        //     "TODAY",
+        //     fromDate,
+        //     toDate,
+        //     subAgentID!,
+        //     corpCode!,
+        //     agentOriginId!);
       } else if (userType == "COLLECTION") {
-        await linkProvider.getLinkTransactionHistory(
-            // "THIS_WEEK",
-            "TODAY",
-            fromDate,
-            toDate,
-            subAgentID!,
-            corpCode!,
-            agentOriginId!);
+        // await linkProvider.getLinkTransactionHistory(
+        //     // "THIS_WEEK",
+        //     "TODAY",
+        //     fromDate,
+        //     toDate,
+        //     subAgentID!,
+        //     corpCode!,
+        //     agentOriginId!);
       }
 
       // Load Cash transactions
@@ -931,7 +929,7 @@ class _HomePageState extends State<HomePage>
     //final qrProvider = context.read<QRTransactionHistoryProvider>();
     final cashTransProvider = context.read<CashTransactionHistoryProvider>();
     final cashQrProvider = context.read<CashQrProvider>();
-    final linkProvider = context.read<LinkTransactionHistoryProvider>();
+   // final linkProvider = context.read<LinkTransactionHistoryProvider>();
     // final transferProvider = context.read<TransferHistoryProvider>();
 
     // Reset to default period
@@ -953,8 +951,8 @@ class _HomePageState extends State<HomePage>
       //   agentOriginId!,
       // );
 
-      await linkProvider.getLinkTransactionHistory("TODAY", formattedFdate,
-          formattedTdate, subAgentID!, corpCode!, agentOriginId!);
+      // await linkProvider.getLinkTransactionHistory("TODAY", formattedFdate,
+      //     formattedTdate, subAgentID!, corpCode!, agentOriginId!);
 
       await cashTransProvider.getCashTranscationHistory(
         "TODAY",
@@ -1008,8 +1006,8 @@ class _HomePageState extends State<HomePage>
       }
 
       if (mounted &&
-          cashTransProvider.showProgressDialog == false &&
-          linkProvider.showProgressDialog == false) {
+          cashTransProvider.showProgressDialog == false
+         ) {
         if (printStatementStatus) {
           print("_clearFilters 3");
         }
@@ -1161,7 +1159,7 @@ class _HomePageState extends State<HomePage>
     //QRTransactionHistoryProvider qrProvider,
     CashQrProvider cashQrProvider,
     CashTransactionHistoryProvider cashTranProvider,
-    LinkTransactionHistoryProvider linkProvider,
+   // LinkTransactionHistoryProvider linkProvider,
   ) {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
@@ -1171,7 +1169,7 @@ class _HomePageState extends State<HomePage>
               return _buildCashWithQrTransactionContent(cashQrProvider);
             case 1:
               // return _buildQRTransactionContent(qrProvider);
-              return _buildLinkTransactionContent(linkProvider);
+             // return _buildLinkTransactionContent(linkProvider);
             case 2:
               return _buildCashTransactionContent(cashTranProvider);
             default:
@@ -1210,39 +1208,40 @@ class _HomePageState extends State<HomePage>
     );
   }*/
 
-  Widget _buildLinkTransactionContent(
-      LinkTransactionHistoryProvider linkProvider) {
-    if (linkProvider.erResposne != null) {
-      return _buildEmptyState(
-        icon: Icons.link,
-        title: "No Link Transactions",
-        message: "Your Link payment transactions will appear here",
-      );
-    } else if (linkProvider.linkTranscationHistoryModel == null) {
-      return _buildLoadingList();
-    }
-
-    return _buildTransactionList(
-      transactions: linkProvider.linkTranscationHistoryModel!.data!,
-      icon: Icons.link_outlined,
-      iconColor: Colors.blue,
-      getAmount: (t) => t.linkAmount ?? 0,
-      getStatus: (t) => t.linkStatus.toString(),
-      getOrderId: (t) => t.orderId.toString(),
-      getCustName: (t) => t.customerName.toString(),
-      getCustId: (t) => t.customerId.toString(),
-      getCustPhone: (t) => t.customerPhone.toString(),
-      getTnxType: (t) => t.source.toString(),
-      paymentMode: (t) => t.paymentMode.toString(),
-
-      collectionType: (t) => t.collectionType.toString(),
-      getAccNo: (t) => t.customerAcctno.toString(),
-      getTranType: (t) => t.source.toString(),
-      getCustAccNo: (t) => t.customerAcctno.toString(),
-      getVendorPostTransId: (t) => t.vendorPostTransId.toString(),
-
-    );
-  }
+  // Widget _buildLinkTransactionContent(
+  //     LinkTransactionHistoryProvider linkProvider)
+  // {
+  //   if (linkProvider.erResposne != null) {
+  //     return _buildEmptyState(
+  //       icon: Icons.link,
+  //       title: "No Link Transactions",
+  //       message: "Your Link payment transactions will appear here",
+  //     );
+  //   } else if (linkProvider.linkTranscationHistoryModel == null) {
+  //     return _buildLoadingList();
+  //   }
+  //
+  //   return _buildTransactionList(
+  //     transactions: linkProvider.linkTranscationHistoryModel!.data!,
+  //     icon: Icons.link_outlined,
+  //     iconColor: Colors.blue,
+  //     getAmount: (t) => t.linkAmount ?? 0,
+  //     getStatus: (t) => t.linkStatus.toString(),
+  //     getOrderId: (t) => t.orderId.toString(),
+  //     getCustName: (t) => t.customerName.toString(),
+  //     getCustId: (t) => t.customerId.toString(),
+  //     getCustPhone: (t) => t.customerPhone.toString(),
+  //     getTnxType: (t) => t.source.toString(),
+  //     paymentMode: (t) => t.paymentMode.toString(),
+  //
+  //     collectionType: (t) => t.collectionType.toString(),
+  //     getAccNo: (t) => t.customerAcctno.toString(),
+  //     getTranType: (t) => t.source.toString(),
+  //     getCustAccNo: (t) => t.customerAcctno.toString(),
+  //     getVendorPostTransId: (t) => t.vendorPostTransId.toString(),
+  //
+  //   );
+  // }
 
   Widget _buildCashTransactionContent(
       CashTransactionHistoryProvider cashProvider) {
@@ -1652,7 +1651,7 @@ class _HomePageState extends State<HomePage>
     final cashTranProvider =
         Provider.of<CashTransactionHistoryProvider>(context);
     final cashQrProvider = Provider.of<CashQrProvider>(context);
-    final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context);
+   // final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context);
     //final transferProvider = Provider.of<TransferHistoryProvider>(context);
     final size = MediaQuery.of(context).size;
 
@@ -1695,11 +1694,11 @@ class _HomePageState extends State<HomePage>
               sliver: userType == "COLLECTION"
                   // ? _buildContentCollectionSection(qrProvider, cashTranProvider, cashQrProvider)
                   ? _buildContentCollectionSection(
-                      cashQrProvider, cashTranProvider, linkProvider)
+                      cashQrProvider, cashTranProvider)
                   // : _buildContentSection(qrProvider, cashTranProvider, linkProvider,  transferProvider),
                   // : _buildContentCollectionSection(qrProvider, cashTranProvider, cashQrProvider)
                   : _buildContentCollectionSection(
-                      cashQrProvider, cashTranProvider, linkProvider)),
+                      cashQrProvider, cashTranProvider)),
         ],
       ),
     );
@@ -1711,8 +1710,7 @@ class _HomePageState extends State<HomePage>
     // Calculate based on selected tab
     switch (selectedTabIndex) {
       case 0: // All Code tab
-        final linkProvider =
-            Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
+        // final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
         final cashQrProvider =
             Provider.of<CashQrProvider>(context, listen: false);
         if (userType != "COLLECTION") {
@@ -1747,12 +1745,11 @@ class _HomePageState extends State<HomePage>
         // if (qrProvider.qrTranscationHistoryModel != null) {
         //   total = qrProvider.qrTranscationHistoryModel!.data!
         //       .fold(0, (sum, item) => sum + (item.orderAmount ?? 0));
-        final linkProvider =
-            Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
-        if (linkProvider.linkTranscationHistoryModel != null) {
-          total = linkProvider.linkTranscationHistoryModel!.data!
-              .fold(0, (sum, item) => sum + (item.linkAmount ?? 0));
-        }
+        //final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
+        // if (linkProvider.linkTranscationHistoryModel != null) {
+        //   total = linkProvider.linkTranscationHistoryModel!.data!
+        //       .fold(0, (sum, item) => sum + (item.linkAmount ?? 0));
+        // }
         break;
 
       case 2: // Cash tab

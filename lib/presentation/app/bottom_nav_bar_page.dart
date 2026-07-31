@@ -68,6 +68,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     }
   }
 
+
   Widget _getSelectedPage(int index) {
     switch (index) {
       case 0:

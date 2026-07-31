@@ -10,7 +10,6 @@ import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
-
 import '../../../core/utils.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 
@@ -187,7 +186,6 @@ if (printStatementStatus){
 if (printStatementStatus){
   print('$perm: ${status.isGranted}');
 }
-
       });
 
       return allGranted;
