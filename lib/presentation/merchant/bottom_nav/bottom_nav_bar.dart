@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../account_dues/account_list_home_page.dart';
 import '../../account_dues/rdcl_cust_list_bloc/customer _list.dart';
-import '../../dues/dues_home_page.dart';
 import '../../dues/rdcl_due_list_bloc_page.dart';
 import '../../home/home_page.dart';
 import '../../profile/profile_home_page.dart';
@@ -26,45 +25,78 @@ class _BottomNavBarState extends State<BottomNavBar> {
   String rdclCustomerUnderAgentListUrl = "";
   String rdclDueListUnderAgentUrl = "";
   String type = "";
+  final String INTEGRATED = "Y";
+  final String USER_TYPE_RDCL = "RDCL";
+  final String USER_TYPE_RD = "RD";
+
+  final rdclItems = [
+    ["Home", Icons.home, Icons.house_outlined],
+    ["Dues", Icons.receipt, Icons.receipt_long],
+    ["Cust-List", Icons.list, Icons.list_alt_outlined],
+    ["Profile", Icons.personal_injury_outlined, Icons.person],
+  ];
+  final rdItems = [
+    ["Home", Icons.home, Icons.house_outlined],
+    ["RD_Loan", Icons.monetization_on_outlined, Icons.monetization_on],
+    ["Profile", Icons.personal_injury_outlined, Icons.person],
+  ];
+  final groupItems = [
+    ["Home", Icons.home, Icons.house_outlined],
+    ["Groups", Icons.safety_divider, Icons.safety_divider_rounded],
+    [
+      "Transactions",
+      Icons.transfer_within_a_station,
+      Icons.transfer_within_a_station_rounded
+    ],
+    [
+      "Settlement",
+      Icons.settings_backup_restore,
+      Icons.settings_backup_restore_sharp
+    ],
+  ];
+
   Future<void> getSharedData() async {
-    final _integrationStatus = await SharedPref.shared.getECollectMerchantIntegrationStatus();
+    final _integrationStatus =
+        await SharedPref.shared.getECollectMerchantIntegrationStatus();
     final _branCode = await SharedPref.shared.getECollectMerchantBranchCode();
-    final _rdclCustomerUnderAgentListUrl = await SharedPref.shared.getECollectRdclCustomerunderAgentListUrl();
-    final _rdclDueListUnderAgentUrl = await SharedPref.shared.getECollectRdclDuesListunderAgentUrl();
+    final _rdclCustomerUnderAgentListUrl =
+        await SharedPref.shared.getECollectRdclCustomerunderAgentListUrl();
+    final _rdclDueListUnderAgentUrl =
+        await SharedPref.shared.getECollectRdclDuesListunderAgentUrl();
     final _type = await SharedPref.shared.getECollectUserType();
 
     setState(() {
-       //type = _type;
+      //type = _type;
       type = "RDCL";
       integrationStatus = _integrationStatus;
       branCode = _branCode;
       rdclCustomerUnderAgentListUrl = _rdclCustomerUnderAgentListUrl;
       rdclDueListUnderAgentUrl = _rdclDueListUnderAgentUrl;
     });
+
     integratedTypeRDCLMerchantPages = [
       HomePage(userType: type),
       RdclDueListBlocPage(
         branchCode: branCode,
       ),
-
       const CustomerList(),
-    //  const ProfileHomePage()
+      const ProfileHomePage()
     ];
     integratedTypeRDMerchantPages = [
       HomePage(userType: type),
-     // const DuesHomePage(),
       const AccountListHomePage(),
       const ProfileHomePage()
     ];
   }
+
   final groupTypeMerchantPages = [
     const GroupHomePageUI(),
     const AllGroupsPage(),
     const PaymentLinkHomePageMerchant(),
     const SettlementPage(),
   ];
-  final integratedTypeLoanMerchantPages = [];
 
+  final integratedTypeLoanMerchantPages = [];
   final nonIntegratedTypeMerchantPages = [];
   late var integratedTypeRDCLMerchantPages = [];
 
@@ -77,143 +109,84 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: integrationStatus == "Y" && type == "RDCL"
+      body: integrationStatus == INTEGRATED && type == USER_TYPE_RDCL
           ? integratedTypeRDCLMerchantPages[_selectedIndex]
-          : integrationStatus == "Y" && type == "RD"
+          : integrationStatus == INTEGRATED && type == USER_TYPE_RD
               ? integratedTypeRDMerchantPages[_selectedIndex]
               : groupTypeMerchantPages[_selectedIndex],
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, -5),
-            ),
-          ],
-        ),
-        child: BottomNavigationBar(
-          currentIndex: _selectedIndex,
-          selectedItemColor: const Color(0xFFEA307B),
-          unselectedItemColor: Colors.grey.shade500,
-          backgroundColor: Colors.white,
-          type: BottomNavigationBarType.fixed,
-          elevation: 0,
-          showSelectedLabels: true,
-          showUnselectedLabels: true,
-          selectedLabelStyle: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            letterSpacing: -0.2,
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, -5),
+              ),
+            ],
           ),
-          unselectedLabelStyle: TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w500,
-            color: Colors.grey.shade500,
-            letterSpacing: -0.2,
-          ),
-          onTap: (index) {
-            setState(() {
-              _selectedIndex = index;
-            });
-          },
-          items: [
-            BottomNavigationBarItem(
-              icon: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.only(bottom: 2),
-                child: Icon(
-                  _selectedIndex == 0 ? Icons.home : Icons.house_outlined,
-                  size: 24,
-                ),
+          child: BottomNavigationBar(
+              currentIndex: _selectedIndex,
+              selectedItemColor: const Color(0xFFEA307B),
+              unselectedItemColor: Colors.grey.shade500,
+              backgroundColor: Colors.white,
+              type: BottomNavigationBarType.fixed,
+              elevation: 0,
+              showSelectedLabels: true,
+              showUnselectedLabels: true,
+              selectedLabelStyle: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                letterSpacing: -0.2,
               ),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.only(bottom: 2),
-                child: integrationStatus == "Y" && type == "RDCL"
-                    ? Icon(
-                        _selectedIndex == 1
-                            ? Icons.receipt_long_outlined
-                            : Icons.receipt_long,
-                        size: 24,
-                      )
-                    : Icon(
-                        _selectedIndex == 1
-                            ? Icons.business_center
-                            : Icons.business_center_outlined,
-                        size: 24,
-                      ),
+              unselectedLabelStyle: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey.shade500,
+                letterSpacing: -0.2,
               ),
-              label: integrationStatus == "Y" && type == "RDCL" || type == "RD"
-                  ? "Dues"
-                  : "Bucket",
-            ),
-            BottomNavigationBarItem(
-              icon: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.only(bottom: 2),
-                child: integrationStatus == "Y" && type == "RDCL"
-                    ? Icon(
-                        _selectedIndex == 2
-                            ? Icons.list_alt_outlined
-                            : Icons.list_alt,
-                        size: 24,
-                      )
-                    : integrationStatus == "Y" && type == "RD"
-                        ? Icon(
-                            _selectedIndex == 2
-                                ? Icons.list_alt_sharp
-                                : Icons.list_alt,
-                            size: 24,
-                          )
-                        : Icon(
-                            _selectedIndex == 2
-                                ? Icons.history
-                                : Icons.history_toggle_off,
-                            size: 24,
-                          ),
-              ),
-              label: integrationStatus == "Y" && type == "RDCL"
-                  ? 'Cust-List'
-                  : integrationStatus == "Y" && type == "RD"
-                      ? "Accounts"
-                      : "History",
-            ),
-            BottomNavigationBarItem(
-              icon: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.only(bottom: 2),
-                child: integrationStatus == "Y" && type == "RDCL"
-                    ? Icon(
-                        _selectedIndex == 2
-                            ? Icons.person_outline
-                            : Icons.person,
-                        size: 24,
-                      )
-                    : integrationStatus == "Y" && type == "RD"
-                        ? Icon(
-                            _selectedIndex == 2
-                                ? Icons.person
-                                : Icons.personal_injury_outlined,
-                            size: 24,
-                          )
-                        : Icon(
-                            _selectedIndex == 2
-                                ? Icons.transfer_within_a_station_sharp
-                                : Icons.transfer_within_a_station,
-                            size: 24,
-                          ),
-              ),
-              label: integrationStatus == "Y" && type == "RDCL" || type == "RD"
-                  ? "Profile"
-                  : 'Settlement',
-            ),
-          ],
+              onTap: (index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
+              items: integrationStatus == INTEGRATED && type == USER_TYPE_RDCL
+                  ? List.generate(rdclItems.length, (index) {
+                      return buildBottomNavigationBarItem(
+                          rdclItems[index][0] as String,
+                          rdclItems[index][1] as IconData,
+                          rdclItems[index][2] as IconData,
+                          _selectedIndex);
+                    })
+                  : integrationStatus == INTEGRATED && type == USER_TYPE_RD
+                      ? List.generate(rdItems.length, (index) {
+                          return buildBottomNavigationBarItem(
+                              rdItems[index][0] as String,
+                              rdItems[index][1] as IconData,
+                              rdItems[index][2] as IconData,
+                              _selectedIndex);
+                        })
+                      : List.generate(groupItems.length, (index) {
+                          return buildBottomNavigationBarItem(
+                              groupItems[index][0] as String,
+                              groupItems[index][1] as IconData,
+                              groupItems[index][2] as IconData,
+                              _selectedIndex);
+                        }))),
+    );
+  }
+
+  BottomNavigationBarItem buildBottomNavigationBarItem(String labelName,
+      IconData selectedIconData, IconData unSelectedIconData, int index) {
+    return BottomNavigationBarItem(
+      icon: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.only(bottom: 2),
+        child: Icon(
+          index == 0 ? selectedIconData : unSelectedIconData,
+          size: 24,
         ),
       ),
+      label: labelName,
     );
   }
 }
