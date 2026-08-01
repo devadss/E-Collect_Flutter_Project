@@ -4,9 +4,11 @@ import 'package:collection_qr_flutter/data/provider/cash_qr_provider.dart';
 import 'package:collection_qr_flutter/domain/model/all_trans_data.dart';
 import 'package:collection_qr_flutter/domain/model/qr_cash_combined_response.dart';
 import 'package:collection_qr_flutter/domain/model/transfer_history_model.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
+
 import 'package:palette_generator_master/palette_generator_master.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/colors.dart';
@@ -52,7 +54,25 @@ class _HomePageState extends State<HomePage>
   String currentToDate = ''; // Track current to date
   int currentBannerIndex = 0;
   Color? dominantColor;
-
+  int touchedIndex = -1;
+  final List<Map<String, dynamic>> data = [
+    {"label": "Food", "value": 35.0, "color": const Color(0xFF6C5CE7)},
+    {"label": "Rent", "value": 25.0, "color": const Color(0xFF00CEC9)},
+    {"label": "Travel", "value": 20.0, "color": const Color(0xFFFF7675)},
+    {"label": "Other", "value": 20.0, "color": const Color(0xFFFDCB6E)},
+    {"label": "Other", "value": 20.0, "color": const Color(0xFFFDCB6E)},
+  ];
+  final spots = [
+    const FlSpot(0, 3),
+    const FlSpot(1, 4.5),
+    const FlSpot(2, 3.8),
+    const FlSpot(3, 6),
+    const FlSpot(4, 5.2),
+    const FlSpot(5, 7.5),
+    const FlSpot(6, 6.8),
+    const FlSpot(7, 8.8),
+    const FlSpot(8, 15.8),
+  ];
   final List<String> bannerImages = [
     "assets/images/cq1.webp",
     "assets/images/cq2.webp",
@@ -131,8 +151,8 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    animationController();
-    createColorPallet();
+    //  animationController();
+    // createColorPallet();
     checkForUpdate();
 
     loadSharedPrefs(context);
@@ -229,8 +249,8 @@ class _HomePageState extends State<HomePage>
                       scrollDirection: Axis.horizontal,
                       child: ToggleButtons(
                         hoverColor: home2,
-                        splashColor: home1.withValues(alpha:0.7),
-                        fillColor: home1.withValues(alpha:0.1),
+                        splashColor: home1.withValues(alpha: 0.7),
+                        fillColor: home1.withValues(alpha: 0.1),
                         selectedBorderColor: home1,
                         isSelected: List.generate(5, (i) => i == selectedIndex),
                         onPressed: (i) => modalSetState(() {
@@ -461,10 +481,14 @@ class _HomePageState extends State<HomePage>
 
     try {
       // Load data for ALL providers, not just QR transactions
-      final qrProvider = Provider.of<QRTransactionHistoryProvider>(context, listen: false);
-      final cashQrProvider = Provider.of<CashQrProvider>(context, listen: false);
-      final cashProvider = Provider.of<CashTransactionHistoryProvider>(context, listen: false);
-      final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
+      final qrProvider =
+          Provider.of<QRTransactionHistoryProvider>(context, listen: false);
+      final cashQrProvider =
+          Provider.of<CashQrProvider>(context, listen: false);
+      final cashProvider =
+          Provider.of<CashTransactionHistoryProvider>(context, listen: false);
+      final linkProvider =
+          Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
 
       if (printStatementStatus) {
         print("userType : $userType");
@@ -603,7 +627,7 @@ class _HomePageState extends State<HomePage>
     final headerColor = bannerImagesColorPallet.isNotEmpty &&
             index < bannerImagesColorPallet.length
         ? bannerImagesColorPallet[index]
-        : Colors.blue; // fallback color
+        : Colors.white; // fallback color
 
     return AnimatedContainer(
       duration: 500.ms,
@@ -627,7 +651,7 @@ class _HomePageState extends State<HomePage>
                   Text(
                     "Welcome back",
                     style: TextStyle(
-                      color: whiteColor.withValues(alpha:0.8),
+                      color: Colors.black.withValues(alpha: 0.8),
                       fontSize: 13,
                       fontWeight: FontWeight.w400,
                     ),
@@ -642,7 +666,7 @@ class _HomePageState extends State<HomePage>
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
-                      color: whiteColor,
+                      color: Colors.black,
                       letterSpacing: 0.3,
                     ),
                   ).animate().fadeIn(duration: 900.ms).slideX(begin: -0.9),
@@ -653,7 +677,7 @@ class _HomePageState extends State<HomePage>
                   Text(
                     "Here's your collection overview",
                     style: TextStyle(
-                      color: whiteColor.withValues(alpha:0.75),
+                      color: Colors.black.withValues(alpha: 0.75),
                       fontSize: 12,
                     ),
                   )
@@ -662,14 +686,127 @@ class _HomePageState extends State<HomePage>
             ),
 
             /// BANNER / CAROUSEL
-            _buildAnimatedBannerCarousel(size),
+            // _buildAnimatedBannerCarousel(size),
 
+        AspectRatio(
+          aspectRatio: 1.8,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 5, top: 10, left: 5),
+            child: LineChart(
+              LineChartData(
+                gridData: FlGridData(
+                  show: true,
+                  drawVerticalLine: false,
+                  horizontalInterval: 1.3,
+                  getDrawingHorizontalLine: (value) => FlLine(
+                    color: Colors.black.withValues(alpha: 0.15),
+                    strokeWidth: 1,
+                  ),
+                ),
+                titlesData: FlTitlesData(
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 30,
+                      getTitlesWidget: (value, meta) {
+                        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', "sda"];
+                        final i = value.toInt();
+                        if (i < 0 || i >= days.length) return const SizedBox();
+                        return Text(days[i],
+                            style: const TextStyle(fontSize: 10, color: Colors.grey));
+                      },
+                    ),
+                  ),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      interval: 2,
+                      reservedSize: 30,
+                      getTitlesWidget: (value, meta) => Text(
+                        value.toInt().toString(),
+                        style: const TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                ),
+                borderData: FlBorderData(show: false),
+                minY: 0,
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: spots,
+                    isCurved: true,
+                    curveSmoothness: 0.35,
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF6C5CE7), Color(0xFFEA307B)],
+                    ),
+                    barWidth: 2,
+                    isStrokeCapRound: true,
+                    dotData: const FlDotData(show: false),
+                    belowBarData: BarAreaData(
+                      show: true,
+                      gradient: LinearGradient(
+                        colors: [
+                          const Color(0xFFEA307B).withValues(alpha: 0.25),
+                          const Color(0xFF8609A8).withValues(alpha: 0.0),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                  ),
+                ],
+                lineTouchData: LineTouchData(
+                  touchTooltipData: LineTouchTooltipData(
+                    getTooltipColor: (touchedSpot) =>
+                        Colors.black.withValues(alpha: 0.8),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.only(left: 20),
+              child: Wrap(
+                spacing: 10,
+                runSpacing: 2,
+                children: data.map((d) {
+                  return Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: d["color"],
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20.0),
+                        child: Text(d["label"], style: const TextStyle(fontSize: 13)),
+                      ),
+                    ],
+                  );
+                }).toList(),
+              ),
+            ),
             const SizedBox(height: 10),
           ],
         ),
       ),
     );
   }
+
 
   Widget _buildAnimatedBannerCarousel(Size size) {
     return SizedBox(
@@ -703,7 +840,7 @@ class _HomePageState extends State<HomePage>
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha:0.2),
+                      color: Colors.black.withValues(alpha: 0.2),
                       blurRadius: 5,
                       spreadRadius: 2,
                     ),
@@ -729,7 +866,7 @@ class _HomePageState extends State<HomePage>
                     borderRadius: BorderRadius.circular(50),
                     color: currentBannerIndex == entry.key
                         ? Colors.red
-                        : Colors.red.withValues(alpha:0.5),
+                        : Colors.red.withValues(alpha: 0.5),
                   ),
                 );
               }).toList(),
@@ -768,7 +905,7 @@ class _HomePageState extends State<HomePage>
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          shadowColor: Colors.black.withValues(alpha:0.08),
+          shadowColor: Colors.black.withValues(alpha: 0.08),
           child: Padding(
             padding: const EdgeInsets.all(18),
             child: Column(
@@ -795,8 +932,8 @@ class _HomePageState extends State<HomePage>
                         // color: home1.withValues(alpha:0.08),
                         gradient: LinearGradient(
                           colors: [
-                            home1.withValues(alpha:0.15),
-                            home1.withValues(alpha:0.5),
+                            home1.withValues(alpha: 0.15),
+                            home1.withValues(alpha: 0.5),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -885,7 +1022,7 @@ class _HomePageState extends State<HomePage>
                           style: OutlinedButton.styleFrom(
                             foregroundColor: Colors.redAccent,
                             side: BorderSide(
-                              color: Colors.redAccent.withValues(alpha:0.5),
+                              color: Colors.redAccent.withValues(alpha: 0.5),
                             ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -1037,7 +1174,7 @@ class _HomePageState extends State<HomePage>
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha:0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, -2),
             ),
@@ -1090,8 +1227,8 @@ class _HomePageState extends State<HomePage>
               gradient: isSelected
                   ? LinearGradient(
                       colors: [
-                        home1.withValues(alpha:0.8),
-                        home1.withValues(alpha:0.03),
+                        home1.withValues(alpha: 0.8),
+                        home1.withValues(alpha: 0.03),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -1110,14 +1247,14 @@ class _HomePageState extends State<HomePage>
               border: Border.all(
                 color: isSelected
                     ? home1.withAlpha(100)
-                    : Colors.grey.withValues(alpha:0.2),
+                    : Colors.grey.withValues(alpha: 0.2),
               ),
 
               /// soft shadow when selected
               boxShadow: isSelected
                   ? [
                       BoxShadow(
-                        color: home1.withValues(alpha:0.25),
+                        color: home1.withValues(alpha: 0.25),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       )
@@ -1413,7 +1550,7 @@ class _HomePageState extends State<HomePage>
                     height: 42,
                     width: 42,
                     decoration: BoxDecoration(
-                      color: iconColor.withValues(alpha:0.08),
+                      color: iconColor.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -1463,7 +1600,7 @@ class _HomePageState extends State<HomePage>
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 3),
                             decoration: BoxDecoration(
-                              color: home1.withValues(alpha:0.08),
+                              color: home1.withValues(alpha: 0.08),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
@@ -1501,8 +1638,8 @@ class _HomePageState extends State<HomePage>
                           color: status.toLowerCase().contains("success") ||
                                   status.toLowerCase().contains("paid") ||
                                   status.toLowerCase().contains("completed")
-                              ? Colors.green.withValues(alpha:0.08)
-                              : Colors.orange.withValues(alpha:0.08),
+                              ? Colors.green.withValues(alpha: 0.08)
+                              : Colors.orange.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
@@ -1634,7 +1771,7 @@ class _HomePageState extends State<HomePage>
         slivers: [
           SliverAppBar(
             automaticallyImplyLeading: false,
-            expandedHeight: size.height * 0.375,
+            expandedHeight: size.height * 0.530,
             floating: false,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
