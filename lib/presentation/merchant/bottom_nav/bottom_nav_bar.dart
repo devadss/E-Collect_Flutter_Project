@@ -19,12 +19,6 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> {
   var _selectedIndex = 0;
-  final groupTypeMerchantPages = [
-    const GroupHomePageUI(),
-    const AllGroupsPage(),
-    const PaymentLinkHomePageMerchant(),
-    const SettlementPage(),
-  ];
 
   late var integratedTypeRDMerchantPages = [];
   String integrationStatus = "";
@@ -40,7 +34,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     final _type = await SharedPref.shared.getECollectUserType();
 
     setState(() {
-      // type = _type;
+       //type = _type;
       type = "RDCL";
       integrationStatus = _integrationStatus;
       branCode = _branCode;
@@ -54,15 +48,21 @@ class _BottomNavBarState extends State<BottomNavBar> {
       ),
 
       const CustomerList(),
-      const ProfileHomePage()
+    //  const ProfileHomePage()
     ];
     integratedTypeRDMerchantPages = [
       HomePage(userType: type),
-      const DuesHomePage(),
+     // const DuesHomePage(),
       const AccountListHomePage(),
       const ProfileHomePage()
     ];
   }
+  final groupTypeMerchantPages = [
+    const GroupHomePageUI(),
+    const AllGroupsPage(),
+    const PaymentLinkHomePageMerchant(),
+    const SettlementPage(),
+  ];
   final integratedTypeLoanMerchantPages = [];
 
   final nonIntegratedTypeMerchantPages = [];
