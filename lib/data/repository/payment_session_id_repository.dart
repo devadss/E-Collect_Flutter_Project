@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:collection_qr_flutter/core/utils.dart';
-
 import '../../core/constants.dart';
 import '../../data/service/error_handler.dart';
 import '../../domain/interface/payment_session_id_interface.dart';

@@ -11,7 +11,8 @@ class CashQrProvider with ChangeNotifier {
   CashQrCombinedResponse? _cashQrCombinedResponse;
 
   CashQrCombinedResponse? get cashQrCombinedResponse => _cashQrCombinedResponse;
-
+  bool? _showProgressDialog;
+  bool? get showProgressDialog  => _showProgressDialog;
 
   String? _errResponse;
   String? get errResponse => _errResponse;
@@ -26,9 +27,11 @@ class CashQrProvider with ChangeNotifier {
     final data = await _cashQrRepository.getCombinedResponse(
         filterType, startDate, endDate, subAgentId, corpCode, agentOrginId);
     data.fold((err) {
+      _showProgressDialog = false;
       _errResponse = err;
       _cashQrCombinedResponse = null;
     }, (success) {
+      _showProgressDialog = false;
       _errResponse = null;
       _cashQrCombinedResponse = success;
     });

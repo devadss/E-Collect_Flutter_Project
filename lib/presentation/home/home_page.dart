@@ -8,8 +8,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
-
-import 'package:palette_generator_master/palette_generator_master.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/colors.dart';
 import '../../../data/storage/shared_pref_helper.dart';
@@ -73,102 +71,46 @@ class _HomePageState extends State<HomePage>
     const FlSpot(7, 8.8),
     const FlSpot(8, 15.8),
   ];
-  final List<String> bannerImages = [
-    "assets/images/cq1.webp",
-    "assets/images/cq2.webp",
-    "assets/images/cq3.webp",
-    "assets/images/cq4.webp",
-    "assets/images/cq5.webp",
-    "assets/images/cq6.webp",
-    "assets/images/cq7.webp",
-  ];
+  // final List<String> bannerImages = [
+  //   "assets/images/cq1.webp",
+  //   "assets/images/cq2.webp",
+  //   "assets/images/cq3.webp",
+  //   "assets/images/cq4.webp",
+  //   "assets/images/cq5.webp",
+  //   "assets/images/cq6.webp",
+  //   "assets/images/cq7.webp",
+  // ];
 
   var bannerImagesColorPallet = [];
 
-  var initialColor = Color.fromARGB(
-    1,
-    0,
-    0,
-    0,
-  );
-  final CarouselSliderController _carouselController =
-      CarouselSliderController();
+  // final CarouselSliderController _carouselController =
+  //     CarouselSliderController();
   DateTime startDate = DateTime.now().subtract(const Duration(days: 30));
   DateTime endDate = DateTime.now();
-  late AnimationController _animationController;
-  late Animation<double> fadeAnimation;
-  late Animation<double> scaleAnimation;
+  // late AnimationController _animationController;
+  // late Animation<double> fadeAnimation;
+  // late Animation<double> scaleAnimation;
   int index = 0;
 
-  Future<void> createColorPallet() async {
-    for (var clr in bannerImages) {
-      final ImageProvider imageProvider = AssetImage(clr);
-      final PaletteGeneratorMaster paletteGenerator =
-          await PaletteGeneratorMaster.fromImageProvider(
-        imageProvider,
-        maximumColorCount: 16,
-        generateHarmony: true, // Generate color harmony
-      );
-      bannerImagesColorPallet.add(paletteGenerator.dominantColor?.color);
-      //dominantColor = paletteGenerator.dominantColor?.color;
-      if (printStatementStatus) {
-        print("dominantColor = ${paletteGenerator.dominantColor?.color}");
-      }
-      // final Color? vibrantColor = paletteGenerator.vibrantColor?.color;
-      // final Color? mutedColor = paletteGenerator.mutedColor?.color;
-    }
-    Timer.periodic(const Duration(seconds: 3), (timer) {
-      if (!mounted) return;
-      setState(() {
-        index = (index + 1) % bannerImagesColorPallet.length;
-      });
-    });
-  }
-
-  void animationController() {
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
-
-    fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeInOut,
-      ),
-    );
-
-    scaleAnimation = Tween<double>(begin: 0.95, end: 1).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeOutBack,
-      ),
-    );
-
-    _animationController.forward();
-  }
 
   @override
   void initState() {
     super.initState();
-    //  animationController();
-    // createColorPallet();
     checkForUpdate();
-
     loadSharedPrefs(context);
   }
 
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _animationController.dispose();
+  //   super.dispose();
+  // }
 
   void showDateRangeFilter() {
     final cashQrProvider = context.read<CashQrProvider>();
     final qrProvider = context.read<QRTransactionHistoryProvider>();
     final cashTransProvider = context.read<CashTransactionHistoryProvider>();
-    final linkProvider = context.read<LinkTransactionHistoryProvider>();
+   // final linkProvider = context.read<LinkTransactionHistoryProvider>();
     //final transferProvider = context.read<TransferHistoryProvider>();
 
     DateTime? fromDate;
@@ -362,8 +304,8 @@ class _HomePageState extends State<HomePage>
                           //
                           //     corpCode,
                           //     agentOriginId);
-                          await linkProvider.getLinkTransactionHistory(period,
-                              from, to, subAgentID!, corpCode!, agentOriginId!);
+                          // await linkProvider.getLinkTransactionHistory(period,
+                          //     from, to, subAgentID!, corpCode!, agentOriginId!);
                           // await transferProvider.getQrTranscationHistory(
                           //     period,
                           //     from,
@@ -382,8 +324,8 @@ class _HomePageState extends State<HomePage>
                               subAgentID,
                               corpCode,
                               agentOriginId);
-                          await linkProvider.getLinkTransactionHistory(period,
-                              from, to, subAgentID!, corpCode!, agentOriginId!);
+                          // await linkProvider.getLinkTransactionHistory(period,
+                          //     from, to, subAgentID!, corpCode!, agentOriginId!);
                           await cashQrProvider.getCombinedResponse(period, from,
                               to, subAgentID!, corpCode!, agentOriginId!);
 
@@ -404,8 +346,7 @@ class _HomePageState extends State<HomePage>
                             currentToDate = to;
                           });
                           if (qrProvider.showProgressDialog == false ||
-                              cashTransProvider.showProgressDialog == false ||
-                              linkProvider.showProgressDialog == false) {
+                              cashTransProvider.showProgressDialog == false ) {
                             if (mounted) {
                               Navigator.of(context, rootNavigator: true).pop();
                               Navigator.of(context, rootNavigator: true).pop();
@@ -450,7 +391,7 @@ class _HomePageState extends State<HomePage>
 
     isRunningLiveBaseUrl(true, subAgentmobnum);
     isRunningLiveDopBaseUrl(true, subAgentmobnum);
-
+print("widget.userType : ${widget.userType}");
     if (mounted) {
       setState(() {
         this.forceLogout = forceLogout;
@@ -480,38 +421,38 @@ class _HomePageState extends State<HomePage>
     final toDate = DateFormat('yyyy-MM-dd').format(now);
 
     try {
-      // Load data for ALL providers, not just QR transactions
-      final qrProvider =
-          Provider.of<QRTransactionHistoryProvider>(context, listen: false);
+
       final cashQrProvider =
           Provider.of<CashQrProvider>(context, listen: false);
       final cashProvider =
           Provider.of<CashTransactionHistoryProvider>(context, listen: false);
-      final linkProvider =
-          Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
-
+      // final linkProvider =
+      //     Provider.of<LinkTransactionHistoryProvider>(context, listen: false);
+      // Load data for ALL providers, not just QR transactions
+      // final qrProvider =
+      //     Provider.of<QRTransactionHistoryProvider>(context, listen: false);
       if (printStatementStatus) {
         print("userType : $userType");
       }
 
       if (userType == "LOAN_COLLECTION") {
-        await linkProvider.getLinkTransactionHistory(
-            // "THIS_WEEK",
-            "TODAY",
-            fromDate,
-            toDate,
-            subAgentID!,
-            corpCode!,
-            agentOriginId!);
+        // await linkProvider.getLinkTransactionHistory(
+        //     // "THIS_WEEK",
+        //     "TODAY",
+        //     fromDate,
+        //     toDate,
+        //     subAgentID!,
+        //     corpCode!,
+        //     agentOriginId!);
       } else if (userType == "COLLECTION") {
-        await linkProvider.getLinkTransactionHistory(
-            // "THIS_WEEK",
-            "TODAY",
-            fromDate,
-            toDate,
-            subAgentID!,
-            corpCode!,
-            agentOriginId!);
+        // await linkProvider.getLinkTransactionHistory(
+        //     // "THIS_WEEK",
+        //     "TODAY",
+        //     fromDate,
+        //     toDate,
+        //     subAgentID!,
+        //     corpCode!,
+        //     agentOriginId!);
       }
 
       // Load Cash transactions
@@ -580,6 +521,8 @@ class _HomePageState extends State<HomePage>
             backgroundColor: Colors.red,
           ),
         );
+      }else{
+        return;
       }
     } finally {
       // Ensure any loading dialog is dismissed
@@ -640,49 +583,118 @@ class _HomePageState extends State<HomePage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
             /// HEADER TEXT
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  /// GREETING SMALL
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      /// GREETING SMALL
 
-                  Text(
-                    "Welcome back",
-                    style: TextStyle(
-                      color: Colors.black.withValues(alpha: 0.8),
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                    ),
+                      Text(
+                        "Welcome back",
+                        style: TextStyle(
+                          color: Colors.black.withValues(alpha: 0.8),
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+
+                      const SizedBox(height: 4),
+
+                      /// USER NAME
+
+                      Text(
+                        "Hi, $formattedName ",
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black,
+                          letterSpacing: 0.3,
+                        ),
+                      ).animate().fadeIn(duration: 900.ms).slideX(begin: -0.9),
+
+                      const SizedBox(height: 6),
+
+                      /// OPTIONAL SUBTEXT
+                      Text(
+                        "Here's your collection overview",
+                        style: TextStyle(
+                          color: Colors.black.withValues(alpha: 0.75),
+                          fontSize: 12,
+                        ),
+                      )
+                    ],
                   ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      /// GREETING SMALL
 
-                  const SizedBox(height: 4),
+                      Text(
+                        "Total collection",
+                        style: TextStyle(
+                          color: Colors.black.withValues(alpha: 0.8),
+                          fontSize: 10,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
 
-                  /// USER NAME
+                      const SizedBox(height: 4),
 
-                  Text(
-                    "Hi, $formattedName ",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
-                      letterSpacing: 0.3,
-                    ),
-                  ).animate().fadeIn(duration: 900.ms).slideX(begin: -0.9),
+                      /// USER NAME
 
-                  const SizedBox(height: 6),
+                      Text(
+                        "₹${calculateTotalAmount().toStringAsFixed(2)}",
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFFEA307B),
+                          letterSpacing: 0.3,
+                        ),
+                      ).animate().fadeIn(duration: 900.ms).slideX(begin: -0.9),
 
-                  /// OPTIONAL SUBTEXT
-                  Text(
-                    "Here's your collection overview",
-                    style: TextStyle(
-                      color: Colors.black.withValues(alpha: 0.75),
-                      fontSize: 12,
-                    ),
-                  )
-                ],
-              ),
+                      const SizedBox(height: 6),
+
+                      /// OPTIONAL SUBTEXT
+                      Container(
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.blue.shade100
+                      ),
+                        child: Text(
+                          overflow: TextOverflow.ellipsis,
+                          "${getFilterDisplayText()} : \n$todaysCount Nos",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 10,
+
+                          ),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Text(isFilterApplied?"Clear":"Filter"),
+                          IconButton(onPressed: (){
+                            isFilterApplied?_clearFilters():
+                            showDateRangeFilter();
+                          }, icon: Icon(
+                              isFilterApplied?Icons.filter_alt_outlined:
+                              Icons.filter_list)),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ],
             ),
 
             /// BANNER / CAROUSEL
@@ -771,7 +783,6 @@ class _HomePageState extends State<HomePage>
             ),
           ),
         ),
-            const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.only(left: 20),
               child: Wrap(
@@ -808,75 +819,92 @@ class _HomePageState extends State<HomePage>
   }
 
 
-  Widget _buildAnimatedBannerCarousel(Size size) {
-    return SizedBox(
-      height: size.height * 0.15,
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          CarouselSlider(
-            carouselController: _carouselController,
-            options: CarouselOptions(
-              height: size.height * 0.15,
-              autoPlay: true,
-              enlargeCenterPage: true,
-              viewportFraction: 0.8,
-              autoPlayInterval: 3.seconds,
-              autoPlayAnimationDuration: 1200.ms,
-              onPageChanged: (index, reason) {
-                setState(() {
-                  currentBannerIndex = index;
-                });
-              },
-            ),
-            items: bannerImages.map((imagePath) {
-              return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                    image: AssetImage(imagePath),
-                    fit: BoxFit.fitWidth,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.2),
-                      blurRadius: 5,
-                      spreadRadius: 2,
-                    ),
-                  ],
-                ),
-              ).animate().scale(
-                    begin: const Offset(0.9, 0.9),
-                    duration: 500.ms,
-                  );
-            }).toList(),
-          ),
-          Positioned(
-            bottom: 5,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: bannerImages.asMap().entries.map((entry) {
-                return AnimatedContainer(
-                  duration: 300.ms,
-                  width: currentBannerIndex == entry.key ? 20 : 8,
-                  height: 15,
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    color: currentBannerIndex == entry.key
-                        ? Colors.red
-                        : Colors.red.withValues(alpha: 0.5),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildAnimatedBannerCarousel(Size size) {
+  //   return SizedBox(
+  //     height: size.height * 0.15,
+  //     child: Stack(
+  //       alignment: Alignment.bottomCenter,
+  //       children: [
+  //         CarouselSlider(
+  //           carouselController: _carouselController,
+  //           options: CarouselOptions(
+  //             height: size.height * 0.15,
+  //             autoPlay: true,
+  //             enlargeCenterPage: true,
+  //             viewportFraction: 0.8,
+  //             autoPlayInterval: 3.seconds,
+  //             autoPlayAnimationDuration: 1200.ms,
+  //             onPageChanged: (index, reason) {
+  //               setState(() {
+  //                 currentBannerIndex = index;
+  //               });
+  //             },
+  //           ),
+  //           items: bannerImages.map((imagePath) {
+  //             return Container(
+  //               margin: const EdgeInsets.symmetric(horizontal: 4),
+  //               decoration: BoxDecoration(
+  //                 borderRadius: BorderRadius.circular(10),
+  //                 image: DecorationImage(
+  //                   image: AssetImage(imagePath),
+  //                   fit: BoxFit.fitWidth,
+  //                 ),
+  //                 boxShadow: [
+  //                   BoxShadow(
+  //                     color: Colors.black.withValues(alpha: 0.2),
+  //                     blurRadius: 5,
+  //                     spreadRadius: 2,
+  //                   ),
+  //                 ],
+  //               ),
+  //             ).animate().scale(
+  //                   begin: const Offset(0.9, 0.9),
+  //                   duration: 500.ms,
+  //                 );
+  //           }).toList(),
+  //         ),
+  //         Positioned(
+  //           bottom: 5,
+  //           child: Row(
+  //             mainAxisAlignment: MainAxisAlignment.center,
+  //             children: bannerImages.asMap().entries.map((entry) {
+  //               return AnimatedContainer(
+  //                 duration: 300.ms,
+  //                 width: currentBannerIndex == entry.key ? 20 : 8,
+  //                 height: 15,
+  //                 margin: const EdgeInsets.symmetric(horizontal: 4),
+  //                 decoration: BoxDecoration(
+  //                   borderRadius: BorderRadius.circular(50),
+  //                   color: currentBannerIndex == entry.key
+  //                       ? Colors.red
+  //                       : Colors.red.withValues(alpha: 0.5),
+  //                 ),
+  //               );
+  //             }).toList(),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+  String getFilterDisplayText() {
+    if (!isFilterApplied) return 'TODAY ';
 
+    switch (currentFilterPeriod) {
+      case 'TODAY':
+        return 'Today';
+      case 'THIS_WEEK':
+        return 'This Week';
+      case 'THIS_MONTH':
+        return 'Last 30 Days';
+      case 'LAST_MONTH':
+        return 'Last Month';
+      case 'CUSTOM':
+        return '$currentFromDate -\n$currentToDate)';
+      default:
+        return 'Filtered';
+    }
+  }
   Widget _buildTotalCollectionCard() {
     // Helper function to format the filter period for display
     String getFilterDisplayText() {
@@ -1145,7 +1173,7 @@ class _HomePageState extends State<HomePage>
       }
 
       if (mounted &&
-          cashTransProvider.showProgressDialog == false &&
+          cashTransProvider.showProgressDialog == false ||
           linkProvider.showProgressDialog == false) {
         if (printStatementStatus) {
           print("_clearFilters 3");
@@ -1298,7 +1326,7 @@ class _HomePageState extends State<HomePage>
     //QRTransactionHistoryProvider qrProvider,
     CashQrProvider cashQrProvider,
     CashTransactionHistoryProvider cashTranProvider,
-    LinkTransactionHistoryProvider linkProvider,
+   // LinkTransactionHistoryProvider linkProvider,
   ) {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
@@ -1307,10 +1335,10 @@ class _HomePageState extends State<HomePage>
             case 0:
               return _buildCashWithQrTransactionContent(cashQrProvider);
             case 1:
-              // return _buildQRTransactionContent(qrProvider);
-              return _buildLinkTransactionContent(linkProvider);
-            case 2:
               return _buildCashTransactionContent(cashTranProvider);
+             // return _buildLinkTransactionContent(linkProvider);
+            // case 2:
+            //   return _buildCashTransactionContent(cashTranProvider);
             default:
               return const SizedBox();
           }
@@ -1505,10 +1533,10 @@ class _HomePageState extends State<HomePage>
     // print("collectionType : $collectionType");
     //print("status : $status");
     return Padding(
-        padding: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.only(bottom: 10),
         child: Card(
           elevation: 0,
-          margin: const EdgeInsets.symmetric(vertical: 6),
+          margin: const EdgeInsets.symmetric(vertical: 2),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
             side: BorderSide(color: Colors.grey.shade200),
@@ -1542,13 +1570,13 @@ class _HomePageState extends State<HomePage>
               );
             },
             child: Padding(
-              padding: const EdgeInsets.all(14),
+              padding: const EdgeInsets.all(10),
               child: Row(
                 children: [
                   /// ICON
                   Container(
-                    height: 42,
-                    width: 42,
+                    height: 38,
+                    width: 38,
                     decoration: BoxDecoration(
                       color: iconColor.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(12),
@@ -1573,8 +1601,8 @@ class _HomePageState extends State<HomePage>
                         Text(
                           title,
                           style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -1587,7 +1615,7 @@ class _HomePageState extends State<HomePage>
                           date,
                           style: TextStyle(
                             color: Colors.grey.shade600,
-                            fontSize: 12,
+                            fontSize: 8,
                           ),
                         ),
 
@@ -1598,7 +1626,7 @@ class _HomePageState extends State<HomePage>
                             !collectionType.contains("null"))
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 3),
+                                horizontal: 5, vertical: 3),
                             decoration: BoxDecoration(
                               color: home1.withValues(alpha: 0.08),
                               borderRadius: BorderRadius.circular(8),
@@ -1606,7 +1634,7 @@ class _HomePageState extends State<HomePage>
                             child: Text(
                               collectionType,
                               style: TextStyle(
-                                fontSize: 11,
+                                fontSize: 10,
                                 color: home1,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -1625,7 +1653,7 @@ class _HomePageState extends State<HomePage>
                         "₹${amount.toStringAsFixed(2)}",
                         style: const TextStyle(
                           fontWeight: FontWeight.w700,
-                          fontSize: 15,
+                          fontSize: 13,
                           color: home1,
                         ),
                       ),
@@ -1633,7 +1661,7 @@ class _HomePageState extends State<HomePage>
                       const SizedBox(height: 6),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 4),
+                            horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: status.toLowerCase().contains("success") ||
                                   status.toLowerCase().contains("paid") ||
@@ -1756,12 +1784,12 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    // final qrProvider = Provider.of<QRTransactionHistoryProvider>(context);
-    final cashTranProvider =
-        Provider.of<CashTransactionHistoryProvider>(context);
+    final cashTranProvider = Provider.of<CashTransactionHistoryProvider>(context);
     final cashQrProvider = Provider.of<CashQrProvider>(context);
-    final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context);
+  //  final linkProvider = Provider.of<LinkTransactionHistoryProvider>(context);
     //final transferProvider = Provider.of<TransferHistoryProvider>(context);
+    //_buildLoadingList
+    // final qrProvider = Provider.of<QRTransactionHistoryProvider>(context);
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -1771,7 +1799,7 @@ class _HomePageState extends State<HomePage>
         slivers: [
           SliverAppBar(
             automaticallyImplyLeading: false,
-            expandedHeight: size.height * 0.530,
+            expandedHeight: size.height * 0.550,
             floating: false,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
@@ -1786,28 +1814,28 @@ class _HomePageState extends State<HomePage>
               ),
             ),
           ),
-          SliverToBoxAdapter(
-            child: _buildTotalCollectionCard().animate(
-              effects: [
-                FadeEffect(duration: 400.ms),
-                SlideEffect(
-                  begin: const Offset(0, 0.2),
-                  duration: 500.ms,
-                  curve: Curves.easeOutCubic,
-                ),
-              ],
-            ),
-          ),
+          // SliverToBoxAdapter(
+          //   child: _buildTotalCollectionCard().animate(
+          //     effects: [
+          //       FadeEffect(duration: 400.ms),
+          //       SlideEffect(
+          //         begin: const Offset(0, 0.2),
+          //         duration: 500.ms,
+          //         curve: Curves.easeOutCubic,
+          //       ),
+          //     ],
+          //   ),
+          // ),
           SliverPadding(
               padding: const EdgeInsets.only(top: 1, left: 16, right: 16),
               sliver: userType == "COLLECTION"
                   // ? _buildContentCollectionSection(qrProvider, cashTranProvider, cashQrProvider)
                   ? _buildContentCollectionSection(
-                      cashQrProvider, cashTranProvider, linkProvider)
-                  // : _buildContentSection(qrProvider, cashTranProvider, linkProvider,  transferProvider),
-                  // : _buildContentCollectionSection(qrProvider, cashTranProvider, cashQrProvider)
+                     // cashQrProvider, cashTranProvider, linkProvider)
+                      cashQrProvider, cashTranProvider)
                   : _buildContentCollectionSection(
-                      cashQrProvider, cashTranProvider, linkProvider)),
+                     // cashQrProvider, cashTranProvider, linkProvider)),
+                      cashQrProvider, cashTranProvider)),
         ],
       ),
     );

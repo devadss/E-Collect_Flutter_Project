@@ -18,8 +18,7 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> {
   var _selectedIndex = 0;
-
-  late var integratedTypeRDMerchantPages = [];
+  late var integratedTypeRDLoanMerchantPages = [];
   String integrationStatus = "";
   String branCode = "";
   String rdclCustomerUnderAgentListUrl = "";
@@ -27,7 +26,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   String type = "";
   final String INTEGRATED = "Y";
   final String USER_TYPE_RDCL = "RDCL";
-  final String USER_TYPE_RD = "RD";
+  final String USER_TYPE_RD = "RD&LOAN";
 
   final rdclItems = [
     ["Home", Icons.home, Icons.house_outlined],
@@ -35,7 +34,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     ["Cust-List", Icons.list, Icons.list_alt_outlined],
     ["Profile", Icons.personal_injury_outlined, Icons.person],
   ];
-  final rdItems = [
+  final rdLoanItems = [
     ["Home", Icons.home, Icons.house_outlined],
     ["RD_Loan", Icons.monetization_on_outlined, Icons.monetization_on],
     ["Profile", Icons.personal_injury_outlined, Icons.person],
@@ -54,7 +53,15 @@ class _BottomNavBarState extends State<BottomNavBar> {
       Icons.settings_backup_restore_sharp
     ],
   ];
-
+  final integratedTypeLoanMerchantPages = [];
+  final nonIntegratedTypeMerchantPages = [];
+  late var integratedTypeRDCLMerchantPages = [];
+  final groupTypeMerchantPages = [
+    const GroupHomePageUI(),
+    const AllGroupsPage(),
+    const PaymentLinkHomePageMerchant(),
+    const SettlementPage(),
+  ];
   Future<void> getSharedData() async {
     final _integrationStatus =
         await SharedPref.shared.getECollectMerchantIntegrationStatus();
@@ -82,23 +89,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
       const CustomerList(),
       const ProfileHomePage()
     ];
-    integratedTypeRDMerchantPages = [
+    integratedTypeRDLoanMerchantPages = [
       HomePage(userType: type),
       const AccountListHomePage(),
       const ProfileHomePage()
     ];
   }
-
-  final groupTypeMerchantPages = [
-    const GroupHomePageUI(),
-    const AllGroupsPage(),
-    const PaymentLinkHomePageMerchant(),
-    const SettlementPage(),
-  ];
-
-  final integratedTypeLoanMerchantPages = [];
-  final nonIntegratedTypeMerchantPages = [];
-  late var integratedTypeRDCLMerchantPages = [];
 
   @override
   void initState() {
@@ -109,10 +105,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: integrationStatus == INTEGRATED && type == USER_TYPE_RDCL
+      body: integrationStatus.toLowerCase() == INTEGRATED.toLowerCase() &&
+              type.toLowerCase() == USER_TYPE_RDCL.toLowerCase()
           ? integratedTypeRDCLMerchantPages[_selectedIndex]
-          : integrationStatus == INTEGRATED && type == USER_TYPE_RD
-              ? integratedTypeRDMerchantPages[_selectedIndex]
+          : integrationStatus.toLowerCase() == INTEGRATED.toLowerCase() &&
+                  type.toLowerCase() == USER_TYPE_RD.toLowerCase()
+              ? integratedTypeRDLoanMerchantPages[_selectedIndex]
               : groupTypeMerchantPages[_selectedIndex],
       bottomNavigationBar: Container(
           decoration: BoxDecoration(
@@ -149,29 +147,33 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   _selectedIndex = index;
                 });
               },
-              items: integrationStatus == INTEGRATED && type == USER_TYPE_RDCL
-                  ? List.generate(rdclItems.length, (index) {
-                      return buildBottomNavigationBarItem(
-                          rdclItems[index][0] as String,
-                          rdclItems[index][1] as IconData,
-                          rdclItems[index][2] as IconData,
-                          _selectedIndex);
-                    })
-                  : integrationStatus == INTEGRATED && type == USER_TYPE_RD
-                      ? List.generate(rdItems.length, (index) {
+              items:
+                  integrationStatus.toLowerCase() == INTEGRATED.toLowerCase() &&
+                          type.toLowerCase() == USER_TYPE_RDCL.toLowerCase()
+                      ? List.generate(rdclItems.length, (index) {
                           return buildBottomNavigationBarItem(
-                              rdItems[index][0] as String,
-                              rdItems[index][1] as IconData,
-                              rdItems[index][2] as IconData,
+                              rdclItems[index][0] as String,
+                              rdclItems[index][1] as IconData,
+                              rdclItems[index][2] as IconData,
                               _selectedIndex);
                         })
-                      : List.generate(groupItems.length, (index) {
-                          return buildBottomNavigationBarItem(
-                              groupItems[index][0] as String,
-                              groupItems[index][1] as IconData,
-                              groupItems[index][2] as IconData,
-                              _selectedIndex);
-                        }))),
+                      : integrationStatus.toLowerCase() ==
+                                  INTEGRATED.toLowerCase() &&
+                              type.toLowerCase() == USER_TYPE_RD.toLowerCase()
+                          ? List.generate(rdLoanItems.length, (index) {
+                              return buildBottomNavigationBarItem(
+                                  rdLoanItems[index][0] as String,
+                                  rdLoanItems[index][1] as IconData,
+                                  rdLoanItems[index][2] as IconData,
+                                  _selectedIndex);
+                            })
+                          : List.generate(groupItems.length, (index) {
+                              return buildBottomNavigationBarItem(
+                                  groupItems[index][0] as String,
+                                  groupItems[index][1] as IconData,
+                                  groupItems[index][2] as IconData,
+                                  _selectedIndex);
+                            }))),
     );
   }
 
