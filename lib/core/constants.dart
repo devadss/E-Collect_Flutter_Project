@@ -145,6 +145,7 @@ class SharedPrefKeys {
   static const String encryptedPassword = "ENCRYPTED_PASSWORD";
   final String login = "LOGIN";
   final String eCollectLoginStatus = "E-COLLECT_LOGIN_STATUS";
+  final String eCollectUserEmail = "E-COLLECT_USER_EMAIL";
   final String cartLogin = "CART_LOGIN";
   final String cardLimit = "SET_CARDLIMIT";
   static const String fullName = "FULL_NAME";

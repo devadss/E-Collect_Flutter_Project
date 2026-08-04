@@ -378,7 +378,7 @@ class _HomePageState extends State<HomePage>
   }
 
   Future<void> loadSharedPrefs(BuildContext context) async {
-    final name = await SharedPref().getECollectUserName();
+    final name = await SharedPref().getECollectMerchantName();
     final entId = await SharedPref().getAgentId();
     final tok = await SharedPref().getTokenValue();
     final agentOrgID = await SharedPref().getAgentOriginId();

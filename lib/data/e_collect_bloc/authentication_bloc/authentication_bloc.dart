@@ -48,11 +48,11 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         SharedPref.shared.setECollectMerchantIntegrationStatus(data.loginResponse.integrationStatus);
         SharedPref.shared.setECollectRdclCustomerunderAgentListUrl(data.loginResponse.listUrl[0]);
         SharedPref.shared.setECollectRdclDuesListunderAgentUrl(data.loginResponse.listUrl[1]);
-        SharedPref.shared.setECollectUserName(data.loginResponse.fullName);
+        SharedPref.shared.setECollectMerchantUserName(data.loginResponse.fullName);
         SharedPref.shared.setECollectUserType(data.loginResponse.productType);
         SharedPref.shared.setECollectToken(data.loginResponse.token);
         SharedPref.shared.setECollectRefreshToken(data.loginResponse.refreshToken);
-        SharedPref.shared.setECollectRefreshToken(data.loginResponse.refreshToken);
+        SharedPref.shared.setECollectUserEmail(data.loginResponse.email);
         SharedPref.shared.setECollectUserNumber(data.loginResponse.phone);
         SharedPref.shared.setECollectMerchantID(data.loginResponse.merchantId.toString());
         SharedPref.shared.setECollectUserID(data.loginResponse.userId.toString());

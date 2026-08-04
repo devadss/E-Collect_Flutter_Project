@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:collection_qr_flutter/core/constants.dart';
 import 'package:collection_qr_flutter/data/e_collect_bloc/authentication_bloc/authentication_bloc.dart';
+import 'package:collection_qr_flutter/data/e_collect_bloc/payment_bloc/payment_bloc.dart';
 import 'package:collection_qr_flutter/data/provider/cash_qr_provider.dart';
 import 'package:collection_qr_flutter/data/provider/integrated_loan_detail_provider.dart';
 import 'package:collection_qr_flutter/data/provider/integration_loan_list_provider.dart';
@@ -9,6 +10,7 @@ import 'package:collection_qr_flutter/data/provider/loan_cash_coolection_provide
 import 'package:collection_qr_flutter/data/provider/transfer_transaction_provider.dart';
 import 'package:collection_qr_flutter/data/provider/whatsapp_share_provider.dart';
 import 'package:collection_qr_flutter/data/repository/cash_qr_repo.dart';
+import 'package:collection_qr_flutter/data/repository/e_collect_repository/payment_repository/payment_repository.dart';
 import 'package:collection_qr_flutter/data/repository/integrated_loan_detail_repository.dart';
 import 'package:collection_qr_flutter/data/repository/integration_loan_repository.dart';
 import 'package:collection_qr_flutter/data/repository/loan_cash_collection_repository.dart';
@@ -172,6 +174,7 @@ void main() async {
     MultiRepositoryProvider(
       providers: [
         RepositoryProvider(create: (_) => AuthenticationRepository()),
+        RepositoryProvider(create: (_) => PaymentRepository()),
         RepositoryProvider(create: (_) => CustomerListRepo()),
         RepositoryProvider(create: (_) => RdclDueListRepo()),
         // Add all your existing repositories
@@ -230,6 +233,9 @@ void main() async {
           BlocProvider(
               create: (context) =>
                   AuthenticationBloc(context.read<AuthenticationRepository>())),
+          BlocProvider(
+              create: (context) =>
+                  PaymentBloc(context.read<PaymentRepository>())),
           BlocProvider(
               create: (context) =>
                   CustomerListBloc(context.read<CustomerListRepo>())),

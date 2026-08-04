@@ -87,7 +87,7 @@ class _GroupHomePageUIState extends State<GroupHomePageUI> {
     },
   ];
   void getSharedData() async {
-    var name  = await SharedPref.shared.getECollectUserName();
+    var name  = await SharedPref.shared.getECollectMerchantName();
 setState(() {
   groupUserName  = name;
 });
@@ -357,7 +357,7 @@ setState(() {
             child: IconButton(
               icon: const Icon(Icons.settings_outlined),
               onPressed: () {
-                SharedPref.shared.setECollectUserName("");
+                SharedPref.shared.setECollectMerchantUserName("");
                 SharedPref.shared.setECollectToken("");
                 SharedPref.shared.setECollectRefreshToken("");
                 SharedPref.shared.setECollectRefreshToken("");

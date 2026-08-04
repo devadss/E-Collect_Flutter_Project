@@ -333,14 +333,10 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
               NewQrCodePage(
                 amount: amountController.text,
                 custName: name!,
-                //email: email.toString(),
                 custPhone: phoneNumber!,
                 custId: entityId!,
-                token: tokenValue!,
                 paymentSessionId: paymentSessionId,
-                //orderId: orderID,
-                //accountNumber: widget.accountNumber,
-             //   agentId: widget.agentId,
+
               )
           ));
       if (result == "fetch_balance") {

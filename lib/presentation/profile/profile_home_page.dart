@@ -43,7 +43,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
   }
 
   Future<void> loadSharedData() async {
-    String? username = await SharedPref.shared.getECollectUserName();
+    String? username = await SharedPref.shared.getECollectMerchantName();
     String? usermobNum = await SharedPref.shared.getECollectUserNumber();
 
     if (mounted) {
@@ -660,7 +660,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
     await SharedPref.shared.setECollectMerchantIntegrationStatus('');
     await SharedPref.shared.setECollectRdclCustomerunderAgentListUrl('');
     await SharedPref.shared.setECollectRdclDuesListunderAgentUrl('');
-    await SharedPref.shared.setECollectUserName('');
+    await SharedPref.shared.setECollectMerchantUserName('');
     await SharedPref.shared.setECollectUserType('');
     await SharedPref.shared.setECollectToken('');
     await SharedPref.shared.setECollectRefreshToken('');
