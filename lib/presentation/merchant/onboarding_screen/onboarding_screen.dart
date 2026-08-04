@@ -1415,7 +1415,6 @@
 //
 import 'dart:math';
 
-import 'package:collection_qr_flutter/core/alerts.dart';
 import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:collection_qr_flutter/core/utils.dart';
 import 'package:collection_qr_flutter/data/e_collect_bloc/authentication_bloc/authentication_bloc.dart';
@@ -1425,7 +1424,6 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data/storage/shared_pref_helper.dart';
-import '../bottom_nav/bottom_nav_bar.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -2145,8 +2143,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         validator: validator ??
             (isRequired
                 ? (value) {
-                    if (value == null || value.isEmpty)
+                    if (value == null || value.isEmpty) {
                       return 'Please enter $label';
+                    }
                     return null;
                   }
                 : null),

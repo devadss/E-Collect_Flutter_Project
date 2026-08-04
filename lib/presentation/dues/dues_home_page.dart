@@ -1,7 +1,10 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../core/colors.dart';
+import '../../core/utils.dart';
+import '../../data/e_collect_bloc/payment_bloc/payment_bloc.dart';
 import '../../data/provider/due_under_agent_provider.dart';
 import '../../data/repository/payment_session_id_repository.dart';
-import '../../presentation/dues/widgets/new_qr_code_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +13,9 @@ import '../../core/alerts.dart' as EasyLoading;
 import '../../data/repository/payment_link_repository.dart';
 import '../../data/storage/shared_pref_helper.dart';
 import '../../domain/model/due_under_agent_model.dart';
+import '../../domain/model/e_collect/payment/qr_request_model/qr_request_model.dart';
 import '../paymentlink_request_ui.dart';
+import '../qr_code/widgets/generate_qr_code_page.dart';
 
 class DuesHomePage extends StatefulWidget {
   const DuesHomePage({super.key});
@@ -32,6 +37,16 @@ class _DuesHomePageState extends State<DuesHomePage> {
   String? corpCode;
   String? paymentSessionId;
 
+  String? eCollectAgentNumber;
+  String? eCollectMerchantName;
+  String? eCollectAgentEmail;
+  String? eCollectCollectionType;
+  String? eCollectAgentBranchCode;
+  String? eCollectAgentMerchantID;
+  String? eCollectAgentOriginId;
+  String? eCollectAgentId;
+  String? selectedMethod;
+  TextEditingController controller = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -47,8 +62,29 @@ class _DuesHomePageState extends State<DuesHomePage> {
     final email = await SharedPref().getEmail();
     final number = await SharedPref().getParentAgentMobNum();
     final tok = await SharedPref().getTokenValue();
+    //-------------------------------------
+    final prefs = SharedPref();
+    final _eCollectMerchantName = await prefs.getECollectMerchantName();
+    final _eCollectAgentId = await prefs.getECollectUserID();
+    final _eCollectAgentOriginId = await prefs.getECollectUserID();
+    final _eCollectAgentNumber = await prefs.getECollectUserNumber();
+    final _eCollectAgentEmail = await prefs.getECollectUserEmail();
+    final _eCollectAgentBranchCode =
+    await prefs.getECollectMerchantBranchCode();
+    final _eCollectAgentMerchantID = await prefs.getECollectMerchantID();
+    final _eCollectCollectionType = await prefs.getECollectUserType();
+    //---------------------------------------
     if (mounted) {
       setState(() {
+        eCollectMerchantName = _eCollectMerchantName;
+        eCollectAgentId = _eCollectAgentId;
+        eCollectAgentOriginId = _eCollectAgentOriginId;
+        eCollectAgentNumber = _eCollectAgentNumber;
+        eCollectAgentEmail = _eCollectAgentEmail;
+        eCollectAgentBranchCode = _eCollectAgentBranchCode;
+        eCollectAgentMerchantID = _eCollectAgentMerchantID;
+        eCollectCollectionType = _eCollectCollectionType;
+
         subagentId = subAgentID;
         agentName = name;
         agentEmail = email;
@@ -120,7 +156,7 @@ class _DuesHomePageState extends State<DuesHomePage> {
                     (context) => NewQrCodePage(
                   paymentSessionId: paymentSessionId!,
                   amount: amount ?? "",
-                  token: token!, custName: customerName ?? "custName",
+              custName: customerName ?? "custName",
                       custPhone: custPhoneNumber ?? "custNumber",
                       custId: custId ?? "CustId",
                 ),
@@ -228,605 +264,682 @@ class _DuesHomePageState extends State<DuesHomePage> {
           ),
         ),
       ),
-      body: Consumer<DueUnderAgentProvider>(
-        builder: (context, provider, child) {
-          final data = provider.agentModel?.duesList1?.data ?? [];
+      body:
+      Column(
+        children: [Consumer<DueUnderAgentProvider>(
+          builder: (context, provider, child) {
+            final data = provider.agentModel?.duesList1?.data ?? [];
 
-          if (provider.agentModel == null) return buildShimmerList();
+            if (provider.agentModel == null) return buildShimmerList();
 
-          final groupedData = <String, List<dynamic>>{};
-          for (var due in data) {
-            groupedData.putIfAbsent(due.accNo!, () => []).add(due);
-          }
+            final groupedData = <String, List<dynamic>>{};
+            for (var due in data) {
+              groupedData.putIfAbsent(due.accNo!, () => []).add(due);
+            }
 
-          return ListView.separated(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-            itemCount: groupedData.keys.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
-            itemBuilder: (_, index) {
-              final accNo = groupedData.keys.elementAt(index);
-              final dues = groupedData[accNo]!;
-              final totalDue = dues.fold<num>(
-                0,
-                (sum, item) => sum + (item.dueAmount ?? 0),
-              );
+            return ListView.separated(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+              itemCount: groupedData.keys.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 12),
+              itemBuilder: (_, index) {
+                final accNo = groupedData.keys.elementAt(index);
+                final dues = groupedData[accNo]!;
+                final totalDue = dues.fold<num>(
+                  0,
+                  (sum, item) => sum + (item.dueAmount ?? 0),
+                );
 
-              return Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color: white,
-                  border: Border.all(color: home2.withValues(alpha:0.7), width: 1.5),
-                  boxShadow: [
-                    BoxShadow(
-                      offset: const Offset(0, 4),
-                      blurRadius: 12,
-                      color: black.withValues(alpha:0.08),
-                    ),
-                  ],
-                ),
-                child: Theme(
-                  data: Theme.of(context).copyWith(
-                    splashColor: transparent,
-                    highlightColor: transparent,
-                    dividerColor: transparent,
+                return Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: white,
+                    border: Border.all(color: home2.withValues(alpha:0.7), width: 1.5),
+                    boxShadow: [
+                      BoxShadow(
+                        offset: const Offset(0, 4),
+                        blurRadius: 12,
+                        color: black.withValues(alpha:0.08),
+                      ),
+                    ],
                   ),
-                  child: ExpansionTile(
-                    onExpansionChanged: (expanded) {
-                      setState(() {
-                        _expandedAccNo = expanded ? accNo : null;
-                      });
-                    },
-                    tilePadding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
+                  child: Theme(
+                    data: Theme.of(context).copyWith(
+                      splashColor: transparent,
+                      highlightColor: transparent,
+                      dividerColor: transparent,
                     ),
-                    childrenPadding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
-                    ),
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Account Number",
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: grey[600],
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          accNo,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                            color: home1,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.currency_rupee,
-                              size: 18,
-                              color: black87,
+                    child: ExpansionTile(
+                      onExpansionChanged: (expanded) {
+                        setState(() {
+                          _expandedAccNo = expanded ? accNo : null;
+                        });
+                      },
+                      tilePadding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
+                      childrenPadding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Account Number",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: grey[600],
+                              fontWeight: FontWeight.w400,
                             ),
-                            Text(
-                              "Total Due: ₹$totalDue",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            accNo,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              color: home1,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.currency_rupee,
+                                size: 18,
                                 color: black87,
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    children:
-                        dues.asMap().entries.map((entry) {
-                          final dueIndex = entry.key;
-                          final due = entry.value;
+                              Text(
+                                "Total Due: ₹$totalDue",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 15,
+                                  color: black87,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      children:
+                          dues.asMap().entries.map((entry) {
+                            final dueIndex = entry.key;
+                            final due = entry.value;
 
-                          _checkboxStates.putIfAbsent(accNo, () => {});
-                          _checkboxStates[accNo]!.putIfAbsent(
-                            dueIndex,
-                            () => false,
-                          );
+                            _checkboxStates.putIfAbsent(accNo, () => {});
+                            _checkboxStates[accNo]!.putIfAbsent(
+                              dueIndex,
+                              () => false,
+                            );
 
-                          final isEnabled =
-                              _expandedAccNo == null || _expandedAccNo == accNo;
+                            final isEnabled =
+                                _expandedAccNo == null || _expandedAccNo == accNo;
 
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Checkbox(
-                                  value: _checkboxStates[accNo]![dueIndex],
-                                  onChanged:
-                                      isEnabled
-                                          ? (bool? value) {
-                                            setState(() {
-                                              // Uncheck all other account numbers
-                                              _checkboxStates.forEach((
-                                                key,
-                                                map,
-                                              ) {
-                                                if (key != accNo) {
-                                                  map.updateAll(
-                                                    (_, __) => false,
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Checkbox(
+                                    value: _checkboxStates[accNo]![dueIndex],
+                                    onChanged:
+                                        isEnabled
+                                            ? (bool? value) {
+                                              setState(() {
+                                                // Uncheck all other account numbers
+                                                _checkboxStates.forEach((
+                                                  key,
+                                                  map,
+                                                ) {
+                                                  if (key != accNo) {
+                                                    map.updateAll(
+                                                      (_, __) => false,
+                                                    );
+                                                  }
+                                                });
+
+                                                // Update current checkbox state
+                                                _checkboxStates[accNo]![dueIndex] =
+                                                    value ?? false;
+                                                _expandedAccNo = accNo;
+                                              });
+
+                                              // Calculate the selected amount only for current group
+                                              num modalSelectedAmount = 0;
+                                              final map = _checkboxStates[accNo];
+                                              if (map != null) {
+                                                map.forEach((i, isChecked) {
+                                                  if (isChecked) {
+                                                    modalSelectedAmount +=
+                                                        dues[i].installAmt ?? 0;
+                                                  }
+                                                });
+                                              }
+
+                                              final hasAnyChecked =
+                                                  modalSelectedAmount > 0;
+
+                                              if (!hasAnyChecked) return;
+
+                                              controller =
+                                                  TextEditingController(
+                                                    text: modalSelectedAmount
+                                                        .toStringAsFixed(2),
                                                   );
-                                                }
-                                              });
 
-                                              // Update current checkbox state
-                                              _checkboxStates[accNo]![dueIndex] =
-                                                  value ?? false;
-                                              _expandedAccNo = accNo;
-                                            });
+                                               selectedMethod =
+                                                  "Link"; // Default selection
 
-                                            // Calculate the selected amount only for current group
-                                            num modalSelectedAmount = 0;
-                                            final map = _checkboxStates[accNo];
-                                            if (map != null) {
-                                              map.forEach((i, isChecked) {
-                                                if (isChecked) {
-                                                  modalSelectedAmount +=
-                                                      dues[i].installAmt ?? 0;
-                                                }
-                                              });
-                                            }
-
-                                            final hasAnyChecked =
-                                                modalSelectedAmount > 0;
-
-                                            if (!hasAnyChecked) return;
-
-                                            final controller =
-                                                TextEditingController(
-                                                  text: modalSelectedAmount
-                                                      .toStringAsFixed(2),
-                                                );
-
-                                            String selectedMethod =
-                                                "Link"; // Default selection
-
-                                            showModalBottomSheet(
-                                              context: context,
-                                              isScrollControlled: true,
-                                              shape:
-                                                  const RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.vertical(
-                                                          top: Radius.circular(
-                                                            20,
+                                              showModalBottomSheet(
+                                                context: context,
+                                                isScrollControlled: true,
+                                                shape:
+                                                    const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.vertical(
+                                                            top: Radius.circular(
+                                                              20,
+                                                            ),
                                                           ),
+                                                    ),
+                                                backgroundColor: white,
+                                                builder: (context) {
+                                                  return StatefulBuilder(
+                                                    builder: (
+                                                      context,
+                                                      setModalState,
+                                                    ) {
+                                                      return Padding(
+                                                        padding: EdgeInsets.only(
+                                                          top: 20,
+                                                          left: 20,
+                                                          right: 20,
+                                                          bottom:
+                                                              MediaQuery.of(
+                                                                    context,
+                                                                  )
+                                                                  .viewInsets
+                                                                  .bottom +
+                                                              20,
                                                         ),
-                                                  ),
-                                              backgroundColor: white,
-                                              builder: (context) {
-                                                return StatefulBuilder(
-                                                  builder: (
-                                                    context,
-                                                    setModalState,
-                                                  ) {
-                                                    return Padding(
-                                                      padding: EdgeInsets.only(
-                                                        top: 20,
-                                                        left: 20,
-                                                        right: 20,
-                                                        bottom:
-                                                            MediaQuery.of(
-                                                                  context,
-                                                                )
-                                                                .viewInsets
-                                                                .bottom +
-                                                            20,
-                                                      ),
-                                                      child: SingleChildScrollView(
-                                                        child: Column(
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Row(
-                                                              children: [
-                                                                Container(
-                                                                  height: 60,
-                                                                  width: 60,
-                                                                  decoration: BoxDecoration(
+                                                        child: SingleChildScrollView(
+                                                          child: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize.min,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Row(
+                                                                children: [
+                                                                  Container(
+                                                                    height: 60,
+                                                                    width: 60,
+                                                                    decoration: BoxDecoration(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                            10,
+                                                                          ),
+                                                                      border: Border.all(
+                                                                        color:
+                                                                            black54,
+                                                                        width: 1,
+                                                                      ),
+                                                                    ),
+                                                                    child:
+                                                                        selectedMethod ==
+                                                                                "Link"
+                                                                            ? Image.asset(
+                                                                              "assets/icons/web-link.png",
+                                                                              scale:
+                                                                                  12,
+                                                                              color:
+                                                                                  home2,
+                                                                            )
+                                                                            : Image.asset(
+                                                                              "assets/icons/qr-code.png",
+                                                                              scale:
+                                                                                  12,
+                                                                              color:
+                                                                                  home2,
+                                                                            ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 8,
+                                                                  ),
+                                                                  Expanded(
+                                                                    child: Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Text(
+                                                                          "Collect Payment Using",
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          style: GoogleFonts.inter(
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                            color:
+                                                                                black87,
+                                                                            fontSize:
+                                                                                15,
+                                                                          ),
+                                                                        ),
+                                                                        Text(
+                                                                          selectedMethod!,
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          style: GoogleFonts.inter(
+                                                                            fontWeight:
+                                                                                FontWeight.w700,
+                                                                            color:
+                                                                                black,
+                                                                            fontSize:
+                                                                                15,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 8,
+                                                                  ),
+                                                                  GestureDetector(
+                                                                    onTap: () {
+                                                                      showModalBottomSheet(
+                                                                        context:
+                                                                            context,
+                                                                        shape: const RoundedRectangleBorder(
+                                                                          borderRadius: BorderRadius.vertical(
+                                                                            top: Radius.circular(
+                                                                              20,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        builder:
+                                                                            (
+                                                                              ctx,
+                                                                            ) => Column(
+                                                                              mainAxisSize:
+                                                                                  MainAxisSize.min,
+                                                                              children: [
+                                                                                ListTile(
+                                                                                  leading: const Icon(
+                                                                                    Icons.link,
+                                                                                  ),
+                                                                                  title: const Text(
+                                                                                    "Link",
+                                                                                  ),
+                                                                                  onTap: () {
+                                                                                    setModalState(
+                                                                                      () =>
+                                                                                          selectedMethod =
+                                                                                              "Link",
+                                                                                    );
+                                                                                    Navigator.pop(
+                                                                                      ctx,
+                                                                                    );
+                                                                                  },
+                                                                                ),
+                                                                                ListTile(
+                                                                                  leading: const Icon(
+                                                                                    Icons.qr_code,
+                                                                                  ),
+                                                                                  title: const Text(
+                                                                                    "QR Code",
+                                                                                  ),
+                                                                                  onTap: () {
+                                                                                    setModalState(
+                                                                                      () =>
+                                                                                          selectedMethod =
+                                                                                              "QR Code",
+                                                                                    );
+                                                                                    Navigator.pop(
+                                                                                      ctx,
+                                                                                    );
+                                                                                  },
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                      );
+                                                                    },
+                                                                    child: Text(
+                                                                      "Change Method >",
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      style: GoogleFonts.inter(
+                                                                        decoration:
+                                                                            TextDecoration
+                                                                                .underline,
+                                                                        decorationColor:
+                                                                            home2,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w800,
+                                                                        color:
+                                                                            home2,
+                                                                        fontSize:
+                                                                            12,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 15,
+                                                              ),
+                                                              const Text(
+                                                                "Installment Details",
+                                                                style: TextStyle(
+                                                                  fontSize: 18,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: home2,
+                                                                ),
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 12,
+                                                              ),
+                                                              Text(
+                                                                "Open Date: ${due.openDate}",
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                              Text(
+                                                                "Due Month: ${dueMonthValues.reverse[due.dueMonth]}",
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 20,
+                                                              ),
+                                                              Text(
+                                                                "Edit Total Selected Amount",
+                                                                style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color:
+                                                                      grey[800],
+                                                                ),
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 8,
+                                                              ),
+                                                              TextFormField(
+                                                                controller:
+                                                                    controller,
+                                                                keyboardType:
+                                                                    const TextInputType.numberWithOptions(
+                                                                      decimal:
+                                                                          true,
+                                                                      signed:
+                                                                          true,
+                                                                    ),
+                                                                decoration: InputDecoration(
+                                                                  filled: true,
+                                                                  fillColor:
+                                                                      home2,
+                                                                  border: OutlineInputBorder(
                                                                     borderRadius:
                                                                         BorderRadius.circular(
                                                                           10,
                                                                         ),
-                                                                    border: Border.all(
-                                                                      color:
-                                                                          black54,
-                                                                      width: 1,
-                                                                    ),
-                                                                  ),
-                                                                  child:
-                                                                      selectedMethod ==
-                                                                              "Link"
-                                                                          ? Image.asset(
-                                                                            "assets/icons/web-link.png",
-                                                                            scale:
-                                                                                12,
-                                                                            color:
-                                                                                home2,
-                                                                          )
-                                                                          : Image.asset(
-                                                                            "assets/icons/qr-code.png",
-                                                                            scale:
-                                                                                12,
-                                                                            color:
-                                                                                home2,
-                                                                          ),
-                                                                ),
-                                                                const SizedBox(
-                                                                  width: 8,
-                                                                ),
-                                                                Expanded(
-                                                                  child: Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      Text(
-                                                                        "Collect Payment Using",
-                                                                        overflow:
-                                                                            TextOverflow.ellipsis,
-                                                                        style: GoogleFonts.inter(
-                                                                          fontWeight:
-                                                                              FontWeight.w500,
+                                                                    borderSide:
+                                                                        const BorderSide(
                                                                           color:
-                                                                              black87,
-                                                                          fontSize:
-                                                                              15,
+                                                                              deepTeal,
                                                                         ),
-                                                                      ),
-                                                                      Text(
-                                                                        selectedMethod,
-                                                                        overflow:
-                                                                            TextOverflow.ellipsis,
-                                                                        style: GoogleFonts.inter(
-                                                                          fontWeight:
-                                                                              FontWeight.w700,
+                                                                  ),
+                                                                  focusedBorder: OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                          10,
+                                                                        ),
+                                                                    borderSide:
+                                                                        const BorderSide(
                                                                           color:
-                                                                              black,
-                                                                          fontSize:
-                                                                              15,
+                                                                              deepTeal,
+                                                                          width:
+                                                                              1.5,
                                                                         ),
+                                                                  ),
+                                                                  contentPadding:
+                                                                      const EdgeInsets.symmetric(
+                                                                        horizontal:
+                                                                            14,
+                                                                        vertical:
+                                                                            12,
                                                                       ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                const SizedBox(
-                                                                  width: 8,
-                                                                ),
-                                                                GestureDetector(
-                                                                  onTap: () {
-                                                                    showModalBottomSheet(
-                                                                      context:
-                                                                          context,
-                                                                      shape: const RoundedRectangleBorder(
-                                                                        borderRadius: BorderRadius.vertical(
-                                                                          top: Radius.circular(
-                                                                            20,
-                                                                          ),
-                                                                        ),
+                                                                  prefixIcon:
+                                                                      const Icon(
+                                                                        Icons
+                                                                            .currency_rupee,
+                                                                        color:
+                                                                            white,
                                                                       ),
-                                                                      builder:
-                                                                          (
-                                                                            ctx,
-                                                                          ) => Column(
-                                                                            mainAxisSize:
-                                                                                MainAxisSize.min,
-                                                                            children: [
-                                                                              ListTile(
-                                                                                leading: const Icon(
-                                                                                  Icons.link,
-                                                                                ),
-                                                                                title: const Text(
-                                                                                  "Link",
-                                                                                ),
-                                                                                onTap: () {
-                                                                                  setModalState(
-                                                                                    () =>
-                                                                                        selectedMethod =
-                                                                                            "Link",
-                                                                                  );
-                                                                                  Navigator.pop(
-                                                                                    ctx,
-                                                                                  );
-                                                                                },
-                                                                              ),
-                                                                              ListTile(
-                                                                                leading: const Icon(
-                                                                                  Icons.qr_code,
-                                                                                ),
-                                                                                title: const Text(
-                                                                                  "QR Code",
-                                                                                ),
-                                                                                onTap: () {
-                                                                                  setModalState(
-                                                                                    () =>
-                                                                                        selectedMethod =
-                                                                                            "QR Code",
-                                                                                  );
-                                                                                  Navigator.pop(
-                                                                                    ctx,
-                                                                                  );
-                                                                                },
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                    );
-                                                                  },
-                                                                  child: Text(
-                                                                    "Change Method >",
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    style: GoogleFonts.inter(
-                                                                      decoration:
-                                                                          TextDecoration
-                                                                              .underline,
-                                                                      decorationColor:
-                                                                          home2,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w800,
-                                                                      color:
-                                                                          home2,
-                                                                      fontSize:
-                                                                          12,
-                                                                    ),
-                                                                  ),
                                                                 ),
-                                                              ],
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 15,
-                                                            ),
-                                                            const Text(
-                                                              "Installment Details",
-                                                              style: TextStyle(
-                                                                fontSize: 18,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color: home2,
+                                                                style: const TextStyle(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: white,
+                                                                ),
                                                               ),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 12,
-                                                            ),
-                                                            Text(
-                                                              "Open Date: ${due.openDate}",
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
-                                                            Text(
-                                                              "Due Month: ${dueMonthValues.reverse[due.dueMonth]}",
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 20,
-                                                            ),
-                                                            Text(
-                                                              "Edit Total Selected Amount",
-                                                              style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color:
-                                                                    grey[800],
+                                                              const SizedBox(
+                                                                height: 20,
                                                               ),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 8,
-                                                            ),
-                                                            TextFormField(
-                                                              controller:
-                                                                  controller,
-                                                              keyboardType:
-                                                                  const TextInputType.numberWithOptions(
-                                                                    decimal:
-                                                                        true,
-                                                                    signed:
-                                                                        true,
-                                                                  ),
-                                                              decoration: InputDecoration(
-                                                                filled: true,
-                                                                fillColor:
+                                                              CustomSliderButton(
+                                                                token: token!,
+                                                                label:
+                                                                    "Slide to Collect Using $selectedMethod",
+                                                                backgroundColor:
                                                                     home2,
-                                                                border: OutlineInputBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                        10,
-                                                                      ),
-                                                                  borderSide:
-                                                                      const BorderSide(
-                                                                        color:
-                                                                            deepTeal,
-                                                                      ),
-                                                                ),
-                                                                focusedBorder: OutlineInputBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                        10,
-                                                                      ),
-                                                                  borderSide:
-                                                                      const BorderSide(
-                                                                        color:
-                                                                            deepTeal,
-                                                                        width:
-                                                                            1.5,
-                                                                      ),
-                                                                ),
-                                                                contentPadding:
-                                                                    const EdgeInsets.symmetric(
-                                                                      horizontal:
-                                                                          14,
-                                                                      vertical:
-                                                                          12,
-                                                                    ),
-                                                                prefixIcon:
-                                                                    const Icon(
-                                                                      Icons
-                                                                          .currency_rupee,
-                                                                      color:
-                                                                          white,
-                                                                    ),
-                                                              ),
-                                                              style: const TextStyle(
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color: white,
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 20,
-                                                            ),
-                                                            CustomSliderButton(
-                                                              token: token!,
-                                                              label:
-                                                                  "Slide to Collect Using $selectedMethod",
-                                                              backgroundColor:
-                                                                  home2,
-                                                              buttonColor:
-                                                                  Colors.white,
-                                                              onConfirmed: () async {
-                                                                // final editedAmount = num.tryParse(controller.text.trim()) ?? 0;
-                                                                selectedMethod ==
-                                                                        "Link"
-                                                                    ? sendLinkFunction(
-                                                                      provider
-                                                                          .agentModel!
-                                                                          .duesList1!
-                                                                          .data![index],
-                                                                      controller
-                                                                          .text,
-                                                                    )
-                                                                    :getPaymentSessionId(token,
-                                                                    provider.agentModel?.duesList1?.data?[index].name,
-                                                                    provider.agentModel?.duesList1?.data?[index].phone,
-                                                                    provider.agentModel?.duesList1?.data?[index].accNo,
-                                                                    provider.agentModel?.duesList1?.data?[index].custId,
-                                                                    provider.agentModel?.duesList1?.data?[index].email,
-                                                                    controller.text, "$agentPhoneNumber", agentId, "Payment For Agent $agentName");
+                                                                buttonColor:
+                                                                    Colors.white,
+                                                                onConfirmed: () async {
+                                                                  // final editedAmount = num.tryParse(controller.text.trim()) ?? 0;
+                                                                  selectedMethod ==
+                                                                          "Link"
+                                                                      ?
+                                                                  // sendLinkFunction(
+                                                                  //       provider
+                                                                  //           .agentModel!
+                                                                  //           .duesList1!
+                                                                  //           .data![index],
+                                                                  //       controller
+                                                                  //           .text,
+                                                                  //     )
+                                                                  context.read<PaymentBloc>().add(QrPaymentEvent(QrPaymentRequestModel(
+                                                                      agentDetails: AgentDetails(agentName: eCollectMerchantName!, agentId: eCollectAgentId!, agentOrginId: eCollectAgentId!, agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
+                                                                      customerDetails: CustomerDetails(customerName: provider.agentModel?.duesList1?.data![index].name ??"", customerPhone: eCollectAgentNumber!, customerAccno: provider.agentModel?.duesList1?.data![index].accNo ??"",
+                                                                          customerId: provider.agentModel?.duesList1?.data![index].custId ??"",
+                                                                          customerEmail: eCollectAgentEmail!),
+                                                                      collectionType: eCollectCollectionType!,
+                                                                      amount: double.parse(controller.text),
+                                                                      note: 'Payment for Order',
+                                                                      qrSource: 'MOB',
+                                                                      source: 'COLLECTION',
+                                                                      // merchantId: int.parse(eCollectAgentMerchantID!)
+                                                                      merchantId: 1)))
+                                                                      :
 
-                                                                    // : Navigator.push(
-                                                                    //   context,
-                                                                    //   MaterialPageRoute(
-                                                                    //     builder:
-                                                                    //         (
-                                                                    //           context,
-                                                                    //         ) => QrCodePage(
-                                                                    //           amount:
-                                                                    //               controller.text,
-                                                                    //           token:
-                                                                    //               token!,
-                                                                    //           custEmail:
-                                                                    //               provider.agentModel?.duesList1?.data?[index].email ??
-                                                                    //               "",
-                                                                    //           custPhoneNumber:
-                                                                    //               provider.agentModel?.duesList1?.data?[index].phone ??
-                                                                    //               "phone",
-                                                                    //           custId:
-                                                                    //               provider.agentModel?.duesList1?.data?[index].custId ??
-                                                                    //               "CustID",
-                                                                    //           custAcNumber:
-                                                                    //               provider.agentModel?.duesList1?.data?[index].accNo ??
-                                                                    //               "CustACCNo",
-                                                                    //           custName:
-                                                                    //               provider.agentModel?.duesList1?.data?[index].name ??
-                                                                    //               "NAME",
-                                                                    //         ),
-                                                                    //   ),
-                                                                    // );
-                                                                //Navigator.pop(context);
-                                                              },
-                                                            ),
-                                                          ],
+                                                                  context.read<PaymentBloc>().add(QrPaymentEvent(QrPaymentRequestModel(
+                                                                      agentDetails: AgentDetails(agentName: eCollectMerchantName!,
+                                                                          agentId: eCollectAgentId!, agentOrginId: eCollectAgentId!,
+                                                                          agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!,
+                                                                          agentBranch: int.parse(eCollectAgentBranchCode!)),
+                                                                      customerDetails:
+                                                                      CustomerDetails(customerName:
+                                                                      provider.agentModel?.duesList1?.data![index].name ??"",
+                                                                          customerPhone: eCollectAgentNumber!,
+                                                                          customerAccno: provider.agentModel?.duesList1?.data?[index].accNo ??'',
+                                                                          customerId: provider.agentModel?.duesList1?.data?[index].custId ??'',
+                                                                          customerEmail: eCollectAgentEmail!),
+                                                                      collectionType: eCollectCollectionType!,
+                                                                      amount: double.parse(controller.text),
+                                                                      note: 'Payment for Order',
+                                                                      qrSource: 'MOB',
+                                                                      source: 'COLLECTION',
+                                                                      // merchantId: int.parse(eCollectAgentMerchantID!)
+                                                                      merchantId: 1)));
+                                                                  // getPaymentSessionId(token,
+                                                                  //     provider.agentModel?.duesList1?.data?[index].name,
+                                                                  //     provider.agentModel?.duesList1?.data?[index].phone,
+                                                                  //     provider.agentModel?.duesList1?.data?[index].accNo,
+                                                                  //     provider.agentModel?.duesList1?.data?[index].custId,
+                                                                  //     provider.agentModel?.duesList1?.data?[index].email,
+                                                                  //     controller.text, "$agentPhoneNumber", agentId, "Payment For Agent $agentName");
+
+                                                                      // : Navigator.push(
+                                                                      //   context,
+                                                                      //   MaterialPageRoute(
+                                                                      //     builder:
+                                                                      //         (
+                                                                      //           context,
+                                                                      //         ) => QrCodePage(
+                                                                      //           amount:
+                                                                      //               controller.text,
+                                                                      //           token:
+                                                                      //               token!,
+                                                                      //           custEmail:
+                                                                      //               provider.agentModel?.duesList1?.data?[index].email ??
+                                                                      //               "",
+                                                                      //           custPhoneNumber:
+                                                                      //               provider.agentModel?.duesList1?.data?[index].phone ??
+                                                                      //               "phone",
+                                                                      //           custId:
+                                                                      //               provider.agentModel?.duesList1?.data?[index].custId ??
+                                                                      //               "CustID",
+                                                                      //           custAcNumber:
+                                                                      //               provider.agentModel?.duesList1?.data?[index].accNo ??
+                                                                      //               "CustACCNo",
+                                                                      //           custName:
+                                                                      //               provider.agentModel?.duesList1?.data?[index].name ??
+                                                                      //               "NAME",
+                                                                      //         ),
+                                                                      //   ),
+                                                                      // );
+                                                                  //Navigator.pop(context);
+                                                                },
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
-                                                      ),
-                                                    );
-                                                  },
-                                                );
-                                              },
-                                            );
-                                          }
-                                          : null,
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 14,
-                                      vertical: 12,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(
-                                        color: home1,
-                                        width: 1.5,
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                              );
+                                            }
+                                            : null,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 14,
+                                        vertical: 12,
                                       ),
-                                      color: grey[50],
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Installment: ₹${due.installAmt}",
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 14,
-                                            color: black87,
-                                          ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                          color: home1,
+                                          width: 1.5,
                                         ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          "Open Date: ${due.openDate}",
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                            color: grey[700],
+                                        color: grey[50],
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Installment: ₹${due.installAmt}",
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 14,
+                                              color: black87,
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          "Due Month: ${dueMonthValues.reverse[due.dueMonth]}",
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                            color: grey[700],
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            "Open Date: ${due.openDate}",
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              color: grey[700],
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            "Due Month: ${dueMonthValues.reverse[due.dueMonth]}",
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              color: grey[700],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                    ),
                   ),
-                ),
-              );
+                );
+              },
+            );
+          },
+        ),
+          BlocListener<PaymentBloc, PaymentState>(
+            listener: (BuildContext context, PaymentState state) {
+              if (state is QrPaymentLoaderState) {
+                showProgressDialog(context);
+              }
+              if (state is QrPaymentSuccessState) {
+                Navigator.pop(context);
+                print(state.qrPaymentSuccess.paymentResponseSuccess.paymentUrl);
+                selectedMethod == "QR"?
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NewQrCodePage(
+                      paymentSessionId: state
+                          .qrPaymentSuccess.paymentResponseSuccess.paymentUrl,
+                      amount: controller.text,
+                      custName: "",
+                      custPhone: "custNumber",
+                      custId: "CustId",
+                    ),
+                  ),
+                ):
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => PaymentLinkRequestUi(
+                          customerMobileNumber: "",
+                          paymentLink: state.qrPaymentSuccess.paymentResponseSuccess.paymentUrl,
+                        )));
+
+              } else if (state is QrPaymentFailState) {
+                Navigator.pop(context);
+                print(state.qrPaymentFail.paymentFailResponse.message);
+              }
             },
-          );
-        },
+            child: SizedBox(),
+          ),
+
+        ]
       ),
     );
   }

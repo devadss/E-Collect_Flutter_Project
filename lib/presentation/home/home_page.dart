@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:collection_qr_flutter/data/provider/cash_qr_provider.dart';
 import 'package:collection_qr_flutter/domain/model/all_trans_data.dart';
 import 'package:collection_qr_flutter/domain/model/qr_cash_combined_response.dart';
 import 'package:collection_qr_flutter/domain/model/transfer_history_model.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -98,8 +98,19 @@ class _HomePageState extends State<HomePage>
     super.initState();
     checkForUpdate();
     loadSharedPrefs(context);
-  }
+    getDeviceToken();
 
+  }
+  Future<void> getDeviceToken() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    // Request permission (mainly for iOS)
+    await messaging.requestPermission();
+
+    String? token = await messaging.getToken();
+
+    print("FCM Token: $token");
+  }
   // @override
   // void dispose() {
   //   _animationController.dispose();
@@ -1375,36 +1386,37 @@ print("widget.userType : ${widget.userType}");
     );
   }*/
 
-  Widget _buildLinkTransactionContent(
-      LinkTransactionHistoryProvider linkProvider) {
-    if (linkProvider.erResposne != null) {
-      return _buildEmptyState(
-        icon: Icons.link,
-        title: "No Link Transactions",
-        message: "Your Link payment transactions will appear here",
-      );
-    } else if (linkProvider.linkTranscationHistoryModel == null) {
-      return _buildLoadingList();
-    }
-
-    return _buildTransactionList(
-      transactions: linkProvider.linkTranscationHistoryModel!.data!,
-      icon: Icons.link_outlined,
-      iconColor: Colors.blue,
-      getAmount: (t) => t.linkAmount ?? 0,
-      getStatus: (t) => t.linkStatus.toString(),
-      getOrderId: (t) => t.orderId.toString(),
-      getCustName: (t) => t.customerName.toString(),
-      getCustId: (t) => t.customerId.toString(),
-      getCustPhone: (t) => t.customerPhone.toString(),
-      getTnxType: (t) => t.source.toString(),
-      paymentMode: (t) => t.paymentMode.toString(),
-      collectionType: (t) => t.collectionType.toString(),
-      getAccNo: (t) => t.customerAcctno.toString(),
-      getTranType: (t) => t.source.toString(),
-      getCustAccNo: (t) => t.customerAcctno.toString(),
-    );
-  }
+  // Widget _buildLinkTransactionContent(
+  //     LinkTransactionHistoryProvider linkProvider)
+  // {
+  //   if (linkProvider.erResposne != null) {
+  //     return _buildEmptyState(
+  //       icon: Icons.link,
+  //       title: "No Link Transactions",
+  //       message: "Your Link payment transactions will appear here",
+  //     );
+  //   } else if (linkProvider.linkTranscationHistoryModel == null) {
+  //     return _buildLoadingList();
+  //   }
+  //
+  //   return _buildTransactionList(
+  //     transactions: linkProvider.linkTranscationHistoryModel!.data!,
+  //     icon: Icons.link_outlined,
+  //     iconColor: Colors.blue,
+  //     getAmount: (t) => t.linkAmount ?? 0,
+  //     getStatus: (t) => t.linkStatus.toString(),
+  //     getOrderId: (t) => t.orderId.toString(),
+  //     getCustName: (t) => t.customerName.toString(),
+  //     getCustId: (t) => t.customerId.toString(),
+  //     getCustPhone: (t) => t.customerPhone.toString(),
+  //     getTnxType: (t) => t.source.toString(),
+  //     paymentMode: (t) => t.paymentMode.toString(),
+  //     collectionType: (t) => t.collectionType.toString(),
+  //     getAccNo: (t) => t.customerAcctno.toString(),
+  //     getTranType: (t) => t.source.toString(),
+  //     getCustAccNo: (t) => t.customerAcctno.toString(),
+  //   );
+  // }
 
   Widget _buildCashTransactionContent(
       CashTransactionHistoryProvider cashProvider) {

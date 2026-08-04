@@ -1,5 +1,6 @@
 import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:collection_qr_flutter/data/e_collect_bloc/payment_bloc/payment_bloc.dart';
+import 'package:collection_qr_flutter/presentation/dues/rdcl_due_home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,7 +11,6 @@ import '../../data/provider/cash_transcation_provider.dart';
 import '../../data/rdcl_duelist_bloc/rdcl_duelist_bloc.dart';
 import '../../data/storage/shared_pref_helper.dart';
 import '../../domain/model/e_collect/payment/qr_request_model/qr_request_model.dart';
-import '../account_dues/widgets/rdcl_account_due_detail_page.dart';
 import '../paymentlink_request_ui.dart';
 import '../profile/widgets/recipect_page.dart';
 import '../qr_code/widgets/generate_qr_code_page.dart';
@@ -177,8 +177,7 @@ class _RdclDueListBlocPageState extends State<RdclDueListBlocPage> {
   @override
   void initState() {
     super.initState();
-    context
-        .read<RdclDuelistBloc>()
+    context.read<RdclDuelistBloc>()
         .add(RdclDueListFetchEvent("", widget.branchCode, "", ""));
     loadSharedPrefs();
   }

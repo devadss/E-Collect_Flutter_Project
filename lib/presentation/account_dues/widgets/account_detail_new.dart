@@ -76,7 +76,7 @@ loadSharedPrefs();
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black.withValues(alpha: 0.1),
                         blurRadius: 20,
                         spreadRadius: 2,
                       ),
@@ -111,11 +111,11 @@ loadSharedPrefs();
                           prefixIcon: const Icon(Icons.currency_rupee),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: home1.withOpacity(0.3)),
+                            borderSide: BorderSide(color: home1.withValues(alpha: 0.3)),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: home1.withOpacity(0.3)),
+                            borderSide: BorderSide(color: home1.withValues(alpha: 0.3)),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -408,7 +408,7 @@ loadSharedPrefs();
               borderRadius: BorderRadius.circular(25),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black.withValues(alpha: 0.2),
                   blurRadius: 20,
                   spreadRadius: 5,
                 ),
@@ -428,7 +428,7 @@ loadSharedPrefs();
                     width: 80,
                     height: 80,
                     decoration: BoxDecoration(
-                      color: Colors.redAccent.withOpacity(0.1),
+                      color: Colors.redAccent.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
                     // child: Lottie.asset("assets/animations/logout.json"),
@@ -788,8 +788,8 @@ loadSharedPrefs();
               decoration: BoxDecoration(
                 color: Colors.white,
                 gradient: LinearGradient(colors: [
-                  home1.withOpacity(0.22),
-                  home1.withOpacity(0.02)
+                  home1.withValues(alpha: 0.22),
+                  home1.withValues(alpha: 0.02)
 
 
                 ],
@@ -799,7 +799,7 @@ loadSharedPrefs();
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.06),
+                    color: Colors.black.withValues(alpha: 0.06),
                     blurRadius: 16,
                     offset: const Offset(0, 6),
                     spreadRadius: -2,
@@ -817,8 +817,8 @@ loadSharedPrefs();
                         topRight: Radius.circular(20),
                       ),
                         gradient: LinearGradient(colors: [
-                          home1.withOpacity(0.02),
-                          home1.withOpacity(0.02),
+                          home1.withValues(alpha: 0.02),
+                          home1.withValues(alpha: 0.02),
                         ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -1034,7 +1034,7 @@ Widget _buildInfoRow({
       Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: home1.withOpacity(0.08),
+          color: home1.withValues(alpha: 0.08),
           shape: BoxShape.circle,
         ),
         child: Icon(icon, size: 18, color: home1),

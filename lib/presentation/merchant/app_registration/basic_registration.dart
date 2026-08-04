@@ -58,7 +58,7 @@ class _BasicRegistrationState extends State<BasicRegistration> {
   }
   bool isValidEmail(String email) {
     return RegExp(
-      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+      r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$',
     ).hasMatch(email);
   }
 /////********************************************

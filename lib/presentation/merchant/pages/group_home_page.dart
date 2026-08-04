@@ -1,4 +1,3 @@
-import 'package:collection_qr_flutter/core/alerts.dart';
 import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:collection_qr_flutter/presentation/auth/mobile_number_page.dart';
 import 'package:flutter/material.dart';

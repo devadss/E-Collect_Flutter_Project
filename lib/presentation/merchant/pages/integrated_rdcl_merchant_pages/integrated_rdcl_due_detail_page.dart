@@ -60,7 +60,7 @@ class _IntegratedRDCLDueDetailPageState extends State<IntegratedRDCLDueDetailPag
                 borderRadius: BorderRadius.circular(30),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.06),
+                    color: Colors.black.withValues(alpha: 0.06),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -923,7 +923,7 @@ class _CustomSliderButtonState extends State<CustomSliderButton> {
           Center(
             child: Shimmer.fromColors(
               baseColor: Colors.white,
-              highlightColor: widget.buttonColor.withOpacity(0.25),
+              highlightColor: widget.buttonColor.withValues(alpha: 0.25),
               child: FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(

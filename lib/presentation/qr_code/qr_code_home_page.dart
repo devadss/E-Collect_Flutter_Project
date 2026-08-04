@@ -324,6 +324,7 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
     if (paymentSessionId.isNotEmpty && orderID.isNotEmpty) {
       printLog("------------------ORDER ID-----------------");
       printLog(orderID);
+      if(!mounted)return;
       Navigator.pop(context);
       final result = await Navigator.push(
           context,
@@ -344,10 +345,12 @@ class _QrCodeHomePageState extends State<QrCodeHomePage> {
         // _fetchBalance();
         fetchTransaction();
         _fetchBalance();
+        if(!mounted)return;
         Navigator.pop(context);
 
       }
     } else {
+      if(!mounted)return;
       Navigator.pop(context);
       EasyLoading.showToast("Session id is null");
     }

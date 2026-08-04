@@ -125,12 +125,15 @@ class _MemberBucketTrackingDashboardState
 
   List<Group> get filteredGroups {
     if (_selectedTab == 0) return groups;
-    if (_selectedTab == 1)
+    if (_selectedTab == 1) {
       return groups.where((g) => g.status == GroupStatus.active).toList();
-    if (_selectedTab == 2)
+    }
+    if (_selectedTab == 2) {
       return groups.where((g) => g.status == GroupStatus.completed).toList();
-    if (_selectedTab == 3)
+    }
+    if (_selectedTab == 3) {
       return groups.where((g) => g.pendingAmount > 0).toList();
+    }
     return groups;
   }
 

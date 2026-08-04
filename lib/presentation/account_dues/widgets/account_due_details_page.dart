@@ -1,426 +1,3 @@
-// import '../../core/colors.dart';
-// import '../../core/general.dart';
-// import '../../data/provider/due_list_provider.dart';
-// import '../../data/repository/payment_link_repository.dart';
-// import '../../presentation/qr_code/qr_code_home_page.dart';
-// import 'package:flutter/material.dart';
-// import 'package:google_fonts/google_fonts.dart';
-// import 'package:provider/provider.dart';
-// import 'package:share_plus/share_plus.dart';
-// import '../../../data/storage/shared_pref_helper.dart';
-//
-// class DuesDetailPage extends StatefulWidget {
-//   final String custName;
-//   final String custAcNumber;
-//   final String custPhoneNumber;
-//   final String custId;
-//   const DuesDetailPage({
-//     super.key,
-//     required this.custName,
-//     required this.custAcNumber,
-//     required this.custPhoneNumber,
-//     required this.custId,
-//   });
-//
-//   @override
-//   State<DuesDetailPage> createState() => _DuesDetailPageState();
-// }
-//
-// class _DuesDetailPageState extends State<DuesDetailPage> {
-//   List<bool> checkedItems = List.generate(10, (index) => false);
-//   TextEditingController amountController = TextEditingController();
-//   num previousCheckboxTotal = 0;
-//   DateTime? _dateTime;
-//   String? agentId;
-//   String? agentOriginId;
-//   String? agentMobile;
-//   String? agentName;
-//   String? agentEmail;
-//   String? customerEmail;
-//   String? customerName;
-//   String? customerNumber;
-//   String? customerAccountNumber;
-//   String? corpCode;
-//
-//   void updateTotalAmount() {
-//     final provider = Provider.of<DueListProvider>(context, listen: false);
-//
-//     int manualAmount =
-//         int.tryParse(amountController.text) ?? 0; // Preserve manual input
-//     int checkboxTotal = 0;
-//
-//     // Calculate the sum of selected due amounts
-//     for (int i = 0; i < checkedItems.length; i++) {
-//       if (checkedItems[i]) {
-//         // Convert dueAmount to int safely
-//         checkboxTotal +=
-//             (provider.dueListModel!.duesList!.data![i].dueAmount as num)
-//                 .toInt();
-//       }
-//     }
-//
-//     // Reset manual input if all checkboxes are unchecked
-//     if (checkboxTotal == 0) {
-//       manualAmount = 0;
-//       previousCheckboxTotal = 0;
-//     }
-//
-//     num newTotal = checkboxTotal +
-//         (manualAmount - previousCheckboxTotal); // Maintain manual edits
-//     previousCheckboxTotal =
-//         checkboxTotal; // Store last calculated checkbox total
-//
-//     setState(() {
-//       amountController.text = newTotal.toString();
-//     });
-//   }
-//
-//   String _getLastThreeDigits(String phoneNumber) {
-//     return phoneNumber.length >= 3
-//         ? "*** *** ${phoneNumber.substring(phoneNumber.length - 3)}"
-//         : phoneNumber;
-//   }
-//
-//   void _proceedButtonClick() {
-//     showDialog(
-//       context: context,
-//       builder: (context) {
-//         return AlertDialog(
-//           title: Text("Proceed Confirmation", style: TextStyle(fontWeight: FontWeight.w700,color: black,fontSize: 18)),
-//           content: Text(
-//             "Select the Payment Mode to proceed with the total amount of Rs. ${amountController.text}?",
-//             style: _valueTextStyle(),
-//           ),
-//           actions: [
-//             TextButton(
-//               onPressed: () {
-//                 Navigator.pop(context);
-//                 Navigator.push(
-//                   context,
-//                   MaterialPageRoute(
-//                       builder: (context) => QrCodeHomePage(
-//                             payAbleAmount: amountController.text, accountNumber: '', agentId: '',
-//                           )),
-//                 );
-//               },
-//               child: Text("QR Code", style: _valueTextStyle()),
-//             ),
-//             ElevatedButton(
-//               onPressed: () {
-//                 Navigator.pop(context);
-//                 sendLinkFunction();
-//               },
-//               style: ElevatedButton.styleFrom(
-//                 backgroundColor: teal700,
-//                 foregroundColor: white,
-//               ),
-//               child: const Text("Send Link"),
-//             ),
-//           ],
-//         );
-//       },
-//     );
-//   }
-//
-//   Future<void> sendLinkFunction() async {
-//     final send = await PaymentLinkRepository().getPaymentLink(
-//         agentName!,
-//         agentId!,
-//         agentOriginId!,
-//         agentMobile!,
-//         agentEmail!,
-//         widget.custName,
-//         widget.custPhoneNumber,
-//         widget.custAcNumber,
-//         "rahul.sharma@example.com",
-//         widget.custId,
-//         num.parse(amountController.text),
-//         "Payment for Order #12345",
-//         corpCode!,
-//         ""
-//         // "John Doe",
-//         // "AGT12345",
-//         // "ORG98765",
-//         // "+919876543210",
-//         // "agent@example.com",
-//         // "Rahul Sharma",
-//         // "+919123456789",
-//         // "123456789012",
-//         // "rahul.sharma@example.com",
-//         // "CUS12345",
-//         // num.parse(amountController.text),
-//         // "Payment for Order #12345",
-//         // "CORP001",
-//         // "CARD98765",
-//         );
-//
-//     send.fold(
-//       (error) {
-//         print("-------------------ERROR---------------------");
-//         print(error);
-//       },
-//       (sendLink) {
-//         if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
-//           Share.share("Here is your payment link: ${sendLink.linkUrl}");
-//         } else {
-//           print("Payment link is empty or null");
-//         }
-//       },
-//     );
-//   }
-//
-//   @override
-//   @override
-//   void initState() {
-//     super.initState();
-//     loadSharedPrefs();
-//     _dateTime = DateTime.now();
-//
-//     print(
-//         "--------------------------------DATE TIME--------------------------");
-//     print(_dateTime);
-//     // Format today's date as 'YYYY-MM-DD'
-//     String todayDate = "${_dateTime?.year}-${_dateTime?.month.toString().padLeft(2, '0')}-${_dateTime?.day.toString().padLeft(2, '0')}";
-//     print("--------------------------TODAYS DATE----------------------------");
-//     print(todayDate);
-//
-//     final provider = Provider.of<DueListProvider>(context, listen: false);
-//     provider.getDueList(widget.custAcNumber, todayDate);
-//   }
-//
-//   // void initState() {
-//   //   loadSharedPrefs();
-//   //   _dateTime = DateTime.now();
-//   //   print(
-//   //       "--------------------------------DATE TIME--------------------------");
-//   //   print(_dateTime);
-//   //   final provider = Provider.of<DueListProvider>(context, listen: false);
-//   //   provider.getDueList(widget.custAcNumber, "2025-03-25");
-//   //   super.initState();
-//   // }
-//
-//   Future<void> loadSharedPrefs() async {
-//     final name = await SharedPref().getAgentName();
-//     final phone = await SharedPref().getMobNum();
-//     final agentid = await SharedPref().getAgentId();
-//     final agentOrigin = await SharedPref().getAgentOriginId();
-//     final mail = await SharedPref().getEmail();
-//     final corp = await SharedPref().getCorpCode();
-//
-//     // Trigger rebuild after fetching the userName
-//     if (mounted) {
-//       setState(() {
-//         agentName = name;
-//         agentMobile = phone;
-//         agentId = agentid;
-//         agentOriginId = agentOrigin;
-//         agentEmail = mail;
-//         corpCode = corp;
-//       });
-//     }
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       resizeToAvoidBottomInset: true,
-//       backgroundColor: white,
-//       appBar: AppBar(
-//         centerTitle: true,
-//         backgroundColor: white,
-//         title: Text(
-//           "Due Details",
-//           style: TextStyle(
-//               fontWeight: FontWeight.w700, fontSize: 22, color: teal700),
-//         ),
-//       ),
-//       body: Consumer<DueListProvider>(builder: (context, provider, child) {
-//         return provider.dueListModel == null
-//             ? const Center(
-//                 child: CircularProgressIndicator(
-//                   color: deepTeal,
-//                 ),
-//               )
-//             : Padding(
-//                 padding:
-//                     const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-//                 child: Column(
-//                   children: [
-//                     _buildCustomerInfo(),
-//                     const SizedBox(height: 15),
-//                     Expanded(
-//                       child: ListView.builder(
-//                         itemCount:
-//                             provider.dueListModel!.duesList!.data!.length,
-//                         itemBuilder: (_, index) {
-//                           return Container(
-//                             margin: const EdgeInsets.only(bottom: 12),
-//                             decoration: BoxDecoration(
-//                                 borderRadius: BorderRadius.circular(10),
-//                                 color: white,
-//                                 border:
-//                                     Border.all(color: deepTeal, width: 0.5)),
-//                             child: Padding(
-//                               padding: const EdgeInsets.all(12),
-//                               child: Column(
-//                                 crossAxisAlignment: CrossAxisAlignment.start,
-//                                 children: [
-//                                   Text(
-//                                       "Due amount: Rs.${provider.dueListModel!.duesList!.data![index].dueAmount}",
-//                                       style: _infoTextStyle()),
-//                                   const SizedBox(height: 5),
-//                                   Row(
-//                                     children: [
-//                                       Text("Loan type: RD",
-//                                           style: _infoTextStyle()),
-//                                       const Spacer(),
-//                                       Transform.scale(
-//                                         scale: 1.2,
-//                                         child: Checkbox(
-//                                           value: checkedItems[index],
-//                                           onChanged: (bool? value) {
-//                                             setState(() {
-//                                               checkedItems[index] = value!;
-//                                               updateTotalAmount();
-//                                             });
-//                                           },
-//                                           activeColor: teal700,
-//                                         ),
-//                                       ),
-//                                     ],
-//                                   ),
-//                                   Text(
-//                                       "Due date: ${provider.dueListModel!.duesList!.data![index].dueMonth}",
-//                                       style: _infoTextStyle()),
-//                                 ],
-//                               ),
-//                             ),
-//                           );
-//                         },
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               );
-//       }),
-//       bottomNavigationBar:
-//           checkedItems.contains(true) ? _buildBottomBar() : null,
-//     );
-//   }
-//
-//   Widget _buildCustomerInfo() {
-//     return Container(
-//       padding: const EdgeInsets.all(16),
-//       decoration: BoxDecoration(
-//        color: deepTeal,
-//         borderRadius: BorderRadius.circular(10),
-//         border: Border.all(color: black, width: 2),
-//         boxShadow:  [
-//           BoxShadow(
-//             color: black.withOpacity(0.25),
-//             blurRadius: 10,
-//             spreadRadius: 0,
-//             offset:const Offset(0, 2),
-//           )
-//         ],
-//       ),
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           _buildInfoRow("Customer Name", widget.custName),
-//           _buildInfoRow("Account Number", widget.custAcNumber),
-//           _buildInfoRow("Account Status", "Active"),
-//           _buildInfoRow(
-//               "Mobile Number", _getLastThreeDigits(widget.custPhoneNumber)),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   Widget _buildBottomBar() {
-//     return Container(
-//       height: MediaQuery.of(context).size.height * 0.15,
-//       decoration: BoxDecoration(
-//         gradient: LinearGradient(
-//           colors: [deepTeal,teal700!, teal500!],
-//           begin: Alignment.topLeft,
-//           end: Alignment.bottomRight,
-//         ),
-//         borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
-//       ),
-//       child: Padding(
-//         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-//         child: Row(
-//           children: [
-//             Expanded(
-//               child: Text(
-//                 "Total Amount :",
-//                 style: _bottomTextStyle(),
-//               ),
-//             ),
-//             SizedBox(
-//               width: 120,
-//               child: TextField(
-//                 controller: amountController,
-//                 keyboardType:
-//                     const TextInputType.numberWithOptions(decimal: true),
-//                 style: const TextStyle(
-//                     color: white, fontSize: 16, fontWeight: FontWeight.w700),
-//                 textAlign: TextAlign.center,
-//                 decoration: InputDecoration(
-//                   border: OutlineInputBorder(
-//                     borderRadius: BorderRadius.circular(10),
-//                     borderSide: BorderSide.none
-//                   ),
-//                   filled: true,
-//                   fillColor: teal600!.withOpacity(0.3),
-//                 ),
-//               ),
-//             ),
-//             const SizedBox(width: 10),
-//             ElevatedButton(
-//               onPressed: _proceedButtonClick,
-//               style: ElevatedButton.styleFrom(
-//                 padding:
-//                     const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-//                 shape: RoundedRectangleBorder(
-//                     borderRadius: BorderRadius.circular(10)),
-//                 backgroundColor: white,
-//                 foregroundColor: teal700,
-//                 textStyle: TextStyle(
-//                     fontWeight: FontWeight.w600, fontSize: 15),
-//               ),
-//               child: const Text("Proceed"),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-//
-//   Widget _buildInfoRow(String label, String value) {
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(vertical: 6),
-//       child: Row(
-//         children: [
-//           Expanded(flex: 2, child: Text(label, style: _labelTextStyle())),
-//           Text(":", style: _labelTextStyle()),
-//           const SizedBox(width: 8),
-//           Expanded(flex: 3, child: Text(value, style: _labelTextStyle())),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   TextStyle _labelTextStyle() => TextStyle(
-//       fontWeight: FontWeight.w600, fontSize: 16, color: white);
-//   TextStyle _valueTextStyle() => TextStyle(
-//       fontWeight: FontWeight.w500, fontSize: 16, color: black87);
-//   TextStyle _infoTextStyle() => TextStyle(
-//       fontWeight: FontWeight.w500, fontSize: 14, color: black87);
-//   TextStyle _bottomTextStyle() => TextStyle(
-//       fontWeight: FontWeight.w600, fontSize: 16, color: white);
-// }
 
 import 'dart:io';
 import 'dart:math';
@@ -440,7 +17,7 @@ import '../../../data/provider/transaction_provider.dart';
 import '../../../data/repository/payment_link_repository.dart';
 import '../../../data/repository/payment_session_id_repository.dart';
 import '../../../data/storage/shared_pref_helper.dart';
-import '../../dues/widgets/new_qr_code_page.dart';
+import '../../qr_code/widgets/generate_qr_code_page.dart';
 
 class AccountDueDetailsPage extends StatefulWidget {
   final String corpCode;
@@ -582,9 +159,8 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
                             NewQrCodePage(
                               paymentSessionId: paymentSessionId!,
                               amount: amountController.text ?? "",
-                              token: token!,custName: customerName ?? "custName",
                               custPhone: widget.custPhoneNumber,
-                              custId: widget.custId,
+                              custId: widget.custId, custName: '',
                             ),
                       ),
                     );
@@ -704,6 +280,7 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
         subAgentCodeNew = sub_AgentCodeNew;
       });
     }
+    if(!mounted) return;
     final provider = Provider.of<DueListProvider>(context, listen: false);
     await provider.getDueList(widget.custAcNumber, _dateTime.toString());
   }
@@ -758,12 +335,12 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: home2.withOpacity(0.1),
+            color: home2.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
-        border: Border.all(color: home1.withOpacity(0.2)),
+        border: Border.all(color: home1.withValues(alpha: 0.2)),
       ),
       child: Column(
         children: [
@@ -829,7 +406,7 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
             margin: const EdgeInsets.only(bottom: 12),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
-              side: BorderSide(color: home1.withOpacity(0.1)),
+              side: BorderSide(color: home1.withValues(alpha: 0.1)),
             ),
             child: InkWell(
               borderRadius: BorderRadius.circular(12),
@@ -975,7 +552,7 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black.withValues(alpha: 0.1),
                         blurRadius: 20,
                         spreadRadius: 2,
                       ),
@@ -1010,11 +587,11 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
                           prefixIcon: const Icon(Icons.currency_rupee),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: home1.withOpacity(0.3)),
+                            borderSide: BorderSide(color: home1.withValues(alpha: 0.3)),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: home1.withOpacity(0.3)),
+                            borderSide: BorderSide(color: home1.withValues(alpha: 0.3)),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -1244,6 +821,7 @@ class _AccountDueDetailsPageState extends State<AccountDueDetailsPage> {
       status = await Permission.phone.request();
       if (!status.isGranted) {
         debugPrint("Permission denied for CALL_PHONE");
+        if(!mounted)return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Call permission is required")),
         );

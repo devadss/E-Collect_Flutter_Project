@@ -1,13 +1,16 @@
+import 'package:collection_qr_flutter/presentation/qr_code/widgets/generate_qr_code_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../core/colors.dart';
 import '../../../core/utils.dart';
+import '../../../data/e_collect_bloc/payment_bloc/payment_bloc.dart';
 import '../../../data/provider/cash_transcation_provider.dart';
 import '../../../data/rdcl_duelist_bloc/rdcl_duelist_bloc.dart';
 import '../../../data/repository/payment_link_repository.dart';
 import '../../../data/storage/shared_pref_helper.dart';
+import '../../../domain/model/e_collect/payment/qr_request_model/qr_request_model.dart';
 import '../../dues/rdcl_due_home_page.dart';
 import '../../paymentlink_request_ui.dart';
 import '../../profile/widgets/recipect_page.dart';
@@ -53,8 +56,18 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
   String orderID = "";
   String? subAgentCodeNew;
   String? subagentPhoneNumber;
-
+  String? eCollectAgentNumber;
+  String? eCollectMerchantName;
+  String? eCollectAgentEmail;
+  String? eCollectCollectionType;
+  String? eCollectAgentBranchCode;
+  String? eCollectAgentMerchantID;
+  String? eCollectAgentOriginId;
+  String? eCollectAgentId;
+  String? selectedMethod;
   Future<void> loadSharedPrefs() async {
+    final prefs = SharedPref();
+
     final name = await SharedPref().getAgentName();
     final phone = await SharedPref().getParentAgentMobNum();
     final id = await SharedPref().getAgentId();
@@ -66,9 +79,28 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
     final tok = await SharedPref.shared.getTokenValue();
     final sub_AgentCodeNew = await SharedPref().getSubAgentCodeNew();
     final subagentNum = await SharedPref().getSubAgentMobNum();
-
+    //-------------------------------------
+    final _eCollectMerchantName = await prefs.getECollectMerchantName();
+    final _eCollectAgentId = await prefs.getECollectUserID();
+    final _eCollectAgentOriginId = await prefs.getECollectUserID();
+    final _eCollectAgentNumber = await prefs.getECollectUserNumber();
+    final _eCollectAgentEmail = await prefs.getECollectUserEmail();
+    final _eCollectAgentBranchCode =
+    await prefs.getECollectMerchantBranchCode();
+    final _eCollectAgentMerchantID = await prefs.getECollectMerchantID();
+    final _eCollectCollectionType = await prefs.getECollectUserType();
+    //---------------------------------------
     if (mounted) {
       setState(() {
+        eCollectMerchantName = _eCollectMerchantName;
+        eCollectAgentId = _eCollectAgentId;
+        eCollectAgentOriginId = _eCollectAgentOriginId;
+        eCollectAgentNumber = _eCollectAgentNumber;
+        eCollectAgentEmail = _eCollectAgentEmail;
+        eCollectAgentBranchCode = _eCollectAgentBranchCode;
+        eCollectAgentMerchantID = _eCollectAgentMerchantID;
+        eCollectCollectionType = _eCollectCollectionType;
+
         subagentPhoneNumber = subagentNum;
         agentName = name;
         subagentId = subAgentId;
@@ -189,12 +221,12 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [home1.withOpacity(0.1), home1.withOpacity(0.05)],
+                      colors: [home1.withValues(alpha: 0.1), home1.withValues(alpha: 0.05)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: home1.withOpacity(0.2)),
+                    border: Border.all(color: home1.withValues(alpha: 0.2)),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -223,7 +255,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: home1.withOpacity(0.1),
+                          color: home1.withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
@@ -238,71 +270,90 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                 const SizedBox(height: 24),
 
                 // Payment options
-         /*       _buildPaymentOptionButton(
+                _buildPaymentOptionButton(
                   icon: Icons.qr_code_scanner,
                   label: "Pay via QR Code",
                   onPressed: () async {
-                    showProgressDialog(context);
-                    final paymentSession =
-                    await CreatePaymentSessionIdRepository()
-                        .getPaymentSessionId(
-                        agentOriginId: agentId,
-                        agentEmail: agentEmail,
-                        customerName: widget.customeName,
-                        customerPhone: widget.custPhoneNumber,
-                        customerAccno: widget.custAcNumber,
-                        customerId: widget.custIdNew,
-                        customerEmail: "",
-                        corpCode: corpCode,
-                        cardRefNum: "",
-                        token: token,
-                        amount: amountController.text,
-                        agentPhone: agentMobile,
-                        agentId: widget.custId,
-                        note: "Payment For Agent $agentName",
-                        subAgentId: subagentId,
-                        agentName: agentName,
-                        subAgentBranchCode: subAgentCodeNew,
-                        collectionType: 'RDCL');
-                    paymentSession.fold((error) {
-                      Navigator.pop(context);
-                    }, (sessionId) async {
-                      paymentSessionId = sessionId.paymentSessionId ?? "";
-                      if (paymentSessionId!.isNotEmpty) {
-                        if (!mounted) return;
-                        Navigator.pop(context);
-
-                        if (!mounted) return;
-                        final result = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => NewQrCodePage(
-                              paymentSessionId: paymentSessionId!,
-                              amount: amountController.text ?? "",
-                              token: token!,
-                              custName: customerName ?? "custName",
-                              custPhone: widget.custPhoneNumber,
-                              custId: widget.custId,
-                            ),
-                          ),
-                        );
-                        if (!mounted) return;
-                        if (result == "fetch_balance") {
-                          Navigator.pop(context);
-                        }
-                      } else {
-                        if (!mounted) return;
-                        Navigator.pop(context);
-                      }
-                    });
+                    selectedMethod = "QR";
+                    context.read<PaymentBloc>().add(QrPaymentEvent(QrPaymentRequestModel(
+                        agentDetails: AgentDetails(agentName: eCollectMerchantName!,
+                            agentId: eCollectAgentId!, agentOrginId: eCollectAgentId!,
+                            agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!,
+                            agentBranch: int.parse(eCollectAgentBranchCode!)),
+                        customerDetails: CustomerDetails(customerName: widget.customeName,
+                            customerPhone: eCollectAgentNumber!,
+                            customerAccno: widget.custAcNumber,
+                            customerId: widget.custIdNew,
+                            customerEmail: eCollectAgentEmail!),
+                        collectionType: eCollectCollectionType!,
+                        amount: double.parse(amountController.text),
+                        note: 'Payment for Order',
+                        qrSource: 'MOB',
+                        source: 'COLLECTION',
+                        // merchantId: int.parse(eCollectAgentMerchantID!)
+                        merchantId: 1)));
+                    // showProgressDialog(context);
+                    // final paymentSession =
+                    // await CreatePaymentSessionIdRepository()
+                    //     .getPaymentSessionId(
+                    //     agentOriginId: agentId,
+                    //     agentEmail: agentEmail,
+                    //     customerName: widget.customeName,
+                    //     customerPhone: widget.custPhoneNumber,
+                    //     customerAccno: widget.custAcNumber,
+                    //     customerId: widget.custIdNew,
+                    //     customerEmail: "",
+                    //     corpCode: corpCode,
+                    //     cardRefNum: "",
+                    //     token: token,
+                    //     amount: amountController.text,
+                    //     agentPhone: agentMobile,
+                    //     agentId: widget.custId,
+                    //     note: "Payment For Agent $agentName",
+                    //     subAgentId: subagentId,
+                    //     agentName: agentName,
+                    //     subAgentBranchCode: subAgentCodeNew,
+                    //     collectionType: 'RDCL');
+                    // paymentSession.fold((error) {
+                    //   Navigator.pop(context);
+                    // }, (sessionId) async {
+                    //   paymentSessionId = sessionId.paymentSessionId ?? "";
+                    //   if (paymentSessionId!.isNotEmpty) {
+                    //     if (!mounted) return;
+                    //     Navigator.pop(context);
+                    //
+                    //     if (!mounted) return;
+                    //     final result = await Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (context) => NewQrCodePage(
+                    //           paymentSessionId: paymentSessionId!,
+                    //           amount: amountController.text ?? "",
+                    //           token: token!,
+                    //           custName: customerName ?? "custName",
+                    //           custPhone: widget.custPhoneNumber,
+                    //           custId: widget.custId,
+                    //         ),
+                    //       ),
+                    //     );
+                    //     if (!mounted) return;
+                    //     if (result == "fetch_balance") {
+                    //       Navigator.pop(context);
+                    //     }
+                    //   } else {
+                    //     if (!mounted) return;
+                    //     Navigator.pop(context);
+                    //   }
+                    // });
                   },
                 ),
-                const SizedBox(height: 12),*/
+                const SizedBox(height: 12),
 
                 _buildPaymentOptionButton(
                   icon: Icons.currency_rupee_rounded,
                   label: "Cash Payment",
                   onPressed: () {
+                    selectedMethod = "CASH";
                     Navigator.pop(context);
                     paymentConfirmation(
                         context,
@@ -315,16 +366,31 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                 ),
                 //const SizedBox(height: 24),
                 //UNCOMMENT AFTER PAYMENT LINK IS LIVE....
-              //                 const SizedBox(height: 12),
-              //   uatTestMobileNumber.replaceAll("+91", "") != subagentPhoneNumber?.replaceAll("+91", "")?
-              // _buildPaymentOptionButton(
-              //   icon: Icons.link,
-              //   label: "Send Payment Link",
-              //   onPressed: () {
-              //     Navigator.pop(context);
-              //     sendLinkFunction();
-              //   },
-              // ):SizedBox.shrink(),
+                              const SizedBox(height: 12),
+              _buildPaymentOptionButton(
+                icon: Icons.link,
+                label: "Send Payment Link",
+                onPressed: () {
+                  Navigator.pop(context);
+                  context.read<PaymentBloc>().add(QrPaymentEvent(QrPaymentRequestModel(
+                      agentDetails: AgentDetails(agentName: eCollectMerchantName!,
+                          agentId: eCollectAgentId!, agentOrginId: eCollectAgentId!,
+                          agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!,
+                          agentBranch: int.parse(eCollectAgentBranchCode!)),
+                      customerDetails: CustomerDetails(customerName: widget.customeName,
+                          customerPhone: eCollectAgentNumber!,
+                          customerAccno: widget.custAcNumber,
+                          customerId: widget.custIdNew,
+                          customerEmail: eCollectAgentEmail!),
+                      collectionType: eCollectCollectionType!,
+                      amount: double.parse(amountController.text),
+                      note: 'Payment for Order',
+                      qrSource: 'MOB',
+                      source: 'COLLECTION',
+                      // merchantId: int.parse(eCollectAgentMerchantID!)
+                      merchantId: 1)));
+                },
+              ),
                 const SizedBox(height: 12),
               ],
             ),
@@ -396,7 +462,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
               borderRadius: BorderRadius.circular(32),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 30,
                   offset: const Offset(0, 10),
                 ),
@@ -410,7 +476,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                   width: 90,
                   height: 90,
                   decoration: BoxDecoration(
-                    color: Colors.red.withOpacity(0.1),
+                    color: Colors.red.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -467,7 +533,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                         onPressed: () => Navigator.pop(context),
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
-                          side: BorderSide(color: home1.withOpacity(0.3)),
+                          side: BorderSide(color: home1.withValues(alpha: 0.3)),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
@@ -675,7 +741,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                 decoration: BoxDecoration(
                   color: Colors.grey[50],
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: home1.withOpacity(0.2)),
+                  border: Border.all(color: home1.withValues(alpha: 0.2)),
                 ),
                 child: TextField(
                   controller: amountController,
@@ -720,7 +786,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                       onPressed: () => Navigator.pop(context),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        side: BorderSide(color: home1.withOpacity(0.3)),
+                        side: BorderSide(color: home1.withValues(alpha: 0.3)),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -796,7 +862,8 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
           // Customer Info Card
           Padding(
             padding: const EdgeInsets.all(16),
-            child: BlocBuilder<RdclDuelistBloc, RdclDuelistState>(
+            child: 
+            BlocBuilder<RdclDuelistBloc, RdclDuelistState>(
               builder: (BuildContext context, RdclDuelistState state) {
                 if (state is RdclDueListLoaderState) {
                   return const Center(child: CircularProgressIndicator());
@@ -828,7 +895,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: home1.withOpacity(0.08),
+                          color: home1.withValues(alpha: 0.08),
                           spreadRadius: 0,
                           blurRadius: 20,
                           offset: const Offset(0, 8),
@@ -893,7 +960,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: home1.withOpacity(0.08),
+                          color: home1.withValues(alpha: 0.08),
                           spreadRadius: 0,
                           blurRadius: 20,
                           offset: const Offset(0, 8),
@@ -935,7 +1002,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                             Container(
                               decoration: BoxDecoration(
                                 border: Border.all(
-                                    color: home1.withOpacity(0.3)),
+                                    color: home1.withValues(alpha: 0.3)),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Checkbox(
@@ -1012,6 +1079,44 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
               },
             ),
           ),
+          BlocListener<PaymentBloc, PaymentState>(
+            listener: (BuildContext context, PaymentState state) {
+              if (state is QrPaymentLoaderState) {
+                showProgressDialog(context);
+              }
+              if (state is QrPaymentSuccessState) {
+                Navigator.pop(context);
+                print(state.qrPaymentSuccess.paymentResponseSuccess.paymentUrl);
+                selectedMethod == "QR"?
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NewQrCodePage(
+                      paymentSessionId: state
+                          .qrPaymentSuccess.paymentResponseSuccess.paymentUrl,
+                      amount: amountController.text,
+                      custName: "",
+                      custPhone: "custNumber",
+                      custId: "CustId",
+                    ),
+                  ),
+                ):
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => PaymentLinkRequestUi(
+                          customerMobileNumber: "",
+                          paymentLink: state.qrPaymentSuccess.paymentResponseSuccess.paymentUrl,
+                        )));
+
+              } else if (state is QrPaymentFailState) {
+                Navigator.pop(context);
+                print(state.qrPaymentFail.paymentFailResponse.message);
+              }
+            },
+            child: SizedBox(),
+          ),
         ],
       ),
     );
@@ -1028,7 +1133,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: iconColor.withOpacity(0.1),
+            color: iconColor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: iconColor, size: 22),
@@ -1070,7 +1175,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Icon(icon, color: color, size: 22),
@@ -1095,7 +1200,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
           Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: iconColor.withOpacity(0.1),
+              color: iconColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: iconColor, size: 16),

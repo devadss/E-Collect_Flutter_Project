@@ -20,7 +20,9 @@ void isRunningLiveBaseUrl(bool status, String mobile) async {
         print("returning live url");
       }
 
-      baseUrl = "https://adsspay.aanvinsolutions.com:8444/";
+     // baseUrl = "https://adsspay.aanvinsolutions.com:8444/";
+      baseUrl ="https://adsspayweb.digicob.in/";
+
     }else{
       baseUrl ="https://adsspayweb.digicob.in/";
       if(printStatementStatus){
@@ -35,7 +37,9 @@ void isRunningLiveBaseUrl(bool status, String mobile) async {
         print("returning live url");
       }
 
-      baseUrl = "https://adsspay.aanvinsolutions.com:8444/";
+     // baseUrl = "https://adsspay.aanvinsolutions.com:8444/";
+      baseUrl ="https://adsspayweb.digicob.in/";
+
     }else{
       baseUrl ="https://adsspayweb.digicob.in/";
       if(printStatementStatus){
@@ -51,7 +55,7 @@ class Validators {
       return 'Please enter PAN';
     }
 
-    final panRegex = RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]{1}$');
+    final panRegex = RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]$');
 
     if (!panRegex.hasMatch(value.trim().toUpperCase())) {
       return 'Please enter a valid PAN';
@@ -77,13 +81,16 @@ class Validators {
 void isRunningLiveDopBaseUrl(bool status, String mobile) async {
   if(mobile.startsWith("+91")){
     if (status== true && "+91${mobile}" != null && "+91${mobile}" != uatTestMobileNumber){
-      dopBaseUrl =  "https://mydop.in/api/fetch/vendor/urls/";
+     // dopBaseUrl =  "https://mydop.in/api/fetch/vendor/urls/";
+      dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";
+
     }else{
       dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";
     }
   }else{
     if (status== true && "+91${mobile}"!= null && "+91${mobile}" != uatTestMobileNumber){
-      dopBaseUrl =  "https://mydop.in/api/fetch/vendor/urls/";
+      //dopBaseUrl =  "https://mydop.in/api/fetch/vendor/urls/";
+      dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";
     }else{
       dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";
     }
