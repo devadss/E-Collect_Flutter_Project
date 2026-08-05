@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import '../../../core/constants.dart';
 import '../../../presentation/app/bottom_nav_bar_page.dart';
+import '../../../presentation/merchant/bottom_nav/bottom_nav_bar.dart';
 import '../../storage/shared_pref_helper.dart';
 import '../../../presentation/auth/authetication_page/google_pin_code_page.dart';
 
@@ -118,12 +119,14 @@ class NotificationService {
       String agentID,
       BuildContext context,
       String navPage, String appToken, String mobnum, String mpin) async {
-    //final url = Uri.parse('${baseUrl}api/RegisterToken');
-    final url = Uri.parse('${baseUrl}api/AgentRegisterToken');
+   // final url = Uri.parse('${baseUrl}api/AgentRegisterToken');
+      final url = Uri.parse('${baseUrl}api/device/register');
 
     final body = {
-      "agentId": agentID,
+      "customerId": agentID,
       "mobileNumber": mobnum,
+      "deviceType":"Android",
+      "appVersion":"22.0.1",
       "deviceToken": token.trim().toString()
 
     };
@@ -180,7 +183,9 @@ Future<String?> fetchFcmTokenWithRetries({int maxRetries = 3}) async {
 
 Future<void> saveFcmToken(
     String entityID, BuildContext context,
-    String navPage, String tok, String mob, String mpin) async
+    String navPage, String tok,
+    String mob, String mpin
+    ) async
 {
   if (_isRequestingPermission) {
     if(printStatementStatus){
@@ -212,13 +217,13 @@ Future<void> saveFcmToken(
        SharedPref.shared.setFcmToken(fcmToken);
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const BottomNavScreen()),
+        MaterialPageRoute(builder: (context) => const BottomNavBar()),
             (route) => false,
       );
     } else {
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const BottomNavScreen()),
+        MaterialPageRoute(builder: (context) => const BottomNavBar()),
             (route) => false,
       );
       if (_isRequestingPermission) {

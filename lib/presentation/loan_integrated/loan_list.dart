@@ -170,7 +170,6 @@ class _LoanListState extends State<LoanList> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-        
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: Container(
@@ -224,80 +223,6 @@ class _LoanListState extends State<LoanList> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 8),
                         child:
-        
-                        // Card(
-                        //   elevation: 0,
-                        //   margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-                        //   shape: RoundedRectangleBorder(
-                        //     borderRadius: BorderRadius.circular(18),
-                        //   ),
-                        //   child: Container(
-                        //     padding: const EdgeInsets.all(16),
-                        //     decoration: BoxDecoration(
-                        //       borderRadius: BorderRadius.circular(18),
-                        //       color: Colors.white,
-                        //       boxShadow: const [
-                        //         BoxShadow(
-                        //           color: Colors.black12,
-                        //           blurRadius: 12,
-                        //           offset: Offset(0, 4),
-                        //         ),
-                        //       ],
-                        //     ),
-                        //     child: Column(
-                        //       crossAxisAlignment: CrossAxisAlignment.start,
-                        //       children: [
-                        //         /// 🔹 Customer Name
-                        //         _filteredList?[index].custName == null
-                        //             ? _buildSkeleton(width: 140, height: 16)
-                        //             : Text(
-                        //           _filteredList?[index].custName ?? "",
-                        //           style: TextStyle(
-                        //             fontSize: 16,
-                        //             fontWeight: FontWeight.w600,
-                        //             color: home1,
-                        //           ),
-                        //         ),
-                        //
-                        //         const SizedBox(height: 4),
-                        //
-                        //         /// 🔹 Scheme Name
-                        //         _filteredList?[index].schName == null
-                        //             ? _buildSkeleton(width: 100, height: 12)
-                        //             : Text(
-                        //           _filteredList?[index].schName ?? "",
-                        //           style: TextStyle(
-                        //             fontSize: 12,
-                        //             color: Colors.grey.shade600,
-                        //           ),
-                        //         ),
-                        //
-                        //         const SizedBox(height: 12),
-                        //
-                        //         /// 🔹 Info Chips Row (Modern replacement for table)
-                        //         Wrap(
-                        //
-                        //           spacing: 15,
-                        //           runSpacing: 8,
-                        //           children: [
-                        //             _buildInfoChip(
-                        //               label: "Customer ID",
-                        //               value: _filteredList?[index].custId,
-                        //             ),
-                        //             _buildInfoChip(
-                        //               label: "Account",
-                        //               value: _filteredList?[index].lnGlobalAccNo,
-                        //             ),
-                        //             _buildInfoChip(
-                        //               label: "Scheme",
-                        //               value: _filteredList?[index].schCode,
-                        //             ),
-                        //           ],
-                        //         ),
-                        //       ],
-                        //     ),
-                        //   ),
-                        // )
                         Card(
                           elevation: 0,
                           margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

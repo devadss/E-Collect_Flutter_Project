@@ -148,8 +148,7 @@ class _SetMpinPageState extends State<SetMpinPage> {
             data.message == "MPIN SET"
                 ? Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => const GooglePinCodePage()))
+                MaterialPageRoute(builder: (context) => const GooglePinCodePage()))
                 : "";
           },
         );

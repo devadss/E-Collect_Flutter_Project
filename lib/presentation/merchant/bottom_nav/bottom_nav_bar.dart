@@ -20,6 +20,15 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> {
   int currentIndex = 0;
+  String integrationStatus = "";
+  String branCode = "";
+  String type = "";
+  final String INTEGRATED = "Y";
+  final String USER_TYPE_RDCL = "RDCL";
+  final String USER_TYPE_RD = "RD";
+  final String USER_TYPE_LOAN = "LOAN";
+  // String rdclCustomerUnderAgentListUrl = "";
+  // String rdclDueListUnderAgentUrl = "";
   List<NavItem> get navItems {
     //LoanList()
     if (type == "RD") {
@@ -70,8 +79,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
         NavItem(
           label: 'Due-Detail',
           icon: Icons.receipt_long,
-          page: const RdclDueDetailBlocPage(
-            branchCode: '09',
+          page:  RdclDueDetailBlocPage(
+            branchCode: branCode,
           ),
         ),
         NavItem(
@@ -112,15 +121,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   }
 
   List<NavItem> get items => navItems;
-  String integrationStatus = "";
-  String branCode = "";
-  String type = "";
-  final String INTEGRATED = "Y";
-  final String USER_TYPE_RDCL = "RDCL";
-  final String USER_TYPE_RD = "RD";
-  final String USER_TYPE_LOAN = "LOAN";
-  // String rdclCustomerUnderAgentListUrl = "";
-  // String rdclDueListUnderAgentUrl = "";
+
 
   Future<void> getSharedData() async {
     final _integrationStatus =
@@ -132,7 +133,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     // final _rdclDueListUnderAgentUrl = await SharedPref.shared.getECollectRdclDuesListunderAgentUrl();
     setState(() {
       //type = _type;
-       type = "LOAN";
+       type = "RDCL";
       integrationStatus = _integrationStatus;
       branCode = _branCode;
       // rdclCustomerUnderAgentListUrl = _rdclCustomerUnderAgentListUrl;

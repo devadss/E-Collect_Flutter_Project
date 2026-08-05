@@ -177,8 +177,7 @@ class _RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
   @override
   void initState() {
     super.initState();
-    context.read<RdclDuelistBloc>()
-        .add(RdclDueListFetchEvent("", widget.branchCode, "", ""));
+    context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", ""));
     loadSharedPrefs();
   }
 

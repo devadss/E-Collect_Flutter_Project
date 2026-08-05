@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/colors.dart';
 import '../../../../core/utils.dart';
 import '../../../merchant/bottom_nav/bottom_nav_bar.dart';
+import '../../authetication_page/google_pin_code_page.dart';
 
 class OtpRequestVerificationPage extends StatefulWidget {
   final int userId;
@@ -81,8 +82,12 @@ class _OtpRequestVerificationPageState
               Navigator.pop(context);
               print(state.otpVerificationSuccessModel.loginResponse.username);
 
-              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>
-                  BottomNavBar()));
+              // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>
+              //     BottomNavBar()));
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const GooglePinCodePage()));
             }else if (state is MobLoginVerifyOtpFailureState){
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.otpVerificationFailureModel.otpVerificationErrorResponse.message)));
