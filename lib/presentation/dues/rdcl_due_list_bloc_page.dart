@@ -15,15 +15,15 @@ import '../paymentlink_request_ui.dart';
 import '../profile/widgets/recipect_page.dart';
 import '../qr_code/widgets/generate_qr_code_page.dart';
 
-class RdclDueListBlocPage extends StatefulWidget {
+class RdclDueDetailBlocPage extends StatefulWidget {
   final String branchCode;
-  const RdclDueListBlocPage({super.key, required this.branchCode});
+  const RdclDueDetailBlocPage({super.key, required this.branchCode});
 
   @override
-  State<RdclDueListBlocPage> createState() => _RdclDueListBlocPageState();
+  State<RdclDueDetailBlocPage> createState() => _RdclDueDetailBlocPageState();
 }
 
-class _RdclDueListBlocPageState extends State<RdclDueListBlocPage> {
+class _RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
   final List<bool> _showDrops = [false];
   final List<bool> _isSelected = [false];
   final List<bool> _itemSelected = [false];

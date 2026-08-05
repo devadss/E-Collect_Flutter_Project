@@ -78,15 +78,15 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         ;
       case 1:
         return userTPYE?.contains("RDCL") == true
-            ? RdclDueListBlocPage(branchCode: _branchID.toString(),)
+            ? RdclDueDetailBlocPage(branchCode: _branchID.toString(),)
             : _corpCode != "BNKVND"
             ? const DuesHomePage()
             : SizedBox();
 
       case 2:
         return userTPYE?.contains("RDCL") == true
-            ? const CustomerList()
-            : const AccountListHomePage();
+            ? const RdclDueListBocPage()
+            : const RdDueDetailPage();
       case 3:
         return const ProfileHomePage();
        // return const PtpBucketUi();

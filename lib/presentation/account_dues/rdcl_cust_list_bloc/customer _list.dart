@@ -6,13 +6,13 @@ import '../../../data/customer_list_bloc/customer_list_bloc.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../../domain/model/customer_list_model/customer_list_success.dart' as prefix0;
 
-class CustomerList extends StatefulWidget {
-  const CustomerList({super.key});
+class RdclDueListBocPage extends StatefulWidget {
+  const RdclDueListBocPage({super.key});
 
   @override
-  State<CustomerList> createState() => _CustomerListState();
+  State<RdclDueListBocPage> createState() => _RdclDueListBocPageState();
 }
-class _CustomerListState extends State<CustomerList> {
+class _RdclDueListBocPageState extends State<RdclDueListBocPage> {
   String? branchid;
   String? agentPhoneNumber;
   String? agentIdValue;

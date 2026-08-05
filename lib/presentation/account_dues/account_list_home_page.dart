@@ -12,14 +12,14 @@ import 'package:shimmer/shimmer.dart';
 import '../../domain/model/agent_customer_details_model.dart';
 import '../loan_integrated/loan_list.dart';
 
-class AccountListHomePage extends StatefulWidget {
-  const AccountListHomePage({super.key});
+class RdDueDetailPage extends StatefulWidget {
+  const RdDueDetailPage({super.key});
 
   @override
-  State<AccountListHomePage> createState() => _AccountListHomePageState();
+  State<RdDueDetailPage> createState() => _RdDueDetailPageState();
 }
 
-class _AccountListHomePageState extends State<AccountListHomePage>  {
+class _RdDueDetailPageState extends State<RdDueDetailPage>  {
   String? agentId;
   String? corpCode;
   bool? showShadowLoan = false;
@@ -445,39 +445,36 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: buildAppBar(),
-        backgroundColor: white,
-        body:TabBarView(children: [
-          Consumer<AgentCustomerDetailsProvider>(
-            builder: (context, provider, child) {
-              if (_isLoading || provider.agentCustomerDetailsModel == null) {
-                return Column(
-                  children: [
-                    _buildSearchField(),
-                    const SizedBox(height: 20),
-                    _buildShimmerList(),
-                  ],
-                );
-              }
-              final customers = _filteredCustomers ?? provider.agentCustomerDetailsModel!.data;
-
+    return Scaffold(
+      appBar: buildAppBar(),
+      backgroundColor: white,
+      body:
+        Consumer<AgentCustomerDetailsProvider>(
+          builder: (context, provider, child) {
+            if (_isLoading || provider.agentCustomerDetailsModel == null) {
               return Column(
                 children: [
                   _buildSearchField(),
                   const SizedBox(height: 20),
-                  _buildCustomerList(customers),
+                  _buildShimmerList(),
                 ],
               );
-            },
-          ),
-          LoanList()
-        ])
+            }
+            final customers = _filteredCustomers ?? provider.agentCustomerDetailsModel!.data;
+
+            return Column(
+              children: [
+                _buildSearchField(),
+                const SizedBox(height: 20),
+                _buildCustomerList(customers),
+              ],
+            );
+          },
+        ),
+       //LoanList()
 
 
-      ),
+
     );
   }
 
@@ -498,50 +495,50 @@ class _AccountListHomePageState extends State<AccountListHomePage>  {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade200.withValues(alpha:0.6),
-                borderRadius: BorderRadius.circular(40),
-              ),
-              child: SegmentedTabControl(
-                indicatorPadding: const EdgeInsets.all(4),
-                indicatorDecoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [home1, home1.withValues(alpha:0.85)],
-                  ),
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [
-                    BoxShadow(
-                      color: home1.withValues(alpha:0.9),
-                      blurRadius: 10,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                barDecoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(40),
-                ),
-                tabs: [
-                  SegmentTab(
-                    label: "RD",
-                    color: Colors.transparent,
-                    backgroundColor: Colors.transparent,
-                    textColor: Colors.grey.shade600,
-                    selectedTextColor: Colors.white,
-                  ),
-                  SegmentTab(
-                    label: "LOANS",
-                    color: Colors.transparent,
-                    backgroundColor: Colors.transparent,
-                    textColor: Colors.grey.shade600,
-                    selectedTextColor: Colors.white,
-                  ),
-                ],
-              ),
-            )
+            // SizedBox(height: 8),
+            // Container(
+            //   padding: const EdgeInsets.all(6),
+            //   decoration: BoxDecoration(
+            //     color: Colors.grey.shade200.withValues(alpha:0.6),
+            //     borderRadius: BorderRadius.circular(40),
+            //   ),
+            //   child: SegmentedTabControl(
+            //     indicatorPadding: const EdgeInsets.all(4),
+            //     indicatorDecoration: BoxDecoration(
+            //       gradient: LinearGradient(
+            //         colors: [home1, home1.withValues(alpha:0.85)],
+            //       ),
+            //       borderRadius: BorderRadius.circular(30),
+            //       boxShadow: [
+            //         BoxShadow(
+            //           color: home1.withValues(alpha:0.9),
+            //           blurRadius: 10,
+            //           offset: const Offset(0, 2),
+            //         ),
+            //       ],
+            //     ),
+            //     barDecoration: BoxDecoration(
+            //       color: Colors.transparent,
+            //       borderRadius: BorderRadius.circular(40),
+            //     ),
+            //     // tabs: [
+            //     //   SegmentTab(
+            //     //     label: "RD",
+            //     //     color: Colors.transparent,
+            //     //     backgroundColor: Colors.transparent,
+            //     //     textColor: Colors.grey.shade600,
+            //     //     selectedTextColor: Colors.white,
+            //     //   ),
+            //     //   SegmentTab(
+            //     //     label: "LOANS",
+            //     //     color: Colors.transparent,
+            //     //     backgroundColor: Colors.transparent,
+            //     //     textColor: Colors.grey.shade600,
+            //     //     selectedTextColor: Colors.white,
+            //     //   ),
+            //     // ],
+            //   ),
+            // )
 
           ],
         ),

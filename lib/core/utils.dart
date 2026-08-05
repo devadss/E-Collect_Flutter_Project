@@ -97,6 +97,14 @@ void isRunningLiveDopBaseUrl(bool status, String mobile) async {
   }
 
 }
+class NavItem{
+
+  final String label;
+  final IconData icon;
+  final Widget page;
+  NavItem({required this.label, required this.icon, required this.page});
+}
+
 
 String getBankNameFromCorpCode(String corpCode) {
   //print("getBankNameFromCorpCode $corpCode");
