@@ -630,3 +630,8 @@ Future<void> openGoogleMaps(double latitude , double longitude) async {
     throw 'Could not open Google Maps';
   }
 }
+
+class Cat{
+  String? name="";
+  Cat(this.name);
+}

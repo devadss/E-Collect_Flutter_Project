@@ -7,8 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_messaging/firebase_messaging.dart';
-import '../../../core/constants.dart';
-import '../../../presentation/app/bottom_nav_bar_page.dart';
 import '../../../presentation/merchant/bottom_nav/bottom_nav_bar.dart';
 import '../../storage/shared_pref_helper.dart';
 import '../../../presentation/auth/authetication_page/google_pin_code_page.dart';

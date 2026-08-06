@@ -37,9 +37,6 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
     loadSharedData();
   }
 
-
-
-
   void loadSharedData() async {
     String custid = await SharedPref.shared.getECollectMerchantID();
     String tok = await SharedPref.shared.getTokenValue();
@@ -51,15 +48,15 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       token = tok;
       contactNum = mobNum;
       mpin = m_pin;
-      subAgentContactNum =subAgentMobNum;
+      subAgentContactNum = subAgentMobNum;
       custID = custid;
       fcmToken = fcmTok;
     });
     print("INSIDE");
     print(fcmTok);
     print(subAgentContactNum);
-   await  saveFcmToken(custid, context, "GPIN", fcmToken, contactNum, mpin);
-   //_openScreenLock();
+    await saveFcmToken(custid, context, "GPIN", fcmToken, contactNum, mpin);
+    //_openScreenLock();
     _authenticateWithBiometrics();
   }
 
@@ -72,7 +69,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       final isDeviceSupported = await auth.isDeviceSupported();
 
       if (!canCheckBiometrics && !isDeviceSupported) {
-        if(printStatementStatus ){
+        if (printStatementStatus) {
           debugPrint('No biometric or device auth support');
         }
 
@@ -89,7 +86,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
 
       // ❌ STOP immediately if widget disposed or auth failed
       if (!mounted || result != true) {
-        if(printStatementStatus ){
+        if (printStatementStatus) {
           debugPrint('Authentication canceled or failed');
         }
 
@@ -100,34 +97,30 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       authenticated = true;
 
       await validateMpinFingerAuth();
-
     } on PlatformException catch (e) {
       // ❌ NEVER allow navigation on exception
       authenticated = false;
-      if(printStatementStatus ){
-        debugPrint('PlatformException during biometric auth: ${e.code} - ${e.message}');
+      if (printStatementStatus) {
+        debugPrint(
+            'PlatformException during biometric auth: ${e.code} - ${e.message}');
       }
-
     } catch (e) {
       authenticated = false;
-      if(printStatementStatus ){
+      if (printStatementStatus) {
         debugPrint('Exception during biometric authentication: $e');
       }
-
     }
   }
 
   Future<void> validateMpinFingerAuth() async {
     if (!mounted) return; // ✅ very important before using context
     if (fcmToken.isNotEmpty && authenticated == true) {
-
-      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>
-          BottomNavBar()));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (BuildContext context) => BottomNavBar()));
     } else if (fcmToken.isEmpty && authenticated == true) {
-    //  await saveFcmToken(custID, context, "GPIN", fcmToken, subAgentContactNum, mpin);
+      //  await saveFcmToken(custID, context, "GPIN", fcmToken, subAgentContactNum, mpin);
     } else {
       if (!mounted) return; // ✅ re-check before using context again
-
     }
   }
 
@@ -148,7 +141,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
           ),
         ),
         leading: IconButton(
-          icon:const Icon(Icons.arrow_back, color: home2),
+          icon: const Icon(Icons.arrow_back, color: home2),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -159,7 +152,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                 Column(
+                Column(
                   children: [
                     const SizedBox(height: 40),
                     const Icon(
@@ -183,14 +176,12 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
                 Column(
                   children: [
                     GridView.count(
-                      physics:const NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       crossAxisCount: 1,
                       childAspectRatio: 2.5,
                       padding: EdgeInsets.zero,
-                      children: [
-                        _buildBiometricButton()
-                      ],
+                      children: [_buildBiometricButton()],
                     ),
                     const SizedBox(height: 20),
                   ],
@@ -203,16 +194,14 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
     );
   }
 
-
-
   Widget _buildBiometricButton() {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(45),
         onTap: _authenticateWithBiometrics,
-       // onTap: _openScreenLock,
-        child:const Center(
+        // onTap: _openScreenLock,
+        child: const Center(
           child: Icon(
             Icons.fingerprint,
             color: home2,
@@ -223,7 +212,3 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
     );
   }
 }
-
-
-
-
