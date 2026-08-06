@@ -1,14 +1,13 @@
 {
   "project_info": {
-    "project_number": "375597665548",
-    "project_id": "adsspay-6c58e",
-    "storage_bucket": "adsspay-6c58e.firebasestorage.app"
+    "project_number": "233148717436",
+    "project_id": "ecollect-25b4c",
+    "storage_bucket": "ecollect-25b4c.firebasestorage.app"
   },
   "client": [
-
     {
       "client_info": {
-        "mobilesdk_app_id": "1:375597665548:android:0fd18a2e9d52b8a4d40d29",
+        "mobilesdk_app_id": "1:233148717436:android:9d623877b2fcd0677aecf9",
         "android_client_info": {
           "package_name": "com.collection.qr"
         }
@@ -16,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBu5uzj0TRjQEBQU8Qcm4VMpuEvHYBQ1mw"
+          "current_key": "AIzaSyBSRj0VU5jyQyTEjez1MI680yZ7YY75R2s"
         }
       ],
       "services": {

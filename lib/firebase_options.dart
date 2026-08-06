@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -28,15 +25,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -50,19 +41,46 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBu5uzj0TRjQEBQU8Qcm4VMpuEvHYBQ1mw',
-    appId: '1:375597665548:android:647289d1bec22844d40d29',
-    messagingSenderId: '375597665548',
-    projectId: 'adsspay-6c58e',
-    storageBucket: 'adsspay-6c58e.appspot.com',
+    apiKey: 'AIzaSyBSRj0VU5jyQyTEjez1MI680yZ7YY75R2s',
+    appId: '1:233148717436:android:9d623877b2fcd0677aecf9',
+    messagingSenderId: '233148717436',
+    projectId: 'ecollect-25b4c',
+    storageBucket: 'ecollect-25b4c.firebasestorage.app',
+  );
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyAi8z8UaLGCRB64JgS20vKj9MNc0rkO8yk',
+    appId: '1:233148717436:ios:f9eee47aee7c7bad7aecf9',
+    messagingSenderId: '233148717436',
+    projectId: 'ecollect-25b4c',
+    storageBucket: 'ecollect-25b4c.firebasestorage.app',
+    iosBundleId: 'com.collection.qr',
+  );
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyDUWWBlfPXvbver5Pqy7NY3lUh1OnLz_cQ',
+    appId: '1:233148717436:web:3f7e9fd09fe6ea047aecf9',
+    messagingSenderId: '233148717436',
+    projectId: 'ecollect-25b4c',
+    authDomain: 'ecollect-25b4c.firebaseapp.com',
+    storageBucket: 'ecollect-25b4c.firebasestorage.app',
+    measurementId: 'G-8VLRLCM63P',
   );
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDd7oOC6DJMAhg8T-PlsioTM7MHIJVLveo',
-    appId: '1:375597665548:ios:8f85c8c8d3b1ee5dd40d29',
-    messagingSenderId: '375597665548',
-    projectId: 'adsspay-6c58e',
-    storageBucket: 'adsspay-6c58e.appspot.com',
-    iosBundleId: 'com.collection.qr',
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyAi8z8UaLGCRB64JgS20vKj9MNc0rkO8yk',
+    appId: '1:233148717436:ios:f59a7d1d0e9111727aecf9',
+    messagingSenderId: '233148717436',
+    projectId: 'ecollect-25b4c',
+    storageBucket: 'ecollect-25b4c.firebasestorage.app',
+    iosBundleId: 'com.example.collectionQr',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyDUWWBlfPXvbver5Pqy7NY3lUh1OnLz_cQ',
+    appId: '1:233148717436:web:705bf739ea25ac187aecf9',
+    messagingSenderId: '233148717436',
+    projectId: 'ecollect-25b4c',
+    authDomain: 'ecollect-25b4c.firebaseapp.com',
+    storageBucket: 'ecollect-25b4c.firebasestorage.app',
+    measurementId: 'G-3EJ1J30L5Q',
   );
 }

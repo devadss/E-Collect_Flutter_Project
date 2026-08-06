@@ -27,8 +27,8 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   String contactNum = ""; // contains +91
   String subAgentContactNum = ""; // contains +91
   final LocalAuthentication auth = LocalAuthentication();
-  final String sk = "770A8A65DA156D24EE2A093277530142";
-  final String iv = "1234567890123456";
+  //final String sk = "770A8A65DA156D24EE2A093277530142";
+  //final String iv = "1234567890123456";
 
   @override
   void initState() {
@@ -58,7 +58,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
     print("INSIDE");
     print(fcmTok);
     print(subAgentContactNum);
-   await  saveFcmToken("4", context, "GPIN", fcmToken, "9999888877", mpin);
+   await  saveFcmToken(custid, context, "GPIN", fcmToken, contactNum, mpin);
    //_openScreenLock();
     _authenticateWithBiometrics();
   }

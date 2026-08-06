@@ -550,7 +550,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
             duration: const Duration(seconds: 8),
             curve: Curves.easeInOut,
             width: 120,
-            height: 120,
+            height: 160,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: home1.withValues(alpha: 0.05),
@@ -558,13 +558,13 @@ class _NewQrCodePageState extends State<NewQrCodePage>
           ),
         ),
         Positioned(
-          bottom: 70,
+          bottom: 40,
           right: 40,
           child: AnimatedContainer(
             duration: const Duration(seconds: 6),
             curve: Curves.easeInOut,
             width: 160,
-            height: 160,
+            height: 180,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: home2.withValues(alpha: 0.05),
@@ -577,7 +577,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
             ScaleTransition(
               scale: _scaleAnimation,
               child: Container(
-                padding: const EdgeInsets.all(17),
+                padding: const EdgeInsets.all(1),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(24),
