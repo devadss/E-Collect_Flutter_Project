@@ -98,19 +98,10 @@ class _HomePageState extends State<HomePage>
     super.initState();
     checkForUpdate();
     loadSharedPrefs(context);
-    getDeviceToken();
+
 
   }
-  Future<void> getDeviceToken() async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-    // Request permission (mainly for iOS)
-    await messaging.requestPermission();
-
-    String? token = await messaging.getToken();
-
-    print("FCM Token: $token");
-  }
   // @override
   // void dispose() {
   //   _animationController.dispose();

@@ -14,7 +14,7 @@ class RdclDuelistBloc extends Bloc<RdclDuelistEvent , RdclDuelistState>{
   RdclDuelistBloc(this.rdclDueListRepo):super(const RdclDueListInitialState()){
     on<RdclDueListFetchEvent>((event ,emit) async {
       emit(const RdclDueListLoaderState());
-      final data = await rdclDueListRepo.fetchRdclDueList(event.agentId, event.branchCode, event.accNo, event.custName);
+      final data = await rdclDueListRepo.fetchRdclDueList(event.agentId, event.branchCode, event.accNo, event.custName, event.pageNo, event.itemsPerPage);
       if(data is RdclDulistSuccess){
         emit(RdclDueListSuccessState(data));
       }else if (data is RdclDueListFail){

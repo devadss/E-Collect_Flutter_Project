@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'package:collection_qr_flutter/data/e_collect_bloc/authentication_bloc/authentication_bloc.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/utils.dart';
+import '../../data/service/notification_service/notification_service.dart';
 import '../../data/storage/shared_pref_helper.dart';
+import '../auth/authetication_page/google_pin_code_page.dart';
 import '../auth/mobile_number_page.dart';
 import '../merchant/bottom_nav/bottom_nav_bar.dart';
 
@@ -29,6 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
+    getDeviceToken();
     getSharedData();
     super.initState();
   }
@@ -54,6 +58,17 @@ class _SplashScreenState extends State<SplashScreen> {
         }
       });
     }
+  }
+  Future<void> getDeviceToken() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    // Request permission (mainly for iOS)
+    await messaging.requestPermission();
+
+    var fcmToken = await messaging.getToken();
+    SharedPref.shared.setFcmToken(fcmToken.toString());
+    print("FCM Token: $fcmToken");
+
   }
 
   void getSharedData() async {
@@ -108,7 +123,7 @@ class _SplashScreenState extends State<SplashScreen> {
             print("Gpin page from _onAnimationsComplete");
           }
 
-          // _navigateAfterAnimations(const GooglePinCodePage());
+           _navigateAfterAnimations(const GooglePinCodePage());
         }
       } else {
         _navigateAfterAnimations(const MobileNumberVerificationPage());
@@ -167,10 +182,15 @@ class _SplashScreenState extends State<SplashScreen> {
                 print(data.message);
                 data.isValid == true?
 
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const BottomNavBar())):
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) => const BottomNavBar()))
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const GooglePinCodePage()))
+                    :
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(

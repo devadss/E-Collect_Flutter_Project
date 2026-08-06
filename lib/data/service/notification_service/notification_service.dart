@@ -114,13 +114,13 @@ class NotificationService {
 
   bool isAuthenticated = false;
 
-  Future<void> addFcmToken(String token,
-     // String entityID,
+  Future<void> addFcmToken(
+      String token,
       String agentID,
       BuildContext context,
-      String navPage, String appToken, String mobnum, String mpin) async {
+      String navPage, String mobnum) async {
    // final url = Uri.parse('${baseUrl}api/AgentRegisterToken');
-      final url = Uri.parse('${baseUrl}api/device/register');
+      final url = Uri.parse('https://dev.collect.org.in/api/device/register');
 
     final body = {
       "customerId": agentID,
@@ -205,7 +205,7 @@ Future<void> saveFcmToken(
       // Adding a timeout for the server call
       await Future.any([
         NotificationService().addFcmToken(fcmToken,
-            entityID, context, navPage, tok , mob, mpin),
+            entityID, context, navPage,  mob),
         Future.delayed(const Duration(seconds: 5),
                 () => throw TimeoutException("Server call timed out"))
       ]);

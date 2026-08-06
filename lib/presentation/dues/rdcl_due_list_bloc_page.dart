@@ -59,8 +59,7 @@ class _RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
     final _eCollectAgentOriginId = await prefs.getECollectUserID();
     final _eCollectAgentNumber = await prefs.getECollectUserNumber();
     final _eCollectAgentEmail = await prefs.getECollectUserEmail();
-    final _eCollectAgentBranchCode =
-        await prefs.getECollectMerchantBranchCode();
+    final _eCollectAgentBranchCode = await prefs.getECollectMerchantBranchCode();
     final _eCollectAgentMerchantID = await prefs.getECollectMerchantID();
     final _eCollectCollectionType = await prefs.getECollectUserType();
     //---------------------------------------
@@ -177,7 +176,7 @@ class _RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
   @override
   void initState() {
     super.initState();
-    context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", ""));
+    context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", "",'0', '0'));
     loadSharedPrefs();
   }
 
@@ -403,7 +402,7 @@ class _RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
 
                                   context.read<RdclDuelistBloc>().add(
                                         RdclDueListFetchEvent(
-                                            "", widget.branchCode, "", ""),
+                                            "", widget.branchCode, "", "",'0', '0'),
                                       );
                                 },
                                 child: Container(
@@ -434,12 +433,12 @@ class _RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
                                   if (chekValue(text)) {
                                     context.read<RdclDuelistBloc>().add(
                                           RdclDueListFetchEvent(
-                                              "", widget.branchCode, text, ""),
+                                              "", widget.branchCode, text, "", '0', '0'),
                                         );
                                   } else {
                                     context.read<RdclDuelistBloc>().add(
                                           RdclDueListFetchEvent(
-                                              "", widget.branchCode, "", text),
+                                              "", widget.branchCode, "", text,'0', '0'),
                                         );
                                   }
                                 },

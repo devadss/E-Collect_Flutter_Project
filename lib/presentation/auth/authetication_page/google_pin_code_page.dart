@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -32,15 +33,19 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   @override
   void initState() {
     super.initState();
+
     loadSharedData();
   }
 
+
+
+
   void loadSharedData() async {
-    String custid = await SharedPref.shared.getSubAgentId();
+    String custid = await SharedPref.shared.getECollectMerchantID();
     String tok = await SharedPref.shared.getTokenValue();
     String fcmTok = await SharedPref.shared.getFcmToken();
     String m_pin = await SharedPref.shared.getMpinValue();
-    String mobNum = await SharedPref.shared.getParentAgentMobNum();
+    String mobNum = await SharedPref.shared.getECollectUserNumber();
     String subAgentMobNum = await SharedPref.shared.getSubAgentMobNum();
     setState(() {
       token = tok;
@@ -50,6 +55,10 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       custID = custid;
       fcmToken = fcmTok;
     });
+    print("INSIDE");
+    print(fcmTok);
+    print(subAgentContactNum);
+   await  saveFcmToken("4", context, "GPIN", fcmToken, "9999888877", mpin);
    //_openScreenLock();
     _authenticateWithBiometrics();
   }
@@ -111,10 +120,11 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   Future<void> validateMpinFingerAuth() async {
     if (!mounted) return; // ✅ very important before using context
     if (fcmToken.isNotEmpty && authenticated == true) {
+
       Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>
           BottomNavBar()));
     } else if (fcmToken.isEmpty && authenticated == true) {
-      await saveFcmToken(custID, context, "GPIN", token, subAgentContactNum, mpin);
+    //  await saveFcmToken(custID, context, "GPIN", fcmToken, subAgentContactNum, mpin);
     } else {
       if (!mounted) return; // ✅ re-check before using context again
 

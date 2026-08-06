@@ -65,6 +65,9 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
   String? eCollectAgentOriginId;
   String? eCollectAgentId;
   String? selectedMethod;
+
+
+
   Future<void> loadSharedPrefs() async {
     final prefs = SharedPref();
 
@@ -119,10 +122,10 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
   @override
   void initState() {
     super.initState();
-    context.read<RdclDuelistBloc>().add(
-        RdclDueListFetchEvent("", widget.branchCode, "", widget.customeName));
+    context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", widget.customeName, '0', '0'));
     loadSharedPrefs();
   }
+
 
   TextStyle _labelTextStyle() =>
       const TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: black);
@@ -845,7 +848,9 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => {
+            context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", "", '0', '0')),
+            Navigator.pop(context)},
         ),
         centerTitle: true,
         title: Text(

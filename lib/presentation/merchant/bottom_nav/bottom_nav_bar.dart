@@ -23,121 +23,35 @@ class _BottomNavBarState extends State<BottomNavBar> {
   String integrationStatus = "";
   String branCode = "";
   String type = "";
+  bool isLoading = true;
   final String INTEGRATED = "Y";
   final String USER_TYPE_RDCL = "RDCL";
   final String USER_TYPE_RD = "RD";
   final String USER_TYPE_LOAN = "LOAN";
-  // String rdclCustomerUnderAgentListUrl = "";
-  // String rdclDueListUnderAgentUrl = "";
-  List<NavItem> get navItems {
-    //LoanList()
-    if (type == "RD") {
-      return [
-        NavItem(
-          label: 'Home',
-          icon: Icons.home,
-          page: const HomePage(userType: "RD"),
-        ),
-        NavItem(
-          label: 'Due-Detail',
-          icon: Icons.receipt_long,
-          page: const RdDueDetailPage(),
-        ),
-        NavItem(
-          label: 'Profile',
-          icon: Icons.person,
-          page: const ProfileHomePage(),
-        ),
-      ];
-    }
-    if (type == "LOAN") {
-      return [
-        NavItem(
-          label: 'Home',
-          icon: Icons.home,
-          page: const HomePage(userType: "RD"),
-        ),
-        NavItem(
-          label: 'Loan-List',
-          icon: Icons.monetization_on,
-          page: const LoanList(),
-        ),
-        NavItem(
-          label: 'Profile',
-          icon: Icons.person,
-          page: const ProfileHomePage(),
-        ),
-      ];
-    }
-    if (type == "RDCL") {
-      return [
-        NavItem(
-          label: 'Home',
-          icon: Icons.home,
-          page: const HomePage(userType: "RDCL"),
-        ),
-        NavItem(
-          label: 'Due-Detail',
-          icon: Icons.receipt_long,
-          page:  RdclDueDetailBlocPage(
-            branchCode: branCode,
-          ),
-        ),
-        NavItem(
-          label: 'Due-List',
-          icon: Icons.receipt,
-          page: const RdclDueListBocPage(),
-        ),
-        NavItem(
-          label: 'Profile',
-          icon: Icons.person,
-          page: const ProfileHomePage(),
-        ),
-      ];
-    }
-    if (type == "GROUP") {
-      return [
-        NavItem(label: 'Home', icon: Icons.home, page: const GroupHomePageUI()),
-        NavItem(
-            label: 'Groups', icon: Icons.safety_divider, page: AllGroupsPage()),
-        NavItem(
-          label: 'TranHistory',
-          icon: Icons.send_time_extension_outlined,
-          page: const PaymentLinkHomePageMerchant(),
-        ),
-        NavItem(
-          label: 'Settlement',
-          icon: Icons.settings_backup_restore,
-          page: const SettlementPage(),
-        ),
-        NavItem(
-          label: 'Profile',
-          icon: Icons.person,
-          page: const ProfileHomePage(),
-        ),
-      ];
-    }
-    return [];
-  }
-
-  List<NavItem> get items => navItems;
 
 
   Future<void> getSharedData() async {
     final _integrationStatus =
-        await SharedPref.shared.getECollectMerchantIntegrationStatus();
-    final _branCode = await SharedPref.shared.getECollectMerchantBranchCode();
-    final _type = await SharedPref.shared.getECollectUserType();
-    // final _rdclCustomerUnderAgentListUrl =
-    // await SharedPref.shared.getECollectRdclCustomerunderAgentListUrl();
-    // final _rdclDueListUnderAgentUrl = await SharedPref.shared.getECollectRdclDuesListunderAgentUrl();
+    await SharedPref.shared.getECollectMerchantIntegrationStatus();
+
+    final _branCode =
+    await SharedPref.shared.getECollectMerchantBranchCode();
+
+    final _type =
+    await SharedPref.shared.getECollectUserType();
+
+    if (!mounted) return;
+    debugPrint("=================================");
+    debugPrint("Integration Status: [$integrationStatus]");
+    debugPrint("Branch Code: [$_branCode]");
+    debugPrint("User Type: [$_type]");
+    debugPrint("=================================");
     setState(() {
-      //type = _type;
-       type = "RDCL";
+    //  type = _type;
+      type = "RDCL";
       integrationStatus = _integrationStatus;
       branCode = _branCode;
-      // rdclCustomerUnderAgentListUrl = _rdclCustomerUnderAgentListUrl;
-      // rdclDueListUnderAgentUrl = _rdclDueListUnderAgentUrl;
+      isLoading = false;
     });
   }
 
@@ -146,13 +60,132 @@ class _BottomNavBarState extends State<BottomNavBar> {
     super.initState();
     getSharedData();
   }
+  /// RD, LOAN , RDCL , Group these are the 4 categories we are currently using. Based on the type its been switched....
+  List<NavItem> get navItemCategories {
+    switch(type) {
+      case "RD":
+        {
+          return [
+            NavItem(
+              label: 'Home',
+              icon: Icons.home,
+              page: const HomePage(userType: "RD"),
+            ),
+            NavItem(
+              label: 'Due-Detail',
+              icon: Icons.receipt_long,
+              page: const RdDueDetailPage(),
+            ),
+            NavItem(
+              label: 'Profile',
+              icon: Icons.person,
+              page: const ProfileHomePage(),
+            ),
+          ];
+        }
+      case "LOAN":
+        {
+          return [
+            NavItem(
+              label: 'Home',
+              icon: Icons.home,
+              page: const HomePage(userType: "RD"),
+            ),
+            NavItem(
+              label: 'Loan-List',
+              icon: Icons.monetization_on,
+              page: const LoanList(),
+            ),
+            NavItem(
+              label: 'Profile',
+              icon: Icons.person,
+              page: const ProfileHomePage(),
+            ),
+          ];
+        }
+      case "RDCL":
+        {
+          return [
+            NavItem(
+              label: 'Home',
+              icon: Icons.home,
+              page: const HomePage(userType: "RDCL"),
+            ),
+            NavItem(
+              label: 'Due-Detail',
+              icon: Icons.receipt_long,
+              page: RdclDueDetailBlocPage(
+                branchCode: branCode,
+              ),
+            ),
+            NavItem(
+              label: 'Due-List',
+              icon: Icons.receipt,
+              page: const RdclDueListBocPage(),
+            ),
+            NavItem(
+              label: 'Profile',
+              icon: Icons.person,
+              page: const ProfileHomePage(),
+            ),
+          ];
+        }
+      case "GROUP":
+        {
+          return [
+            NavItem(
+                label: 'Home', icon: Icons.home, page: const GroupHomePageUI()),
+            NavItem(
+                label: 'Groups',
+                icon: Icons.safety_divider,
+                page: AllGroupsPage()),
+            NavItem(
+              label: 'TranHistory',
+              icon: Icons.send_time_extension_outlined,
+              page: const PaymentLinkHomePageMerchant(),
+            ),
+            NavItem(
+              label: 'Settlement',
+              icon: Icons.settings_backup_restore,
+              page: const SettlementPage(),
+            ),
+            NavItem(
+              label: 'Profile',
+              icon: Icons.person,
+              page: const ProfileHomePage(),
+            ),
+          ];
+        }
+      default:
+        return [];
+    }
+  }
+  List<NavItem> get items => navItemCategories;
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    final navItems = items;
+
+    if (navItems.length < 2) {
+      return const Scaffold(
+        body: Center(
+          child: Text('Unable to load navigation'),
+        ),
+      );
+    }
+
     return Scaffold(
       body: IndexedStack(
         index: currentIndex,
-        children: items.map((item) => item.page).toList(),
+        children: navItems.map((item) => item.page).toList(),
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -175,7 +208,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               currentIndex = index;
             });
           },
-          items: items.map((item) {
+          items: navItems.map((item) {
             return BottomNavigationBarItem(
               icon: Icon(item.icon),
               label: item.label,
