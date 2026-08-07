@@ -4,6 +4,7 @@ import '../../../data/storage/shared_pref_helper.dart';
 import '../../account_dues/account_list_home_page.dart';
 import '../../account_dues/rdcl_cust_list_bloc/customer _list.dart';
 import '../../dues/rdcl_due_list_bloc_page.dart';
+import '../../home/e_collect_homepage.dart';
 import '../../home/home_page.dart';
 import '../../loan_integrated/loan_list.dart';
 import '../../profile/profile_home_page.dart';
@@ -109,7 +110,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
             NavItem(
               label: 'Home',
               icon: Icons.home,
-              page: const HomePage(userType: "RDCL"),
+            //  page: const HomePage(userType: "RDCL"),
+              page: const ECollectHomepage(),
             ),
             NavItem(
               label: 'Due-Detail',

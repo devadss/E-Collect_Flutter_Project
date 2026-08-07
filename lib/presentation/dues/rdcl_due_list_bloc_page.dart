@@ -176,7 +176,7 @@ class _RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
   @override
   void initState() {
     super.initState();
-    context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", "",'0', '0'));
+    context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", "",'1', '10'));
     loadSharedPrefs();
   }
 
@@ -402,7 +402,7 @@ class _RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
 
                                   context.read<RdclDuelistBloc>().add(
                                         RdclDueListFetchEvent(
-                                            "", widget.branchCode, "", "",'0', '0'),
+                                            "", widget.branchCode, "", "",'1', '10'),
                                       );
                                 },
                                 child: Container(

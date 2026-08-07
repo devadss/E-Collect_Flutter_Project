@@ -122,7 +122,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
   @override
   void initState() {
     super.initState();
-    context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", widget.customeName, '0', '0'));
+    context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", widget.customeName, '1', '10'));
     loadSharedPrefs();
   }
 
@@ -557,18 +557,35 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          getCashTrans(
-                            token: token,
-                            customerName: name,
-                            custPhoneNumber: customerNumber,
-                            custAcNumber: accNo,
-                            custId: custId,
-                            custEmail: email,
-                            phoneNumber: agentMobile,
-                            entityId: agentId,
-                            note: "Payment For Agent $agentName",
-                            amount: amt,
-                          );
+                          context.read<PaymentBloc>().add(QrPaymentEvent(QrPaymentRequestModel(
+                              agentDetails: AgentDetails(agentName: eCollectMerchantName!,
+                                  agentId: eCollectAgentId!, agentOrginId: eCollectAgentId!,
+                                  agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!,
+                                  agentBranch: int.parse(eCollectAgentBranchCode!)),
+                              customerDetails: CustomerDetails(customerName: widget.customeName,
+                                  customerPhone: eCollectAgentNumber!,
+                                  customerAccno: widget.custAcNumber,
+                                  customerId: widget.custIdNew,
+                                  customerEmail: eCollectAgentEmail!),
+                              collectionType: eCollectCollectionType!,
+                              amount: double.parse(amountController.text),
+                              note: 'Payment for Order',
+                              qrSource: 'MOB',
+                              source: 'COLLECTION',
+                              // merchantId: int.parse(eCollectAgentMerchantID!)
+                              merchantId: 1)));
+                          // getCashTrans(
+                          //   token: token,
+                          //   customerName: name,
+                          //   custPhoneNumber: customerNumber,
+                          //   custAcNumber: accNo,
+                          //   custId: custId,
+                          //   custEmail: email,
+                          //   phoneNumber: agentMobile,
+                          //   entityId: agentId,
+                          //   note: "Payment For Agent $agentName",
+                          //   amount: amt,
+                          // );
                           Navigator.pop(context, true);
                           Navigator.pop(context, true);
                           showProgressDialog(context);
@@ -849,7 +866,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
           onPressed: () => {
-            context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", "", '0', '0')),
+            context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", "", '1', '10')),
             Navigator.pop(context)},
         ),
         centerTitle: true,

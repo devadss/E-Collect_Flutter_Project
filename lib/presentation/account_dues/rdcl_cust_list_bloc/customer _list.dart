@@ -37,7 +37,7 @@ class _RdclDueListBocPageState extends State<RdclDueListBocPage> {
       agentIdValue = custId;
     });
     if(!mounted) return;
-    context.read<CustomerListBloc>().add(CustomerListFetchEvent("", branchid.toString(), "0", "0", ""),);
+    context.read<CustomerListBloc>().add(CustomerListFetchEvent("", branchid.toString(), "1", "10", ""),);
 
 
   }
@@ -57,7 +57,7 @@ class _RdclDueListBocPageState extends State<RdclDueListBocPage> {
       }
     });
 
-    context.read<CustomerListBloc>().add(CustomerListFetchEvent("", branchid.toString(), "0", "0", iconSwitch ? searchController.text : "",
+    context.read<CustomerListBloc>().add(CustomerListFetchEvent("", branchid.toString(), "1", "10", iconSwitch ? searchController.text : "",
       ),
     );
   }
@@ -167,7 +167,8 @@ class _RdclDueListBocPageState extends State<RdclDueListBocPage> {
 
                   return ListView.builder(
                     padding: const EdgeInsets.all(16),
-                    itemCount: data.totalCount ?? 0,
+                   // itemCount: data.totalCount ?? 0,
+                    itemCount: data.data?.length ?? 0,
                     itemBuilder: (context, index) {
                       final customer = data?.data?[index];
                       return Container(

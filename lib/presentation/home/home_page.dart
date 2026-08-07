@@ -71,25 +71,11 @@ class _HomePageState extends State<HomePage>
     const FlSpot(7, 8.8),
     const FlSpot(8, 15.8),
   ];
-  // final List<String> bannerImages = [
-  //   "assets/images/cq1.webp",
-  //   "assets/images/cq2.webp",
-  //   "assets/images/cq3.webp",
-  //   "assets/images/cq4.webp",
-  //   "assets/images/cq5.webp",
-  //   "assets/images/cq6.webp",
-  //   "assets/images/cq7.webp",
-  // ];
 
   var bannerImagesColorPallet = [];
-
-  // final CarouselSliderController _carouselController =
-  //     CarouselSliderController();
   DateTime startDate = DateTime.now().subtract(const Duration(days: 30));
   DateTime endDate = DateTime.now();
-  // late AnimationController _animationController;
-  // late Animation<double> fadeAnimation;
-  // late Animation<double> scaleAnimation;
+
   int index = 0;
 
 
@@ -102,11 +88,6 @@ class _HomePageState extends State<HomePage>
 
   }
 
-  // @override
-  // void dispose() {
-  //   _animationController.dispose();
-  //   super.dispose();
-  // }
 
   void showDateRangeFilter() {
     final cashQrProvider = context.read<CashQrProvider>();
@@ -1949,7 +1930,25 @@ class _DatePickerButton extends StatelessWidget {
     );
   }
 }
-
+// final List<String> bannerImages = [
+//   "assets/images/cq1.webp",
+//   "assets/images/cq2.webp",
+//   "assets/images/cq3.webp",
+//   "assets/images/cq4.webp",
+//   "assets/images/cq5.webp",
+//   "assets/images/cq6.webp",
+//   "assets/images/cq7.webp",
+// ];
+// late AnimationController _animationController;
+// late Animation<double> fadeAnimation;
+// late Animation<double> scaleAnimation;
+// final CarouselSliderController _carouselController =
+//     CarouselSliderController();
+// @override
+// void dispose() {
+//   _animationController.dispose();
+//   super.dispose();
+// }
 //final transferProvider = Provider.of<TransferHistoryProvider>(context, listen: false);
 
 // Load QR transactions
