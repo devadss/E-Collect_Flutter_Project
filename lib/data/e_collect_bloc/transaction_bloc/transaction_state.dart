@@ -36,3 +36,26 @@ class SettlementTransactionSuccessState extends TransactionState{
 class SettlementTransactionFailureState extends TransactionState{
   const SettlementTransactionFailureState();
 }
+
+/////////////////
+class TransactionReportInitialState extends TransactionState{
+  const TransactionReportInitialState();
+}
+
+class TransactionReportLoaderState extends TransactionState{
+  const TransactionReportLoaderState();
+}
+
+class TransactionReportSuccessState extends TransactionState{
+  final TransactionSuccessModel transactionSuccessModel;
+  final double finalTotal;
+  final int successCount;
+  final int failCount;
+  final int pendingCount;
+  const TransactionReportSuccessState(this.transactionSuccessModel, this.finalTotal,  this.successCount,  this.failCount,   this.pendingCount);
+}
+
+class TransactionReportFailureState extends TransactionState{
+  final TransactionFailModel transactionFailModel;
+  const TransactionReportFailureState(this.transactionFailModel);
+}

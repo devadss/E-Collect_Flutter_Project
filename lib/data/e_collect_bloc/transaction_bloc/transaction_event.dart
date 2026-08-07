@@ -3,8 +3,9 @@ abstract class TransactionEvent {
   const TransactionEvent();
 }
 
-class PaymentTransactionEvent extends TransactionEvent{
-  const PaymentTransactionEvent();
+class GetTransactionByMerchant extends TransactionEvent{
+  final String merchantID;
+  const GetTransactionByMerchant(this.merchantID);
 }
 
 class SettlementTransactionEvent extends TransactionEvent{

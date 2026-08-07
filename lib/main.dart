@@ -45,6 +45,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/utils.dart';
 import 'data/customer_list_bloc/customer_list_bloc.dart';
+import 'data/e_collect_bloc/transaction_bloc/transaction_bloc.dart';
 import 'data/provider/aadhaar_otp_request_provider.dart';
 import 'data/provider/auth_provider.dart';
 import 'data/provider/cash_transcation_history_provider.dart';
@@ -87,6 +88,7 @@ import 'data/repository/collection_base_url_repo.dart';
 import 'data/repository/create_order_repository.dart';
 import 'data/repository/customer_list_repo/customer_list_repo.dart';
 import 'data/repository/e_collect_repository/authentication_repository/authentication_repository.dart';
+import 'data/repository/e_collect_repository/transation_report/transaction_reposrt_repository.dart';
 import 'data/repository/get_loan_repository.dart';
 import 'data/repository/group/bank_account_update_repository.dart';
 import 'data/repository/group/bank_detail_repository.dart';
@@ -176,6 +178,7 @@ void main() async {
       providers: [
         RepositoryProvider(create: (_) => AuthenticationRepository()),
         RepositoryProvider(create: (_) => PaymentRepository()),
+        RepositoryProvider(create: (_) => TransactionReportRepository()),
         RepositoryProvider(create: (_) => CustomerListRepo()),
         RepositoryProvider(create: (_) => RdclDueListRepo()),
         // Add all your existing repositories
@@ -243,6 +246,9 @@ void main() async {
           BlocProvider(
               create: (context) =>
                   RdclDuelistBloc(context.read<RdclDueListRepo>())),
+          BlocProvider(
+              create: (context) =>
+                  PaymentTransactionBloc(context.read<TransactionReportRepository>())),
           // Add BLoCs for your existing providers (if you migrate them)
           // Example: BlocProvider(create: (context) => AuthBloc(context.read<AuthRepository>())),
         ],
