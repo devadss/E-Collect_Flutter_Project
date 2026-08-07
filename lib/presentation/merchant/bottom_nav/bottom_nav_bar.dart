@@ -8,6 +8,7 @@ import '../../home/e_collect_homepage.dart';
 import '../../home/home_page.dart';
 import '../../loan_integrated/loan_list.dart';
 import '../../profile/profile_home_page.dart';
+import '../history/ecollect_transaction_report.dart';
 import '../pages/all-groups.dart';
 import '../pages/group_home_page.dart';
 import '../pages/payment_link_page.dart';
@@ -124,6 +125,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
               label: 'Due-List',
               icon: Icons.receipt,
               page: const RdclDueListBocPage(),
+            ),
+            NavItem(
+              label: 'Tran-History',
+              icon: Icons.timelapse,
+              page: const EcollectTransactionReport(),
             ),
             NavItem(
               label: 'Profile',
