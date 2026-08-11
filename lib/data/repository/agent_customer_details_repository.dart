@@ -17,8 +17,10 @@ class AgentCustomerDetailsRepository
 
   @override
   Future<Either<ErrorHandler, AgentCustomerDetailsModel>>
-      getAgentCustomerDetails(String agentId) async {
-    final url = Uri.parse("https://mftctest.digicob.in/getRDCustomerunderAgentList");
+      getAgentCustomerDetails(
+      String requestUrl,
+      String agentId) async {
+    final url = Uri.parse(requestUrl);
     print(
         "--------------------------AGENT CUSTOMER DETAILS URL------------------");
     print(url);

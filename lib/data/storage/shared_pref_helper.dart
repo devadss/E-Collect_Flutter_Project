@@ -242,6 +242,25 @@ class SharedPref {
     return List<String>.from(jsonDecode(value));
   }
 
+  Future<Future<bool>> setECollectAgentID(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.eCollectAgentId, value);
+  }
+
+  Future<String> getECollectAgentID() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.eCollectAgentId) ?? '';
+  }
+
+  Future<Future<bool>> setECollectBranchID(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.eCollectBranchId, value);
+  }
+
+  Future<String> getECollectBranchID() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.eCollectBranchId) ?? '';
+  }
 
 
 
@@ -379,11 +398,6 @@ class SharedPref {
 
 
   //e-Collect////////
-
-
-
-
-
 
 
   Future<Future<bool>> setMpinValue(String value) async {

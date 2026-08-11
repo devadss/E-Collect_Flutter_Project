@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:palette_generator_master/palette_generator_master.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/alerts.dart';
 import '../../core/utils.dart' as utl;
 import '../../data/e_collect_bloc/payment_bloc/payment_bloc.dart';
 import '../../data/provider/loan_cash_coolection_provider.dart';
@@ -81,6 +82,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
   String? agentOriginId;
   String? paymentSessionId;
   String? branchCode;
+  String selectedMethod ="";
   String? selectedAccNumber;
   TextEditingController editAmountController = TextEditingController();
    Color? dominantColor;
@@ -178,7 +180,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
         title: Text(
           textAlign: TextAlign.center,
           "LOAN DETAILS",
-          style: TextStyle(color: home2, fontWeight: FontWeight.w700),
+          style: TextStyle(color: home1, fontWeight: FontWeight.w700),
         ),
       ),
       body:
@@ -247,8 +249,8 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
               children: [
                 Expanded(
                   child: _buildModernButton(
-                    text: "Payment Link",
-                    icon: Icons.link,
+                    text: "QR",
+                    icon: Icons.qr_code,
                     onPressed: () {
                       showModalBottomSheet(
                         isScrollControlled: true,
@@ -330,21 +332,159 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                                     width: double.infinity,
                                     child: ElevatedButton(
                                       onPressed: () {
-                                       /// generateQrPaymentSession();
-                                       // sendLinkFunction();
+                                        setState(() {
+                                          selectedMethod = "QR";
+                                        });
+
                                         context.read<PaymentBloc>().add(QrPaymentEvent(QrPaymentRequestModel(
-                                            agentDetails: AgentDetails(agentName: eCollectMerchantName!, agentId: eCollectAgentId!, agentOrginId: eCollectAgentId!, agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
+                                            agentDetails: AgentDetails(agentName: eCollectMerchantName!, agentId: eCollectAgentId!, agentOrginId: "1079", agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
                                             customerDetails: CustomerDetails(customerName:
                                             widget.name, customerPhone: eCollectAgentNumber!,
-                                                customerAccno: widget.loanNumber,
+                                               // customerAccno: widget.loanNumber,
+                                                customerAccno: "01042888",
                                                 customerId: widget.custNo, customerEmail: eCollectAgentEmail!),
                                             collectionType: eCollectCollectionType!,
                                             amount: double.parse(editAmountController.text),
                                             note: 'Payment for Order',
                                             qrSource: 'MOB',
                                             source: 'COLLECTION',
-                                            // merchantId: int.parse(eCollectAgentMerchantID!)
-                                            merchantId: 1)));
+                                            merchantId: int.parse(eCollectAgentMerchantID!))));
+                                           // merchantId: 1)
+                                       // ));
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: home1,
+                                        foregroundColor: Colors.white,
+                                        padding: const EdgeInsets.symmetric(vertical: 14),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(16),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        "Generate Payment QR",
+                                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    isOutlined: false,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _buildModernButton(
+                    text: "Link",
+                    icon: Icons.link,
+                    onPressed: () {
+                      showModalBottomSheet(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom,
+                            ),
+                            child: Container(
+                              padding: const EdgeInsets.all(24),
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(30),
+                                ),
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        "Link Amount",
+                                        style: TextStyle(
+                                          color: Color(0xFF4361EE),
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                          editAmountController.text = widget.loanAmount.toString();
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.shade100,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Icon(
+                                            Icons.close,
+                                            size: 20,
+                                            color: Color(0xFF64748B),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 20),
+                                  TextField(
+                                    keyboardType: TextInputType.number,
+                                    controller: editAmountController,
+                                    decoration: InputDecoration(
+                                      prefixIcon: const Icon(
+                                        Icons.currency_rupee,
+                                        color: Color(0xFF4361EE),
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                        borderSide: BorderSide(color: Colors.grey.shade300),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                        borderSide: BorderSide(color: Colors.grey.shade300),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                        borderSide: const BorderSide(color: Color(0xFF4361EE), width: 2),
+                                      ),
+                                      labelText: "Enter collection amount",
+                                      labelStyle: TextStyle(color: Colors.grey.shade600),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          selectedMethod = "Link";
+                                        });
+                                        context.read<PaymentBloc>().add(LinkPaymentEvent(QrPaymentRequestModel(
+                                            agentDetails: AgentDetails(agentName: eCollectMerchantName!,
+                                                agentId: eCollectAgentId!,
+                                                agentOrginId: "1079",
+                                                agentPhone: eCollectAgentNumber!,
+                                                agentEmail: eCollectAgentEmail!,
+                                                agentBranch: int.parse(eCollectAgentBranchCode!)),
+                                            customerDetails: CustomerDetails(customerName:
+                                            widget.name,
+                                                customerPhone: eCollectAgentNumber!,
+                                               // customerAccno: widget.loanNumber,
+                                                customerAccno: "01042888",
+                                                customerId: widget.custNo, customerEmail: eCollectAgentEmail!),
+                                            collectionType: eCollectCollectionType!,
+                                            amount: double.parse(editAmountController.text),
+                                            note: 'Payment for Order',
+                                            qrSource: 'MOB',
+                                            source: 'COLLECTION',
+                                            merchantId: int.parse(eCollectAgentMerchantID!))));
+                                            //merchantId:1)));
                                       },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: home1,
@@ -374,7 +514,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
 
                 Expanded(
                   child: _buildModernButton(
-                    text: "Collect Cash",
+                    text: "Cash",
                     icon: Icons.money_rounded,
                     onPressed: () {
                       showModalBottomSheet(
@@ -502,20 +642,22 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                 if (state is QrPaymentSuccessState) {
                   Navigator.pop(context);
                   print(state.qrPaymentSuccess.paymentResponseSuccess.paymentUrl);
-                  // selectedMethod == "Link"?
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (BuildContext context) => PaymentLinkRequestUi(
-                  //           customerMobileNumber: "",
-                  //           paymentLink: state.qrPaymentSuccess.paymentResponseSuccess.paymentUrl,
-                  //         ))):
-                  Navigator.push(
+                  selectedMethod == "Link"
+                      ? Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              PaymentLinkRequestUi(
+                                customerMobileNumber: "",
+                                paymentLink: state.qrPaymentSuccess
+                                    .paymentResponseSuccess.paymentUrl,
+                              )))
+                      : Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => NewQrCodePage(
-                        paymentSessionId: state
-                            .qrPaymentSuccess.paymentResponseSuccess.paymentUrl,
+                        paymentSessionId: state.qrPaymentSuccess
+                            .paymentResponseSuccess.paymentUrl,
                         amount: editAmountController.text,
                         custName: "",
                         custPhone: "custNumber",
@@ -523,14 +665,33 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                       ),
                     ),
                   );
-
                 } else if (state is QrPaymentFailState) {
                   Navigator.pop(context);
+                  showAlertDialog(
+                      state.qrPaymentFail.paymentFailResponse.message, context);
                   print(state.qrPaymentFail.paymentFailResponse.message);
+                } else if (state is CashPaymentSuccessState) {
+                  Navigator.pop(context);
+                  showAlert(
+                      state.cashPaymentSuccess.cashPaymentSuccessResponse
+                          .status ==
+                          "Y"
+                          ? "SUCCESS"
+                          : "FAILED",
+                      state.cashPaymentSuccess.cashPaymentSuccessResponse.message,
+                      context);
+                  print(state
+                      .cashPaymentSuccess.cashPaymentSuccessResponse.message);
+                } else if (state is CashPaymentFailState) {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  showAlertDialog(state.cashPaymentFail.payemtError, context);
+                  print(state.cashPaymentFail.payemtError);
                 }
               },
               child: SizedBox(),
             ),
+
           ],
         ),
       )
@@ -556,7 +717,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
     );
   }
 
-  Future<void> sendLinkFunction() async {
+/*  Future<void> sendLinkFunction() async {
     final send = await PaymentLinkRepository().getPaymentLink(
         agentName: agentName!,
         agentId: agentId!,
@@ -594,7 +755,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
         }
       },
     );
-  }
+  }*/
   Future<void> createColorPallet(String imageStr) async {
     final ImageProvider imageProvider = AssetImage(imageStr);
     final PaletteGeneratorMaster paletteGenerator =
@@ -638,7 +799,7 @@ if(utl.printStatementStatus){
                 padding: const EdgeInsets.all(5.0),
                 child: CircleAvatar(
                   radius: 40,
-                 backgroundImage: AssetImage("assets/images/person.png"),
+                 backgroundImage: AssetImage("assets/images/cq1.webp"),
                 ),
               ),
             ),
@@ -1192,7 +1353,24 @@ if(utl.printStatementStatus){
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          loanCashCollection();
+                          setState(() {
+                            selectedMethod = "Cash";
+                          });
+                          Navigator.pop(context);
+                          context.read<PaymentBloc>().add(CashPaymentEvent(QrPaymentRequestModel(
+                              agentDetails: AgentDetails(agentName: eCollectMerchantName!, agentId: eCollectAgentId!, agentOrginId: "1079", agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
+                              customerDetails: CustomerDetails(customerName:
+                              widget.name, customerPhone: eCollectAgentNumber!,
+                                //  customerAccno: widget.loanNumber,
+                                  customerAccno: "01042888",
+                                  customerId: widget.custNo, customerEmail: eCollectAgentEmail!),
+                              collectionType: eCollectCollectionType!,
+                              amount: double.parse(editAmountController.text),
+                              note: 'Payment for Order',
+                              qrSource: 'MOB',
+                              source: 'COLLECTION',
+                               merchantId: int.parse(eCollectAgentMerchantID!))));
+                             // merchantId: 1)));
 
                         },
                         style: ElevatedButton.styleFrom(

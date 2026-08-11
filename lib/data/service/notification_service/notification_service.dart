@@ -126,7 +126,6 @@ class NotificationService {
       "deviceType":"Android",
       "appVersion":"22.0.1",
       "deviceToken": token.trim().toString()
-
     };
     final response = await http.post(
       url,

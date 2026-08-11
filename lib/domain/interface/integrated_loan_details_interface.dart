@@ -5,6 +5,7 @@ import '../model/integrated_loan_detail_model.dart';
 
 abstract class IntegratedLoanDetailInterface{
   Future<Either<String, IntegratedLoanDetails>> getIntegratedLoanDetails(
+      String requestUrl,
       String flag,
       String branchId,
       String schemeCode,

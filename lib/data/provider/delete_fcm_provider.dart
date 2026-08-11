@@ -25,8 +25,10 @@ class DeleteFcmProvider with ChangeNotifier {
   String? tokenResults;
 
   Future<Either<String, String>> deleteFirebaseToken(
-      String entityID, String token) async {
-    return _deleteFcmToken.deleteFcmToken(entityID, token);
+      String entityID,
+      String mobNum,
+      String token) async {
+    return _deleteFcmToken.deleteFcmToken(entityID,mobNum,  token);
     // final result = await _deleteFcmToken.deleteFcmToken(entityID, token);
     // result.fold((error) {}, (success) {
     //   tokenResults = success;

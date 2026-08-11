@@ -10,13 +10,13 @@ class AgentCustomerDetailsProvider with ChangeNotifier{
   AgentCustomerDetailsProvider(this._agentCustomerDetailsRepository);
   AgentCustomerDetailsModel? _agentCustomerDetailsModel;
   AgentCustomerDetailsModel? get agentCustomerDetailsModel =>_agentCustomerDetailsModel;
-  Future<void>getAgentCustomerDetails(String agentId) async{
+  Future<void>getAgentCustomerDetails(String requestUrl,String agentId) async{
     if(printStatementStatus){
       printLog("-----------------AGENT CUST DETAILS----------------");
       printLog(agentCustomerDetailsModel);
     }
 
-    final result = await _agentCustomerDetailsRepository.getAgentCustomerDetails(agentId);
+    final result = await _agentCustomerDetailsRepository.getAgentCustomerDetails(requestUrl,agentId);
     result.fold(
         (error){
           if(printStatementStatus){

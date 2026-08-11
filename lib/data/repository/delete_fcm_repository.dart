@@ -8,17 +8,27 @@ import '../../domain/interface/delete_fcm_interface.dart';
 
 class DeleteFcmTokenRepository extends DeleteFcmTokenInterface {
   @override
-  Future<Either<String, String>> deleteFcmToken(String entityID, String token) async {
+  Future<Either<String, String>> deleteFcmToken(
+      String entityID,
+      String mobNum,
+      String token
+      ) async {
     try {
       //final uri = Uri.parse("${baseUrl}api/DeleteToken");
-      final uri = Uri.parse("${baseUrl}api/AgentDeleteToken");
+      final uri = Uri.parse("${eCollectBaseUrl}api/device/unregister");
       final request = await http.post(uri,
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',
           },
          // body: json.encode({"EntityId": entityID}));
-          body: json.encode({"agentId": entityID}));
+          body: json.encode({
+            "customerId": entityID,
+            "mobileNumber": mobNum,
+            "deviceType":"Android",
+            "appVersion":"22.0.1",
+            "deviceToken": token
+          }));
 if(printStatementStatus){
   print("Delete Fcm EntityId : ${entityID}");
   print("Delete Fcm Response : ${request.body}");

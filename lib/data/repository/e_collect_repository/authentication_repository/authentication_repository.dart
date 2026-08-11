@@ -17,31 +17,31 @@ import '../../../../domain/model/e_collect/token_validation/token_validation_fai
 import '../../../../domain/model/e_collect/token_validation/token_validation_success.dart';
 
 class AuthenticationRepository {
-  
   final String _requestOtpEndPoint = "api/Auth/request-otp";
   final String _resendOtpEndPoint = "api/Auth/resend-otp";
   final String _verifyOtpEndPoint = "api/Auth/verify-otp";
   final String _basicRegistrationEndPoint = "api/Auth/register";
   final String _onBoardingEndPoint = "api/Merchant/register";
   final String _tokenValidationEndPoint = "api/Auth/validate-token";
+  final String _fcmUnregisterEndPoint = "api/device/unregister";
   final String _ifscBranchApiUrl = "https://ifsc.razorpay.com/";
   final Map<String, String> contentType = {"Content-Type": "application/json"};
 
   ///*********************LOGIN******************************
-  Future<void> mobLoginRepository() async {
-
-  }
+  Future<void> mobLoginRepository() async {}
 
   ///*********************REQUEST-OTP******************************
   Future<AuthenticationModel> mobOtpRequestRepository(
       String mobileNumber) async {
     final Uri uri = Uri.parse("$eCollectBaseUrl$_requestOtpEndPoint");
-    final http.Response request = await http.post(uri, body: jsonEncode({"mobileNumber": mobileNumber}), headers: contentType);
+    final http.Response request = await http.post(uri,
+        body: jsonEncode({"mobileNumber": mobileNumber}), headers: contentType);
     print(request.body);
-    return request.statusCode == 200 ? OtpRequestSuccessModel(
-          OtpRequestSuccessResponse.fromJson(jsonDecode(request.body))) :
-    OtpRequestFailureModel(
-          OtpRequestErrorResponse.fromJson(jsonDecode(request.body)));
+    return request.statusCode == 200
+        ? OtpRequestSuccessModel(
+            OtpRequestSuccessResponse.fromJson(jsonDecode(request.body)))
+        : OtpRequestFailureModel(
+            OtpRequestErrorResponse.fromJson(jsonDecode(request.body)));
   }
 
   ///*********************RESEND-OTP******************************
@@ -50,10 +50,13 @@ class AuthenticationRepository {
     final http.Response request = await http.post(uri,
         body: jsonEncode({"userId": id}), headers: contentType);
     print(request.body);
-    return request.statusCode == 200 ? OtpRequestSuccessModel(
-          OtpRequestSuccessResponse.fromJson(jsonDecode(request.body))) : OtpRequestFailureModel(
-          OtpRequestErrorResponse.fromJson(jsonDecode(request.body)));
+    return request.statusCode == 200
+        ? OtpRequestSuccessModel(
+            OtpRequestSuccessResponse.fromJson(jsonDecode(request.body)))
+        : OtpRequestFailureModel(
+            OtpRequestErrorResponse.fromJson(jsonDecode(request.body)));
   }
+
   ///*********************OTP_VERIFICATION******************************
   Future<AuthenticationModel> mobOtpVerificationRepository(
       String mobileNumber, int id, String otp) async {
@@ -64,26 +67,28 @@ class AuthenticationRepository {
         headers: contentType);
     print(request.body);
     print(uri);
-    return request.statusCode != 200 ? OtpVerificationFailureModel(
-          OtpVerificationErrorResponse.fromJson(jsonDecode(request.body))) : OtpVerificationSuccessModel(
-          LoginResponse.fromJson(jsonDecode(request.body)));
+    return request.statusCode != 200
+        ? OtpVerificationFailureModel(
+            OtpVerificationErrorResponse.fromJson(jsonDecode(request.body)))
+        : OtpVerificationSuccessModel(
+            LoginResponse.fromJson(jsonDecode(request.body)));
   }
 
   ///*********************MERCHANT-ONBOARDING******************************
-  Future<AuthenticationModel> merchantOnboardingRepository(MerchantRegistrationRequestModel merchantRegistrationRequestModel) async {
+  Future<AuthenticationModel> merchantOnboardingRepository(
+      MerchantRegistrationRequestModel merchantRegistrationRequestModel) async {
     final uri = Uri.parse("$eCollectBaseUrl$_onBoardingEndPoint");
-    final request = await http.post(uri, body: jsonEncode(merchantRegistrationRequestModel),
-    headers: {
-      "Content-Type":"application/json"
-    }
-    );
+    final request = await http.post(uri,
+        body: jsonEncode(merchantRegistrationRequestModel),
+        headers: {"Content-Type": "application/json"});
     print(request.body);
-    if(request.statusCode == 200){
-      return OnboardOkModel(MerchantRegistrationSuccess.fromJson(jsonDecode(request.body)));
-    }else{
-      return OnboardFailModel(MerchantRegistrationFailResponse.fromJson(jsonDecode(request.body)));
+    if (request.statusCode == 200) {
+      return OnboardOkModel(
+          MerchantRegistrationSuccess.fromJson(jsonDecode(request.body)));
+    } else {
+      return OnboardFailModel(
+          MerchantRegistrationFailResponse.fromJson(jsonDecode(request.body)));
     }
-
   }
 
   ///*********************MERCHANT-ONBOARDING-STATUS******************************
@@ -96,9 +101,11 @@ class AuthenticationRepository {
     final http.Response request = await http.post(uri,
         body: jsonEncode(basicUserRegisterModel), headers: contentType);
     print(request.body);
-    return request.statusCode == 200 ? BasicRegistrationSuccessModel(
-          BasicRegistrationSuccessResponse.fromJson(jsonDecode(request.body))) : BasicRegistrationFailureModel(
-          BasicRegistrationErrorResponse.fromJson(jsonDecode(request.body)));
+    return request.statusCode == 200
+        ? BasicRegistrationSuccessModel(
+            BasicRegistrationSuccessResponse.fromJson(jsonDecode(request.body)))
+        : BasicRegistrationFailureModel(
+            BasicRegistrationErrorResponse.fromJson(jsonDecode(request.body)));
   }
 
   ///*********************TOKEN-VERIFICATION******************************
@@ -114,17 +121,34 @@ class AuthenticationRepository {
             TokenValidationFailureResponse.fromJson(jsonDecode(request.body)));
   }
 
-
   ///*********************IFSC******************************
-  Future<AuthenticationModel> ifscBranchRepository(
-      String ifscCode) async {
+  Future<AuthenticationModel> ifscBranchRepository(String ifscCode) async {
     final Uri uri = Uri.parse("$_ifscBranchApiUrl$ifscCode");
     final http.Response request = await http.get(uri, headers: contentType);
     print(request.body);
     return request.statusCode == 200
         ? IfscCodeOkModel(
-        BankIfscSuccessModel.fromJson(jsonDecode(request.body)))
+            BankIfscSuccessModel.fromJson(jsonDecode(request.body)))
         : IfscCodeFailModel(request.body);
   }
 
+  ///*********************FCM_UNREGISTER******************************
+  Future<AuthenticationModel> fcmUnregisterRepository(
+      String merchantID, String mobNumber, String fcmToken) async {
+    final Uri uri = Uri.parse("$eCollectBaseUrl$_fcmUnregisterEndPoint");
+    final http.Response request = await http.post(uri,
+        body: jsonEncode({
+          "customerId": merchantID,
+          "mobileNumber": mobNumber,
+          "deviceType": "Android",
+          "appVersion": "22.0.1",
+          "deviceToken": fcmToken
+        }),
+        headers: contentType);
+    print(request.body);
+    return request.statusCode == 200
+        ? IfscCodeOkModel(
+            BankIfscSuccessModel.fromJson(jsonDecode(request.body)))
+        : IfscCodeFailModel(request.body);
+  }
 }

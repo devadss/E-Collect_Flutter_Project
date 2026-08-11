@@ -48,9 +48,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         emit(MobLoginVerifyOtpSuccessState(data));
         SharedPref.shared.setECollectLoginStatus(data.loginResponse.isAuthenticated);
         SharedPref.shared.setECollectMerchantBranchCode(data.loginResponse.branchCode);
+        SharedPref.shared.setECollectBranchID(data.loginResponse.branchId.toString());
+        SharedPref.shared.setECollectAgentID(data.loginResponse.agentId.toString());
         SharedPref.shared.setECollectMerchantIntegrationStatus(data.loginResponse.integrationStatus);
-        // SharedPref.shared.setECollectRdclCustomerunderAgentListUrl(data.loginResponse.listUrl[0]);
-        // SharedPref.shared.setECollectRdclDuesListunderAgentUrl(data.loginResponse.listUrl[1]);
        for(var x in data.loginResponse.listUrl.keys){
           typeList.add(x);
        }
@@ -60,10 +60,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
           }
 
         }
-
         SharedPref.shared.setECollectTypeList(typeList);
         SharedPref.shared.setECollectUrlList(eCollectUrlList);
-
         SharedPref.shared.setECollectMerchantUserName(data.loginResponse.fullName);
         SharedPref.shared.setECollectUserType(data.loginResponse.productType);
         SharedPref.shared.setECollectToken(data.loginResponse.token);
@@ -121,6 +119,19 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         emit(IfscBranchSuccessState(data));
       }else if(data is IfscCodeFailModel){
         emit(IfscBranchFailureState(data));
+      }
+    });
+
+    ///*********************FCM_UNREGISTER******************************
+    on<FcmUnregisterEvent>((event, emit) async {
+      emit(FcmUnRegisterLoaderState());
+      final AuthenticationModel data = await authenticationRepository.fcmUnregisterRepository(
+        event.customerId, event.mobileNumber, event.deviceToken
+      );
+      if(data is FcmUnregisterSuccess){
+        emit(FcmUnRegisterSuccessState(data));
+      }else if(data is FcmUnregisterFail){
+        emit(FcmUnRegisterFailureState(data));
       }
     });
   }

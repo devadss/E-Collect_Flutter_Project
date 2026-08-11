@@ -617,11 +617,12 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
   }
 
   Future<void> performLogout(BuildContext context) async {
-    String entityId = await SharedPref.shared.getSubAgentId();
-    String token = await SharedPref.shared.getTokenValue();
+    String entityId = await SharedPref.shared.getECollectMerchantID();
+    String mobnum = await SharedPref.shared.getECollectUserNumber();
+    String token = await SharedPref.shared.getFcmToken();
 
     final fcmProvider = Provider.of<DeleteFcmProvider>(context, listen: false);
-    await fcmProvider.deleteFirebaseToken(entityId, token);
+    await fcmProvider.deleteFirebaseToken(entityId,mobnum, token);
     await SharedPref.shared.setLogin(false);
     await SharedPref.shared.setCustId("");
     await SharedPref.shared.setAgentName("");
@@ -657,12 +658,17 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
     await SharedPref.shared.setLoggedInUserType("");
 
     await SharedPref.shared.setECollectLoginStatus(false);
+    await SharedPref.shared.setECollectTypeList([]);
+    await SharedPref.shared.setECollectUrlList([]);
     await SharedPref.shared.setECollectMerchantBranchCode('');
+    await SharedPref.shared.setECollectAgentID('');
+    await SharedPref.shared.setECollectBranchID('');
     await SharedPref.shared.setECollectMerchantIntegrationStatus('');
     await SharedPref.shared.setECollectRdclCustomerunderAgentListUrl('');
     await SharedPref.shared.setECollectRdclDuesListunderAgentUrl('');
     await SharedPref.shared.setECollectMerchantUserName('');
     await SharedPref.shared.setECollectUserType('');
+    await SharedPref.shared.setECollectUserEmail('');
     await SharedPref.shared.setECollectToken('');
     await SharedPref.shared.setECollectRefreshToken('');
     await SharedPref.shared.setECollectRefreshToken('');

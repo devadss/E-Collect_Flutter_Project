@@ -95,6 +95,7 @@ class _DuesHomePageState extends State<DuesHomePage> {
         token = tok;
       });
     }
+    if(!mounted) return;
     final provider = Provider.of<DueUnderAgentProvider>(context, listen: false);
     await provider.getDuesUnderAgent(agentOriginId);
   }
@@ -759,7 +760,7 @@ class _DuesHomePageState extends State<DuesHomePage> {
                                                                   //           .text,
                                                                   //     )
                                                                   context.read<PaymentBloc>().add(QrPaymentEvent(QrPaymentRequestModel(
-                                                                      agentDetails: AgentDetails(agentName: eCollectMerchantName!, agentId: eCollectAgentId!, agentOrginId: eCollectAgentId!, agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
+                                                                      agentDetails: AgentDetails(agentName: eCollectMerchantName!, agentId: eCollectAgentId!, agentOrginId: "1079", agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
                                                                       customerDetails: CustomerDetails(customerName: provider.agentModel?.duesList1?.data![index].name ??"", customerPhone: eCollectAgentNumber!, customerAccno: provider.agentModel?.duesList1?.data![index].accNo ??"",
                                                                           customerId: provider.agentModel?.duesList1?.data![index].custId ??"",
                                                                           customerEmail: eCollectAgentEmail!),
@@ -768,13 +769,13 @@ class _DuesHomePageState extends State<DuesHomePage> {
                                                                       note: 'Payment for Order',
                                                                       qrSource: 'MOB',
                                                                       source: 'COLLECTION',
-                                                                      // merchantId: int.parse(eCollectAgentMerchantID!)
-                                                                      merchantId: 1)))
+                                                                      merchantId: int.parse(eCollectAgentMerchantID!))))
+                                                                     // merchantId: 1)))
                                                                       :
 
                                                                   context.read<PaymentBloc>().add(QrPaymentEvent(QrPaymentRequestModel(
                                                                       agentDetails: AgentDetails(agentName: eCollectMerchantName!,
-                                                                          agentId: eCollectAgentId!, agentOrginId: eCollectAgentId!,
+                                                                          agentId: eCollectAgentId!, agentOrginId: "1079",
                                                                           agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!,
                                                                           agentBranch: int.parse(eCollectAgentBranchCode!)),
                                                                       customerDetails:
@@ -789,8 +790,8 @@ class _DuesHomePageState extends State<DuesHomePage> {
                                                                       note: 'Payment for Order',
                                                                       qrSource: 'MOB',
                                                                       source: 'COLLECTION',
-                                                                      // merchantId: int.parse(eCollectAgentMerchantID!)
-                                                                      merchantId: 1)));
+                                                                      merchantId: int.parse(eCollectAgentMerchantID!))));
+                                                                     // merchantId: 1)));
                                                                   // getPaymentSessionId(token,
                                                                   //     provider.agentModel?.duesList1?.data?[index].name,
                                                                   //     provider.agentModel?.duesList1?.data?[index].phone,
@@ -908,36 +909,54 @@ class _DuesHomePageState extends State<DuesHomePage> {
               if (state is QrPaymentSuccessState) {
                 Navigator.pop(context);
                 print(state.qrPaymentSuccess.paymentResponseSuccess.paymentUrl);
-                selectedMethod == "QR"?
-
-                Navigator.push(
+                selectedMethod == "Link"
+                    ? Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            PaymentLinkRequestUi(
+                              customerMobileNumber: "",
+                              paymentLink: state.qrPaymentSuccess
+                                  .paymentResponseSuccess.paymentUrl,
+                            )))
+                    : Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => NewQrCodePage(
-                      paymentSessionId: state
-                          .qrPaymentSuccess.paymentResponseSuccess.paymentUrl,
+                      paymentSessionId: state.qrPaymentSuccess
+                          .paymentResponseSuccess.paymentUrl,
                       amount: controller.text,
                       custName: "",
                       custPhone: "custNumber",
                       custId: "CustId",
                     ),
                   ),
-                ):
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => PaymentLinkRequestUi(
-                          customerMobileNumber: "",
-                          paymentLink: state.qrPaymentSuccess.paymentResponseSuccess.paymentUrl,
-                        )));
-
+                );
               } else if (state is QrPaymentFailState) {
                 Navigator.pop(context);
+                EasyLoading.showAlertDialog(
+                    state.qrPaymentFail.paymentFailResponse.message, context);
                 print(state.qrPaymentFail.paymentFailResponse.message);
+              } else if (state is CashPaymentSuccessState) {
+                Navigator.pop(context);
+                EasyLoading.showAlert(
+                    state.cashPaymentSuccess.cashPaymentSuccessResponse
+                        .status ==
+                        "Y"
+                        ? "SUCCESS"
+                        : "FAILED",
+                    state.cashPaymentSuccess.cashPaymentSuccessResponse.message,
+                    context);
+                print(state
+                    .cashPaymentSuccess.cashPaymentSuccessResponse.message);
+              } else if (state is CashPaymentFailState) {
+                Navigator.pop(context);
+                print(state.cashPaymentFail.payemtError);
               }
             },
             child: SizedBox(),
           ),
+
 
         ]
       ),

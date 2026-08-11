@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../core/alerts.dart';
 import '../../core/utils.dart';
 import '../../data/provider/cash_transcation_provider.dart';
 import '../../data/rdcl_duelist_bloc/rdcl_duelist_bloc.dart';
@@ -64,17 +65,6 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
     final _eCollectCollectionType = await prefs.getECollectUserType();
     //---------------------------------------
     final tok = await prefs.getTokenValue();
-    // final name = await prefs.getParentAgentName();
-    // final id = await prefs.getAgentId();
-    // final originId = await prefs.getSubAgentCode();
-    // final subAgentID = await prefs.getSubAgentId();
-    // final code = await prefs.getCorpCode();
-    // final brCode = await prefs.getBranchCode();
-    // final email = await prefs.getEmail();
-    // final number = await prefs.getParentAgentMobNum();
-    //
-    // final subAgentCodeNewVal = await prefs.getSubAgentCodeNew();
-    // final subagentNum = await prefs.getSubAgentMobNum();
 
     if (!mounted) return;
 
@@ -1438,47 +1428,29 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
                                                                         }
                                                                       } else if (selectedMethod == "Link") {
                                                                         context.read<PaymentBloc>().add(QrPaymentEvent(QrPaymentRequestModel(
-                                                                            agentDetails: AgentDetails(agentName: eCollectMerchantName!, agentId: eCollectAgentId!, agentOrginId: eCollectAgentId!, agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
+                                                                            agentDetails: AgentDetails(agentName: eCollectMerchantName!, agentId: "1079", agentOrginId: eCollectAgentId!, agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
                                                                             customerDetails: CustomerDetails(customerName: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].name, customerPhone: eCollectAgentNumber!, customerAccno: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].accNo, customerId: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].custId, customerEmail: eCollectAgentEmail!),
                                                                             collectionType: eCollectCollectionType!,
                                                                             amount: double.parse(controller.text),
                                                                             note: 'Payment for Order',
                                                                             qrSource: 'MOB',
                                                                             source: 'COLLECTION',
-                                                                            // merchantId: int.parse(eCollectAgentMerchantID!)
-                                                                            merchantId: 1)));
-                                                                        // sendLinkFunction(
-                                                                        //     context,
-                                                                        //     eCollectMerchantName!,
-                                                                        //     eCollectAgentId!,
-                                                                        //     eCollectAgentOriginId!,
-                                                                        //     eCollectAgentNumber!,
-                                                                        //     eCollectAgentEmail!,
-                                                                        //     state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].name,
-                                                                        //     eCollectAgentNumber!,
-                                                                        //     state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].accNo,
-                                                                        //     "",
-                                                                        //     state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].custId,
-                                                                        //     int.parse(controller.text),
-                                                                        //     '',
-                                                                        //     eCollectCollectionType!,
-                                                                        //     '',
-                                                                        //     token!,
-                                                                        //     eCollectAgentMerchantID!);
+                                                                            merchantId: int.parse(eCollectAgentMerchantID!))));
+
                                                                       } else {
                                                                         print(
                                                                             "QR API CALL");
 
                                                                         context.read<PaymentBloc>().add(QrPaymentEvent(QrPaymentRequestModel(
-                                                                            agentDetails: AgentDetails(agentName: eCollectMerchantName!, agentId: eCollectAgentId!, agentOrginId: eCollectAgentId!, agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
+                                                                            agentDetails: AgentDetails(agentName: eCollectMerchantName!, agentId: "1079", agentOrginId: eCollectAgentId!, agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
                                                                             customerDetails: CustomerDetails(customerName: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].name, customerPhone: eCollectAgentNumber!, customerAccno: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].accNo, customerId: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].custId, customerEmail: eCollectAgentEmail!),
                                                                             collectionType: eCollectCollectionType!,
                                                                             amount: double.parse(controller.text),
                                                                             note: 'Payment for Order',
                                                                             qrSource: 'MOB',
                                                                             source: 'COLLECTION',
-                                                                            // merchantId: int.parse(eCollectAgentMerchantID!)
-                                                                            merchantId: 1)));
+                                                                            merchantId: int.parse(eCollectAgentMerchantID!))));
+                                                                            //merchantId: 1)));
                                                                       }
                                                                     },
                                                                   ),
@@ -1568,20 +1540,22 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
               if (state is QrPaymentSuccessState) {
                 Navigator.pop(context);
                 print(state.qrPaymentSuccess.paymentResponseSuccess.paymentUrl);
-                selectedMethod == "Link"?
-                Navigator.push(
+                selectedMethod == "Link"
+                    ? Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (BuildContext context) => PaymentLinkRequestUi(
-                          customerMobileNumber: "",
-                          paymentLink: state.qrPaymentSuccess.paymentResponseSuccess.paymentUrl,
-                        ))):
-                Navigator.push(
+                        builder: (BuildContext context) =>
+                            PaymentLinkRequestUi(
+                              customerMobileNumber: "",
+                              paymentLink: state.qrPaymentSuccess
+                                  .paymentResponseSuccess.paymentUrl,
+                            )))
+                    : Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => NewQrCodePage(
-                      paymentSessionId: state
-                          .qrPaymentSuccess.paymentResponseSuccess.paymentUrl,
+                      paymentSessionId: state.qrPaymentSuccess
+                          .paymentResponseSuccess.paymentUrl,
                       amount: controller.text,
                       custName: "",
                       custPhone: "custNumber",
@@ -1589,14 +1563,31 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
                     ),
                   ),
                 );
-
               } else if (state is QrPaymentFailState) {
                 Navigator.pop(context);
+                showAlertDialog(
+                    state.qrPaymentFail.paymentFailResponse.message, context);
                 print(state.qrPaymentFail.paymentFailResponse.message);
+              } else if (state is CashPaymentSuccessState) {
+                Navigator.pop(context);
+                showAlert(
+                    state.cashPaymentSuccess.cashPaymentSuccessResponse
+                        .status ==
+                        "Y"
+                        ? "SUCCESS"
+                        : "FAILED",
+                    state.cashPaymentSuccess.cashPaymentSuccessResponse.message,
+                    context);
+                print(state
+                    .cashPaymentSuccess.cashPaymentSuccessResponse.message);
+              } else if (state is CashPaymentFailState) {
+                Navigator.pop(context);
+                print(state.cashPaymentFail.payemtError);
               }
             },
             child: SizedBox(),
           ),
+
         ],
       ),
     );

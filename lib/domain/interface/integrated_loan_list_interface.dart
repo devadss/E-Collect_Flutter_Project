@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 
 abstract class IntegrationLoanInterface{
   Future<Either<String , IntegratedLoanListResponse>>fetchIntegratedLoans(
+      String? requestUrl ,
       String? agentId ,
       String? branchId ,
       String? schemeCode ,

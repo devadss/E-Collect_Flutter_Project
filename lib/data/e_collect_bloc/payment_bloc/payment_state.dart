@@ -39,3 +39,21 @@ class LinkPaymentSuccessState extends PaymentState{
 class LinkPaymentFailState extends PaymentState{
   const LinkPaymentFailState();
 }
+//------------
+class CashPaymentInitialState extends PaymentState{
+  const CashPaymentInitialState();
+}
+
+class CashPaymentLoaderState extends PaymentState{
+  const CashPaymentLoaderState();
+}
+
+class CashPaymentSuccessState extends PaymentState{
+  final CashPaymentSuccess cashPaymentSuccess;
+  const CashPaymentSuccessState(this.cashPaymentSuccess);
+}
+
+class CashPaymentFailState extends PaymentState{
+  final CashPaymentFail cashPaymentFail;
+  const CashPaymentFailState(this.cashPaymentFail);
+}

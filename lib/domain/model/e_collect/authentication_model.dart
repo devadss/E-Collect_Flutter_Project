@@ -3,6 +3,8 @@ import 'package:collection_qr_flutter/domain/model/e_collect/token_validation/to
 import 'package:collection_qr_flutter/domain/model/e_collect/token_validation/token_validation_success.dart';
 import 'basic_registartion/basic_registration_failure_response.dart';
 import 'basic_registartion/basic_registration_success_response.dart';
+import 'fcm/unregister_fail.dart';
+import 'fcm/unregister_success.dart';
 import 'merchant_registation_model/merchant_registration_success.dart';
 import 'merchant_registation_model/merchat_registration_fail.dart';
 import 'otp_request/otp_request_fail.dart';
@@ -75,5 +77,16 @@ class OnboardOkModel extends AuthenticationModel{
 class OnboardFailModel extends AuthenticationModel{
   final MerchantRegistrationFailResponse merchantRegistrationFailResponse;
   const OnboardFailModel(this.merchantRegistrationFailResponse);
+}
+
+///********************FCM UNREGISTER******************************
+class FcmUnregisterSuccess extends AuthenticationModel{
+  final UnregisterDeviceSuccessResponse unregisterDeviceSuccessResponse;
+  FcmUnregisterSuccess(this.unregisterDeviceSuccessResponse);
+}
+
+class FcmUnregisterFail  extends AuthenticationModel{
+  final DeviceUnregisterFailResponse deviceUnregisterFailResponse;
+  FcmUnregisterFail(this.deviceUnregisterFailResponse);
 }
 

@@ -114,6 +114,9 @@ class SharedPrefKeys {
   static const String eCollectRdclCustomerunderAgentList = "E-COLLECT_RDCL_CUSTOMER_UNDER_AGENT_LIST";
   static const String eCollectRdclDueLisUnderAgent = "E-COLLECT_RDCL_DUE_LIST_UNDER_AGENT";
   static const String eCollectMerchantBranchCode = "E-COLLECT_MERCHANT_BRANCH_CODE";
+  static const String eCollectBranchCode = "E-COLLECT_BRANCH_CODE";
+  static const String eCollectBranchId= "E-COLLECT_BRANCH_ID";
+  static const String eCollectAgentId = "E-COLLECT_AGENT_ID";
   static const String eCollectMerchantIntegrationStatus = "E-COLLECT_MERCHANT_INTEGRATION_STATUS";
   static const String eCollectTypes = "E-COLLECT_TYPES";
   static const String eCollectUrlList = "E-COLLECT_URL_LIST";

@@ -3,6 +3,7 @@ import 'package:collection_qr_flutter/presentation/account_dues/widgets/account_
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../core/colors.dart';
+import '../../core/utils.dart';
 import '../../data/provider/agent_customer_details_provider.dart';
 import '../../data/storage/shared_pref_helper.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,10 @@ class RdDueDetailPage extends StatefulWidget {
 class _RdDueDetailPageState extends State<RdDueDetailPage>  {
   String? agentId;
   String? corpCode;
+  String? _rdListingUrl;
+  String? _rdDetailUrl;
+  String? _agentId;
+  String? _branchId;
   bool? showShadowLoan = false;
   bool? showShadowAcc = true;
   final TextEditingController searchController = TextEditingController();
@@ -30,7 +35,7 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
   void initState() {
     super.initState();
     searchController.addListener(_onSearchChanged);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initializeData());
+    WidgetsBinding.instance.addPostFrameCallback((_) => loadSharedPrefs(context));
   }
 
   @override
@@ -44,6 +49,68 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
     _filterCustomers(searchController.text);
   }
 
+  Future<void> loadSharedPrefs(BuildContext context) async {
+    final branchId = await SharedPref().getECollectBranchID(); //01
+    final agentID = await SharedPref().getECollectAgentID(); //1021
+    final loanListingUrl = await SharedPref().getECollectUrlList(); //1021
+
+    setState(() {
+      for(var x in loanListingUrl){
+        if(x.contains("getRDCustomerunderAgentList")){
+          setState(() {
+            _rdListingUrl = x;
+          });
+          print((x));
+        }
+      }
+      for(var x in loanListingUrl){
+        if(x.contains("")){
+          setState(() {
+            _rdDetailUrl = x;
+          });
+          print((x));
+        }
+      }
+      print("RD LIST URL : $_rdListingUrl");
+      print("RD detail URL : $_rdDetailUrl");
+      print("agentID : $agentID");
+      print("branchId : $branchId");
+     // _rdListingUrl = "https://mftctest.digicob.in/getRDCustomerunderAgentLis";
+      _rdDetailUrl = "";
+      _branchId = "01";
+      _agentId = "1005";
+    });
+    try {
+
+      if (!mounted) return;
+
+      setState(() {
+        _isLoading = true;
+      });
+
+      final provider = Provider.of<AgentCustomerDetailsProvider>(
+        context,
+        listen: false,
+      );
+
+      await provider.getAgentCustomerDetails(_rdListingUrl!,_agentId!);
+
+      if (!mounted) return;
+
+      setState(() {
+        _filteredCustomers = provider.agentCustomerDetailsModel?.data;
+        _isLoading = false;
+      });
+    } catch (error) {
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+    }
+    if (printStatementStatus) {
+      print("RD _branchId = $_branchId");
+      print("RD _subAgentId = $_agentId");
+    }
+
+  }
   void _filterCustomers(String query) {
     final provider = Provider.of<AgentCustomerDetailsProvider>(
       context,
@@ -71,40 +138,6 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
     });
   }
 
-  Future<void> _initializeData() async {
-    try {
-      final id = await SharedPref().getAgentOriginId();
-      final crpCd = await SharedPref().getCorpCode();
-
-      if (!mounted) return;
-
-      setState(() {
-      //  agentId = id;
-        agentId = "1005";
-        corpCode = crpCd;
-        _isLoading = true;
-      });
-
-      final provider = Provider.of<AgentCustomerDetailsProvider>(
-        context,
-        listen: false,
-      );
-
-      await provider.getAgentCustomerDetails(agentId!);
-
-      if (!mounted) return;
-
-      setState(() {
-        _filteredCustomers = provider.agentCustomerDetailsModel?.data;
-        _isLoading = false;
-      });
-    } catch (error) {
-      if (!mounted) return;
-      setState(() => _isLoading = false);
-      // Handle error appropriately
-     // print("Error initializing data: $error");
-    }
-  }
   Widget _buildSearchField() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -434,7 +467,8 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
       MaterialPageRoute(
         builder: (context) => AccountDetailNew(
           custName: customer.custName,
-          accNo: customer.depGlobalAccNo,
+         /// accNo: customer.depGlobalAccNo,
+          accNo: "01042888",
           scheme: customer.schName,
           custId: customer.custId,
         ),

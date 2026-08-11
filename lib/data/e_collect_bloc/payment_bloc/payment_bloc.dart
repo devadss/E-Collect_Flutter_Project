@@ -18,5 +18,26 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState>{
         emit(QrPaymentFailState(data));
       }
     });
+    on<LinkPaymentEvent>((event, emit) async {
+      emit(QrPaymentLoaderState());
+      var data = await paymentRepository.linkPaymentApiIntentCall(event.linkPaymentRequestModel);
+      if(data is QrPaymentSuccess){
+        emit(QrPaymentSuccessState(data));
+      }else if(data is QrPaymentFail){
+        emit(QrPaymentFailState(data));
+      }
+    });
+
+    on<CashPaymentEvent>((event, emit) async {
+      emit(QrPaymentLoaderState());
+      var data = await paymentRepository.cashPaymentApiIntentCall(event.cashPaymentRequestModel);
+      if(data is CashPaymentSuccess){
+        emit(CashPaymentSuccessState(data));
+      }else if(data is CashPaymentFail){
+        emit(CashPaymentFailState(data));
+      }
+    });
+
+
   }
 }

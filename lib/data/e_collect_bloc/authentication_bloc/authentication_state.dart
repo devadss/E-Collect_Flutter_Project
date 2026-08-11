@@ -157,3 +157,19 @@ class IfscBranchFailureState extends AuthenticationState {
   const IfscBranchFailureState(this.ifscCodeFailModel);
 }
 
+///*********************FCM_UNREGISTER******************************
+class FcmUnRegisterLoaderState extends AuthenticationState {
+  const FcmUnRegisterLoaderState();
+}
+
+class FcmUnRegisterSuccessState extends AuthenticationState {
+  final FcmUnregisterSuccess fcmUnregisterSuccess;
+  const FcmUnRegisterSuccessState(this.fcmUnregisterSuccess);
+}
+
+class FcmUnRegisterFailureState extends AuthenticationState {
+  final FcmUnregisterFail fcmUnregisterFail;
+  const FcmUnRegisterFailureState(this.fcmUnregisterFail);
+}
+
+

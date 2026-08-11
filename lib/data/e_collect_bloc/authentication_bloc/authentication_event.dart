@@ -49,3 +49,13 @@ class IfscBranchEvent extends AuthenticationEvent{
   final String ifscCode;
   const IfscBranchEvent(this.ifscCode);
 }
+
+///**********************FCM_UNREGISTER*****************************
+class FcmUnregisterEvent extends AuthenticationEvent{
+  final String customerId;
+  final String mobileNumber;
+  final String deviceType;
+  final String appVersion;
+  final String deviceToken;
+  const FcmUnregisterEvent(this.customerId, this.mobileNumber, this.deviceToken, this.appVersion, this.deviceType);
+}

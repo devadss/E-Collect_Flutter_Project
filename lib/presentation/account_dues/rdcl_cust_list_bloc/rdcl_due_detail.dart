@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import '../../../core/alerts.dart';
 import '../../../core/colors.dart';
 import '../../../core/utils.dart';
 import '../../../data/e_collect_bloc/payment_bloc/payment_bloc.dart';
@@ -35,6 +36,7 @@ class RdclDueDetail extends StatefulWidget {
   @override
   State<RdclDueDetail> createState() => _RdclDueDetailState();
 }
+
 class _RdclDueDetailState extends State<RdclDueDetail> {
   TextEditingController amountController = TextEditingController();
   double? duemAount;
@@ -66,8 +68,6 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
   String? eCollectAgentId;
   String? selectedMethod;
 
-
-
   Future<void> loadSharedPrefs() async {
     final prefs = SharedPref();
 
@@ -89,7 +89,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
     final _eCollectAgentNumber = await prefs.getECollectUserNumber();
     final _eCollectAgentEmail = await prefs.getECollectUserEmail();
     final _eCollectAgentBranchCode =
-    await prefs.getECollectMerchantBranchCode();
+        await prefs.getECollectMerchantBranchCode();
     final _eCollectAgentMerchantID = await prefs.getECollectMerchantID();
     final _eCollectCollectionType = await prefs.getECollectUserType();
     //---------------------------------------
@@ -122,10 +122,10 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
   @override
   void initState() {
     super.initState();
-    context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", widget.customeName, '1', '10'));
+    context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent(
+        "", widget.branchCode, "", widget.customeName, '1', '10'));
     loadSharedPrefs();
   }
-
 
   TextStyle _labelTextStyle() =>
       const TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: black);
@@ -224,7 +224,10 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [home1.withValues(alpha: 0.1), home1.withValues(alpha: 0.05)],
+                      colors: [
+                        home1.withValues(alpha: 0.1),
+                        home1.withValues(alpha: 0.05)
+                      ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -262,7 +265,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
-                          Icons.currency_rupee_rounded  ,
+                          Icons.currency_rupee_rounded,
                           color: home1,
                           size: 30,
                         ),
@@ -278,76 +281,28 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                   label: "Pay via QR Code",
                   onPressed: () async {
                     selectedMethod = "QR";
-                    context.read<PaymentBloc>().add(QrPaymentEvent(QrPaymentRequestModel(
-                        agentDetails: AgentDetails(agentName: eCollectMerchantName!,
-                            agentId: eCollectAgentId!, agentOrginId: eCollectAgentId!,
-                            agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!,
-                            agentBranch: int.parse(eCollectAgentBranchCode!)),
-                        customerDetails: CustomerDetails(customerName: widget.customeName,
-                            customerPhone: eCollectAgentNumber!,
-                            customerAccno: widget.custAcNumber,
-                            customerId: widget.custIdNew,
-                            customerEmail: eCollectAgentEmail!),
-                        collectionType: eCollectCollectionType!,
-                        amount: double.parse(amountController.text),
-                        note: 'Payment for Order',
-                        qrSource: 'MOB',
-                        source: 'COLLECTION',
-                        // merchantId: int.parse(eCollectAgentMerchantID!)
-                        merchantId: 1)));
-                    // showProgressDialog(context);
-                    // final paymentSession =
-                    // await CreatePaymentSessionIdRepository()
-                    //     .getPaymentSessionId(
-                    //     agentOriginId: agentId,
-                    //     agentEmail: agentEmail,
-                    //     customerName: widget.customeName,
-                    //     customerPhone: widget.custPhoneNumber,
-                    //     customerAccno: widget.custAcNumber,
-                    //     customerId: widget.custIdNew,
-                    //     customerEmail: "",
-                    //     corpCode: corpCode,
-                    //     cardRefNum: "",
-                    //     token: token,
-                    //     amount: amountController.text,
-                    //     agentPhone: agentMobile,
-                    //     agentId: widget.custId,
-                    //     note: "Payment For Agent $agentName",
-                    //     subAgentId: subagentId,
-                    //     agentName: agentName,
-                    //     subAgentBranchCode: subAgentCodeNew,
-                    //     collectionType: 'RDCL');
-                    // paymentSession.fold((error) {
-                    //   Navigator.pop(context);
-                    // }, (sessionId) async {
-                    //   paymentSessionId = sessionId.paymentSessionId ?? "";
-                    //   if (paymentSessionId!.isNotEmpty) {
-                    //     if (!mounted) return;
-                    //     Navigator.pop(context);
-                    //
-                    //     if (!mounted) return;
-                    //     final result = await Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(
-                    //         builder: (context) => NewQrCodePage(
-                    //           paymentSessionId: paymentSessionId!,
-                    //           amount: amountController.text ?? "",
-                    //           token: token!,
-                    //           custName: customerName ?? "custName",
-                    //           custPhone: widget.custPhoneNumber,
-                    //           custId: widget.custId,
-                    //         ),
-                    //       ),
-                    //     );
-                    //     if (!mounted) return;
-                    //     if (result == "fetch_balance") {
-                    //       Navigator.pop(context);
-                    //     }
-                    //   } else {
-                    //     if (!mounted) return;
-                    //     Navigator.pop(context);
-                    //   }
-                    // });
+                    context.read<PaymentBloc>().add(CashPaymentEvent(
+                        QrPaymentRequestModel(
+                            agentDetails: AgentDetails(
+                                agentName: eCollectMerchantName!,
+                                agentId: eCollectAgentId!,
+                                agentOrginId: "1079",
+                                agentPhone: eCollectAgentNumber!,
+                                agentEmail: eCollectAgentEmail!,
+                                agentBranch:
+                                    int.parse(eCollectAgentBranchCode!)),
+                            customerDetails: CustomerDetails(
+                                customerName: widget.customeName,
+                                customerPhone: eCollectAgentNumber!,
+                                customerAccno: widget.custAcNumber,
+                                customerId: widget.custIdNew,
+                                customerEmail: eCollectAgentEmail!),
+                            collectionType: eCollectCollectionType!,
+                            amount: double.parse(amountController.text),
+                            note: 'Payment for Order',
+                            qrSource: 'MOB',
+                            source: 'COLLECTION',
+                            merchantId: int.parse(eCollectAgentMerchantID!))));
                   },
                 ),
                 const SizedBox(height: 12),
@@ -367,33 +322,38 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                         amountController.text);
                   },
                 ),
-                //const SizedBox(height: 24),
-                //UNCOMMENT AFTER PAYMENT LINK IS LIVE....
-                              const SizedBox(height: 12),
-              _buildPaymentOptionButton(
-                icon: Icons.link,
-                label: "Send Payment Link",
-                onPressed: () {
-                  Navigator.pop(context);
-                  context.read<PaymentBloc>().add(QrPaymentEvent(QrPaymentRequestModel(
-                      agentDetails: AgentDetails(agentName: eCollectMerchantName!,
-                          agentId: eCollectAgentId!, agentOrginId: eCollectAgentId!,
-                          agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!,
-                          agentBranch: int.parse(eCollectAgentBranchCode!)),
-                      customerDetails: CustomerDetails(customerName: widget.customeName,
-                          customerPhone: eCollectAgentNumber!,
-                          customerAccno: widget.custAcNumber,
-                          customerId: widget.custIdNew,
-                          customerEmail: eCollectAgentEmail!),
-                      collectionType: eCollectCollectionType!,
-                      amount: double.parse(amountController.text),
-                      note: 'Payment for Order',
-                      qrSource: 'MOB',
-                      source: 'COLLECTION',
-                      // merchantId: int.parse(eCollectAgentMerchantID!)
-                      merchantId: 1)));
-                },
-              ),
+
+                const SizedBox(height: 12),
+                _buildPaymentOptionButton(
+                  icon: Icons.link,
+                  label: "Send Payment Link",
+                  onPressed: () {
+                    Navigator.pop(context);
+                    context.read<PaymentBloc>().add(LinkPaymentEvent(
+                        QrPaymentRequestModel(
+                            agentDetails: AgentDetails(
+                                agentName: eCollectMerchantName!,
+                                agentId: eCollectAgentId!,
+                                agentOrginId: "1079",
+                                agentPhone: eCollectAgentNumber!,
+                                agentEmail: eCollectAgentEmail!,
+                                agentBranch:
+                                    int.parse(eCollectAgentBranchCode!)),
+                            customerDetails: CustomerDetails(
+                                customerName: widget.customeName,
+                                customerPhone: eCollectAgentNumber!,
+                                customerAccno: widget.custAcNumber,
+                                customerId: widget.custIdNew,
+                                customerEmail: eCollectAgentEmail!),
+                            collectionType: eCollectCollectionType!,
+                            amount: double.parse(amountController.text),
+                            note: 'Payment for Order',
+                            qrSource: 'MOB',
+                            source: 'COLLECTION',
+                            merchantId: int.parse(eCollectAgentMerchantID!))));
+                    // merchantId: 1)));
+                  },
+                ),
                 const SizedBox(height: 12),
               ],
             ),
@@ -402,6 +362,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
       },
     );
   }
+
   Future<void> sendLinkFunction() async {
     final send = await PaymentLinkRepository().getPaymentLink(
         agentName: agentName!,
@@ -422,17 +383,21 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
         subAgentId: subagentId!);
 
     send.fold(
-          (error) {
+      (error) {
         //print("-------------------ERROR---------------------");
         // print(error);
       },
-          (sendLink) {
+      (sendLink) {
         if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
           print("2");
           //Share.share("Here is your payment link: ${sendLink.linkUrl}");
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>
-              PaymentLinkRequestUi(customerMobileNumber: agentMobile.toString(), paymentLink: sendLink.linkUrl.toString(),)
-          ));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => PaymentLinkRequestUi(
+                        customerMobileNumber: agentMobile.toString(),
+                        paymentLink: sendLink.linkUrl.toString(),
+                      )));
         } else {
           // print("Payment link is empty or null");
         }
@@ -441,13 +406,13 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
   }
 
   Future<void> paymentConfirmation(
-      BuildContext context,
-      String name,
-      String accNo,
-      String custId,
-      String email,
-      String amt,
-      ) {
+    BuildContext context,
+    String name,
+    String accNo,
+    String custId,
+    String email,
+    String amt,
+  ) {
     return showDialog(
       context: context,
       barrierDismissible: false,
@@ -557,23 +522,30 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          context.read<PaymentBloc>().add(QrPaymentEvent(QrPaymentRequestModel(
-                              agentDetails: AgentDetails(agentName: eCollectMerchantName!,
-                                  agentId: eCollectAgentId!, agentOrginId: eCollectAgentId!,
-                                  agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!,
-                                  agentBranch: int.parse(eCollectAgentBranchCode!)),
-                              customerDetails: CustomerDetails(customerName: widget.customeName,
-                                  customerPhone: eCollectAgentNumber!,
-                                  customerAccno: widget.custAcNumber,
-                                  customerId: widget.custIdNew,
-                                  customerEmail: eCollectAgentEmail!),
-                              collectionType: eCollectCollectionType!,
-                              amount: double.parse(amountController.text),
-                              note: 'Payment for Order',
-                              qrSource: 'MOB',
-                              source: 'COLLECTION',
-                              // merchantId: int.parse(eCollectAgentMerchantID!)
-                              merchantId: 1)));
+                          context.read<PaymentBloc>().add(QrPaymentEvent(
+                              QrPaymentRequestModel(
+                                  agentDetails: AgentDetails(
+                                      agentName: eCollectMerchantName!,
+                                      agentId: eCollectAgentId!,
+                                      agentOrginId: "1079",
+                                      agentPhone: eCollectAgentNumber!,
+                                      agentEmail: eCollectAgentEmail!,
+                                      agentBranch:
+                                          int.parse(eCollectAgentBranchCode!)),
+                                  customerDetails: CustomerDetails(
+                                      customerName: widget.customeName,
+                                      customerPhone: eCollectAgentNumber!,
+                                      customerAccno: widget.custAcNumber,
+                                      customerId: widget.custIdNew,
+                                      customerEmail: eCollectAgentEmail!),
+                                  collectionType: eCollectCollectionType!,
+                                  amount: double.parse(amountController.text),
+                                  note: 'Payment for Order',
+                                  qrSource: 'MOB',
+                                  source: 'COLLECTION',
+                                  merchantId:
+                                      int.parse(eCollectAgentMerchantID!))));
+                          // merchantId: 1)));
                           // getCashTrans(
                           //   token: token,
                           //   customerName: name,
@@ -623,17 +595,16 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-
-      Text(
-            value,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.poppins(
-              color: isAmount ? Colors.red : Colors.grey[800],
-              fontSize: 14,
-              fontWeight: isAmount ? FontWeight.w700 : FontWeight.w600,
-            ),
+        Text(
+          value,
+          overflow: TextOverflow.ellipsis,
+          style: GoogleFonts.poppins(
+            color: isAmount ? Colors.red : Colors.grey[800],
+            fontSize: 14,
+            fontWeight: isAmount ? FontWeight.w700 : FontWeight.w600,
           ),
-       // ),
+        ),
+        // ),
       ],
     );
   }
@@ -651,7 +622,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
     required String? note,
   }) async {
     final cashPaymentProvider =
-    Provider.of<CashTranscationProvider>(context, listen: false);
+        Provider.of<CashTranscationProvider>(context, listen: false);
     final cash = await cashPaymentProvider.getTranscations(
         agentName: agentName,
         agentId: custId,
@@ -692,7 +663,9 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
               custId: custId ?? "",
               txnId: success.transactionId.toString(),
               txnType: "CASH",
-              dat: '', tranType: '', accNo: '',
+              dat: '',
+              tranType: '',
+              accNo: '',
             );
             Navigator.push(
               context,
@@ -737,7 +710,6 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                 ),
               ),
               const SizedBox(height: 24),
-
               Text(
                 "Enter Payment Amount",
                 style: GoogleFonts.poppins(
@@ -747,7 +719,6 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                 ),
               ),
               const SizedBox(height: 8),
-
               Text(
                 "Maximum due: Rs. ${duemAount?.toStringAsFixed(2)}",
                 style: GoogleFonts.poppins(
@@ -756,7 +727,6 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                 ),
               ),
               const SizedBox(height: 24),
-
               Container(
                 decoration: BoxDecoration(
                   color: Colors.grey[50],
@@ -798,7 +768,6 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                 ),
               ),
               const SizedBox(height: 24),
-
               Row(
                 children: [
                   Expanded(
@@ -823,11 +792,10 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: ()
-                      {
-                        amountController.text.toString().isNotEmpty?
-                        _proceedButtonClick():
-                        Navigator.pop(context);
+                      onPressed: () {
+                        amountController.text.toString().isNotEmpty
+                            ? _proceedButtonClick()
+                            : Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: home1,
@@ -866,8 +834,10 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
           onPressed: () => {
-            context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", "", '1', '10')),
-            Navigator.pop(context)},
+            context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent(
+                "", widget.branchCode, "", "", '1', '10')),
+            Navigator.pop(context)
+          },
         ),
         centerTitle: true,
         title: Text(
@@ -884,8 +854,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
           // Customer Info Card
           Padding(
             padding: const EdgeInsets.all(16),
-            child: 
-            BlocBuilder<RdclDuelistBloc, RdclDuelistState>(
+            child: BlocBuilder<RdclDuelistBloc, RdclDuelistState>(
               builder: (BuildContext context, RdclDuelistState state) {
                 if (state is RdclDueListLoaderState) {
                   return const Center(child: CircularProgressIndicator());
@@ -1064,7 +1033,8 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                               icon: Icons.payment,
                               iconColor: Colors.blueGrey,
                               label: "Installment",
-                              value: "Rs. ${item.installAmt?.toStringAsFixed(2)}",
+                              value:
+                                  "Rs. ${item.installAmt?.toStringAsFixed(2)}",
                             ),
                             _buildDetailGridItem(
                               icon: Icons.credit_card,
@@ -1109,36 +1079,54 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
               if (state is QrPaymentSuccessState) {
                 Navigator.pop(context);
                 print(state.qrPaymentSuccess.paymentResponseSuccess.paymentUrl);
-                selectedMethod == "QR"?
-
-                Navigator.push(
+                selectedMethod == "Link"
+                    ? Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            PaymentLinkRequestUi(
+                              customerMobileNumber: "",
+                              paymentLink: state.qrPaymentSuccess
+                                  .paymentResponseSuccess.paymentUrl,
+                            )))
+                    : Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => NewQrCodePage(
-                      paymentSessionId: state
-                          .qrPaymentSuccess.paymentResponseSuccess.paymentUrl,
+                      paymentSessionId: state.qrPaymentSuccess
+                          .paymentResponseSuccess.paymentUrl,
                       amount: amountController.text,
                       custName: "",
                       custPhone: "custNumber",
                       custId: "CustId",
                     ),
                   ),
-                ):
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => PaymentLinkRequestUi(
-                          customerMobileNumber: "",
-                          paymentLink: state.qrPaymentSuccess.paymentResponseSuccess.paymentUrl,
-                        )));
-
+                );
               } else if (state is QrPaymentFailState) {
                 Navigator.pop(context);
+                showAlertDialog(
+                    state.qrPaymentFail.paymentFailResponse.message, context);
                 print(state.qrPaymentFail.paymentFailResponse.message);
+              } else if (state is CashPaymentSuccessState) {
+                Navigator.pop(context);
+                showAlert(
+                    state.cashPaymentSuccess.cashPaymentSuccessResponse
+                        .status ==
+                        "Y"
+                        ? "SUCCESS"
+                        : "FAILED",
+                    state.cashPaymentSuccess.cashPaymentSuccessResponse.message,
+                    context);
+                print(state
+                    .cashPaymentSuccess.cashPaymentSuccessResponse.message);
+              } else if (state is CashPaymentFailState) {
+                Navigator.pop(context);
+                print(state.cashPaymentFail.payemtError);
               }
             },
             child: SizedBox(),
           ),
+
         ],
       ),
     );

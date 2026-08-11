@@ -5,12 +5,10 @@ import '../../account_dues/account_list_home_page.dart';
 import '../../account_dues/rdcl_cust_list_bloc/customer _list.dart';
 import '../../dues/rdcl_due_list_bloc_page.dart';
 import '../../home/e_collect_homepage.dart';
-import '../../home/home_page.dart';
 import '../../loan_integrated/loan_list.dart';
 import '../../profile/profile_home_page.dart';
 import '../history/ecollect_transaction_report.dart';
 import '../pages/all-groups.dart';
-import '../pages/group_home_page.dart';
 import '../pages/payment_link_page.dart';
 import '../pages/settlement_page.dart';
 
@@ -37,10 +35,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   Future<void> getSharedData() async {
     final _integrationStatus =
     await SharedPref.shared.getECollectMerchantIntegrationStatus();
-
-    final _branCode =
-    await SharedPref.shared.getECollectMerchantBranchCode();
-
+    final _branCode = await SharedPref.shared.getECollectMerchantBranchCode();
     final _type = await SharedPref.shared.getECollectTypeList();
 
     if (!mounted) return;
@@ -51,7 +46,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
     debugPrint("=================================");
     setState(() {
     type = _type;
-
       integrationStatus = _integrationStatus;
       branCode = _branCode;
       isLoading = false;
@@ -64,116 +58,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
     getSharedData();
   }
   /// RD, LOAN , RDCL , Group these are the 4 categories we are currently using. Based on the type its been switched....
- /* List<NavItem> get navItemCategories {
-
-    switch(type) {
-
-      case "RD":
-        {
-          return [
-            NavItem(
-              label: 'Home',
-              icon: Icons.home,
-             // page: const HomePage(userType: "RD"),
-              page:  ECollectHomepage(key: eCollectHomeKey,),
-            ),
-            NavItem(
-              label: 'RD Dues',
-              icon: Icons.receipt_long,
-              page: const RdDueDetailPage(),
-            ),
-            NavItem(
-              label: 'Profile',
-              icon: Icons.person,
-              page: const ProfileHomePage(),
-            ),
-          ];
-        }
-      case "LOAN":
-        {
-          return [
-            NavItem(
-              label: 'Home',
-              icon: Icons.home,
-              page: const HomePage(userType: "RD"),
-            ),
-            NavItem(
-              label: 'Loan-List',
-              icon: Icons.monetization_on,
-              page: const LoanList(),
-            ),
-            NavItem(
-              label: 'Profile',
-              icon: Icons.person,
-              page: const ProfileHomePage(),
-            ),
-          ];
-        }
-      case "RDCL":
-        {
-          return [
-            NavItem(
-              label: 'Home',
-              icon: Icons.home,
-            //  page: const HomePage(userType: "RDCL"),
-            //  page: const ECollectHomepage(),
-              page:  ECollectHomepage(key: eCollectHomeKey,),
-            ),
-            NavItem(
-              label: 'Due-Detail',
-              icon: Icons.receipt_long,
-              page: RdclDueDetailBlocPage(
-                branchCode: branCode,
-                key: eCollectRdclDueDetailKey,
-              ),
-            ),
-            NavItem(
-              label: 'Due-List',
-              icon: Icons.receipt,
-              page: RdclDueListBocPage(key: eCollectRdclDueListKey),
-            ),
-            NavItem(
-              label: 'Tran-History',
-              icon: Icons.timelapse,
-              page: const EcollectTransactionReport(),
-            ),
-            NavItem(
-              label: 'Profile',
-              icon: Icons.person,
-              page: const ProfileHomePage(),
-            ),
-          ];
-        }
-      case "GROUP":
-        {
-          return [
-            NavItem(
-                label: 'Home', icon: Icons.home, page: const GroupHomePageUI()),
-            NavItem(
-                label: 'Groups',
-                icon: Icons.safety_divider,
-                page: AllGroupsPage()),
-            NavItem(
-              label: 'TranHistory',
-              icon: Icons.send_time_extension_outlined,
-              page: const PaymentLinkHomePageMerchant(),
-            ),
-            NavItem(
-              label: 'Settlement',
-              icon: Icons.settings_backup_restore,
-              page: const SettlementPage(),
-            ),
-            NavItem(
-              label: 'Profile',
-              icon: Icons.person,
-              page: const ProfileHomePage(),
-            ),
-          ];
-        }
-      default:
-        return [];
-    }
-  }*/
   List<NavItem> get navItemCategories {
     final List<NavItem> items = [
       NavItem(
@@ -247,7 +131,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
           break;
       }
     }
-items.add(     NavItem(
+
+    items.add(NavItem(
   label: 'Tran-History',
   icon: Icons.timelapse,
   page: const EcollectTransactionReport(),

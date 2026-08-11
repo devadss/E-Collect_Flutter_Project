@@ -11,12 +11,13 @@ class IntegratedLoanListProvider with ChangeNotifier{
   IntegratedLoanListResponse? get integratedLoanListResponse => _integratedLoanListResponse;
 
   Future<Either<String , IntegratedLoanListResponse>>fetchIntegratedLoans(
+      String? requestUrl ,
       String? agentId ,
       String? branchId ,
       String? schemeCode ,
       String? accNo
       ) async {
-    final data = await _integrationLoanRepository.fetchIntegratedLoans(agentId, branchId, schemeCode, accNo);
+    final data = await _integrationLoanRepository.fetchIntegratedLoans(requestUrl, agentId, branchId, schemeCode, accNo);
     data.fold((err){}, (success){
       _integratedLoanListResponse = success;
     });

@@ -9,4 +9,11 @@ class QrPaymentEvent extends PaymentEvent{
 }
 
 class LinkPaymentEvent extends PaymentEvent{
+  final QrPaymentRequestModel linkPaymentRequestModel;
+  LinkPaymentEvent(this.linkPaymentRequestModel);
+}
+
+class CashPaymentEvent extends PaymentEvent{
+  final QrPaymentRequestModel cashPaymentRequestModel;
+  CashPaymentEvent(this.cashPaymentRequestModel);
 }
