@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/constants.dart';
 
@@ -193,6 +195,56 @@ class SharedPref {
   }
 
   //e-Collect////////
+  Future<bool> setECollectTypeList(
+      List<String> types,
+      ) async {
+    final prefs = await _getPrefs();
+
+    return prefs.setString(
+      SharedPrefKeys.eCollectTypes,
+      jsonEncode(types),
+    );
+  }
+
+  Future<List<String>> getECollectTypeList() async {
+    final prefs = await _getPrefs();
+
+    final value = prefs.getString(
+      SharedPrefKeys.eCollectTypes,
+    );
+
+    if (value == null) return [];
+
+    return List<String>.from(jsonDecode(value));
+  }
+
+
+  Future<bool> setECollectUrlList(
+      List<String> types,
+      ) async {
+    final prefs = await _getPrefs();
+
+    return prefs.setString(
+      SharedPrefKeys.eCollectUrlList,
+      jsonEncode(types),
+    );
+  }
+
+  Future<List<String>> getECollectUrlList() async {
+    final prefs = await _getPrefs();
+
+    final value = prefs.getString(
+      SharedPrefKeys.eCollectUrlList,
+    );
+
+    if (value == null) return [];
+
+    return List<String>.from(jsonDecode(value));
+  }
+
+
+
+
   Future<Future<bool>> setECollectMerchantBranchCode(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.eCollectMerchantBranchCode, value);

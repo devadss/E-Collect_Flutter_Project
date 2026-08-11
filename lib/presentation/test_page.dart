@@ -1,6 +1,7 @@
 import 'package:collection_qr_flutter/presentation/profile/profile_home_page.dart';
 import 'package:flutter/material.dart';
 
+import '../core/colors.dart';
 import 'account_dues/account_list_home_page.dart';
 import 'account_dues/rdcl_cust_list_bloc/customer _list.dart';
 import 'dues/rdcl_due_list_bloc_page.dart';
@@ -729,3 +730,53 @@ import 'merchant/pages/settlement_page.dart';
 //     );
 //   }
 // }
+
+class TestPage extends StatefulWidget {
+  const TestPage({super.key});
+
+  @override
+  State<TestPage> createState() => _TestPageState();
+}
+
+class _TestPageState extends State<TestPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          toolbarHeight: 200,
+          backgroundColor: Colors.white,
+          expandedHeight: 200,
+          pinned: true,
+          flexibleSpace: FlexibleSpaceBar(
+            expandedTitleScale: 2,
+            collapseMode: CollapseMode.pin,
+            title: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 70,
+                ),
+                Text('Hi Welcome back , '),
+                Text(
+                  "Ainsteen varghese",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                )
+              ],
+            ),
+
+            centerTitle: false,
+            // background: Container(
+            //   decoration: BoxDecoration(
+            //       borderRadius: BorderRadius.circular(10), color: Colors.white),
+            //
+            // ),
+          ),
+        ),
+        SliverFillRemaining()
+      ],
+    ));
+  }
+}

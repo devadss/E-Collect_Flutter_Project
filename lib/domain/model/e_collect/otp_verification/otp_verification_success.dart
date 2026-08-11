@@ -25,7 +25,9 @@ class LoginResponse {
   final String branchCode;
   final String integrationStatus;
   final String productType;
-  final List<String> listUrl;
+
+// Changed from List<String> to Map<String, List<String>>
+  final Map<String, List<String>> listUrl;
 
   LoginResponse({
     required this.isAuthenticated,
@@ -53,15 +55,30 @@ class LoginResponse {
     this.branchName,
     required this.branchCode,
     required this.integrationStatus,
-    required this.listUrl, required this.productType,
+    required this.productType,
+    required this.listUrl,
   });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
+    final rawListUrl = json['listUrl'];
+
+    final Map<String, List<String>> parsedListUrl = {};
+
+    if (rawListUrl is Map) {
+      rawListUrl.forEach((key, value) {
+        if (value is List) {
+          parsedListUrl[key.toString()] =
+              value.map((e) => e.toString().trim()).toList();
+        }
+      });
+    }
+
     return LoginResponse(
       isAuthenticated: json['isAuthenticated'] ?? false,
       token: json['token'] ?? '',
       refreshToken: json['refreshToken'] ?? '',
-      expiryDate: DateTime.parse(json['expiryDate']),
+      expiryDate: DateTime.tryParse(json['expiryDate'] ?? '') ??
+          DateTime.fromMillisecondsSinceEpoch(0),
       loginType: json['loginType'] ?? '',
       userId: json['userId'] ?? 0,
       username: json['username'] ?? '',
@@ -82,11 +99,9 @@ class LoginResponse {
       merchantName: json['merchantName'] ?? '',
       branchName: json['branchName'],
       branchCode: json['branchCode'] ?? '',
-      productType: json['productType'] ?? '',
       integrationStatus: json['integrationStatus'] ?? '',
-      listUrl: (json['listUrl'] as List<dynamic>? ?? [])
-          .map((e) => e.toString().trim())
-          .toList(),
+      productType: json['productType'] ?? '',
+      listUrl: parsedListUrl,
     );
   }
 
@@ -116,8 +131,8 @@ class LoginResponse {
       'merchantName': merchantName,
       'branchName': branchName,
       'branchCode': branchCode,
-      'productType': productType,
       'integrationStatus': integrationStatus,
+      'productType': productType,
       'listUrl': listUrl,
     };
   }

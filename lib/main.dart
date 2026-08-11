@@ -419,9 +419,8 @@ class MyApp extends StatelessWidget {
             );
           },
           home: const SplashScreen(),
-         // home: const NavTest(),
-        // home: const OnboardingScreen(),
-         // home: const Sample(),
+       //   home: const TestPage(),
+
         );
       },
     );

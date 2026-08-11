@@ -32,8 +32,10 @@ class _LoanListState extends State<LoanList> {
     final subAgentCode = await SharedPref().getSubAgentCode(); //1021
 
     setState(() {
-      _branchId = branchId;
-      _subAgentId= subAgentId;
+      // _branchId = branchId;
+      // _branchId = branchId;
+     _branchId = "01";
+      _subAgentId= "1005";
     });
     if(printStatementStatus ){
       print("Loan _branchId = $_branchId");
@@ -159,10 +161,76 @@ class _LoanListState extends State<LoanList> {
       });
     }
   }
+  AppBar buildAppBar() {
+    return AppBar(
+      backgroundColor: Colors.white,
+      automaticallyImplyLeading: false,
+      centerTitle: true,
+      toolbarHeight: 100,
+      title: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "Loan List",
+            style: TextStyle(
+              color: home1,
+              fontSize: 27,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          // SizedBox(height: 8),
+          // Container(
+          //   padding: const EdgeInsets.all(6),
+          //   decoration: BoxDecoration(
+          //     color: Colors.grey.shade200.withValues(alpha:0.6),
+          //     borderRadius: BorderRadius.circular(40),
+          //   ),
+          //   child: SegmentedTabControl(
+          //     indicatorPadding: const EdgeInsets.all(4),
+          //     indicatorDecoration: BoxDecoration(
+          //       gradient: LinearGradient(
+          //         colors: [home1, home1.withValues(alpha:0.85)],
+          //       ),
+          //       borderRadius: BorderRadius.circular(30),
+          //       boxShadow: [
+          //         BoxShadow(
+          //           color: home1.withValues(alpha:0.9),
+          //           blurRadius: 10,
+          //           offset: const Offset(0, 2),
+          //         ),
+          //       ],
+          //     ),
+          //     barDecoration: BoxDecoration(
+          //       color: Colors.transparent,
+          //       borderRadius: BorderRadius.circular(40),
+          //     ),
+          //     // tabs: [
+          //     //   SegmentTab(
+          //     //     label: "RD",
+          //     //     color: Colors.transparent,
+          //     //     backgroundColor: Colors.transparent,
+          //     //     textColor: Colors.grey.shade600,
+          //     //     selectedTextColor: Colors.white,
+          //     //   ),
+          //     //   SegmentTab(
+          //     //     label: "LOANS",
+          //     //     color: Colors.transparent,
+          //     //     backgroundColor: Colors.transparent,
+          //     //     textColor: Colors.grey.shade600,
+          //     //     selectedTextColor: Colors.white,
+          //     //   ),
+          //     // ],
+          //   ),
+          // )
 
+        ],
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: buildAppBar(),
       backgroundColor: Colors.white,
 
       body: SafeArea(

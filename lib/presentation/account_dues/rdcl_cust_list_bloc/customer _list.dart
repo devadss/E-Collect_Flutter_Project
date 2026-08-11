@@ -10,9 +10,9 @@ class RdclDueListBocPage extends StatefulWidget {
   const RdclDueListBocPage({super.key});
 
   @override
-  State<RdclDueListBocPage> createState() => _RdclDueListBocPageState();
+  State<RdclDueListBocPage> createState() => RdclDueListBocPageState();
 }
-class _RdclDueListBocPageState extends State<RdclDueListBocPage> {
+class RdclDueListBocPageState extends State<RdclDueListBocPage> {
   String? branchid;
   String? agentPhoneNumber;
   String? agentIdValue;
@@ -25,7 +25,12 @@ class _RdclDueListBocPageState extends State<RdclDueListBocPage> {
     super.initState();
     loadSharedPrefs();
   }
+  Future<void> refresh()async{
+    print("Here");
+    searchController.clear();
+    context.read<CustomerListBloc>().add(CustomerListFetchEvent("", branchid.toString(), "1", "10", ""),);
 
+  }
   Future<void> loadSharedPrefs() async {
     final branchID = await SharedPref().getECollectMerchantBranchCode();
     final number = await SharedPref().getParentAgentMobNum();

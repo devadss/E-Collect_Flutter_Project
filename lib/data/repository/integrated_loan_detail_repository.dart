@@ -14,10 +14,10 @@ class IntegratedLoanDetailRepository implements IntegratedLoanDetailInterface{
   Future<Either<String, IntegratedLoanDetails>> getIntegratedLoanDetails
       (String flag, String branchId, String schemeCode, String demandDate, String accountNumber) async {
    // final uri = Uri.parse("https://doorstepthazhava.digicob.in/getLoanAccountHolder");
-   // final uri = Uri.parse("https://mftctest.digicob.in/getLoanAccountHolder");
+    final uri = Uri.parse("https://mftctest.digicob.in/getLoanAccountHolder");
     print("loadVendorUrl = ${await loadVendorUrl()}");
-    var urls = await loadVendorUrl();
-    final uri = Uri.parse(urls);
+   // var urls = await loadVendorUrl();
+  //  final uri = Uri.parse(urls);
     final request = await http.post(uri,
     body: jsonEncode({
       "flag": flag,

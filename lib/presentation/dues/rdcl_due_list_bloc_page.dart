@@ -20,10 +20,10 @@ class RdclDueDetailBlocPage extends StatefulWidget {
   const RdclDueDetailBlocPage({super.key, required this.branchCode});
 
   @override
-  State<RdclDueDetailBlocPage> createState() => _RdclDueDetailBlocPageState();
+  State<RdclDueDetailBlocPage> createState() => RdclDueDetailBlocPageState();
 }
 
-class _RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
+class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
   final List<bool> _showDrops = [false];
   final List<bool> _isSelected = [false];
   final List<bool> _itemSelected = [false];
@@ -95,6 +95,20 @@ class _RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
     if (printStatementStatus) {
       print("agentPhoneNumber : $subagentPhoneNumber");
     }
+  }
+
+
+  Future<void> refresh()async{
+    _showDrops.clear();
+    _isSelected.clear();
+    _itemSelected.clear();
+    searchController.clear();
+    setState(() {
+      _showSendIcon = false;
+      didSearch = false;
+    });
+  context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", "",'1', '10'));
+
   }
 
   Future<void> getCashTrans(
@@ -491,8 +505,7 @@ class _RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
               if (state is RdclDueListSuccessState) {
                 for (int x = 0;
                     x <
-                        state.rdclDulistSuccess.rdclduesListSuccessModel
-                            .rdclDuesList1!.data.length;
+                        state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data.length;
                     x++) {
                   _showDrops.add(false);
                   _isSelected.add(false);

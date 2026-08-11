@@ -42,12 +42,28 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       final AuthenticationModel data = await authenticationRepository.mobOtpVerificationRepository(
           event.mobileNumber, event.id, event.otp);
       if (data is OtpVerificationSuccessModel) {
+        List<String> typeList = [];
+        List<String> eCollectUrlList = [];
+
         emit(MobLoginVerifyOtpSuccessState(data));
         SharedPref.shared.setECollectLoginStatus(data.loginResponse.isAuthenticated);
         SharedPref.shared.setECollectMerchantBranchCode(data.loginResponse.branchCode);
         SharedPref.shared.setECollectMerchantIntegrationStatus(data.loginResponse.integrationStatus);
-        SharedPref.shared.setECollectRdclCustomerunderAgentListUrl(data.loginResponse.listUrl[0]);
-        SharedPref.shared.setECollectRdclDuesListunderAgentUrl(data.loginResponse.listUrl[1]);
+        // SharedPref.shared.setECollectRdclCustomerunderAgentListUrl(data.loginResponse.listUrl[0]);
+        // SharedPref.shared.setECollectRdclDuesListunderAgentUrl(data.loginResponse.listUrl[1]);
+       for(var x in data.loginResponse.listUrl.keys){
+          typeList.add(x);
+       }
+        for(var x in data.loginResponse.listUrl.values){
+          for(var c in x){
+            eCollectUrlList.add(c);
+          }
+
+        }
+
+        SharedPref.shared.setECollectTypeList(typeList);
+        SharedPref.shared.setECollectUrlList(eCollectUrlList);
+
         SharedPref.shared.setECollectMerchantUserName(data.loginResponse.fullName);
         SharedPref.shared.setECollectUserType(data.loginResponse.productType);
         SharedPref.shared.setECollectToken(data.loginResponse.token);

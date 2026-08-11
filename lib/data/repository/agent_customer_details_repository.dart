@@ -13,49 +13,47 @@ import '../storage/shared_pref_helper.dart';
 
 class AgentCustomerDetailsRepository
     implements IAgentCustomerDetailsRepository {
-  Future<String> loadVendorUrl() async {
-    //final liveUrl = await SharedPref().getVendorUrlLive();
-    return await SharedPref().getCustomerRdUrl();
-  }
+
 
   @override
   Future<Either<ErrorHandler, AgentCustomerDetailsModel>>
       getAgentCustomerDetails(String agentId) async {
-    final vendorUrl = await loadVendorUrl();
-    final url =
-        //Uri.parse("https://mftctest.digicob.in/getRDCustomerunderAgentList");
-        //  Uri.parse("${vendorUrl}getCustomerlist");
-        Uri.parse(vendorUrl);
-    print("--------------------------AGENT CUSTOMER DETAILS VENDOR URL------------------");
-    print(vendorUrl);
-    print("çl = ${await loadVendorUrl()}");
-    print("--------------------------AGENT CUSTOMER DETAILS URL------------------");
+    final url = Uri.parse("https://mftctest.digicob.in/getRDCustomerunderAgentList");
+    print(
+        "--------------------------AGENT CUSTOMER DETAILS URL------------------");
     print(url);
-    bool checkConnection = await InternetConnectionChecker.createInstance().hasConnection;
-    final body = {"agent_id": agentId};
     print("agentId : $agentId");
-    if (checkConnection) {
-     final response = await http.post(url, body:{"agent_Id": agentId},);
-     // final response = await http.post(url, body:{"agent_Id": "1002"},);
-     if(printStatementStatus){
-       printLog("------------------------AGENT CUSTOMER DETAILS STATUSCODE-------------------");
-       printLog(response.statusCode);
-       printLog("------------------------AGENT CUSTOMER DETAILS BODY RD--------------------------");
-       printLog(response.body);
-     }
 
-      if (response.statusCode == 200 ) {
-        try {
-          return Right(
-              AgentCustomerDetailsModel.fromJson(jsonDecode(response.body)));
-        } catch (e) {
-          return Left(DataParsingException(e));
-        }
-      } else {
-        return Left(FetchDataError("Failed to Fetch data"));
+    final response = await http.post(
+      url,
+      body:json.encode({
+        "agent_id": "1005",
+        "branch_id": "01",
+        "PageNumber": 0,
+        "PageSize": 0,
+        "cust_name": ""
+      }),
+        headers: {"Content-Type":"application/json"}
+
+    );
+    if (printStatementStatus) {
+      printLog(
+          "------------------------AGENT CUSTOMER DETAILS STATUSCODE-------------------");
+      printLog(response.statusCode);
+      printLog(
+          "------------------------AGENT CUSTOMER DETAILS BODY RD--------------------------");
+      printLog(response.body);
+    }
+
+    if (response.statusCode == 200) {
+      try {
+        return Right(
+            AgentCustomerDetailsModel.fromJson(jsonDecode(response.body)));
+      } catch (e) {
+        return Left(DataParsingException(e));
       }
     } else {
-      return Left(FetchDataError("No Internet Connection"));
+      return Left(FetchDataError("Failed to Fetch data"));
     }
   }
 }

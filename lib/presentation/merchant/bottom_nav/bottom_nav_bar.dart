@@ -19,12 +19,14 @@ class BottomNavBar extends StatefulWidget {
   @override
   State<BottomNavBar> createState() => _BottomNavBarState();
 }
-
+final GlobalKey<ECollectHomepageState> eCollectHomeKey = GlobalKey<ECollectHomepageState>();
+final GlobalKey<RdclDueDetailBlocPageState> eCollectRdclDueDetailKey = GlobalKey<RdclDueDetailBlocPageState>();
+final GlobalKey<RdclDueListBocPageState> eCollectRdclDueListKey = GlobalKey<RdclDueListBocPageState>();
 class _BottomNavBarState extends State<BottomNavBar> {
   int currentIndex = 0;
   String integrationStatus = "";
   String branCode = "";
-  String type = "";
+  List<String> type = [];
   bool isLoading = true;
   final String INTEGRATED = "Y";
   final String USER_TYPE_RDCL = "RDCL";
@@ -39,8 +41,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     final _branCode =
     await SharedPref.shared.getECollectMerchantBranchCode();
 
-    final _type =
-    await SharedPref.shared.getECollectUserType();
+    final _type = await SharedPref.shared.getECollectTypeList();
 
     if (!mounted) return;
     debugPrint("=================================");
@@ -49,8 +50,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
     debugPrint("User Type: [$_type]");
     debugPrint("=================================");
     setState(() {
-    //  type = _type;
-      type = "RDCL";
+    type = _type;
+
       integrationStatus = _integrationStatus;
       branCode = _branCode;
       isLoading = false;
@@ -63,18 +64,21 @@ class _BottomNavBarState extends State<BottomNavBar> {
     getSharedData();
   }
   /// RD, LOAN , RDCL , Group these are the 4 categories we are currently using. Based on the type its been switched....
-  List<NavItem> get navItemCategories {
+ /* List<NavItem> get navItemCategories {
+
     switch(type) {
+
       case "RD":
         {
           return [
             NavItem(
               label: 'Home',
               icon: Icons.home,
-              page: const HomePage(userType: "RD"),
+             // page: const HomePage(userType: "RD"),
+              page:  ECollectHomepage(key: eCollectHomeKey,),
             ),
             NavItem(
-              label: 'Due-Detail',
+              label: 'RD Dues',
               icon: Icons.receipt_long,
               page: const RdDueDetailPage(),
             ),
@@ -112,19 +116,21 @@ class _BottomNavBarState extends State<BottomNavBar> {
               label: 'Home',
               icon: Icons.home,
             //  page: const HomePage(userType: "RDCL"),
-              page: const ECollectHomepage(),
+            //  page: const ECollectHomepage(),
+              page:  ECollectHomepage(key: eCollectHomeKey,),
             ),
             NavItem(
               label: 'Due-Detail',
               icon: Icons.receipt_long,
               page: RdclDueDetailBlocPage(
                 branchCode: branCode,
+                key: eCollectRdclDueDetailKey,
               ),
             ),
             NavItem(
               label: 'Due-List',
               icon: Icons.receipt,
-              page: const RdclDueListBocPage(),
+              page: RdclDueListBocPage(key: eCollectRdclDueListKey),
             ),
             NavItem(
               label: 'Tran-History',
@@ -167,6 +173,95 @@ class _BottomNavBarState extends State<BottomNavBar> {
       default:
         return [];
     }
+  }*/
+  List<NavItem> get navItemCategories {
+    final List<NavItem> items = [
+      NavItem(
+        label: 'Home',
+        icon: Icons.home,
+        page: ECollectHomepage(key: eCollectHomeKey),
+      ),
+    ];
+
+    for (final t in type) {
+      switch (t) {
+        case "RD":
+          items.add(
+            NavItem(
+              label: 'RD Dues',
+              icon: Icons.receipt_long,
+              page: const RdDueDetailPage(),
+            ),
+          );
+          break;
+
+        case "LOAN":
+          items.add(
+            NavItem(
+              label: 'Loan-List',
+              icon: Icons.monetization_on,
+              page: const LoanList(),
+            ),
+          );
+          break;
+
+        case "RDCL":
+          items.addAll([
+            NavItem(
+              label: 'Due-Detail',
+              icon: Icons.receipt_long,
+              page: RdclDueDetailBlocPage(
+                branchCode: branCode,
+                key: eCollectRdclDueDetailKey,
+              ),
+            ),
+            NavItem(
+              label: 'Due-List',
+              icon: Icons.receipt,
+              page: RdclDueListBocPage(
+                key: eCollectRdclDueListKey,
+              ),
+            ),
+
+          ]);
+          break;
+
+        case "GROUP":
+          items.addAll([
+            NavItem(
+              label: 'Groups',
+              icon: Icons.safety_divider,
+              page: AllGroupsPage(),
+            ),
+            NavItem(
+              label: 'TranHistory',
+              icon: Icons.send_time_extension_outlined,
+              page: const PaymentLinkHomePageMerchant(),
+            ),
+            NavItem(
+              label: 'Settlement',
+              icon: Icons.settings_backup_restore,
+              page: const SettlementPage(),
+            ),
+          ]);
+          break;
+      }
+    }
+items.add(     NavItem(
+  label: 'Tran-History',
+  icon: Icons.timelapse,
+  page: const EcollectTransactionReport(),
+),);
+    // Common Profile — add only once
+    items.add(
+      NavItem(
+        label: 'Profile',
+        icon: Icons.person,
+        page: const ProfileHomePage(),
+      ),
+    );
+
+    return items;
   }
   List<NavItem> get items => navItemCategories;
 
@@ -211,10 +306,20 @@ class _BottomNavBarState extends State<BottomNavBar> {
           backgroundColor: Colors.white,
           type: BottomNavigationBarType.fixed,
           currentIndex: currentIndex,
-          onTap: (index) {
+          onTap: (index) async {
             setState(() {
               currentIndex = index;
             });
+            if(index == 0){
+              await eCollectHomeKey.currentState?.refresh();
+            }
+            if(index == 1){
+              await eCollectRdclDueDetailKey.currentState?.refresh();
+            }
+            if(index == 2){
+              await eCollectRdclDueListKey.currentState?.refresh();
+            }
+            print("index : $index");
           },
           items: navItems.map((item) {
             return BottomNavigationBarItem(

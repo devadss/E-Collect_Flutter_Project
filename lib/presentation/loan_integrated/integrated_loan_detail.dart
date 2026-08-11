@@ -621,7 +621,7 @@ if(utl.printStatementStatus){
         children: [
           // Modern Avatar with gradient background
           LongPressImagePreview(
-            imageProvider: AssetImage("assets/images/person.png"),
+            imageProvider: AssetImage("assets/images/cq1.webp"),
             child: Container(
               decoration: BoxDecoration(
                 color: dominantColor,

@@ -22,8 +22,7 @@ class TransactionRepository implements TransactionInterface {
 
       final request = await http.post(
         uri,
-        body: json
-            .encode({"fromDate": fDate, "toDate": tDate, "entityId": entityId}),
+        body: json.encode({"fromDate": fDate, "toDate": tDate, "entityId": entityId}),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',

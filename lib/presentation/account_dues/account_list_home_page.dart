@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:animated_segmented_tab_control/animated_segmented_tab_control.dart';
 import 'package:collection_qr_flutter/presentation/account_dues/widgets/account_detail_new.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -10,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../domain/model/agent_customer_details_model.dart';
-import '../loan_integrated/loan_list.dart';
 
 class RdDueDetailPage extends StatefulWidget {
   const RdDueDetailPage({super.key});
@@ -81,7 +79,8 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
       if (!mounted) return;
 
       setState(() {
-        agentId = id;
+      //  agentId = id;
+        agentId = "1005";
         corpCode = crpCd;
         _isLoading = true;
       });
@@ -488,10 +487,10 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              "Customer List",
+              "Rd Customer List",
               style: TextStyle(
-                color: Colors.black,
-                fontSize: 18,
+                color: home1,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
