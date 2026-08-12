@@ -20,7 +20,7 @@ class PaymentLinkHomePageMerchant extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 🔹 VERIFICATION STATE - Change this to true/false to test
-    const bool isVerified = false; // Set to false for unverified state
+    const bool isVerified = true; // Set to false for unverified state
 
     return Scaffold(
       backgroundColor: backgroundColor,

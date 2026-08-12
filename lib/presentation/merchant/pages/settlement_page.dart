@@ -9,7 +9,7 @@ class SettlementPage extends StatefulWidget {
 
 class _SettlementPageState extends State<SettlementPage> {
   // 🔹 VERIFICATION STATE - Change this to true/false to test
-  bool isVerified = false; // Set to false for locked state
+  bool isVerified = true; // Set to false for locked state
 
   @override
   Widget build(BuildContext context) {

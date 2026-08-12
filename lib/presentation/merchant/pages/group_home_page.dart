@@ -52,7 +52,7 @@ class _GroupHomePageUIState extends State<GroupHomePageUI> {
   };
 
   // 🔹 VERIFICATION STATE - Change this to true/false to test
-  bool isVerified = false; // Set to false for unverified state
+  bool isVerified = true; // Set to false for unverified state
 
   // Dummy groups data
   final List<Map<String, dynamic>> groups = [

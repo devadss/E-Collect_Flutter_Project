@@ -1,3 +1,4 @@
+import 'package:collection_qr_flutter/presentation/merchant/pages/group_home_page.dart';
 import 'package:flutter/material.dart';
 import '../../../core/utils.dart';
 import '../../../data/storage/shared_pref_helper.dart';
@@ -19,6 +20,7 @@ class BottomNavBar extends StatefulWidget {
 }
 final GlobalKey<ECollectHomepageState> eCollectHomeKey = GlobalKey<ECollectHomepageState>();
 final GlobalKey<RdclDueDetailBlocPageState> eCollectRdclDueDetailKey = GlobalKey<RdclDueDetailBlocPageState>();
+final GlobalKey<EcollectTransactionReportState> eCollectTransactionKey = GlobalKey<EcollectTransactionReportState>();
 final GlobalKey<RdclDueListBocPageState> eCollectRdclDueListKey = GlobalKey<RdclDueListBocPageState>();
 class _BottomNavBarState extends State<BottomNavBar> {
   int currentIndex = 0;
@@ -46,6 +48,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     debugPrint("=================================");
     setState(() {
     type = _type;
+
       integrationStatus = _integrationStatus;
       branCode = _branCode;
       isLoading = false;
@@ -60,6 +63,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
   /// RD, LOAN , RDCL , Group these are the 4 categories we are currently using. Based on the type its been switched....
   List<NavItem> get navItemCategories {
     final List<NavItem> items = [
+      type.contains("GROUP")?
+      NavItem(
+        label: 'Home',
+        icon: Icons.home,
+        page: GroupHomePageUI(key: eCollectHomeKey),
+      ):
       NavItem(
         label: 'Home',
         icon: Icons.home,
@@ -135,7 +144,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
     items.add(NavItem(
   label: 'Tran-History',
   icon: Icons.timelapse,
-  page: const EcollectTransactionReport(),
+
+  page: EcollectTransactionReport(key: eCollectTransactionKey,),
 ),);
     // Common Profile — add only once
     items.add(
@@ -203,6 +213,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
             }
             if(index == 2){
               await eCollectRdclDueListKey.currentState?.refresh();
+            }
+            if(index == 3){
+              await eCollectTransactionKey.currentState?.refresh();
             }
             print("index : $index");
           },

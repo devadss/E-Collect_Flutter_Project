@@ -11,8 +11,8 @@ class PaymentTransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   PaymentTransactionBloc(this.reportRepository)
       : super(PaymentTransactionInitialState()) {
     on<GetTransactionByMerchant>((event, emit) async {
-      final data = await reportRepository
-          .getTransactionReportByMerchantId(event.merchantID);
+
+      final data = await reportRepository.getTransactionReportByMerchantId(event.merchantID);
       if (data is TransactionSuccessModel) {
         var newTotal = 0.0;
         var totalSuccessTransactionCount = 0;
@@ -35,9 +35,24 @@ class PaymentTransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         if (data.transactionOkReport.data.isNotEmpty) {
           emit(TransactionReportSuccessState(data, newTotal, totalSuccessTransactionCount, totalFailedTransactionCount,totalPendingTransactionCount));
         } else {}
-      } else if (data is TransactionFailModel) {
+      }
+      else if (data is TransactionFailModel) {
         emit(TransactionReportFailureState(data));
       }
+    });
+    on<GetTransactionByMerchantDateRange>((event, emit) async {
+      emit(TransactionReportLoaderState());
+      final data = await reportRepository.getTransactionReportByMerchantIdDate(event.merchantID, event.fromDate, event.toDate);
+      if (data is TransactionSuccessModel) {
+
+          emit(TransactionReportSuccessState(data,
+              0, 0, 0,0));
+
+      }
+      else if (data is TransactionFailModel) {
+        emit(TransactionReportFailureState(data));
+      }
+
     });
     on<SettlementTransactionEvent>((event, emit) {});
   }
