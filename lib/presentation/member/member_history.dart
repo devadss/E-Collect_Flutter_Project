@@ -320,7 +320,7 @@ class _MemberPaymentHistoryPageState extends State<MemberPaymentHistoryPage> {
   Widget _buildPaymentCard(PaymentRecord payment) {
     final isPaid = payment.status == PaymentStatus.paid;
     final isPending = payment.status == PaymentStatus.pending;
-    final isLate = payment.status == PaymentStatus.late;
+   // final isLate = payment.status == PaymentStatus.late;
 
     Color statusColor;
     IconData statusIcon;

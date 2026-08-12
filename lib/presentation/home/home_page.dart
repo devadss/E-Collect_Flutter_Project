@@ -3,7 +3,6 @@ import 'package:collection_qr_flutter/data/provider/cash_qr_provider.dart';
 import 'package:collection_qr_flutter/domain/model/all_trans_data.dart';
 import 'package:collection_qr_flutter/domain/model/qr_cash_combined_response.dart';
 import 'package:collection_qr_flutter/domain/model/transfer_history_model.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -497,6 +496,7 @@ print("widget.userType : ${widget.userType}");
     } catch (e) {
       //print("Error loading transaction data: $e");
       if (mounted) {
+
         // Show error message to user
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
