@@ -88,7 +88,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
   void initState() {
     super.initState();
     context.read<RdclDuelistBloc>().add(
-        RdclDueListFetchEvent("", widget.branchCode, "", widget.customeName));
+        RdclDueListFetchEvent("", widget.branchCode, "", widget.customeName, "1", "10"));
     loadSharedPrefs();
   }
 

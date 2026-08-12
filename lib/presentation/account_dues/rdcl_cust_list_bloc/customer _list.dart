@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data/customer_list_bloc/customer_list_bloc.dart';
 import '../../../data/storage/shared_pref_helper.dart';
-import '../../../domain/model/customer_list_model/customer_list_success.dart' as prefix0;
+import '../../../domain/model/customer_list_model/customer_list_success.dart'
+    as prefix0;
 
 class CustomerList extends StatefulWidget {
   const CustomerList({super.key});
@@ -12,6 +13,7 @@ class CustomerList extends StatefulWidget {
   @override
   State<CustomerList> createState() => _CustomerListState();
 }
+
 class _CustomerListState extends State<CustomerList> {
   String? branchid;
   String? agentPhoneNumber;
@@ -36,10 +38,10 @@ class _CustomerListState extends State<CustomerList> {
       agentPhoneNumber = number;
       agentIdValue = custId;
     });
-    if(!mounted) return;
-    context.read<CustomerListBloc>().add(CustomerListFetchEvent("", branchid.toString(), "0", "0", ""),);
-
-
+    if (!mounted) return;
+    context.read<CustomerListBloc>().add(
+          CustomerListFetchEvent("", branchid.toString(), "1", "10", ""),
+        );
   }
 
   @override
@@ -57,9 +59,15 @@ class _CustomerListState extends State<CustomerList> {
       }
     });
 
-    context.read<CustomerListBloc>().add(CustomerListFetchEvent("", branchid.toString(), "0", "0", iconSwitch ? searchController.text : "",
-      ),
-    );
+    context.read<CustomerListBloc>().add(
+          CustomerListFetchEvent(
+            "",
+            branchid.toString(),
+            iconSwitch ? "1":"0",
+            iconSwitch ?"10":"0",
+            iconSwitch ? searchController.text : "",
+          ),
+        );
   }
 
   @override
@@ -112,7 +120,8 @@ class _CustomerListState extends State<CustomerList> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            state.customerListFailModel.customerListFailResponse.error,
+                            state.customerListFailModel.customerListFailResponse
+                                .error,
                             textAlign: TextAlign.center,
                             style: const TextStyle(color: Colors.red),
                           ),
@@ -123,7 +132,8 @@ class _CustomerListState extends State<CustomerList> {
                 }
 
                 if (state is CustomerListSuccessState) {
-                  data = state.customerListSuccessModel.customerListSuccessResponse.customerList;
+                  data = state.customerListSuccessModel
+                      .customerListSuccessResponse.customerList;
 
                   if (data?.data == null || data!.data!.isEmpty) {
                     return Center(
@@ -167,7 +177,7 @@ class _CustomerListState extends State<CustomerList> {
 
                   return ListView.builder(
                     padding: const EdgeInsets.all(16),
-                    itemCount: data.totalCount ?? 0,
+                    itemCount: data.data?.length ?? 0,
                     itemBuilder: (context, index) {
                       final customer = data?.data?[index];
                       return Container(
@@ -188,16 +198,21 @@ class _CustomerListState extends State<CustomerList> {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(20),
                             onTap: () {
-                              print("customer?.rdclGlobalAccNo.toString() :${customer?.rdclGlobalAccNo.toString()}");
+                              print(
+                                  "customer?.rdclGlobalAccNo.toString() :${customer?.rdclGlobalAccNo.toString()}");
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => RdclDueDetail(
                                     branchCode: branchid.toString(),
                                     customeName: customer?.custName ?? "",
-                                    custPhoneNumber: agentPhoneNumber.toString(),
-                                    custIdNew: customer?.custId.toString() ?? "",
-                                    custAcNumber: customer?.rdclGlobalAccNo.toString() ?? "",
+                                    custPhoneNumber:
+                                        agentPhoneNumber.toString(),
+                                    custIdNew:
+                                        customer?.custId.toString() ?? "",
+                                    custAcNumber:
+                                        customer?.rdclGlobalAccNo.toString() ??
+                                            "",
                                     custId: customer?.custId.toString() ?? "",
                                   ),
                                 ),
@@ -212,10 +227,12 @@ class _CustomerListState extends State<CustomerList> {
                                   Row(
                                     children: [
                                       Container(
-                                         padding: const EdgeInsets.all(10),
+                                        padding: const EdgeInsets.all(10),
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(14),
-                                          color: Colors.green.withValues(alpha: 0.1),
+                                          borderRadius:
+                                              BorderRadius.circular(14),
+                                          color: Colors.green
+                                              .withValues(alpha: 0.1),
                                         ),
                                         child: Icon(
                                           Icons.person_rounded,
@@ -247,8 +264,10 @@ class _CustomerListState extends State<CustomerList> {
                                       Container(
                                         padding: const EdgeInsets.all(10),
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(14),
-                                          color: Colors.blue.withValues(alpha: 0.1),
+                                          borderRadius:
+                                              BorderRadius.circular(14),
+                                          color: Colors.blue
+                                              .withValues(alpha: 0.1),
                                         ),
                                         child: Icon(
                                           Icons.account_balance_rounded,
@@ -259,7 +278,8 @@ class _CustomerListState extends State<CustomerList> {
                                       const SizedBox(width: 12),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               "Account Number",
@@ -294,8 +314,10 @@ class _CustomerListState extends State<CustomerList> {
                                       Container(
                                         padding: const EdgeInsets.all(10),
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(14),
-                                          color: Colors.orange.withValues(alpha: 0.1),
+                                          borderRadius:
+                                              BorderRadius.circular(14),
+                                          color: Colors.orange
+                                              .withValues(alpha: 0.1),
                                         ),
                                         child: Icon(
                                           Icons.category_rounded,
@@ -306,7 +328,8 @@ class _CustomerListState extends State<CustomerList> {
                                       const SizedBox(width: 12),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               "Scheme Name",
@@ -352,85 +375,85 @@ class _CustomerListState extends State<CustomerList> {
 
   Column buildLoader() {
     return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: home1.withValues(alpha: 0.1),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            color: home1,
-                            strokeWidth: 3,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        "Loading customers...",
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  );
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            color: home1.withValues(alpha: 0.1),
+            shape: BoxShape.circle,
+          ),
+          child: Center(
+            child: CircularProgressIndicator(
+              color: home1,
+              strokeWidth: 3,
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+        Text(
+          "Loading customers...",
+          style: TextStyle(
+            color: Colors.grey[600],
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
   }
 
   Container buildSearchContainer() {
     return Container(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withValues(alpha: 0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withValues(alpha: 0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              color: Colors.grey[100],
+        ],
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Colors.grey[100],
+        ),
+        child: TextField(
+          controller: searchController,
+          focusNode: _searchFocusNode,
+          decoration: InputDecoration(
+            hintText: "Search customers by name...",
+            hintStyle: TextStyle(
+              color: Colors.grey[500],
+              fontSize: 15,
             ),
-            child: TextField(
-              controller: searchController,
-              focusNode: _searchFocusNode,
-              decoration: InputDecoration(
-                hintText: "Search customers by name...",
-                hintStyle: TextStyle(
-                  color: Colors.grey[500],
-                  fontSize: 15,
-                ),
-                prefixIcon: Icon(Icons.search_rounded, color: home1, size: 24),
-                suffixIcon: IconButton(
-                  icon: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 200),
-                    child: Icon(
-                      iconSwitch ? Icons.close_rounded : Icons.send_rounded,
-                      key: ValueKey(iconSwitch),
-                      color: iconSwitch ? Colors.red : home1,
-                      size: 22,
-                    ),
-                  ),
-                  onPressed: _handleSearch,
-                ),
-                border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 14,
+            prefixIcon: Icon(Icons.search_rounded, color: home1, size: 24),
+            suffixIcon: IconButton(
+              icon: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: Icon(
+                  iconSwitch ? Icons.close_rounded : Icons.send_rounded,
+                  key: ValueKey(iconSwitch),
+                  color: iconSwitch ? Colors.red : home1,
+                  size: 22,
                 ),
               ),
-              onSubmitted: (_) => _handleSearch(),
+              onPressed: _handleSearch,
+            ),
+            border: InputBorder.none,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
             ),
           ),
-        );
+          onSubmitted: (_) => _handleSearch(),
+        ),
+      ),
+    );
   }
 
   AppBar buildAppBar() {
@@ -451,4 +474,3 @@ class _CustomerListState extends State<CustomerList> {
     );
   }
 }
-

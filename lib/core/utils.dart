@@ -49,13 +49,13 @@ void isRunningLiveBaseUrl(bool status, String mobile) async {
 
 void isRunningLiveDopBaseUrl(bool status, String mobile) async {
   if(mobile.startsWith("+91")){
-    if (status== true && "+91${mobile}" != null && "+91${mobile}" != uatTestMobileNumber){
+    if (status== true && "+91$mobile" != null && "+91$mobile" != uatTestMobileNumber){
       dopBaseUrl =  "https://mydop.in/api/fetch/vendor/urls/";
     }else{
       dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";
     }
   }else{
-    if (status== true && "+91${mobile}"!= null && "+91${mobile}" != uatTestMobileNumber){
+    if (status== true && "+91$mobile"!= null && "+91$mobile" != uatTestMobileNumber){
       dopBaseUrl =  "https://mydop.in/api/fetch/vendor/urls/";
     }else{
       dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";

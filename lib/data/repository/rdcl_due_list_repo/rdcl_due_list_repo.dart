@@ -17,9 +17,11 @@ Future<String> loadVendorUrl()async{
       String branchCode,
       String accNo,
       String custName,
+      String pageNo,
+      String pageSize,
       ) async {
     final vendorUrl = await loadVendorUrl();
-    final uri = Uri.parse("$vendorUrl?agent_id=$agentId&br_code=$branchCode&acc_no=$accNo&PageNumber=0&PageSize=0&CustName=$custName");
+    final uri = Uri.parse("$vendorUrl?agent_id=$agentId&br_code=$branchCode&acc_no=$accNo&PageNumber=$pageNo&PageSize=$pageSize&CustName=$custName");
     final request =  await http.get(uri , headers: {"Content-Type":"application/json"});
     if(printStatementStatus ){
       print("Uri = $uri");

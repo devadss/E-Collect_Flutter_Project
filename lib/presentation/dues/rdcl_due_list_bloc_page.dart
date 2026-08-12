@@ -235,7 +235,7 @@ class _RdclDueListBlocPageState extends State<RdclDueListBlocPage> {
   @override
   void initState() {
     super.initState();
-    context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", ""));
+    context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", "", "1", "10"));
     loadSharedPrefs();
   }
   Future<bool> paymentConfirmation(
@@ -534,7 +534,7 @@ bool chekValue(String value){
 
                           context.read<RdclDuelistBloc>().add(
                             RdclDueListFetchEvent(
-                                "", widget.branchCode, "", ""),
+                                "", widget.branchCode, "", "","1", "10"),
                           );
                         },
                         child: Container(
@@ -565,12 +565,12 @@ bool chekValue(String value){
                           if (chekValue(text)) {
                             context.read<RdclDuelistBloc>().add(
                               RdclDueListFetchEvent(
-                                  "", widget.branchCode, text, ""),
+                                  "", widget.branchCode, text, "", "1", "10"),
                             );
                           } else {
                             context.read<RdclDuelistBloc>().add(
                               RdclDueListFetchEvent(
-                                  "", widget.branchCode, "", text),
+                                  "", widget.branchCode, "", text, "0", "0"),
                             );
                           }
                         },
