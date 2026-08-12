@@ -1,44 +1,14 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
-import 'package:collection_qr_flutter/core/general.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:screenshot/screenshot.dart';
-import 'package:share_plus/share_plus.dart';
-import '../../../../../../core/colors.dart';
-import 'package:encrypt/encrypt.dart' as encrypt;
-import '../../../core/utils.dart';
-import '../../../data/repository/new_qr_code_repository.dart';
-import '../../../data/storage/shared_pref_helper.dart';
-import '../../../domain/model/cash_deposit_model.dart';
-import '../../app/bottom_nav_bar_page.dart';
-import '../../profile/widgets/recipect_page.dart';
-import 'dart:async';
-import 'dart:math';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../../../../../core/colors.dart';
 import '../../../core/utils.dart';
-import '../../app/bottom_nav_bar_page.dart';
 import '../../profile/widgets/recipect_page.dart';
 
-// ─────────────────────────────────────────────────────────────
-// NOTE: This is a trimmed extract containing ONLY:
-//   1) UI (build method + all _build*/dialog widget methods)
-//   2) Firebase Cloud Messaging listener logic
-// Everything else (QR generation/repository calls, AES encryption,
-// PDF creation, screenshot sharing, shared-prefs loading) has been
-// removed or stubbed out — wire those back in as needed.
-// ─────────────────────────────────────────────────────────────
 
 class NewQrCodePage extends StatefulWidget {
   final String paymentSessionId;
