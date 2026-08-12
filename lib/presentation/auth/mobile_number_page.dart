@@ -182,7 +182,7 @@ class _MobileNumberVerificationPageState extends State<MobileNumberVerificationP
               customer.response!.data!['CustId']?.isNotEmpty == true) {
             insertCustRegister(customer);
             ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Center(child: Text("Not a registered e-Collect User", style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),)),));
+                SnackBar(content: Center(child: Text("Not a registered e-Collect Classic User", style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),)),));
             //Map<String, String?> nameParts = splitName(customer.response!.data!['firstName'].toString());
             //List<String> parts = customer.response!.data!['date'].toString().split('-');
            // String year = parts[0];

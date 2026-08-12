@@ -58,7 +58,7 @@ AlertDialog exitAlert(BuildContext context){
       height: 120,
       child: Column(children: [
         const Text(
-          "Are you sure you want to exit e-Collect? ",
+          "Are you sure you want to exit e-Collect Classic? ",
         style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black,
         fontSize: 15),),
         const SizedBox(height: 30,),

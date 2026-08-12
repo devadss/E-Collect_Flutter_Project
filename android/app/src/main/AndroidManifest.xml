@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:label="e-Collect"
+        android:label="e-Collect Classic"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 

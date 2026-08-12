@@ -390,7 +390,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'e-Collect',
+          title: 'e-Collect Classis',
           builder: (context, child) {
             return MediaQuery(
               data: MediaQuery.of(context)
