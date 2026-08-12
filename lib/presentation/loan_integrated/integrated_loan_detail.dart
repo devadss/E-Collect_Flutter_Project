@@ -10,7 +10,6 @@ import '../../core/alerts.dart';
 import '../../core/utils.dart' as utl;
 import '../../data/e_collect_bloc/payment_bloc/payment_bloc.dart';
 import '../../data/provider/loan_cash_coolection_provider.dart';
-import '../../data/repository/payment_link_repository.dart';
 import '../../data/repository/payment_session_id_repository.dart';
 import '../../data/storage/shared_pref_helper.dart';
 import '../../domain/model/e_collect/payment/qr_request_model/qr_request_model.dart';
@@ -1050,22 +1049,22 @@ if(utl.printStatementStatus){
   //     ),
   //   );
   // }
-  Widget _buildAmountRow(String label, dynamic value, Color color) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: TextStyle(color: color, fontSize: 12)),
-          Text(value.toString(),
-              style: TextStyle(
-                  color: color,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 13)),
-        ],
-      ),
-    );
-  }
+  // Widget _buildAmountRow(String label, dynamic value, Color color) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 4),
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       children: [
+  //         Text(label, style: TextStyle(color: color, fontSize: 12)),
+  //         Text(value.toString(),
+  //             style: TextStyle(
+  //                 color: color,
+  //                 fontWeight: FontWeight.w600,
+  //                 fontSize: 13)),
+  //       ],
+  //     ),
+  //   );
+  // }
   // Widget _buildPrimaryButton(String text, {required VoidCallback onTap}) {
   //   return SizedBox(
   //     width: double.infinity,
@@ -1513,6 +1512,58 @@ if(utl.printStatementStatus){
     });
   }
 
+
+  AlertDialog linkShareAlert(BuildContext context, bool status, String msg) {
+    return AlertDialog(
+      icon: status == true
+          ? const Icon(
+              Icons.check_circle,
+              color: Colors.green,
+              size: 30,
+            )
+          : const Icon(
+              Icons.error,
+              color: Colors.red,
+              size: 30,
+            ),
+      alignment: Alignment.center,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10))),
+      title: Center(
+          child: status == true ? const Text("Success") : const Text("Error")),
+      backgroundColor: Colors.white,
+      content: SizedBox(
+        height: 120,
+        child: Column(
+          children: [
+            Text(
+              msg,
+              style: const TextStyle(
+                  fontWeight: FontWeight.w300,
+                  color: Colors.black,
+                  fontSize: 15),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: home1,
+                    foregroundColor: Colors.white,
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)))),
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                child: const Text(" OK "))
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 /*  Future<void> loadSharedPrefs() async {
     final id = await SharedPref().getSubAgentCode();
     final agentid = await SharedPref().getAgentId();
@@ -1594,54 +1645,3 @@ if(utl.printStatementStatus){
           });
     }
   }*/
-
-  AlertDialog linkShareAlert(BuildContext context, bool status, String msg) {
-    return AlertDialog(
-      icon: status == true
-          ? const Icon(
-              Icons.check_circle,
-              color: Colors.green,
-              size: 30,
-            )
-          : const Icon(
-              Icons.error,
-              color: Colors.red,
-              size: 30,
-            ),
-      alignment: Alignment.center,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10))),
-      title: Center(
-          child: status == true ? const Text("Success") : const Text("Error")),
-      backgroundColor: Colors.white,
-      content: SizedBox(
-        height: 120,
-        child: Column(
-          children: [
-            Text(
-              msg,
-              style: const TextStyle(
-                  fontWeight: FontWeight.w300,
-                  color: Colors.black,
-                  fontSize: 15),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: home1,
-                    foregroundColor: Colors.white,
-                    shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)))),
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                },
-                child: const Text(" OK "))
-          ],
-        ),
-      ),
-    );
-  }
-}

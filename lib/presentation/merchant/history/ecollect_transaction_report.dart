@@ -22,7 +22,7 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
   String name = "Select";
   bool sendIconVisibility = false;
   TextEditingController searchNameController = TextEditingController();
-
+  int selectedIndex = 0;
   // ---- NEW: date-range filter state ----
   DateTimeRange? customRange; // used only when selectedValue == "Custom Range"
   final List<String> filterItems = [
@@ -363,7 +363,7 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.only(left: 16,right: 16),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Chip(
@@ -381,6 +381,7 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
                   ),
                 ),
               ),
+
               selectedValue != "This Week"
                   ? InkWell(
                       onTap: () {
@@ -414,7 +415,39 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
                   : SizedBox.shrink(),
             ],
           ),
+Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    SizedBox(width: 16,),
+  ChoiceChip(
+    //selectedColor: Colors.green.shade100,
+    label: Text("All", style: TextStyle(fontSize: 11),), selected: selectedIndex==0,
+    onSelected: (selected){
+      setState(() {
+        selectedIndex = 0;
+      });
+    },),
+    SizedBox(width: 16,),
+  ChoiceChip(
+    selectedColor: Colors.green.shade100,
+    label: Text("Success",style: TextStyle(fontSize: 11)), selected: selectedIndex==1,
+    onSelected: (selected){
+      setState(() {
+        selectedIndex = 1;
+      });
+    },),
+    SizedBox(width: 16,),
+  ChoiceChip(
+    selectedColor: Colors.orange.shade100,
 
+    label: Text("Pending",style: TextStyle(fontSize: 11)), selected: selectedIndex == 2,
+    onSelected: (selected){
+      setState(() {
+        selectedIndex = 2;
+      });
+    },),
+    Spacer(flex: 1,)
+],),
           const SizedBox(height: 6),
 
           // Transaction List
