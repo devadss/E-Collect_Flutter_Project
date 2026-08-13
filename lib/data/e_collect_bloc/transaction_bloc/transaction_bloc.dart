@@ -40,14 +40,13 @@ class PaymentTransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         emit(TransactionReportFailureState(data));
       }
     });
-    on<GetTransactionByMerchantDateRange>((event, emit) async {
+    on<GetTransactionByMerchantDateWithStatus>((event, emit) async {
       emit(TransactionReportLoaderState());
-      final data = await reportRepository.getTransactionReportByMerchantIdDate(event.merchantID, event.fromDate, event.toDate);
+      final data = await reportRepository.getTransactionReportByMerchantIdDateStatus
+        (event.merchantID, event.fromDate, event.toDate, event.status);
       if (data is TransactionSuccessModel) {
-
-          emit(TransactionReportSuccessState(data,
+        emit(TransactionReportSuccessState(data,
               0, 0, 0,0));
-
       }
       else if (data is TransactionFailModel) {
         emit(TransactionReportFailureState(data));

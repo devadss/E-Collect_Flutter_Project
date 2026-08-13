@@ -45,8 +45,7 @@ class ECollectHomepageState extends State<ECollectHomepage> {
     "Last Month"
   ];
 
-  Future<void> refresh() async {
-    context.read<PaymentTransactionBloc>().add(GetTransactionByMerchant(merchantID));  }
+  Future<void> refresh() async => context.read<PaymentTransactionBloc>().add(GetTransactionByMerchant(merchantID));
 
   Future<void> getSharedData() async {
     final _merchantID = await SharedPref.shared.getECollectMerchantID();
@@ -120,8 +119,7 @@ class ECollectHomepageState extends State<ECollectHomepage> {
                     child: BlocBuilder<PaymentTransactionBloc, TransactionState>(
                       builder: (BuildContext context, TransactionState state) {
                         if (state is TransactionReportSuccessState) {
-                          var data = state
-                              .transactionSuccessModel.transactionOkReport.data;
+                          var data = state.transactionSuccessModel.transactionOkReport.data;
                           if(data.isNotEmpty){
                             return Padding(
                               padding:
@@ -158,7 +156,7 @@ class ECollectHomepageState extends State<ECollectHomepage> {
                                           }
 
                                           final i = value.toInt();
-                                          if (i < 0 || i >= 5) {
+                                          if (i < 0 || i >= 2) {
                                             return const SizedBox();
                                           }
                                           return Center(

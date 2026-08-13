@@ -18,7 +18,7 @@ class EcollectTransactionReport extends StatefulWidget {
 
 class EcollectTransactionReportState extends State<EcollectTransactionReport> {
   String selectedValue = "This Week";
-  String selectedDateFilter = "All";
+  //String selectedDateFilter = "All";
 
   String selectedStatusFilter = "All";
 
@@ -37,14 +37,14 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
     "Custom Range",
   ];
 
-  final List<String> dateFilters = [
-    "All",
-    "Today",
-    "Yesterday",
-    "Last 7 Days",
-    "This Month",
-    "Custom Range",
-  ];
+  // final List<String> dateFilters = [
+  //   "All",
+  //   "Today",
+  //   "Yesterday",
+  //   "Last 7 Days",
+  //   "This Month",
+  //   "Custom Range",
+  // ];
   final List<String> statusFilters = [
     "All",
     "Success",
@@ -55,10 +55,11 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
   String searchQuery = "";
 
   Future<void> refresh() async {
-    print("caeeld this week");
     setState(() {
       selectedValue = "This Week";
+      selectedStatusFilter = "All";
     });
+    context.read<PaymentTransactionBloc>().add(GetTransactionByMerchant(merchantID));
   }
 
   Future<void> getSharedData() async {
@@ -99,7 +100,10 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
     final todayEnd = todayStart
         .add(const Duration(days: 1))
         .subtract(const Duration(milliseconds: 1));
-
+print("selectedValue $selectedValue");
+setState(() {
+  selectedValue = selectedValue;
+});
     switch (selectedValue) {
       case "Today":
         return DateTimeRange(start: todayStart, end: todayEnd);
@@ -139,7 +143,7 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
     return data.where((transaction) {
       final matchesName = query.isEmpty ||
           transaction.customerName.toString().toLowerCase().contains(query) ||
-      transaction.status.toLowerCase().contains(query);
+          transaction.status.toLowerCase().contains(query);
       return matchesName;
     }).toList();
   }
@@ -196,9 +200,7 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
                             size: 21,
                           ),
                         ),
-
                         const SizedBox(width: 12),
-
                         const Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,14 +224,16 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
                             ],
                           ),
                         ),
-
                         TextButton(
                           onPressed: () {
                             setSheetState(() {
-                              selectedDateFilter = "All";
+                              selectedValue = "This Week";
                               selectedStatusFilter = "All";
                               customRange = null;
                             });
+                            context
+                                .read<PaymentTransactionBloc>()
+                                .add(GetTransactionByMerchant(merchantID));
                           },
                           style: TextButton.styleFrom(
                             foregroundColor: Colors.grey.shade700,
@@ -241,9 +245,8 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
                           child: Container(
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.grey.shade200
-                            ),
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.grey.shade200),
                             child: const Text(
                               "Reset",
                               style: TextStyle(
@@ -256,7 +259,7 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
                     ),
 
                     const SizedBox(height: 20),
-Divider(),
+                    Divider(),
                     // Date section
                     const Text(
                       "Date range",
@@ -271,29 +274,23 @@ Divider(),
                     Wrap(
                       spacing: 8,
                       runSpacing: 10,
-                      children: dateFilters.map((item) {
-                        final isSelected =
-                            selectedDateFilter == item;
+                      children: filterItems.map((item) {
+                        final isSelected = selectedValue == item;
 
                         return ChoiceChip(
                           label: Text(item),
                           selected: isSelected,
                           showCheckmark: false,
                           side: BorderSide(
-                            color: isSelected
-                                ? home1
-                                : Colors.grey.shade200,
+                            color: isSelected ? home1 : Colors.grey.shade200,
                           ),
                           backgroundColor: Colors.grey.shade50,
                           selectedColor: home1.withValues(alpha: 0.1),
                           labelStyle: TextStyle(
                             fontSize: 13,
-                            fontWeight: isSelected
-                                ? FontWeight.w600
-                                : FontWeight.w500,
-                            color: isSelected
-                                ? home1
-                                : Colors.grey.shade700,
+                            fontWeight:
+                                isSelected ? FontWeight.w600 : FontWeight.w500,
+                            color: isSelected ? home1 : Colors.grey.shade700,
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -306,11 +303,9 @@ Divider(),
                             if (item == "Custom Range") {
                               final now = DateTime.now();
 
-                              final picked =
-                              await showDateRangePicker(
+                              final picked = await showDateRangePicker(
                                 context: sheetContext,
-                                firstDate:
-                                DateTime(now.year - 2),
+                                firstDate: DateTime(now.year - 2),
                                 lastDate: now,
                                 initialDateRange: customRange ??
                                     DateTimeRange(
@@ -320,10 +315,8 @@ Divider(),
                                 builder: (context, child) {
                                   return Theme(
                                     data: Theme.of(context).copyWith(
-                                      colorScheme:
-                                      ColorScheme.light(
-                                        primary:
-                                        Colors.blue.shade700,
+                                      colorScheme: ColorScheme.light(
+                                        primary: Colors.blue.shade700,
                                       ),
                                     ),
                                     child: child!,
@@ -334,8 +327,7 @@ Divider(),
                               if (picked == null) return;
 
                               setSheetState(() {
-                                selectedDateFilter =
-                                "Custom Range";
+                                selectedValue = "Custom Range";
 
                                 customRange = DateTimeRange(
                                   start: DateTime(
@@ -355,7 +347,7 @@ Divider(),
                               });
                             } else {
                               setSheetState(() {
-                                selectedDateFilter = item;
+                                selectedValue = item;
                                 customRange = null;
                               });
                             }
@@ -365,7 +357,7 @@ Divider(),
                     ),
 
                     // Custom range preview
-                    if (selectedDateFilter == "Custom Range" &&
+                    if (selectedValue == "Custom Range" &&
                         customRange != null) ...[
                       const SizedBox(height: 12),
                       Container(
@@ -383,16 +375,14 @@ Divider(),
                         ),
                         child: Row(
                           children: [
-                            Icon(
-                              Icons.date_range_rounded,
-                              size: 18,
-                              color: home1),
+                            Icon(Icons.date_range_rounded,
+                                size: 18, color: home1),
                             const SizedBox(width: 10),
                             Expanded(
                               child: Text(
                                 "${_formatDate(customRange!.start)}"
-                                    "  –  "
-                                    "${_formatDate(customRange!.end)}",
+                                "  –  "
+                                "${_formatDate(customRange!.end)}",
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
@@ -406,7 +396,7 @@ Divider(),
                     ],
 
                     const SizedBox(height: 20),
-Divider(),
+                    Divider(),
                     // Status section
                     const Text(
                       "Transaction status",
@@ -422,28 +412,22 @@ Divider(),
                       spacing: 8,
                       runSpacing: 10,
                       children: statusFilters.map((status) {
-                        final isSelected =
-                            selectedStatusFilter == status;
+                        final isSelected = selectedStatusFilter == status;
 
                         return ChoiceChip(
                           label: Text(status),
                           selected: isSelected,
                           showCheckmark: false,
                           side: BorderSide(
-                            color: isSelected
-                                ? home1
-                                : Colors.grey.shade200,
+                            color: isSelected ? home1 : Colors.grey.shade200,
                           ),
                           backgroundColor: Colors.grey.shade50,
                           selectedColor: home1.withValues(alpha: 0.1),
                           labelStyle: TextStyle(
                             fontSize: 13,
-                            fontWeight: isSelected
-                                ? FontWeight.w600
-                                : FontWeight.w500,
-                            color: isSelected
-                                ? home1
-                                : Colors.grey.shade700,
+                            fontWeight:
+                                isSelected ? FontWeight.w600 : FontWeight.w500,
+                            color: isSelected ? home1 : Colors.grey.shade700,
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -476,16 +460,30 @@ Divider(),
                           final range = _resolveDateRange();
 
                           if (range == null) return;
+                          // print(range.start
+                          //     .toIso8601String()
+                          //     .replaceRange(10, null, "")
+                          //     .toString());
+                          // print(range.end
+                          //     .toIso8601String()
+                          //     .replaceRange(10, null, "")
+                          //     .toString());
+                          // print(selectedStatusFilter);
 
-                          context
-                              .read<PaymentTransactionBloc>()
-                              .add(
-                            GetTransactionByMerchantDateRange(
-                              merchantID,
-                              range.start.toIso8601String(),
-                              range.end.toIso8601String(),
-                            ),
-                          );
+                          context.read<PaymentTransactionBloc>().add(
+                                GetTransactionByMerchantDateWithStatus(
+                                    merchantID,
+                                    range.start
+                                        .toIso8601String()
+                                        .replaceRange(10, null, "")
+                                        .toString(),
+                                    range.end
+                                        .toIso8601String()
+                                        .replaceRange(10, null, "")
+                                        .toString(),
+                                    selectedStatusFilter == "All"?"":
+                                    selectedStatusFilter),
+                              );
                         },
                         icon: const Icon(
                           Icons.check_rounded,
@@ -703,7 +701,7 @@ Divider(),
                         suffixIcon: sendIconVisibility
                             ? IconButton(
                                 onPressed: _runSearch,
-                                icon:  Icon(
+                                icon: Icon(
                                   color: home1.withValues(alpha: 0.5),
                                   Icons.arrow_forward_rounded,
                                   size: 20,
@@ -758,7 +756,7 @@ Divider(),
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 16,right: 16),
+                padding: const EdgeInsets.only(left: 16, right: 16),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Chip(
@@ -776,7 +774,6 @@ Divider(),
                   ),
                 ),
               ),
-
               selectedValue != "This Week"
                   ? InkWell(
                       onTap: () {
@@ -817,14 +814,17 @@ Divider(),
             child: BlocListener<PaymentTransactionBloc, TransactionState>(
               listener: (BuildContext context, TransactionState state) {
                 if (state is TransactionReportLoaderState) {
-                  showProgressDialog(context)     ;   }
+                  showProgressDialog(context);
+                }
                 if (state is TransactionReportSuccessState) {
                   if (Navigator.of(context).canPop()) {
                     Navigator.of(context).pop();
-                  }              } else if (state is TransactionReportFailureState) {
+                  }
+                } else if (state is TransactionReportFailureState) {
                   if (Navigator.of(context).canPop()) {
                     Navigator.of(context).pop();
-                  }              }
+                  }
+                }
               },
               child: SizedBox.shrink(),
             ),
