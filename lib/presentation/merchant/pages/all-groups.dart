@@ -175,22 +175,22 @@ class _AllGroupsPageState extends State<AllGroupsPage> {
     super.dispose();
   }
 
-  Future<void> _pickDueDateRange() async {
-    final DateTimeRange? picked = await showDateRangePicker(
-      context: context,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-      initialDateRange: (dueDateFrom != null && dueDateTo != null)
-          ? DateTimeRange(start: dueDateFrom!, end: dueDateTo!)
-          : null,
-    );
-    if (picked != null) {
-      setState(() {
-        dueDateFrom = picked.start;
-        dueDateTo = picked.end;
-      });
-    }
-  }
+  // Future<void> _pickDueDateRange() async {
+  //   final DateTimeRange? picked = await showDateRangePicker(
+  //     context: context,
+  //     firstDate: DateTime(2000),
+  //     lastDate: DateTime(2100),
+  //     initialDateRange: (dueDateFrom != null && dueDateTo != null)
+  //         ? DateTimeRange(start: dueDateFrom!, end: dueDateTo!)
+  //         : null,
+  //   );
+  //   if (picked != null) {
+  //     setState(() {
+  //       dueDateFrom = picked.start;
+  //       dueDateTo = picked.end;
+  //     });
+  //   }
+  // }
 
   void _showFilterBottomSheet() {
     // Store temporary values

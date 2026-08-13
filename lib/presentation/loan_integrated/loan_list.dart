@@ -202,7 +202,7 @@ class _LoanListState extends State<LoanList> {
       backgroundColor: Colors.white,
       automaticallyImplyLeading: false,
       centerTitle: true,
-      toolbarHeight: 100,
+      toolbarHeight: 50,
       title: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -297,20 +297,7 @@ class _LoanListState extends State<LoanList> {
                 ),
               ),
             ),
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Text(
-                textAlign: TextAlign.start,
-                "Active Loans",
-                style: TextStyle(color: home2, fontWeight: FontWeight.w700),
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
+
             Expanded(
               child: ListView.builder(
                   itemCount: _filteredList?.length,
@@ -322,9 +309,9 @@ class _LoanListState extends State<LoanList> {
                       },
                       child: Padding(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
+                              horizontal: 10, vertical: 5),
                           child: Card(
-                            elevation: 0,
+                            elevation: 1,
                             margin: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 8),
                             shape: RoundedRectangleBorder(
@@ -426,7 +413,7 @@ class _LoanListState extends State<LoanList> {
                                                                     "",
                                                                 style:
                                                                     TextStyle(
-                                                                  fontSize: 16,
+                                                                  fontSize: 15,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w700,
@@ -470,7 +457,7 @@ class _LoanListState extends State<LoanList> {
                                                                     style:
                                                                         TextStyle(
                                                                       fontSize:
-                                                                          12,
+                                                                          10,
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .w500,
@@ -514,12 +501,12 @@ class _LoanListState extends State<LoanList> {
                                           ],
                                         ),
 
-                                        const SizedBox(height: 20),
+                                        const SizedBox(height: 10),
 
                                         /// 🔹 Stats Row - Modern Metrics Display
                                         Container(
                                           padding: const EdgeInsets.symmetric(
-                                              vertical: 12, horizontal: 12),
+                                              vertical: 10, horizontal: 12),
                                           decoration: BoxDecoration(
                                             gradient: LinearGradient(
                                               begin: Alignment.topLeft,
@@ -667,6 +654,7 @@ Widget _buildModernMetric({
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Row(
+        
         children: [
           Icon(icon, size: 12, color: home1.withValues(alpha: 0.6)),
           const SizedBox(width: 4),
@@ -675,6 +663,7 @@ Widget _buildModernMetric({
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w500,
+
               color: Colors.grey.shade500,
               letterSpacing: 0.5,
             ),
@@ -682,16 +671,22 @@ Widget _buildModernMetric({
         ],
       ),
       const SizedBox(height: 6),
-      Text(
-        value,
-        style: TextStyle(
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-          color: Colors.grey.shade800,
-          letterSpacing: 0.3,
+      Container(
+        padding: EdgeInsets.all(5),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
+            color: home2.withValues(alpha: 0.03)),
+        child: Text(
+          textAlign: TextAlign.center,
+          value,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
+            color: Colors.grey.shade900,
+            letterSpacing: 0.9,
+          ),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
         ),
-        overflow: TextOverflow.ellipsis,
-        maxLines: 1,
       ),
     ],
   );

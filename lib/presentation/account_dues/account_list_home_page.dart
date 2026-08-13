@@ -260,7 +260,7 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
           ? _buildEmptyState()
           : ListView.separated(
               itemCount: customers.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 10),
+              separatorBuilder: (context, index) => const SizedBox(height: 5),
               itemBuilder: (context, index) {
                 final customer = customers[index];
                 return _buildCustomerItem(customer);
@@ -304,7 +304,7 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
                   children: [
                     Container(
                       padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),
                         color: home1.withValues(alpha:0.2)),
                         child: const Icon(Icons.person_rounded, size: 20, color: home1)),
                     const SizedBox(width: 10),
@@ -312,7 +312,7 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
                       child: Text(
                         customer.custName,
                         style: const TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
                           fontWeight: FontWeight.w600,
                           height: 1.3,
                         ),
@@ -338,7 +338,7 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
-                        color: Colors.grey.shade600,
+                        color: Colors.grey.shade400,
                         letterSpacing: 0.5,
                       ),
                     ),
@@ -367,10 +367,10 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      padding: EdgeInsets.all(5),
+                      padding: EdgeInsets.all(7),
                         decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
                         color: home1.withValues(alpha:0.2)),
-                        child: Icon(Icons.account_balance, size: 18, color: home1)),
+                        child: Icon(Icons.account_balance, size: 16, color: home1)),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Container(
@@ -385,7 +385,7 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
                             fontSize: 17,
                             color: Colors.grey,
                             fontWeight: FontWeight.w600,
-                            letterSpacing: 1.5,
+                            letterSpacing: 1.7,
                             fontFamily: Platform.isIOS ? 'Courier' : 'monospace',
                           ),
                         ),
@@ -418,7 +418,7 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
                         onPressed: () {
                           _navigateToCustomerDetails(customer);
                         },
-                        icon: const Icon(Icons.payments_rounded, size: 18),
+                        icon: const Icon(Icons.point_of_sale, size: 18),
                         label: const Text(
                           'Collect',
                           style: TextStyle(fontWeight: FontWeight.w600),
@@ -439,7 +439,7 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
                         onPressed: () {
                           _navigateToCustomerDetails(customer);
                         },
-                        icon: Icon(Icons.info_rounded, size: 18, color: home1),
+                        icon: Icon(Icons.info_outline, size: 18, color: home1),
                         label: const Text('Details'),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: home1,
@@ -488,7 +488,7 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
               return Column(
                 children: [
                   _buildSearchField(),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   _buildShimmerList(),
                 ],
               );
@@ -498,7 +498,7 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
             return Column(
               children: [
                 _buildSearchField(),
-                const SizedBox(height: 20),
+                //const SizedBox(height: 10),
                 _buildCustomerList(customers),
               ],
             );
@@ -516,7 +516,7 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
         centerTitle: true,
-        toolbarHeight: 100,
+        toolbarHeight: 50,
         title: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

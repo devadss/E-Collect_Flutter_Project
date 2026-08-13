@@ -1600,88 +1600,88 @@ setState(() {
 }
 
 // Helper widget for stat cards
-Widget _modernStatCard({
-  required String title,
-  required String value,
-  required Color color,
-  required IconData icon,
-}) {
-  return Container(
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(20),
-      gradient: LinearGradient(
-        colors: [
-          Colors.white,
-          color.withValues(alpha:0.05),
-        ],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withValues(alpha:0.04),
-          blurRadius: 12,
-          offset: const Offset(0, 6),
-        ),
-      ],
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        /// Top Row (Icon + optional trend)
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha:0.12),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Icon(icon, color: color, size: 20),
-            ),
-            /// Small trend indicator
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.grey.withValues(alpha:0.1),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text(
-                "+2%",
-                style: TextStyle(
-                  fontSize: 11,
-                  color: Colors.green,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const Spacer(),
-        /// Value
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 0.5,
-          ),
-        ),
-        const SizedBox(height: 6),
-        /// Title
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 13,
-            color: Colors.grey.shade600,
-          ),
-        ),
-      ],
-    ),
-  );
-}
+// Widget _modernStatCard({
+//   required String title,
+//   required String value,
+//   required Color color,
+//   required IconData icon,
+// }) {
+//   return Container(
+//     padding: const EdgeInsets.all(16),
+//     decoration: BoxDecoration(
+//       borderRadius: BorderRadius.circular(20),
+//       gradient: LinearGradient(
+//         colors: [
+//           Colors.white,
+//           color.withValues(alpha:0.05),
+//         ],
+//         begin: Alignment.topLeft,
+//         end: Alignment.bottomRight,
+//       ),
+//       boxShadow: [
+//         BoxShadow(
+//           color: Colors.black.withValues(alpha:0.04),
+//           blurRadius: 12,
+//           offset: const Offset(0, 6),
+//         ),
+//       ],
+//     ),
+//     child: Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         /// Top Row (Icon + optional trend)
+//         Row(
+//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//           children: [
+//             Container(
+//               padding: const EdgeInsets.all(10),
+//               decoration: BoxDecoration(
+//                 color: color.withValues(alpha:0.12),
+//                 borderRadius: BorderRadius.circular(14),
+//               ),
+//               child: Icon(icon, color: color, size: 20),
+//             ),
+//             /// Small trend indicator
+//             Container(
+//               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+//               decoration: BoxDecoration(
+//                 color: Colors.grey.withValues(alpha:0.1),
+//                 borderRadius: BorderRadius.circular(10),
+//               ),
+//               child: Text(
+//                 "+2%",
+//                 style: TextStyle(
+//                   fontSize: 11,
+//                   color: Colors.green,
+//                   fontWeight: FontWeight.w600,
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//         const Spacer(),
+//         /// Value
+//         Text(
+//           value,
+//           style: const TextStyle(
+//             fontSize: 22,
+//             fontWeight: FontWeight.w800,
+//             letterSpacing: 0.5,
+//           ),
+//         ),
+//         const SizedBox(height: 6),
+//         /// Title
+//         Text(
+//           title,
+//           style: TextStyle(
+//             fontSize: 13,
+//             color: Colors.grey.shade600,
+//           ),
+//         ),
+//       ],
+//     ),
+//   );
+// }
 
 // Add this helper method in your widget class
 String _getMonthYear() {

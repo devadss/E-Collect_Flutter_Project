@@ -6,11 +6,9 @@ import '../../core/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/utils.dart';
-import '../../data/service/notification_service/notification_service.dart';
 import '../../data/storage/shared_pref_helper.dart';
 import '../auth/authetication_page/google_pin_code_page.dart';
 import '../auth/mobile_number_page.dart';
-import '../merchant/bottom_nav/bottom_nav_bar.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

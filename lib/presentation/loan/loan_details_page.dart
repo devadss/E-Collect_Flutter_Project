@@ -6,13 +6,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../core/alerts.dart';
 import '../../data/e_collect_bloc/payment_bloc/payment_bloc.dart';
-import '../../data/provider/cash_transcation_provider.dart';
 import '../../data/repository/payment_session_id_repository.dart';
 import '../../data/storage/shared_pref_helper.dart';
 import '../../domain/model/e_collect/payment/qr_request_model/qr_request_model.dart';
-import '../dues/rdcl_due_home_page.dart';
 import '../paymentlink_request_ui.dart';
-import '../profile/widgets/recipect_page.dart';
 import 'package:collection_qr_flutter/core/utils.dart' as utl;
 
 import '../qr_code/widgets/generate_qr_code_page.dart';

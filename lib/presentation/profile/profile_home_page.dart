@@ -527,6 +527,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                                       borderRadius: BorderRadius.circular(16),
                                       child: InkWell(
                                         onTap: () async {
+
                                           await performLogout(context);
                                         },
                                         borderRadius: BorderRadius.circular(16),

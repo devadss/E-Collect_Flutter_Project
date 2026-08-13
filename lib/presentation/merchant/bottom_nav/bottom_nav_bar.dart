@@ -82,7 +82,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           items.add(
             NavItem(
               label: 'RD Dues',
-              icon: Icons.receipt_long,
+              icon: Icons.event_repeat,
               page: const RdDueDetailPage(),
             ),
           );
@@ -92,7 +92,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           items.add(
             NavItem(
               label: 'Loan-List',
-              icon: Icons.monetization_on,
+              icon: Icons.account_balance,
               page: const LoanList(),
             ),
           );
@@ -143,7 +143,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
     items.add(NavItem(
   label: 'Tran-History',
-  icon: Icons.timelapse,
+  icon: Icons.list_alt,
 
   page: EcollectTransactionReport(key: eCollectTransactionKey,),
 ),);

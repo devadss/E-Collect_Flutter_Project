@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,9 +11,6 @@ import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/colors.dart';
 import '../../../domain/model/e_collect/transaction_report/transaction_ok_report.dart';
-/// Requires the same packages already used by the printing flow elsewhere
-/// in the app: permission_handler, print_bluetooth_thermal, screenshot,
-/// share_plus, path_provider, intl, and google_fonts.
 
 class EcollectTransactionDetail extends StatefulWidget {
   final PaymentTransaction paymentTransaction;
@@ -643,6 +639,7 @@ class _EcollectTransactionDetailState extends State<EcollectTransactionDetail> {
       await WidgetsBinding.instance.endOfFrame;
 
       // Capture AFTER the UI has been rebuilt
+      if(!mounted)return;
       final Uint8List? imageBytes =
       await _screenshotController.capture(
         pixelRatio: MediaQuery.of(context).devicePixelRatio,
@@ -784,7 +781,7 @@ class _EcollectTransactionDetailState extends State<EcollectTransactionDetail> {
                                   isSuccess
                                       ? const Icon(Icons.check_circle,
                                       color: Colors.green)
-                                      : const Icon(Icons.timelapse,
+                                      : const Icon(Icons.pending_actions,
                                       color: Colors.orange),
                                   Text(
                                     txn.status,
@@ -806,9 +803,9 @@ class _EcollectTransactionDetailState extends State<EcollectTransactionDetail> {
                           const SizedBox(height: 20),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
-                              Text("Amount", style: TextStyle(fontSize: 12)),
-                              Text("Order ID", style: TextStyle(fontSize: 11)),
+                            children: [
+                              const Text("Amount", style: TextStyle(fontSize: 12)),
+                              const Text("Order ID", style: TextStyle(fontSize: 11)),
                             ],
                           ),
                           Row(
@@ -819,8 +816,14 @@ class _EcollectTransactionDetailState extends State<EcollectTransactionDetail> {
                                 style: const TextStyle(
                                     fontSize: 20, fontWeight: FontWeight.w700),
                               ),
-                              Text(txn.orderId,
-                                  style: const TextStyle(fontSize: 11)),
+                              Container(
+                                  padding: EdgeInsets.all(7),
+                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.indigo.shade50),
+                                  child: Text(
+                                      textAlign: TextAlign.end,
+                                      txn.orderId,
+                                      style: const TextStyle(fontSize: 11,color:Colors.grey,fontStyle:FontStyle.italic,fontWeight: FontWeight.w700))),
+
                             ],
                           ),
                           const SizedBox(height: 20),
@@ -829,6 +832,9 @@ class _EcollectTransactionDetailState extends State<EcollectTransactionDetail> {
                             children: const [
                               Text("Payment Mode",
                                   style: TextStyle(fontSize: 12)),
+                              Spacer(flex: 1,),
+                              Icon(Icons.date_range, color: Colors.grey,size: 16,),
+                              SizedBox(width: 5,),
                               Text("Transaction Date",
                                   style: TextStyle(fontSize: 11)),
                             ],
@@ -837,11 +843,10 @@ class _EcollectTransactionDetailState extends State<EcollectTransactionDetail> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(txn.paymentMode,
-                                  style: const TextStyle(fontSize: 12)),
+                                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, fontStyle:FontStyle.italic, color: Colors.grey)),
                               Text(
-                                DateFormat('dd MMM yyyy, hh:mm a')
-                                    .format(txn.createdAt),
-                                style: const TextStyle(fontSize: 11),
+                                DateFormat('dd MMM yyyy, hh:mm a').format(txn.createdAt),
+                                style:  TextStyle(fontSize: 11, fontStyle:FontStyle.italic, color: Colors.grey, fontWeight: FontWeight.w700),
                               ),
                             ],
                           ),
@@ -919,8 +924,10 @@ class _EcollectTransactionDetailState extends State<EcollectTransactionDetail> {
                               const Text("Transaction ID",
                                   style: TextStyle(fontSize: 11)),
                               const SizedBox(height: 10),
-                              Text(txn.transactionId,
-                                  style: const TextStyle(fontSize: 11)),
+                              Expanded(
+                                child: Text(textAlign: TextAlign.end,txn.transactionId,
+                                    style: const TextStyle(fontSize: 11)),
+                              ),
                             ],
                           ),
                           const SizedBox(height: 10),
@@ -928,11 +935,15 @@ class _EcollectTransactionDetailState extends State<EcollectTransactionDetail> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text("Payment Gateway Transaction ID",
-                                  style: TextStyle(fontSize: 11)),
+                              Expanded(
+                                child: const Text("Payment Gateway Transaction ID",
+                                    style: TextStyle(fontSize: 11)),
+                              ),
                               const SizedBox(height: 10),
-                              Text(txn.paymentGatewayTransactionId,
-                                  style: const TextStyle(fontSize: 11)),
+                              Expanded(
+                                child: Text(textAlign: TextAlign.end,txn.paymentGatewayTransactionId,
+                                    style: const TextStyle(fontSize: 11)),
+                              ),
                             ],
                           ),
                           const SizedBox(height: 10),
@@ -966,6 +977,7 @@ class _EcollectTransactionDetailState extends State<EcollectTransactionDetail> {
                                   txn.status,
                                   style: TextStyle(
                                     fontSize: 11,
+                                    fontWeight: FontWeight.w700,
                                     color: isSuccess
                                         ? Colors.green
                                         : Colors.orangeAccent,
@@ -983,7 +995,7 @@ class _EcollectTransactionDetailState extends State<EcollectTransactionDetail> {
                                   style: TextStyle(fontSize: 11)),
                               const Spacer(flex: 1),
                               Expanded(
-                                child: Text(txn.responseMessage,
+                                child: Text(textAlign: TextAlign.end,txn.responseMessage,
                                     style: const TextStyle(fontSize: 10)),
                               ),
                             ],

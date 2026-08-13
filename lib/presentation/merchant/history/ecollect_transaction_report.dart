@@ -18,6 +18,10 @@ class EcollectTransactionReport extends StatefulWidget {
 
 class EcollectTransactionReportState extends State<EcollectTransactionReport> {
   String selectedValue = "This Week";
+  String selectedDateFilter = "All";
+
+  String selectedStatusFilter = "All";
+
   String merchantID = "";
   String name = "Select";
   bool sendIconVisibility = false;
@@ -33,11 +37,25 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
     "Custom Range",
   ];
 
+  final List<String> dateFilters = [
+    "All",
+    "Today",
+    "Yesterday",
+    "Last 7 Days",
+    "This Month",
+    "Custom Range",
+  ];
+  final List<String> statusFilters = [
+    "All",
+    "Success",
+    "Pending",
+  ];
+
   // ---- NEW: search text kept in state for filtering ----
   String searchQuery = "";
 
   Future<void> refresh() async {
-    print("caeeld  this week");
+    print("caeeld this week");
     setState(() {
       selectedValue = "This Week";
     });
@@ -120,7 +138,8 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
     final query = searchQuery.trim().toLowerCase();
     return data.where((transaction) {
       final matchesName = query.isEmpty ||
-          transaction.customerName.toString().toLowerCase().contains(query);
+          transaction.customerName.toString().toLowerCase().contains(query) ||
+      transaction.status.toLowerCase().contains(query);
       return matchesName;
     }).toList();
   }
@@ -128,127 +147,501 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
   void _openFilterSheet() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
-        ),
-      ),
-      builder: (BuildContext sheetContext) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Filter by date",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                  ),
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (sheetContext) {
+        return StatefulBuilder(
+          builder: (context, setSheetState) {
+            return Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(28),
                 ),
-                const SizedBox(height: 12),
-                ...filterItems.map((item) {
-                  final isSelected = item == selectedValue;
-
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(
-                      item,
-                      style: TextStyle(
-                        fontWeight:
-                            isSelected ? FontWeight.w700 : FontWeight.w500,
-                        fontSize: 14,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Drag handle
+                    Center(
+                      child: Container(
+                        width: 42,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                     ),
-                    trailing: isSelected
-                        ? const Icon(
-                            Icons.check_circle_rounded,
-                            color: Colors.green,
-                          )
-                        : null,
-                    onTap: () async {
-                      DateTimeRange? range;
 
-                      if (item == "Custom Range") {
-                        final now = DateTime.now();
+                    const SizedBox(height: 20),
 
-                        final picked = await showDateRangePicker(
-                          context: context,
-                          firstDate: DateTime(now.year - 2),
-                          lastDate: now,
-                          initialDateRange: customRange ??
-                              DateTimeRange(
-                                start: now,
-                                end: now,
+                    // Header
+                    Row(
+                      children: [
+                        Container(
+                          width: 42,
+                          height: 42,
+                          decoration: BoxDecoration(
+                            color: home1.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: Icon(
+                            Icons.tune_rounded,
+                            color: home1,
+                            size: 21,
+                          ),
+                        ),
+
+                        const SizedBox(width: 12),
+
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Filter Transactions",
+                                style: TextStyle(
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: -0.3,
+                                ),
                               ),
-                        );
-
-                        if (picked == null) return;
-
-                        range = DateTimeRange(
-                          start: DateTime(
-                            picked.start.year,
-                            picked.start.month,
-                            picked.start.day,
+                              SizedBox(height: 3),
+                              Text(
+                                "Refine your transaction history",
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
                           ),
-                          end: DateTime(
-                            picked.end.year,
-                            picked.end.month,
-                            picked.end.day,
-                            23,
-                            59,
-                            59,
+                        ),
+
+                        TextButton(
+                          onPressed: () {
+                            setSheetState(() {
+                              selectedDateFilter = "All";
+                              selectedStatusFilter = "All";
+                              customRange = null;
+                            });
+                          },
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.grey.shade700,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 0,
+                              vertical: 8,
+                            ),
                           ),
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.grey.shade200
+                            ),
+                            child: const Text(
+                              "Reset",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 20),
+Divider(),
+                    // Date section
+                    const Text(
+                      "Date range",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 10,
+                      children: dateFilters.map((item) {
+                        final isSelected =
+                            selectedDateFilter == item;
+
+                        return ChoiceChip(
+                          label: Text(item),
+                          selected: isSelected,
+                          showCheckmark: false,
+                          side: BorderSide(
+                            color: isSelected
+                                ? home1
+                                : Colors.grey.shade200,
+                          ),
+                          backgroundColor: Colors.grey.shade50,
+                          selectedColor: home1.withValues(alpha: 0.1),
+                          labelStyle: TextStyle(
+                            fontSize: 13,
+                            fontWeight: isSelected
+                                ? FontWeight.w600
+                                : FontWeight.w500,
+                            color: isSelected
+                                ? home1
+                                : Colors.grey.shade700,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 5,
+                            vertical: 2,
+                          ),
+                          onSelected: (_) async {
+                            if (item == "Custom Range") {
+                              final now = DateTime.now();
+
+                              final picked =
+                              await showDateRangePicker(
+                                context: sheetContext,
+                                firstDate:
+                                DateTime(now.year - 2),
+                                lastDate: now,
+                                initialDateRange: customRange ??
+                                    DateTimeRange(
+                                      start: now,
+                                      end: now,
+                                    ),
+                                builder: (context, child) {
+                                  return Theme(
+                                    data: Theme.of(context).copyWith(
+                                      colorScheme:
+                                      ColorScheme.light(
+                                        primary:
+                                        Colors.blue.shade700,
+                                      ),
+                                    ),
+                                    child: child!,
+                                  );
+                                },
+                              );
+
+                              if (picked == null) return;
+
+                              setSheetState(() {
+                                selectedDateFilter =
+                                "Custom Range";
+
+                                customRange = DateTimeRange(
+                                  start: DateTime(
+                                    picked.start.year,
+                                    picked.start.month,
+                                    picked.start.day,
+                                  ),
+                                  end: DateTime(
+                                    picked.end.year,
+                                    picked.end.month,
+                                    picked.end.day,
+                                    23,
+                                    59,
+                                    59,
+                                  ),
+                                );
+                              });
+                            } else {
+                              setSheetState(() {
+                                selectedDateFilter = item;
+                                customRange = null;
+                              });
+                            }
+                          },
                         );
-                      } else {
-                        // Temporarily change selectedValue so
-                        // _resolveDateRange() calculates this selection.
-                        setState(() {
-                          selectedValue = item;
-                        });
+                      }).toList(),
+                    ),
 
-                        range = _resolveDateRange();
-                      }
+                    // Custom range preview
+                    if (selectedDateFilter == "Custom Range" &&
+                        customRange != null) ...[
+                      const SizedBox(height: 12),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: home1.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: home1.withValues(alpha: 0.1),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.date_range_rounded,
+                              size: 18,
+                              color: home1),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                "${_formatDate(customRange!.start)}"
+                                    "  –  "
+                                    "${_formatDate(customRange!.end)}",
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: home1,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
 
-                      if (range == null) return;
+                    const SizedBox(height: 20),
+Divider(),
+                    // Status section
+                    const Text(
+                      "Transaction status",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
 
-                      setState(() {
-                        selectedValue = item;
-                        customRange = item == "Custom Range" ? range : null;
-                      });
+                    const SizedBox(height: 12),
 
-                      // Close filter sheet
-                      if (sheetContext.mounted) {
-                        Navigator.pop(sheetContext);
-                      }
-                      context.read<PaymentTransactionBloc>().add(
-                          GetTransactionByMerchantDateRange(
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 10,
+                      children: statusFilters.map((status) {
+                        final isSelected =
+                            selectedStatusFilter == status;
+
+                        return ChoiceChip(
+                          label: Text(status),
+                          selected: isSelected,
+                          showCheckmark: false,
+                          side: BorderSide(
+                            color: isSelected
+                                ? home1
+                                : Colors.grey.shade200,
+                          ),
+                          backgroundColor: Colors.grey.shade50,
+                          selectedColor: home1.withValues(alpha: 0.1),
+                          labelStyle: TextStyle(
+                            fontSize: 13,
+                            fontWeight: isSelected
+                                ? FontWeight.w600
+                                : FontWeight.w500,
+                            color: isSelected
+                                ? home1
+                                : Colors.grey.shade700,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 5,
+                            vertical: 2,
+                          ),
+                          onSelected: (_) {
+                            setSheetState(() {
+                              selectedStatusFilter = status;
+                            });
+                          },
+                        );
+                      }).toList(),
+                    ),
+
+                    const SizedBox(height: 28),
+
+                    // Apply button
+                    SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.pop(sheetContext);
+
+                          if (!mounted) return;
+
+                          final range = _resolveDateRange();
+
+                          if (range == null) return;
+
+                          context
+                              .read<PaymentTransactionBloc>()
+                              .add(
+                            GetTransactionByMerchantDateRange(
                               merchantID,
                               range.start.toIso8601String(),
-                              range.end.toIso8601String()));
-                      // --------------------------------------------------
-                      // API CALL
-                      // --------------------------------------------------
-                      // context.read<PaymentTransactionBloc>().add(
-                      //   GetTransactionByMerchant(
-                      //     merchantID,
-                      //     fromDate: range.start.toIso8601String(),
-                      //     toDate: range.end.toIso8601String(),
-                      //   ),
-                      // );
-                    },
-                  );
-                }),
-              ],
-            ),
-          ),
+                              range.end.toIso8601String(),
+                            ),
+                          );
+                        },
+                        icon: const Icon(
+                          Icons.check_rounded,
+                          size: 19,
+                        ),
+                        label: const Text(
+                          "Apply Filters",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          backgroundColor: home1.withValues(alpha: 0.79),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
         );
       },
     );
   }
+  // void _openFilterSheet() {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     backgroundColor: Colors.white,
+  //     shape: const RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.vertical(
+  //         top: Radius.circular(20),
+  //       ),
+  //     ),
+  //     builder: (BuildContext sheetContext) {
+  //       return SafeArea(
+  //         child: Padding(
+  //           padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+  //           child: Column(
+  //             mainAxisSize: MainAxisSize.min,
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               const Text(
+  //                 "Filter by date",
+  //                 style: TextStyle(
+  //                   fontSize: 16,
+  //                   fontWeight: FontWeight.w700,
+  //                 ),
+  //               ),
+  //               const SizedBox(height: 12),
+  //               ...filterItems.map((item) {
+  //                 final isSelected = item == selectedValue;
+  //
+  //                 return ListTile(
+  //                   contentPadding: EdgeInsets.zero,
+  //                   title: Text(
+  //                     item,
+  //                     style: TextStyle(
+  //                       fontWeight:
+  //                           isSelected ? FontWeight.w700 : FontWeight.w500,
+  //                       fontSize: 14,
+  //                     ),
+  //                   ),
+  //                   trailing: isSelected
+  //                       ? const Icon(
+  //                           Icons.check_circle_rounded,
+  //                           color: Colors.green,
+  //                         )
+  //                       : null,
+  //                   onTap: () async {
+  //                     DateTimeRange? range;
+  //
+  //                     if (item == "Custom Range") {
+  //                       final now = DateTime.now();
+  //
+  //                       final picked = await showDateRangePicker(
+  //                         context: context,
+  //                         firstDate: DateTime(now.year - 2),
+  //                         lastDate: now,
+  //                         initialDateRange: customRange ??
+  //                             DateTimeRange(
+  //                               start: now,
+  //                               end: now,
+  //                             ),
+  //                       );
+  //
+  //                       if (picked == null) return;
+  //
+  //                       range = DateTimeRange(
+  //                         start: DateTime(
+  //                           picked.start.year,
+  //                           picked.start.month,
+  //                           picked.start.day,
+  //                         ),
+  //                         end: DateTime(
+  //                           picked.end.year,
+  //                           picked.end.month,
+  //                           picked.end.day,
+  //                           23,
+  //                           59,
+  //                           59,
+  //                         ),
+  //                       );
+  //                     } else {
+  //                       // Temporarily change selectedValue so
+  //                       // _resolveDateRange() calculates this selection.
+  //                       setState(() {
+  //                         selectedValue = item;
+  //                       });
+  //
+  //                       range = _resolveDateRange();
+  //                     }
+  //
+  //                     if (range == null) return;
+  //
+  //                     setState(() {
+  //                       selectedValue = item;
+  //                       customRange = item == "Custom Range" ? range : null;
+  //                     });
+  //
+  //                     // Close filter sheet
+  //                     if (sheetContext.mounted) {
+  //                       Navigator.pop(sheetContext);
+  //                     }
+  //                     if(!mounted)return;
+  //                     context.read<PaymentTransactionBloc>().add(
+  //                         GetTransactionByMerchantDateRange(
+  //                             merchantID,
+  //                             range.start.toIso8601String(),
+  //                             range.end.toIso8601String()));
+  //                     // --------------------------------------------------
+  //                     // API CALL
+  //                     // --------------------------------------------------
+  //                     // context.read<PaymentTransactionBloc>().add(
+  //                     //   GetTransactionByMerchant(
+  //                     //     merchantID,
+  //                     //     fromDate: range.start.toIso8601String(),
+  //                     //     toDate: range.end.toIso8601String(),
+  //                     //   ),
+  //                     // );
+  //                   },
+  //                 );
+  //               }),
+  //             ],
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   void _runSearch() {
     setState(() {
@@ -304,13 +697,14 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
                         ),
                         prefixIcon: Icon(
                           Icons.search_rounded,
-                          color: Colors.grey.shade600,
+                          color: home1.withValues(alpha: 0.5),
                           size: 21,
                         ),
                         suffixIcon: sendIconVisibility
                             ? IconButton(
                                 onPressed: _runSearch,
-                                icon: const Icon(
+                                icon:  Icon(
+                                  color: home1.withValues(alpha: 0.5),
                                   Icons.arrow_forward_rounded,
                                   size: 20,
                                 ),
@@ -335,12 +729,12 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                      color: Colors.grey.shade200,
+                      color: home1.withValues(alpha: 0.5),
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.03),
-                        blurRadius: 8,
+                        color: home1.withValues(alpha: 0.1),
+                        blurRadius: 2,
                         offset: const Offset(0, 2),
                       ),
                     ],
@@ -349,6 +743,7 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
                     tooltip: "Filter",
                     onPressed: _openFilterSheet,
                     icon: const Icon(
+                      color: home1,
                       Icons.tune_rounded,
                       size: 21,
                     ),
@@ -388,7 +783,6 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
                         setState(() {
                           selectedValue = "This Week";
                         });
-
                         context
                             .read<PaymentTransactionBloc>()
                             .add(GetTransactionByMerchant(merchantID));
@@ -415,39 +809,7 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
                   : SizedBox.shrink(),
             ],
           ),
-Row(
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: [
-    SizedBox(width: 16,),
-  ChoiceChip(
-    //selectedColor: Colors.green.shade100,
-    label: Text("All", style: TextStyle(fontSize: 11),), selected: selectedIndex==0,
-    onSelected: (selected){
-      setState(() {
-        selectedIndex = 0;
-      });
-    },),
-    SizedBox(width: 16,),
-  ChoiceChip(
-    selectedColor: Colors.green.shade100,
-    label: Text("Success",style: TextStyle(fontSize: 11)), selected: selectedIndex==1,
-    onSelected: (selected){
-      setState(() {
-        selectedIndex = 1;
-      });
-    },),
-    SizedBox(width: 16,),
-  ChoiceChip(
-    selectedColor: Colors.orange.shade100,
 
-    label: Text("Pending",style: TextStyle(fontSize: 11)), selected: selectedIndex == 2,
-    onSelected: (selected){
-      setState(() {
-        selectedIndex = 2;
-      });
-    },),
-    Spacer(flex: 1,)
-],),
           const SizedBox(height: 6),
 
           // Transaction List
@@ -588,7 +950,7 @@ Row(
                                       height: 42,
                                       width: 42,
                                       decoration: BoxDecoration(
-                                        color: Colors.grey.shade100,
+                                        color: Colors.blueGrey.shade50,
                                         shape: BoxShape.circle,
                                       ),
                                       child: Center(
@@ -599,6 +961,7 @@ Row(
                                               : "?",
                                           style: const TextStyle(
                                             fontSize: 16,
+                                            color: Colors.grey,
                                             fontWeight: FontWeight.w700,
                                           ),
                                         ),
@@ -694,7 +1057,7 @@ Row(
                                     Icon(
                                       Icons.account_balance_wallet_outlined,
                                       size: 16,
-                                      color: Colors.grey.shade500,
+                                      color: Colors.red.shade500,
                                     ),
                                     const SizedBox(width: 6),
                                     Text(

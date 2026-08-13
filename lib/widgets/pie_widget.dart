@@ -115,7 +115,7 @@ class PieChartLegend extends StatelessWidget {
           child: Text(
             'Revenue Distribution',
             style: TextStyle(
-              color: Colors.white.withOpacity(0.7),
+              color: Colors.white.withValues(alpha: 0.7),
               fontSize: 16,
               fontWeight: FontWeight.w600,
               letterSpacing: 0.5,
@@ -146,7 +146,7 @@ class PieChartLegend extends StatelessWidget {
                     curve: Curves.easeOut,
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? segment.color.withOpacity(0.3)
+                          ? segment.color.withValues(alpha: 0.3)
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(10),
                       border: isSelected
@@ -166,7 +166,7 @@ class PieChartLegend extends StatelessWidget {
                             boxShadow: isSelected
                                 ? [
                               BoxShadow(
-                                color: segment.color.withOpacity(0.5),
+                                color: segment.color.withValues(alpha: 0.5),
                                 blurRadius: 8,
                               )
                             ]
@@ -180,7 +180,7 @@ class PieChartLegend extends StatelessWidget {
                             style: TextStyle(
                               color: isSelected
                                   ? Colors.white
-                                  : Colors.white.withOpacity(0.6),
+                                  : Colors.white.withValues(alpha: 0.6),
                               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                             ),
                           ),
@@ -190,7 +190,7 @@ class PieChartLegend extends StatelessWidget {
                           style: TextStyle(
                             color: isSelected
                                 ? Colors.white
-                                : Colors.white.withOpacity(0.6),
+                                : Colors.white.withValues(alpha: 0.6),
                             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                           ),
                         ),
@@ -258,7 +258,7 @@ class PieChartPainter extends CustomPainter {
 
         // Draw glow
         final glowPaint = Paint()
-          ..color = segment.color.withOpacity(0.15)
+          ..color = segment.color.withValues(alpha: 0.15)
           ..style = PaintingStyle.fill
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 20);
         canvas.drawPath(path, glowPaint);
@@ -267,7 +267,7 @@ class PieChartPainter extends CustomPainter {
         final paint = Paint()
           ..shader = SweepGradient(
             colors: [
-              segment.color.withOpacity(0.9),
+              segment.color.withValues(alpha: 0.9),
               segment.color,
             ],
             startAngle: startAngle,
@@ -280,7 +280,7 @@ class PieChartPainter extends CustomPainter {
 
         // Border stroke
         final borderPaint = Paint()
-          ..color = Colors.white.withOpacity(0.3)
+          ..color = Colors.white.withValues(alpha: 0.3)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2;
         canvas.drawPath(path, borderPaint);
@@ -298,7 +298,7 @@ class PieChartPainter extends CustomPainter {
         final paint = Paint()
           ..shader = SweepGradient(
             colors: [
-              segment.color.withOpacity(0.7),
+              segment.color.withValues(alpha: 0.7),
               segment.color,
             ],
             startAngle: startAngle,
@@ -311,7 +311,7 @@ class PieChartPainter extends CustomPainter {
 
         // Subtle border
         final borderPaint = Paint()
-          ..color = Colors.black.withOpacity(0.2)
+          ..color = Colors.black.withValues(alpha: 0.2)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1.5;
         canvas.drawPath(path, borderPaint);
@@ -365,7 +365,7 @@ class PieChartPainter extends CustomPainter {
     final textSpan = TextSpan(
       text: '${percentage.toStringAsFixed(0)}%',
       style: TextStyle(
-        color: isSelected ? Colors.white : Colors.white.withOpacity(0.9),
+        color: isSelected ? Colors.white : Colors.white.withValues(alpha: 0.9),
         fontSize: radius * 0.12,
         fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
       ),
