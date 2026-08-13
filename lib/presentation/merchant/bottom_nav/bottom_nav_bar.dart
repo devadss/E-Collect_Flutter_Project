@@ -22,6 +22,7 @@ final GlobalKey<ECollectHomepageState> eCollectHomeKey = GlobalKey<ECollectHomep
 final GlobalKey<RdclDueDetailBlocPageState> eCollectRdclDueDetailKey = GlobalKey<RdclDueDetailBlocPageState>();
 final GlobalKey<EcollectTransactionReportState> eCollectTransactionKey = GlobalKey<EcollectTransactionReportState>();
 final GlobalKey<RdclDueListBocPageState> eCollectRdclDueListKey = GlobalKey<RdclDueListBocPageState>();
+
 class _BottomNavBarState extends State<BottomNavBar> {
   int currentIndex = 0;
   String integrationStatus = "";
@@ -60,7 +61,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     super.initState();
     getSharedData();
   }
-  /// RD, LOAN , RDCL , Group these are the 4 categories we are currently using. Based on the type its been switched....
+  /// RD, LOAN , R-D-C-L , Group these are the 4 categories we are currently using. Based on the type its been switched....
   List<NavItem> get navItemCategories {
     final List<NavItem> items = [
       type.contains("GROUP")?

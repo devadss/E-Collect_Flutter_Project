@@ -11,7 +11,7 @@ class PaymentTransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   PaymentTransactionBloc(this.reportRepository)
       : super(PaymentTransactionInitialState()) {
     on<GetTransactionByMerchant>((event, emit) async {
-
+      emit(TransactionReportLoaderState());
       final data = await reportRepository.getTransactionReportByMerchantId(event.merchantID);
       if (data is TransactionSuccessModel) {
         var newTotal = 0.0;

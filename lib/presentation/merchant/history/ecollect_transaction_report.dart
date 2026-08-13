@@ -813,9 +813,11 @@ setState(() {
           SizedBox(
             child: BlocListener<PaymentTransactionBloc, TransactionState>(
               listener: (BuildContext context, TransactionState state) {
+                print("STATE IS : ${state}");
                 if (state is TransactionReportLoaderState) {
                   showProgressDialog(context);
                 }
+
                 if (state is TransactionReportSuccessState) {
                   if (Navigator.of(context).canPop()) {
                     Navigator.of(context).pop();
