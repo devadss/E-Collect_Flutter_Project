@@ -2,10 +2,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../data/provider/collection_base_url_provider.dart';
-import '../data/provider/parent_agent_detail_provider/parent_agent_detil_provider.dart';
 import '../data/storage/shared_pref_helper.dart';
-import '../domain/model/registered_cust_model.dart';
 import 'colors.dart';
 import 'constants.dart';
 
@@ -187,34 +184,6 @@ String getBankNameFromCorpCode(String corpCode) {
   return corpCodeToBankName[corpCode] ?? "Unknown Bank";
 }
 
-Map<String, String?> splitName(String fullName) {
-  List<String> parts = fullName.trim().split(RegExp(r'\s+'));
-
-  String? first;
-  String? middle;
-  String? last;
-
-  if (parts.isEmpty) {
-    return {'first': null, 'middle': null, 'last': null};
-  }
-
-  if (parts.length == 1) {
-    first = parts[0];
-  } else if (parts.length == 2) {
-    first = parts[0];
-    last = parts[1];
-  } else {
-    first = parts[0];
-    last = parts.last;
-    middle = parts.sublist(1, parts.length - 1).join(' ');
-  }
-
-  return {
-    'first': first,
-    'middle': middle,
-    'last': last,
-  };
-}
 
 void checkForUpdate() async {
   try {
@@ -271,109 +240,7 @@ void showProgressDialog(BuildContext context) {
       });
 }
 
-void insertCollectionAgentIntegrationY(RegistedCustomerModel customer) {
-  SharedPref.shared.setEmail(
-    customer.response!.data!['emailId'].toString(),
-  );
-  SharedPref.shared.setCorpCode(
-    customer.response!.data!['CorpCode'].toString(),
-  );
-  SharedPref.shared.setBranchCode(
-    customer.response!.data!['BranchCode'].toString(),
-  );
-  SharedPref.shared.setMpinValue(customer.mpin.toString());
-}
 
-void insertCollectionAgentIntegrationN(RegistedCustomerModel customer) {
-  SharedPref.shared.setCustId(
-    customer.response!.data!['CustId'].toString(),
-  );
-  SharedPref.shared.setEmail(
-    customer.response!.data!['emailId'].toString(),
-  );
-  SharedPref.shared.setCorpCode(
-    customer.response!.data!['CorpCode'].toString(),
-  );
-  SharedPref.shared.setBranchCode(
-    customer.response!.data!['BranchCode'].toString(),
-  );
-  SharedPref.shared.setMpinValue(customer.mpin.toString());
-}
-
-void insertCustRegister(RegistedCustomerModel customer) {
-  SharedPref.shared.setEmail(
-    customer.response!.data!['emailId'].toString(),
-  );
-  SharedPref.shared.setCustId(
-    customer.response!.data!['CustId'].toString(),
-  );
-  SharedPref.shared.setCorpCode(
-    customer.response!.data!['CorpCode'].toString(),
-  );
-  SharedPref.shared.setBranchCode(
-    customer.response!.data!['BranchCode'].toString(),
-  );
-  SharedPref.shared.setSubAgentMobNum(
-    customer.response!.data!['contactNo'].toString(),
-  );
-  SharedPref.shared.setAgentName(
-    customer.response!.data!['firstName'].toString(),
-  );
-  SharedPref.shared.setMpinValue(customer.mpin.toString());
-}
-
-void insertCollectionBaseUrl(CollectionBaseUrlProvider vendorBaseUrlProvider) {
-  SharedPref.shared.setRdclCustomerVendorUrl(vendorBaseUrlProvider
-      .collectionBaseUrlModel!.getCustomerRdclUrl
-      .toString());
-  SharedPref.shared.setDueListRdclUrl(vendorBaseUrlProvider
-      .collectionBaseUrlModel!.getDueListRdclUrl
-      .toString());
-  SharedPref.shared.setCustomerRdUrl(vendorBaseUrlProvider
-      .collectionBaseUrlModel!.getCustomerRdUrl
-      .toString());
-  SharedPref.shared.setDueListRdUrl(
-      vendorBaseUrlProvider.collectionBaseUrlModel!.getDueListRdUrl.toString());
-  SharedPref.shared.setCustomerLoanUrl(vendorBaseUrlProvider
-      .collectionBaseUrlModel!.getCustomerLoanUrl
-      .toString());
-  SharedPref.shared.setDueListLoanUrl(vendorBaseUrlProvider
-      .collectionBaseUrlModel!.getDueListLoanUrl
-      .toString());
-  SharedPref.shared.setLoanAccountHolderUrl(vendorBaseUrlProvider
-      .collectionBaseUrlModel!.getLoanAccountHolderUrl
-      .toString());
-  SharedPref.shared.setUserType(
-      vendorBaseUrlProvider.collectionBaseUrlModel!.userType.toString());
-}
-
-Future<void> insertParentDetailAgent(
-    ParentDetailAgentProvider parentAgentDetailProvider) async
-{
-  await SharedPref.shared.setAgentId(
-    parentAgentDetailProvider.subAgent!.data.parentAgentId.toString(),
-  );
-  await SharedPref.shared.setParentAgentMobNum(
-    parentAgentDetailProvider.subAgent!.data.parentAgentMobNo.toString(),
-  );
-  await SharedPref.shared.setSubAgentName(
-    parentAgentDetailProvider.subAgent!.data.subAgentName.toString(),
-  );
-  await SharedPref.shared.setSubAgentMobNum(
-    parentAgentDetailProvider.subAgent!.data.mobileNumber.toString(),
-  );
-  await SharedPref.shared.setAgentOriginId(
-      parentAgentDetailProvider.subAgent!.data.subAgentOriginId.toString());
-  await SharedPref.shared.setSubAgentCode(
-    parentAgentDetailProvider.subAgent!.data.subAgentOriginId.toString(),
-  );
-  await SharedPref.shared.setSubAgentCodeNew(
-    parentAgentDetailProvider.subAgent!.data.subAgentCode.toString(),
-  );
-  await SharedPref.shared.setSubAgentId(
-    parentAgentDetailProvider.subAgent!.data.subAgentId.toString(),
-  );
-}
 class HomeVariablesModel{
   int todaysCount;
   String? userName;
@@ -635,3 +502,136 @@ class Cat{
   String? name="";
   Cat(this.name);
 }
+
+// Map<String, String?> splitName(String fullName) {
+//   List<String> parts = fullName.trim().split(RegExp(r'\s+'));
+//
+//   String? first;
+//   String? middle;
+//   String? last;
+//
+//   if (parts.isEmpty) {
+//     return {'first': null, 'middle': null, 'last': null};
+//   }
+//
+//   if (parts.length == 1) {
+//     first = parts[0];
+//   } else if (parts.length == 2) {
+//     first = parts[0];
+//     last = parts[1];
+//   } else {
+//     first = parts[0];
+//     last = parts.last;
+//     middle = parts.sublist(1, parts.length - 1).join(' ');
+//   }
+//
+//   return {
+//     'first': first,
+//     'middle': middle,
+//     'last': last,
+//   };
+// }
+
+// void insertCollectionAgentIntegrationY(RegistedCustomerModel customer) {
+//   SharedPref.shared.setEmail(
+//     customer.response!.data!['emailId'].toString(),
+//   );
+//   SharedPref.shared.setCorpCode(
+//     customer.response!.data!['CorpCode'].toString(),
+//   );
+//   SharedPref.shared.setBranchCode(
+//     customer.response!.data!['BranchCode'].toString(),
+//   );
+//   SharedPref.shared.setMpinValue(customer.mpin.toString());
+// }
+
+// void insertCollectionAgentIntegrationN(RegistedCustomerModel customer) {
+//   SharedPref.shared.setCustId(
+//     customer.response!.data!['CustId'].toString(),
+//   );
+//   SharedPref.shared.setEmail(
+//     customer.response!.data!['emailId'].toString(),
+//   );
+//   SharedPref.shared.setCorpCode(
+//     customer.response!.data!['CorpCode'].toString(),
+//   );
+//   SharedPref.shared.setBranchCode(
+//     customer.response!.data!['BranchCode'].toString(),
+//   );
+//   SharedPref.shared.setMpinValue(customer.mpin.toString());
+// }
+
+// void insertCustRegister(RegistedCustomerModel customer) {
+//   SharedPref.shared.setEmail(
+//     customer.response!.data!['emailId'].toString(),
+//   );
+//   SharedPref.shared.setCustId(
+//     customer.response!.data!['CustId'].toString(),
+//   );
+//   SharedPref.shared.setCorpCode(
+//     customer.response!.data!['CorpCode'].toString(),
+//   );
+//   SharedPref.shared.setBranchCode(
+//     customer.response!.data!['BranchCode'].toString(),
+//   );
+//   SharedPref.shared.setSubAgentMobNum(
+//     customer.response!.data!['contactNo'].toString(),
+//   );
+//   SharedPref.shared.setAgentName(
+//     customer.response!.data!['firstName'].toString(),
+//   );
+//   SharedPref.shared.setMpinValue(customer.mpin.toString());
+// }
+
+// void insertCollectionBaseUrl(CollectionBaseUrlProvider vendorBaseUrlProvider) {
+//   SharedPref.shared.setRdclCustomerVendorUrl(vendorBaseUrlProvider
+//       .collectionBaseUrlModel!.getCustomerRdclUrl
+//       .toString());
+//   SharedPref.shared.setDueListRdclUrl(vendorBaseUrlProvider
+//       .collectionBaseUrlModel!.getDueListRdclUrl
+//       .toString());
+//   SharedPref.shared.setCustomerRdUrl(vendorBaseUrlProvider
+//       .collectionBaseUrlModel!.getCustomerRdUrl
+//       .toString());
+//   SharedPref.shared.setDueListRdUrl(
+//       vendorBaseUrlProvider.collectionBaseUrlModel!.getDueListRdUrl.toString());
+//   SharedPref.shared.setCustomerLoanUrl(vendorBaseUrlProvider
+//       .collectionBaseUrlModel!.getCustomerLoanUrl
+//       .toString());
+//   SharedPref.shared.setDueListLoanUrl(vendorBaseUrlProvider
+//       .collectionBaseUrlModel!.getDueListLoanUrl
+//       .toString());
+//   SharedPref.shared.setLoanAccountHolderUrl(vendorBaseUrlProvider
+//       .collectionBaseUrlModel!.getLoanAccountHolderUrl
+//       .toString());
+//   SharedPref.shared.setUserType(
+//       vendorBaseUrlProvider.collectionBaseUrlModel!.userType.toString());
+// }
+
+// Future<void> insertParentDetailAgent(
+//     ParentDetailAgentProvider parentAgentDetailProvider) async
+// {
+//   await SharedPref.shared.setAgentId(
+//     parentAgentDetailProvider.subAgent!.data.parentAgentId.toString(),
+//   );
+//   await SharedPref.shared.setParentAgentMobNum(
+//     parentAgentDetailProvider.subAgent!.data.parentAgentMobNo.toString(),
+//   );
+//   await SharedPref.shared.setSubAgentName(
+//     parentAgentDetailProvider.subAgent!.data.subAgentName.toString(),
+//   );
+//   await SharedPref.shared.setSubAgentMobNum(
+//     parentAgentDetailProvider.subAgent!.data.mobileNumber.toString(),
+//   );
+//   await SharedPref.shared.setAgentOriginId(
+//       parentAgentDetailProvider.subAgent!.data.subAgentOriginId.toString());
+//   await SharedPref.shared.setSubAgentCode(
+//     parentAgentDetailProvider.subAgent!.data.subAgentOriginId.toString(),
+//   );
+//   await SharedPref.shared.setSubAgentCodeNew(
+//     parentAgentDetailProvider.subAgent!.data.subAgentCode.toString(),
+//   );
+//   await SharedPref.shared.setSubAgentId(
+//     parentAgentDetailProvider.subAgent!.data.subAgentId.toString(),
+//   );
+// }

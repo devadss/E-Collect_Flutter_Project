@@ -64,8 +64,10 @@ class _NewQrCodePageState extends State<NewQrCodePage>
         final String? notificationTitle = message.notification?.title;
         final String? notificationBody = message.notification?.body;
 
-        if (notificationTitle == "Wallet Load Successful 🎉" ||
-            notificationTitle == "Amount Collected Successfully") {
+        if (notificationTitle == "Wallet Load Successful 🎉"
+            || notificationTitle == "Amount Collected Successfully"
+        || notificationTitle?.isNotEmpty == true
+        ) {
           if (mounted) {
             _showSuccessMessage(notificationBody);
           }

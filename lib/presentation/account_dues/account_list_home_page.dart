@@ -149,7 +149,7 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
           hintStyle: TextStyle(color: Colors.grey.shade500),
 
           /// 🔍 Prefix Icon
-          prefixIcon: Icon(Icons.search, color: Colors.grey.shade500),
+          prefixIcon: Icon(Icons.search, color: home1.withValues(alpha: 0.5)),
 
           /// ❌ Clear Button (modern UX)
           suffixIcon: searchController.text.isNotEmpty
@@ -162,19 +162,19 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
               : null,
 
           filled: true,
-          fillColor: Colors.grey.shade100,
+          fillColor: Colors.white,
 
           contentPadding:
           const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
 
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30), // pill shape
+            borderRadius: BorderRadius.circular(16), // pill shape
             borderSide: BorderSide.none,
           ),
 
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: Colors.grey.shade300),
           ),
 
           focusedBorder: OutlineInputBorder(
@@ -287,10 +287,10 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Material(
-        elevation: 2,
+        elevation: 3,
         borderRadius: BorderRadius.circular(18),
         color: Colors.white,
-        shadowColor: Colors.black.withValues(alpha:0.05),
+        shadowColor: Colors.black.withValues(alpha:0.19),
         child: InkWell(
           borderRadius: BorderRadius.circular(18),
           onTap: () => _navigateToCustomerDetails(customer),
@@ -480,7 +480,7 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(),
-      backgroundColor: white,
+      backgroundColor: const Color(0xFFF7F8FA),
       body:
         Consumer<AgentCustomerDetailsProvider>(
           builder: (context, provider, child) {
