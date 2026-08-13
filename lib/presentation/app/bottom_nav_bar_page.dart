@@ -50,6 +50,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       _corpCode = corpCode;
       userTPYE = userType; // This is from the vendor url like All , RDCL
       loggedInUserTPYE = loggedInUserType;
+      print("loggedInUserTPYE: $loggedInUserTPYE");
+      print("userTPYE: $userTPYE");
     });
   }
 

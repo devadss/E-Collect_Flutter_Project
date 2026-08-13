@@ -69,7 +69,8 @@ class _MobileNumberVerificationPageState extends State<MobileNumberVerificationP
       if (parentAgentDetailProvider.subAgent != null) {
 
         //PROVIDER CALL 2......
-        await vendorBaseUrlProvider.getCollectionUrl(parentAgentDetailProvider.subAgent?.data.mobileNumber);
+       // await vendorBaseUrlProvider.getCollectionUrl(parentAgentDetailProvider.subAgent?.data.mobileNumber); Some sub-agent number is not mapped with the url from backend so the below code is used with parent mobile number instead.
+        await vendorBaseUrlProvider.getCollectionUrl(parentAgentDetailProvider.subAgent?.data.parentAgentMobNo);
 
         if (vendorBaseUrlProvider.collectionBaseUrlModel != null) {
           insertCollectionBaseUrl(vendorBaseUrlProvider);
