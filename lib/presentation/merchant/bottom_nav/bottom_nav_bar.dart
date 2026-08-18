@@ -100,7 +100,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       items.add(
         NavItem(
           label: 'Home',
-          icon: Icons.home,
+          icon: Icons.home_max,
           page: const GroupHomePageUI(),
         ),
       );
