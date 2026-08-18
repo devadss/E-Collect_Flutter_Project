@@ -839,7 +839,10 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                               onPressed: () {
 
                                                 context.read<PaymentBloc>().add(QrPaymentEvent(QrPaymentRequestModel(
-                                                    agentDetails: AgentDetails(agentName: eCollectMerchantName!, agentId: eCollectAgentId!, agentOrginId: "1079", agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
+                                                    agentDetails: AgentDetails(agentName: eCollectMerchantName!,
+                                                        agentId: eCollectAgentId!,
+                                                        agentOrginId: eCollectAgentOriginId!, agentPhone: eCollectAgentNumber!,
+                                                        agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
                                                     customerDetails: CustomerDetails(customerName: widget.loanDetailsModel.customerName,
                                                         customerPhone: eCollectAgentNumber!,
                                                         customerAccno: widget.loanDetailsModel.loanNumber,
@@ -850,7 +853,6 @@ class _LoanDetailsPageState extends State<LoanDetailsPage>
                                                     qrSource: 'MOB',
                                                     source: 'COLLECTION',
                                                     merchantId: int.parse(eCollectAgentMerchantID!))));
-                                                  //  merchantId: 1)));
                                               },
                                               style: ElevatedButton.styleFrom(
                                                   elevation: 0,

@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/colors.dart';
 import '../../../../core/utils.dart';
-import '../../../merchant/bottom_nav/bottom_nav_bar.dart';
 import '../../authetication_page/google_pin_code_page.dart';
 
 class OtpRequestVerificationPage extends StatefulWidget {
@@ -80,7 +79,7 @@ class _OtpRequestVerificationPageState
             }
             if(state is MobLoginVerifyOtpSuccessState){
               Navigator.pop(context);
-              print(state.otpVerificationSuccessModel.loginResponse.username);
+              print(state.otpVerificationSuccessModel.loginResponse.user.name);
 
               // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>
               //     BottomNavBar()));

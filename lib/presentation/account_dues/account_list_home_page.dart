@@ -50,9 +50,14 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
   }
 
   Future<void> loadSharedPrefs(BuildContext context) async {
-    final branchId = await SharedPref().getECollectBranchID(); //01
-    final agentID = await SharedPref().getECollectAgentID(); //1021
-    final loanListingUrl = await SharedPref().getECollectUrlList(); //1021
+    final result =  await Future.wait([
+      SharedPref.shared.getECollectExternalBranchCode(),
+      SharedPref.shared.getExternalAgentID(),
+      SharedPref.shared.getECollectUrlList(),
+    ]);
+    final branchId = result[0]; //01
+    final agentID = result[1]; //1021
+    final loanListingUrl = result[2] as List<String>; //1021
 
     setState(() {
       for(var x in loanListingUrl){
@@ -467,8 +472,7 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
       MaterialPageRoute(
         builder: (context) => AccountDetailNew(
           custName: customer.custName,
-         /// accNo: customer.depGlobalAccNo,
-          accNo: "01042888",
+          accNo: customer.depGlobalAccNo,
           scheme: customer.schName,
           custId: customer.custId,
         ),

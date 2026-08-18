@@ -64,9 +64,9 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
 
   Future<void> getSharedData() async {
     final _merchantID = await SharedPref.shared.getECollectMerchantID();
-    final _name = await SharedPref().getECollectMerchantName();
+    final _name = await SharedPref.shared.getECollectMerchantName();
 
-    if (!mounted) return;
+   // if (!mounted) return;
     setState(() {
       merchantID = _merchantID;
       name = _name;

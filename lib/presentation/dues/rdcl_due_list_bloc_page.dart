@@ -53,38 +53,27 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
   }
 
   Future<void> loadSharedPrefs() async {
-    final prefs = SharedPref();
+    final result  = await Future.wait([
+      SharedPref.shared.getECollectMerchantName(),
+      SharedPref.shared.getECollectUserID(),
+      SharedPref.shared.getECollectUserID(),
+      SharedPref.shared.getECollectUserNumber(),
+      SharedPref.shared.getECollectUserEmail(),
+      SharedPref.shared.getECollectMerchantBranchCode(),
+      SharedPref.shared.getECollectMerchantID(),
+      SharedPref.shared.getECollectUserType(),
+      SharedPref.shared.getTokenValue(),
+    ]);
     //-------------------------------------
-    final _eCollectMerchantName = await prefs.getECollectMerchantName();
-    final _eCollectAgentId = await prefs.getECollectUserID();
-    final _eCollectAgentOriginId = await prefs.getECollectUserID();
-    final _eCollectAgentNumber = await prefs.getECollectUserNumber();
-    final _eCollectAgentEmail = await prefs.getECollectUserEmail();
-    final _eCollectAgentBranchCode = await prefs.getECollectMerchantBranchCode();
-    final _eCollectAgentMerchantID = await prefs.getECollectMerchantID();
-    final _eCollectCollectionType = await prefs.getECollectUserType();
-    //---------------------------------------
-    final tok = await prefs.getTokenValue();
-
-    if (!mounted) return;
-
-    setState(() {
-      eCollectMerchantName = _eCollectMerchantName;
-      eCollectAgentId = _eCollectAgentId;
-      eCollectAgentOriginId = _eCollectAgentOriginId;
-      eCollectAgentNumber = _eCollectAgentNumber;
-      eCollectAgentEmail = _eCollectAgentEmail;
-      eCollectAgentBranchCode = _eCollectAgentBranchCode;
-      eCollectAgentMerchantID = _eCollectAgentMerchantID;
-      eCollectCollectionType = _eCollectCollectionType;
-
-      token = tok;
-      // subAgentCodeNew = subAgentCodeNewVal;
-      // subagentPhoneNumber = subagentNum;
-    });
-    if (printStatementStatus) {
-      print("agentPhoneNumber : $subagentPhoneNumber");
-    }
+    eCollectMerchantName = result[0];
+    eCollectAgentId = result[1];
+    eCollectAgentOriginId = result[2];
+    eCollectAgentNumber = result[3];
+    eCollectAgentEmail = result[4];
+    eCollectAgentBranchCode = result[5];
+    eCollectAgentMerchantID = result[6];
+    eCollectCollectionType = result[7];
+    token = result[8];
   }
 
 
@@ -1428,7 +1417,8 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
                                                                         }
                                                                       } else if (selectedMethod == "Link") {
                                                                         context.read<PaymentBloc>().add(QrPaymentEvent(QrPaymentRequestModel(
-                                                                            agentDetails: AgentDetails(agentName: eCollectMerchantName!, agentId: "1079", agentOrginId: eCollectAgentId!, agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
+                                                                            agentDetails: AgentDetails(agentName: eCollectMerchantName!,
+                                                                                agentId: eCollectAgentOriginId!, agentOrginId: eCollectAgentId!, agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
                                                                             customerDetails: CustomerDetails(customerName: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].name, customerPhone: eCollectAgentNumber!, customerAccno: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].accNo, customerId: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].custId, customerEmail: eCollectAgentEmail!),
                                                                             collectionType: eCollectCollectionType!,
                                                                             amount: double.parse(controller.text),
@@ -1442,7 +1432,7 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
                                                                             "QR API CALL");
 
                                                                         context.read<PaymentBloc>().add(QrPaymentEvent(QrPaymentRequestModel(
-                                                                            agentDetails: AgentDetails(agentName: eCollectMerchantName!, agentId: "1079", agentOrginId: eCollectAgentId!, agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
+                                                                            agentDetails: AgentDetails(agentName: eCollectMerchantName!, agentId: eCollectAgentOriginId!, agentOrginId: eCollectAgentId!, agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
                                                                             customerDetails: CustomerDetails(customerName: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].name, customerPhone: eCollectAgentNumber!, customerAccno: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].accNo, customerId: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].custId, customerEmail: eCollectAgentEmail!),
                                                                             collectionType: eCollectCollectionType!,
                                                                             amount: double.parse(controller.text),

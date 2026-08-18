@@ -662,8 +662,8 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
     await SharedPref.shared.setECollectTypeList([]);
     await SharedPref.shared.setECollectUrlList([]);
     await SharedPref.shared.setECollectMerchantBranchCode('');
-    await SharedPref.shared.setECollectAgentID('');
-    await SharedPref.shared.setECollectBranchID('');
+    await SharedPref.shared.setExternalAgentID('');
+    await SharedPref.shared.setECollectExternalBranchCode('');
     await SharedPref.shared.setECollectMerchantIntegrationStatus('');
     await SharedPref.shared.setECollectRdclCustomerunderAgentListUrl('');
     await SharedPref.shared.setECollectRdclDuesListunderAgentUrl('');

@@ -129,27 +129,12 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   }
 }
 
-void main() async {
+/*void main() async {
   final apiService = ApiService(baseUrl);
 
   WidgetsFlutterBinding.ensureInitialized();
-  requestLocationPermission();
-  try {
-    if (Firebase.apps.isEmpty) {
-      await Firebase.initializeApp(
-        name: 'com_collection_qr', // Use a unique name
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
-    }
-    await FirebaseMessaging.instance.getInitialMessage();
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    await NotificationServiceQrCode().initialize();
-  } catch (e) {
-    // Handle already initialized or any Firebase-related error
-    if (printStatementStatus) {
-      debugPrint("Firebase initialization error: $e");
-    }
-  }
+ // requestLocationPermission();
+
 
   await requestLocationPermission();
 
@@ -161,15 +146,15 @@ void main() async {
     statusBarColor: Colors.transparent,
   ));
 
-  try {
-    await FirebaseMessaging.instance.getInitialMessage();
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    await NotificationServiceQrCode().initialize();
-  } catch (e) {
-    if (printStatementStatus) {
-      debugPrint("Firebase Messaging error: $e");
-    }
-  }
+  // try {
+  //   await FirebaseMessaging.instance.getInitialMessage();
+  //   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  //   await NotificationServiceQrCode().initialize();
+  // } catch (e) {
+  //   if (printStatementStatus) {
+  //     debugPrint("Firebase Messaging error: $e");
+  //   }
+  // }
 
   runApp(
     // Layer 1: All Repositories (Dependency Injection)
@@ -379,8 +364,410 @@ void main() async {
       ),
     ),
   );
-}
+  try {
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(
+        name: 'com_collection_qr', // Use a unique name
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    }
+    await FirebaseMessaging.instance.getInitialMessage();
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    await NotificationServiceQrCode().initialize();
+  } catch (e) {
+    // Handle already initialized or any Firebase-related error
+    if (printStatementStatus) {
+      debugPrint("Firebase initialization error: $e");
+    }
+  }
+}*/
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
+  final apiService = ApiService(baseUrl);
+
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+    ),
+  );
+
+  // ------------------------------------------------------------
+  // Start Flutter UI immediately
+  // ------------------------------------------------------------
+
+  runApp(
+    MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider(create: (_) => AuthenticationRepository()),
+        RepositoryProvider(create: (_) => PaymentRepository()),
+        RepositoryProvider(create: (_) => TransactionReportRepository()),
+        RepositoryProvider(create: (_) => CustomerListRepo()),
+        RepositoryProvider(create: (_) => RdclDueListRepo()),
+        RepositoryProvider(create: (_) => CashTransactionHistoryRepository()),
+        RepositoryProvider(create: (_) => CashTranscationRepository()),
+        RepositoryProvider(create: (_) => RdclCustListRep()),
+        RepositoryProvider(create: (_) => RdclDueUnderAgentRepo()),
+        RepositoryProvider(create: (_) => LinkTransactionHistoryRepository()),
+        RepositoryProvider(create: (_) => CollectionBaseUrlRepo()),
+        RepositoryProvider(create: (_) => QRTransactionHistoryRepository()),
+        RepositoryProvider(create: (_) => CustRegRepository()),
+        RepositoryProvider(create: (_) => TokenRequestRepository()),
+        RepositoryProvider(create: (_) => OtpRequestRepository()),
+        RepositoryProvider(create: (_) => OtpVerificationRepository()),
+        RepositoryProvider(create: (_) => SetMpinRepository()),
+        RepositoryProvider(create: (_) => AuthRepository()),
+        RepositoryProvider(create: (_) => AgentCustomerDetailsRepository()),
+        RepositoryProvider(create: (_) => OrderCreateRepository()),
+        RepositoryProvider(create: (_) => FetchAccountBalanceRepository()),
+        RepositoryProvider(create: (_) => CashQrRepository()),
+        RepositoryProvider(create: (_) => DueListRepository()),
+        RepositoryProvider(create: (_) => TransactionRepository()),
+        RepositoryProvider(create: (_) => AgentTransactionRepository()),
+        RepositoryProvider(create: (_) => CollectionSummaryRepository()),
+        RepositoryProvider(create: (_) => DueUnderAgentRepository()),
+        RepositoryProvider(create: (_) => TokenExpiryRepository()),
+        RepositoryProvider(create: (_) => DeleteFcmTokenRepository()),
+        RepositoryProvider(create: (_) => ParentAgentDetailRepository()),
+        RepositoryProvider(create: (_) => ParentAgentCredentialRepository()),
+        RepositoryProvider(create: (_) => GetLoanRepository(apiService)),
+        RepositoryProvider(create: (_) => AadhaarOtpRequestRepository()),
+        RepositoryProvider(create: (_) => VerifyAadhaarDetailRepository()),
+        RepositoryProvider(create: (_) => BankAccountRepository()),
+        RepositoryProvider(create: (_) => BankAccountUpdateRepository()),
+        RepositoryProvider(create: (_) => GroupListRepository()),
+        RepositoryProvider(create: (_) => MemberListRepository()),
+        RepositoryProvider(create: (_) => CreateGroupRepository()),
+        RepositoryProvider(create: (_) => CreateMemberRepository()),
+        RepositoryProvider(create: (_) => MemberDeleteRepository()),
+        RepositoryProvider(create: (_) => WhatsAppShareRepository()),
+        RepositoryProvider(create: (_) => DeleteGroupRepository()),
+        RepositoryProvider(create: (_) => CreateGroupWithMemberRepository()),
+        RepositoryProvider(create: (_) => GroupUpdateRepository()),
+        RepositoryProvider(create: (_) => UpdateBankAccountRepository()),
+        RepositoryProvider(create: (_) => GroupStatusRepository()),
+        RepositoryProvider(create: (_) => MemberUpdateRepository()),
+        RepositoryProvider(create: (_) => LoanCashCollectionRepository()),
+        RepositoryProvider(create: (_) => TransferHistoryRepository()),
+        RepositoryProvider(create: (_) => PaymentLinkRepository()),
+        RepositoryProvider(create: (_) => IntegrationLoanRepository()),
+        RepositoryProvider(create: (_) => IntegratedLoanDetailRepository()),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => AuthenticationBloc(
+              context.read<AuthenticationRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => PaymentBloc(
+              context.read<PaymentRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => CustomerListBloc(
+              context.read<CustomerListRepo>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => RdclDuelistBloc(
+              context.read<RdclDueListRepo>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => PaymentTransactionBloc(
+              context.read<TransactionReportRepository>(),
+            ),
+          ),
+        ],
+        child: MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+              create: (_) => CashTransactionHistoryProvider(
+                CashTransactionHistoryRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => CashTranscationProvider(
+                CashTranscationRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => RdclCustListProvider(
+                RdclCustListRep(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => RdclDueUnderAgentProvider(
+                RdclDueUnderAgentRepo(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => LinkTransactionHistoryProvider(
+                LinkTransactionHistoryRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => CollectionBaseUrlProvider(
+                CollectionBaseUrlRepo(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => QRTransactionHistoryProvider(
+                QRTransactionHistoryRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => CustRegisterProvider(
+                CustRegRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => TokenRequestProvider(
+                TokenRequestRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => OtpRequestProvider(
+                OtpRequestRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => OtpVerificationProvider(
+                OtpVerificationRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => SetMpinProvider(
+                SetMpinRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => AuthProvider(
+                AuthRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => AgentCustomerDetailsProvider(
+                AgentCustomerDetailsRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => CreateOrderProvider(
+                OrderCreateRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => BalanceProvider(
+                FetchAccountBalanceRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => CashQrProvider(
+                CashQrRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => DueListProvider(
+                DueListRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => TransactionProvider(
+                TransactionRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => AgentTransactionProvider(
+                AgentTransactionRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => CollectionSummaryProvider(
+                CollectionSummaryRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => DueUnderAgentProvider(
+                DueUnderAgentRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => TokenExpiryProvider(
+                TokenExpiryRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => DeleteFcmProvider(
+                DeleteFcmTokenRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => ParentDetailAgentProvider(
+                ParentAgentDetailRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => ParentAgentCredentialProvider(
+                ParentAgentCredentialRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => GetLoanProvider(
+                GetLoanRepository(apiService),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => AadhaarOtpRequestProvider(
+                AadhaarOtpRequestRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => VerifyAadhaarDetailProvider(
+                VerifyAadhaarDetailRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => BankDetailProvider(
+                BankAccountRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => BankAccountUpdateProvider(
+                BankAccountUpdateRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => GroupListProvider(
+                GroupListRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => MemberListProvider(
+                MemberListRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => CreateGroupProvider(
+                CreateGroupRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => CreateMemberProvider(
+                CreateMemberRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => DeleteMemberProvider(
+                MemberDeleteRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => WhatsAppShareProvider(
+                WhatsAppShareRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => GroupDeleteProvider(
+                DeleteGroupRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => CreateGroupWithMemberProvider(
+                CreateGroupWithMemberRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => GroupUpdateProvider(
+                GroupUpdateRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => UpdateGroupProvider(
+                UpdateBankAccountRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => GroupStatusProvider(
+                GroupStatusRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => MemberUpdateProvider(
+                MemberUpdateRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => LoanCashCollectionProvider(
+                LoanCashCollectionRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => TransferHistoryProvider(
+                TransferHistoryRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => IntegratedLoanListProvider(
+                IntegrationLoanRepository(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => IntegratedLoanDetailProvider(
+                IntegratedLoanDetailRepository(),
+              ),
+            ),
+          ],
+          child: const MyApp(),
+        ),
+      ),
+    ),
+  );
+
+  // ------------------------------------------------------------
+  // Do NOT block UI with these
+  // ------------------------------------------------------------
+
+  _initializeBackgroundServices();
+}
+Future<void> _initializeBackgroundServices() async {
+  // Firebase
+  try {
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(
+        name: 'com_collection_qr',
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    }
+
+    await FirebaseMessaging.instance.getInitialMessage();
+
+    FirebaseMessaging.onBackgroundMessage(
+      _firebaseMessagingBackgroundHandler,
+    );
+
+    await NotificationServiceQrCode().initialize();
+  } catch (e) {
+    if (printStatementStatus) {
+      debugPrint("Firebase initialization error: $e");
+    }
+  }
+
+  // Location
+  try {
+    await requestLocationPermission();
+  } catch (e) {
+    if (printStatementStatus) {
+      debugPrint("Location permission error: $e");
+    }
+  }
+}
 Future<void> requestOverlayPermission() async {
   final isGranted = await FlutterOverlayWindow.isPermissionGranted();
   if (!isGranted) {

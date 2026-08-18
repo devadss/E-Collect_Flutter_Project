@@ -116,7 +116,8 @@ class NotificationService {
       String token,
       String agentID,
       BuildContext context,
-      String navPage, String mobnum) async {
+      String navPage,
+      String mobnum) async {
    // final url = Uri.parse('${baseUrl}api/AgentRegisterToken');
       final url = Uri.parse('https://dev.collect.org.in/api/device/register');
 
@@ -133,6 +134,8 @@ class NotificationService {
       body: jsonEncode(body),
     );
 if(printStatementStatus){
+  print('agentID = $agentID');
+  print('mobnum = $mobnum');
   print('addFcmToken body = $body');
   print('addFcmToken response = ${response.body}');
   print('statusCode: ${response.statusCode}');
@@ -157,28 +160,111 @@ if(printStatementStatus){
 bool _isRequestingPermission = false;
 
 
-
-Future<String?> fetchFcmTokenWithRetries({int maxRetries = 3}) async {
+Future<String?> fetchFcmTokenWithRetries({int maxRetries = 2}) async {
   for (int attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       final token = await FirebaseMessaging.instance.getToken();
+
       if (token != null) {
         return token;
       }
     } catch (e) {
-      if(printStatementStatus){
-        print('Attempt $attempt: Error fetching FCM token: $e');
-        log('Attempt $attempt: Error fetching FCM token: $e');
-      }
-
+      debugPrint('FCM token attempt $attempt failed: $e');
     }
-    await Future.delayed(
-        const Duration(seconds: 2)); // Small delay before retrying
-  }
-  return null; // Return null after exhausting retries
-}
 
+    if (attempt < maxRetries) {
+      await Future.delayed(const Duration(seconds: 1));
+    }
+  }
+
+  return null;
+}
+// Future<String?> fetchFcmTokenWithRetries({int maxRetries = 1}) async {
+//   for (int attempt = 1; attempt <= maxRetries; attempt++) {
+//     try {
+//       final token = await FirebaseMessaging.instance.getToken();
+//       if (token != null) {
+//         return token;
+//       }
+//     } catch (e) {
+//       if(printStatementStatus){
+//         print('Attempt $attempt: Error fetching FCM token: $e');
+//         log('Attempt $attempt: Error fetching FCM token: $e');
+//       }
+//
+//     }
+//     await Future.delayed(
+//         const Duration(seconds: 2)); // Small delay before retrying
+//   }
+//   return null; // Return null after exhausting retries
+// }
 Future<void> saveFcmToken(
+    String entityID,
+    BuildContext context,
+    String navPage,
+    String tok,
+    String mob,
+    String mpin,
+    ) async {
+  if (_isRequestingPermission) {
+    debugPrint("Permission request already in progress.");
+    return;
+  }
+
+  _isRequestingPermission = true;
+
+  try {
+    await FirebaseMessaging.instance.requestPermission();
+
+    final fcmToken = await fetchFcmTokenWithRetries();
+
+    // Navigate immediately.
+    if (!context.mounted) return;
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const BottomNavBar(),
+      ),
+          (route) => false,
+    );
+
+    // Save/register token in background.
+    if (fcmToken != null) {
+      SharedPref.shared.setFcmToken(fcmToken);
+
+      try {
+        await NotificationService().addFcmToken(
+          fcmToken,
+          entityID,
+          context,
+          navPage,
+          mob,
+        );
+
+        debugPrint('FCM token saved successfully');
+      } catch (e) {
+        debugPrint('Failed to register FCM token: $e');
+      }
+    }
+  } catch (e, stacktrace) {
+    debugPrint('Error in saving FCM token: $e');
+    debugPrint('$stacktrace');
+
+    if (!context.mounted) return;
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const BottomNavBar(),
+      ),
+          (route) => false,
+    );
+  } finally {
+    _isRequestingPermission = false;
+  }
+}
+/*Future<void> saveFcmToken(
     String entityID, BuildContext context,
     String navPage, String tok,
     String mob, String mpin
@@ -245,4 +331,4 @@ Future<void> saveFcmToken(
   } finally {
     _isRequestingPermission = false; // Reset the flag
   }
-}
+}*/

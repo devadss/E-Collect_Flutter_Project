@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:collection_qr_flutter/domain/model/e_collect/transaction_report/transaction_ok_report.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -20,6 +21,7 @@ class ECollectHomepageState extends State<ECollectHomepage> {
     {"label": "Pending", "value": 25.0, "color": Colors.orange},
     {"label": "Failed", "value": 20.0, "color": Colors.red},
   ];
+  List<PaymentTransaction> transactionData = [];
 
   final spots = [
     const FlSpot(0, 3),
@@ -48,14 +50,15 @@ class ECollectHomepageState extends State<ECollectHomepage> {
   Future<void> refresh() async => context.read<PaymentTransactionBloc>().add(GetTransactionByMerchant(merchantID));
 
   Future<void> getSharedData() async {
-    final _merchantID = await SharedPref.shared.getECollectMerchantID();
-    final _name = await SharedPref().getECollectMerchantName();
+    final result =  await Future.wait([
+    SharedPref.shared.getECollectMerchantID(),
+    SharedPref.shared.getECollectMerchantName(),
+    ]);
+    merchantID = result[0];
+    name = result[1];
 
     if (!mounted) return;
-    setState(() {
-      merchantID = _merchantID;
-      name = _name;
-    });
+
     context.read<PaymentTransactionBloc>().add(GetTransactionByMerchant(merchantID));
   }
 
@@ -119,8 +122,8 @@ class ECollectHomepageState extends State<ECollectHomepage> {
                     child: BlocBuilder<PaymentTransactionBloc, TransactionState>(
                       builder: (BuildContext context, TransactionState state) {
                         if (state is TransactionReportSuccessState) {
-                          var data = state.transactionSuccessModel.transactionOkReport.data;
-                          if(data.isNotEmpty){
+                           transactionData = state.transactionSuccessModel.transactionOkReport.data;
+                          if(transactionData.isNotEmpty){
                             return Padding(
                               padding:
                               const EdgeInsets.only(right: 5, top: 10, left: 5),
@@ -149,7 +152,7 @@ class ECollectHomepageState extends State<ECollectHomepage> {
                                         reservedSize: 30,
                                         getTitlesWidget: (value, meta) {
                                           var days = [];
-                                          for (var d in data) {
+                                          for (var d in transactionData) {
                                             days.add(d.createdAt
                                                 .toString()
                                                 .replaceRange(10, null, ""));
@@ -224,6 +227,8 @@ class ECollectHomepageState extends State<ECollectHomepage> {
                               ),
                             );
 
+                          }else{
+                            return SizedBox.shrink();
                           }
 
                         }

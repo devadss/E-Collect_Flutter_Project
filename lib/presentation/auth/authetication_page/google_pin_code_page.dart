@@ -22,7 +22,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   String custID = "";
   String token = "";
   bool authenticated = false;
-  String mpin = "";
+ // String mpin = "";
   String fcmToken = "";
   String contactNum = ""; // contains +91
   String subAgentContactNum = ""; // contains +91
@@ -38,25 +38,25 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   }
 
   void loadSharedData() async {
-    String custid = await SharedPref.shared.getECollectMerchantID();
-    String tok = await SharedPref.shared.getTokenValue();
-    String fcmTok = await SharedPref.shared.getFcmToken();
-    String m_pin = await SharedPref.shared.getMpinValue();
-    String mobNum = await SharedPref.shared.getECollectUserNumber();
-    String subAgentMobNum = await SharedPref.shared.getSubAgentMobNum();
-    setState(() {
-      token = tok;
-      contactNum = mobNum;
-      mpin = m_pin;
-      subAgentContactNum = subAgentMobNum;
-      custID = custid;
-      fcmToken = fcmTok;
-    });
-    print("INSIDE");
-    print(fcmTok);
+    final result = await Future.wait([
+      SharedPref.shared.getECollectMerchantID(),
+      SharedPref.shared.getTokenValue(),
+      SharedPref.shared.getFcmToken(),
+      SharedPref.shared.getMpinValue(),
+      SharedPref.shared.getECollectUserNumber(),
+      SharedPref.shared.getSubAgentMobNum(),
+    ]);
+    custID = result[0];
+    token = result[1];
+    fcmToken = result[2];
+    contactNum = result[4];
+    subAgentContactNum = result[5];
+
     print(subAgentContactNum);
-    await saveFcmToken(custid, context, "GPIN", fcmToken, contactNum, mpin);
-    //_openScreenLock();
+    if(fcmToken.isEmpty){
+      await saveFcmToken(custID, context, "GPIN", fcmToken, contactNum, "");
+
+    }
     _authenticateWithBiometrics();
   }
 

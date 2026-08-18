@@ -32,15 +32,15 @@ class RdclDueListBocPageState extends State<RdclDueListBocPage> {
 
   }
   Future<void> loadSharedPrefs() async {
-    final branchID = await SharedPref().getECollectMerchantBranchCode();
-    final number = await SharedPref().getParentAgentMobNum();
-    final custId = await SharedPref().getAgentId();
+    final result  = await Future.wait([
+      SharedPref.shared.getECollectMerchantBranchCode(),
+      SharedPref.shared.getParentAgentMobNum(),
+      SharedPref.shared.getAgentId(),
+    ]);
+    branchid = result[0];
+    agentPhoneNumber = result[1];
+    agentIdValue = result[2];
 
-    setState(() {
-      branchid = branchID;
-      agentPhoneNumber = number;
-      agentIdValue = custId;
-    });
     if(!mounted) return;
     context.read<CustomerListBloc>().add(CustomerListFetchEvent("", branchid.toString(), "1", "10", ""),);
 

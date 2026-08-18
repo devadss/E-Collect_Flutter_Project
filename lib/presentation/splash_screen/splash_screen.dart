@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    getDeviceToken();
+
     getSharedData();
     super.initState();
   }
@@ -68,8 +68,57 @@ class _SplashScreenState extends State<SplashScreen> {
     print("FCM Token: $fcmToken");
 
   }
+  Future<void> getSharedData() async {
+    final results = await Future.wait([
+      SharedPref.shared.getECollectLoginStatus(),
+      SharedPref.shared.getFcmToken(),
+      SharedPref.shared.getAgentId(),
+      SharedPref.shared.getSubAgentId(),
+      SharedPref.shared.getECollectUserToken(),
+      SharedPref.shared.getParentAgentMobNum(),
+      SharedPref.shared.getSubAgentMobNum(),
+      SharedPref.shared.getMpinValue(),
+      SharedPref.shared.getFcmToken(),
+    ]);
 
-  void getSharedData() async {
+    final lgStatus = results[0] as bool;
+
+    fcmToken = results[1] as String;
+    entityid = results[2] as String;
+    subAgentid = results[3] as String;
+    token = results[4] as String;
+    mobnum = results[5] as String;
+    subAgentmobnum = results[6] as String;
+    mpin = results[7] as String;
+    var fcmtok = results[8] as String;
+
+    if(fcmtok.isEmpty){
+      getDeviceToken();
+    }
+
+    isRunningLiveBaseUrl(true, subAgentmobnum);
+    isRunningLiveDopBaseUrl(true, subAgentmobnum);
+
+    if (!mounted) return;
+
+    setState(() {
+      loginStatus = lgStatus;
+    });
+
+    if (loginStatus) {
+      context
+          .read<AuthenticationBloc>()
+          .add(TokenVerificationEvent(token));
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const MobileNumberVerificationPage(),
+        ),
+      );
+    }
+  }
+/*  void getSharedData() async {
     bool lgStatus = await SharedPref.shared.getECollectLoginStatus();
     fcmToken = await SharedPref.shared.getFcmToken();
     entityid = await SharedPref.shared.getAgentId();
@@ -106,7 +155,7 @@ class _SplashScreenState extends State<SplashScreen> {
         }
       });
     }
-  }
+  }*/
 
   void _onAnimationsComplete() {
     if (!_animationsCompleted) {

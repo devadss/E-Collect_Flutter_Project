@@ -46,15 +46,15 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         List<String> eCollectUrlList = [];
 
         emit(MobLoginVerifyOtpSuccessState(data));
-        SharedPref.shared.setECollectLoginStatus(data.loginResponse.isAuthenticated);
-        SharedPref.shared.setECollectMerchantBranchCode(data.loginResponse.branchCode);
-        SharedPref.shared.setECollectBranchID(data.loginResponse.branchId.toString());
-        SharedPref.shared.setECollectAgentID(data.loginResponse.agentId.toString());
-        SharedPref.shared.setECollectMerchantIntegrationStatus(data.loginResponse.integrationStatus);
-       for(var x in data.loginResponse.listUrl.keys){
+        SharedPref.shared.setECollectLoginStatus(data.loginResponse.success);
+        SharedPref.shared.setECollectMerchantBranchCode(data.loginResponse.user.branchCode);
+        SharedPref.shared.setECollectExternalBranchCode(data.loginResponse.user.externalBranchId.toString());
+        SharedPref.shared.setExternalAgentID(data.loginResponse.user.externalAgentId.toString());
+        SharedPref.shared.setECollectMerchantIntegrationStatus(data.loginResponse.user.integrationStatus);
+       for(var x in data.loginResponse.collectionConfig.listUrl.keys){
           typeList.add(x);
        }
-        for(var x in data.loginResponse.listUrl.values){
+        for(var x in data.loginResponse.collectionConfig.listUrl.values){
           for(var c in x){
             eCollectUrlList.add(c);
           }
@@ -62,14 +62,14 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         }
         SharedPref.shared.setECollectTypeList(typeList);
         SharedPref.shared.setECollectUrlList(eCollectUrlList);
-        SharedPref.shared.setECollectMerchantUserName(data.loginResponse.fullName);
-        SharedPref.shared.setECollectUserType(data.loginResponse.productType);
+        SharedPref.shared.setECollectMerchantUserName(data.loginResponse.user.name);
+        SharedPref.shared.setECollectUserType("");
         SharedPref.shared.setECollectToken(data.loginResponse.token);
         SharedPref.shared.setECollectRefreshToken(data.loginResponse.refreshToken);
-        SharedPref.shared.setECollectUserEmail(data.loginResponse.email);
-        SharedPref.shared.setECollectUserNumber(data.loginResponse.phone);
-        SharedPref.shared.setECollectMerchantID(data.loginResponse.merchantId.toString());
-        SharedPref.shared.setECollectUserID(data.loginResponse.userId.toString());
+        SharedPref.shared.setECollectUserEmail(data.loginResponse.user.email);
+        SharedPref.shared.setECollectUserNumber(data.loginResponse.user.mobileNumber);
+        SharedPref.shared.setECollectMerchantID(data.loginResponse.user.merchantId.toString());
+        SharedPref.shared.setECollectUserID(data.loginResponse.user.agentId.toString());
 
 
       } else if (data is OtpVerificationFailureModel) {

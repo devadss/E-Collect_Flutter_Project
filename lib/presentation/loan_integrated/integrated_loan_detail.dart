@@ -119,56 +119,53 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
     super.dispose();
   }
   Future<void> loadSharedPrefs() async {
-    final prefs = SharedPref();
-    final id = await SharedPref().getSubAgentCode();
-    final agentid = await SharedPref().getAgentId();
-    String custid = await SharedPref().getCustId();
-    final crpCd = await SharedPref().getCorpCode();
-    final tok = await SharedPref.shared.getTokenValue();
-    final mail = await SharedPref().getEmail();
-    final agentOrigin = await SharedPref().getSubAgentCode();
-    final custId = await SharedPref().getAgentId();
-    final subAgentId = await SharedPref().getSubAgentId();
-    final sub_AgentCodeNew = await SharedPref().getSubAgentCodeNew();
-    final phone = await SharedPref().getParentAgentMobNum();
-    final name = await SharedPref().getAgentName();
-    final brCode = await SharedPref().getBranchCode();
+    final result = await Future.wait([
+      SharedPref.shared.getSubAgentCode(),
+      SharedPref.shared.getAgentId(),
+      SharedPref.shared.getCustId(),
+      SharedPref.shared.getCorpCode(),
+      SharedPref.shared.getTokenValue(),
+      SharedPref.shared.getEmail(),
+      SharedPref.shared.getSubAgentCode(),
+      SharedPref.shared.getAgentId(),
+      SharedPref.shared.getSubAgentId(),
+      SharedPref.shared.getSubAgentCodeNew(),
+      SharedPref.shared.getParentAgentMobNum(),
+      SharedPref.shared.getAgentName(),
+      SharedPref.shared.getBranchCode(),
+      SharedPref.shared.getECollectMerchantName(),
+      SharedPref.shared.getECollectUserID(),
+      SharedPref.shared.getExternalAgentID(),
+      SharedPref.shared.getECollectUserNumber(),
+      SharedPref.shared.getECollectUserEmail(),
+      SharedPref.shared.getECollectMerchantBranchCode(),
+      SharedPref.shared.getECollectMerchantID(),
+      SharedPref.shared.getECollectUserType(),
+    ]);
 
-    //-------------------------------------
-    final _eCollectMerchantName = await prefs.getECollectMerchantName();
-    final _eCollectAgentId = await prefs.getECollectUserID();
-    final _eCollectAgentOriginId = await prefs.getECollectUserID();
-    final _eCollectAgentNumber = await prefs.getECollectUserNumber();
-    final _eCollectAgentEmail = await prefs.getECollectUserEmail();
-    final _eCollectAgentBranchCode =
-    await prefs.getECollectMerchantBranchCode();
-    final _eCollectAgentMerchantID = await prefs.getECollectMerchantID();
-    final _eCollectCollectionType = await prefs.getECollectUserType();
-    //---------------------------------------
-    setState(() {
-      cid = custid;
-      eCollectMerchantName = _eCollectMerchantName;
-      eCollectAgentId = _eCollectAgentId;
-      eCollectAgentOriginId = _eCollectAgentOriginId;
-      eCollectAgentNumber = _eCollectAgentNumber;
-      eCollectAgentEmail = _eCollectAgentEmail;
-      eCollectAgentBranchCode = _eCollectAgentBranchCode;
-      eCollectAgentMerchantID = _eCollectAgentMerchantID;
-      eCollectCollectionType = _eCollectCollectionType;
+      cid = result[2];
+      eCollectMerchantName = result[13];
+      eCollectAgentId = result[14];
+      eCollectAgentOriginId = result[15];
+      eCollectAgentNumber = result[16];
+      eCollectAgentEmail = result[17];
+      eCollectAgentBranchCode = result[18];
+      eCollectAgentMerchantID = result[19];
+      eCollectCollectionType = "LOAN";
 
-      subAgentCodeNew = sub_AgentCodeNew;
-      branchCode = brCode;
-      agent_Id = agentid;
-      agentId = id;
-      corpCode = crpCd;
-      agentIdValue = custId;
-      token = tok;
-      agentName = name;
-      agentOriginId = agentOrigin;
-      agentEmail = mail;
-      agentMobile = phone;
-      subagentId = subAgentId;
-    });
+      subAgentCodeNew = result[9];
+      branchCode = result[12];
+      agent_Id = result[1];
+      agentId = result[0];
+      corpCode = result[3];
+      agentIdValue = result[7];
+      token = result[4];
+      agentName = result[11];
+      agentOriginId = result[6];
+      agentEmail = result[5];
+      agentMobile = result[10];
+      subagentId = result[8];
+
     editAmountController.addListener(validateInput);
   }
   @override
@@ -334,15 +331,16 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                                         setState(() {
                                           selectedMethod = "QR";
                                         });
-
                                         context.read<PaymentBloc>().add(QrPaymentEvent(QrPaymentRequestModel(
-                                            agentDetails: AgentDetails(agentName: eCollectMerchantName!, agentId: eCollectAgentId!, agentOrginId: "1079", agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
+                                            agentDetails: AgentDetails(agentName: eCollectMerchantName!,
+                                                agentId: eCollectAgentId!,
+                                                agentOrginId: eCollectAgentOriginId!,
+                                                agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
                                             customerDetails: CustomerDetails(customerName:
                                             widget.name, customerPhone: eCollectAgentNumber!,
-                                               // customerAccno: widget.loanNumber,
-                                                customerAccno: "01042888",
+                                               customerAccno: widget.loanNumber,
                                                 customerId: widget.custNo, customerEmail: eCollectAgentEmail!),
-                                            collectionType: eCollectCollectionType!,
+                                            collectionType: "LOAN",
                                             amount: double.parse(editAmountController.text),
                                             note: 'Payment for Order',
                                             qrSource: 'MOB',
@@ -467,15 +465,14 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                                         context.read<PaymentBloc>().add(LinkPaymentEvent(QrPaymentRequestModel(
                                             agentDetails: AgentDetails(agentName: eCollectMerchantName!,
                                                 agentId: eCollectAgentId!,
-                                                agentOrginId: "1079",
+                                                agentOrginId: eCollectAgentOriginId!,
                                                 agentPhone: eCollectAgentNumber!,
                                                 agentEmail: eCollectAgentEmail!,
                                                 agentBranch: int.parse(eCollectAgentBranchCode!)),
                                             customerDetails: CustomerDetails(customerName:
                                             widget.name,
                                                 customerPhone: eCollectAgentNumber!,
-                                               // customerAccno: widget.loanNumber,
-                                                customerAccno: "01042888",
+                                                customerAccno: widget.loanNumber,
                                                 customerId: widget.custNo, customerEmail: eCollectAgentEmail!),
                                             collectionType: eCollectCollectionType!,
                                             amount: double.parse(editAmountController.text),
@@ -1357,11 +1354,13 @@ if(utl.printStatementStatus){
                           });
                           Navigator.pop(context);
                           context.read<PaymentBloc>().add(CashPaymentEvent(QrPaymentRequestModel(
-                              agentDetails: AgentDetails(agentName: eCollectMerchantName!, agentId: eCollectAgentId!, agentOrginId: "1079", agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
+                              agentDetails: AgentDetails(agentName: eCollectMerchantName!, agentId: eCollectAgentId!,
+                                  agentOrginId: eCollectAgentOriginId!, agentPhone: eCollectAgentNumber!,
+                                  agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
                               customerDetails: CustomerDetails(customerName:
                               widget.name, customerPhone: eCollectAgentNumber!,
-                                //  customerAccno: widget.loanNumber,
-                                  customerAccno: "01042888",
+                                 customerAccno: widget.loanNumber,
+
                                   customerId: widget.custNo, customerEmail: eCollectAgentEmail!),
                               collectionType: eCollectCollectionType!,
                               amount: double.parse(editAmountController.text),
@@ -1369,7 +1368,7 @@ if(utl.printStatementStatus){
                               qrSource: 'MOB',
                               source: 'COLLECTION',
                                merchantId: int.parse(eCollectAgentMerchantID!))));
-                             // merchantId: 1)));
+
 
                         },
                         style: ElevatedButton.styleFrom(

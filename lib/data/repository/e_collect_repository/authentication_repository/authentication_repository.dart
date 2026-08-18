@@ -17,7 +17,7 @@ import '../../../../domain/model/e_collect/token_validation/token_validation_fai
 import '../../../../domain/model/e_collect/token_validation/token_validation_success.dart';
 
 class AuthenticationRepository {
-  final String _requestOtpEndPoint = "api/Auth/request-otp";
+  final String _requestOtpEndPoint = "api/Auth/send-otp";
   final String _resendOtpEndPoint = "api/Auth/resend-otp";
   final String _verifyOtpEndPoint = "api/Auth/verify-otp";
   final String _basicRegistrationEndPoint = "api/Auth/register";

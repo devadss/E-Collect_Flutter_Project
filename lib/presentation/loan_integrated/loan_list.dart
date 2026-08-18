@@ -29,10 +29,16 @@ class _LoanListState extends State<LoanList> {
   String? _agentId;
 
   Future<void> loadSharedPrefs(BuildContext context) async {
-    final subAgentId = await SharedPref().getSubAgentId(); //63
-    final branchId = await SharedPref().getECollectBranchID(); //01
-    final agentID = await SharedPref().getECollectAgentID(); //1021
-    final loanListingUrl = await SharedPref().getECollectUrlList(); //1021
+    final result = await Future.wait([
+      SharedPref.shared.getSubAgentId(),
+      SharedPref.shared.getECollectExternalBranchCode(),
+      SharedPref.shared.getExternalAgentID(),
+      SharedPref.shared.getECollectUrlList(),
+    ]);
+   // final subAgentId = result[0]; //63
+    final branchId = result[1]; //01
+    final agentID = result[2]; //1021
+    final loanListingUrl = result[3] as List<String>; //1021
 
     setState(() {
 

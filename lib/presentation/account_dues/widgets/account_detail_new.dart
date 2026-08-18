@@ -56,7 +56,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
   String? eCollectCollectionType;
   String? eCollectAgentBranchCode;
   String? eCollectAgentMerchantID;
-  String? eCollectAgentOriginId;
+  String? eCollectExternalAgentId;
   String? eCollectAgentId;
   TextEditingController amountController = TextEditingController();
   @override
@@ -288,6 +288,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                           agentDetails: AgentDetails(
                               agentName: eCollectMerchantName!,
                               agentId: eCollectAgentId!,
+                             // agentOrginId: eCollectExternalAgentId!,
                               agentOrginId: "1079",
                               agentPhone: eCollectAgentNumber!,
                               agentEmail: eCollectAgentEmail!,
@@ -295,7 +296,8 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                           customerDetails: CustomerDetails(
                               customerName: widget.custName,
                               customerPhone: eCollectAgentNumber!,
-                              customerAccno: widget.accNo,
+                             // customerAccno: widget.accNo,
+                              customerAccno: "01042721",
                               customerId: widget.custId,
                               customerEmail: eCollectAgentEmail!),
                           collectionType: eCollectCollectionType!,
@@ -323,7 +325,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                           agentDetails: AgentDetails(
                               agentName: eCollectMerchantName!,
                               agentId: eCollectAgentId!,
-                              agentOrginId: "1079",
+                              agentOrginId: eCollectExternalAgentId!,
                               agentPhone: eCollectAgentNumber!,
                               agentEmail: eCollectAgentEmail!,
                               agentBranch: int.parse(eCollectAgentBranchCode!)),
@@ -470,7 +472,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                                   agentDetails: AgentDetails(
                                       agentName: eCollectMerchantName!,
                                       agentId: eCollectAgentId!,
-                                      agentOrginId: "1079",
+                                      agentOrginId: eCollectExternalAgentId!,
                                       agentPhone: eCollectAgentNumber!,
                                       agentEmail: eCollectAgentEmail!,
                                       agentBranch:
@@ -543,209 +545,52 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
         ));
   }
 
-/*  Future<void> sendLinkFunction() async {
-    final send = await PaymentLinkRepository().getPaymentLink(
-        agentName: agentName!,
-        agentId: agentId!,
-        agentOriginId: agentOriginId!,
-        agentPhone: agentMobile!,
-        agentEmail: agentEmail!,
-        customerName: widget.custName,
-        customerPhone: agentMobile!,
-        customerAccountNumber: widget.accNo,
-        customerEmail: "",
-        customerId: widget.custId,
-        linkAmount: num.parse(amountController.text),
-        note: "Payment for Order #12345",
-        corpCode: corpCode!,
-        cardRefNum: "",
-        token: token.toString(),
-        subAgentId: subagentId!);
 
-         send.fold(
-          (error) {
-        //print("-------------------ERROR---------------------");
-       // print(error);
-      },
-          (sendLink) {
-        if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
-          //Share.share("Here is your payment link: ${sendLink.linkUrl}");
-          print("3");
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>
-              PaymentLinkRequestUi(customerMobileNumber: customerNumber.toString(), paymentLink: sendLink.linkUrl.toString(),)
-          ));
-        } else {
-         // print("Payment link is empty or null");
-        }
-      },
-    );
-  }*/
   Future<void> loadSharedPrefs() async {
-    final prefs = SharedPref();
-    final agentid = await SharedPref().getAgentId();
-    final subAgentId = await SharedPref().getSubAgentId();
-    final agentOrigin = await SharedPref().getSubAgentCode();
+    final result = await Future.wait([
+      SharedPref.shared.getAgentId(),
+      SharedPref.shared.getSubAgentId(),
+      SharedPref.shared.getSubAgentCode(),
+      SharedPref.shared.getEmail(),
+      SharedPref.shared.getCorpCode(),
+      SharedPref.shared.getTokenValue(),
+      SharedPref.shared.getSubAgentCodeNew(),
+      SharedPref.shared.getCustId(),
+      SharedPref.shared.getCorpCode(),
+      SharedPref.shared.getAgentId(),
+      SharedPref.shared.getParentAgentMobNum(),
+      SharedPref.shared.getAgentName(),
+      SharedPref.shared.getBranchCode(),
+      SharedPref.shared.getECollectMerchantName(),
+      SharedPref.shared.getECollectUserID(),
+      SharedPref.shared.getExternalAgentID(),
+      SharedPref.shared.getECollectUserNumber(),
+      SharedPref.shared.getECollectUserEmail(),
+      SharedPref.shared.getECollectMerchantBranchCode(),
+      SharedPref.shared.getECollectMerchantID(),
+    ]);
 
-    final mail = await SharedPref().getEmail();
-    final corp = await SharedPref().getCorpCode();
-    final tok = await SharedPref.shared.getTokenValue();
-    final sub_AgentCodeNew = await SharedPref.shared.getSubAgentCodeNew();
+        cid = result[9];
+        eCollectMerchantName = result[13];
+        eCollectAgentId = result[14];
+        eCollectExternalAgentId = result[15];
+        eCollectAgentNumber = result[16];
+        eCollectAgentEmail = result[17];
+        eCollectAgentBranchCode = result[18];
+        eCollectAgentMerchantID = result[19];
+        eCollectCollectionType = "RD";
+        agentName = result[11];
+        subagentId = result[1];
+        agentMobile = result[10];
+        agentId = result[0];
+        agentOriginId = result[2];
+        agentEmail = result[3];
+        corpCode = result[4];
+        token = result[5];
+        subAgentCodeNew = result[6];
 
-    String custid = await SharedPref().getCustId();
-    final crpCd = await SharedPref().getCorpCode();
-    final custId = await SharedPref().getAgentId();
-    final phone = await SharedPref().getParentAgentMobNum();
-    final name = await SharedPref().getAgentName();
-    final brCode = await SharedPref().getBranchCode();
-    //-------------------------------------
-    final _eCollectMerchantName = await prefs.getECollectMerchantName();
-    final _eCollectAgentId = await prefs.getECollectUserID();
-    final _eCollectAgentOriginId = await prefs.getECollectUserID();
-    final _eCollectAgentNumber = await prefs.getECollectUserNumber();
-    final _eCollectAgentEmail = await prefs.getECollectUserEmail();
-    final _eCollectAgentBranchCode =
-        await prefs.getECollectMerchantBranchCode();
-    final _eCollectAgentMerchantID = await prefs.getECollectMerchantID();
-    final _eCollectCollectionType = await prefs.getECollectUserType();
-    //---------------------------------------
-    // Trigger rebuild after fetching the userName
-    if (mounted) {
-      setState(() {
-        cid = custId;
-        eCollectMerchantName = _eCollectMerchantName;
-        eCollectAgentId = _eCollectAgentId;
-        eCollectAgentOriginId = _eCollectAgentOriginId;
-        eCollectAgentNumber = _eCollectAgentNumber;
-        eCollectAgentEmail = _eCollectAgentEmail;
-        eCollectAgentBranchCode = _eCollectAgentBranchCode;
-        eCollectAgentMerchantID = _eCollectAgentMerchantID;
-        eCollectCollectionType = _eCollectCollectionType;
-        agentName = name;
-        subagentId = subAgentId;
-        agentMobile = phone;
-        agentId = agentid;
-        agentOriginId = agentOrigin;
-        agentEmail = mail;
-        corpCode = corp;
-        token = tok;
-        subAgentCodeNew = sub_AgentCodeNew;
-      });
-    }
   }
 
-  /* Future<void> getCashTrans(
-      {required String? token,
-        required String? customerName,
-        required String? custPhoneNumber,
-        required String? custAcNumber,
-        required String? custId,
-        required String? custEmail,
-        required String? amount,
-        required String? phoneNumber,
-        required String? entityId,
-        required String? note})
-  async {
-    final cashPaymentProvider =
-    Provider.of<CashTranscationProvider>(context, listen: false);
-    final cash = await cashPaymentProvider.getTranscations(
-        agentName: agentName,
-        agentId: agentId,
-        agentOriginId: agentOriginId,
-        agentPhone: phoneNumber,
-        agentEmail: agentEmail,
-        subAgentId: subagentId,
-        customerName: customerName,
-        customerPhone: "",
-        customerAccNo: widget.accNo,
-        customerId: widget.custId,
-        customerEmail: "",
-        amount: amount,
-        note: note,
-        corpCode: corpCode,
-        cardRefNum: "",
-        token: token,
-        subagentBranchCode: subAgentCodeNew,
-        branchCode: "", collectionType: 'RD');
-    cash.fold((err) {
-      //print("getCashTrans $err");
-      Navigator.pop(context);
-    }, (success) {
-      //print("getCashTrans $success");
-      Navigator.pop(context);
-      showDialog(
-        context: context,
-        builder: (context) => TransactionSuccessDialog(
-          success: success,
-          onViewReceipt: () {
-            Navigator.pop(context);
-            var receiptModel = ReceiptDataModel(
-              amount: success.amount.toString(),
-              bankName: getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
-              agentName: agentName ?? "Name",
-              agentPhone: phoneNumber ?? "agentPhone",
-              custName: customerName!,
-              custPhone: custPhoneNumber ?? "",
-              custId: custId!,
-              txnId: success.transactionId.toString(),
-              txnType: "CASH", dat: '', tranType: '', accNo: '',
-            );
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ReceiptPage(
-              receiptDataModel: receiptModel,
-                ),
-              ),
-            );
-          },
-        ),
-      );
-
-      // showDialog(
-      //   context: context,
-      //   builder: (context) {
-      //     return AlertDialog(
-      //       title: const Text("Transaction Result"),
-      //       content: Column(
-      //         mainAxisSize: MainAxisSize.min,
-      //         crossAxisAlignment: CrossAxisAlignment.start,
-      //         children: [
-      //           Text("Status: ${success.status ?? 'N/A'}"),
-      //           const SizedBox(height: 8),
-      //           Text("Transaction ID: ${success.transactionId ?? 'N/A'}"),
-      //           const SizedBox(height: 8),
-      //           Text("Message: ${success.message ?? 'N/A'}"),
-      //         ],
-      //       ),
-      //       actions: [
-      //         TextButton(
-      //           onPressed: () => {
-      //             Navigator.pop(context),
-      //             Navigator.push(
-      //                 context,
-      //                 MaterialPageRoute(
-      //                     builder: (context) => ReceiptPage(
-      //                           amount: success.amount.toString(),
-      //                           bankName: _getBankNameFromCorpCode(corpCode!) ??
-      //                               "XYZ BANK",
-      //                           agentName: agentName ?? "Name",
-      //                           agentPhone: subagentPhoneNumber.toString() ??
-      //                               "agentPhone",
-      //                           custName: customerName!,
-      //                           custPhone: phoneNumber.toString(),
-      //                           custId: custId!,
-      //                           txnId: success.transactionId.toString(),
-      //                           txnType: "CASH",
-      //                         )))
-      //           },
-      //           child: const Text("OK"),
-      //         ),
-      //       ],
-      //     );
-      //   },
-      // );
-    });
-  }*/
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1125,3 +970,154 @@ Widget _buildInfoRow({
     ],
   );
 }*/
+
+/* Future<void> getCashTrans(
+      {required String? token,
+        required String? customerName,
+        required String? custPhoneNumber,
+        required String? custAcNumber,
+        required String? custId,
+        required String? custEmail,
+        required String? amount,
+        required String? phoneNumber,
+        required String? entityId,
+        required String? note})
+  async {
+    final cashPaymentProvider =
+    Provider.of<CashTranscationProvider>(context, listen: false);
+    final cash = await cashPaymentProvider.getTranscations(
+        agentName: agentName,
+        agentId: agentId,
+        agentOriginId: agentOriginId,
+        agentPhone: phoneNumber,
+        agentEmail: agentEmail,
+        subAgentId: subagentId,
+        customerName: customerName,
+        customerPhone: "",
+        customerAccNo: widget.accNo,
+        customerId: widget.custId,
+        customerEmail: "",
+        amount: amount,
+        note: note,
+        corpCode: corpCode,
+        cardRefNum: "",
+        token: token,
+        subagentBranchCode: subAgentCodeNew,
+        branchCode: "", collectionType: 'RD');
+    cash.fold((err) {
+      //print("getCashTrans $err");
+      Navigator.pop(context);
+    }, (success) {
+      //print("getCashTrans $success");
+      Navigator.pop(context);
+      showDialog(
+        context: context,
+        builder: (context) => TransactionSuccessDialog(
+          success: success,
+          onViewReceipt: () {
+            Navigator.pop(context);
+            var receiptModel = ReceiptDataModel(
+              amount: success.amount.toString(),
+              bankName: getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
+              agentName: agentName ?? "Name",
+              agentPhone: phoneNumber ?? "agentPhone",
+              custName: customerName!,
+              custPhone: custPhoneNumber ?? "",
+              custId: custId!,
+              txnId: success.transactionId.toString(),
+              txnType: "CASH", dat: '', tranType: '', accNo: '',
+            );
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ReceiptPage(
+              receiptDataModel: receiptModel,
+                ),
+              ),
+            );
+          },
+        ),
+      );
+
+      // showDialog(
+      //   context: context,
+      //   builder: (context) {
+      //     return AlertDialog(
+      //       title: const Text("Transaction Result"),
+      //       content: Column(
+      //         mainAxisSize: MainAxisSize.min,
+      //         crossAxisAlignment: CrossAxisAlignment.start,
+      //         children: [
+      //           Text("Status: ${success.status ?? 'N/A'}"),
+      //           const SizedBox(height: 8),
+      //           Text("Transaction ID: ${success.transactionId ?? 'N/A'}"),
+      //           const SizedBox(height: 8),
+      //           Text("Message: ${success.message ?? 'N/A'}"),
+      //         ],
+      //       ),
+      //       actions: [
+      //         TextButton(
+      //           onPressed: () => {
+      //             Navigator.pop(context),
+      //             Navigator.push(
+      //                 context,
+      //                 MaterialPageRoute(
+      //                     builder: (context) => ReceiptPage(
+      //                           amount: success.amount.toString(),
+      //                           bankName: _getBankNameFromCorpCode(corpCode!) ??
+      //                               "XYZ BANK",
+      //                           agentName: agentName ?? "Name",
+      //                           agentPhone: subagentPhoneNumber.toString() ??
+      //                               "agentPhone",
+      //                           custName: customerName!,
+      //                           custPhone: phoneNumber.toString(),
+      //                           custId: custId!,
+      //                           txnId: success.transactionId.toString(),
+      //                           txnType: "CASH",
+      //                         )))
+      //           },
+      //           child: const Text("OK"),
+      //         ),
+      //       ],
+      //     );
+      //   },
+      // );
+    });
+  }*/
+/*  Future<void> sendLinkFunction() async {
+    final send = await PaymentLinkRepository().getPaymentLink(
+        agentName: agentName!,
+        agentId: agentId!,
+        agentOriginId: agentOriginId!,
+        agentPhone: agentMobile!,
+        agentEmail: agentEmail!,
+        customerName: widget.custName,
+        customerPhone: agentMobile!,
+        customerAccountNumber: widget.accNo,
+        customerEmail: "",
+        customerId: widget.custId,
+        linkAmount: num.parse(amountController.text),
+        note: "Payment for Order #12345",
+        corpCode: corpCode!,
+        cardRefNum: "",
+        token: token.toString(),
+        subAgentId: subagentId!);
+
+         send.fold(
+          (error) {
+        //print("-------------------ERROR---------------------");
+       // print(error);
+      },
+          (sendLink) {
+        if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
+          //Share.share("Here is your payment link: ${sendLink.linkUrl}");
+          print("3");
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>
+              PaymentLinkRequestUi(customerMobileNumber: customerNumber.toString(), paymentLink: sendLink.linkUrl.toString(),)
+          ));
+        } else {
+         // print("Payment link is empty or null");
+        }
+      },
+    );
+  }*/

@@ -9,7 +9,6 @@ import '../../../core/utils.dart';
 import '../../../data/e_collect_bloc/payment_bloc/payment_bloc.dart';
 import '../../../data/provider/cash_transcation_provider.dart';
 import '../../../data/rdcl_duelist_bloc/rdcl_duelist_bloc.dart';
-import '../../../data/repository/payment_link_repository.dart';
 import '../../../data/storage/shared_pref_helper.dart';
 import '../../../domain/model/e_collect/payment/qr_request_model/qr_request_model.dart';
 import '../../dues/rdcl_due_home_page.dart';
@@ -68,55 +67,51 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
   String? eCollectAgentId;
   String? selectedMethod;
 
+
   Future<void> loadSharedPrefs() async {
-    final prefs = SharedPref();
+    final result = await Future.wait([
+      SharedPref.shared.getAgentName(),
+      SharedPref.shared.getParentAgentMobNum(),
+      SharedPref.shared.getAgentId(),
+      SharedPref.shared.getAgentId(),
+      SharedPref.shared.getSubAgentId(),
+      SharedPref.shared.getAgentOriginId(),
+      SharedPref.shared.getEmail(),
+      SharedPref.shared.getCorpCode(),
+      SharedPref.shared.getTokenValue(),
+      SharedPref.shared.getSubAgentCodeNew(),
+      SharedPref.shared.getSubAgentMobNum(),
+      SharedPref.shared.getECollectMerchantName(),
+      SharedPref.shared.getECollectUserID(),
+      SharedPref.shared.getExternalAgentID(),
+      SharedPref.shared.getECollectUserNumber(),
+      SharedPref.shared.getECollectUserEmail(),
+      SharedPref.shared.getECollectMerchantBranchCode(),
+      SharedPref.shared.getECollectMerchantID(),
+      SharedPref.shared.getECollectUserType(),
+    ]);
 
-    final name = await SharedPref().getAgentName();
-    final phone = await SharedPref().getParentAgentMobNum();
-    final id = await SharedPref().getAgentId();
-    final custID = await SharedPref().getAgentId();
-    final subAgentId = await SharedPref().getSubAgentId();
-    final agentOrigin = await SharedPref().getAgentOriginId();
-    final mail = await SharedPref().getEmail();
-    final corp = await SharedPref().getCorpCode();
-    final tok = await SharedPref.shared.getTokenValue();
-    final sub_AgentCodeNew = await SharedPref().getSubAgentCodeNew();
-    final subagentNum = await SharedPref().getSubAgentMobNum();
+    agentName = result[0];
+    agentMobile = result[1];
+    agentId = result[2];
+    custid = result[3];
+    subagentId = result[4];
+    agentOriginId = result[5];
+    agentEmail =result[6];
+    corpCode = result[7];
+    token = result[8];
+    subAgentCodeNew = result[9];
+    subagentPhoneNumber = result[10];
     //-------------------------------------
-    final _eCollectMerchantName = await prefs.getECollectMerchantName();
-    final _eCollectAgentId = await prefs.getECollectUserID();
-    final _eCollectAgentOriginId = await prefs.getECollectUserID();
-    final _eCollectAgentNumber = await prefs.getECollectUserNumber();
-    final _eCollectAgentEmail = await prefs.getECollectUserEmail();
-    final _eCollectAgentBranchCode =
-        await prefs.getECollectMerchantBranchCode();
-    final _eCollectAgentMerchantID = await prefs.getECollectMerchantID();
-    final _eCollectCollectionType = await prefs.getECollectUserType();
-    //---------------------------------------
-    if (mounted) {
-      setState(() {
-        eCollectMerchantName = _eCollectMerchantName;
-        eCollectAgentId = _eCollectAgentId;
-        eCollectAgentOriginId = _eCollectAgentOriginId;
-        eCollectAgentNumber = _eCollectAgentNumber;
-        eCollectAgentEmail = _eCollectAgentEmail;
-        eCollectAgentBranchCode = _eCollectAgentBranchCode;
-        eCollectAgentMerchantID = _eCollectAgentMerchantID;
-        eCollectCollectionType = _eCollectCollectionType;
+    eCollectMerchantName = result[11];
+    eCollectAgentId = result[12];
+    eCollectAgentOriginId = result[13];
+    eCollectAgentNumber =result[14];
+    eCollectAgentEmail = result[15];
+    eCollectAgentBranchCode = result[16];
+    eCollectAgentMerchantID = result[17];
+    eCollectCollectionType = "RDCL";
 
-        subagentPhoneNumber = subagentNum;
-        agentName = name;
-        subagentId = subAgentId;
-        agentMobile = phone;
-        agentId = id;
-        custid = custID;
-        agentOriginId = agentOrigin;
-        agentEmail = mail;
-        corpCode = corp;
-        token = tok;
-        subAgentCodeNew = sub_AgentCodeNew;
-      });
-    }
   }
 
   @override
@@ -286,7 +281,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                             agentDetails: AgentDetails(
                                 agentName: eCollectMerchantName!,
                                 agentId: eCollectAgentId!,
-                                agentOrginId: "1079",
+                                agentOrginId: eCollectAgentOriginId!,
                                 agentPhone: eCollectAgentNumber!,
                                 agentEmail: eCollectAgentEmail!,
                                 agentBranch:
@@ -334,7 +329,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                             agentDetails: AgentDetails(
                                 agentName: eCollectMerchantName!,
                                 agentId: eCollectAgentId!,
-                                agentOrginId: "1079",
+                                agentOrginId: eCollectAgentOriginId!,
                                 agentPhone: eCollectAgentNumber!,
                                 agentEmail: eCollectAgentEmail!,
                                 agentBranch:
@@ -363,47 +358,47 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
     );
   }
 
-  Future<void> sendLinkFunction() async {
-    final send = await PaymentLinkRepository().getPaymentLink(
-        agentName: agentName!,
-        agentId: agentId!,
-        agentOriginId: agentOriginId!,
-        agentPhone: agentMobile!,
-        agentEmail: agentEmail!,
-        customerName: widget.customeName,
-        customerPhone: agentMobile!,
-        customerAccountNumber: widget.custAcNumber,
-        customerEmail: "",
-        customerId: widget.custId,
-        linkAmount: num.parse(amountController.text),
-        note: "Payment for Order #12345",
-        corpCode: corpCode!,
-        cardRefNum: "",
-        token: token.toString(),
-        subAgentId: subagentId!);
-
-    send.fold(
-      (error) {
-        //print("-------------------ERROR---------------------");
-        // print(error);
-      },
-      (sendLink) {
-        if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
-          print("2");
-          //Share.share("Here is your payment link: ${sendLink.linkUrl}");
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => PaymentLinkRequestUi(
-                        customerMobileNumber: agentMobile.toString(),
-                        paymentLink: sendLink.linkUrl.toString(),
-                      )));
-        } else {
-          // print("Payment link is empty or null");
-        }
-      },
-    );
-  }
+  // Future<void> sendLinkFunction() async {
+  //   final send = await PaymentLinkRepository().getPaymentLink(
+  //       agentName: agentName!,
+  //       agentId: agentId!,
+  //       agentOriginId: agentOriginId!,
+  //       agentPhone: agentMobile!,
+  //       agentEmail: agentEmail!,
+  //       customerName: widget.customeName,
+  //       customerPhone: agentMobile!,
+  //       customerAccountNumber: widget.custAcNumber,
+  //       customerEmail: "",
+  //       customerId: widget.custId,
+  //       linkAmount: num.parse(amountController.text),
+  //       note: "Payment for Order #12345",
+  //       corpCode: corpCode!,
+  //       cardRefNum: "",
+  //       token: token.toString(),
+  //       subAgentId: subagentId!);
+  //
+  //   send.fold(
+  //     (error) {
+  //       //print("-------------------ERROR---------------------");
+  //       // print(error);
+  //     },
+  //     (sendLink) {
+  //       if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
+  //         print("2");
+  //         //Share.share("Here is your payment link: ${sendLink.linkUrl}");
+  //         Navigator.push(
+  //             context,
+  //             MaterialPageRoute(
+  //                 builder: (BuildContext context) => PaymentLinkRequestUi(
+  //                       customerMobileNumber: agentMobile.toString(),
+  //                       paymentLink: sendLink.linkUrl.toString(),
+  //                     )));
+  //       } else {
+  //         // print("Payment link is empty or null");
+  //       }
+  //     },
+  //   );
+  // }
 
   Future<void> paymentConfirmation(
     BuildContext context,
@@ -527,7 +522,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                                   agentDetails: AgentDetails(
                                       agentName: eCollectMerchantName!,
                                       agentId: eCollectAgentId!,
-                                      agentOrginId: "1079",
+                                      agentOrginId: eCollectAgentOriginId!,
                                       agentPhone: eCollectAgentNumber!,
                                       agentEmail: eCollectAgentEmail!,
                                       agentBranch:

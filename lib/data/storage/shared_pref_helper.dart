@@ -242,22 +242,22 @@ class SharedPref {
     return List<String>.from(jsonDecode(value));
   }
 
-  Future<Future<bool>> setECollectAgentID(String value) async {
+  Future<Future<bool>> setExternalAgentID(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.eCollectAgentId, value);
   }
 
-  Future<String> getECollectAgentID() async {
+  Future<String> getExternalAgentID() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.eCollectAgentId) ?? '';
   }
 
-  Future<Future<bool>> setECollectBranchID(String value) async {
+  Future<Future<bool>> setECollectExternalBranchCode(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.eCollectBranchId, value);
   }
 
-  Future<String> getECollectBranchID() async {
+  Future<String> getECollectExternalBranchCode() async {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.eCollectBranchId) ?? '';
   }

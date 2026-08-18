@@ -760,7 +760,7 @@ class _DuesHomePageState extends State<DuesHomePage> {
                                                                   //           .text,
                                                                   //     )
                                                                   context.read<PaymentBloc>().add(QrPaymentEvent(QrPaymentRequestModel(
-                                                                      agentDetails: AgentDetails(agentName: eCollectMerchantName!, agentId: eCollectAgentId!, agentOrginId: "1079", agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
+                                                                      agentDetails: AgentDetails(agentName: eCollectMerchantName!, agentId: eCollectAgentId!, agentOrginId: eCollectAgentOriginId!, agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
                                                                       customerDetails: CustomerDetails(customerName: provider.agentModel?.duesList1?.data![index].name ??"", customerPhone: eCollectAgentNumber!, customerAccno: provider.agentModel?.duesList1?.data![index].accNo ??"",
                                                                           customerId: provider.agentModel?.duesList1?.data![index].custId ??"",
                                                                           customerEmail: eCollectAgentEmail!),
@@ -775,7 +775,7 @@ class _DuesHomePageState extends State<DuesHomePage> {
 
                                                                   context.read<PaymentBloc>().add(QrPaymentEvent(QrPaymentRequestModel(
                                                                       agentDetails: AgentDetails(agentName: eCollectMerchantName!,
-                                                                          agentId: eCollectAgentId!, agentOrginId: "1079",
+                                                                          agentId: eCollectAgentId!, agentOrginId: eCollectAgentOriginId!,
                                                                           agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!,
                                                                           agentBranch: int.parse(eCollectAgentBranchCode!)),
                                                                       customerDetails:

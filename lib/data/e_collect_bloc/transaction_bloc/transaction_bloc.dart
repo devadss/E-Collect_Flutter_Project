@@ -18,7 +18,6 @@ class PaymentTransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         var totalSuccessTransactionCount = 0;
         var totalPendingTransactionCount = 0;
         var totalFailedTransactionCount = 0;
-
         for (var total in data.transactionOkReport.data) {
           newTotal += total.amount;
           if(total.status.toLowerCase().startsWith("pending")){
