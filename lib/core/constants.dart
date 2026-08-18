@@ -9,42 +9,11 @@ String eCollectBaseUrl = "https://dev.collect.org.in/";
 const String uatTestMobileNumber = "+917663220991"; ///Currently this number is provided for appstore...
 final String termsUrl = "https://your-terms-url.com";
 final String privacyUrl = "https://your-privacy-url.com";
-const String port = ":8444/";
-const String agentIdLive = "ADSS20231011";
-const String agentIdUat = "AANVIN20230627";
-//Collection type instead of description in loan...
-//1823 crpfwn
-final RegExp emailValidatorRegExp = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-final phoneRegex = RegExp("[0-9]");
-final nameRegex = RegExp("[a-zA-Z]");
-const String kEmailNullError = "Enter your email";
-const String kInvalidEmailError = "Enter Valid Email";
-const String kPassNullError = "Enter your password";
-const String kConfirmPassNullError = "confirm your password";
-const String kShortPassError = "Password is too short";
-const String kMatchPassError = "Passwords don't match";
-const String kNameNullError = "Enter your name";
-const String kPhoneNumberNullError = "Enter your phone number";
-const String kAddressNullError = "Enter your address";
-const String kPhoneNumberValidError = "Enter a valid phone number";
-const String kPinCodeNullError = "Enter your pin code";
-const String kPinCodeValidError = "Enter a valid pin code";
-const String kNameValidError = "Enter a valid name";
-const String kOtpNullError = "Enter the otp";
-const String mobileNumEmpty = 'EMPTY FIELDS NOT ALLOWED';
-const String mobileNumEmptyMSG = "Please enter valid mobile number";
+
 const String terms = 'https://collect.org.in/terms-of-conditions.html';
 const String privacy = 'https://collect.org.in/privacy-policy.html';
 String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
 RegExp regExp = RegExp(pattern);
-
-class NotificationChannels {
-  static const String getCartNonDeliverable = "GET_CART_NON_DELIVERABLE";
-  static const String login = "LOGIN";
-  static const String nonDeliverableButton = "NON_DELIVERABLE_BUTTON";
-  static const String getAllCart = "GET_ALL_CART";
-  static const String getCart = "GET_CART";
-}
 
 AlertDialog exitAlert(BuildContext context){
   return AlertDialog(
@@ -205,19 +174,3 @@ String capitalizeFirstLetter(String? input){
   if(input == null || input.isEmpty) return '';
   return input[0].toUpperCase()+input.substring(1);
 }
-
-//******************************************************************
-//*******true : Production base url is used******
-//******false : Uat base url is used******
-
-
-// String baseUrl = isRunningLiveBaseUrl(true).toString();
-// String dopBaseUrl = isRunningLiveDopBaseUrl(true).toString();
-//******************************************************************
-
-//******************************************************************
-//const String baseUrl = "https://adsspay.aanvinsolutions.com:8444/";///LIVE
-//const String baseUrl = "https://adsspayweb.digicob.in/"; //TEST
-//*******************************************************************
-//const String dopBaseUrl = "https://devops.mydop.in/api/fetch/vendor/urls/"; //UAT
-//const String dopBaseUrl = "https://mydop.in/api/fetch/vendor/urls/"; //LIVE

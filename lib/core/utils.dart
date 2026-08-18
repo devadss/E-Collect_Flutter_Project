@@ -3,11 +3,197 @@ import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../data/storage/shared_pref_helper.dart';
+import '../domain/model/cash_transcation_model.dart';
 import 'colors.dart';
 import 'constants.dart';
 
 const bool printStatementStatus = true;
+class TransactionSuccessDialog extends StatelessWidget {
+  final CashTranscation success;
+  final VoidCallback onViewReceipt;
 
+  const TransactionSuccessDialog({
+    super.key,
+    required this.success,
+    required this.onViewReceipt,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 8,
+      shadowColor: Colors.black.withValues(alpha:0.2),
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header with Icon
+            _buildHeader(context),
+            const SizedBox(height: 24),
+
+            // Transaction Details
+            _buildTransactionDetails(),
+            const SizedBox(height: 32),
+
+            // Action Buttons
+            _buildActionButtons(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.green.withValues(alpha:0.1),
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(
+            Icons.check_circle_rounded,
+            color: Colors.green,
+            size: 24,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            "Transaction Completed",
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: Colors.green,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTransactionDetails() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildDetailItem(
+          label: "Status",
+          value: success.status ?? 'N/A',
+          valueColor: _getStatusColor(success.status),
+        ),
+        const SizedBox(height: 12),
+        _buildDetailItem(
+          label: "Transaction ID",
+          value: success.transactionId ?? 'N/A',
+          isImportant: true,
+        ),
+        const SizedBox(height: 12),
+        _buildDetailItem(
+          label: "Message",
+          value: success.message ?? 'N/A',
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDetailItem({
+    required String label,
+    required String value,
+    Color? valueColor,
+    bool isImportant = false,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          label.toUpperCase(),
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey,
+            letterSpacing: 0.5,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: isImportant ? FontWeight.w600 : FontWeight.w400,
+            color: valueColor ?? Colors.black87,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActionButtons(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: OutlinedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pop(context);},
+
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Text(
+              "CLOSE",
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: ElevatedButton(
+            onPressed: onViewReceipt,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: home1,
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Text(
+              "VIEW RECEIPT",
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Color _getStatusColor(String? status) {
+    switch (status?.toLowerCase()) {
+      case 'success':
+        return Colors.green;
+      case 'pending':
+        return Colors.orange;
+      case 'failed':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+}
 void isRunningLiveBaseUrl(bool status, String mobile) async {
   if(mobile.startsWith("+91")){
     if (status==true && mobile != null && mobile != uatTestMobileNumber){
@@ -503,135 +689,4 @@ class Cat{
   Cat(this.name);
 }
 
-// Map<String, String?> splitName(String fullName) {
-//   List<String> parts = fullName.trim().split(RegExp(r'\s+'));
-//
-//   String? first;
-//   String? middle;
-//   String? last;
-//
-//   if (parts.isEmpty) {
-//     return {'first': null, 'middle': null, 'last': null};
-//   }
-//
-//   if (parts.length == 1) {
-//     first = parts[0];
-//   } else if (parts.length == 2) {
-//     first = parts[0];
-//     last = parts[1];
-//   } else {
-//     first = parts[0];
-//     last = parts.last;
-//     middle = parts.sublist(1, parts.length - 1).join(' ');
-//   }
-//
-//   return {
-//     'first': first,
-//     'middle': middle,
-//     'last': last,
-//   };
-// }
-
-// void insertCollectionAgentIntegrationY(RegistedCustomerModel customer) {
-//   SharedPref.shared.setEmail(
-//     customer.response!.data!['emailId'].toString(),
-//   );
-//   SharedPref.shared.setCorpCode(
-//     customer.response!.data!['CorpCode'].toString(),
-//   );
-//   SharedPref.shared.setBranchCode(
-//     customer.response!.data!['BranchCode'].toString(),
-//   );
-//   SharedPref.shared.setMpinValue(customer.mpin.toString());
-// }
-
-// void insertCollectionAgentIntegrationN(RegistedCustomerModel customer) {
-//   SharedPref.shared.setCustId(
-//     customer.response!.data!['CustId'].toString(),
-//   );
-//   SharedPref.shared.setEmail(
-//     customer.response!.data!['emailId'].toString(),
-//   );
-//   SharedPref.shared.setCorpCode(
-//     customer.response!.data!['CorpCode'].toString(),
-//   );
-//   SharedPref.shared.setBranchCode(
-//     customer.response!.data!['BranchCode'].toString(),
-//   );
-//   SharedPref.shared.setMpinValue(customer.mpin.toString());
-// }
-
-// void insertCustRegister(RegistedCustomerModel customer) {
-//   SharedPref.shared.setEmail(
-//     customer.response!.data!['emailId'].toString(),
-//   );
-//   SharedPref.shared.setCustId(
-//     customer.response!.data!['CustId'].toString(),
-//   );
-//   SharedPref.shared.setCorpCode(
-//     customer.response!.data!['CorpCode'].toString(),
-//   );
-//   SharedPref.shared.setBranchCode(
-//     customer.response!.data!['BranchCode'].toString(),
-//   );
-//   SharedPref.shared.setSubAgentMobNum(
-//     customer.response!.data!['contactNo'].toString(),
-//   );
-//   SharedPref.shared.setAgentName(
-//     customer.response!.data!['firstName'].toString(),
-//   );
-//   SharedPref.shared.setMpinValue(customer.mpin.toString());
-// }
-
-// void insertCollectionBaseUrl(CollectionBaseUrlProvider vendorBaseUrlProvider) {
-//   SharedPref.shared.setRdclCustomerVendorUrl(vendorBaseUrlProvider
-//       .collectionBaseUrlModel!.getCustomerRdclUrl
-//       .toString());
-//   SharedPref.shared.setDueListRdclUrl(vendorBaseUrlProvider
-//       .collectionBaseUrlModel!.getDueListRdclUrl
-//       .toString());
-//   SharedPref.shared.setCustomerRdUrl(vendorBaseUrlProvider
-//       .collectionBaseUrlModel!.getCustomerRdUrl
-//       .toString());
-//   SharedPref.shared.setDueListRdUrl(
-//       vendorBaseUrlProvider.collectionBaseUrlModel!.getDueListRdUrl.toString());
-//   SharedPref.shared.setCustomerLoanUrl(vendorBaseUrlProvider
-//       .collectionBaseUrlModel!.getCustomerLoanUrl
-//       .toString());
-//   SharedPref.shared.setDueListLoanUrl(vendorBaseUrlProvider
-//       .collectionBaseUrlModel!.getDueListLoanUrl
-//       .toString());
-//   SharedPref.shared.setLoanAccountHolderUrl(vendorBaseUrlProvider
-//       .collectionBaseUrlModel!.getLoanAccountHolderUrl
-//       .toString());
-//   SharedPref.shared.setUserType(
-//       vendorBaseUrlProvider.collectionBaseUrlModel!.userType.toString());
-// }
-
-// Future<void> insertParentDetailAgent(
-//     ParentDetailAgentProvider parentAgentDetailProvider) async
-// {
-//   await SharedPref.shared.setAgentId(
-//     parentAgentDetailProvider.subAgent!.data.parentAgentId.toString(),
-//   );
-//   await SharedPref.shared.setParentAgentMobNum(
-//     parentAgentDetailProvider.subAgent!.data.parentAgentMobNo.toString(),
-//   );
-//   await SharedPref.shared.setSubAgentName(
-//     parentAgentDetailProvider.subAgent!.data.subAgentName.toString(),
-//   );
-//   await SharedPref.shared.setSubAgentMobNum(
-//     parentAgentDetailProvider.subAgent!.data.mobileNumber.toString(),
-//   );
-//   await SharedPref.shared.setAgentOriginId(
-//       parentAgentDetailProvider.subAgent!.data.subAgentOriginId.toString());
-//   await SharedPref.shared.setSubAgentCode(
-//     parentAgentDetailProvider.subAgent!.data.subAgentOriginId.toString(),
-//   );
-//   await SharedPref.shared.setSubAgentCodeNew(
-//     parentAgentDetailProvider.subAgent!.data.subAgentCode.toString(),
-//   );
-//   await SharedPref.shared.setSubAgentId(
-//     parentAgentDetailProvider.subAgent!.data.subAgentId.toString(),
-//   );
-// }
+ 

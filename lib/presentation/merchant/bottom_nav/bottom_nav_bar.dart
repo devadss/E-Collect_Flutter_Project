@@ -1,14 +1,13 @@
 
 import 'package:collection_qr_flutter/presentation/merchant/pages/group_home_page.dart';
 import 'package:flutter/material.dart';
-
 import '../../../core/utils.dart';
 import '../../../data/storage/shared_pref_helper.dart';
-import '../../account_dues/account_list_home_page.dart';
-import '../../account_dues/rdcl_cust_list_bloc/customer _list.dart';
-import '../../dues/rdcl_due_list_bloc_page.dart';
+import '../../account_dues/rd_dues/rd_cust_list_page.dart';
+import '../../account_dues/rdcl/rdcl_customer _list.dart';
+import '../../account_dues/rdcl/rdcl_due_list_bloc_page.dart';
 import '../../home/e_collect_homepage.dart';
-import '../../loan_integrated/loan_list.dart';
+import '../../loan/loan_list.dart';
 import '../../profile/profile_home_page.dart';
 import '../history/ecollect_transaction_report.dart';
 import '../pages/all-groups.dart';
@@ -100,7 +99,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       items.add(
         NavItem(
           label: 'Home',
-          icon: Icons.home_max,
+          icon: Icons.home,
           page: const GroupHomePageUI(),
         ),
       );

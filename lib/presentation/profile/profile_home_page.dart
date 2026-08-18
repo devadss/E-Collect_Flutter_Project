@@ -616,14 +616,43 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
       );
     }
   }
-
   Future<void> performLogout(BuildContext context) async {
+    final entityId = await SharedPref.shared.getECollectMerchantID();
+    final mobnum = await SharedPref.shared.getECollectUserNumber();
+    final token = await SharedPref.shared.getFcmToken();
+
+    final fcmProvider = Provider.of<DeleteFcmProvider>(
+      context,
+      listen: false,
+    );
+
+    await fcmProvider.deleteFirebaseToken(
+      entityId,
+      mobnum,
+      token,
+    );
+
+    // Clears ALL SharedPreferences
+    await SharedPref.shared.clearAll();
+
+    if (!context.mounted) return;
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const SplashScreen(),
+      ),
+          (route) => false,
+    );
+  }
+/*  Future<void> performLogout(BuildContext context) async {
     String entityId = await SharedPref.shared.getECollectMerchantID();
     String mobnum = await SharedPref.shared.getECollectUserNumber();
     String token = await SharedPref.shared.getFcmToken();
 
     final fcmProvider = Provider.of<DeleteFcmProvider>(context, listen: false);
     await fcmProvider.deleteFirebaseToken(entityId,mobnum, token);
+
     await SharedPref.shared.setLogin(false);
     await SharedPref.shared.setCustId("");
     await SharedPref.shared.setAgentName("");
@@ -682,5 +711,5 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
       MaterialPageRoute(builder: (context) => const SplashScreen()),
       (route) => false,
     );
-  }
+  }*/
 }

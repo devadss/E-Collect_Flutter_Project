@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/colors.dart';
-import '../../auth/login/otp_verification/otp_verification.dart';
+import '../../auth/login/otp_verification.dart';
 
 class BasicRegistration extends StatefulWidget {
   const BasicRegistration({super.key});

@@ -542,5 +542,8 @@ class SharedPref {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.cardRefNum) ?? '';
   }
-
+  Future<bool> clearAll() async {
+    final prefs = await _getPrefs();
+    return prefs.clear();
+  }
 }

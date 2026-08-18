@@ -1,4 +1,3 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,7 +6,6 @@ import '../../../core/colors.dart';
 import '../../../core/utils.dart';
 import '../../../data/service/notification_service/notification_service.dart';
 import '../../../data/storage/shared_pref_helper.dart';
-import '../../app/bottom_nav_bar_page.dart';
 import '../../merchant/bottom_nav/bottom_nav_bar.dart';
 
 class GooglePinCodePage extends StatefulWidget {
