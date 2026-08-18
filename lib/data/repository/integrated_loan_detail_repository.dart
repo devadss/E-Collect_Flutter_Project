@@ -4,7 +4,6 @@ import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 
 import '../../domain/model/integrated_loan_detail_model.dart';
-import '../storage/shared_pref_helper.dart';
 
 class IntegratedLoanDetailRepository implements IntegratedLoanDetailInterface{
 
