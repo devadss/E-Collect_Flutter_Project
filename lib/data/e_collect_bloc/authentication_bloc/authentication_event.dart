@@ -44,6 +44,12 @@ class TokenVerificationEvent extends AuthenticationEvent{
   final String token;
   const TokenVerificationEvent(this.token);
 }
+///**********************TOKEN_REGENERATION*****************************
+class TokenRegenerationEvent extends AuthenticationEvent{
+  final String token;
+  final String refreshToken;
+  const TokenRegenerationEvent(this.token, this.refreshToken);
+}
 ///**********************IFSC*****************************
 class IfscBranchEvent extends AuthenticationEvent{
   final String ifscCode;

@@ -1,4 +1,6 @@
 import 'package:collection_qr_flutter/domain/model/e_collect/ifsc_model/ifsc_success_model.dart';
+import 'package:collection_qr_flutter/domain/model/e_collect/token_validation/token_regeneratiion/ecollect_token_gen_fail.dart';
+import 'package:collection_qr_flutter/domain/model/e_collect/token_validation/token_regeneratiion/ecollect_token_gen_success.dart';
 import 'package:collection_qr_flutter/domain/model/e_collect/token_validation/token_validation_fail.dart';
 import 'package:collection_qr_flutter/domain/model/e_collect/token_validation/token_validation_success.dart';
 import 'basic_registartion/basic_registration_failure_response.dart';
@@ -56,6 +58,17 @@ class TokenVerificationSuccessModel extends AuthenticationModel{
 class TokenVerificationFailureModel extends AuthenticationModel{
   final TokenValidationFailureResponse tokenValidationFailureResponse;
   const TokenVerificationFailureModel(this.tokenValidationFailureResponse);
+}
+
+///********************TOKEN_REGENERATION******************************
+class TokenRegenerationSuccessModel extends AuthenticationModel{
+  final ECollectTokenGenSuccess eCollectTokenGenSuccess;
+  const TokenRegenerationSuccessModel(this.eCollectTokenGenSuccess);
+}
+
+class TokenRegenerationFailureModel extends AuthenticationModel{
+  final RefreshTokenError refreshTokenError;
+  const TokenRegenerationFailureModel(this.refreshTokenError);
 }
 
 ///********************IfscCode******************************

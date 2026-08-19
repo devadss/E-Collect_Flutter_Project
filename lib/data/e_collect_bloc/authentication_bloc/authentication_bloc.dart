@@ -109,7 +109,15 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         emit(TokenVerificationFailureState(data));
       }
     });
-
+    ///*********************TOKEN_REGENERATION******************************
+    on<TokenRegenerationEvent>((event, emit) async {
+      var data = await authenticationRepository.tokenRegenerationRepository(event.token, event.refreshToken);
+      if(data is TokenRegenerationSuccessModel){
+        emit(TokenRegenerationSuccessState(data));
+      }else if(data is TokenRegenerationFailureModel){
+        emit(TokenRegenerationFailureState(data));
+      }
+    });
 
     ///*********************IFSC******************************
     on<IfscBranchEvent>((event, emit) async {

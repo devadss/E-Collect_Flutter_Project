@@ -13,6 +13,8 @@ import '../../../../domain/model/e_collect/otp_request/otp_request_fail.dart';
 import '../../../../domain/model/e_collect/otp_request/otp_request_success.dart';
 import '../../../../domain/model/e_collect/otp_verification/otp_verification_fail.dart';
 import '../../../../domain/model/e_collect/otp_verification/otp_verification_success.dart';
+import '../../../../domain/model/e_collect/token_validation/token_regeneratiion/ecollect_token_gen_fail.dart';
+import '../../../../domain/model/e_collect/token_validation/token_regeneratiion/ecollect_token_gen_success.dart';
 import '../../../../domain/model/e_collect/token_validation/token_validation_fail.dart';
 import '../../../../domain/model/e_collect/token_validation/token_validation_success.dart';
 
@@ -23,6 +25,7 @@ class AuthenticationRepository {
   final String _basicRegistrationEndPoint = "api/Auth/register";
   final String _onBoardingEndPoint = "api/Merchant/register";
   final String _tokenValidationEndPoint = "api/Auth/validate-token";
+  final String _tokenRegenerationEndPoint = "api/Auth/refresh-token";
   final String _fcmUnregisterEndPoint = "api/device/unregister";
   final String _ifscBranchApiUrl = "https://ifsc.razorpay.com/";
   final Map<String, String> contentType = {"Content-Type": "application/json"};
@@ -119,6 +122,18 @@ class AuthenticationRepository {
             TokenValidationSuccessResponse.fromJson(jsonDecode(request.body)))
         : TokenVerificationFailureModel(
             TokenValidationFailureResponse.fromJson(jsonDecode(request.body)));
+  }
+  ///*********************TOKEN-REGENERATION******************************
+  Future<AuthenticationModel> tokenRegenerationRepository(
+      String tokenValue, String refToken) async {
+    final Uri uri = Uri.parse("$eCollectBaseUrl$_tokenRegenerationEndPoint");
+    final http.Response request = await http.post(uri,
+        body: jsonEncode({"token": tokenValue}), headers: contentType);
+    return request.statusCode == 200
+        ? TokenRegenerationSuccessModel(
+        ECollectTokenGenSuccess.fromJson(jsonDecode(request.body)))
+        : TokenRegenerationFailureModel(
+        RefreshTokenError.fromJson(jsonDecode(request.body)));
   }
 
   ///*********************IFSC******************************

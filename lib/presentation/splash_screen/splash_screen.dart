@@ -22,6 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
   String entityid = "";
   String subAgentid = "";
   String ecollectTokenValue = "";
+  String ecollectRefreshToken = "";
   String mobnum = "";
   String subAgentmobnum = "";
   String mpin = "";
@@ -78,6 +79,7 @@ class _SplashScreenState extends State<SplashScreen> {
       SharedPref.shared.getSubAgentMobNum(),
       SharedPref.shared.getMpinValue(),
       SharedPref.shared.getFcmToken(),
+      SharedPref.shared.getECollectRefreshToken(),
     ]);
 
     final lgStatus = results[0] as bool;
@@ -89,6 +91,9 @@ class _SplashScreenState extends State<SplashScreen> {
     mobnum = results[5] as String;
     subAgentmobnum = results[6] as String;
     mpin = results[7] as String;
+    ecollectRefreshToken = results[8] as String;
+
+
     var fcmtok = fcmToken;
     print("fcmtok : $fcmToken");
 
@@ -210,8 +215,15 @@ class _SplashScreenState extends State<SplashScreen> {
                       MaterialPageRoute(
                           builder: (context) => const MobileNumberVerificationPage()));
 
-              }else if(state is TokenVerificationFailureState){
+              }
+              if(state is TokenRegenerationSuccessState){
+                SharedPref.shared.setECollectToken(state.tokenRegenerationSuccessModel.eCollectTokenGenSuccess.token);
+                SharedPref.shared.setECollectRefreshToken(state.tokenRegenerationSuccessModel.eCollectTokenGenSuccess.refreshToken);
+              }
+              else if(state is TokenVerificationFailureState){
                 print(state.tokenVerificationFailureModel.tokenValidationFailureResponse.message);
+
+                context.read<AuthenticationBloc>().add(TokenRegenerationEvent(ecollectTokenValue,ecollectRefreshToken ));
               }
             },
             child: Center(

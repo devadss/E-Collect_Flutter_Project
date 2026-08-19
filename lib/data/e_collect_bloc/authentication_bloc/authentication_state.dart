@@ -141,6 +141,20 @@ class TokenVerificationFailureState extends AuthenticationState {
   final TokenVerificationFailureModel tokenVerificationFailureModel;
   const TokenVerificationFailureState(this.tokenVerificationFailureModel);
 }
+///*********************TOKEN_REGENERATION******************************
+class TokenRegenerationLoaderState extends AuthenticationState {
+  const TokenRegenerationLoaderState();
+}
+
+class TokenRegenerationSuccessState extends AuthenticationState {
+  final TokenRegenerationSuccessModel tokenRegenerationSuccessModel;
+  const TokenRegenerationSuccessState(this.tokenRegenerationSuccessModel);
+}
+
+class TokenRegenerationFailureState extends AuthenticationState {
+  final TokenRegenerationFailureModel tokenRegenerationFailureModel;
+  const TokenRegenerationFailureState(this.tokenRegenerationFailureModel);
+}
 
 ///*********************IFSC******************************
 class IfscBranchLoaderState extends AuthenticationState {
