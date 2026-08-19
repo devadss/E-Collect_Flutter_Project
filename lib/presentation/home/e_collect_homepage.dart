@@ -39,7 +39,8 @@ class ECollectHomepageState extends State<ECollectHomepage> {
   int currentBannerIndex = 0;
   String merchantID = "";
   String selectedValue = "Today";
-  String name = "Today";
+  String name = "";
+  String formattedName = "";
   String eCollectToken = "";
   final List<String> filterItems = [
     "Today",
@@ -48,21 +49,48 @@ class ECollectHomepageState extends State<ECollectHomepage> {
     "Last Month"
   ];
 
-
   Future<void> getSharedData() async {
-    final result =  await Future.wait([
-    SharedPref.shared.getECollectMerchantID(),
-    SharedPref.shared.getECollectMerchantName(),
-      SharedPref.shared.getECollectUserToken(),
-    ]);
-    merchantID = result[0];
-    name = result[1];
-    eCollectToken = result[2];
+    // Get the name first so it can appear immediately
+    final userName = await SharedPref.shared.getECollectMerchantName();
 
     if (!mounted) return;
-    getTransactionReport();
 
+    setState(() {
+      name = userName;
+      if (name.isNotEmpty) {
+        formattedName =
+            name[0].toUpperCase() + name.substring(1);
+      }
+    });
+
+    // Load the remaining data after the name is displayed
+    final result = await Future.wait([
+      SharedPref.shared.getECollectMerchantID(),
+      SharedPref.shared.getECollectUserToken(),
+    ]);
+
+    if (!mounted) return;
+
+    merchantID = result[0];
+    eCollectToken = result[1];
+
+    getTransactionReport();
   }
+  // Future<void> getSharedData() async {
+  //   final result =  await Future.wait([
+  //   SharedPref.shared.getECollectMerchantID(),
+  //   SharedPref.shared.getECollectMerchantName(),
+  //     SharedPref.shared.getECollectUserToken(),
+  //   ]);
+  //   merchantID = result[0];
+  //   name = result[1];
+  //   eCollectToken = result[2];
+  //  formattedName=  name[0].toUpperCase() + name.substring(1);
+  //
+  //   if (!mounted) return;
+  //   getTransactionReport();
+  //
+  // }
 
   void getTransactionReport(){
     context.read<PaymentTransactionBloc>().add(GetTransactionByMerchant(merchantID, eCollectToken));
@@ -483,13 +511,10 @@ final List<String> bannerImages = [
   }
 
   Widget _buildAnimatedHeader(BuildContext context, Size size) {
-    final formattedName = (name != null && name.isNotEmpty)
-        ? name[0].toUpperCase() + name.substring(1)
-        : "";
 
     final headerColor =Colors.white;
     return AnimatedContainer(
-      duration: 500.ms,
+      duration: 100.ms,
       curve: Curves.easeInOut,
       width: double.infinity,
       decoration: BoxDecoration(
@@ -532,7 +557,7 @@ final List<String> bannerImages = [
                           color: Color(0xFFEA307B),
                           letterSpacing: 0.3,
                         ),
-                      ).animate().fadeIn(duration: 900.ms).slideX(begin: -0.9),
+                      ).animate().fadeIn(duration: 100.ms).slideX(begin: -0.9),
 
                       const SizedBox(height: 4),
 

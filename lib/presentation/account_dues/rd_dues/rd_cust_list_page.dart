@@ -220,7 +220,7 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
     return Expanded(
       child: ListView.separated(
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: 10,
+        itemCount: 5,
         separatorBuilder: (context, index) => const SizedBox(height: 10),
         itemBuilder: (context, index) {
           return Padding(
@@ -230,12 +230,12 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: white,
-                border: Border.all(color: grey[300]!, width: 1),
+                border: Border.all(color: grey[100]!, width: 1),
                 boxShadow: const [
                   BoxShadow(
-                    color: black45,
-                    blurRadius: 8,
-                    offset: Offset(0, 4),
+                    color: Colors.black12,
+                    blurRadius: 2,
+                    offset: Offset(0, 2),
                   ),
                 ],
               ),
