@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../main.dart';
 import 'colors.dart';
 
 void showToast({required String message, required Color color}) {
@@ -14,7 +13,7 @@ void showToast({required String message, required Color color}) {
       fontSize: 16.0);
 }
 
-//Display snack bar
+/*//Display snack bar
 void showSnackBar(String message) {
   final snackBarContent = SnackBar(
     //padding: EdgeInsets.only(bottom: 16.0),
@@ -25,7 +24,7 @@ void showSnackBar(String message) {
             ?.hideCurrentSnackBar(reason: SnackBarClosedReason.hide)),
   );
   snackBarKey.currentState?.showSnackBar(snackBarContent);
-}
+}*/
 
 Future<dynamic> showAlertDialog(String message, BuildContext context) {
   return showDialog(
@@ -37,6 +36,7 @@ Future<dynamic> showAlertDialog(String message, BuildContext context) {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
+
               },
               child: const Text('OK'),
             ),

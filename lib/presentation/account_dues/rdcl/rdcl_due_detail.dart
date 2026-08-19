@@ -65,6 +65,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
   String? eCollectAgentOriginId;
   String? eCollectAgentId;
   String? selectedMethod;
+  String? eCollectToken;
 
 
   Future<void> loadSharedPrefs() async {
@@ -88,6 +89,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
       SharedPref.shared.getECollectMerchantBranchCode(),
       SharedPref.shared.getECollectMerchantID(),
       SharedPref.shared.getECollectUserType(),
+      SharedPref.shared.getECollectUserToken(),
     ]);
 
     agentName = result[0];
@@ -109,6 +111,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
     eCollectAgentEmail = result[15];
     eCollectAgentBranchCode = result[16];
     eCollectAgentMerchantID = result[17];
+    eCollectToken = result[18];
     eCollectCollectionType = "RDCL";
 
   }
@@ -296,7 +299,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                             note: 'Payment for Order',
                             qrSource: 'MOB',
                             source: 'COLLECTION',
-                            merchantId: int.parse(eCollectAgentMerchantID!))));
+                            merchantId: int.parse(eCollectAgentMerchantID!)), eCollectToken!));
                   },
                 ),
                 const SizedBox(height: 12),
@@ -344,7 +347,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                             note: 'Payment for Order',
                             qrSource: 'MOB',
                             source: 'COLLECTION',
-                            merchantId: int.parse(eCollectAgentMerchantID!))));
+                            merchantId: int.parse(eCollectAgentMerchantID!)), eCollectToken!));
                     // merchantId: 1)));
                   },
                 ),
@@ -538,7 +541,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                                   qrSource: 'MOB',
                                   source: 'COLLECTION',
                                   merchantId:
-                                      int.parse(eCollectAgentMerchantID!))));
+                                      int.parse(eCollectAgentMerchantID!)), eCollectToken!));
                           // merchantId: 1)));
                           // getCashTrans(
                           //   token: token,

@@ -8,14 +8,19 @@ import '../../../../domain/model/e_collect/payment/response/payment_qr_response.
 import '../../../../domain/model/e_collect/payment/response/payment_response_fail.dart';
 import '../../../../domain/model/e_collect/payment/response/payment_response_success.dart';
 class PaymentRepository {
-  
-  Future<PaymentResponse> qrPaymentApiIntentCall(QrPaymentRequestModel qrPaymentRequestModel) async {
-    final uri = Uri.parse("https://dev.collect.org.in/api/payment/UpiIntent");
+  final String baseURL = "https://dev.collect.org.in/";
+  final String qrEndpoint = "api/payment/UpiIntent";
+  final String linkEndpoint = "api/payment/PaymentLink";
+  final String cashEndpoint = "api/payment/Cash_Collection";
+  Future<PaymentResponse> qrPaymentApiIntentCall(QrPaymentRequestModel qrPaymentRequestModel, String eCollectToken) async {
+
+    final uri = Uri.parse("$baseURL$qrEndpoint");
     final data = await http.post(uri,
 
     body: jsonEncode(qrPaymentRequestModel),
       headers: {
-      "Content-Type":"application/json"
+        'Authorization':"Bearer $eCollectToken",
+        "Content-Type":"application/json"
       }
     );
     print(jsonEncode(qrPaymentRequestModel));
@@ -28,12 +33,13 @@ class PaymentRepository {
     
   }
 
-  Future<PaymentResponse> linkPaymentApiIntentCall(QrPaymentRequestModel qrPaymentRequestModel) async {
-    final uri = Uri.parse("https://dev.collect.org.in/api/payment/PaymentLink");
+  Future<PaymentResponse> linkPaymentApiIntentCall(QrPaymentRequestModel qrPaymentRequestModel,String eCollectToken) async {
+    final uri = Uri.parse("$baseURL$linkEndpoint");
     final data = await http.post(uri,
 
         body: jsonEncode(qrPaymentRequestModel),
         headers: {
+          'Authorization':"Bearer $eCollectToken",
           "Content-Type":"application/json"
         }
     );
@@ -47,12 +53,13 @@ class PaymentRepository {
 
   }
 
-  Future<PaymentResponse> cashPaymentApiIntentCall(QrPaymentRequestModel qrPaymentRequestModel) async {
-    final uri = Uri.parse("https://dev.collect.org.in/api/payment/Cash_Collection");
+  Future<PaymentResponse> cashPaymentApiIntentCall(QrPaymentRequestModel qrPaymentRequestModel,String eCollectToken) async {
+    final uri = Uri.parse("$baseURL$cashEndpoint");
     final data = await http.post(uri,
 
         body: jsonEncode(qrPaymentRequestModel),
         headers: {
+          'Authorization':"Bearer $eCollectToken",
           "Content-Type":"application/json"
         }
     );

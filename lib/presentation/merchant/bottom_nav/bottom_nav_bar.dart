@@ -31,7 +31,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   bool isLoading = true;
 
-  final String INTEGRATED = "Y";
+  //final String INTEGRATED = "Y";
   final String USER_TYPE_RDCL = "RDCL";
   final String USER_TYPE_RD = "RD";
   final String USER_TYPE_LOAN = "LOAN";

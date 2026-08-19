@@ -5,15 +5,18 @@ abstract class PaymentEvent {}
 
 class QrPaymentEvent extends PaymentEvent{
   final QrPaymentRequestModel qrPaymentRequestModel;
-  QrPaymentEvent(this.qrPaymentRequestModel);
+  final String eCollectToken;
+  QrPaymentEvent(this.qrPaymentRequestModel, this.eCollectToken);
 }
 
 class LinkPaymentEvent extends PaymentEvent{
   final QrPaymentRequestModel linkPaymentRequestModel;
-  LinkPaymentEvent(this.linkPaymentRequestModel);
+  final String eCollectToken;
+  LinkPaymentEvent(this.linkPaymentRequestModel, this.eCollectToken);
 }
 
 class CashPaymentEvent extends PaymentEvent{
   final QrPaymentRequestModel cashPaymentRequestModel;
-  CashPaymentEvent(this.cashPaymentRequestModel);
+  final String eCollectToken;
+  CashPaymentEvent(this.cashPaymentRequestModel, this.eCollectToken);
 }

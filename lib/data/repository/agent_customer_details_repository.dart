@@ -1,15 +1,11 @@
 import 'dart:convert';
-
 import '../../core/general.dart';
 import '../../core/utils.dart';
 import '../../data/service/error_handler.dart';
 import '../../domain/interface/agent_customer_details_interface.dart';
 import '../../domain/model/agent_customer_details_model.dart';
 import 'package:dartz/dartz.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:http/http.dart' as http;
-
-import '../storage/shared_pref_helper.dart';
 
 class AgentCustomerDetailsRepository
     implements IAgentCustomerDetailsRepository {
@@ -19,7 +15,10 @@ class AgentCustomerDetailsRepository
   Future<Either<ErrorHandler, AgentCustomerDetailsModel>>
       getAgentCustomerDetails(
       String requestUrl,
-      String agentId) async {
+      String agentId,
+      String branchId
+
+      ) async {
     final url = Uri.parse(requestUrl);
     print(
         "--------------------------AGENT CUSTOMER DETAILS URL------------------");
@@ -29,9 +28,8 @@ class AgentCustomerDetailsRepository
     final response = await http.post(
       url,
       body:json.encode({
-       // "agent_id": "1005",
         "agent_id": agentId,
-        "branch_id": "01",
+        "branch_id":   branchId,
         "PageNumber": 0,
         "PageSize": 0,
         "cust_name": ""

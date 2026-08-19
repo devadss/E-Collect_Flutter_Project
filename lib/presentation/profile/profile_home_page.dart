@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:lottie/lottie.dart';
 import '../../presentation/profile/widgets/contact_us_page.dart';
 import 'package:flutter/material.dart';
@@ -43,13 +42,15 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
   }
 
   Future<void> loadSharedData() async {
-    String? username = await SharedPref.shared.getECollectMerchantName();
-    String? usermobNum = await SharedPref.shared.getECollectUserNumber();
+    final result = await Future.wait([
+    SharedPref.shared.getECollectMerchantName(),
+        SharedPref.shared.getECollectUserNumber()
+    ]);
 
     if (mounted) {
       setState(() {
-        name = username ?? "Unknown User";
-        mobNum = usermobNum ?? "No Number";
+        name = result[0] ?? "Unknown User";
+        mobNum = result[1] ?? "No Number";
       });
     }
   }
@@ -526,10 +527,8 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                                       elevation: 0,
                                       borderRadius: BorderRadius.circular(16),
                                       child: InkWell(
-                                        onTap: () async {
-
-                                          await performLogout(context);
-                                        },
+                                        onTap: () async =>
+                                            await performLogout(context),
                                         borderRadius: BorderRadius.circular(16),
                                         child: Container(
                                           padding: const EdgeInsets.symmetric(
@@ -616,10 +615,17 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
       );
     }
   }
+
   Future<void> performLogout(BuildContext context) async {
-    final entityId = await SharedPref.shared.getECollectMerchantID();
-    final mobnum = await SharedPref.shared.getECollectUserNumber();
-    final token = await SharedPref.shared.getFcmToken();
+    final result = await Future.wait([
+    SharedPref.shared.getECollectMerchantID(),
+    SharedPref.shared.getECollectUserNumber(),
+    SharedPref.shared.getFcmToken()
+
+    ]);
+    final entityId = result[0];
+    final mobnum = result[1];
+    final token = result[2];
 
     final fcmProvider = Provider.of<DeleteFcmProvider>(
       context,
@@ -642,7 +648,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
       MaterialPageRoute(
         builder: (_) => const SplashScreen(),
       ),
-          (route) => false,
+      (route) => false,
     );
   }
 /*  Future<void> performLogout(BuildContext context) async {

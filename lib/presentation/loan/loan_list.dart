@@ -4,7 +4,6 @@ import 'package:collection_qr_flutter/data/provider/integration_loan_list_provid
 import 'package:collection_qr_flutter/domain/model/integrated_loan_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../core/utils.dart';
 import '../../data/storage/shared_pref_helper.dart';
 import 'integrated_loan_detail.dart';
@@ -35,41 +34,36 @@ class _LoanListState extends State<LoanList> {
       SharedPref.shared.getExternalAgentID(),
       SharedPref.shared.getECollectUrlList(),
     ]);
-   // final subAgentId = result[0]; //63
-    final branchId = result[1]; //01
-    final agentID = result[2]; //1021
+    // final subAgentId = result[0]; //63
+    final branchId = result[1] as String; //01
+    final agentID = result[2] as String; //1021
     final loanListingUrl = result[3] as List<String>; //1021
-
-    setState(() {
-
-      for(var x in loanListingUrl){
-        if(x.contains("getLoanCustUnderAgent")){
-          setState(() {
-            _loanListingUrl = x;
-          });
-          print((x));
-        }
+    for (var x in loanListingUrl) {
+      if (x.contains("getLoanCustUnderAgent")) {
+        setState(() {
+          _loanListingUrl = x;
+        });
+        print((x));
       }
-      for(var x in loanListingUrl){
-        if(x.contains("getLoanAccountHolder")){
-          setState(() {
-            _loanDetailUrl = x;
-          });
-          print((x));
-        }else{
-          _loanDetailUrl = "https://mftctest.digicob.in/getLoanAccountHolder";
-        }
+    }
+    for (var x in loanListingUrl) {
+      if (x.contains("getLoanAccountHolder")) {
+        setState(() {
+          _loanDetailUrl = x;
+        });
+        print((x));
+      } else {
+        _loanDetailUrl = "https://mftctest.digicob.in/getLoanAccountHolder";
       }
-
+    }
+  //  setState(() {
       print("LOAN LIST URL : $_loanListingUrl");
       print("LOAN detail URL : $_loanDetailUrl");
       print("agentID : $agentID");
       print("branchId : $branchId");
-     // _loanListingUrl = "https://mftctest.digicob.in/getLoanCustUnderAgent";
-     // _loanDetailUrl = "https://mftctest.digicob.in/getLoanAccountHolder";
-      _branchId = "01";
-      _agentId = "1005";
-    });
+      _branchId = branchId;
+      _agentId = agentID;
+  //  });
     if (printStatementStatus) {
       print("Loan _branchId = $_branchId");
       print("Loan _subAgentId = $_agentId");
@@ -82,9 +76,7 @@ class _LoanListState extends State<LoanList> {
     final integratedLoanProvider =
         Provider.of<IntegratedLoanListProvider>(context, listen: false);
     await integratedLoanProvider.fetchIntegratedLoans(
-
-        _loanListingUrl,
-        _agentId, _branchId, "", "");
+        _loanListingUrl, _agentId, _branchId, "", "");
     setState(() {
       _integratedLoanListResponse =
           integratedLoanProvider.integratedLoanListResponse;
@@ -97,14 +89,11 @@ class _LoanListState extends State<LoanList> {
     final integratedLoanDetailProvider =
         Provider.of<IntegratedLoanDetailProvider>(context, listen: false);
     await integratedLoanDetailProvider.getIntegratedLoanDetails(
-      _loanDetailUrl!,
-        "", _branchId.toString(), "", "",
-
-        accNo);
+        _loanDetailUrl!, "", _branchId.toString(), "", "", accNo);
     if (integratedLoanDetailProvider
             .integratedLoanListResponse?.loanDate.isNotEmpty ==
         true) {
-      if(!mounted) return;
+      if (!mounted) return;
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -176,7 +165,7 @@ class _LoanListState extends State<LoanList> {
                     penalInterestAmountOverdue: integratedLoanDetailProvider
                         .integratedLoanListResponse!.receiptDetails[2].overdue,
                   ))).then((_) {
-                    if(!mounted) return;
+        if (!mounted) return;
         Navigator.pop(context);
       });
     }
@@ -190,17 +179,20 @@ class _LoanListState extends State<LoanList> {
   }
 
   void filterList(String filterValue) {
-    //print("filterValue $filterValue");
-    if (filterValue.isEmpty) {
-      _filteredList = _integratedLoanListResponse!.data;
-    } else {
-      setState(() {
-        _filteredList = _integratedLoanListResponse!.data.where((item) {
-          return item.custName.toLowerCase().contains(filterValue) ||
-              item.lnGlobalAccNo.toLowerCase().contains(filterValue);
+    final query = filterValue.toLowerCase().trim();
+
+    final data = _integratedLoanListResponse?.data ?? [];
+
+    setState(() {
+      if (query.isEmpty) {
+        _filteredList = data;
+      } else {
+        _filteredList = data.where((item) {
+          return item.custName.toLowerCase().contains(query) ||
+              item.lnGlobalAccNo.toLowerCase().contains(query);
         }).toList();
-      });
-    }
+      }
+    });
   }
 
   AppBar buildAppBar() {
@@ -220,50 +212,6 @@ class _LoanListState extends State<LoanList> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          // SizedBox(height: 8),
-          // Container(
-          //   padding: const EdgeInsets.all(6),
-          //   decoration: BoxDecoration(
-          //     color: Colors.grey.shade200.withValues(alpha:0.6),
-          //     borderRadius: BorderRadius.circular(40),
-          //   ),
-          //   child: SegmentedTabControl(
-          //     indicatorPadding: const EdgeInsets.all(4),
-          //     indicatorDecoration: BoxDecoration(
-          //       gradient: LinearGradient(
-          //         colors: [home1, home1.withValues(alpha:0.85)],
-          //       ),
-          //       borderRadius: BorderRadius.circular(30),
-          //       boxShadow: [
-          //         BoxShadow(
-          //           color: home1.withValues(alpha:0.9),
-          //           blurRadius: 10,
-          //           offset: const Offset(0, 2),
-          //         ),
-          //       ],
-          //     ),
-          //     barDecoration: BoxDecoration(
-          //       color: Colors.transparent,
-          //       borderRadius: BorderRadius.circular(40),
-          //     ),
-          //     // tabs: [
-          //     //   SegmentTab(
-          //     //     label: "RD",
-          //     //     color: Colors.transparent,
-          //     //     backgroundColor: Colors.transparent,
-          //     //     textColor: Colors.grey.shade600,
-          //     //     selectedTextColor: Colors.white,
-          //     //   ),
-          //     //   SegmentTab(
-          //     //     label: "LOANS",
-          //     //     color: Colors.transparent,
-          //     //     backgroundColor: Colors.transparent,
-          //     //     textColor: Colors.grey.shade600,
-          //     //     selectedTextColor: Colors.white,
-          //     //   ),
-          //     // ],
-          //   ),
-          // )
         ],
       ),
     );
@@ -303,7 +251,6 @@ class _LoanListState extends State<LoanList> {
                 ),
               ),
             ),
-
             Expanded(
               child: ListView.builder(
                   itemCount: _filteredList?.length,
@@ -660,7 +607,6 @@ Widget _buildModernMetric({
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Row(
-        
         children: [
           Icon(icon, size: 12, color: home1.withValues(alpha: 0.6)),
           const SizedBox(width: 4),
@@ -669,7 +615,6 @@ Widget _buildModernMetric({
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w500,
-
               color: Colors.grey.shade500,
               letterSpacing: 0.5,
             ),
@@ -679,7 +624,8 @@ Widget _buildModernMetric({
       const SizedBox(height: 6),
       Container(
         padding: EdgeInsets.all(5),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
             color: home2.withValues(alpha: 0.03)),
         child: Text(
           textAlign: TextAlign.center,
@@ -698,38 +644,6 @@ Widget _buildModernMetric({
   );
 }
 
-// Widget _buildInfoChip({required String label, String? value}) {
-//   return Container(
-//     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-//     decoration: BoxDecoration(
-//       color: home1.withValues(alpha:0.08),
-//       borderRadius: BorderRadius.circular(12),
-//     ),
-//     child: value == null
-//         ? _buildSkeleton(width: 60, height: 12)
-//         : Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         Text(
-//           label,
-//           style: TextStyle(
-//             fontSize: 10,
-//             color: Colors.grey.shade600,
-//           ),
-//         ),
-//         const SizedBox(height: 2),
-//         Text(
-//           value,
-//           style: TextStyle(
-//             fontSize: 12,
-//             fontWeight: FontWeight.w600,
-//             color: home1,
-//           ),
-//         ),
-//       ],
-//     ),
-//   );
-// }
 Widget _buildSkeleton({double width = 100, double height = 12}) {
   return Container(
     width: width,

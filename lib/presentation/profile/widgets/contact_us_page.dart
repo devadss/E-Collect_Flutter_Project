@@ -231,7 +231,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
     );
   }
 
-  Widget _buildDocumentLink({required String title, required String url}) {
+ /* Widget _buildDocumentLink({required String title, required String url}) {
     return Card(
       elevation: 1,
       color: Colors.grey[100],
@@ -262,7 +262,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
         ),
       ),
     );
-  }
+  }*/
 
   void _handlePhoneTap() async {
     const phoneNumber = 'tel:7597182222';
@@ -282,7 +282,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
     }
   }
 
-  void _openUrl(String url) async {
+  /*void _openUrl(String url) async {
     try {
       if (await canLaunchUrl(Uri.parse(url))) {
         await launchUrl(Uri.parse(url));
@@ -292,7 +292,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
     } catch (e) {
       _showErrorSnackBar("Error opening link: $e");
     }
-  }
+  }*/
 
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(

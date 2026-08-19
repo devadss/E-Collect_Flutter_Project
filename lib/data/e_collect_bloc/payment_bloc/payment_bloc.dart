@@ -11,7 +11,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState>{
   PaymentBloc(this.paymentRepository):super(QrPaymentInitialState()){
     on<QrPaymentEvent>((event, emit) async {
       emit(QrPaymentLoaderState());
-      var data = await paymentRepository.qrPaymentApiIntentCall(event.qrPaymentRequestModel);
+      var data = await paymentRepository.qrPaymentApiIntentCall(event.qrPaymentRequestModel, event.eCollectToken);
       if(data is QrPaymentSuccess){
         emit(QrPaymentSuccessState(data));
       }else if(data is QrPaymentFail){
@@ -20,7 +20,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState>{
     });
     on<LinkPaymentEvent>((event, emit) async {
       emit(QrPaymentLoaderState());
-      var data = await paymentRepository.linkPaymentApiIntentCall(event.linkPaymentRequestModel);
+      var data = await paymentRepository.linkPaymentApiIntentCall(event.linkPaymentRequestModel, event.eCollectToken);
       if(data is QrPaymentSuccess){
         emit(QrPaymentSuccessState(data));
       }else if(data is QrPaymentFail){
@@ -30,7 +30,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState>{
 
     on<CashPaymentEvent>((event, emit) async {
       emit(QrPaymentLoaderState());
-      var data = await paymentRepository.cashPaymentApiIntentCall(event.cashPaymentRequestModel);
+      var data = await paymentRepository.cashPaymentApiIntentCall(event.cashPaymentRequestModel, event.eCollectToken);
       if(data is CashPaymentSuccess){
         emit(CashPaymentSuccessState(data));
       }else if(data is CashPaymentFail){

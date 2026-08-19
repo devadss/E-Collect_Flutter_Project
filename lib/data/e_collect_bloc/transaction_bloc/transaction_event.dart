@@ -5,7 +5,8 @@ abstract class TransactionEvent {
 
 class GetTransactionByMerchant extends TransactionEvent{
   final String merchantID;
-  const GetTransactionByMerchant(this.merchantID);
+  final String eCollectToken;
+  const GetTransactionByMerchant(this.merchantID, this.eCollectToken);
 }
 // class GetTransactionByMerchantDateRange extends TransactionEvent{
 //   final String merchantID;
@@ -19,7 +20,8 @@ class GetTransactionByMerchantDateWithStatus extends TransactionEvent{
   final String fromDate;
   final String toDate;
   final String status;
-  const GetTransactionByMerchantDateWithStatus(this.merchantID, this.fromDate, this.toDate, this.status);
+  final String eCollectToken;
+  const GetTransactionByMerchantDateWithStatus(this.merchantID, this.fromDate, this.toDate, this.status, this.eCollectToken);
 }
 
 // class GetTransactionByMerchantDate extends TransactionEvent{

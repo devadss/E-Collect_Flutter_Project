@@ -1,7 +1,6 @@
 import 'package:collection_qr_flutter/core/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../core/colors.dart';
 import '../../../data/e_collect_bloc/transaction_bloc/transaction_bloc.dart';
 import '../../../data/storage/shared_pref_helper.dart';
@@ -23,6 +22,7 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
   String selectedStatusFilter = "All";
 
   String merchantID = "";
+  String eCollectToken = "";
   String name = "Select";
   bool sendIconVisibility = false;
   TextEditingController searchNameController = TextEditingController();
@@ -37,14 +37,7 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
     "Custom Range",
   ];
 
-  // final List<String> dateFilters = [
-  //   "All",
-  //   "Today",
-  //   "Yesterday",
-  //   "Last 7 Days",
-  //   "This Month",
-  //   "Custom Range",
-  // ];
+
   final List<String> statusFilters = [
     "All",
     "Success",
@@ -59,23 +52,30 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
       selectedValue = "This Week";
       selectedStatusFilter = "All";
     });
-    context.read<PaymentTransactionBloc>().add(GetTransactionByMerchant(merchantID));
+    context.read<PaymentTransactionBloc>().add(GetTransactionByMerchant(merchantID, eCollectToken));
   }
 
   Future<void> getSharedData() async {
-    final _merchantID = await SharedPref.shared.getECollectMerchantID();
-    final _name = await SharedPref.shared.getECollectMerchantName();
+    final result = await Future.wait([
+    SharedPref.shared.getECollectMerchantID(),
+    SharedPref.shared.getECollectMerchantName(),
+    SharedPref.shared.getECollectUserToken(),
 
-   // if (!mounted) return;
-    setState(() {
-      merchantID = _merchantID;
-      name = _name;
-    });
-    context
-        .read<PaymentTransactionBloc>()
-        .add(GetTransactionByMerchant(merchantID));
+    ]);
+
+      merchantID = result[0];
+      name = result[1];
+      eCollectToken = result[2];
+
+      if(!mounted) return;
+    getTransactionReport();
   }
 
+  void getTransactionReport(){
+    context
+        .read<PaymentTransactionBloc>()
+        .add(GetTransactionByMerchant(merchantID, eCollectToken));
+  }
   @override
   void initState() {
     super.initState();
@@ -233,7 +233,7 @@ setState(() {
                             });
                             context
                                 .read<PaymentTransactionBloc>()
-                                .add(GetTransactionByMerchant(merchantID));
+                                .add(GetTransactionByMerchant(merchantID, eCollectToken));
                           },
                           style: TextButton.styleFrom(
                             foregroundColor: Colors.grey.shade700,
@@ -482,7 +482,7 @@ setState(() {
                                         .replaceRange(10, null, "")
                                         .toString(),
                                     selectedStatusFilter == "All"?"":
-                                    selectedStatusFilter),
+                                    selectedStatusFilter, eCollectToken),
                               );
                         },
                         icon: const Icon(
@@ -782,7 +782,7 @@ setState(() {
                         });
                         context
                             .read<PaymentTransactionBloc>()
-                            .add(GetTransactionByMerchant(merchantID));
+                            .add(GetTransactionByMerchant(merchantID, eCollectToken));
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -813,7 +813,7 @@ setState(() {
           SizedBox(
             child: BlocListener<PaymentTransactionBloc, TransactionState>(
               listener: (BuildContext context, TransactionState state) {
-                print("STATE IS : ${state}");
+                print("STATE IS : $state");
                 if (state is TransactionReportLoaderState) {
                   showProgressDialog(context);
                 }

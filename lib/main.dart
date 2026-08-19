@@ -1,25 +1,19 @@
 import 'dart:developer';
-import 'package:collection_qr_flutter/core/constants.dart';
 import 'package:collection_qr_flutter/data/e_collect_bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:collection_qr_flutter/data/e_collect_bloc/payment_bloc/payment_bloc.dart';
 import 'package:collection_qr_flutter/data/provider/integrated_loan_detail_provider.dart';
 import 'package:collection_qr_flutter/data/provider/integration_loan_list_provider.dart';
 import 'package:collection_qr_flutter/data/provider/loan_cash_coolection_provider.dart';
-
 import 'package:collection_qr_flutter/data/repository/e_collect_repository/payment_repository/payment_repository.dart';
 import 'package:collection_qr_flutter/data/repository/integrated_loan_detail_repository.dart';
 import 'package:collection_qr_flutter/data/repository/integration_loan_repository.dart';
 import 'package:collection_qr_flutter/data/repository/loan_cash_collection_repository.dart';
-
-import 'package:collection_qr_flutter/domain/service/api_services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import '../../data/provider/agent_customer_details_provider.dart';
 import '../../data/provider/delete_fcm_provider.dart';
 import '../../data/repository/agent_customer_details_repository.dart';
-
 import '../../data/repository/delete_fcm_repository.dart';
-
 import '../../presentation/splash_screen/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -46,13 +40,10 @@ import 'data/provider/group/member_update/member_update_provider.dart';
 import 'data/provider/group/update_group/group_update_repository.dart';
 import 'data/provider/group/update_group_provider.dart';
 import 'data/rdcl_duelist_bloc/rdcl_duelist_bloc.dart';
-
 import 'data/repository/cash_transcation_repository.dart';
-
 import 'data/repository/customer_list_repo/customer_list_repo.dart';
 import 'data/repository/e_collect_repository/authentication_repository/authentication_repository.dart';
 import 'data/repository/e_collect_repository/transation_report/transaction_reposrt_repository.dart';
-
 import 'data/repository/group/bank_account_update_repository.dart';
 import 'data/repository/group/bank_detail_repository.dart';
 import 'data/repository/group/create_group/create_group_repository.dart';
@@ -66,13 +57,7 @@ import 'data/repository/group/member_delete/member_delete_repository.dart';
 import 'data/repository/group/member_list/member_list_repository.dart';
 import 'data/repository/group/member_update_repository/member_update_repository.dart';
 import 'data/repository/group/update_account_repository.dart';
-
-import 'data/repository/parent_agent/fetch_parent_crentials/parent_agent_credential_repository.dart';
-import 'data/repository/parent_agent/parent_agent_detail_repo.dart';
-
 import 'data/repository/rdcl_due_list_repo/rdcl_due_list_repo.dart';
-
-
 import 'data/service/notification_service/firebase_notification_services.dart';
 import 'firebase_options.dart';
 
@@ -89,7 +74,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final apiService = ApiService(baseUrl);
+ // final apiService = ApiService(baseUrl);
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -114,15 +99,9 @@ Future<void> main() async {
         RepositoryProvider(create: (_) => TransactionReportRepository()),
         RepositoryProvider(create: (_) => CustomerListRepo()),
         RepositoryProvider(create: (_) => RdclDueListRepo()),
-
         RepositoryProvider(create: (_) => CashTranscationRepository()),
-
         RepositoryProvider(create: (_) => AgentCustomerDetailsRepository()),
-
         RepositoryProvider(create: (_) => DeleteFcmTokenRepository()),
-        RepositoryProvider(create: (_) => ParentAgentDetailRepository()),
-        RepositoryProvider(create: (_) => ParentAgentCredentialRepository()),
-
         RepositoryProvider(create: (_) => BankAccountRepository()),
         RepositoryProvider(create: (_) => BankAccountUpdateRepository()),
         RepositoryProvider(create: (_) => GroupListRepository()),
@@ -130,7 +109,6 @@ Future<void> main() async {
         RepositoryProvider(create: (_) => CreateGroupRepository()),
         RepositoryProvider(create: (_) => CreateMemberRepository()),
         RepositoryProvider(create: (_) => MemberDeleteRepository()),
-
         RepositoryProvider(create: (_) => DeleteGroupRepository()),
         RepositoryProvider(create: (_) => CreateGroupWithMemberRepository()),
         RepositoryProvider(create: (_) => GroupUpdateRepository()),
@@ -138,7 +116,6 @@ Future<void> main() async {
         RepositoryProvider(create: (_) => GroupStatusRepository()),
         RepositoryProvider(create: (_) => MemberUpdateRepository()),
         RepositoryProvider(create: (_) => LoanCashCollectionRepository()),
-
         RepositoryProvider(create: (_) => IntegrationLoanRepository()),
         RepositoryProvider(create: (_) => IntegratedLoanDetailRepository()),
       ],
@@ -172,7 +149,6 @@ Future<void> main() async {
         ],
         child: MultiProvider(
           providers: [
-
             ChangeNotifierProvider(
               create: (_) => CashTranscationProvider(
                 CashTranscationRepository(),
@@ -325,13 +301,18 @@ Future<void> requestOverlayPermission() async {
 }
 
 Future<void> requestLocationPermission() async {
-  // Check if location permission is denied and request it if necessary
-  await Permission.locationWhenInUse.isDenied.then((value) {
-    if (value) {
-      Permission.locationWhenInUse.request();
-    }
-  });
+  if (await Permission.locationWhenInUse.isDenied) {
+    await Permission.locationWhenInUse.request();
+  }
 }
+// Future<void> requestLocationPermission() async {
+//   // Check if location permission is denied and request it if necessary
+//   await Permission.locationWhenInUse.isDenied.then((value) {
+//     if (value) {
+//       Permission.locationWhenInUse.request();
+//     }
+//   });
+// }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

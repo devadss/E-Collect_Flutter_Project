@@ -2,7 +2,6 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../data/storage/shared_pref_helper.dart';
 import '../domain/model/cash_transcation_model.dart';
 import 'colors.dart';
 import 'constants.dart';
@@ -263,7 +262,7 @@ class Validators {
 
 void isRunningLiveDopBaseUrl(bool status, String mobile) async {
   if(mobile.startsWith("+91")){
-    if (status== true && "+91${mobile}" != null && "+91${mobile}" != uatTestMobileNumber){
+    if (status== true && "+91$mobile" != null && "+91$mobile" != uatTestMobileNumber){
      // dopBaseUrl =  "https://mydop.in/api/fetch/vendor/urls/";
       dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";
 
@@ -271,7 +270,7 @@ void isRunningLiveDopBaseUrl(bool status, String mobile) async {
       dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";
     }
   }else{
-    if (status== true && "+91${mobile}"!= null && "+91${mobile}" != uatTestMobileNumber){
+    if (status== true && "+91$mobile"!= null && "+91$mobile" != uatTestMobileNumber){
       //dopBaseUrl =  "https://mydop.in/api/fetch/vendor/urls/";
       dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";
     }else{
@@ -633,30 +632,29 @@ Uint8List padPKCS7(Uint8List input) {
   return output;
 }
 
-Future<void> resetInitialData() async {
-
-  SharedPref.shared.setEmail("");
-  SharedPref.shared.setCorpCode("");
-  SharedPref.shared.setBranchCode("");
-  SharedPref.shared.setMpinValue("");
-  await SharedPref.shared.setAgentId('');
-  await SharedPref.shared.setParentAgentMobNum('');
-  await SharedPref.shared.setSubAgentName('');
-  await SharedPref.shared.setSubAgentMobNum('');
-  await SharedPref.shared.setAgentOriginId('');
-  await SharedPref.shared.setSubAgentCode('');
-  await SharedPref.shared.setSubAgentCodeNew('');
-  await SharedPref.shared.setSubAgentId('');
-  SharedPref.shared.setRdclCustomerVendorUrl('');
-  SharedPref.shared.setDueListRdclUrl('');
-  SharedPref.shared.setCustomerRdUrl('');
-  SharedPref.shared.setDueListRdUrl('');
-  SharedPref.shared.setCustomerLoanUrl('');
-  SharedPref.shared.setDueListLoanUrl('');
-  SharedPref.shared.setLoanAccountHolderUrl('');
-  SharedPref.shared.setUserType('');
-
-}
+// Future<void> resetInitialData() async {
+//
+//   SharedPref.shared.setEmail("");
+//   SharedPref.shared.setCorpCode("");
+//   SharedPref.shared.setBranchCode("");
+//   SharedPref.shared.setMpinValue("");
+//   await SharedPref.shared.setAgentId('');
+//   await SharedPref.shared.setParentAgentMobNum('');
+//   await SharedPref.shared.setSubAgentMobNum('');
+//   await SharedPref.shared.setAgentOriginId('');
+//   await SharedPref.shared.setSubAgentCode('');
+//   await SharedPref.shared.setSubAgentCodeNew('');
+//   await SharedPref.shared.setSubAgentId('');
+//   SharedPref.shared.setRdclCustomerVendorUrl('');
+//   SharedPref.shared.setDueListRdclUrl('');
+//   SharedPref.shared.setCustomerRdUrl('');
+//   SharedPref.shared.setDueListRdUrl('');
+//   SharedPref.shared.setCustomerLoanUrl('');
+//   SharedPref.shared.setDueListLoanUrl('');
+//   SharedPref.shared.setLoanAccountHolderUrl('');
+//   SharedPref.shared.setUserType('');
+//
+// }
 
 void showNotification(BuildContext context , String content, Color color, Color txtColor){
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(content, style: TextStyle(color: txtColor, fontWeight: FontWeight.w700),), backgroundColor: color));
@@ -689,4 +687,3 @@ class Cat{
   Cat(this.name);
 }
 
- 

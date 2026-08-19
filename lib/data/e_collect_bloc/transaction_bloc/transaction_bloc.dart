@@ -12,7 +12,7 @@ class PaymentTransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       : super(PaymentTransactionInitialState()) {
     on<GetTransactionByMerchant>((event, emit) async {
       emit(TransactionReportLoaderState());
-      final data = await reportRepository.getTransactionReportByMerchantId(event.merchantID);
+      final data = await reportRepository.getTransactionReportByMerchantId(event.merchantID, event.eCollectToken);
       if (data is TransactionSuccessModel) {
         var newTotal = 0.0;
         var totalSuccessTransactionCount = 0;
@@ -42,7 +42,7 @@ class PaymentTransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<GetTransactionByMerchantDateWithStatus>((event, emit) async {
       emit(TransactionReportLoaderState());
       final data = await reportRepository.getTransactionReportByMerchantIdDateStatus
-        (event.merchantID, event.fromDate, event.toDate, event.status);
+        (event.merchantID, event.fromDate, event.toDate, event.status, event.eCollectToken);
       if (data is TransactionSuccessModel) {
         emit(TransactionReportSuccessState(data,
               0, 0, 0,0));

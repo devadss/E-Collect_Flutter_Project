@@ -4,7 +4,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/utils.dart';
 import '../../data/storage/shared_pref_helper.dart';
 import '../auth/authetication_page/google_pin_code_page.dart';
@@ -18,11 +17,11 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  bool loginStatus = false;
+  bool loggedInUser = false;
   String fcmToken = "";
   String entityid = "";
   String subAgentid = "";
-  String token = "";
+  String ecollectTokenValue = "";
   String mobnum = "";
   String subAgentmobnum = "";
   String mpin = "";
@@ -50,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void _navigateAfterAnimations(Widget page) {
     if (_animationsCompleted) {
-      Future.delayed(const Duration(milliseconds: 500), () {
+      Future.delayed(const Duration(milliseconds: 200), () {
         if (mounted) {
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => page));
         }
@@ -64,7 +63,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await messaging.requestPermission();
 
     var fcmToken = await messaging.getToken();
-    SharedPref.shared.setFcmToken(fcmToken.toString());
+   // SharedPref.shared.setFcmToken(fcmToken.toString());
     print("FCM Token: $fcmToken");
 
   }
@@ -86,11 +85,12 @@ class _SplashScreenState extends State<SplashScreen> {
     fcmToken = results[1] as String;
     entityid = results[2] as String;
     subAgentid = results[3] as String;
-    token = results[4] as String;
+    ecollectTokenValue = results[4] as String;
     mobnum = results[5] as String;
     subAgentmobnum = results[6] as String;
     mpin = results[7] as String;
-    var fcmtok = results[8] as String;
+    var fcmtok = fcmToken;
+    print("fcmtok : $fcmToken");
 
     if(fcmtok.isEmpty){
       getDeviceToken();
@@ -102,13 +102,11 @@ class _SplashScreenState extends State<SplashScreen> {
     if (!mounted) return;
 
     setState(() {
-      loginStatus = lgStatus;
+      loggedInUser = lgStatus;
     });
 
-    if (loginStatus) {
-      context
-          .read<AuthenticationBloc>()
-          .add(TokenVerificationEvent(token));
+    if (loggedInUser) {
+      validateECollectToken();
     } else {
       Navigator.pushReplacement(
         context,
@@ -118,44 +116,13 @@ class _SplashScreenState extends State<SplashScreen> {
       );
     }
   }
-/*  void getSharedData() async {
-    bool lgStatus = await SharedPref.shared.getECollectLoginStatus();
-    fcmToken = await SharedPref.shared.getFcmToken();
-    entityid = await SharedPref.shared.getAgentId();
-    subAgentid = await SharedPref.shared.getSubAgentId();
-    token = await SharedPref.shared.getECollectUserToken();
-    mobnum = await SharedPref.shared.getParentAgentMobNum();
-    subAgentmobnum = await SharedPref.shared.getSubAgentMobNum();
-    mpin = await SharedPref.shared.getMpinValue();
-   // String username = await SharedPref.shared.getParentAgentName();
-   // String password = await SharedPref.shared.getParentAgentPassword();
-    isRunningLiveBaseUrl(true, subAgentmobnum);
-    isRunningLiveDopBaseUrl(true, subAgentmobnum);
-    setState(() {
-      loginStatus = lgStatus;
-    });
-    if (printStatementStatus == true) {
-      // print("Login status = $loginStatus");
-      // print("token  = $token");
-    }
 
-    if (loginStatus == true) {
-      if(!mounted) return;
-      context.read<AuthenticationBloc>().add(TokenVerificationEvent(token));
-      // validateToken(
-      //     token, username, password, mobnum.replaceAll("+91", ""), "Mob");
-    } else {
-      Future.delayed(const Duration(milliseconds: 100), () {
-        // Do something
-        if (mounted) {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const MobileNumberVerificationPage()));
-        }
-      });
-    }
-  }*/
+
+  void validateECollectToken(){
+    context.read<AuthenticationBloc>().add(TokenVerificationEvent(ecollectTokenValue));
+  }
+
+
 
   void _onAnimationsComplete() {
     if (!_animationsCompleted) {
@@ -164,7 +131,7 @@ class _SplashScreenState extends State<SplashScreen> {
       });
 
       // Trigger navigation based on login status
-      if (loginStatus) {
+      if (loggedInUser) {
         if (fcmToken.isNotEmpty) {
           if (printStatementStatus) {
             print("Gpin page from _onAnimationsComplete");
@@ -260,11 +227,10 @@ class _SplashScreenState extends State<SplashScreen> {
                     _TypingText(
                       //text: "Collection QR",
                       text: "SMART PAYMENT SOLUTION",
-                      style: GoogleFonts.poppins(
-                        // fontSize: 32,
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
+                      style: TextStyle(
+    fontSize: 25,
+    fontWeight: FontWeight.bold,
+    color: Colors.grey,
                       ),
                       onComplete: _onAnimationsComplete,
                     ),
@@ -358,8 +324,7 @@ class _FloatingParticle extends StatefulWidget {
   __FloatingParticleState createState() => __FloatingParticleState();
 }
 
-class __FloatingParticleState extends State<_FloatingParticle>
-    with SingleTickerProviderStateMixin {
+class __FloatingParticleState extends State<_FloatingParticle> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -385,7 +350,7 @@ class __FloatingParticleState extends State<_FloatingParticle>
       });
 
     Future.delayed(
-      Duration(milliseconds: (widget.delay * 1000).round()),
+      Duration(milliseconds: (widget.delay * 500).round()),
       () {
         if (mounted) _controller.forward();
       },
@@ -520,7 +485,7 @@ class __FadeInTextState extends State<_FadeInText>
         }
       });
 
-    Future.delayed(const Duration(milliseconds: 800), () {
+    Future.delayed(const Duration(milliseconds: 200), () {
       if (mounted) _controller.forward();
     });
   }
@@ -542,139 +507,4 @@ class __FadeInTextState extends State<_FadeInText>
     );
   }
 }
-// Animated QR Code SVG
-// Hero(
-//   tag: 'splash-logo',
-//   child: SizedBox(
-//     width: MediaQuery.of(context).size.width * 0.7,
-//     child: SvgPicture.asset(
-//       //"assets/svg/QR Code-bro.svg",
-//       "assets/images/ecollect.jpg",
-//       fit: BoxFit.contain,
-//     ),
-//   ),
-// ),
-/*  Future<void> validateToken(
-    String token,
-    String userName,
-    String password,
-    String mobNum,
-    String type,
-  ) async
-  {
-    final provider = Provider.of<TokenExpiryProvider>(context, listen: false);
-    final tokenValidateResponse = await provider.validateToken(token);
-
-    tokenValidateResponse.fold(
-      (error) {
-        if (printStatementStatus) {
-          print("Token Validation Error: $error");
-        }
-
-        showInSnackBar(error, "RED");
-      },
-      (data) async {
-        if (printStatementStatus) {
-          print("Token Validation ${data.isExpired}");
-        }
-
-        if (data.isExpired == false) {
-          if (loginStatus == true) {
-            if (fcmToken.isNotEmpty) {
-              Future.delayed(const Duration(milliseconds: 100), () {
-                if (mounted) {
-                  if (printStatementStatus) {
-                    print(
-                        "Gpin page from validateToken data.isExpired == false");
-                  }
-
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const GooglePinCodePage()));
-                }
-              });
-            } else {
-              if (mounted) {
-                saveFcmToken(
-                    subAgentid, context, "GPIN", token, subAgentmobnum, mpin);
-              }
-            }
-          } else {
-            Future.delayed(const Duration(milliseconds: 100), () {
-              // Do something
-              if (mounted) {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            const MobileNumberVerificationPage()));
-              }
-            });
-          }
-        } else {
-          final tokenRequest =
-              Provider.of<TokenRequestProvider>(context, listen: false);
-          final requestNewTokenResponse =
-              await tokenRequest.requestToken(userName, password, mobNum, type);
-
-          requestNewTokenResponse.fold(
-            (error) {
-              if (printStatementStatus) {
-                print("Error: $error");
-              }
-
-              if (mounted) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const MobileNumberVerificationPage(),
-                  ),
-                );
-              }
-            },
-            (data) {
-              if (printStatementStatus) {
-                print("Token Response : $data");
-              }
-
-              SharedPref.shared.setTokenValue(data);
-              if (loginStatus == true) {
-                if (fcmToken.isNotEmpty) {
-                  Future.delayed(const Duration(milliseconds: 100), () {
-                    if (mounted) {
-                      if (printStatementStatus) {
-                        print(
-                            "Gpin page from validateToken data.isExpired == true");
-                      }
-
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const GooglePinCodePage()));
-                    }
-                  });
-                } else {
-                  if (mounted) {
-                    saveFcmToken(subAgentid, context, "GPIN", token,
-                        subAgentmobnum, mpin);
-                  }
-                }
-              } else {
-                Future.delayed(const Duration(milliseconds: 100), () {
-                  if (mounted) {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                const MobileNumberVerificationPage()));
-                  }
-                });
-              }
-            },
-          );
-        }
-      },
-    );
-  }*/
 

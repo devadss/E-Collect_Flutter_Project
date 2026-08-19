@@ -25,6 +25,7 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
   String? _rdDetailUrl;
   String? _agentId;
   String? _branchId;
+  String? eCollectUserToken = "";
   bool? showShadowLoan = false;
   bool? showShadowAcc = true;
   final TextEditingController searchController = TextEditingController();
@@ -54,36 +55,39 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
       SharedPref.shared.getECollectExternalBranchCode(),
       SharedPref.shared.getExternalAgentID(),
       SharedPref.shared.getECollectUrlList(),
+      SharedPref.shared.getECollectUserToken(),
     ]);
-    final branchId = result[0]; //01
-    final agentID = result[1]; //1021
+    final branchId = result[0] as String; //01
+    final agentID = result[1] as String; //1021
     final loanListingUrl = result[2] as List<String>; //1021
-
+    eCollectUserToken = result[3] as String; //1021
+    for(var x in loanListingUrl){
+      if(x.contains("getRDCustomerunderAgentList")){
+        setState(() {
+          _rdListingUrl = x;
+        });
+        print((x));
+      }
+    }
+    for(var x in loanListingUrl){
+      if(x.contains("")){
+        setState(() {
+          _rdDetailUrl = x;
+        });
+        print((x));
+      }
+    }
     setState(() {
-      for(var x in loanListingUrl){
-        if(x.contains("getRDCustomerunderAgentList")){
-          setState(() {
-            _rdListingUrl = x;
-          });
-          print((x));
-        }
-      }
-      for(var x in loanListingUrl){
-        if(x.contains("")){
-          setState(() {
-            _rdDetailUrl = x;
-          });
-          print((x));
-        }
-      }
+
       print("RD LIST URL : $_rdListingUrl");
       print("RD detail URL : $_rdDetailUrl");
       print("agentID : $agentID");
       print("branchId : $branchId");
      // _rdListingUrl = "https://mftctest.digicob.in/getRDCustomerunderAgentLis";
       _rdDetailUrl = "";
-      _branchId = "01";
-      _agentId = "1005";
+      _branchId = branchId;
+
+      _agentId = agentID;
     });
     try {
 
@@ -98,7 +102,7 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
         listen: false,
       );
 
-      await provider.getAgentCustomerDetails(_rdListingUrl!,_agentId!);
+      await provider.getAgentCustomerDetails(_rdListingUrl!,_agentId!, _branchId!);
 
       if (!mounted) return;
 
@@ -532,50 +536,6 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            // SizedBox(height: 8),
-            // Container(
-            //   padding: const EdgeInsets.all(6),
-            //   decoration: BoxDecoration(
-            //     color: Colors.grey.shade200.withValues(alpha:0.6),
-            //     borderRadius: BorderRadius.circular(40),
-            //   ),
-            //   child: SegmentedTabControl(
-            //     indicatorPadding: const EdgeInsets.all(4),
-            //     indicatorDecoration: BoxDecoration(
-            //       gradient: LinearGradient(
-            //         colors: [home1, home1.withValues(alpha:0.85)],
-            //       ),
-            //       borderRadius: BorderRadius.circular(30),
-            //       boxShadow: [
-            //         BoxShadow(
-            //           color: home1.withValues(alpha:0.9),
-            //           blurRadius: 10,
-            //           offset: const Offset(0, 2),
-            //         ),
-            //       ],
-            //     ),
-            //     barDecoration: BoxDecoration(
-            //       color: Colors.transparent,
-            //       borderRadius: BorderRadius.circular(40),
-            //     ),
-            //     // tabs: [
-            //     //   SegmentTab(
-            //     //     label: "RD",
-            //     //     color: Colors.transparent,
-            //     //     backgroundColor: Colors.transparent,
-            //     //     textColor: Colors.grey.shade600,
-            //     //     selectedTextColor: Colors.white,
-            //     //   ),
-            //     //   SegmentTab(
-            //     //     label: "LOANS",
-            //     //     color: Colors.transparent,
-            //     //     backgroundColor: Colors.transparent,
-            //     //     textColor: Colors.grey.shade600,
-            //     //     selectedTextColor: Colors.white,
-            //     //   ),
-            //     // ],
-            //   ),
-            // )
 
           ],
         ),

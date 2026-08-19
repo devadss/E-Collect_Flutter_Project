@@ -40,6 +40,7 @@ class ECollectHomepageState extends State<ECollectHomepage> {
   String merchantID = "";
   String selectedValue = "Today";
   String name = "Today";
+  String eCollectToken = "";
   final List<String> filterItems = [
     "Today",
     "This Week",
@@ -47,19 +48,24 @@ class ECollectHomepageState extends State<ECollectHomepage> {
     "Last Month"
   ];
 
-  Future<void> refresh() async => context.read<PaymentTransactionBloc>().add(GetTransactionByMerchant(merchantID));
 
   Future<void> getSharedData() async {
     final result =  await Future.wait([
     SharedPref.shared.getECollectMerchantID(),
     SharedPref.shared.getECollectMerchantName(),
+      SharedPref.shared.getECollectUserToken(),
     ]);
     merchantID = result[0];
     name = result[1];
+    eCollectToken = result[2];
 
     if (!mounted) return;
+    getTransactionReport();
 
-    context.read<PaymentTransactionBloc>().add(GetTransactionByMerchant(merchantID));
+  }
+
+  void getTransactionReport(){
+    context.read<PaymentTransactionBloc>().add(GetTransactionByMerchant(merchantID, eCollectToken));
   }
 
   @override
@@ -480,11 +486,7 @@ final List<String> bannerImages = [
     final formattedName = (name != null && name.isNotEmpty)
         ? name[0].toUpperCase() + name.substring(1)
         : "";
-    // SAFE COLOR
-    // final headerColor = bannerImagesColorPallet.isNotEmpty &&
-    //     index < bannerImagesColorPallet.length
-    //     ? bannerImagesColorPallet[index]
-    //     : Colors.white; // fallback color
+
     final headerColor =Colors.white;
     return AnimatedContainer(
       duration: 500.ms,

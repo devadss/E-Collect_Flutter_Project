@@ -5,11 +5,9 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/utils.dart';
 
 class PtpBucketUi extends StatefulWidget {
-
   const PtpBucketUi({super.key});
   @override
   State<PtpBucketUi> createState() => _PtpBucketUiState();
-
 }
 
 class _PtpBucketUiState extends State<PtpBucketUi> {
@@ -21,13 +19,13 @@ class _PtpBucketUiState extends State<PtpBucketUi> {
     "Broken PTP": ["102", Colors.cyan],
     "Kept PTP": ["2", Colors.green],
   };
-final Map<String , dynamic> bfc = {
-  "All":Colors.white,
-  "B1(1-30 DPD)":Colors.orange,
-  "B2(31-60 DPD)":Colors.amber,
-  "B3(61-90 DPD)":Colors.red.shade300,
-  "B4(91+ DPD)":Colors.red,
-};
+  final Map<String, dynamic> bfc = {
+    "All": Colors.white,
+    "B1(1-30 DPD)": Colors.orange,
+    "B2(31-60 DPD)": Colors.amber,
+    "B3(61-90 DPD)": Colors.red.shade300,
+    "B4(91+ DPD)": Colors.red,
+  };
 
   int? selectedIndex;
   int? selectedCodeIndex;
@@ -50,15 +48,13 @@ final Map<String , dynamic> bfc = {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xffF4F7FC),
-      appBar:ptp_bucket_appbar("LOAN-BUCKET"),
-
+      appBar: ptp_bucket_appbar("LOAN-BUCKET"),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               /// HEADER CARDS
               SizedBox(
                 width: double.infinity,
@@ -76,7 +72,7 @@ final Map<String , dynamic> bfc = {
                 ),
               ),
 
-              const SizedBox(height: 10 ),
+              const SizedBox(height: 10),
               const Divider(),
               const Padding(
                 padding: EdgeInsets.only(left: 4),
@@ -100,9 +96,7 @@ final Map<String , dynamic> bfc = {
                   scrollDirection: Axis.horizontal,
                   itemCount: bfc.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return bucketWidgetCodes(
-                      index,bfc
-                    );
+                    return bucketWidgetCodes(index, bfc);
                   },
                 ),
               ),
@@ -147,20 +141,17 @@ final Map<String , dynamic> bfc = {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha:.04),
+                    color: Colors.black.withValues(alpha: .04),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   )
                 ],
               ),
-
               child: Column(
                 children: [
-
                   /// TOP SECTION
                   Row(
                     children: [
-
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
@@ -173,15 +164,11 @@ final Map<String , dynamic> bfc = {
                           size: 24,
                         ),
                       ),
-
                       const SizedBox(width: 14),
-
                       Expanded(
                         child: Column(
-                          crossAxisAlignment:
-                          CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: const [
-
                             Text(
                               "Ravi Kumar",
                               style: TextStyle(
@@ -190,9 +177,7 @@ final Map<String , dynamic> bfc = {
                                 fontSize: 17,
                               ),
                             ),
-
-                             SizedBox(height: 4),
-
+                            SizedBox(height: 4),
                             Text(
                               "PTP : 19-01-2026",
                               style: TextStyle(
@@ -200,22 +185,19 @@ final Map<String , dynamic> bfc = {
                                 fontSize: 13,
                               ),
                             ),
-
                           ],
                         ),
                       ),
-
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 14,
                           vertical: 8,
                         ),
                         decoration: BoxDecoration(
-                          borderRadius:
-                          BorderRadius.circular(30),
+                          borderRadius: BorderRadius.circular(30),
                           color: Colors.orange.shade100,
                         ),
-                        child:  Text(
+                        child: Text(
                           bfc.keys.elementAt(index),
                           style: TextStyle(
                             color: Colors.deepOrange,
@@ -233,26 +215,19 @@ final Map<String , dynamic> bfc = {
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      borderRadius:
-                      BorderRadius.circular(18),
+                      borderRadius: BorderRadius.circular(18),
                       color: Colors.orange.shade50,
                     ),
-
                     child: Row(
-                      mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-
                         Row(
                           children: [
-
                             Container(
-                              padding:
-                              const EdgeInsets.all(8),
+                              padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                 color: Colors.red.shade100,
-                                borderRadius:
-                                BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(12),
                               ),
                               child: Icon(
                                 Icons.currency_rupee,
@@ -260,9 +235,7 @@ final Map<String , dynamic> bfc = {
                                 size: 20,
                               ),
                             ),
-
                             const SizedBox(width: 10),
-
                             const Text(
                               "Due Amount",
                               style: TextStyle(
@@ -272,7 +245,6 @@ final Map<String , dynamic> bfc = {
                             ),
                           ],
                         ),
-
                         const Text(
                           "₹ 2,450",
                           style: TextStyle(
@@ -290,42 +262,32 @@ final Map<String , dynamic> bfc = {
                   /// BUTTONS
                   Row(
                     children: [
-
                       Expanded(
                         child: ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
                             backgroundColor: home1,
                             foregroundColor: Colors.white,
-                            padding:
-                            const EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                               vertical: 14,
                             ),
-                            shape:
-                            RoundedRectangleBorder(
-                              borderRadius:
-                              BorderRadius.circular(16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
                             ),
                           ),
-
                           onPressed: () {
-                            _makePhoneCall(
-                                'tel:9090998987');
+                            _makePhoneCall('tel:9090998987');
                           },
-
                           icon: const Icon(Icons.call),
                           label: const Text(
                             "Call",
                             style: TextStyle(
-                              fontWeight:
-                              FontWeight.w600,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
                       ),
-
                       const SizedBox(width: 12),
-
                       Expanded(
                         child: OutlinedButton.icon(
                           style: OutlinedButton.styleFrom(
@@ -333,37 +295,28 @@ final Map<String , dynamic> bfc = {
                             side: BorderSide(
                               color: home1,
                             ),
-                            padding:
-                            const EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                               vertical: 14,
                             ),
-                            shape:
-                            RoundedRectangleBorder(
-                              borderRadius:
-                              BorderRadius.circular(16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
                             ),
                           ),
-
                           onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder:
-                                    (BuildContext context) =>
-                                    PtpPage(),
+                                builder: (BuildContext context) => PtpPage(),
                               ),
                             );
                           },
-
                           icon: const Icon(
                             Icons.calendar_month,
                           ),
-
                           label: const Text(
                             "PTP",
                             style: TextStyle(
-                              fontWeight:
-                              FontWeight.w600,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
@@ -379,52 +332,45 @@ final Map<String , dynamic> bfc = {
     );
   }
 
-  GestureDetector bucketWidgetCodes(
-
-      int indexes,
-      Map<String , dynamic> bfc
-      ) {
+  GestureDetector bucketWidgetCodes(int indexes, Map<String, dynamic> bfc) {
     return GestureDetector(
       onTap: () {
         setState(() {
           selectedCodeIndex = indexes;
         });
       },
-
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
-
         padding: const EdgeInsets.symmetric(
           horizontal: 22,
           vertical: 10,
         ),
-
         margin: const EdgeInsets.only(right: 12),
-
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
-
           color: selectedCodeIndex == indexes
               ? home2
               : bfc.values.elementAt(indexes),
-
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha:.04),
+              color: Colors.black.withValues(alpha: .04),
               blurRadius: 8,
               offset: const Offset(0, 3),
             )
           ],
         ),
-
         child: Center(
           child: Text(
             bfc.keys.elementAt(indexes),
             style: TextStyle(
               color: selectedCodeIndex == indexes
                   ? Colors.white
-                  : bfc.keys.elementAt(indexes) =="All"?Colors.black:Colors.white,
-              fontWeight: selectedCodeIndex == indexes ?FontWeight.w800:FontWeight.w700,
+                  : bfc.keys.elementAt(indexes) == "All"
+                      ? Colors.black
+                      : Colors.white,
+              fontWeight: selectedCodeIndex == indexes
+                  ? FontWeight.w800
+                  : FontWeight.w700,
             ),
           ),
         ),
@@ -433,48 +379,37 @@ final Map<String , dynamic> bfc = {
   }
 
   Padding headerWidget(
-      String headOne,
-      String headTwo,
-      Color color,
-      ) {
+    String headOne,
+    String headTwo,
+    Color color,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(right: 14),
-
       child: Container(
         width: MediaQuery.of(context).size.width * 0.38,
-
         padding: const EdgeInsets.all(18),
-
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
-
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              color.withValues(alpha:.75),
+              color.withValues(alpha: .75),
               color,
             ],
           ),
-
           boxShadow: [
             BoxShadow(
-              color: color.withValues(alpha:.25),
+              color: color.withValues(alpha: .25),
               blurRadius: 12,
               offset: const Offset(0, 5),
             )
           ],
         ),
-
         child: Column(
-          crossAxisAlignment:
-          CrossAxisAlignment.start,
-
-          mainAxisAlignment:
-          MainAxisAlignment.spaceBetween,
-
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-
             Text(
               headOne,
               style: const TextStyle(
@@ -483,7 +418,6 @@ final Map<String , dynamic> bfc = {
                 fontWeight: FontWeight.w500,
               ),
             ),
-
             Text(
               headTwo,
               style: const TextStyle(
@@ -498,4 +432,3 @@ final Map<String , dynamic> bfc = {
     );
   }
 }
-

@@ -43,6 +43,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
   String? customerNumber;
   String? customerAccountNumber;
   String? subAgentCodeNew;
+  String? eCollectUserToken;
   String? corpCode;
   String? token;
   String? paymentSessionId;
@@ -64,7 +65,11 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
     loadSharedPrefs();
     super.initState();
   }
-
+  @override
+  void dispose() {
+    amountController.dispose();
+    super.dispose();
+  }
   Future<void> _showBottomBar(BuildContext context) async {
     return showModalBottomSheet(
       context: context,
@@ -280,24 +285,23 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                 icon: Icons.qr_code,
                 label: "Pay via QR Code",
                 onPressed: () async {
-                  setState(() {
+                 // setState(() {
                     selectedMethod = "QR";
-                  });
+                 // });
                   context.read<PaymentBloc>().add(QrPaymentEvent(
                       QrPaymentRequestModel(
                           agentDetails: AgentDetails(
                               agentName: eCollectMerchantName!,
                               agentId: eCollectAgentId!,
-                             // agentOrginId: eCollectExternalAgentId!,
-                              agentOrginId: "1079",
+                              agentOrginId: eCollectExternalAgentId!,
+
                               agentPhone: eCollectAgentNumber!,
                               agentEmail: eCollectAgentEmail!,
                               agentBranch: int.parse(eCollectAgentBranchCode!)),
                           customerDetails: CustomerDetails(
                               customerName: widget.custName,
                               customerPhone: eCollectAgentNumber!,
-                             // customerAccno: widget.accNo,
-                              customerAccno: "01042721",
+                             customerAccno: widget.accNo,
                               customerId: widget.custId,
                               customerEmail: eCollectAgentEmail!),
                           collectionType: eCollectCollectionType!,
@@ -306,8 +310,9 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                           qrSource: 'MOB',
                           source: 'COLLECTION',
                           merchantId: int.parse(eCollectAgentMerchantID!)
-                          // merchantId: 1
-                          )));
+                          ), eCollectUserToken!
+
+                  ));
                 },
               ),
               const SizedBox(height: 12),
@@ -317,9 +322,9 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                 label: "Send Payment Link",
                 onPressed: () {
                   Navigator.pop(context);
-                  setState(() {
+                 // setState(() {
                     selectedMethod = "Link";
-                  });
+                 // });
                   context.read<PaymentBloc>().add(LinkPaymentEvent(
                       QrPaymentRequestModel(
                           agentDetails: AgentDetails(
@@ -342,7 +347,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                           source: 'COLLECTION',
                           merchantId: int.parse(eCollectAgentMerchantID!))
                       //  merchantId: 1)
-                      ));
+                      ,eCollectUserToken!));
                 },
               ),
               const SizedBox(height: 12),
@@ -463,9 +468,10 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          setState(() {
+                        //  setState(() {
                             selectedMethod = "Cash";
-                          });
+                         // });
+                          Navigator.pop(context);
                           Navigator.pop(context);
                           context.read<PaymentBloc>().add(CashPaymentEvent(
                               QrPaymentRequestModel(
@@ -491,7 +497,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                                   merchantId:
                                       int.parse(eCollectAgentMerchantID!))
                               // merchantId: 1)
-                              ));
+                              ,eCollectUserToken!));
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.redAccent,
@@ -568,6 +574,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
       SharedPref.shared.getECollectUserEmail(),
       SharedPref.shared.getECollectMerchantBranchCode(),
       SharedPref.shared.getECollectMerchantID(),
+      SharedPref.shared.getECollectUserToken(),
     ]);
 
         cid = result[9];
@@ -588,7 +595,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
         corpCode = result[4];
         token = result[5];
         subAgentCodeNew = result[6];
-
+eCollectUserToken = result[7];
   }
 
   @override
@@ -891,6 +898,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                 );
               } else if (state is QrPaymentFailState) {
                 Navigator.pop(context);
+
                 showAlertDialog(
                     state.qrPaymentFail.paymentFailResponse.message, context);
                 print(state.qrPaymentFail.paymentFailResponse.message);

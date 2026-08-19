@@ -52,6 +52,8 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
 
     print(subAgentContactNum);
     if(fcmToken.isEmpty){
+      print("Saving fcm");
+      if(!mounted) return;
       await saveFcmToken(custID, context, "GPIN", fcmToken, contactNum, "");
 
     }

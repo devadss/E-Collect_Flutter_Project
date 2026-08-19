@@ -10,7 +10,6 @@ import '../../core/alerts.dart';
 import '../../core/utils.dart' as utl;
 import '../../data/e_collect_bloc/payment_bloc/payment_bloc.dart';
 import '../../data/provider/loan_cash_coolection_provider.dart';
-import '../../data/repository/payment_session_id_repository.dart';
 import '../../data/storage/shared_pref_helper.dart';
 import '../../domain/model/e_collect/payment/qr_request_model/qr_request_model.dart';
 import '../paymentlink_request_ui.dart';
@@ -77,6 +76,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
   String? subAgentCodeNew;
   String? cid;
   String? subagentId;
+  String? eCollectToken;
   String? agentName;
   String? agentOriginId;
   String? paymentSessionId;
@@ -141,6 +141,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
       SharedPref.shared.getECollectMerchantBranchCode(),
       SharedPref.shared.getECollectMerchantID(),
       SharedPref.shared.getECollectUserType(),
+      SharedPref.shared.getECollectUserToken(),
     ]);
 
       cid = result[2];
@@ -165,13 +166,14 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
       agentEmail = result[5];
       agentMobile = result[10];
       subagentId = result[8];
+    eCollectToken = result[9];
 
     editAmountController.addListener(validateInput);
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
         title: Text(
           textAlign: TextAlign.center,
@@ -191,52 +193,56 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
             const SizedBox(height: 24),
 
             // Modern Card Container for Amount Sections
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha:0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  _buildModernAmountSection(
-                    title: "Principal Amount",
-                    received: widget.principalAmountReceived,
-                    balance: widget.principalAmountBalance,
-                    overdue: widget.principalAmountOverdue,
-                    current: widget.principalAmountReceipt,
-                    icon: Icons.account_balance_wallet,
-                    color: const Color(0xFF4361EE),
-                  ),
-                  Divider(height: 1, color: Colors.grey.shade100),
-                  _buildModernAmountSection(
-                    title: "Interest",
-                    received: widget.interestAmountReceived,
-                    balance: widget.interestAmountBalance,
-                    overdue: widget.interestAmountOverdue,
-                    current: widget.interestAmountReceipt,
-                    icon: Icons.trending_up,
-                    color: const Color(0xFFE76F51),
-                  ),
-                  Divider(height: 1, color: Colors.grey.shade100),
-                  _buildModernAmountSection(
-                    title: "Penal Interest",
-                    received: widget.penalInterestAmountReceived,
-                    balance: widget.penalInterestAmountBalance,
-                    overdue: widget.penalInterestAmountOverdue,
-                    current: widget.penalInterestAmountReceipt,
-                    icon: Icons.warning_amber_rounded,
-                    color: const Color(0xFFE63946),
-                  ),
-                ],
-              ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
+            child: Column(
+              children: [
+                _buildModernAmountSection(
+                  title: "Principal Amount",
+                  received: widget.principalAmountReceived.toString(),
+                  balance: widget.principalAmountBalance.toString(),
+                  overdue: widget.principalAmountOverdue.toString(),
+                  current: widget.principalAmountReceipt.toString(),
+                  icon: Icons.account_balance_wallet_rounded,
+                  color: const Color(0xFF4361EE),
+                ),
+
+                _buildSectionDivider(),
+
+                _buildModernAmountSection(
+                  title: "Interest",
+                  received: widget.interestAmountReceived.toString(),
+                  balance: widget.interestAmountBalance.toString(),
+                  overdue: widget.interestAmountOverdue.toString(),
+                  current: widget.interestAmountReceipt.toString(),
+                  icon: Icons.trending_up_rounded,
+                  color: const Color(0xFFE76F51),
+                ),
+
+                _buildSectionDivider(),
+
+                _buildModernAmountSection(
+                  title: "Penal Interest",
+                  received: widget.penalInterestAmountReceived.toString(),
+                  balance: widget.penalInterestAmountBalance.toString(),
+                  overdue: widget.penalInterestAmountOverdue.toString(),
+                  current: widget.penalInterestAmountReceipt.toString(),
+                  icon: Icons.warning_amber_rounded,
+                  color: const Color(0xFFE63946),
+                ),
+              ],
+            ),
+          ),
 
             const SizedBox(height: 24),
 
@@ -345,7 +351,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                                             note: 'Payment for Order',
                                             qrSource: 'MOB',
                                             source: 'COLLECTION',
-                                            merchantId: int.parse(eCollectAgentMerchantID!))));
+                                            merchantId: int.parse(eCollectAgentMerchantID!)), eCollectToken!));
                                            // merchantId: 1)
                                        // ));
                                       },
@@ -479,7 +485,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                                             note: 'Payment for Order',
                                             qrSource: 'MOB',
                                             source: 'COLLECTION',
-                                            merchantId: int.parse(eCollectAgentMerchantID!))));
+                                            merchantId: int.parse(eCollectAgentMerchantID!)), eCollectToken!));
                                             //merchantId:1)));
                                       },
                                       style: ElevatedButton.styleFrom(
@@ -694,14 +700,176 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
     );
   }
 
+
+  Widget _buildSectionDivider() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Divider(
+        height: 1,
+        thickness: 1,
+        color: Colors.grey.shade100,
+      ),
+    );
+  }
+
+  Widget _buildModernAmountSection({
+    required String title,
+    required String received,
+    required String balance,
+    required String overdue,
+    required String current,
+    required IconData icon,
+    required Color color,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          // Header
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(9),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(11),
+                ),
+                child: Icon(
+                  icon,
+                  size: 19,
+                  color: color,
+                ),
+              ),
+
+              const SizedBox(width: 10),
+
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 14),
+
+          // 2 x 2 Grid
+          Row(
+            children: [
+              Expanded(
+                child: _buildAmountItem(
+                  label: "Received",
+                  value: received,
+                ),
+              ),
+
+              const SizedBox(width: 10),
+
+              Expanded(
+                child: _buildAmountItem(
+                  label: "Balance",
+                  value: balance,
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 10),
+
+          Row(
+            children: [
+              Expanded(
+                child: _buildAmountItem(
+                  label: "Overdue",
+                  value: overdue,
+                  isOverdue: true,
+                ),
+              ),
+
+              const SizedBox(width: 10),
+
+              Expanded(
+                child: _buildAmountItem(
+                  label: "Current Receipt",
+                  value: current,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAmountItem({
+    required String label,
+    required String value,
+    bool isOverdue = false,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 10,
+      ),
+      decoration: BoxDecoration(
+        color: isOverdue
+            ? const Color(0xFFE63946).withValues(alpha: 0.05)
+            : Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isOverdue
+              ? const Color(0xFFE63946).withValues(alpha: 0.12)
+              : Colors.grey.shade100,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+              color: isOverdue
+                  ? const Color(0xFFE63946)
+                  : Colors.grey.shade600,
+            ),
+          ),
+
+          const SizedBox(height: 4),
+
+          Text(
+            value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: isOverdue
+                  ? const Color(0xFFE63946)
+                  : Colors.black87,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
   BoxDecoration _modernCardDecoration() {
     return BoxDecoration(
-      color: dominantColor?.withAlpha(150),
+     // color: dominantColor?.withAlpha(150),
+      color: Colors.white,
       borderRadius: BorderRadius.circular(20),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withValues(alpha:0.04),
-          blurRadius: 10,
+          color: Colors.black12,
+          blurRadius: 3,
           offset: const Offset(0, 2),
         ),
         BoxShadow(
@@ -781,13 +949,14 @@ if(utl.printStatementStatus){
             imageProvider: AssetImage("assets/images/cq1.webp"),
             child: Container(
               decoration: BoxDecoration(
-                color: dominantColor,
+              //  color: dominantColor,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(100),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black12,
                     blurRadius: 3,
-                    offset: const Offset(0, 2),
+                    offset: const Offset(0, 1),
                   ),
                 ],
               ),
@@ -809,23 +978,22 @@ if(utl.printStatementStatus){
                 Row(
                   children: [
                     Expanded(
-                      child: FittedBox(
-                        child: Text(
-                        
-                          widget.name,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF1E293B),
-                            letterSpacing: -0.3,
-                          ),
-                          maxLines: 1,
+                      child: Text(
+
+                       widget.name,
+                        style: const TextStyle(
                           overflow: TextOverflow.ellipsis,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1E293B),
+                          letterSpacing: -0.3,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     SizedBox(width: 10,),
-                    Container(
+                   /* Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: const Color(0xFF10B981).withValues(alpha:0.1),
@@ -850,7 +1018,7 @@ if(utl.printStatementStatus){
                           ),
                         ],
                       ),
-                    ),
+                    ),*/
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -929,65 +1097,123 @@ if(utl.printStatementStatus){
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Loan Details",
-              style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: home2)),
+          Text(
+            "Loan Details",
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              color: home2,
+            ),
+          ),
 
           const SizedBox(height: 12),
 
-          _buildDetailRow(Icons.date_range, "Loan Date", widget.loanDate),
-          _buildDetailRow(Icons.currency_rupee, "Loan Amount", widget.loanAmount),
-          _buildDetailRow(Icons.numbers, "Loan Number", widget.loanNumber),
-          _buildDetailRow(Icons.account_balance_wallet, "Loan Type", widget.loanType),
-          _buildDetailRow(Icons.schedule, "Loan Period", widget.loanPeriod),
-          _buildDetailRow(Icons.percent, "Interest", widget.loanInterest),
+          GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            childAspectRatio: 2.8,
+            children: [
+              _buildDetailItem(
+                Icons.date_range,
+                "Loan Date",
+                widget.loanDate,
+              ),
+              _buildDetailItem(
+                Icons.currency_rupee,
+                "Loan Amount",
+                widget.loanAmount,
+              ),
+              _buildDetailItem(
+                Icons.numbers,
+                "Loan Number",
+                widget.loanNumber,
+              ),
+              _buildDetailItem(
+                Icons.account_balance_wallet,
+                "Loan Type",
+                widget.loanType,
+              ),
+              _buildDetailItem(
+                Icons.schedule,
+                "Loan Period",
+                widget.loanPeriod,
+              ),
+              _buildDetailItem(
+                Icons.percent,
+                "Interest",
+                widget.loanInterest,
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
-  Widget _buildDetailRow(IconData icon, String label, String value) {
+
+  Widget _buildDetailItem(
+      IconData icon,
+      String label,
+      String value,
+      ) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 8,
+      ),
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Colors.grey.shade200,
+        ),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: const Color(0xFFEA307B).withValues(alpha:0.1),
-              borderRadius: BorderRadius.circular(10),
+              color: const Color(0xFFEA307B).withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(9),
             ),
-            child: Icon(icon, size: 18, color: const Color(0xFFEA307B)),
+            child: Icon(
+              icon,
+              size: 17,
+              color: const Color(0xFFEA307B),
+            ),
           ),
-          const SizedBox(width: 12),
+
+          const SizedBox(width: 8),
+
           Expanded(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   label,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Colors.grey.shade500,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 10,
+                    color: Colors.black54,
                     fontWeight: FontWeight.w500,
-                    letterSpacing: 0.3,
                   ),
                 ),
+
                 const SizedBox(height: 2),
+
                 Text(
                   value,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF1E293B),
-                  ),
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
                 ),
               ],
             ),
@@ -996,211 +1222,113 @@ if(utl.printStatementStatus){
       ),
     );
   }
-/*  Widget _buildDetailRow(IconData icon, String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        children: [
-          Icon(icon, size: 18, color: home1),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(label,
-                style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey.shade600)),
-          ),
-          Text(value,
-              style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600)),
-        ],
-      ),
-    );
-  }*/
-  // Widget _buildAmountSection({
+
+  // Widget _buildModernAmountSection({
   //   required String title,
-  //   required dynamic received,
-  //   required dynamic balance,
-  //   required dynamic overdue,
-  //   required dynamic current,
-  // })
-  // {
+  //   required double received,
+  //   required double balance,
+  //   required double overdue,
+  //   required double current,
+  //   required IconData icon,
+  //   required Color color,
+  // }) {
   //   return Container(
   //     padding: const EdgeInsets.all(16),
-  //     decoration: _cardDecoration(),
   //     child: Column(
   //       crossAxisAlignment: CrossAxisAlignment.start,
   //       children: [
-  //         Text(title,
-  //             style: TextStyle(
+  //         Row(
+  //           children: [
+  //             Container(
+  //               padding: const EdgeInsets.all(8),
+  //               decoration: BoxDecoration(
+  //                 color: color.withValues(alpha:0.1),
+  //                 borderRadius: BorderRadius.circular(12),
+  //               ),
+  //               child: Icon(icon, size: 20, color: color),
+  //             ),
+  //             const SizedBox(width: 12),
+  //             Text(
+  //               title,
+  //               style: const TextStyle(
+  //                 fontSize: 16,
   //                 fontWeight: FontWeight.w600,
-  //                 color: home2)),
-  //
-  //         const SizedBox(height: 12),
-  //
-  //         _buildAmountRow("Received", received, Colors.green),
-  //         _buildAmountRow("Balance", balance, Colors.blue),
-  //         _buildAmountRow("Overdue", overdue, Colors.red),
-  //         _buildAmountRow("Current", current, home1),
+  //                 color: Color(0xFF1E293B),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //         const SizedBox(height: 16),
+  //         Row(
+  //           children: [
+  //             _buildAmountChip("Received", received, const Color(0xFF10B981)),
+  //             const SizedBox(width: 8),
+  //             _buildAmountChip("Balance", balance, const Color(0xFFF59E0B)),
+  //             const SizedBox(width: 8),
+  //             _buildAmountChip("Overdue", overdue, const Color(0xFFEF4444)),
+  //           ],
+  //         ),
+  //         if (current > 0) ...[
+  //           const SizedBox(height: 12),
+  //           Container(
+  //             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+  //             decoration: BoxDecoration(
+  //               color: color.withValues(alpha:0.05),
+  //               borderRadius: BorderRadius.circular(12),
+  //               border: Border.all(color: color.withValues(alpha:0.2)),
+  //             ),
+  //             child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //               children: [
+  //                 const Text(
+  //                   "Current Receipt",
+  //                   style: TextStyle(fontSize: 13, color: Color(0xFF64748B)),
+  //                 ),
+  //                 Text(
+  //                   "₹${current.toStringAsFixed(2)}",
+  //                   style: TextStyle(
+  //                     fontSize: 14,
+  //                     fontWeight: FontWeight.bold,
+  //                     color: color,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ],
   //       ],
   //     ),
   //   );
   // }
-  // Widget _buildAmountRow(String label, dynamic value, Color color) {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(vertical: 4),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //       children: [
-  //         Text(label, style: TextStyle(color: color, fontSize: 12)),
-  //         Text(value.toString(),
-  //             style: TextStyle(
-  //                 color: color,
-  //                 fontWeight: FontWeight.w600,
-  //                 fontSize: 13)),
-  //       ],
-  //     ),
-  //   );
-  // }
-  // Widget _buildPrimaryButton(String text, {required VoidCallback onTap}) {
-  //   return SizedBox(
-  //     width: double.infinity,
-  //     child: ElevatedButton(
-  //       onPressed: onTap,
-  //       style: ElevatedButton.styleFrom(
-  //         backgroundColor: home1,
-  //         shape: RoundedRectangleBorder(
-  //           borderRadius: BorderRadius.circular(14),
-  //         ),
-  //         padding: const EdgeInsets.symmetric(vertical: 14),
-  //       ),
-  //       child: Text(text, style: const TextStyle(fontSize: 14)),
-  //     ),
-  //   );
-  // }
   //
-  // Widget _buildOutlineButton(String text, {required VoidCallback onTap}) {
-  //   return SizedBox(
-  //     width: double.infinity,
-  //     child: OutlinedButton(
-  //       onPressed: onTap,
-  //       style: OutlinedButton.styleFrom(
-  //         side: BorderSide(color: home1),
-  //         shape: RoundedRectangleBorder(
-  //           borderRadius: BorderRadius.circular(14),
-  //         ),
-  //         padding: const EdgeInsets.symmetric(vertical: 14),
+  // Widget _buildAmountChip(String label, double amount, Color color) {
+  //   return Expanded(
+  //     child: Container(
+  //       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+  //       decoration: BoxDecoration(
+  //         color: color.withValues(alpha:0.1),
+  //         borderRadius: BorderRadius.circular(12),
   //       ),
-  //       child: Text(text, style: TextStyle(color: home1)),
+  //       child: Column(
+  //         children: [
+  //           Text(
+  //             label,
+  //             style: TextStyle(fontSize: 10, color: Colors.black, fontWeight: FontWeight.w500, fontStyle: FontStyle.italic),
+  //           ),
+  //           const SizedBox(height: 4),
+  //           Text(
+  //             "₹${amount.toStringAsFixed(2)}",
+  //             style: TextStyle(
+  //               fontSize: 11,
+  //               fontWeight: FontWeight.bold,
+  //               color: color,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
   //     ),
   //   );
   // }
-  Widget _buildModernAmountSection({
-    required String title,
-    required double received,
-    required double balance,
-    required double overdue,
-    required double current,
-    required IconData icon,
-    required Color color,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha:0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(icon, size: 20, color: color),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF1E293B),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              _buildAmountChip("Received", received, const Color(0xFF10B981)),
-              const SizedBox(width: 8),
-              _buildAmountChip("Balance", balance, const Color(0xFFF59E0B)),
-              const SizedBox(width: 8),
-              _buildAmountChip("Overdue", overdue, const Color(0xFFEF4444)),
-            ],
-          ),
-          if (current > 0) ...[
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha:0.05),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: color.withValues(alpha:0.2)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Current Receipt",
-                    style: TextStyle(fontSize: 13, color: Color(0xFF64748B)),
-                  ),
-                  Text(
-                    "₹${current.toStringAsFixed(2)}",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: color,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAmountChip(String label, double amount, Color color) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha:0.1),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          children: [
-            Text(
-              label,
-              style: TextStyle(fontSize: 11, color: color, fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              "₹${amount.toStringAsFixed(2)}",
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _buildModernButton({
     required String text,
@@ -1240,8 +1368,8 @@ if(utl.printStatementStatus){
       boxShadow: const [
         BoxShadow(
           color: Colors.black12,
-          blurRadius: 10,
-          offset: Offset(0, 4),
+          blurRadius: 3,
+          offset: Offset(0, 2),
         ),
       ],
     );
@@ -1367,7 +1495,7 @@ if(utl.printStatementStatus){
                               note: 'Payment for Order',
                               qrSource: 'MOB',
                               source: 'COLLECTION',
-                               merchantId: int.parse(eCollectAgentMerchantID!))));
+                               merchantId: int.parse(eCollectAgentMerchantID!)),eCollectToken!));
 
 
                         },

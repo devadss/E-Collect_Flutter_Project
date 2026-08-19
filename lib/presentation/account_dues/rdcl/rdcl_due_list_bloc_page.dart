@@ -39,6 +39,7 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
   String? eCollectAgentId;
   String? paymentSessionId;
   String? subAgentCodeNew;
+  String? eCollectToken;
   String selectedMethod ="";
   bool _showSendIcon = false;
   String? token;
@@ -62,7 +63,11 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
       SharedPref.shared.getECollectMerchantID(),
       SharedPref.shared.getECollectUserType(),
       SharedPref.shared.getTokenValue(),
+      SharedPref.shared.getECollectUserToken(),
     ]);
+    if(!mounted) return;
+    context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", "",'1', '10'));
+
     //-------------------------------------
     eCollectMerchantName = result[0];
     eCollectAgentId = result[1];
@@ -73,21 +78,9 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
     eCollectAgentMerchantID = result[6];
     eCollectCollectionType = result[7];
     token = result[8];
+    eCollectToken = result[9];
   }
 
-
-  Future<void> refresh()async{
-    _showDrops.clear();
-    _isSelected.clear();
-    _itemSelected.clear();
-    searchController.clear();
-    setState(() {
-      _showSendIcon = false;
-      didSearch = false;
-    });
-  context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", "",'1', '10'));
-
-  }
 
   Future<void> getCashTrans(
       {required String? token,
@@ -168,8 +161,8 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
   @override
   void initState() {
     super.initState();
-    context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", "",'1', '10'));
     loadSharedPrefs();
+
   }
 
   Future<bool> paymentConfirmation(
@@ -857,7 +850,7 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
                                                                 .rdclDuesList1
                                                                 ?.data[index]
                                                                 .paidInstallments
-                                                                ?.toString() ??
+                                                                .toString() ??
                                                             "0",
                                                         style: TextStyle(
                                                           fontSize: 16,
@@ -905,7 +898,7 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
                                                                 .rdclDuesList1
                                                                 ?.data[index]
                                                                 .dueInstallments
-                                                                ?.toString() ??
+                                                                .toString() ??
                                                             "0",
                                                         style: TextStyle(
                                                           fontSize: 16,
@@ -953,7 +946,7 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
                                                                 .rdclDuesList1
                                                                 ?.data[index]
                                                                 .totalInstallment
-                                                                ?.toString() ??
+                                                                .toString() ??
                                                             "0",
                                                         style: TextStyle(
                                                           fontSize: 16,
@@ -1424,7 +1417,7 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
                                                                             note: 'Payment for Order',
                                                                             qrSource: 'MOB',
                                                                             source: 'COLLECTION',
-                                                                            merchantId: int.parse(eCollectAgentMerchantID!))));
+                                                                            merchantId: int.parse(eCollectAgentMerchantID!)),eCollectToken!));
 
                                                                       } else {
                                                                         print(
@@ -1438,7 +1431,7 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
                                                                             note: 'Payment for Order',
                                                                             qrSource: 'MOB',
                                                                             source: 'COLLECTION',
-                                                                            merchantId: int.parse(eCollectAgentMerchantID!))));
+                                                                            merchantId: int.parse(eCollectAgentMerchantID!)),eCollectToken!));
                                                                             //merchantId: 1)));
                                                                       }
                                                                     },
