@@ -10,7 +10,10 @@ import 'integrated_loan_detail.dart';
 
 //THE LOAN CUSTOMER LISTING PAGE 1 OF 2....
 class LoanList extends StatefulWidget {
-  const LoanList({super.key});
+  final String eCollectBranchId;
+  final String eCollectAgentID;
+  final List<String> eCollectLoanListingUrl;
+  const LoanList({super.key, required this.eCollectBranchId, required this.eCollectAgentID, required this.eCollectLoanListingUrl});
 
   @override
   State<LoanList> createState() => _LoanListState();
@@ -27,18 +30,8 @@ class _LoanListState extends State<LoanList> {
   String? _loanDetailUrl;
   String? _agentId;
 
-  Future<void> loadSharedPrefs(BuildContext context) async {
-    final result = await Future.wait([
-      SharedPref.shared.getSubAgentId(),
-      SharedPref.shared.getECollectExternalBranchCode(),
-      SharedPref.shared.getExternalAgentID(),
-      SharedPref.shared.getECollectUrlList(),
-    ]);
-    // final subAgentId = result[0]; //63
-    final branchId = result[1] as String; //01
-    final agentID = result[2] as String; //1021
-    final loanListingUrl = result[3] as List<String>; //1021
-    for (var x in loanListingUrl) {
+   void loadSharedPrefs(BuildContext context)  {
+    for (var x in widget.eCollectLoanListingUrl) {
       if (x.contains("getLoanCustUnderAgent")) {
         setState(() {
           _loanListingUrl = x;
@@ -46,7 +39,7 @@ class _LoanListState extends State<LoanList> {
         print((x));
       }
     }
-    for (var x in loanListingUrl) {
+    for (var x in widget.eCollectLoanListingUrl) {
       if (x.contains("getLoanAccountHolder")) {
         setState(() {
           _loanDetailUrl = x;
@@ -56,19 +49,11 @@ class _LoanListState extends State<LoanList> {
         _loanDetailUrl = "https://mftctest.digicob.in/getLoanAccountHolder";
       }
     }
-  //  setState(() {
       print("LOAN LIST URL : $_loanListingUrl");
       print("LOAN detail URL : $_loanDetailUrl");
-      print("agentID : $agentID");
-      print("branchId : $branchId");
-      _branchId = branchId;
-      _agentId = agentID;
-  //  });
-    if (printStatementStatus) {
-      print("Loan _branchId = $_branchId");
-      print("Loan _subAgentId = $_agentId");
-    }
 
+      _branchId = widget.eCollectBranchId;
+      _agentId = widget.eCollectAgentID;
     fetchIntegratedLoans();
   }
 
@@ -431,16 +416,16 @@ class _LoanListState extends State<LoanList> {
                                             /// Menu Button
                                             Container(
                                               decoration: BoxDecoration(
-                                                color: Colors.grey.shade50,
+                                                color: Colors.green.shade50,
                                                 borderRadius:
                                                     BorderRadius.circular(10),
                                               ),
                                               child: IconButton(
                                                 icon: Icon(
-                                                    Icons.more_horiz_rounded,
+                                                    Icons.verified_user,
                                                     size: 20,
                                                     color:
-                                                        Colors.grey.shade700),
+                                                        Colors.green.shade700),
                                                 onPressed: () {
                                                   // Show options menu
                                                 },

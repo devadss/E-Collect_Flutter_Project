@@ -1,4 +1,3 @@
-
 import 'package:collection_qr_flutter/presentation/merchant/pages/group_home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,16 +22,20 @@ class BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
-  int currentIndex = 0;
 
+  int currentIndex = 0;
   String integrationStatus = "";
   String branCode = "";
-
+  String eCollectBranchID = "";
+  String eCollectAgentID = "";
+  String eCollectUserToken = "";
+  String eCollectUserName = "";
+  String eCollectMerchantId = "";
+  String eCollectMerchantNumber = "";
+  String fcmToken = "";
   List<String> type = [];
-
+  List<String> eCollectUrlList = [];
   bool isLoading = true;
-
-  //final String INTEGRATED = "Y";
   final String USER_TYPE_RDCL = "RDCL";
   final String USER_TYPE_RD = "RD";
   final String USER_TYPE_LOAN = "LOAN";
@@ -48,16 +51,27 @@ class _BottomNavBarState extends State<BottomNavBar> {
   // ---------------------------------------------------------------------------
 
   Future<void> getSharedData() async {
-
-    final integrationStatus =
-    await SharedPref.shared.getECollectMerchantIntegrationStatus();
-
-    final branCode =
-    await SharedPref.shared.getECollectMerchantBranchCode();
-
-    final type =
-    await SharedPref.shared.getECollectTypeList();
-
+    final integrationStatus = await SharedPref.shared.getECollectMerchantIntegrationStatus();
+    final branCode = await SharedPref.shared.getECollectMerchantBranchCode();
+    final type =    await SharedPref.shared.getECollectTypeList();
+    final result =  await Future.wait([
+      SharedPref.shared.getECollectExternalBranchCode(),
+      SharedPref.shared.getExternalAgentID(),
+      SharedPref.shared.getECollectUrlList(),
+      SharedPref.shared.getECollectUserToken(),
+      SharedPref.shared.getECollectMerchantName(),
+      SharedPref.shared.getECollectMerchantID(),
+      SharedPref.shared.getECollectUserNumber(),
+      SharedPref.shared.getFcmToken()
+    ]);
+    eCollectBranchID  = result[0] as String; //01
+    eCollectAgentID = result[1] as String; //1021
+    eCollectUrlList = result[2] as List<String>; //1021
+    eCollectUserToken = result[3] as String; //1021
+    eCollectUserName = result[4] as String; //1021
+    eCollectMerchantId = result[5] as String; //1021
+    eCollectMerchantNumber = result[6] as String; //1021
+    fcmToken = result[7] as String; //1021
     if (!mounted) return;
 
     debugPrint("=================================");
@@ -73,22 +87,17 @@ class _BottomNavBarState extends State<BottomNavBar> {
       isLoading = false;
     });
   }
-
   // ---------------------------------------------------------------------------
   // CHECK USER TYPE
   // ---------------------------------------------------------------------------
-
   bool hasType(String userType) {
     return type.contains(userType);
   }
-
   // ---------------------------------------------------------------------------
   // DYNAMIC NAVIGATION ITEMS
   // ---------------------------------------------------------------------------
-
   List<NavItem> get navItems {
     final List<NavItem> items = [];
-
     // -------------------------------------------------------------------------
     // HOME
     //
@@ -109,11 +118,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
         NavItem(
           label: 'Home',
           icon: Icons.home,
-          page: const ECollectHomepage(),
+          page:  ECollectHomepage(eCollectUserName: eCollectUserName,
+            eCollectMerchantID: eCollectMerchantId, eCollectToken:eCollectUserToken,),
         ),
       );
     }
-
     // -------------------------------------------------------------------------
     // RD
     // -------------------------------------------------------------------------
@@ -123,7 +132,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
         NavItem(
           label: 'RD Dues',
           icon: Icons.event_repeat,
-          page: const RdDueDetailPage(),
+          page: RdDueDetailPage(
+            eCollectBranchID: eCollectBranchID, eCollectAgentID: eCollectAgentID,
+            eCollectUserToken: eCollectUserToken,
+            eCollectUrlList:  eCollectUrlList,),
         ),
       );
     }
@@ -137,7 +149,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
         NavItem(
           label: 'Loan-List',
           icon: Icons.account_balance,
-          page: const LoanList(),
+          page:  LoanList(
+            eCollectBranchId: eCollectBranchID,
+            eCollectAgentID: eCollectAgentID,
+            eCollectLoanListingUrl: eCollectUrlList),
         ),
       );
     }
@@ -204,7 +219,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
       NavItem(
         label: 'Tran-History',
         icon: Icons.list_alt,
-        page: EcollectTransactionReport(),
+        page: EcollectTransactionReport(
+          eCollectMerchantID: eCollectMerchantId,
+          eCollectMerchantName: eCollectUserName,
+          eCollectToken: eCollectUserToken,),
       ),
     );
 
@@ -216,7 +234,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
       NavItem(
         label: 'Profile',
         icon: Icons.person,
-        page: const ProfileHomePage(),
+        page:  ProfileHomePage(eCollectMerchantName: eCollectUserName,
+          eCollectMerchantNumber: eCollectMerchantNumber, eCollectMerchantID: eCollectMerchantId, eCollectFcmToken:fcmToken,),
       ),
     );
 

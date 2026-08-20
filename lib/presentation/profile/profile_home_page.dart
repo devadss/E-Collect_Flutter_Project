@@ -10,15 +10,17 @@ import '../../data/storage/shared_pref_helper.dart';
 import '../splash_screen/splash_screen.dart';
 
 class ProfileHomePage extends StatefulWidget {
-  const ProfileHomePage({super.key});
+  final String eCollectMerchantName;
+  final String eCollectMerchantID;
+  final String eCollectFcmToken;
+  final String eCollectMerchantNumber;
+  const ProfileHomePage({super.key, required this.eCollectMerchantName, required this.eCollectMerchantNumber, required this.eCollectMerchantID, required this.eCollectFcmToken});
 
   @override
   State<ProfileHomePage> createState() => _ProfileHomePageState();
 }
 
 class _ProfileHomePageState extends State<ProfileHomePage> {
-  String name = "Unknown User";
-  String mobNum = "No Number";
 
   final List<Map<String, dynamic>> profileItems = [
     {
@@ -35,25 +37,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
     },
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    loadSharedData();
-  }
 
-  Future<void> loadSharedData() async {
-    final result = await Future.wait([
-    SharedPref.shared.getECollectMerchantName(),
-        SharedPref.shared.getECollectUserNumber()
-    ]);
-
-    if (mounted) {
-      setState(() {
-        name = result[0] ?? "Unknown User";
-        mobNum = result[1] ?? "No Number";
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +134,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                           );
                         },
                         child: Text(
-                          name,
+                          widget.eCollectMerchantName,
                           style: GoogleFonts.poppins(
                             color: white,
                             fontSize: 24,
@@ -180,7 +164,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                             const Icon(Icons.phone, color: white, size: 16),
                             const SizedBox(width: 8),
                             Text(
-                              mobNum,
+                              widget.eCollectMerchantNumber,
                               style: GoogleFonts.poppins(
                                 color: white,
                                 fontSize: 16,
@@ -211,7 +195,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                   image: item["image"],
                   label: item["label"],
                   color: item["color"],
-                  icon: item["icon"],
+                  icon:  item["icon"],
                   onTap: () => handleProfileItemClick(context, item["label"]),
                 );
               },
@@ -617,15 +601,6 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
   }
 
   Future<void> performLogout(BuildContext context) async {
-    final result = await Future.wait([
-    SharedPref.shared.getECollectMerchantID(),
-    SharedPref.shared.getECollectUserNumber(),
-    SharedPref.shared.getFcmToken()
-
-    ]);
-    final entityId = result[0];
-    final mobnum = result[1];
-    final token = result[2];
 
     final fcmProvider = Provider.of<DeleteFcmProvider>(
       context,
@@ -633,9 +608,9 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
     );
 
     await fcmProvider.deleteFirebaseToken(
-      entityId,
-      mobnum,
-      token,
+      widget.eCollectMerchantID,
+      widget.eCollectMerchantNumber,
+      widget.eCollectFcmToken,
     );
 
     // Clears ALL SharedPreferences
@@ -651,71 +626,5 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
       (route) => false,
     );
   }
-/*  Future<void> performLogout(BuildContext context) async {
-    String entityId = await SharedPref.shared.getECollectMerchantID();
-    String mobnum = await SharedPref.shared.getECollectUserNumber();
-    String token = await SharedPref.shared.getFcmToken();
 
-    final fcmProvider = Provider.of<DeleteFcmProvider>(context, listen: false);
-    await fcmProvider.deleteFirebaseToken(entityId,mobnum, token);
-
-    await SharedPref.shared.setLogin(false);
-    await SharedPref.shared.setCustId("");
-    await SharedPref.shared.setAgentName("");
-    await SharedPref.shared.setParentAgentName("");
-    await SharedPref.shared.setParentAgentPassword("");
-    await SharedPref.shared.setParentAgentMobNum("");
-    await SharedPref.shared.setSubAgentId("");
-    await SharedPref.shared.setSubAgentCode("");
-    await SharedPref.shared.setUserType("");
-    await SharedPref.shared.setUserType("");
-    await SharedPref.shared.setRdclCustomerVendorUrl("");
-    await SharedPref.shared.setDueListRdclUrl("");
-    await SharedPref.shared.setCustomerRdUrl("");
-    await SharedPref.shared.setDueListRdUrl("");
-    await SharedPref.shared.setCustomerLoanUrl("");
-    await SharedPref.shared.setDueListLoanUrl("");
-    await SharedPref.shared.setLoanAccountHolderUrl("");
-    await SharedPref.shared.setSubAgentName("");
-    await SharedPref.shared.setSubAgentMobNum("");
-    await SharedPref.shared.setSubAgentCodeNew("");
-    await SharedPref.shared.setFcmToken("");
-    await SharedPref.shared.setAgentId("");
-    await SharedPref.shared.setPassword("");
-    await SharedPref.shared.setMpinValue("");
-    await SharedPref.shared.setMpinStatus("");
-    await SharedPref.shared.setTokenValue("");
-    await SharedPref.shared.setMobNum("");
-    await SharedPref.shared.setBranchCode("");
-    await SharedPref.shared.setAgentOriginId("");
-    await SharedPref.shared.setCorpCode("");
-    await SharedPref.shared.setCardRefNum("");
-    await SharedPref.shared.setEmail("");
-    await SharedPref.shared.setLoggedInUserType("");
-
-    await SharedPref.shared.setECollectLoginStatus(false);
-    await SharedPref.shared.setECollectTypeList([]);
-    await SharedPref.shared.setECollectUrlList([]);
-    await SharedPref.shared.setECollectMerchantBranchCode('');
-    await SharedPref.shared.setExternalAgentID('');
-    await SharedPref.shared.setECollectExternalBranchCode('');
-    await SharedPref.shared.setECollectMerchantIntegrationStatus('');
-    await SharedPref.shared.setECollectRdclCustomerunderAgentListUrl('');
-    await SharedPref.shared.setECollectRdclDuesListunderAgentUrl('');
-    await SharedPref.shared.setECollectMerchantUserName('');
-    await SharedPref.shared.setECollectUserType('');
-    await SharedPref.shared.setECollectUserEmail('');
-    await SharedPref.shared.setECollectToken('');
-    await SharedPref.shared.setECollectRefreshToken('');
-    await SharedPref.shared.setECollectRefreshToken('');
-    await SharedPref.shared.setECollectUserNumber('');
-    await SharedPref.shared.setECollectMerchantID('');
-    await SharedPref.shared.setECollectUserID('');
-
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const SplashScreen()),
-      (route) => false,
-    );
-  }*/
 }

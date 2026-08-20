@@ -595,537 +595,782 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
         corpCode = result[4];
         token = result[5];
         subAgentCodeNew = result[6];
-eCollectUserToken = result[7];
+eCollectUserToken = result[20];
   }
-
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF6F7FB),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        backgroundColor: const Color(0xFFF6F7FB),
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+          color: const Color(0xFF172033),
+        ),
         title: Text(
-          "Rd Account Details",
-          style: TextStyle(color: home1, fontWeight: FontWeight.w700),
+          "Account Details",
+          style: GoogleFonts.poppins(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: const Color(0xFF172033),
+          ),
         ),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  gradient: LinearGradient(
-                    colors: [
-                      home1.withValues(alpha: 0.22),
-                      home1.withValues(alpha: 0.02)
-                    ],
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.06),
-                      blurRadius: 16,
-                      offset: const Offset(0, 6),
-                      spreadRadius: -2,
-                    ),
-                  ],
-                ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    /// Customer Name
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                          ),
-                          gradient: LinearGradient(
-                            colors: [
-                              home1.withValues(alpha: 0.02),
-                              home1.withValues(alpha: 0.02),
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          )),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Colors.blue.shade50,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Icon(Icons.person_rounded,
-                                size: 20, color: Colors.blue.shade700),
-                          ),
-                          const SizedBox(width: 14),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Customer Name",
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.grey.shade600,
-                                    letterSpacing: 0.5,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  widget.custName,
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600,
-                                    height: 1.3,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          ),
-                          Icon(Icons.verified_rounded,
-                              size: 18, color: Colors.green.shade400),
-                        ],
+                    // Header
+                    Text(
+                      "RD Account",
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFF7B8497),
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      "Customer information",
+                      style: GoogleFonts.poppins(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF172033),
                       ),
                     ),
 
-                    /// Divider
-                    Container(
-                      height: 1,
-                      color: Colors.grey.shade100,
-                    ),
+                    const SizedBox(height: 20),
 
-                    /// Account Number
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Colors.purple.shade50,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Icon(Icons.account_balance_wallet_rounded,
-                                size: 20, color: Colors.purple.shade700),
+                    // Main account card
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: const Color(0xFFE8EBF2),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.045),
+                            blurRadius: 24,
+                            offset: const Offset(0, 10),
                           ),
-                          const SizedBox(width: 14),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Account Number",
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.grey.shade600,
-                                    letterSpacing: 0.5,
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          // Customer
+                          _modernInfoTile(
+                            icon: Icons.person_rounded,
+                            iconBackground: const Color(0xFFEFF4FF),
+                            iconColor: const Color(0xFF4263EB),
+                            title: "Customer",
+                            value: widget.custName,
+                            trailing: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 9,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFEAF9F0),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.verified_rounded,
+                                    size: 13,
+                                    color: Color(0xFF18A957),
                                   ),
-                                ),
-                                const SizedBox(height: 4),
-                                Row(
-                                  children: [
-                                    Flexible(
-                                      child: Text(
-                                        widget.accNo,
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600,
-                                          letterSpacing: 1.2,
-                                          fontFamily: Platform.isIOS
-                                              ? 'Courier'
-                                              : 'monospace',
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    "Verified",
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w600,
+                                      color: const Color(0xFF168B4A),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 20),
+                          _modernDivider(),
+                          const SizedBox(height: 20),
+
+                          // Account number
+                          _modernInfoTile(
+                            icon: Icons.account_balance_wallet_rounded,
+                            iconBackground: home1.withValues(alpha: 0.2),
+                            iconColor: home1,
+                            title: "Account Number",
+                            value: widget.accNo,
+                            trailing: InkWell(
+                              borderRadius: BorderRadius.circular(10),
+                              onTap: () {
+                                Clipboard.setData(
+                                  ClipboardData(text: widget.accNo),
+                                );
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      "Account number copied",
+                                      style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w500,
                                       ),
                                     ),
-                                    const SizedBox(width: 8),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Clipboard.setData(
-                                            ClipboardData(text: widget.accNo));
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                            content: Text('Copied!'),
-                                            duration: Duration(seconds: 1),
-                                            behavior: SnackBarBehavior.floating,
-                                          ),
-                                        );
-                                      },
-                                      child: Icon(Icons.copy_rounded,
-                                          size: 16,
-                                          color: Colors.grey.shade400),
+                                    behavior: SnackBarBehavior.floating,
+                                    margin: const EdgeInsets.all(16),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
                                     ),
-                                  ],
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(9),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF5F6FA),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                              ],
+                                child: const Icon(
+                                  Icons.copy_rounded,
+                                  size: 17,
+                                  color: Color(0xFF667085),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 20),
+                          _modernDivider(),
+                          const SizedBox(height: 20),
+
+                          // Scheme
+                          _modernInfoTile(
+                            icon: Icons.description_rounded,
+                            iconBackground: const Color(0xFFFFF4E8),
+                            iconColor: const Color(0xFFE88A24),
+                            title: "Scheme",
+                            value: widget.scheme,
+                            trailing: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFEAF9F0),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                "ACTIVE",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w700,
+                                  color: const Color(0xFF168B4A),
+                                  letterSpacing: .5,
+                                ),
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
 
-                    /// Divider
-                    Container(
-                      height: 1,
-                      color: Colors.grey.shade100,
-                    ),
+                    const SizedBox(height: 24),
 
-                    /// Scheme
-                    Padding(
+                    // Secure payment info
+                    Container(
+                      width: double.infinity,
                       padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: home1.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(18),
+                        border: Border.all(
+                          color: const Color(0xFFDCEBFF),
+                        ),
+                      ),
                       child: Row(
                         children: [
                           Container(
-                            padding: const EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: Colors.orange.shade50,
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: Icon(Icons.description_rounded,
-                                size: 20, color: Colors.orange.shade700),
+                            child: const Icon(
+                              Icons.lock_outline_rounded,
+                              color: home1,
+                              size: 20,
+                            ),
                           ),
-                          const SizedBox(width: 14),
+                          const SizedBox(width: 12),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Scheme",
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.grey.shade600,
-                                    letterSpacing: 0.5,
+                                  "Secure collection",
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                    color: const Color(0xFF243B64),
                                   ),
                                 ),
-                                const SizedBox(height: 4),
+                                const SizedBox(height: 2),
                                 Text(
-                                  widget.scheme,
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600,
-                                    height: 1.3,
+                                  "Choose a payment method to collect the amount.",
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 11,
+                                    color: const Color(0xFF667085),
+                                    height: 1.4,
                                   ),
-                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ],
                             ),
-                          ),
-                          Chip(
-                            label: Text(
-                              "Active",
-                              style: TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.green.shade700),
-                            ),
-                            backgroundColor: Colors.green.shade50,
-                            side: BorderSide.none,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 0),
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
                           ),
                         ],
                       ),
                     ),
                   ],
                 ),
-              )),
-          Spacer(
-            flex: 1,
-          ),
-          //  SizedBox(height: 50,),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-            child: SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                  onPressed: () {
-                    _showBottomBar(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: home1,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      foregroundColor: Colors.white),
-                  child: Text("Submit")),
+              ),
             ),
-          ),
-          BlocListener<PaymentBloc, PaymentState>(
-            listener: (BuildContext context, PaymentState state) {
-              if (state is QrPaymentLoaderState) {
-                showProgressDialog(context);
-              }
-              if (state is QrPaymentSuccessState) {
-                Navigator.pop(context);
-                print(state.qrPaymentSuccess.paymentResponseSuccess.paymentUrl);
-                selectedMethod == "Link"
-                    ? Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            PaymentLinkRequestUi(
-                              customerMobileNumber: "",
-                              paymentLink: state.qrPaymentSuccess
-                                  .paymentResponseSuccess.paymentUrl,
-                            )))
-                    : Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => NewQrCodePage(
-                      paymentSessionId: state.qrPaymentSuccess
-                          .paymentResponseSuccess.paymentUrl,
-                      amount: amountController.text,
-                      custName: "",
-                      custPhone: "custNumber",
-                      custId: "CustId",
+
+            // Bottom CTA
+            Container(
+              padding: const EdgeInsets.fromLTRB(20, 14, 20, 18),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  top: BorderSide(
+                    color: const Color(0xFFE8EBF2),
+                  ),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.04),
+                    blurRadius: 18,
+                    offset: const Offset(0, -5),
+                  ),
+                ],
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: ElevatedButton(
+                  onPressed: () => _showBottomBar(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: home1,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(17),
                     ),
                   ),
-                );
-              } else if (state is QrPaymentFailState) {
-                Navigator.pop(context);
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.payments_rounded,
+                        size: 21,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        "Collect Payment",
+                        style: GoogleFonts.poppins(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Icon(
+                        Icons.arrow_forward_rounded,
+                        size: 19,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
 
-                showAlertDialog(
-                    state.qrPaymentFail.paymentFailResponse.message, context);
-                print(state.qrPaymentFail.paymentFailResponse.message);
-              } else if (state is CashPaymentSuccessState) {
-                Navigator.pop(context);
-                showAlert(
-                    state.cashPaymentSuccess.cashPaymentSuccessResponse
-                        .status ==
+            BlocListener<PaymentBloc, PaymentState>(
+              listener: (BuildContext context, PaymentState state) {
+                if (state is QrPaymentLoaderState) {
+                  showProgressDialog(context);
+                }
+
+                if (state is QrPaymentSuccessState) {
+                  Navigator.pop(context);
+
+                  selectedMethod == "Link"
+                      ? Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          PaymentLinkRequestUi(
+                            customerMobileNumber: "",
+                            paymentLink: state
+                                .qrPaymentSuccess
+                                .paymentResponseSuccess
+                                .paymentUrl,
+                          ),
+                    ),
+                  )
+                      : Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => NewQrCodePage(
+                        paymentSessionId: state
+                            .qrPaymentSuccess
+                            .paymentResponseSuccess
+                            .paymentUrl,
+                        amount: amountController.text,
+                        custName: "",
+                        custPhone: "custNumber",
+                        custId: "CustId",
+                      ),
+                    ),
+                  );
+                } else if (state is QrPaymentFailState) {
+                  Navigator.pop(context);
+                  showAlertDialog(
+                    state.qrPaymentFail.paymentFailResponse.message,
+                    context,
+                  );
+                } else if (state is CashPaymentSuccessState) {
+                  Navigator.pop(context);
+                  showAlert(
+                    state.cashPaymentSuccess.cashPaymentSuccessResponse.status ==
                         "Y"
                         ? "SUCCESS"
                         : "FAILED",
                     state.cashPaymentSuccess.cashPaymentSuccessResponse.message,
-                    context);
-                print(state
-                    .cashPaymentSuccess.cashPaymentSuccessResponse.message);
-              } else if (state is CashPaymentFailState) {
-                Navigator.pop(context);
-                print(state.cashPaymentFail.payemtError);
-              }
-            },
-            child: SizedBox(),
-          ),
-
-        ],
-      ),
-    );
-  }
-}
-
-/*
-Widget _buildInfoRow({
-  required String label,
-  required String value,
-  required IconData icon,
-}) {
-  return Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      /// Icon
-      Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: home1.withValues(alpha: 0.08),
-          shape: BoxShape.circle,
-        ),
-        child: Icon(icon, size: 18, color: home1),
-      ),
-
-      const SizedBox(width: 12),
-
-      /// Texts
-      Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey.shade600,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                color: home1,
-              ),
-              overflow: TextOverflow.ellipsis,
+                    context,
+                  );
+                } else if (state is CashPaymentFailState) {
+                  Navigator.pop(context);
+                }
+              },
+              child: const SizedBox.shrink(),
             ),
           ],
         ),
       ),
-    ],
-  );
-}*/
+    );
+  }
+  Widget _modernInfoTile({
+    required IconData icon,
+    required Color iconBackground,
+    required Color iconColor,
+    required String title,
+    required String value,
+    Widget? trailing,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: iconBackground,
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Icon(
+            icon,
+            color: iconColor,
+            size: 21,
+          ),
+        ),
 
-/* Future<void> getCashTrans(
-      {required String? token,
-        required String? customerName,
-        required String? custPhoneNumber,
-        required String? custAcNumber,
-        required String? custId,
-        required String? custEmail,
-        required String? amount,
-        required String? phoneNumber,
-        required String? entityId,
-        required String? note})
-  async {
-    final cashPaymentProvider =
-    Provider.of<CashTranscationProvider>(context, listen: false);
-    final cash = await cashPaymentProvider.getTranscations(
-        agentName: agentName,
-        agentId: agentId,
-        agentOriginId: agentOriginId,
-        agentPhone: phoneNumber,
-        agentEmail: agentEmail,
-        subAgentId: subagentId,
-        customerName: customerName,
-        customerPhone: "",
-        customerAccNo: widget.accNo,
-        customerId: widget.custId,
-        customerEmail: "",
-        amount: amount,
-        note: note,
-        corpCode: corpCode,
-        cardRefNum: "",
-        token: token,
-        subagentBranchCode: subAgentCodeNew,
-        branchCode: "", collectionType: 'RD');
-    cash.fold((err) {
-      //print("getCashTrans $err");
-      Navigator.pop(context);
-    }, (success) {
-      //print("getCashTrans $success");
-      Navigator.pop(context);
-      showDialog(
-        context: context,
-        builder: (context) => TransactionSuccessDialog(
-          success: success,
-          onViewReceipt: () {
-            Navigator.pop(context);
-            var receiptModel = ReceiptDataModel(
-              amount: success.amount.toString(),
-              bankName: getBankNameFromCorpCode(corpCode!) ?? "XYZ BANK",
-              agentName: agentName ?? "Name",
-              agentPhone: phoneNumber ?? "agentPhone",
-              custName: customerName!,
-              custPhone: custPhoneNumber ?? "",
-              custId: custId!,
-              txnId: success.transactionId.toString(),
-              txnType: "CASH", dat: '', tranType: '', accNo: '',
-            );
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ReceiptPage(
-              receiptDataModel: receiptModel,
+        const SizedBox(width: 14),
+
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: GoogleFonts.poppins(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                  color: const Color(0xFF8A92A3),
                 ),
               ),
-            );
-          },
+              const SizedBox(height: 3),
+              Text(
+                value,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFF172033),
+                ),
+              ),
+            ],
+          ),
         ),
-      );
 
-      // showDialog(
-      //   context: context,
-      //   builder: (context) {
-      //     return AlertDialog(
-      //       title: const Text("Transaction Result"),
-      //       content: Column(
-      //         mainAxisSize: MainAxisSize.min,
-      //         crossAxisAlignment: CrossAxisAlignment.start,
-      //         children: [
-      //           Text("Status: ${success.status ?? 'N/A'}"),
-      //           const SizedBox(height: 8),
-      //           Text("Transaction ID: ${success.transactionId ?? 'N/A'}"),
-      //           const SizedBox(height: 8),
-      //           Text("Message: ${success.message ?? 'N/A'}"),
-      //         ],
-      //       ),
-      //       actions: [
-      //         TextButton(
-      //           onPressed: () => {
-      //             Navigator.pop(context),
-      //             Navigator.push(
-      //                 context,
-      //                 MaterialPageRoute(
-      //                     builder: (context) => ReceiptPage(
-      //                           amount: success.amount.toString(),
-      //                           bankName: _getBankNameFromCorpCode(corpCode!) ??
-      //                               "XYZ BANK",
-      //                           agentName: agentName ?? "Name",
-      //                           agentPhone: subagentPhoneNumber.toString() ??
-      //                               "agentPhone",
-      //                           custName: customerName!,
-      //                           custPhone: phoneNumber.toString(),
-      //                           custId: custId!,
-      //                           txnId: success.transactionId.toString(),
-      //                           txnType: "CASH",
-      //                         )))
-      //           },
-      //           child: const Text("OK"),
-      //         ),
-      //       ],
-      //     );
-      //   },
-      // );
-    });
-  }*/
-/*  Future<void> sendLinkFunction() async {
-    final send = await PaymentLinkRepository().getPaymentLink(
-        agentName: agentName!,
-        agentId: agentId!,
-        agentOriginId: agentOriginId!,
-        agentPhone: agentMobile!,
-        agentEmail: agentEmail!,
-        customerName: widget.custName,
-        customerPhone: agentMobile!,
-        customerAccountNumber: widget.accNo,
-        customerEmail: "",
-        customerId: widget.custId,
-        linkAmount: num.parse(amountController.text),
-        note: "Payment for Order #12345",
-        corpCode: corpCode!,
-        cardRefNum: "",
-        token: token.toString(),
-        subAgentId: subagentId!);
-
-         send.fold(
-          (error) {
-        //print("-------------------ERROR---------------------");
-       // print(error);
-      },
-          (sendLink) {
-        if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
-          //Share.share("Here is your payment link: ${sendLink.linkUrl}");
-          print("3");
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>
-              PaymentLinkRequestUi(customerMobileNumber: customerNumber.toString(), paymentLink: sendLink.linkUrl.toString(),)
-          ));
-        } else {
-         // print("Payment link is empty or null");
-        }
-      },
+        if (trailing != null) ...[
+          const SizedBox(width: 10),
+          trailing,
+        ],
+      ],
     );
-  }*/
+  }
+
+  Widget _modernDivider() {
+    return Container(
+      height: 1,
+      color: const Color(0xFFF0F1F5),
+    );
+  }
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     backgroundColor: Colors.white,
+  //     appBar: AppBar(
+  //       backgroundColor: Colors.white,
+  //       title: Text(
+  //         "Rd Account Details",
+  //         style: TextStyle(color: home1, fontWeight: FontWeight.w700),
+  //       ),
+  //       centerTitle: true,
+  //     ),
+  //     body: Column(
+  //       children: [
+  //         Padding(
+  //             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+  //             child: Container(
+  //               width: double.infinity,
+  //               decoration: BoxDecoration(
+  //                 color: Colors.white,
+  //                 gradient: LinearGradient(
+  //                   colors: [
+  //                     home1.withValues(alpha: 0.22),
+  //                     home1.withValues(alpha: 0.02)
+  //                   ],
+  //                   begin: Alignment.topRight,
+  //                   end: Alignment.bottomRight,
+  //                 ),
+  //                 borderRadius: BorderRadius.circular(20),
+  //                 boxShadow: [
+  //                   BoxShadow(
+  //                     color: Colors.black.withValues(alpha: 0.06),
+  //                     blurRadius: 16,
+  //                     offset: const Offset(0, 6),
+  //                     spreadRadius: -2,
+  //                   ),
+  //                 ],
+  //               ),
+  //               child: Column(
+  //                 children: [
+  //                   /// Customer Name
+  //                   Container(
+  //                     padding: const EdgeInsets.all(16),
+  //                     decoration: BoxDecoration(
+  //                         borderRadius: const BorderRadius.only(
+  //                           topLeft: Radius.circular(20),
+  //                           topRight: Radius.circular(20),
+  //                         ),
+  //                         gradient: LinearGradient(
+  //                           colors: [
+  //                             home1.withValues(alpha: 0.02),
+  //                             home1.withValues(alpha: 0.02),
+  //                           ],
+  //                           begin: Alignment.topLeft,
+  //                           end: Alignment.bottomRight,
+  //                         )),
+  //                     child: Row(
+  //                       children: [
+  //                         Container(
+  //                           padding: const EdgeInsets.all(8),
+  //                           decoration: BoxDecoration(
+  //                             color: Colors.blue.shade50,
+  //                             borderRadius: BorderRadius.circular(12),
+  //                           ),
+  //                           child: Icon(Icons.person_rounded,
+  //                               size: 20, color: Colors.blue.shade700),
+  //                         ),
+  //                         const SizedBox(width: 14),
+  //                         Expanded(
+  //                           child: Column(
+  //                             crossAxisAlignment: CrossAxisAlignment.start,
+  //                             children: [
+  //                               Text(
+  //                                 "Customer Name",
+  //                                 style: TextStyle(
+  //                                   fontSize: 12,
+  //                                   fontWeight: FontWeight.w500,
+  //                                   color: Colors.grey.shade600,
+  //                                   letterSpacing: 0.5,
+  //                                 ),
+  //                               ),
+  //                               const SizedBox(height: 4),
+  //                               Text(
+  //                                 widget.custName,
+  //                                 style: const TextStyle(
+  //                                   fontSize: 15,
+  //                                   fontWeight: FontWeight.w600,
+  //                                   height: 1.3,
+  //                                 ),
+  //                                 overflow: TextOverflow.ellipsis,
+  //                               ),
+  //                             ],
+  //                           ),
+  //                         ),
+  //                         Icon(Icons.verified_rounded,
+  //                             size: 18, color: Colors.green.shade400),
+  //                       ],
+  //                     ),
+  //                   ),
+  //
+  //                   /// Divider
+  //                   Container(
+  //                     height: 1,
+  //                     color: Colors.grey.shade100,
+  //                   ),
+  //
+  //                   /// Account Number
+  //                   Padding(
+  //                     padding: const EdgeInsets.all(16),
+  //                     child: Row(
+  //                       children: [
+  //                         Container(
+  //                           padding: const EdgeInsets.all(8),
+  //                           decoration: BoxDecoration(
+  //                             color: Colors.purple.shade50,
+  //                             borderRadius: BorderRadius.circular(12),
+  //                           ),
+  //                           child: Icon(Icons.account_balance_wallet_rounded,
+  //                               size: 20, color: Colors.purple.shade700),
+  //                         ),
+  //                         const SizedBox(width: 14),
+  //                         Expanded(
+  //                           child: Column(
+  //                             crossAxisAlignment: CrossAxisAlignment.start,
+  //                             children: [
+  //                               Text(
+  //                                 "Account Number",
+  //                                 style: TextStyle(
+  //                                   fontSize: 12,
+  //                                   fontWeight: FontWeight.w500,
+  //                                   color: Colors.grey.shade600,
+  //                                   letterSpacing: 0.5,
+  //                                 ),
+  //                               ),
+  //                               const SizedBox(height: 4),
+  //                               Row(
+  //                                 children: [
+  //                                   Flexible(
+  //                                     child: Text(
+  //                                       widget.accNo,
+  //                                       style: TextStyle(
+  //                                         fontSize: 15,
+  //                                         fontWeight: FontWeight.w600,
+  //                                         letterSpacing: 1.2,
+  //                                         fontFamily: Platform.isIOS
+  //                                             ? 'Courier'
+  //                                             : 'monospace',
+  //                                       ),
+  //                                       overflow: TextOverflow.ellipsis,
+  //                                     ),
+  //                                   ),
+  //                                   const SizedBox(width: 8),
+  //                                   GestureDetector(
+  //                                     onTap: () {
+  //                                       Clipboard.setData(
+  //                                           ClipboardData(text: widget.accNo));
+  //                                       ScaffoldMessenger.of(context)
+  //                                           .showSnackBar(
+  //                                         const SnackBar(
+  //                                           content: Text('Copied!'),
+  //                                           duration: Duration(seconds: 1),
+  //                                           behavior: SnackBarBehavior.floating,
+  //                                         ),
+  //                                       );
+  //                                     },
+  //                                     child: Icon(Icons.copy_rounded,
+  //                                         size: 16,
+  //                                         color: Colors.grey.shade400),
+  //                                   ),
+  //                                 ],
+  //                               ),
+  //                             ],
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //
+  //                   /// Divider
+  //                   Container(
+  //                     height: 1,
+  //                     color: Colors.grey.shade100,
+  //                   ),
+  //
+  //                   /// Scheme
+  //                   Padding(
+  //                     padding: const EdgeInsets.all(16),
+  //                     child: Row(
+  //                       children: [
+  //                         Container(
+  //                           padding: const EdgeInsets.all(8),
+  //                           decoration: BoxDecoration(
+  //                             color: Colors.orange.shade50,
+  //                             borderRadius: BorderRadius.circular(12),
+  //                           ),
+  //                           child: Icon(Icons.description_rounded,
+  //                               size: 20, color: Colors.orange.shade700),
+  //                         ),
+  //                         const SizedBox(width: 14),
+  //                         Expanded(
+  //                           child: Column(
+  //                             crossAxisAlignment: CrossAxisAlignment.start,
+  //                             children: [
+  //                               Text(
+  //                                 "Scheme",
+  //                                 style: TextStyle(
+  //                                   fontSize: 12,
+  //                                   fontWeight: FontWeight.w500,
+  //                                   color: Colors.grey.shade600,
+  //                                   letterSpacing: 0.5,
+  //                                 ),
+  //                               ),
+  //                               const SizedBox(height: 4),
+  //                               Text(
+  //                                 widget.scheme,
+  //                                 style: const TextStyle(
+  //                                   fontSize: 15,
+  //                                   fontWeight: FontWeight.w600,
+  //                                   height: 1.3,
+  //                                 ),
+  //                                 overflow: TextOverflow.ellipsis,
+  //                               ),
+  //                             ],
+  //                           ),
+  //                         ),
+  //                         Chip(
+  //                           label: Text(
+  //                             "Active",
+  //                             style: TextStyle(
+  //                                 fontSize: 10,
+  //                                 fontWeight: FontWeight.w600,
+  //                                 color: Colors.green.shade700),
+  //                           ),
+  //                           backgroundColor: Colors.green.shade50,
+  //                           side: BorderSide.none,
+  //                           padding: const EdgeInsets.symmetric(
+  //                               horizontal: 8, vertical: 0),
+  //                           materialTapTargetSize:
+  //                               MaterialTapTargetSize.shrinkWrap,
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             )),
+  //         Spacer(
+  //           flex: 1,
+  //         ),
+  //         //  SizedBox(height: 50,),
+  //         Padding(
+  //           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+  //           child: SizedBox(
+  //             width: double.infinity,
+  //             height: 50,
+  //             child: ElevatedButton(
+  //                 onPressed: () {
+  //                   _showBottomBar(context);
+  //                 },
+  //                 style: ElevatedButton.styleFrom(
+  //                     backgroundColor: home1,
+  //                     shape: RoundedRectangleBorder(
+  //                         borderRadius: BorderRadius.circular(10)),
+  //                     foregroundColor: Colors.white),
+  //                 child: Text("Submit")),
+  //           ),
+  //         ),
+  //         BlocListener<PaymentBloc, PaymentState>(
+  //           listener: (BuildContext context, PaymentState state) {
+  //             if (state is QrPaymentLoaderState) {
+  //               showProgressDialog(context);
+  //             }
+  //             if (state is QrPaymentSuccessState) {
+  //               Navigator.pop(context);
+  //               print(state.qrPaymentSuccess.paymentResponseSuccess.paymentUrl);
+  //               selectedMethod == "Link"
+  //                   ? Navigator.push(
+  //                   context,
+  //                   MaterialPageRoute(
+  //                       builder: (BuildContext context) =>
+  //                           PaymentLinkRequestUi(
+  //                             customerMobileNumber: "",
+  //                             paymentLink: state.qrPaymentSuccess
+  //                                 .paymentResponseSuccess.paymentUrl,
+  //                           )))
+  //                   : Navigator.push(
+  //                 context,
+  //                 MaterialPageRoute(
+  //                   builder: (context) => NewQrCodePage(
+  //                     paymentSessionId: state.qrPaymentSuccess
+  //                         .paymentResponseSuccess.paymentUrl,
+  //                     amount: amountController.text,
+  //                     custName: "",
+  //                     custPhone: "custNumber",
+  //                     custId: "CustId",
+  //                   ),
+  //                 ),
+  //               );
+  //             } else if (state is QrPaymentFailState) {
+  //               Navigator.pop(context);
+  //
+  //               showAlertDialog(
+  //                   state.qrPaymentFail.paymentFailResponse.message, context);
+  //               print(state.qrPaymentFail.paymentFailResponse.message);
+  //             } else if (state is CashPaymentSuccessState) {
+  //               Navigator.pop(context);
+  //               showAlert(
+  //                   state.cashPaymentSuccess.cashPaymentSuccessResponse
+  //                       .status ==
+  //                       "Y"
+  //                       ? "SUCCESS"
+  //                       : "FAILED",
+  //                   state.cashPaymentSuccess.cashPaymentSuccessResponse.message,
+  //                   context);
+  //               print(state
+  //                   .cashPaymentSuccess.cashPaymentSuccessResponse.message);
+  //             } else if (state is CashPaymentFailState) {
+  //               Navigator.pop(context);
+  //               print(state.cashPaymentFail.payemtError);
+  //             }
+  //           },
+  //           child: SizedBox(),
+  //         ),
+  //
+  //       ],
+  //     ),
+  //   );
+  // }
+}

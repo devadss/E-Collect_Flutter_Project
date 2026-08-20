@@ -8,8 +8,10 @@ import '../../data/e_collect_bloc/transaction_bloc/transaction_bloc.dart';
 import '../../data/storage/shared_pref_helper.dart';
 
 class ECollectHomepage extends StatefulWidget {
-
-  const ECollectHomepage({super.key});
+final String eCollectUserName;
+final String eCollectMerchantID;
+final String eCollectToken;
+  const ECollectHomepage({super.key, required this.eCollectUserName, required this.eCollectMerchantID, required this.eCollectToken});
 
   @override
   State<ECollectHomepage> createState() => ECollectHomepageState();
@@ -49,30 +51,27 @@ class ECollectHomepageState extends State<ECollectHomepage> {
     "Last Month"
   ];
 
-  Future<void> getSharedData() async {
-    // Get the name first so it can appear immediately
-    final userName = await SharedPref.shared.getECollectMerchantName();
-
+  void getSharedData()  {
+  //  final userName = await SharedPref.shared.getECollectMerchantName();
     if (!mounted) return;
-
     setState(() {
-      name = userName;
+      name = widget.eCollectUserName;
       if (name.isNotEmpty) {
         formattedName =
             name[0].toUpperCase() + name.substring(1);
       }
     });
 
-    // Load the remaining data after the name is displayed
-    final result = await Future.wait([
-      SharedPref.shared.getECollectMerchantID(),
-      SharedPref.shared.getECollectUserToken(),
-    ]);
+    // // Load the remaining data after the name is displayed
+    // final result = await Future.wait([
+    //   SharedPref.shared.getECollectMerchantID(),
+    //   SharedPref.shared.getECollectUserToken(),
+    // ]);
 
     if (!mounted) return;
 
-    merchantID = result[0];
-    eCollectToken = result[1];
+    merchantID = widget.eCollectMerchantID;
+    eCollectToken = widget.eCollectToken;
 
     getTransactionReport();
   }

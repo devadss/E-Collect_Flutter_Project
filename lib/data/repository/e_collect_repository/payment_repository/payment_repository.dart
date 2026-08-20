@@ -23,7 +23,8 @@ class PaymentRepository {
         "Content-Type":"application/json"
       }
     );
-    print(jsonEncode(qrPaymentRequestModel));
+    print("eCollectToken $eCollectToken");
+    print("PAYMENT body: ${jsonEncode(qrPaymentRequestModel)}");
     print("PAYMENT RES: ${data.body}");
     if(data.statusCode == 200){
       return QrPaymentSuccess(PaymentResponseSuccess.fromJson(jsonDecode(data.body)));

@@ -3,16 +3,18 @@ import 'package:collection_qr_flutter/presentation/account_dues/rd_dues/rd_cust_
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/colors.dart';
-import '../../../core/utils.dart';
 import '../../../data/provider/agent_customer_details_provider.dart';
-import '../../../data/storage/shared_pref_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../domain/model/agent_customer_details_model.dart';
 
 class RdDueDetailPage extends StatefulWidget {
-  const RdDueDetailPage({super.key});
+  final String eCollectBranchID;
+  final String eCollectAgentID;
+  final String eCollectUserToken;
+  final List<String> eCollectUrlList;
+  const RdDueDetailPage({super.key, required this.eCollectBranchID, required this.eCollectAgentID, required this.eCollectUserToken, required this.eCollectUrlList});
 
   @override
   State<RdDueDetailPage> createState() => _RdDueDetailPageState();
@@ -35,8 +37,9 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
   @override
   void initState() {
     super.initState();
-    searchController.addListener(_onSearchChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) => loadSharedPrefs(context));
+    searchController.addListener(_onSearchChanged);
+
   }
 
   @override
@@ -50,18 +53,8 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
     _filterCustomers(searchController.text);
   }
 
-  Future<void> loadSharedPrefs(BuildContext context) async {
-    final result =  await Future.wait([
-      SharedPref.shared.getECollectExternalBranchCode(),
-      SharedPref.shared.getExternalAgentID(),
-      SharedPref.shared.getECollectUrlList(),
-      SharedPref.shared.getECollectUserToken(),
-    ]);
-    final branchId = result[0] as String; //01
-    final agentID = result[1] as String; //1021
-    final loanListingUrl = result[2] as List<String>; //1021
-    eCollectUserToken = result[3] as String; //1021
-    for(var x in loanListingUrl){
+   Future<void> loadSharedPrefs(BuildContext context)  async {
+    for(var x in widget.eCollectUrlList){
       if(x.contains("getRDCustomerunderAgentList")){
         setState(() {
           _rdListingUrl = x;
@@ -69,7 +62,7 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
         print((x));
       }
     }
-    for(var x in loanListingUrl){
+    for(var x in widget.eCollectUrlList){
       if(x.contains("")){
         setState(() {
           _rdDetailUrl = x;
@@ -77,26 +70,18 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
         print((x));
       }
     }
-    setState(() {
+    // print("RD LIST URL : $_rdListingUrl");
+    // print("RD detail URL : $_rdDetailUrl");
 
-      print("RD LIST URL : $_rdListingUrl");
-      print("RD detail URL : $_rdDetailUrl");
-      print("agentID : $agentID");
-      print("branchId : $branchId");
-     // _rdListingUrl = "https://mftctest.digicob.in/getRDCustomerunderAgentLis";
-      _rdDetailUrl = "";
-      _branchId = branchId;
-
-      _agentId = agentID;
-    });
     try {
 
       if (!mounted) return;
-
       setState(() {
+        _rdDetailUrl = "";
+        _branchId = widget.eCollectBranchID;
+        _agentId = widget.eCollectAgentID;
         _isLoading = true;
       });
-
       final provider = Provider.of<AgentCustomerDetailsProvider>(
         context,
         listen: false,
@@ -104,20 +89,17 @@ class _RdDueDetailPageState extends State<RdDueDetailPage>  {
 
       await provider.getAgentCustomerDetails(_rdListingUrl!,_agentId!, _branchId!);
 
-      if (!mounted) return;
-
       setState(() {
         _filteredCustomers = provider.agentCustomerDetailsModel?.data;
         _isLoading = false;
       });
     } catch (error) {
-      if (!mounted) return;
       setState(() => _isLoading = false);
     }
-    if (printStatementStatus) {
-      print("RD _branchId = $_branchId");
-      print("RD _subAgentId = $_agentId");
-    }
+    // if (printStatementStatus) {
+    //   print("RD _branchId = $_branchId");
+    //   print("RD _subAgentId = $_agentId");
+    // }
 
   }
   void _filterCustomers(String query) {

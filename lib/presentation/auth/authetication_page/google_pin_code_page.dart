@@ -20,13 +20,10 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   String custID = "";
   String token = "";
   bool authenticated = false;
- // String mpin = "";
   String fcmToken = "";
   String contactNum = ""; // contains +91
-  String subAgentContactNum = ""; // contains +91
   final LocalAuthentication auth = LocalAuthentication();
-  //final String sk = "770A8A65DA156D24EE2A093277530142";
-  //final String iv = "1234567890123456";
+
 
   @override
   void initState() {
@@ -42,15 +39,13 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       SharedPref.shared.getFcmToken(),
       SharedPref.shared.getMpinValue(),
       SharedPref.shared.getECollectUserNumber(),
-      SharedPref.shared.getSubAgentMobNum(),
-    ]);
+     ]);
     custID = result[0];
     token = result[1];
     fcmToken = result[2];
     contactNum = result[4];
-    subAgentContactNum = result[5];
 
-    print(subAgentContactNum);
+
     if(fcmToken.isEmpty){
       print("Saving fcm");
       if(!mounted) return;
@@ -126,72 +121,6 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
 
   @override
   Widget build(BuildContext context) {
-   /* return Scaffold(
-      backgroundColor: white, // Using home2 as background
-      appBar: AppBar(
-        backgroundColor: white, // Matching background
-        elevation: 0,
-        centerTitle: true,
-        title: Text(
-          "Please authenticate to proceed",
-          style: GoogleFonts.poppins(
-            color: home2, // Using home2 for text
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
-          ),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: home2),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  children: [
-                    const SizedBox(height: 40),
-                    const Icon(
-                      Icons.lock_outline,
-                      size: 100,
-                      color: home2,
-                    ),
-                    const SizedBox(height: 30),
-                    Text(
-                      "Authenticate to Continue",
-                      style: GoogleFonts.poppins(
-                        fontSize: 18,
-                        color: home2.withValues(alpha: 0.8),
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-                  ],
-                ),
-
-                // Number Pad
-                Column(
-                  children: [
-                    GridView.count(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      crossAxisCount: 1,
-                      childAspectRatio: 2.5,
-                      padding: EdgeInsets.zero,
-                      children: [_buildBiometricButton()],
-                    ),
-                    const SizedBox(height: 20),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );*/
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FC),
       body: SafeArea(
@@ -461,21 +390,5 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       ),
     );
   }
-  // Widget _buildBiometricButton() {
-  //   return Material(
-  //     color: Colors.transparent,
-  //     child: InkWell(
-  //       borderRadius: BorderRadius.circular(45),
-  //       onTap: _authenticateWithBiometrics,
-  //       // onTap: _openScreenLock,
-  //       child: const Center(
-  //         child: Icon(
-  //           Icons.fingerprint,
-  //           color: home2,
-  //           size: 100,
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
+
 }

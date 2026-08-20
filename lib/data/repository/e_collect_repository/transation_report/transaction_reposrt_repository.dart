@@ -17,6 +17,9 @@ class TransactionReportRepository {
       'Authorization': "Bearer $eCollectToken",
       "Content-Type": "application/json"
     });
+
+    print("$baseURl$transactionReportEndpoint$merchantID");
+    print("Bearer $eCollectToken");
     print("TransactionReport ${request.body}");
     if (request.statusCode == 200) {
       return TransactionSuccessModel(
