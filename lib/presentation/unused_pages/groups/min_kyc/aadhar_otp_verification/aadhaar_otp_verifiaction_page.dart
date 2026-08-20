@@ -1,6 +1,6 @@
 // import 'dart:async';
 // import 'dart:convert';
-// import 'package:collection_qr_flutter/core/colors.dart';
+// import 'package:e_Collect/core/colors.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter_easyloading/flutter_easyloading.dart';
 // import 'package:google_fonts/google_fonts.dart';

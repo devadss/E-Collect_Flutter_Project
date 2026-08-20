@@ -1,5 +1,5 @@
-import 'package:collection_qr_flutter/core/colors.dart';
-import 'package:collection_qr_flutter/presentation/account_dues/rdcl/rdcl_due_detail.dart';
+import 'package:e_Collect/core/colors.dart';
+import 'package:e_Collect/presentation/account_dues/rdcl/rdcl_due_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data/customer_list_bloc/customer_list_bloc.dart';

@@ -1,5 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:collection_qr_flutter/domain/model/e_collect/transaction_report/transaction_ok_report.dart';
+import 'package:e_Collect/domain/model/e_collect/transaction_report/transaction_ok_report.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';

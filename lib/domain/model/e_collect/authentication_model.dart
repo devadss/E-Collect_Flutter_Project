@@ -1,8 +1,8 @@
-import 'package:collection_qr_flutter/domain/model/e_collect/ifsc_model/ifsc_success_model.dart';
-import 'package:collection_qr_flutter/domain/model/e_collect/token_validation/token_regeneratiion/ecollect_token_gen_fail.dart';
-import 'package:collection_qr_flutter/domain/model/e_collect/token_validation/token_regeneratiion/ecollect_token_gen_success.dart';
-import 'package:collection_qr_flutter/domain/model/e_collect/token_validation/token_validation_fail.dart';
-import 'package:collection_qr_flutter/domain/model/e_collect/token_validation/token_validation_success.dart';
+import 'package:e_Collect/domain/model/e_collect/ifsc_model/ifsc_success_model.dart';
+import 'package:e_Collect/domain/model/e_collect/token_validation/token_regeneratiion/ecollect_token_gen_fail.dart';
+import 'package:e_Collect/domain/model/e_collect/token_validation/token_regeneratiion/ecollect_token_gen_success.dart';
+import 'package:e_Collect/domain/model/e_collect/token_validation/token_validation_fail.dart';
+import 'package:e_Collect/domain/model/e_collect/token_validation/token_validation_success.dart';
 import 'basic_registartion/basic_registration_failure_response.dart';
 import 'basic_registartion/basic_registration_success_response.dart';
 import 'fcm/unregister_fail.dart';

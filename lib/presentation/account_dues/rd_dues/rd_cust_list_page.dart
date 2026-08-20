@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:collection_qr_flutter/presentation/account_dues/rd_dues/rd_cust_acc_details_page.dart';
+import 'package:e_Collect/presentation/account_dues/rd_dues/rd_cust_acc_details_page.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/colors.dart';

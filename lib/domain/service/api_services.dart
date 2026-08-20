@@ -1,6 +1,6 @@
-import 'package:collection_qr_flutter/core/utils.dart';
+import 'package:e_Collect/core/utils.dart';
 import 'package:http/http.dart' as http;
-import 'package:collection_qr_flutter/core/constants.dart';
+import 'package:e_Collect/core/constants.dart';
 
 import '../../data/storage/shared_pref_helper.dart';
 

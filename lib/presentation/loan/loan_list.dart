@@ -1,7 +1,7 @@
-import 'package:collection_qr_flutter/core/colors.dart';
-import 'package:collection_qr_flutter/data/provider/integrated_loan_detail_provider.dart';
-import 'package:collection_qr_flutter/data/provider/integration_loan_list_provider.dart';
-import 'package:collection_qr_flutter/domain/model/integrated_loan_list_model.dart';
+import 'package:e_Collect/core/colors.dart';
+import 'package:e_Collect/data/provider/integrated_loan_detail_provider.dart';
+import 'package:e_Collect/data/provider/integration_loan_list_provider.dart';
+import 'package:e_Collect/domain/model/integrated_loan_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/utils.dart';

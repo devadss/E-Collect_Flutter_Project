@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:collection_qr_flutter/core/constants.dart';
-import 'package:collection_qr_flutter/domain/model/group/group_listing/group_list_model.dart';
+import 'package:e_Collect/core/constants.dart';
+import 'package:e_Collect/domain/model/group/group_listing/group_list_model.dart';
 import 'package:http/http.dart'as http;
 import 'package:dartz/dartz.dart';
 

@@ -1,6 +1,6 @@
-// import 'package:collection_qr_flutter/data/repository/group/update_account_repository.dart';
+// import 'package:e_Collect/data/repository/group/update_account_repository.dart';
 // import 'package:flutter/material.dart';
-// import 'package:collection_qr_flutter/domain/model/group/default_model/default_model.dart';
+// import 'package:e_Collect/domain/model/group/default_model/default_model.dart';
 // import 'package:fpdart/src/either.dart';
 //
 // import '../../service/error_handler.dart';

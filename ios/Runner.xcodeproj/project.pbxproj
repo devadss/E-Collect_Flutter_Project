@@ -519,7 +519,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 4.4.4;
-				PRODUCT_BUNDLE_IDENTIFIER = com.collection.qr;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ecollect.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Collection Qr – App Store";
@@ -716,7 +716,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 4.4.4;
-				PRODUCT_BUNDLE_IDENTIFIER = com.collection.qr;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ecollect.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Collection Qr – App Store";
@@ -749,7 +749,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 4.4.4;
-				PRODUCT_BUNDLE_IDENTIFIER = com.collection.qr;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ecollect.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Collection Qr – App Store";

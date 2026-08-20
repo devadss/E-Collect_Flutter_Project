@@ -1,5 +1,5 @@
-import 'package:collection_qr_flutter/data/repository/group/create_group/create_group_repository.dart';
-import 'package:collection_qr_flutter/domain/model/group/group_creation/group_creation_model.dart';
+import 'package:e_Collect/data/repository/group/create_group/create_group_repository.dart';
+import 'package:e_Collect/domain/model/group/group_creation/group_creation_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
 

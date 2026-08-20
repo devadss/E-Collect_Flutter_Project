@@ -1,5 +1,5 @@
-import 'package:collection_qr_flutter/data/service/error_handler.dart';
-import 'package:collection_qr_flutter/domain/model/group/group_creation/group_with_member.dart';
+import 'package:e_Collect/data/service/error_handler.dart';
+import 'package:e_Collect/domain/model/group/group_creation/group_with_member.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class CreateGroupWithMemberInterface {

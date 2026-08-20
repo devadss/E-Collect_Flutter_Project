@@ -1,5 +1,5 @@
-import 'package:collection_qr_flutter/domain/model/e_collect/fcm/unregister_fail.dart';
-import 'package:collection_qr_flutter/domain/model/e_collect/fcm/unregister_success.dart';
+import 'package:e_Collect/domain/model/e_collect/fcm/unregister_fail.dart';
+import 'package:e_Collect/domain/model/e_collect/fcm/unregister_success.dart';
 
 sealed class FcmUnregister {
   const FcmUnregister();

@@ -1,6 +1,6 @@
 // import 'dart:convert';
 // import 'dart:math';
-// import 'package:collection_qr_flutter/core/alerts.dart';
+// import 'package:e_Collect/core/alerts.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 // import 'package:http/http.dart' as http;

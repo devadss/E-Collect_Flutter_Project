@@ -1,4 +1,4 @@
-import 'package:collection_qr_flutter/domain/model/rdcl_duelist_model/rdcl_due_list_success.dart';
+import 'package:e_Collect/domain/model/rdcl_duelist_model/rdcl_due_list_success.dart';
 
 sealed class RdclDueListModel {
   const RdclDueListModel();

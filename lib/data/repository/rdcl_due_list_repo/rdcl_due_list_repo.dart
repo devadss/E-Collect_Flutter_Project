@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:collection_qr_flutter/data/storage/shared_pref_helper.dart';
+import 'package:e_Collect/data/storage/shared_pref_helper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart'as http;
 

@@ -1,13 +1,13 @@
 import 'dart:developer';
-import 'package:collection_qr_flutter/data/e_collect_bloc/authentication_bloc/authentication_bloc.dart';
-import 'package:collection_qr_flutter/data/e_collect_bloc/payment_bloc/payment_bloc.dart';
-import 'package:collection_qr_flutter/data/provider/integrated_loan_detail_provider.dart';
-import 'package:collection_qr_flutter/data/provider/integration_loan_list_provider.dart';
-import 'package:collection_qr_flutter/data/provider/loan_cash_coolection_provider.dart';
-import 'package:collection_qr_flutter/data/repository/e_collect_repository/payment_repository/payment_repository.dart';
-import 'package:collection_qr_flutter/data/repository/integrated_loan_detail_repository.dart';
-import 'package:collection_qr_flutter/data/repository/integration_loan_repository.dart';
-import 'package:collection_qr_flutter/data/repository/loan_cash_collection_repository.dart';
+import 'package:e_Collect/data/e_collect_bloc/authentication_bloc/authentication_bloc.dart';
+import 'package:e_Collect/data/e_collect_bloc/payment_bloc/payment_bloc.dart';
+import 'package:e_Collect/data/provider/integrated_loan_detail_provider.dart';
+import 'package:e_Collect/data/provider/integration_loan_list_provider.dart';
+import 'package:e_Collect/data/provider/loan_cash_coolection_provider.dart';
+import 'package:e_Collect/data/repository/e_collect_repository/payment_repository/payment_repository.dart';
+import 'package:e_Collect/data/repository/integrated_loan_detail_repository.dart';
+import 'package:e_Collect/data/repository/integration_loan_repository.dart';
+import 'package:e_Collect/data/repository/loan_cash_collection_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import '../../data/provider/agent_customer_details_provider.dart';
@@ -266,7 +266,6 @@ Future<void> _initializeBackgroundServices() async {
   try {
     if (Firebase.apps.isEmpty) {
       await Firebase.initializeApp(
-        name: 'com_collection_qr',
         options: DefaultFirebaseOptions.currentPlatform,
       );
     }

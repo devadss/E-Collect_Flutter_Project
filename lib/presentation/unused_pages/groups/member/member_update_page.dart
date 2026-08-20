@@ -1,4 +1,4 @@
-// import 'package:collection_qr_flutter/data/provider/group/member_update/member_update_provider.dart';
+// import 'package:e_Collect/data/provider/group/member_update/member_update_provider.dart';
 // import 'package:flutter/material.dart';
 // import 'package:intl/intl.dart';
 // import 'package:provider/provider.dart';

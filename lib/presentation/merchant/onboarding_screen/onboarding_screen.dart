@@ -1,11 +1,11 @@
 
 import 'dart:math';
 
-import 'package:collection_qr_flutter/core/colors.dart';
-import 'package:collection_qr_flutter/core/utils.dart';
-import 'package:collection_qr_flutter/data/e_collect_bloc/authentication_bloc/authentication_bloc.dart';
-import 'package:collection_qr_flutter/domain/model/e_collect/merchant_registation_model/request/merchant_request_model.dart';
-import 'package:collection_qr_flutter/presentation/auth/login/mobile_number_page.dart';
+import 'package:e_Collect/core/colors.dart';
+import 'package:e_Collect/core/utils.dart';
+import 'package:e_Collect/data/e_collect_bloc/authentication_bloc/authentication_bloc.dart';
+import 'package:e_Collect/domain/model/e_collect/merchant_registation_model/request/merchant_request_model.dart';
+import 'package:e_Collect/presentation/auth/login/mobile_number_page.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

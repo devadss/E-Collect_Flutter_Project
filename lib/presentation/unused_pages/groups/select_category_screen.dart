@@ -1,5 +1,5 @@
-// import 'package:collection_qr_flutter/core/colors.dart';
-// import 'package:collection_qr_flutter/presentation/groups/bnk_account_details/bank_accout_detail_page.dart';
+// import 'package:e_Collect/core/colors.dart';
+// import 'package:e_Collect/presentation/groups/bnk_account_details/bank_accout_detail_page.dart';
 // import 'package:flutter/material.dart';
 //
 // import 'bnk_account_details/bank_details_screen.dart';

@@ -1,4 +1,4 @@
-import 'package:collection_qr_flutter/presentation/merchant/pages/group_home_page.dart';
+import 'package:e_Collect/presentation/merchant/pages/group_home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../core/utils.dart';

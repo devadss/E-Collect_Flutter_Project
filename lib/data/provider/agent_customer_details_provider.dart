@@ -1,6 +1,6 @@
-import 'package:collection_qr_flutter/core/utils.dart';
 
 import '../../core/general.dart';
+import '../../core/utils.dart';
 import '../../data/repository/agent_customer_details_repository.dart';
 import '../../domain/model/agent_customer_details_model.dart';
 import 'package:flutter/material.dart';

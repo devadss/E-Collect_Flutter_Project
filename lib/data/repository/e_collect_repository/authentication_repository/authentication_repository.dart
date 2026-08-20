@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:collection_qr_flutter/core/constants.dart';
+import 'package:e_Collect/core/constants.dart';
 import '../../../../domain/model/e_collect/authentication_model.dart';
 import '../../../../domain/model/e_collect/basic_registartion/basic_registration_failure_response.dart';
 import '../../../../domain/model/e_collect/basic_registartion/basic_registration_success_response.dart';

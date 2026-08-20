@@ -1,6 +1,6 @@
 // import 'dart:core';
 // import 'package:flutter/material.dart';
-// import 'package:collection_qr_flutter/core/colors.dart';
+// import 'package:e_Collect/core/colors.dart';
 // import 'package:provider/provider.dart';
 // import '../../../data/provider/group/group_list/group_list_preovider.dart';
 // import '../../../data/storage/shared_pref_helper.dart';

@@ -1,4 +1,4 @@
-// import 'package:collection_qr_flutter/presentation/collection/home/widgets/search_filter_page.dart';
+// import 'package:e_Collect/presentation/collection/home/widgets/search_filter_page.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 // import 'package:provider/provider.dart';

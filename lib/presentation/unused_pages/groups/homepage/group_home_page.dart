@@ -1,5 +1,5 @@
-// import 'package:collection_qr_flutter/presentation/groups/bnk_account_details/bank_details_screen.dart';
-// import 'package:collection_qr_flutter/presentation/groups/homepage/payment_link_provider.dart';
+// import 'package:e_Collect/presentation/groups/bnk_account_details/bank_details_screen.dart';
+// import 'package:e_Collect/presentation/groups/homepage/payment_link_provider.dart';
 // import 'package:flutter/material.dart';
 // import 'package:intl/intl.dart';
 // import 'package:provider/provider.dart';
@@ -1435,7 +1435,7 @@
 // }
 //
 //
-// // import 'package:collection_qr_flutter/presentation/groups/bnk_account_details/bank_details_screen.dart';
+// // import 'package:e_Collect/presentation/groups/bnk_account_details/bank_details_screen.dart';
 // // import 'package:flutter/material.dart';
 // // import 'package:intl/intl.dart';
 // // import 'package:provider/provider.dart';

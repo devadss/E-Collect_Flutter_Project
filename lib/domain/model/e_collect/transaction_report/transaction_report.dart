@@ -1,4 +1,4 @@
-import 'package:collection_qr_flutter/domain/model/e_collect/transaction_report/transaction_ok_report.dart';
+import 'package:e_Collect/domain/model/e_collect/transaction_report/transaction_ok_report.dart';
 
 sealed class TransactionReport {}
 

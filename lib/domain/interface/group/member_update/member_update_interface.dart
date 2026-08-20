@@ -1,5 +1,5 @@
-import 'package:collection_qr_flutter/data/service/error_handler.dart';
-import 'package:collection_qr_flutter/domain/model/group/member_updation/member_update_response_model.dart';
+import 'package:e_Collect/data/service/error_handler.dart';
+import 'package:e_Collect/domain/model/group/member_updation/member_update_response_model.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class MemberUpdateInterface{

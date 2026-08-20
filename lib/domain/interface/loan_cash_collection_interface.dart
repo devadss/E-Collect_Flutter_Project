@@ -1,4 +1,4 @@
-import 'package:collection_qr_flutter/domain/model/loan_cash_collect_model.dart';
+import 'package:e_Collect/domain/model/loan_cash_collect_model.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class LoanCashCollectionInterface{

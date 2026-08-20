@@ -1,4 +1,4 @@
-import 'package:collection_qr_flutter/domain/model/group/group_listing/group_list_model.dart';
+import 'package:e_Collect/domain/model/group/group_listing/group_list_model.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class GroupListInterface{

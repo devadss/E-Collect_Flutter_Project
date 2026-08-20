@@ -1,7 +1,7 @@
-// import 'package:collection_qr_flutter/data/provider/group/group_delte/group_delete_provider.dart';
-// import 'package:collection_qr_flutter/data/provider/group/member_list/member_list_provider.dart';
-// import 'package:collection_qr_flutter/domain/model/group/members_listing/members_listing_model.dart';
-// import 'package:collection_qr_flutter/presentation/groups/member/member_page.dart';
+// import 'package:e_Collect/data/provider/group/group_delte/group_delete_provider.dart';
+// import 'package:e_Collect/data/provider/group/member_list/member_list_provider.dart';
+// import 'package:e_Collect/domain/model/group/members_listing/members_listing_model.dart';
+// import 'package:e_Collect/presentation/groups/member/member_page.dart';
 // import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';
 // import '../../../../core/colors.dart';
@@ -1560,10 +1560,10 @@
 // }
 //
 //
-// // import 'package:collection_qr_flutter/data/provider/group/group_delte/group_delete_provider.dart';
-// // import 'package:collection_qr_flutter/data/provider/group/member_list/member_list_provider.dart';
-// // import 'package:collection_qr_flutter/domain/model/group/members_listing/members_listing_model.dart';
-// // import 'package:collection_qr_flutter/presentation/groups/member/member_page.dart';
+// // import 'package:e_Collect/data/provider/group/group_delte/group_delete_provider.dart';
+// // import 'package:e_Collect/data/provider/group/member_list/member_list_provider.dart';
+// // import 'package:e_Collect/domain/model/group/members_listing/members_listing_model.dart';
+// // import 'package:e_Collect/presentation/groups/member/member_page.dart';
 // // import 'package:flutter/material.dart';
 // // import 'package:provider/provider.dart';
 // // import '../../../../core/colors.dart';

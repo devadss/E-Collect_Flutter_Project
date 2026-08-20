@@ -1,5 +1,5 @@
-import 'package:collection_qr_flutter/data/repository/group/member_delete/member_delete_repository.dart';
-import 'package:collection_qr_flutter/domain/model/group/member_delete/member_delete.dart';
+import 'package:e_Collect/data/repository/group/member_delete/member_delete_repository.dart';
+import 'package:e_Collect/domain/model/group/member_delete/member_delete.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
 

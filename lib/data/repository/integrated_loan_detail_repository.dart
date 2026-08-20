@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:collection_qr_flutter/domain/interface/integrated_loan_details_interface.dart';
+import 'package:e_Collect/domain/interface/integrated_loan_details_interface.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 

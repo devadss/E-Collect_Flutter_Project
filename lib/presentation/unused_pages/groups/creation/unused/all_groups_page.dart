@@ -1,5 +1,5 @@
 // import 'package:flutter/material.dart';
-// import 'package:collection_qr_flutter/core/colors.dart';
+// import 'package:e_Collect/core/colors.dart';
 //
 // import '../group_homepage/detail_page/group_detail_page.dart';
 // import 'create_group_page.dart';

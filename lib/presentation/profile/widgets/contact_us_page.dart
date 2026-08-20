@@ -1,5 +1,5 @@
 
-import 'package:collection_qr_flutter/core/constants.dart';
+import 'package:e_Collect/core/constants.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

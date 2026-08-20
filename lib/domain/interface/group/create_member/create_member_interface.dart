@@ -1,4 +1,4 @@
-import 'package:collection_qr_flutter/domain/model/group/member_creation/member_creation_model.dart';
+import 'package:e_Collect/domain/model/group/member_creation/member_creation_model.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class CreateMemberInterface {

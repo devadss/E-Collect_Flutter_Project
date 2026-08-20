@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:collection_qr_flutter/core/constants.dart';
-import 'package:collection_qr_flutter/domain/interface/group/bank_account_interface.dart';
-import 'package:collection_qr_flutter/domain/model/group/bank_account/bank_detail_model.dart';
+import 'package:e_Collect/core/constants.dart';
+import 'package:e_Collect/domain/interface/group/bank_account_interface.dart';
+import 'package:e_Collect/domain/model/group/bank_account/bank_detail_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 

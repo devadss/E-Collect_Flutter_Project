@@ -1,4 +1,4 @@
-import 'package:collection_qr_flutter/domain/model/group/member_delete/member_delete.dart';
+import 'package:e_Collect/domain/model/group/member_delete/member_delete.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class MemberDeleteInterface{

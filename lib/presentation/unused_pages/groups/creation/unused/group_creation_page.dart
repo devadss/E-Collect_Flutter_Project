@@ -1,4 +1,4 @@
-// import 'package:collection_qr_flutter/core/colors.dart';
+// import 'package:e_Collect/core/colors.dart';
 // import 'package:flutter/material.dart';
 // import 'package:permission_handler/permission_handler.dart';
 //

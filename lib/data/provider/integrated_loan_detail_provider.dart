@@ -1,7 +1,8 @@
-import 'package:collection_qr_flutter/data/repository/integrated_loan_detail_repository.dart';
-import 'package:collection_qr_flutter/domain/model/integrated_loan_detail_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
+
+import '../../domain/model/integrated_loan_detail_model.dart';
+import '../repository/integrated_loan_detail_repository.dart';
 
 class IntegratedLoanDetailProvider with ChangeNotifier{
   final IntegratedLoanDetailRepository _integratedLoanDetailRepository;

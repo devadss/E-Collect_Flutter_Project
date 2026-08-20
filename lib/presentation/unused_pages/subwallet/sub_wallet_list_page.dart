@@ -1,5 +1,5 @@
-// import 'package:collection_qr_flutter/core/colors.dart';
-// import 'package:collection_qr_flutter/subwallet/sub_wallet_creation_page.dart';
+// import 'package:e_Collect/core/colors.dart';
+// import 'package:e_Collect/subwallet/sub_wallet_creation_page.dart';
 // import 'package:flutter/material.dart';
 //
 // class  SubWalletListPage extends StatefulWidget {

@@ -1,4 +1,4 @@
-// import 'package:collection_qr_flutter/core/alerts.dart';
+// import 'package:e_Collect/core/alerts.dart';
 // import 'package:flutter/material.dart';
 // import 'package:google_fonts/google_fonts.dart'; // Add this to pubspec.yaml if not already
 // import '../../../core/colors.dart'; // Assuming `home1` color is defined there

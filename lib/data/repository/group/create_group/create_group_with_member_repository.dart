@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:collection_qr_flutter/core/constants.dart';
-import 'package:collection_qr_flutter/data/service/error_handler.dart';
-import 'package:collection_qr_flutter/domain/interface/group/group_creation/create_group_with_member_interface.dart';
-import 'package:collection_qr_flutter/domain/model/group/group_creation/group_with_member.dart';
+import 'package:e_Collect/core/constants.dart';
+import 'package:e_Collect/data/service/error_handler.dart';
+import 'package:e_Collect/domain/interface/group/group_creation/create_group_with_member_interface.dart';
+import 'package:e_Collect/domain/model/group/group_creation/group_with_member.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';

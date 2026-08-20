@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'package:collection_qr_flutter/core/constants.dart';
-import 'package:collection_qr_flutter/domain/interface/loan_cash_collection_interface.dart';
-import 'package:collection_qr_flutter/domain/model/loan_cash_collect_model.dart';
+import 'package:e_Collect/core/constants.dart';
+import 'package:e_Collect/domain/interface/loan_cash_collection_interface.dart';
+import 'package:e_Collect/domain/model/loan_cash_collect_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';

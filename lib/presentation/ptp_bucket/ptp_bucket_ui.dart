@@ -1,5 +1,5 @@
-import 'package:collection_qr_flutter/core/colors.dart';
-import 'package:collection_qr_flutter/presentation/ptp_bucket/ptp_page.dart';
+import 'package:e_Collect/core/colors.dart';
+import 'package:e_Collect/presentation/ptp_bucket/ptp_page.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/utils.dart';

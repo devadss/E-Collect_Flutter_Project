@@ -1,5 +1,5 @@
-import 'package:collection_qr_flutter/domain/model/e_collect/payment/response/payment_response_fail.dart';
-import 'package:collection_qr_flutter/domain/model/e_collect/payment/response/payment_response_success.dart';
+import 'package:e_Collect/domain/model/e_collect/payment/response/payment_response_fail.dart';
+import 'package:e_Collect/domain/model/e_collect/payment/response/payment_response_success.dart';
 
 import '../cash/cash_model.dart';
 

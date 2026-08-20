@@ -1,6 +1,8 @@
 import 'dart:io';
-import 'package:collection_qr_flutter/core/colors.dart';
 import 'package:flutter/material.dart';
+
+import '../presentation/merchant/pages/all-groups.dart';
+import 'colors.dart' hide home1;
 
 String baseUrl = "";
 String dopBaseUrl = "";
@@ -17,7 +19,7 @@ RegExp regExp = RegExp(pattern);
 
 AlertDialog exitAlert(BuildContext context){
   return AlertDialog(
-    icon: const Icon(Icons.warning_amber, color: home1,size: 30,),
+    icon: Icon(Icons.warning_amber, color: home1,size: 30,),
     alignment: Alignment.center,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.all(Radius.circular(10))

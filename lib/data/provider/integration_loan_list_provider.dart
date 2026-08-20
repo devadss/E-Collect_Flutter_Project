@@ -1,5 +1,5 @@
-import 'package:collection_qr_flutter/data/repository/integration_loan_repository.dart';
-import 'package:collection_qr_flutter/domain/model/integrated_loan_list_model.dart';
+import 'package:e_Collect/data/repository/integration_loan_repository.dart';
+import 'package:e_Collect/domain/model/integrated_loan_list_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
 

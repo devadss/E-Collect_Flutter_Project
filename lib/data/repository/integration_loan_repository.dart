@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:collection_qr_flutter/domain/interface/integrated_loan_list_interface.dart';
-import 'package:collection_qr_flutter/domain/model/integrated_loan_list_model.dart';
+import 'package:e_Collect/domain/interface/integrated_loan_list_interface.dart';
+import 'package:e_Collect/domain/model/integrated_loan_list_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 

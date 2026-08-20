@@ -1,5 +1,5 @@
-import 'package:collection_qr_flutter/core/general.dart';
-import 'package:collection_qr_flutter/data/repository/group/bank_account_update_repository.dart';
+import 'package:e_Collect/core/general.dart';
+import 'package:e_Collect/data/repository/group/bank_account_update_repository.dart';
 import 'package:flutter/cupertino.dart';
 import '../../../domain/model/group/bank_account/bank_update_model.dart';
 

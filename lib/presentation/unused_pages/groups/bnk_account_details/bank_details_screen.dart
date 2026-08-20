@@ -1,7 +1,7 @@
-// import 'package:collection_qr_flutter/data/provider/group/bank_detail_provider.dart';
-// import 'package:collection_qr_flutter/presentation/auth/authetication_page/google_pin_code_page.dart';
+// import 'package:e_Collect/data/provider/group/bank_detail_provider.dart';
+// import 'package:e_Collect/presentation/auth/authetication_page/google_pin_code_page.dart';
 // import 'package:flutter/material.dart';
-// import 'package:collection_qr_flutter/core/colors.dart';
+// import 'package:e_Collect/core/colors.dart';
 // import 'package:provider/provider.dart';
 // import '../../../data/provider/group/bank_account_update_provider.dart';
 // import '../../../data/provider/group/update_group_provider.dart';
