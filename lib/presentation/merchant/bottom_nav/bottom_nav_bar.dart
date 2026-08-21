@@ -28,11 +28,19 @@ class _BottomNavBarState extends State<BottomNavBar> {
   String branCode = "";
   String eCollectBranchID = "";
   String eCollectAgentID = "";
+  String eCollectUserRole = "";
   String eCollectUserToken = "";
+  bool eCollectActiveStatus= false;
+  bool eCollectVerifyStatus= false;
   String eCollectUserName = "";
   String eCollectMerchantId = "";
   String eCollectMerchantNumber = "";
+  String eCollectMerchantEmail = "";
+  String eCollectMerchantRegName = "";
+  String eCollectBranchName = "";
+  String eCollectCommRate = "";
   String fcmToken = "";
+  String eCollectUserID = "";
   List<String> type = [];
   List<String> eCollectUrlList = [];
   bool isLoading = true;
@@ -62,7 +70,16 @@ class _BottomNavBarState extends State<BottomNavBar> {
       SharedPref.shared.getECollectMerchantName(),
       SharedPref.shared.getECollectMerchantID(),
       SharedPref.shared.getECollectUserNumber(),
-      SharedPref.shared.getFcmToken()
+      SharedPref.shared.getFcmToken(),
+      SharedPref.shared.getECollectUserID(),
+      SharedPref.shared.getECollectUserEmail(),
+      SharedPref.shared.getECollectMerchantRegName(),
+      SharedPref.shared.getECollectBranchName(),
+      SharedPref.shared.getECollectUserRole(),
+      SharedPref.shared.getECollectCommRate(),
+      SharedPref.shared.getECollectActiveStatus(),
+      SharedPref.shared.getECollectVerifyStatus(),
+      SharedPref.shared.getECollectMerchantIntegrationStatus(),
     ]);
     eCollectBranchID  = result[0] as String; //01
     eCollectAgentID = result[1] as String; //1021
@@ -72,6 +89,14 @@ class _BottomNavBarState extends State<BottomNavBar> {
     eCollectMerchantId = result[5] as String; //1021
     eCollectMerchantNumber = result[6] as String; //1021
     fcmToken = result[7] as String; //1021
+    eCollectUserID = result[8] as String; //1021
+    eCollectMerchantEmail = result[9] as String; //1021
+    eCollectMerchantRegName = result[10] as String; //1021
+    eCollectBranchName = result[11] as String; //1021
+    eCollectUserRole = result[12] as String; //1021
+    eCollectCommRate = result[13] as String; //1021
+    eCollectActiveStatus = result[14] as bool; //1021
+    eCollectVerifyStatus = result[15] as bool; //1021
     if (!mounted) return;
 
     debugPrint("=================================");
@@ -133,7 +158,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
           label: 'RD Dues',
           icon: Icons.event_repeat,
           page: RdDueDetailPage(
-            eCollectBranchID: eCollectBranchID, eCollectAgentID: eCollectAgentID,
+            eCollectBranchID: eCollectBranchID,
+            eCollectAgentID: eCollectAgentID,
             eCollectUserToken: eCollectUserToken,
             eCollectUrlList:  eCollectUrlList,),
         ),
@@ -229,16 +255,33 @@ class _BottomNavBarState extends State<BottomNavBar> {
     // -------------------------------------------------------------------------
     // COMMON PROFILE
     // -------------------------------------------------------------------------
-
     items.add(
       NavItem(
         label: 'Profile',
         icon: Icons.person,
-        page:  ProfileHomePage(eCollectMerchantName: eCollectUserName,
-          eCollectMerchantNumber: eCollectMerchantNumber, eCollectMerchantID: eCollectMerchantId, eCollectFcmToken:fcmToken,),
+        page:  ProfileHomePage(
+          profileData:
+          ProfileData(
+              userId: eCollectUserID,
+              agentCode: eCollectAgentID,
+              agentName: eCollectUserName,
+              mobileNumber: eCollectMerchantNumber,
+              email: eCollectMerchantEmail,
+              role: eCollectUserRole,
+              merchantName: eCollectMerchantRegName,
+              merchantId:eCollectMerchantId,
+              branchName: eCollectBranchName,
+              branchCode: eCollectBranchID,
+              commissionRate: eCollectCommRate,
+              eCollectFcmToken: fcmToken,
+              isActive: eCollectActiveStatus,
+              isVerified: eCollectVerifyStatus,
+              isIntegrated: integrationStatus == "Y"? true:false,
+              enabledProducts: type
+          ),
+        ),
       ),
     );
-
     return items;
   }
 

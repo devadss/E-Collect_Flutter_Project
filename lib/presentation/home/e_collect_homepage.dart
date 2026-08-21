@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:e_Collect/core/colors.dart';
 import 'package:e_Collect/domain/model/e_collect/transaction_report/transaction_ok_report.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -112,20 +113,58 @@ class ECollectHomepageState extends State<ECollectHomepage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildAnimatedHeader(context, MediaQuery.of(context).size),
-              transactionDataCard("Total Transaction Amount", "₹ 48000"),
+              transactionDataCard(
+                "Total Transaction Amount",
+                "₹ 48,000",
+                icon: Icons.currency_rupee_rounded,
+                accentColor: Colors.indigo,
+                isPrimary: true,
+              ),
+
+              const SizedBox(height: 4),
+
               Row(
                 children: [
                   Expanded(
-                      child: transactionDataCard("Total Transactions", "1500")),
-                  Expanded(child: transactionDataCard("Successful", "1000")),
+                    child: transactionDataCard(
+                      "Total Transactions",
+                      "1500",
+                      icon: Icons.receipt_long_rounded,
+                      accentColor: Colors.blue,
+                    ),
+                  ),
+                  Expanded(
+                    child: transactionDataCard(
+                      "Successful",
+                      "1000",
+                      icon: Icons.check_rounded,
+                      accentColor: Colors.green,
+                    ),
+                  ),
                 ],
               ),
+
               Row(
                 children: [
-                  Expanded(child: transactionDataCard("Pending", "10")),
-                  Expanded(child: transactionDataCard("Failed", "3")),
+                  Expanded(
+                    child: transactionDataCard(
+                      "Pending",
+                      "10",
+                      icon: Icons.schedule_rounded,
+                      accentColor: Colors.orange,
+                    ),
+                  ),
+                  Expanded(
+                    child: transactionDataCard(
+                      "Failed",
+                      "3",
+                      icon: Icons.close_rounded,
+                      accentColor: Colors.red,
+                    ),
+                  ),
                 ],
               ),
+
               SizedBox(
                 height: 10,
               ),
@@ -305,131 +344,94 @@ class ECollectHomepageState extends State<ECollectHomepage> {
       ),
     );
   }
-
-  Padding transactionDataCard(String label, String totalTransactionAmount) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Container(
-        padding: EdgeInsets.all(10),
-        width: double.infinity,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: label == "Pending"
-                ? Colors.orange.shade50
-                : label == "Successful"
-                    ? Colors.green.shade50
-                    : label == "Failed"
-                        ? Colors.red.shade50
-                        :
-            label == "Total Transactions"?Colors.blue.shade50:
-            Colors.white,
-            boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 2)]),
-        child: Row(
-          children: [
-            // label == "Total Transaction Amount"?
-            //     SizedBox.shrink():
-            CircleAvatar(
-              backgroundColor: label == "Total Transactions"
-                  ? Colors.blue.shade100
-                  : label == "Successful"
-                      ? Colors.green.shade100
-                      : label == "Pending"
-                          ? Colors.orange.shade100
-                          : label == "Failed"
-                              ? Colors.red.shade100
-                              :
-              label== "Total Transaction Amount"?
-                  Colors.yellow.shade100:
-              Colors.white,
-              child:
-              label == "Total Transactions"?
-              Icon(
-                Icons.list_alt_rounded,
-                color: Colors.blue,
-              ):
-              label == "Successful"?
-              Icon(
-                Icons.check_circle,
-                color: Colors.green,
-              ):
-              label == "Pending"?
-              Icon(
-                Icons.timelapse,
-                color: Colors.orange,
-              ):
-              label == "Total Transaction Amount"?
-              Icon(
-                Icons.currency_rupee_outlined,
-                color: Colors.orange,
-              )
-                  :label == "Failed"?
-              Icon(
-                Icons.error_outline_outlined,
-                color: Colors.red,
-              ):SizedBox.shrink(),
-            ),
-            SizedBox(width: 5,),
-            Flexible(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(label, style: TextStyle(fontSize: 12),),
-                  BlocBuilder<PaymentTransactionBloc, TransactionState>(
-                    builder: (BuildContext context, TransactionState state) {
-                      if (state is TransactionReportSuccessState) {
-                        return label == "Total Transaction Amount"
-                            ? Text(
-                                state.finalTotal.toString(),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w700, fontSize: 17),
-                              )
-                            : label == "Total Transactions"
-                                ? Text(
-                          overflow: TextOverflow.ellipsis,
-                                    state.transactionSuccessModel
-                                        .transactionOkReport.pagination.pageSize
-                                        .toString(),
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 17),
-                                  )
-                                : label == "Pending"
-                                    ? Text(
-                                        state.pendingCount.toString(),
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 17),
-                                      )
-                                    : label == "Successful"
-                                        ? Text(
-                                            state.successCount.toString(),
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: 17),
-                                          )
-                                        : Text(
-                                            state.failCount.toString(),
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: 17),
-                                          );
-                      }
-                      return Text(
-                        "0.0",
-                        style:
-                            TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
+  Widget transactionDataCard(
+      String label,
+      String value, {
+        required IconData icon,
+        required Color accentColor,
+        bool isPrimary = false,
+      }) {
+    return Container(
+      margin: const EdgeInsets.all(6),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: accentColor.withOpacity(0.12),
         ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: accentColor.withOpacity(0.10),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Icon(
+              icon,
+              color: accentColor,
+              size: 22,
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                BlocBuilder<PaymentTransactionBloc, TransactionState>(
+                  builder: (context, state) {
+                    String displayValue = "0";
+
+                    if (state is TransactionReportSuccessState) {
+                      if (label == "Total Transaction Amount") {
+                        displayValue = state.finalTotal.toString();
+                      } else if (label == "Total Transactions") {
+                        displayValue = state.transactionSuccessModel
+                            .transactionOkReport.pagination.pageSize
+                            .toString();
+                      } else if (label == "Successful") {
+                        displayValue = state.successCount.toString();
+                      } else if (label == "Pending") {
+                        displayValue = state.pendingCount.toString();
+                      } else if (label == "Failed") {
+                        displayValue = state.failCount.toString();
+                      }
+                    }
+
+                    return Text(
+                      displayValue,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: isPrimary ? 24 : 19,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.grey.shade900,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
+
 final List<String> bannerImages = [
   "assets/images/cq1.webp",
   "assets/images/cq2.webp",
@@ -440,6 +442,95 @@ final List<String> bannerImages = [
   "assets/images/cq7.webp",
 ];
 
+  Widget _buildAnimatedBannerCarousel(Size size) {
+    return Column(
+      children: [
+        CarouselSlider.builder(
+          carouselController: _carouselController,
+          itemCount: bannerImages.length,
+          options: CarouselOptions(
+            height: size.height * 0.17,
+            autoPlay: true,
+            autoPlayInterval: const Duration(seconds: 4),
+            autoPlayAnimationDuration: const Duration(milliseconds: 800),
+            autoPlayCurve: Curves.easeInOutCubic,
+
+            // Modern full-width feel
+            viewportFraction: 0.92,
+            enlargeCenterPage: false,
+
+            // Gives a little breathing room
+            padEnds: true,
+
+            onPageChanged: (index, reason) {
+              setState(() {
+                currentBannerIndex = index;
+              });
+            },
+          ),
+          itemBuilder: (context, index, realIndex) {
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.easeOutCubic,
+              margin: const EdgeInsets.symmetric(
+                horizontal: 5,
+                vertical: 4,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(22),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 18,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(22),
+                child: Image.asset(
+                  bannerImages[index],
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
+                  filterQuality: FilterQuality.high,
+                ),
+              ),
+            );
+          },
+        ),
+
+        const SizedBox(height: 10),
+
+        // Modern page indicator
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(
+            bannerImages.length,
+                (index) {
+              final isActive = currentBannerIndex == index;
+
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOutCubic,
+                margin: const EdgeInsets.symmetric(horizontal: 3),
+                width: isActive ? 22 : 7,
+                height: 6,
+                decoration: BoxDecoration(
+                  color: isActive
+                      ? Colors.black87
+                      : Colors.black.withValues(alpha: 0.18),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+/*
   Widget _buildAnimatedBannerCarousel(Size size) {
     return SizedBox(
       height: size.height * 0.15,
@@ -508,7 +599,8 @@ final List<String> bannerImages = [
       ),
     );
   }
-
+*/
+/*
   Widget _buildAnimatedHeader(BuildContext context, Size size) {
 
     final headerColor =Colors.white;
@@ -580,6 +672,114 @@ final List<String> bannerImages = [
       ),
     );
   }
+*/
+  Widget _buildAnimatedHeader(BuildContext context, Size size) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(20, 14, 20, 18),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Row(
+          children: [
+            // Avatar
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+        color: const Color(0xFFFCE7F1),
+              ),
+              child: Center(
+                child:
+                Icon(Icons.person, color: home1,)
+
+              ),
+            ),
+
+            const SizedBox(width: 13),
+
+            // Greeting
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Welcome back ",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey.shade500,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    formattedName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: -0.3,
+                      color: Color(0xFF171717),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Notification button
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF7F7F8),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: Colors.black.withValues(alpha: 0.05),
+                ),
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Icon(
+                    Icons.notifications_none_rounded,
+                    size: 23,
+                    color: Colors.grey.shade800,
+                  ),
+
+                  Positioned(
+                    top: 10,
+                    right: 10,
+                    child: Container(
+                      width: 7,
+                      height: 7,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFEA307B),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    )
+        .animate()
+        .fadeIn(
+      duration: const Duration(milliseconds: 400),
+    )
+        .slideY(
+      begin: -0.08,
+      end: 0,
+      curve: Curves.easeOutCubic,
+    );
+  }
+
 }
 
 

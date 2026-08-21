@@ -393,25 +393,25 @@ class _MobileNumberVerificationPageState
                       width: double.infinity,
                       child: confirmButton(context),
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      OnboardingScreen()));
-                        },
-                        child: Center(
-                          child: Text(
-                            "New User ? Register Now",
-                            style: TextStyle(
-                                color: const Color(0xFFEA307B),
-                                fontWeight: FontWeight.w700),
-                          ),
-                        ))
+                    // SizedBox(
+                    //   height: 20,
+                    // ),
+                    // InkWell(
+                    //     onTap: () {
+                    //       Navigator.push(
+                    //           context,
+                    //           MaterialPageRoute(
+                    //               builder: (BuildContext context) =>
+                    //                   OnboardingScreen()));
+                    //     },
+                    //     child: Center(
+                    //       child: Text(
+                    //         "New User ? Register Now",
+                    //         style: TextStyle(
+                    //             color: const Color(0xFFEA307B),
+                    //             fontWeight: FontWeight.w700),
+                    //       ),
+                    //     ))
                   ],
                 ),
               ),

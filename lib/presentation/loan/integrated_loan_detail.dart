@@ -17,7 +17,6 @@ import '../qr_code/widgets/generate_qr_code_page.dart';
 //THE LOAN CUSTOMER DETAILS PAGE 2 OF 2....
 
 class IntegratedLoanDetail extends StatefulWidget {
-
   final String loanDate;
   final String name;
   final String custNo;
@@ -81,10 +80,10 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
   String? agentOriginId;
   String? paymentSessionId;
   String? branchCode;
-  String selectedMethod ="";
+  String selectedMethod = "";
   String? selectedAccNumber;
   TextEditingController editAmountController = TextEditingController();
-   Color? dominantColor;
+  Color? dominantColor;
   String? eCollectAgentNumber;
   String? subagentPhoneNumber;
   String? eCollectMerchantName;
@@ -99,7 +98,10 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
     super.initState();
     loadSharedPrefs();
     createColorPallet("assets/images/person.png");
-    editAmountController.text = (widget.principalAmountBalance+widget.interestAmountBalance+widget.penalInterestAmountBalance).toString();
+    editAmountController.text = (widget.principalAmountBalance +
+            widget.interestAmountBalance +
+            widget.penalInterestAmountBalance)
+        .toString();
   }
 
   void validateInput() {
@@ -112,12 +114,14 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
           TextPosition(offset: editAmountController.text.length));
     }
   }
+
   @override
   void dispose() {
     editAmountController.dispose();
     editAmountController.removeListener(validateInput);
     super.dispose();
   }
+
   Future<void> loadSharedPrefs() async {
     final result = await Future.wait([
       SharedPref.shared.getSubAgentCode(),
@@ -144,562 +148,632 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
       SharedPref.shared.getECollectUserToken(),
     ]);
 
-      cid = result[2];
-      eCollectMerchantName = result[13];
-      eCollectAgentId = result[14];
-      eCollectAgentOriginId = result[15];
-      eCollectAgentNumber = result[16];
-      eCollectAgentEmail = result[17];
-      eCollectAgentBranchCode = result[18];
-      eCollectAgentMerchantID = result[19];
-      eCollectCollectionType = "LOAN";
+    cid = result[2];
+    eCollectMerchantName = result[13];
+    eCollectAgentId = result[14];
+    eCollectAgentOriginId = result[15];
+    eCollectAgentNumber = result[16];
+    eCollectAgentEmail = result[17];
+    eCollectAgentBranchCode = result[18];
+    eCollectAgentMerchantID = result[19];
+    eCollectCollectionType = "LOAN";
 
-      subAgentCodeNew = result[9];
-      branchCode = result[12];
-      agent_Id = result[1];
-      agentId = result[0];
-      corpCode = result[3];
-      agentIdValue = result[7];
-      token = result[4];
-      agentName = result[11];
-      agentOriginId = result[6];
-      agentEmail = result[5];
-      agentMobile = result[10];
-      subagentId = result[8];
+    subAgentCodeNew = result[9];
+    branchCode = result[12];
+    agent_Id = result[1];
+    agentId = result[0];
+    corpCode = result[3];
+    agentIdValue = result[7];
+    token = result[4];
+    agentName = result[11];
+    agentOriginId = result[6];
+    agentEmail = result[5];
+    agentMobile = result[10];
+    subagentId = result[8];
     eCollectToken = result[21];
 
     editAmountController.addListener(validateInput);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
-      appBar: AppBar(
-        title: Text(
-          textAlign: TextAlign.center,
-          "LOAN DETAILS",
-          style: TextStyle(color: home1, fontWeight: FontWeight.w700),
-        ),
-      ),
-      body:
-
-      SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            _buildHeaderCard(),
-            const SizedBox(height: 20),
-            _buildLoanDetailsCard(),
-            const SizedBox(height: 24),
-
-            // Modern Card Container for Amount Sections
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                _buildModernAmountSection(
-                  title: "Principal Amount",
-                  received: widget.principalAmountReceived.toString(),
-                  balance: widget.principalAmountBalance.toString(),
-                  overdue: widget.principalAmountOverdue.toString(),
-                  current: widget.principalAmountReceipt.toString(),
-                  icon: Icons.account_balance_wallet_rounded,
-                  color: const Color(0xFF4361EE),
-                ),
-
-                _buildSectionDivider(),
-
-                _buildModernAmountSection(
-                  title: "Interest",
-                  received: widget.interestAmountReceived.toString(),
-                  balance: widget.interestAmountBalance.toString(),
-                  overdue: widget.interestAmountOverdue.toString(),
-                  current: widget.interestAmountReceipt.toString(),
-                  icon: Icons.trending_up_rounded,
-                  color: const Color(0xFFE76F51),
-                ),
-
-                _buildSectionDivider(),
-
-                _buildModernAmountSection(
-                  title: "Penal Interest",
-                  received: widget.penalInterestAmountReceived.toString(),
-                  balance: widget.penalInterestAmountBalance.toString(),
-                  overdue: widget.penalInterestAmountOverdue.toString(),
-                  current: widget.penalInterestAmountReceipt.toString(),
-                  icon: Icons.warning_amber_rounded,
-                  color: const Color(0xFFE63946),
-                ),
-              ],
-            ),
+        backgroundColor: Colors.grey.shade50,
+        appBar: AppBar(
+          title: Text(
+            textAlign: TextAlign.center,
+            "LOAN DETAILS",
+            style: TextStyle(color: home1, fontWeight: FontWeight.w700),
           ),
-
-            const SizedBox(height: 24),
-
-            // Modern Button Row
-            Row(
-              children: [
-                Expanded(
-                  child: _buildModernButton(
-                    text: "QR",
-                    icon: Icons.qr_code,
-                    onPressed: () {
-                      showModalBottomSheet(
-                        isScrollControlled: true,
-                        context: context,
-                        builder: (BuildContext context) {
-                          return Padding(
-                            padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).viewInsets.bottom,
-                            ),
-                            child: Container(
-                              padding: const EdgeInsets.all(24),
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(30),
-                                ),
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        "QR Amount",
-                                        style: TextStyle(
-                                          color: Color(0xFF4361EE),
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                          editAmountController.text = widget.loanAmount.toString();
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.all(8),
-                                          decoration: BoxDecoration(
-                                            color: Colors.grey.shade100,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: const Icon(
-                                            Icons.close,
-                                            size: 20,
-                                            color: Color(0xFF64748B),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 20),
-                                  TextField(
-                                    keyboardType: TextInputType.number,
-                                    controller: editAmountController,
-                                    decoration: InputDecoration(
-                                      prefixIcon: const Icon(
-                                        Icons.currency_rupee,
-                                        color: Color(0xFF4361EE),
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                        borderSide: BorderSide(color: Colors.grey.shade300),
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                        borderSide: BorderSide(color: Colors.grey.shade300),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                        borderSide: const BorderSide(color: Color(0xFF4361EE), width: 2),
-                                      ),
-                                      labelText: "Enter collection amount",
-                                      labelStyle: TextStyle(color: Colors.grey.shade600),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          selectedMethod = "QR";
-                                        });
-                                        context.read<PaymentBloc>().add(QrPaymentEvent(QrPaymentRequestModel(
-                                            agentDetails: AgentDetails(agentName: eCollectMerchantName!,
-                                                agentId: eCollectAgentId!,
-                                                agentOrginId: eCollectAgentOriginId!,
-                                                agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
-                                            customerDetails: CustomerDetails(customerName:
-                                            widget.name, customerPhone: eCollectAgentNumber!,
-                                               customerAccno: widget.loanNumber,
-                                                customerId: widget.custNo, customerEmail: eCollectAgentEmail!),
-                                            collectionType: "LOAN",
-                                            amount: double.parse(editAmountController.text),
-                                            note: 'Payment for Order',
-                                            qrSource: 'MOB',
-                                            source: 'COLLECTION',
-                                            merchantId: int.parse(eCollectAgentMerchantID!)), eCollectToken!));
-                                           // merchantId: 1)
-                                       // ));
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: home1,
-                                        foregroundColor: Colors.white,
-                                        padding: const EdgeInsets.symmetric(vertical: 14),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(16),
-                                        ),
-                                      ),
-                                      child: const Text(
-                                        "Generate Payment QR",
-                                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    isOutlined: false,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildModernButton(
-                    text: "Link",
-                    icon: Icons.link,
-                    onPressed: () {
-                      showModalBottomSheet(
-                        isScrollControlled: true,
-                        context: context,
-                        builder: (BuildContext context) {
-                          return Padding(
-                            padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).viewInsets.bottom,
-                            ),
-                            child: Container(
-                              padding: const EdgeInsets.all(24),
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(30),
-                                ),
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        "Link Amount",
-                                        style: TextStyle(
-                                          color: Color(0xFF4361EE),
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                          editAmountController.text = widget.loanAmount.toString();
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.all(8),
-                                          decoration: BoxDecoration(
-                                            color: Colors.grey.shade100,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: const Icon(
-                                            Icons.close,
-                                            size: 20,
-                                            color: Color(0xFF64748B),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 20),
-                                  TextField(
-                                    keyboardType: TextInputType.number,
-                                    controller: editAmountController,
-                                    decoration: InputDecoration(
-                                      prefixIcon: const Icon(
-                                        Icons.currency_rupee,
-                                        color: Color(0xFF4361EE),
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                        borderSide: BorderSide(color: Colors.grey.shade300),
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                        borderSide: BorderSide(color: Colors.grey.shade300),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                        borderSide: const BorderSide(color: Color(0xFF4361EE), width: 2),
-                                      ),
-                                      labelText: "Enter collection amount",
-                                      labelStyle: TextStyle(color: Colors.grey.shade600),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          selectedMethod = "Link";
-                                        });
-                                        context.read<PaymentBloc>().add(LinkPaymentEvent(QrPaymentRequestModel(
-                                            agentDetails: AgentDetails(agentName: eCollectMerchantName!,
-                                                agentId: eCollectAgentId!,
-                                                agentOrginId: eCollectAgentOriginId!,
-                                                agentPhone: eCollectAgentNumber!,
-                                                agentEmail: eCollectAgentEmail!,
-                                                agentBranch: int.parse(eCollectAgentBranchCode!)),
-                                            customerDetails: CustomerDetails(customerName:
-                                            widget.name,
-                                                customerPhone: eCollectAgentNumber!,
-                                                customerAccno: widget.loanNumber,
-                                                customerId: widget.custNo, customerEmail: eCollectAgentEmail!),
-                                            collectionType: eCollectCollectionType!,
-                                            amount: double.parse(editAmountController.text),
-                                            note: 'Payment for Order',
-                                            qrSource: 'MOB',
-                                            source: 'COLLECTION',
-                                            merchantId: int.parse(eCollectAgentMerchantID!)), eCollectToken!));
-                                            //merchantId:1)));
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: home1,
-                                        foregroundColor: Colors.white,
-                                        padding: const EdgeInsets.symmetric(vertical: 14),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(16),
-                                        ),
-                                      ),
-                                      child: const Text(
-                                        "Send Payment Link",
-                                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    isOutlined: false,
-                  ),
-                ),
-                const SizedBox(width: 12),
-
-                Expanded(
-                  child: _buildModernButton(
-                    text: "Cash",
-                    icon: Icons.money_rounded,
-                    onPressed: () {
-                      showModalBottomSheet(
-                        isScrollControlled: true,
-                        context: context,
-                        builder: (BuildContext context) {
-                          return Padding(
-                            padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).viewInsets.bottom,
-                            ),
-                            child: Container(
-                              padding: const EdgeInsets.all(24),
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(30),
-                                ),
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        "Collection Amount",
-                                        style: TextStyle(
-                                          color: Color(0xFF4361EE),
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                          editAmountController.text = widget.loanAmount.toString();
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.all(8),
-                                          decoration: BoxDecoration(
-                                            color: Colors.grey.shade100,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: const Icon(
-                                            Icons.close,
-                                            size: 20,
-                                            color: Color(0xFF64748B),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 20),
-                                  TextField(
-                                    keyboardType: TextInputType.number,
-                                    controller: editAmountController,
-                                    decoration: InputDecoration(
-                                      prefixIcon: const Icon(
-                                        Icons.currency_rupee,
-                                        color: Color(0xFF4361EE),
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                        borderSide: BorderSide(color: Colors.grey.shade300),
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                        borderSide: BorderSide(color: Colors.grey.shade300),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                        borderSide: const BorderSide(color: Color(0xFF4361EE), width: 2),
-                                      ),
-                                      labelText: "Enter collection amount",
-                                      labelStyle: TextStyle(color: Colors.grey.shade600),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                        paymentConfirmation(
-                                          context,
-                                          agentName!,
-                                          widget.loanNumber,
-                                          widget.custNo,
-                                          editAmountController.text,
-                                        );
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: home1,
-                                        foregroundColor: Colors.white,
-                                        padding: const EdgeInsets.symmetric(vertical: 14),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(16),
-                                        ),
-                                      ),
-                                      child: const Text(
-                                        "Confirm Collection",
-                                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    isOutlined: true,
-                  ),
-                ),
-                const SizedBox(width: 12),
-
-              ],
-            ),
-            BlocListener<PaymentBloc, PaymentState>(
-              listener: (BuildContext context, PaymentState state) {
-                if (state is QrPaymentLoaderState) {
-                  utl.showProgressDialog(context);
-                }
-                if (state is QrPaymentSuccessState) {
-                  Navigator.pop(context);
-                  print(state.qrPaymentSuccess.paymentResponseSuccess.paymentUrl);
-                  selectedMethod == "Link"
-                      ? Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              PaymentLinkRequestUi(
-                                customerMobileNumber: "",
-                                paymentLink: state.qrPaymentSuccess
-                                    .paymentResponseSuccess.paymentUrl,
-                              )))
-                      : Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => NewQrCodePage(
-                        paymentSessionId: state.qrPaymentSuccess
-                            .paymentResponseSuccess.paymentUrl,
-                        amount: editAmountController.text,
-                        custName: "",
-                        custPhone: "custNumber",
-                        custId: "CustId",
-                      ),
-                    ),
-                  );
-                } else if (state is QrPaymentFailState) {
-                  Navigator.pop(context);
-                  showAlertDialog(
-                      state.qrPaymentFail.paymentFailResponse.message, context);
-                  print(state.qrPaymentFail.paymentFailResponse.message);
-                } else if (state is CashPaymentSuccessState) {
-                  Navigator.pop(context);
-                  showAlert(
-                      state.cashPaymentSuccess.cashPaymentSuccessResponse
-                          .status ==
-                          "Y"
-                          ? "SUCCESS"
-                          : "FAILED",
-                      state.cashPaymentSuccess.cashPaymentSuccessResponse.message,
-                      context);
-                  print(state
-                      .cashPaymentSuccess.cashPaymentSuccessResponse.message);
-                } else if (state is CashPaymentFailState) {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                  showAlertDialog(state.cashPaymentFail.payemtError, context);
-                  print(state.cashPaymentFail.payemtError);
-                }
-              },
-              child: SizedBox(),
-            ),
-
-          ],
         ),
-      )
-    );
-  }
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              _buildHeaderCard(),
+              const SizedBox(height: 20),
+              _buildLoanDetailsCard(),
+              const SizedBox(height: 24),
 
+              // Modern Card Container for Amount Sections
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    _buildModernAmountSection(
+                      title: "Principal Amount",
+                      received: widget.principalAmountReceived.toString(),
+                      balance: widget.principalAmountBalance.toString(),
+                      overdue: widget.principalAmountOverdue.toString(),
+                      current: widget.principalAmountReceipt.toString(),
+                      icon: Icons.account_balance_wallet_rounded,
+                      color: const Color(0xFF4361EE),
+                    ),
+                    _buildSectionDivider(),
+                    _buildModernAmountSection(
+                      title: "Interest",
+                      received: widget.interestAmountReceived.toString(),
+                      balance: widget.interestAmountBalance.toString(),
+                      overdue: widget.interestAmountOverdue.toString(),
+                      current: widget.interestAmountReceipt.toString(),
+                      icon: Icons.trending_up_rounded,
+                      color: const Color(0xFFE76F51),
+                    ),
+                    _buildSectionDivider(),
+                    _buildModernAmountSection(
+                      title: "Penal Interest",
+                      received: widget.penalInterestAmountReceived.toString(),
+                      balance: widget.penalInterestAmountBalance.toString(),
+                      overdue: widget.penalInterestAmountOverdue.toString(),
+                      current: widget.penalInterestAmountReceipt.toString(),
+                      icon: Icons.warning_amber_rounded,
+                      color: const Color(0xFFE63946),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Modern Button Row
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildModernButton(
+                      text: "QR",
+                      icon: Icons.qr_code,
+                      onPressed: () {
+                        showModalBottomSheet(
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                bottom:
+                                    MediaQuery.of(context).viewInsets.bottom,
+                              ),
+                              child: Container(
+                                padding: const EdgeInsets.all(24),
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(30),
+                                  ),
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          "QR Amount",
+                                          style: TextStyle(
+                                            color: Color(0xFF4361EE),
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                            editAmountController.text =
+                                                widget.loanAmount.toString();
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.all(8),
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey.shade100,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: const Icon(
+                                              Icons.close,
+                                              size: 20,
+                                              color: Color(0xFF64748B),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 20),
+                                    TextField(
+                                      keyboardType: TextInputType.number,
+                                      controller: editAmountController,
+                                      decoration: InputDecoration(
+                                        prefixIcon: const Icon(
+                                          Icons.currency_rupee,
+                                          color: Color(0xFF4361EE),
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          borderSide: BorderSide(
+                                              color: Colors.grey.shade300),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          borderSide: BorderSide(
+                                              color: Colors.grey.shade300),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          borderSide: const BorderSide(
+                                              color: Color(0xFF4361EE),
+                                              width: 2),
+                                        ),
+                                        labelText: "Enter collection amount",
+                                        labelStyle: TextStyle(
+                                            color: Colors.grey.shade600),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            selectedMethod = "QR";
+                                          });
+                                          context.read<PaymentBloc>().add(QrPaymentEvent(
+                                              QrPaymentRequestModel(
+                                                  agentDetails: AgentDetails(
+                                                      agentName:
+                                                          eCollectMerchantName!,
+                                                      agentId: eCollectAgentId!,
+                                                      agentOrginId:
+                                                          eCollectAgentOriginId!,
+                                                      agentPhone:
+                                                          eCollectAgentNumber!,
+                                                      agentEmail:
+                                                          eCollectAgentEmail!,
+                                                      agentBranch: int.parse(
+                                                          eCollectAgentBranchCode!)),
+                                                  customerDetails: CustomerDetails(
+                                                      customerName: widget.name,
+                                                      customerPhone:
+                                                          eCollectAgentNumber!,
+                                                      customerAccno:
+                                                          widget.loanNumber,
+                                                      customerId: widget.custNo,
+                                                      customerEmail:
+                                                          eCollectAgentEmail!),
+                                                  collectionType: "LOAN",
+                                                  amount: double.parse(
+                                                      editAmountController
+                                                          .text),
+                                                  note: 'Payment for Order',
+                                                  qrSource: 'MOB',
+                                                  source: 'COLLECTION',
+                                                  merchantId: int.parse(
+                                                      eCollectAgentMerchantID!)),
+                                              eCollectToken!));
+                                          // merchantId: 1)
+                                          // ));
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: home1,
+                                          foregroundColor: Colors.white,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 14),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          "Generate Payment QR",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      isOutlined: false,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildModernButton(
+                      text: "Link",
+                      icon: Icons.link,
+                      onPressed: () {
+                        showModalBottomSheet(
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                bottom:
+                                    MediaQuery.of(context).viewInsets.bottom,
+                              ),
+                              child: Container(
+                                padding: const EdgeInsets.all(24),
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(30),
+                                  ),
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          "Link Amount",
+                                          style: TextStyle(
+                                            color: Color(0xFF4361EE),
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                            editAmountController.text =
+                                                widget.loanAmount.toString();
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.all(8),
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey.shade100,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: const Icon(
+                                              Icons.close,
+                                              size: 20,
+                                              color: Color(0xFF64748B),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 20),
+                                    TextField(
+                                      keyboardType: TextInputType.number,
+                                      controller: editAmountController,
+                                      decoration: InputDecoration(
+                                        prefixIcon: const Icon(
+                                          Icons.currency_rupee,
+                                          color: Color(0xFF4361EE),
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          borderSide: BorderSide(
+                                              color: Colors.grey.shade300),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          borderSide: BorderSide(
+                                              color: Colors.grey.shade300),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          borderSide: const BorderSide(
+                                              color: Color(0xFF4361EE),
+                                              width: 2),
+                                        ),
+                                        labelText: "Enter collection amount",
+                                        labelStyle: TextStyle(
+                                            color: Colors.grey.shade600),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            selectedMethod = "Link";
+                                          });
+                                          context.read<PaymentBloc>().add(LinkPaymentEvent(
+                                              QrPaymentRequestModel(
+                                                  agentDetails: AgentDetails(
+                                                      agentName:
+                                                          eCollectMerchantName!,
+                                                      agentId: eCollectAgentId!,
+                                                      agentOrginId:
+                                                          eCollectAgentOriginId!,
+                                                      agentPhone:
+                                                          eCollectAgentNumber!,
+                                                      agentEmail:
+                                                          eCollectAgentEmail!,
+                                                      agentBranch: int.parse(
+                                                          eCollectAgentBranchCode!)),
+                                                  customerDetails: CustomerDetails(
+                                                      customerName: widget.name,
+                                                      customerPhone:
+                                                          eCollectAgentNumber!,
+                                                      customerAccno:
+                                                          widget.loanNumber,
+                                                      customerId: widget.custNo,
+                                                      customerEmail:
+                                                          eCollectAgentEmail!),
+                                                  collectionType:
+                                                      eCollectCollectionType!,
+                                                  amount: double.parse(
+                                                      editAmountController
+                                                          .text),
+                                                  note: 'Payment for Order',
+                                                  qrSource: 'MOB',
+                                                  source: 'COLLECTION',
+                                                  merchantId: int.parse(
+                                                      eCollectAgentMerchantID!)),
+                                              eCollectToken!));
+                                          //merchantId:1)));
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: home1,
+                                          foregroundColor: Colors.white,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 14),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          "Send Payment Link",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      isOutlined: false,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildModernButton(
+                      text: "Cash",
+                      icon: Icons.money_rounded,
+                      onPressed: () {
+                        showModalBottomSheet(
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                bottom:
+                                    MediaQuery.of(context).viewInsets.bottom,
+                              ),
+                              child: Container(
+                                padding: const EdgeInsets.all(24),
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(30),
+                                  ),
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          "Collection Amount",
+                                          style: TextStyle(
+                                            color: Color(0xFF4361EE),
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                            editAmountController.text =
+                                                widget.loanAmount.toString();
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.all(8),
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey.shade100,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: const Icon(
+                                              Icons.close,
+                                              size: 20,
+                                              color: Color(0xFF64748B),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 20),
+                                    TextField(
+                                      keyboardType: TextInputType.number,
+                                      controller: editAmountController,
+                                      decoration: InputDecoration(
+                                        prefixIcon: const Icon(
+                                          Icons.currency_rupee,
+                                          color: Color(0xFF4361EE),
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          borderSide: BorderSide(
+                                              color: Colors.grey.shade300),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          borderSide: BorderSide(
+                                              color: Colors.grey.shade300),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          borderSide: const BorderSide(
+                                              color: Color(0xFF4361EE),
+                                              width: 2),
+                                        ),
+                                        labelText: "Enter collection amount",
+                                        labelStyle: TextStyle(
+                                            color: Colors.grey.shade600),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          paymentConfirmation(
+                                            context,
+                                            agentName!,
+                                            widget.loanNumber,
+                                            widget.custNo,
+                                            editAmountController.text,
+                                          );
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: home1,
+                                          foregroundColor: Colors.white,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 14),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          "Confirm Collection",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      isOutlined: true,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                ],
+              ),
+              BlocListener<PaymentBloc, PaymentState>(
+                listener: (BuildContext context, PaymentState state) {
+                  if (state is QrPaymentLoaderState) {
+                    utl.showProgressDialog(context);
+                  }
+                  if (state is QrPaymentSuccessState) {
+                    Navigator.pop(context);
+                    // print(state.qrPaymentSuccess.paymentResponseSuccess.paymentUrl);
+                    selectedMethod == "Link"
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    PaymentLinkRequestUi(
+                                      customerMobileNumber: "",
+                                      paymentLink: state.qrPaymentSuccess
+                                          .paymentResponseSuccess.paymentUrl,
+                                    )))
+                        : Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NewQrCodePage(
+                                paymentSessionId: state.qrPaymentSuccess
+                                    .paymentResponseSuccess.paymentUrl,
+                                amount: editAmountController.text,
+                                custName: "",
+                                custPhone: "custNumber",
+                                custId: "CustId",
+                              ),
+                            ),
+                          );
+                  } else if (state is QrPaymentFailState) {
+                    Navigator.pop(context);
+                    showAlertDialog(
+                        state.qrPaymentFail.paymentFailResponse.message,
+                        context);
+                    // print(state.qrPaymentFail.paymentFailResponse.message);
+                  } else if (state is CashPaymentSuccessState) {
+                    Navigator.pop(context);
+                    showAlert(
+                        state.cashPaymentSuccess.cashPaymentSuccessResponse
+                                    .status ==
+                                "Y"
+                            ? "SUCCESS"
+                            : "FAILED",
+                        state.cashPaymentSuccess.cashPaymentSuccessResponse
+                            .message,
+                        context);
+                    // print(state.cashPaymentSuccess.cashPaymentSuccessResponse.message);
+                  } else if (state is CashPaymentFailState) {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                    showAlertDialog(state.cashPaymentFail.payemtError, context);
+                    // print(state.cashPaymentFail.payemtError);
+                  }
+                },
+                child: SizedBox(),
+              ),
+            ],
+          ),
+        ));
+  }
 
   Widget _buildSectionDivider() {
     return Padding(
@@ -740,9 +814,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                   color: color,
                 ),
               ),
-
               const SizedBox(width: 10),
-
               Expanded(
                 child: Text(
                   title,
@@ -767,9 +839,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                   value: received,
                 ),
               ),
-
               const SizedBox(width: 10),
-
               Expanded(
                 child: _buildAmountItem(
                   label: "Balance",
@@ -790,9 +860,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                   isOverdue: true,
                 ),
               ),
-
               const SizedBox(width: 10),
-
               Expanded(
                 child: _buildAmountItem(
                   label: "Current Receipt",
@@ -837,14 +905,10 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w500,
-              color: isOverdue
-                  ? const Color(0xFFE63946)
-                  : Colors.grey.shade600,
+              color: isOverdue ? const Color(0xFFE63946) : Colors.grey.shade600,
             ),
           ),
-
           const SizedBox(height: 4),
-
           Text(
             value,
             maxLines: 1,
@@ -852,18 +916,17 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w700,
-              color: isOverdue
-                  ? const Color(0xFFE63946)
-                  : Colors.black87,
+              color: isOverdue ? const Color(0xFFE63946) : Colors.black87,
             ),
           ),
         ],
       ),
     );
   }
+
   BoxDecoration _modernCardDecoration() {
     return BoxDecoration(
-     // color: dominantColor?.withAlpha(150),
+      // color: dominantColor?.withAlpha(150),
       color: Colors.white,
       borderRadius: BorderRadius.circular(20),
       boxShadow: [
@@ -873,7 +936,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
           offset: const Offset(0, 2),
         ),
         BoxShadow(
-          color: Colors.black.withValues(alpha:0.02),
+          color: Colors.black.withValues(alpha: 0.02),
           blurRadius: 20,
           offset: const Offset(0, 4),
         ),
@@ -926,18 +989,19 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
         await PaletteGeneratorMaster.fromImageProvider(
       imageProvider,
       maximumColorCount: 16,
-      generateHarmony: true,      // Generate color harmony
+      generateHarmony: true, // Generate color harmony
     );
     setState(() {
       dominantColor = paletteGenerator.dominantColor?.color;
     });
-if(utl.printStatementStatus){
-  print("dominantColor = $dominantColor");
-}
+    if (utl.printStatementStatus) {
+      print("dominantColor = $dominantColor");
+    }
 
     //final Color? vibrantColor = paletteGenerator.vibrantColor?.color;
-   // final Color? mutedColor = paletteGenerator.mutedColor?.color;
+    // final Color? mutedColor = paletteGenerator.mutedColor?.color;
   }
+
   Widget _buildHeaderCard() {
     return Container(
       padding: const EdgeInsets.all(20),
@@ -949,7 +1013,7 @@ if(utl.printStatementStatus){
             imageProvider: AssetImage("assets/images/cq1.webp"),
             child: Container(
               decoration: BoxDecoration(
-              //  color: dominantColor,
+                //  color: dominantColor,
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(100),
                 boxShadow: [
@@ -964,7 +1028,7 @@ if(utl.printStatementStatus){
                 padding: const EdgeInsets.all(5.0),
                 child: CircleAvatar(
                   radius: 40,
-                 backgroundImage: AssetImage("assets/images/cq1.webp"),
+                  backgroundImage: AssetImage("assets/images/cq1.webp"),
                 ),
               ),
             ),
@@ -972,15 +1036,13 @@ if(utl.printStatementStatus){
           const SizedBox(width: 16),
           Expanded(
             child: Column(
-
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
                     Expanded(
                       child: Text(
-
-                       widget.name,
+                        widget.name,
                         style: const TextStyle(
                           overflow: TextOverflow.ellipsis,
                           fontSize: 18,
@@ -992,8 +1054,10 @@ if(utl.printStatementStatus){
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    SizedBox(width: 10,),
-                   /* Container(
+                    SizedBox(
+                      width: 10,
+                    ),
+                    /* Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: const Color(0xFF10B981).withValues(alpha:0.1),
@@ -1027,7 +1091,7 @@ if(utl.printStatementStatus){
                     Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF4361EE).withValues(alpha:0.1),
+                        color: const Color(0xFF4361EE).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Icon(
@@ -1047,42 +1111,46 @@ if(utl.printStatementStatus){
                     ),
                   ],
                 ),
-                Divider(color: Colors.grey.shade200,),
-
-                Row(children: [
-                  InkWell(
-                    onTap: (){
-                      utl.openGoogleMaps(9.992079734802246,   76.27655792236328);
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.blue.withValues(alpha:0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.location_on_outlined,
-                            size: 12,
-                            color: Colors.blue,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            "View Customer Location",
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
+                Divider(
+                  color: Colors.grey.shade200,
+                ),
+                Row(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        utl.openGoogleMaps(
+                            9.992079734802246, 76.27655792236328);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.location_on_outlined,
+                              size: 12,
                               color: Colors.blue,
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 4),
+                            Text(
+                              "View Customer Location",
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-
-                ],)
+                  ],
+                )
               ],
             ),
           ),
@@ -1090,6 +1158,7 @@ if(utl.printStatementStatus){
       ),
     );
   }
+
   Widget _buildLoanDetailsCard() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -1105,9 +1174,7 @@ if(utl.printStatementStatus){
               color: home2,
             ),
           ),
-
           const SizedBox(height: 12),
-
           GridView.count(
             crossAxisCount: 2,
             shrinkWrap: true,
@@ -1154,10 +1221,10 @@ if(utl.printStatementStatus){
   }
 
   Widget _buildDetailItem(
-      IconData icon,
-      String label,
-      String value,
-      ) {
+    IconData icon,
+    String label,
+    String value,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 10,
@@ -1184,9 +1251,7 @@ if(utl.printStatementStatus){
               color: const Color(0xFFEA307B),
             ),
           ),
-
           const SizedBox(width: 8),
-
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -1202,9 +1267,7 @@ if(utl.printStatementStatus){
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-
                 const SizedBox(height: 2),
-
                 Text(
                   value,
                   maxLines: 1,
@@ -1254,6 +1317,7 @@ if(utl.printStatementStatus){
       ),
     );
   }
+
   BoxDecoration _cardDecoration() {
     return BoxDecoration(
       color: Colors.white,
@@ -1268,15 +1332,13 @@ if(utl.printStatementStatus){
     );
   }
 
-
   Future<bool> paymentConfirmation(
-      BuildContext context,
-      String name,
-      String accNo,
-      String custId,
-      String amt,
-      )
-  async {
+    BuildContext context,
+    String name,
+    String accNo,
+    String custId,
+    String amt,
+  ) async {
     return await showDialog<bool>(
       context: context,
       barrierDismissible: false, // Prevent closing by tapping outside
@@ -1294,7 +1356,7 @@ if(utl.printStatementStatus){
               borderRadius: BorderRadius.circular(25),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha:0.2),
+                  color: Colors.black.withValues(alpha: 0.2),
                   blurRadius: 20,
                   spreadRadius: 5,
                 ),
@@ -1314,7 +1376,7 @@ if(utl.printStatementStatus){
                     width: 80,
                     height: 80,
                     decoration: BoxDecoration(
-                      color: Colors.redAccent.withValues(alpha:0.1),
+                      color: Colors.redAccent.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -1374,23 +1436,31 @@ if(utl.printStatementStatus){
                             selectedMethod = "Cash";
                           });
                           Navigator.pop(context);
-                          context.read<PaymentBloc>().add(CashPaymentEvent(QrPaymentRequestModel(
-                              agentDetails: AgentDetails(agentName: eCollectMerchantName!, agentId: eCollectAgentId!,
-                                  agentOrginId: eCollectAgentOriginId!, agentPhone: eCollectAgentNumber!,
-                                  agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
-                              customerDetails: CustomerDetails(customerName:
-                              widget.name, customerPhone: eCollectAgentNumber!,
-                                 customerAccno: widget.loanNumber,
-
-                                  customerId: widget.custNo, customerEmail: eCollectAgentEmail!),
-                              collectionType: eCollectCollectionType!,
-                              amount: double.parse(editAmountController.text),
-                              note: 'Payment for Order',
-                              qrSource: 'MOB',
-                              source: 'COLLECTION',
-                               merchantId: int.parse(eCollectAgentMerchantID!)),eCollectToken!));
-
-
+                          context.read<PaymentBloc>().add(CashPaymentEvent(
+                              QrPaymentRequestModel(
+                                  agentDetails: AgentDetails(
+                                      agentName: eCollectMerchantName!,
+                                      agentId: eCollectAgentId!,
+                                      agentOrginId: eCollectAgentOriginId!,
+                                      agentPhone: eCollectAgentNumber!,
+                                      agentEmail: eCollectAgentEmail!,
+                                      agentBranch:
+                                          int.parse(eCollectAgentBranchCode!)),
+                                  customerDetails: CustomerDetails(
+                                      customerName: widget.name,
+                                      customerPhone: eCollectAgentNumber!,
+                                      customerAccno: widget.loanNumber,
+                                      customerId: widget.custNo,
+                                      customerEmail: eCollectAgentEmail!),
+                                  collectionType: eCollectCollectionType!,
+                                  amount:
+                                      double.parse(editAmountController.text),
+                                  note: 'Payment for Order',
+                                  qrSource: 'MOB',
+                                  source: 'COLLECTION',
+                                  merchantId:
+                                      int.parse(eCollectAgentMerchantID!)),
+                              eCollectToken!));
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.redAccent,
@@ -1419,11 +1489,10 @@ if(utl.printStatementStatus){
     ).then((value) => value ?? false); // default to false if dismissed
   }
 
-
   Future<void> loanCashCollection() async {
     utl.showProgressDialog(context);
     final loanCashProvider =
-    Provider.of<LoanCashCollectionProvider>(context, listen: false);
+        Provider.of<LoanCashCollectionProvider>(context, listen: false);
     await loanCashProvider.submitCashCollection(
         agentName.toString(),
         agent_Id.toString(),
@@ -1443,9 +1512,12 @@ if(utl.printStatementStatus){
         corpCode.toString(),
         branchCode.toString(),
         "",
-        "MOB", "CASH", "", "LOAN");
+        "MOB",
+        "CASH",
+        "",
+        "LOAN");
     if (loanCashProvider.loanCashCollectionResponse != null) {
-      if(!mounted) return;
+      if (!mounted) return;
       Navigator.pop(context);
       //print(loanCashProvider.loanCashCollectionResponse?.message.toString());
       showDialog(
@@ -1460,7 +1532,7 @@ if(utl.printStatementStatus){
                     .toString());
           });
     } else {
-      if(!mounted) return;
+      if (!mounted) return;
       Navigator.pop(context);
       showDialog(
           context: context,
@@ -1470,7 +1542,6 @@ if(utl.printStatementStatus){
           });
     }
   }
-
 
   AlertDialog linkShareAlert(BuildContext context, bool status, String msg) {
     return AlertDialog(

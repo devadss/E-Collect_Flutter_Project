@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -695,547 +694,1558 @@ class _EcollectTransactionDetailState extends State<EcollectTransactionDetail> {
   @override
   Widget build(BuildContext context) {
     final txn = widget.paymentTransaction;
-    final bool isSuccess = txn.status == "SUCCESS";
+
+    final String status = txn.status.toString().toUpperCase();
+
+    final bool isSuccess = status == "SUCCESS";
+    final bool isPending = status.startsWith("PENDING");
+    final bool isFailed =
+        status.startsWith("FAIL") || status.startsWith("ERROR");
+
+    final Color statusColor = isSuccess
+        ? const Color(0xFF16A34A)
+        : isPending
+        ? const Color(0xFFD97706)
+        : const Color(0xFFDC2626);
+
+    final Color statusBackground = isSuccess
+        ? const Color(0xFFF0FDF4)
+        : isPending
+        ? const Color(0xFFFFF7ED)
+        : const Color(0xFFFEF2F2);
+
+    final String customerName =
+    txn.customerName.toString().trim().isEmpty
+        ? "Unknown Customer"
+        : txn.customerName.toString();
+
+    final String initial = customerName.isNotEmpty
+        ? customerName[0].toUpperCase()
+        : "?";
 
     return Screenshot(
       controller: _screenshotController,
+
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFF7F7F8),
+
         appBar: buildAppBar(),
+
         body: Stack(
           children: [
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  // Connection status pill — hidden during screenshot
-                  // capture so it doesn't appear in the shared image.
-                  if (!isTakingSS)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: _isConnected
-                                ? Colors.green[100]
-                                : Colors.orange[100],
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                _isConnected
-                                    ? Icons.check_circle
-                                    : Icons.print_disabled_rounded,
-                                color:
-                                _isConnected ? Colors.green : Colors.orange,
-                                size: 14,
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                _connectionStatus,
-                                style: TextStyle(
-                                  color: _isConnected
-                                      ? Colors.green
-                                      : Colors.orange,
-                                  fontSize: 11,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      padding: EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 3,
-                            spreadRadius: 1,
-                          )
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: isSuccess
-                                      ? Colors.green.shade50
-                                      : Colors.orange.shade50,
-                                ),
-                                child: Row(children: [
-                                  isSuccess
-                                      ? const Icon(Icons.check_circle,
-                                      color: Colors.green)
-                                      : const Icon(Icons.pending_actions,
-                                      color: Colors.orange),
-                                  Text(
-                                    txn.status,
-                                    style: TextStyle(
-                                      color: isSuccess
-                                          ? Colors.green
-                                          : Colors.orange,
-                                    ),
-                                  ),
-                                ]),
-                              ),
-                              CircleAvatar(
-                                backgroundColor: Colors.blue.shade50,
-                                child: const Icon(
-                                    Icons.chrome_reader_mode_outlined),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text("Amount", style: TextStyle(fontSize: 12)),
-                              const Text("Order ID", style: TextStyle(fontSize: 11)),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "₹ ${txn.amount.toStringAsFixed(2)}",
-                                style: const TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.w700),
-                              ),
-                              Container(
-                                  padding: EdgeInsets.all(7),
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.indigo.shade50),
-                                  child: Text(
-                                      textAlign: TextAlign.end,
-                                      txn.orderId,
-                                      style: const TextStyle(fontSize: 11,color:Colors.grey,fontStyle:FontStyle.italic,fontWeight: FontWeight.w700))),
 
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
-                              Text("Payment Mode",
-                                  style: TextStyle(fontSize: 12)),
-                              Spacer(flex: 1,),
-                              Icon(Icons.date_range, color: Colors.grey,size: 16,),
-                              SizedBox(width: 5,),
-                              Text("Transaction Date",
-                                  style: TextStyle(fontSize: 11)),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(txn.paymentMode,
-                                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, fontStyle:FontStyle.italic, color: Colors.grey)),
-                              Text(
-                                DateFormat('dd MMM yyyy, hh:mm a').format(txn.createdAt),
-                                style:  TextStyle(fontSize: 11, fontStyle:FontStyle.italic, color: Colors.grey, fontWeight: FontWeight.w700),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        color: isSuccess
-                            ? Colors.green.shade50
-                            : Colors.red.shade50,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          isSuccess
-                              ? const Icon(Icons.check_circle,
-                              color: Colors.green)
-                              : const Icon(Icons.warning_amber,
-                              color: Colors.orange),
-                          isSuccess
-                              ? Center(
-                            child: Text(
-                              txn.responseMessage,
-                              style: const TextStyle(
-                                  color: Colors.green, fontSize: 10),
-                            ),
-                          )
-                              : Text(
-                            txn.responseMessage,
-                            style: const TextStyle(
-                                color: Colors.red, fontSize: 10),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 2,
-                            spreadRadius: 1,
-                          )
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Transaction Information",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 12,
-                            ),
-                          ),
-                          const SizedBox(height: 15),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text("Transaction ID",
-                                  style: TextStyle(fontSize: 11)),
-                              const SizedBox(height: 10),
-                              Expanded(
-                                child: Text(textAlign: TextAlign.end,txn.transactionId,
-                                    style: const TextStyle(fontSize: 11)),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Divider(color: Colors.grey.shade300),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: const Text("Payment Gateway Transaction ID",
-                                    style: TextStyle(fontSize: 11)),
-                              ),
-                              const SizedBox(height: 10),
-                              Expanded(
-                                child: Text(textAlign: TextAlign.end,txn.paymentGatewayTransactionId,
-                                    style: const TextStyle(fontSize: 11)),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Divider(color: Colors.grey.shade300),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text("Description",
-                                  style: TextStyle(fontSize: 11)),
-                              Text(txn.description,
-                                  style: const TextStyle(fontSize: 11)),
-                            ],
-                          ),
-                          Divider(color: Colors.grey.shade300),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text("Status",
-                                  style: TextStyle(fontSize: 11)),
-                              Container(
-                                padding: EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: isSuccess
-                                      ? Colors.green.shade50
-                                      : Colors.yellow.shade50,
-                                ),
-                                child: Text(
-                                  txn.status,
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w700,
-                                    color: isSuccess
-                                        ? Colors.green
-                                        : Colors.orangeAccent,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Divider(color: Colors.grey.shade300),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text("Response Message",
-                                  style: TextStyle(fontSize: 11)),
-                              const Spacer(flex: 1),
-                              Expanded(
-                                child: Text(textAlign: TextAlign.end,txn.responseMessage,
-                                    style: const TextStyle(fontSize: 10)),
-                              ),
-                            ],
-                          ),
-                          Divider(color: Colors.grey.shade300),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text("Created At",
-                                  style: TextStyle(fontSize: 11)),
-                              const Spacer(flex: 1),
-                              Text(
-                                DateFormat('dd MMM yyyy, hh:mm a')
-                                    .format(txn.createdAt),
-                                style: const TextStyle(fontSize: 11),
-                              ),
-                            ],
-                          ),
-                          Divider(color: Colors.grey.shade300),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text("Completed At",
-                                  style: TextStyle(fontSize: 11)),
-                              const Spacer(flex: 1),
-                              Text(
-                                // completedAt is nullable — show a plain
-                                // label instead of the literal string
-                                // "null" when a transaction hasn't
-                                // completed yet.
-                                txn.completedAt != null
-                                    ? DateFormat('dd MMM yyyy, hh:mm a')
-                                    .format(txn.completedAt!)
-                                    : 'Not completed',
-                                style: const TextStyle(fontSize: 11),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 2,
-                            spreadRadius: 1,
-                          )
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Customer Information",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 12,
-                            ),
-                          ),
-                          const SizedBox(height: 15),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Icon(Icons.person_2_outlined,
-                                  color: Colors.blue, size: 15),
-                              const SizedBox(width: 5),
-                              const Text("Customer Name",
-                                  style: TextStyle(fontSize: 11)),
-                              const Spacer(flex: 1),
-                              Text(txn.customerName,
-                                  style: const TextStyle(fontSize: 11)),
-                            ],
-                          ),
-                          const SizedBox(height: 5),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20),
-                            child: Divider(color: Colors.grey.shade300),
-                          ),
-                          const SizedBox(height: 5),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Icon(Icons.email_outlined,
-                                  color: Colors.blue, size: 15),
-                              const SizedBox(width: 5),
-                              const Text("Email",
-                                  style: TextStyle(fontSize: 11)),
-                              const Spacer(flex: 1),
-                              Text(txn.customerEmail,
-                                  style: const TextStyle(fontSize: 11)),
-                            ],
-                          ),
-                          const SizedBox(height: 5),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20),
-                            child: Divider(color: Colors.grey.shade300),
-                          ),
-                          const SizedBox(height: 5),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Icon(Icons.phone_outlined,
-                                  color: Colors.blue, size: 15),
-                              const SizedBox(width: 5),
-                              const Text("Phone",
-                                  style: TextStyle(fontSize: 11)),
-                              const Spacer(flex: 1),
-                              Text(txn.customerPhone,
-                                  style: const TextStyle(fontSize: 11)),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                        ],
-                      ),
-                    ),
-                  ),
-                  // Print / Share actions — hidden during screenshot
-                  // capture so the buttons themselves don't appear in the
-                  // shared image.
+            SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+
+              padding: const EdgeInsets.fromLTRB(
+                18,
+                8,
+                18,
+                30,
+              ),
+
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+
+                children: [
+
+                  // =====================================================
+                  // CONNECTION STATUS
+                  // =====================================================
+
                   if (!isTakingSS)
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Material(
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(14),
-                                onTap: _isLoading ? null : _printReceipt,
-                                child: Ink(
-                                  height: 52,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(14),
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        home1,
-                                        home2.withValues(alpha: 0.85),
-                                      ],
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: home1.withValues(alpha: 0.25),
-                                        blurRadius: 10,
-                                        offset: const Offset(0, 4),
-                                      )
-                                    ],
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.center,
-                                    children: [
-                                      const Icon(Icons.print_rounded,
-                                          color: Colors.white, size: 20),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        "Print Receipt",
-                                        style: GoogleFonts.poppins(
-                                          color: Colors.white,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Material(
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(14),
-                                onTap: _takeScreenshotAndShare,
-                                child: Ink(
-                                  height: 52,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(14),
-                                    color: Colors.white,
-                                    border: Border.all(
-                                      color: home1.withValues(alpha: 0.5),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.share_rounded,
-                                          color: home1, size: 20),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        "Share",
-                                        style: GoogleFonts.poppins(
-                                          color: home1,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                    _buildConnectionStatus(),
+
+                  if (!isTakingSS)
+                    const SizedBox(height: 14),
+
+                  // =====================================================
+                  // TRANSACTION SUMMARY
+                  // =====================================================
+
+                  _buildTransactionSummary(
+                    txn: txn,
+                    status: status,
+                    statusColor: statusColor,
+                    statusBackground: statusBackground,
+                    isSuccess: isSuccess,
+                    isPending: isPending,
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  // =====================================================
+                  // RESPONSE MESSAGE
+                  // =====================================================
+
+                  _buildResponseBanner(
+                    message: txn.responseMessage,
+                    color: statusColor,
+                    background: statusBackground,
+                    isSuccess: isSuccess,
+                  ),
+
+                  const SizedBox(height: 22),
+
+                  // =====================================================
+                  // TRANSACTION DETAILS
+                  // =====================================================
+
+                  _sectionTitle("Transaction details"),
+
+                  const SizedBox(height: 9),
+
+                  _buildDetailsCard(
+                    children: [
+
+                      _detailItem(
+                        label: "Transaction ID",
+                        value: txn.transactionId,
+                        icon: Icons.receipt_long_outlined,
+                        isCopyable: true,
+                      ),
+
+                      _detailDivider(),
+
+                      _detailItem(
+                        label: "Gateway Transaction ID",
+                        value: txn.paymentGatewayTransactionId,
+                        icon: Icons.account_tree_outlined,
+                        isCopyable: true,
+                      ),
+
+                      _detailDivider(),
+
+                      _detailItem(
+                        label: "Order ID",
+                        value: txn.orderId,
+                        icon: Icons.tag_rounded,
+                        isCopyable: true,
+                      ),
+
+                      _detailDivider(),
+
+                      _detailItem(
+                        label: "Description",
+                        value: txn.description,
+                        icon: Icons.notes_outlined,
+                      ),
+
+                      _detailDivider(),
+
+                      _detailItem(
+                        label: "Payment Mode",
+                        value: txn.paymentMode,
+                        icon: Icons.account_balance_wallet_outlined,
+                      ),
+
+                      _detailDivider(),
+
+                      _detailItem(
+                        label: "Payment Channel",
+                        value: txn.paymentChannel,
+                        icon: Icons.device_hub_outlined,
+                      ),
+
+                      _detailDivider(),
+
+                      _detailItem(
+                        label: "Status",
+                        value: txn.status,
+                        icon: Icons.radio_button_checked_rounded,
+                        valueColor: statusColor,
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 22),
+
+                  // =====================================================
+                  // CUSTOMER
+                  // =====================================================
+
+                  _sectionTitle("Customer"),
+
+                  const SizedBox(height: 9),
+
+                  _buildCustomerCard(
+                    customerName: customerName,
+                    initial: initial,
+                    email: txn.customerEmail,
+                    phone: txn.customerPhone,
+                  ),
+
+                  const SizedBox(height: 22),
+
+                  // =====================================================
+                  // TIMELINE
+                  // =====================================================
+
+                  _sectionTitle("Timeline"),
+
+                  const SizedBox(height: 9),
+
+                  _buildTimeline(
+                    createdAt: txn.createdAt,
+                    completedAt: txn.completedAt,
+                    statusColor: statusColor,
+                    isSuccess: isSuccess,
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // =====================================================
+                  // ACTIONS
+                  // =====================================================
+
+                  if (!isTakingSS)
+                    _buildActionButtons(),
+
+                  const SizedBox(height: 10),
+
+                  Center(
+                    child: Text(
+                      "Transaction receipt",
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.grey.shade400,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
+                  ),
                 ],
               ),
             ),
-            // if (showFlash)
-            //   Positioned.fill(
-            //     child: IgnorePointer(
-            //       child: Container(
-            //         color: Colors.white.withValues(alpha: 0.9),
-            //       ),
-            //     ),
-            //   ),
+
+            // =========================================================
+            // LOADING
+            // =========================================================
+
             if (_isLoading || _isConnecting)
               Container(
-                color: Colors.black.withValues(alpha: 0.5),
-                child: const Center(child: CircularProgressIndicator()),
+                color: Colors.black.withValues(alpha: 0.35),
+
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
               ),
           ],
         ),
       ),
     );
   }
+  Widget _buildConnectionStatus() {
+    final Color color = _isConnected
+        ? const Color(0xFF16A34A)
+        : const Color(0xFFD97706);
+
+    return Row(
+      children: [
+
+        Container(
+          width: 7,
+          height: 7,
+
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+          ),
+        ),
+
+        const SizedBox(width: 7),
+
+        Text(
+          _connectionStatus,
+          style: TextStyle(
+            fontSize: 11,
+            color: color,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
+  Widget _buildTransactionSummary({
+    required dynamic txn,
+    required String status,
+    required Color statusColor,
+    required Color statusBackground,
+    required bool isSuccess,
+    required bool isPending,
+  }) {
+    return Container(
+      width: double.infinity,
+
+      padding: const EdgeInsets.fromLTRB(
+        20,
+        20,
+        20,
+        18,
+      ),
+
+      decoration: BoxDecoration(
+        color: Colors.white,
+
+        borderRadius: BorderRadius.circular(22),
+
+        border: Border.all(
+          color: const Color(0xFFE8E8EC),
+        ),
+      ),
+
+      child: Column(
+        children: [
+
+          // ---------------------------------------------------------
+          // STATUS
+          // ---------------------------------------------------------
+
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10,
+              vertical: 6,
+            ),
+
+            decoration: BoxDecoration(
+              color: statusBackground,
+              borderRadius: BorderRadius.circular(30),
+            ),
+
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+
+              children: [
+
+                Icon(
+                  isSuccess
+                      ? Icons.check_circle_rounded
+                      : isPending
+                      ? Icons.schedule_rounded
+                      : Icons.error_rounded,
+
+                  color: statusColor,
+                  size: 15,
+                ),
+
+                const SizedBox(width: 6),
+
+                Text(
+                  status,
+                  style: TextStyle(
+                    color: statusColor,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 18),
+
+          // ---------------------------------------------------------
+          // AMOUNT
+          // ---------------------------------------------------------
+
+          Text(
+            "₹${txn.amount.toStringAsFixed(2)}",
+
+            style: const TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.w800,
+              color: Color(0xFF18181B),
+              letterSpacing: -1,
+            ),
+          ),
+
+          const SizedBox(height: 5),
+
+          Text(
+            "Payment received",
+
+            style: TextStyle(
+              fontSize: 11,
+              color: Colors.grey.shade500,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          Container(
+            height: 1,
+            color: const Color(0xFFEDEDEF),
+          ),
+
+          const SizedBox(height: 15),
+
+          // ---------------------------------------------------------
+          // ORDER / DATE
+          // ---------------------------------------------------------
+
+          Row(
+            children: [
+
+              Expanded(
+                child: _summaryItem(
+                  label: "ORDER ID",
+                  value: "#${txn.orderId}",
+                ),
+              ),
+
+              Container(
+                width: 1,
+                height: 28,
+                color: const Color(0xFFE5E5E7),
+              ),
+
+              Expanded(
+                child: _summaryItem(
+                  label: "DATE",
+                  value: DateFormat(
+                    'dd MMM yyyy',
+                  ).format(txn.createdAt),
+                  alignment: CrossAxisAlignment.end,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+  Widget _summaryItem({
+    required String label,
+    required String value,
+    CrossAxisAlignment alignment =
+        CrossAxisAlignment.start,
+  }) {
+    return Column(
+      crossAxisAlignment: alignment,
+      children: [
+
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 8,
+            color: Color(0xFFA1A1AA),
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.7,
+          ),
+        ),
+
+        const SizedBox(height: 4),
+
+        Text(
+          value,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontSize: 11,
+            color: Color(0xFF3F3F46),
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
+    );
+  }
+  Widget _buildResponseBanner({
+    required String message,
+    required Color color,
+    required Color background,
+    required bool isSuccess,
+  }) {
+    return Container(
+      width: double.infinity,
+
+      padding: const EdgeInsets.symmetric(
+        horizontal: 13,
+        vertical: 11,
+      ),
+
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(13),
+      ),
+
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+
+        children: [
+
+          Icon(
+            isSuccess
+                ? Icons.check_circle_outline_rounded
+                : Icons.info_outline_rounded,
+            size: 17,
+            color: color,
+          ),
+
+          const SizedBox(width: 9),
+
+          Expanded(
+            child: Text(
+              message,
+              style: TextStyle(
+                fontSize: 11,
+                color: color,
+                fontWeight: FontWeight.w600,
+                height: 1.35,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  Widget _buildDetailsCard({
+    required List<Widget> children,
+  }) {
+    return Container(
+      width: double.infinity,
+
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: const Color(0xFFE8E8EC),
+        ),
+      ),
+
+      child: Column(
+        children: children,
+      ),
+    );
+  }
+  Widget _detailItem({
+    required String label,
+    required String value,
+    required IconData icon,
+    Color? valueColor,
+    bool isCopyable = false,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 15,
+        vertical: 13,
+      ),
+
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+
+        children: [
+
+          Container(
+            width: 32,
+            height: 32,
+
+            decoration: BoxDecoration(
+              color: const Color(0xFFF4F4F5),
+              borderRadius: BorderRadius.circular(9),
+            ),
+
+            child: Icon(
+              icon,
+              size: 16,
+              color: const Color(0xFF71717A),
+            ),
+          ),
+
+          const SizedBox(width: 11),
+
+          Expanded(
+            flex: 2,
+
+            child: Text(
+              label,
+
+              style: const TextStyle(
+                fontSize: 11,
+                color: Color(0xFF71717A),
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+
+          const SizedBox(width: 10),
+
+          Expanded(
+            flex: 3,
+
+            child: Row(
+              mainAxisAlignment:
+              MainAxisAlignment.end,
+
+              children: [
+
+                Flexible(
+                  child: Text(
+                    value.isEmpty ? "—" : value,
+
+                    textAlign: TextAlign.end,
+
+                    maxLines: 2,
+
+                    overflow:
+                    TextOverflow.ellipsis,
+
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: valueColor ??
+                          const Color(0xFF27272A),
+                      fontWeight:
+                      FontWeight.w600,
+                    ),
+                  ),
+                ),
+
+                if (isCopyable) ...[
+                  const SizedBox(width: 5),
+
+                  Icon(
+                    Icons.copy_rounded,
+                    size: 12,
+                    color: Colors.grey.shade400,
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  Widget _detailDivider() {
+    return const Divider(
+      height: 1,
+      thickness: 1,
+      indent: 58,
+      endIndent: 15,
+      color: Color(0xFFF0F0F2),
+    );
+  }
+  Widget _buildCustomerCard({
+    required String customerName,
+    required String initial,
+    required String email,
+    required String phone,
+  }) {
+    return Container(
+      width: double.infinity,
+
+      padding: const EdgeInsets.all(15),
+
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: const Color(0xFFE8E8EC),
+        ),
+      ),
+
+      child: Column(
+        children: [
+
+          Row(
+            children: [
+
+              Container(
+                width: 46,
+                height: 46,
+
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF4F4F5),
+                  borderRadius:
+                  BorderRadius.circular(14),
+                ),
+
+                child: Center(
+                  child: Text(
+                    initial,
+
+                    style: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF52525B),
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(width: 12),
+
+              Expanded(
+                child: Column(
+                  crossAxisAlignment:
+                  CrossAxisAlignment.start,
+
+                  children: [
+
+                    Text(
+                      customerName,
+
+                      maxLines: 1,
+
+                      overflow:
+                      TextOverflow.ellipsis,
+
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF18181B),
+                      ),
+                    ),
+
+                    const SizedBox(height: 4),
+
+                    Text(
+                      "Customer",
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.grey.shade500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 15),
+
+          _customerContactRow(
+            Icons.email_outlined,
+            email,
+          ),
+
+          const SizedBox(height: 10),
+
+          _customerContactRow(
+            Icons.phone_outlined,
+            phone,
+          ),
+        ],
+      ),
+    );
+  }
+  Widget _customerContactRow(
+      IconData icon,
+      String value,
+      ) {
+    return Row(
+      children: [
+
+        Icon(
+          icon,
+          size: 15,
+          color: const Color(0xFF71717A),
+        ),
+
+        const SizedBox(width: 9),
+
+        Expanded(
+          child: Text(
+            value.isEmpty ? "Not available" : value,
+
+            maxLines: 1,
+
+            overflow: TextOverflow.ellipsis,
+
+            style: const TextStyle(
+              fontSize: 11,
+              color: Color(0xFF52525B),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+  Widget _buildTimeline({
+    required DateTime createdAt,
+    required DateTime? completedAt,
+    required Color statusColor,
+    required bool isSuccess,
+  }) {
+    return Container(
+      width: double.infinity,
+
+      padding: const EdgeInsets.all(16),
+
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: const Color(0xFFE8E8EC),
+        ),
+      ),
+
+      child: Column(
+        children: [
+
+          _timelineItem(
+            icon: Icons.fiber_manual_record_rounded,
+            title: "Transaction created",
+            date: DateFormat(
+              'dd MMM yyyy, hh:mm a',
+            ).format(createdAt),
+            color: const Color(0xFF71717A),
+            showLine: true,
+          ),
+
+          _timelineItem(
+            icon: isSuccess
+                ? Icons.check_circle_rounded
+                : Icons.radio_button_checked_rounded,
+            title: isSuccess
+                ? "Transaction completed"
+                : "Transaction ${widget.paymentTransaction.status.toString().toLowerCase()}",
+            date: completedAt != null
+                ? DateFormat(
+              'dd MMM yyyy, hh:mm a',
+            ).format(completedAt)
+                : "Not completed",
+            color: isSuccess
+                ? statusColor
+                : const Color(0xFFA1A1AA),
+            showLine: false,
+          ),
+        ],
+      ),
+    );
+  }
+  Widget _timelineItem({
+    required IconData icon,
+    required String title,
+    required String date,
+    required Color color,
+    required bool showLine,
+  }) {
+    return Row(
+      crossAxisAlignment:
+      CrossAxisAlignment.start,
+
+      children: [
+
+        SizedBox(
+          width: 24,
+
+          child: Column(
+            children: [
+
+              Icon(
+                icon,
+                size: 13,
+                color: color,
+              ),
+
+              if (showLine)
+                Container(
+                  width: 1,
+                  height: 32,
+                  margin:
+                  const EdgeInsets.symmetric(
+                    vertical: 3,
+                  ),
+                  color: const Color(0xFFE4E4E7),
+                ),
+            ],
+          ),
+        ),
+
+        const SizedBox(width: 10),
+
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(
+              bottom: 14,
+            ),
+
+            child: Column(
+              crossAxisAlignment:
+              CrossAxisAlignment.start,
+
+              children: [
+
+                Text(
+                  title,
+
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF3F3F46),
+                  ),
+                ),
+
+                const SizedBox(height: 3),
+
+                Text(
+                  date,
+
+                  style: const TextStyle(
+                    fontSize: 10,
+                    color: Color(0xFFA1A1AA),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+  Widget _buildActionButtons() {
+    return Row(
+      children: [
+
+        Expanded(
+          child: _actionButton(
+            icon: Icons.print_outlined,
+            label: "Print",
+            filled: true,
+            onTap: _isLoading
+                ? null
+                : _printReceipt,
+          ),
+        ),
+
+        const SizedBox(width: 10),
+
+        Expanded(
+          child: _actionButton(
+            icon: Icons.share_outlined,
+            label: "Share",
+            filled: false,
+            onTap: _takeScreenshotAndShare,
+          ),
+        ),
+      ],
+    );
+  }
+  Widget _actionButton({
+    required IconData icon,
+    required String label,
+    required bool filled,
+    required VoidCallback? onTap,
+  }) {
+    const Color primary = Color(0xFFEA307B);
+
+    return Material(
+      color: Colors.transparent,
+
+      child: InkWell(
+        onTap: onTap,
+
+        borderRadius:
+        BorderRadius.circular(14),
+
+        child: Container(
+          height: 50,
+
+          decoration: BoxDecoration(
+            color: filled
+                ? primary
+                : Colors.white,
+
+            borderRadius:
+            BorderRadius.circular(14),
+
+            border: Border.all(
+              color: filled
+                  ? primary
+                  : const Color(0xFFE4E4E7),
+            ),
+          ),
+
+          child: Row(
+            mainAxisAlignment:
+            MainAxisAlignment.center,
+
+            children: [
+
+              Icon(
+                icon,
+                size: 18,
+                color: filled
+                    ? Colors.white
+                    : const Color(0xFF3F3F46),
+              ),
+
+              const SizedBox(width: 7),
+
+              Text(
+                label,
+
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: filled
+                      ? Colors.white
+                      : const Color(0xFF3F3F46),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+  Widget _sectionTitle(String title) {
+    return Text(
+      title.toUpperCase(),
+
+      style: const TextStyle(
+        fontSize: 10,
+        fontWeight: FontWeight.w800,
+        color: Color(0xFF92929A),
+        letterSpacing: 0.8,
+      ),
+    );
+  }
+  // Widget build(BuildContext context) {
+  //   final txn = widget.paymentTransaction;
+  //   final bool isSuccess = txn.status == "SUCCESS";
+  //
+  //   return Screenshot(
+  //     controller: _screenshotController,
+  //     child: Scaffold(
+  //       backgroundColor: Colors.white,
+  //       appBar: buildAppBar(),
+  //       body: Stack(
+  //         children: [
+  //           SingleChildScrollView(
+  //             child: Column(
+  //               children: [
+  //                 // Connection status pill — hidden during screenshot
+  //                 // capture so it doesn't appear in the shared image.
+  //                 if (!isTakingSS)
+  //                   Padding(
+  //                     padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
+  //                     child: Align(
+  //                       alignment: Alignment.centerLeft,
+  //                       child: Container(
+  //                         padding: const EdgeInsets.symmetric(
+  //                             horizontal: 12, vertical: 6),
+  //                         decoration: BoxDecoration(
+  //                           color: _isConnected
+  //                               ? Colors.green[100]
+  //                               : Colors.orange[100],
+  //                           borderRadius: BorderRadius.circular(20),
+  //                         ),
+  //                         child: Row(
+  //                           mainAxisSize: MainAxisSize.min,
+  //                           children: [
+  //                             Icon(
+  //                               _isConnected
+  //                                   ? Icons.check_circle
+  //                                   : Icons.print_disabled_rounded,
+  //                               color:
+  //                               _isConnected ? Colors.green : Colors.orange,
+  //                               size: 14,
+  //                             ),
+  //                             const SizedBox(width: 6),
+  //                             Text(
+  //                               _connectionStatus,
+  //                               style: TextStyle(
+  //                                 color: _isConnected
+  //                                     ? Colors.green
+  //                                     : Colors.orange,
+  //                                 fontSize: 11,
+  //                               ),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 Padding(
+  //                   padding: const EdgeInsets.all(8.0),
+  //                   child: Container(
+  //                     padding: EdgeInsets.all(20),
+  //                     decoration: BoxDecoration(
+  //                       borderRadius: BorderRadius.circular(16),
+  //                       color: Colors.white,
+  //                       boxShadow: [
+  //                         BoxShadow(
+  //                           color: Colors.black12,
+  //                           blurRadius: 3,
+  //                           spreadRadius: 1,
+  //                         )
+  //                       ],
+  //                     ),
+  //                     child: Column(
+  //                       children: [
+  //                         Row(
+  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                           children: [
+  //                             Container(
+  //                               padding: EdgeInsets.all(5),
+  //                               decoration: BoxDecoration(
+  //                                 borderRadius: BorderRadius.circular(10),
+  //                                 color: isSuccess
+  //                                     ? Colors.green.shade50
+  //                                     : Colors.orange.shade50,
+  //                               ),
+  //                               child: Row(children: [
+  //                                 isSuccess
+  //                                     ? const Icon(Icons.check_circle,
+  //                                     color: Colors.green)
+  //                                     : const Icon(Icons.pending_actions,
+  //                                     color: Colors.orange),
+  //                                 Text(
+  //                                   txn.status,
+  //                                   style: TextStyle(
+  //                                     color: isSuccess
+  //                                         ? Colors.green
+  //                                         : Colors.orange,
+  //                                   ),
+  //                                 ),
+  //                               ]),
+  //                             ),
+  //                             CircleAvatar(
+  //                               backgroundColor: Colors.blue.shade50,
+  //                               child: const Icon(
+  //                                   Icons.chrome_reader_mode_outlined),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                         const SizedBox(height: 20),
+  //                         Row(
+  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                           children: [
+  //                             const Text("Amount", style: TextStyle(fontSize: 12)),
+  //                             const Text("Order ID", style: TextStyle(fontSize: 11)),
+  //                           ],
+  //                         ),
+  //                         Row(
+  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                           children: [
+  //                             Text(
+  //                               "₹ ${txn.amount.toStringAsFixed(2)}",
+  //                               style: const TextStyle(
+  //                                   fontSize: 20, fontWeight: FontWeight.w700),
+  //                             ),
+  //                             Container(
+  //                                 padding: EdgeInsets.all(7),
+  //                                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.indigo.shade50),
+  //                                 child: Text(
+  //                                     textAlign: TextAlign.end,
+  //                                     txn.orderId,
+  //                                     style: const TextStyle(fontSize: 11,color:Colors.grey,fontStyle:FontStyle.italic,fontWeight: FontWeight.w700))),
+  //
+  //                           ],
+  //                         ),
+  //                         const SizedBox(height: 20),
+  //                         Row(
+  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                           children: const [
+  //                             Text("Payment Mode",
+  //                                 style: TextStyle(fontSize: 12)),
+  //                             Spacer(flex: 1,),
+  //                             Icon(Icons.date_range, color: Colors.grey,size: 16,),
+  //                             SizedBox(width: 5,),
+  //                             Text("Transaction Date",
+  //                                 style: TextStyle(fontSize: 11)),
+  //                           ],
+  //                         ),
+  //                         Row(
+  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                           children: [
+  //                             Text(txn.paymentMode,
+  //                                 style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, fontStyle:FontStyle.italic, color: Colors.grey)),
+  //                             Text(
+  //                               DateFormat('dd MMM yyyy, hh:mm a').format(txn.createdAt),
+  //                               style:  TextStyle(fontSize: 11, fontStyle:FontStyle.italic, color: Colors.grey, fontWeight: FontWeight.w700),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                         const SizedBox(height: 20),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 Padding(
+  //                   padding: const EdgeInsets.all(8.0),
+  //                   child: Container(
+  //                     padding: EdgeInsets.all(10),
+  //                     decoration: BoxDecoration(
+  //                       borderRadius: BorderRadius.circular(16),
+  //                       color: isSuccess
+  //                           ? Colors.green.shade50
+  //                           : Colors.red.shade50,
+  //                     ),
+  //                     child: Row(
+  //                       mainAxisAlignment: MainAxisAlignment.center,
+  //                       children: [
+  //                         isSuccess
+  //                             ? const Icon(Icons.check_circle,
+  //                             color: Colors.green)
+  //                             : const Icon(Icons.warning_amber,
+  //                             color: Colors.orange),
+  //                         isSuccess
+  //                             ? Center(
+  //                           child: Text(
+  //                             txn.responseMessage,
+  //                             style: const TextStyle(
+  //                                 color: Colors.green, fontSize: 10),
+  //                           ),
+  //                         )
+  //                             : Text(
+  //                           txn.responseMessage,
+  //                           style: const TextStyle(
+  //                               color: Colors.red, fontSize: 10),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 Padding(
+  //                   padding: const EdgeInsets.all(8.0),
+  //                   child: Container(
+  //                     width: double.infinity,
+  //                     padding: EdgeInsets.all(10),
+  //                     decoration: BoxDecoration(
+  //                       color: Colors.white,
+  //                       borderRadius: BorderRadius.circular(10),
+  //                       boxShadow: [
+  //                         BoxShadow(
+  //                           color: Colors.black12,
+  //                           blurRadius: 2,
+  //                           spreadRadius: 1,
+  //                         )
+  //                       ],
+  //                     ),
+  //                     child: Column(
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: [
+  //                         const Text(
+  //                           "Transaction Information",
+  //                           style: TextStyle(
+  //                             color: Colors.black,
+  //                             fontWeight: FontWeight.w700,
+  //                             fontSize: 12,
+  //                           ),
+  //                         ),
+  //                         const SizedBox(height: 15),
+  //                         Row(
+  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                           children: [
+  //                             const Text("Transaction ID",
+  //                                 style: TextStyle(fontSize: 11)),
+  //                             const SizedBox(height: 10),
+  //                             Expanded(
+  //                               child: Text(textAlign: TextAlign.end,txn.transactionId,
+  //                                   style: const TextStyle(fontSize: 11)),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                         const SizedBox(height: 10),
+  //                         Divider(color: Colors.grey.shade300),
+  //                         Row(
+  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                           children: [
+  //                             Expanded(
+  //                               child: const Text("Payment Gateway Transaction ID",
+  //                                   style: TextStyle(fontSize: 11)),
+  //                             ),
+  //                             const SizedBox(height: 10),
+  //                             Expanded(
+  //                               child: Text(textAlign: TextAlign.end,txn.paymentGatewayTransactionId,
+  //                                   style: const TextStyle(fontSize: 11)),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                         const SizedBox(height: 10),
+  //                         Divider(color: Colors.grey.shade300),
+  //                         const SizedBox(height: 10),
+  //                         Row(
+  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                           children: [
+  //                             const Text("Description",
+  //                                 style: TextStyle(fontSize: 11)),
+  //                             Text(txn.description,
+  //                                 style: const TextStyle(fontSize: 11)),
+  //                           ],
+  //                         ),
+  //                         Divider(color: Colors.grey.shade300),
+  //                         const SizedBox(height: 10),
+  //                         Row(
+  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                           children: [
+  //                             const Text("Status",
+  //                                 style: TextStyle(fontSize: 11)),
+  //                             Container(
+  //                               padding: EdgeInsets.all(10),
+  //                               decoration: BoxDecoration(
+  //                                 borderRadius: BorderRadius.circular(10),
+  //                                 color: isSuccess
+  //                                     ? Colors.green.shade50
+  //                                     : Colors.yellow.shade50,
+  //                               ),
+  //                               child: Text(
+  //                                 txn.status,
+  //                                 style: TextStyle(
+  //                                   fontSize: 11,
+  //                                   fontWeight: FontWeight.w700,
+  //                                   color: isSuccess
+  //                                       ? Colors.green
+  //                                       : Colors.orangeAccent,
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                         Divider(color: Colors.grey.shade300),
+  //                         const SizedBox(height: 10),
+  //                         Row(
+  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                           children: [
+  //                             const Text("Response Message",
+  //                                 style: TextStyle(fontSize: 11)),
+  //                             const Spacer(flex: 1),
+  //                             Expanded(
+  //                               child: Text(textAlign: TextAlign.end,txn.responseMessage,
+  //                                   style: const TextStyle(fontSize: 10)),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                         Divider(color: Colors.grey.shade300),
+  //                         const SizedBox(height: 10),
+  //                         Row(
+  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                           children: [
+  //                             const Text("Created At",
+  //                                 style: TextStyle(fontSize: 11)),
+  //                             const Spacer(flex: 1),
+  //                             Text(
+  //                               DateFormat('dd MMM yyyy, hh:mm a')
+  //                                   .format(txn.createdAt),
+  //                               style: const TextStyle(fontSize: 11),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                         Divider(color: Colors.grey.shade300),
+  //                         const SizedBox(height: 10),
+  //                         Row(
+  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                           children: [
+  //                             const Text("Completed At",
+  //                                 style: TextStyle(fontSize: 11)),
+  //                             const Spacer(flex: 1),
+  //                             Text(
+  //                               // completedAt is nullable — show a plain
+  //                               // label instead of the literal string
+  //                               // "null" when a transaction hasn't
+  //                               // completed yet.
+  //                               txn.completedAt != null
+  //                                   ? DateFormat('dd MMM yyyy, hh:mm a')
+  //                                   .format(txn.completedAt!)
+  //                                   : 'Not completed',
+  //                               style: const TextStyle(fontSize: 11),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 Padding(
+  //                   padding: const EdgeInsets.all(8.0),
+  //                   child: Container(
+  //                     width: double.infinity,
+  //                     padding: EdgeInsets.all(10),
+  //                     decoration: BoxDecoration(
+  //                       color: Colors.white,
+  //                       borderRadius: BorderRadius.circular(10),
+  //                       boxShadow: [
+  //                         BoxShadow(
+  //                           color: Colors.black12,
+  //                           blurRadius: 2,
+  //                           spreadRadius: 1,
+  //                         )
+  //                       ],
+  //                     ),
+  //                     child: Column(
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: [
+  //                         const Text(
+  //                           "Customer Information",
+  //                           style: TextStyle(
+  //                             color: Colors.black,
+  //                             fontWeight: FontWeight.w700,
+  //                             fontSize: 12,
+  //                           ),
+  //                         ),
+  //                         const SizedBox(height: 15),
+  //                         Row(
+  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                           children: [
+  //                             const Icon(Icons.person_2_outlined,
+  //                                 color: Colors.blue, size: 15),
+  //                             const SizedBox(width: 5),
+  //                             const Text("Customer Name",
+  //                                 style: TextStyle(fontSize: 11)),
+  //                             const Spacer(flex: 1),
+  //                             Text(txn.customerName,
+  //                                 style: const TextStyle(fontSize: 11)),
+  //                           ],
+  //                         ),
+  //                         const SizedBox(height: 5),
+  //                         Padding(
+  //                           padding: const EdgeInsets.only(left: 20),
+  //                           child: Divider(color: Colors.grey.shade300),
+  //                         ),
+  //                         const SizedBox(height: 5),
+  //                         Row(
+  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                           children: [
+  //                             const Icon(Icons.email_outlined,
+  //                                 color: Colors.blue, size: 15),
+  //                             const SizedBox(width: 5),
+  //                             const Text("Email",
+  //                                 style: TextStyle(fontSize: 11)),
+  //                             const Spacer(flex: 1),
+  //                             Text(txn.customerEmail,
+  //                                 style: const TextStyle(fontSize: 11)),
+  //                           ],
+  //                         ),
+  //                         const SizedBox(height: 5),
+  //                         Padding(
+  //                           padding: const EdgeInsets.only(left: 20),
+  //                           child: Divider(color: Colors.grey.shade300),
+  //                         ),
+  //                         const SizedBox(height: 5),
+  //                         Row(
+  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                           children: [
+  //                             const Icon(Icons.phone_outlined,
+  //                                 color: Colors.blue, size: 15),
+  //                             const SizedBox(width: 5),
+  //                             const Text("Phone",
+  //                                 style: TextStyle(fontSize: 11)),
+  //                             const Spacer(flex: 1),
+  //                             Text(txn.customerPhone,
+  //                                 style: const TextStyle(fontSize: 11)),
+  //                           ],
+  //                         ),
+  //                         const SizedBox(height: 10),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 // Print / Share actions — hidden during screenshot
+  //                 // capture so the buttons themselves don't appear in the
+  //                 // shared image.
+  //                 if (!isTakingSS)
+  //                   Padding(
+  //                     padding: const EdgeInsets.all(10),
+  //                     child: Row(
+  //                       children: [
+  //                         Expanded(
+  //                           child: Material(
+  //                             child: InkWell(
+  //                               borderRadius: BorderRadius.circular(14),
+  //                               onTap: _isLoading ? null : _printReceipt,
+  //                               child: Ink(
+  //                                 height: 52,
+  //                                 decoration: BoxDecoration(
+  //                                   borderRadius: BorderRadius.circular(14),
+  //                                   gradient: LinearGradient(
+  //                                     colors: [
+  //                                       home1,
+  //                                       home2.withValues(alpha: 0.85),
+  //                                     ],
+  //                                   ),
+  //                                   boxShadow: [
+  //                                     BoxShadow(
+  //                                       color: home1.withValues(alpha: 0.25),
+  //                                       blurRadius: 10,
+  //                                       offset: const Offset(0, 4),
+  //                                     )
+  //                                   ],
+  //                                 ),
+  //                                 child: Row(
+  //                                   mainAxisAlignment:
+  //                                   MainAxisAlignment.center,
+  //                                   children: [
+  //                                     const Icon(Icons.print_rounded,
+  //                                         color: Colors.white, size: 20),
+  //                                     const SizedBox(width: 8),
+  //                                     Text(
+  //                                       "Print Receipt",
+  //                                       style: GoogleFonts.poppins(
+  //                                         color: Colors.white,
+  //                                         fontSize: 15,
+  //                                         fontWeight: FontWeight.w600,
+  //                                       ),
+  //                                     ),
+  //                                   ],
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ),
+  //                         const SizedBox(width: 12),
+  //                         Expanded(
+  //                           child: Material(
+  //                             child: InkWell(
+  //                               borderRadius: BorderRadius.circular(14),
+  //                               onTap: _takeScreenshotAndShare,
+  //                               child: Ink(
+  //                                 height: 52,
+  //                                 decoration: BoxDecoration(
+  //                                   borderRadius: BorderRadius.circular(14),
+  //                                   color: Colors.white,
+  //                                   border: Border.all(
+  //                                     color: home1.withValues(alpha: 0.5),
+  //                                   ),
+  //                                 ),
+  //                                 child: Row(
+  //                                   mainAxisAlignment:
+  //                                   MainAxisAlignment.center,
+  //                                   children: [
+  //                                     Icon(Icons.share_rounded,
+  //                                         color: home1, size: 20),
+  //                                     const SizedBox(width: 8),
+  //                                     Text(
+  //                                       "Share",
+  //                                       style: GoogleFonts.poppins(
+  //                                         color: home1,
+  //                                         fontSize: 15,
+  //                                         fontWeight: FontWeight.w600,
+  //                                       ),
+  //                                     ),
+  //                                   ],
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //               ],
+  //             ),
+  //           ),
+  //           // if (showFlash)
+  //           //   Positioned.fill(
+  //           //     child: IgnorePointer(
+  //           //       child: Container(
+  //           //         color: Colors.white.withValues(alpha: 0.9),
+  //           //       ),
+  //           //     ),
+  //           //   ),
+  //           if (_isLoading || _isConnecting)
+  //             Container(
+  //               color: Colors.black.withValues(alpha: 0.5),
+  //               child: const Center(child: CircularProgressIndicator()),
+  //             ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   AppBar buildAppBar() {
     return AppBar(

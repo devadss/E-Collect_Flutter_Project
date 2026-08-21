@@ -70,6 +70,12 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         SharedPref.shared.setECollectUserNumber(data.loginResponse.user.mobileNumber);
         SharedPref.shared.setECollectMerchantID(data.loginResponse.user.merchantId.toString());
         SharedPref.shared.setECollectUserID(data.loginResponse.user.agentId.toString());
+        SharedPref.shared.setECollectMerchantRegName(data.loginResponse.user.merchantName.toString());
+        SharedPref.shared.setECollectBranchName(data.loginResponse.user.branchName.toString());
+        SharedPref.shared.setECollectUserRole(data.loginResponse.user.role.toString());
+        SharedPref.shared.setECollectCommRate(data.loginResponse.user.commissionRate.toString());
+        SharedPref.shared.setECollectActiveStatus(data.loginResponse.user.isActive);
+        SharedPref.shared.setECollectVerifyStatus(data.loginResponse.user.isVerified);
 
 
       } else if (data is OtpVerificationFailureModel) {

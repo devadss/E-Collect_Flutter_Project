@@ -85,6 +85,11 @@ class SharedPrefKeys {
   static const String eCollectRdclCustomerunderAgentList = "E-COLLECT_RDCL_CUSTOMER_UNDER_AGENT_LIST";
   static const String eCollectRdclDueLisUnderAgent = "E-COLLECT_RDCL_DUE_LIST_UNDER_AGENT";
   static const String eCollectMerchantBranchCode = "E-COLLECT_MERCHANT_BRANCH_CODE";
+  static const String eCollectBranchName= "E-COLLECT_BRANCH_NAME";
+  static const String eCollectUserRole= "E-COLLECT_USER_ROLE";
+  static const String eCollectCommRate= "E-COLLECT_COMM_RATE";
+  static const String eCollectMerchantRegName = "E-COLLECT_MERCHANT_REG_NAME";
+  static const String eCollectMerchantName= "E-COLLECT_MERCHANT_NAME";
   static const String eCollectBranchCode = "E-COLLECT_BRANCH_CODE";
   static const String eCollectBranchId= "E-COLLECT_BRANCH_ID";
   static const String eCollectAgentId = "E-COLLECT_AGENT_ID";
@@ -120,6 +125,8 @@ class SharedPrefKeys {
  // static const String encryptedPassword = "ENCRYPTED_PASSWORD";
   final String login = "LOGIN";
   final String eCollectLoginStatus = "E-COLLECT_LOGIN_STATUS";
+  final String eCollectActiveStatus = "E-COLLECT_ACTIVE_STATUS";
+  final String eCollectVerifyStatus = "E-COLLECT_VERIFY_STATUS";
   final String eCollectUserEmail = "E-COLLECT_USER_EMAIL";
  // final String cartLogin = "CART_LOGIN";
  // final String cardLimit = "SET_CARDLIMIT";

@@ -262,7 +262,51 @@ class SharedPref {
     return prefs.getString(SharedPrefKeys.eCollectBranchId) ?? '';
   }
 
+  Future<Future<bool>> setECollectMerchantRegName(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.eCollectMerchantRegName, value);
+  }
 
+  Future<String> getECollectMerchantRegName() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.eCollectMerchantRegName) ?? '';
+  }
+
+  Future<Future<bool>> setECollectUserRole(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.eCollectUserRole, value);
+  }
+
+  Future<String> getECollectUserRole() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.eCollectUserRole) ?? '';
+  }
+
+  Future<Future<bool>> setECollectCommRate(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.eCollectCommRate, value);
+  }
+
+  Future<String> getECollectCommRate() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.eCollectCommRate) ?? '';
+  }
+
+
+
+
+
+
+
+  Future<Future<bool>> setECollectBranchName(String value) async {
+    final prefs = await _getPrefs();
+    return prefs.setString(SharedPrefKeys.eCollectBranchName, value);
+  }
+
+  Future<String> getECollectBranchName() async {
+    final prefs = await _getPrefs();
+    return prefs.getString(SharedPrefKeys.eCollectBranchName) ?? '';
+  }
 
   Future<Future<bool>> setECollectMerchantBranchCode(String value) async {
     final prefs = await _getPrefs();
@@ -324,6 +368,30 @@ class SharedPref {
     final prefs = await _getPrefs();
     return prefs.getString(SharedPrefKeys.eCollectRdclDueLisUnderAgent) ?? '';
   }
+
+
+
+  Future<bool> getECollectActiveStatus() async {
+    final prefs = await _getPrefs();
+    return prefs.getBool(SharedPrefKeys().eCollectActiveStatus) ?? false;
+  }
+
+  Future<bool> setECollectActiveStatus(bool value) async {
+    final prefs = await _getPrefs();
+    return prefs.setBool(SharedPrefKeys().eCollectActiveStatus, value);
+  }
+
+
+  Future<bool> getECollectVerifyStatus() async {
+    final prefs = await _getPrefs();
+    return prefs.getBool(SharedPrefKeys().eCollectVerifyStatus) ?? false;
+  }
+
+  Future<bool> setECollectVerifyStatus(bool value) async {
+    final prefs = await _getPrefs();
+    return prefs.setBool(SharedPrefKeys().eCollectVerifyStatus, value);
+  }
+
 
 
 
