@@ -277,7 +277,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
               isActive: eCollectActiveStatus,
               isVerified: eCollectVerifyStatus,
               isIntegrated: integrationStatus == "Y"? true:false,
-              enabledProducts: type
+              enabledProducts: type,
+            bearerToken: eCollectUserToken
           ),
         ),
       ),

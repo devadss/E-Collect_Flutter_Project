@@ -23,6 +23,7 @@ class ProfileData{
   String? branchCode;
   String? commissionRate;
   String? eCollectFcmToken;
+  String? bearerToken;
   bool? isActive;
   bool? isVerified;
   bool? isIntegrated;
@@ -40,6 +41,7 @@ class ProfileData{
     required this.isVerified,
     required this.isIntegrated,
     required this.enabledProducts,
+    required this.bearerToken
   });
 }
 
@@ -329,6 +331,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
       widget.profileData.agentCode!,
       widget.profileData.mobileNumber!,
       widget.profileData.eCollectFcmToken!,
+      widget.profileData.bearerToken!
     );
 
     // Clears ALL SharedPreferences

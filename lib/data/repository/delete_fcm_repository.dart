@@ -11,7 +11,8 @@ class DeleteFcmTokenRepository extends DeleteFcmTokenInterface {
   Future<Either<String, String>> deleteFcmToken(
       String entityID,
       String mobNum,
-      String token
+      String token,
+      String bToken
       ) async {
     try {
       //final uri = Uri.parse("${baseUrl}api/DeleteToken");
@@ -19,12 +20,12 @@ class DeleteFcmTokenRepository extends DeleteFcmTokenInterface {
       final request = await http.post(uri,
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer $token',
+            'Authorization': 'Bearer $bToken',
           },
          // body: json.encode({"EntityId": entityID}));
           body: json.encode({
             "customerId": entityID,
-            "mobileNumber": mobNum,
+            "mobileNumber": mobNum.startsWith("+91")? mobNum : "+91$mobNum",
             "deviceType":"Android",
             "appVersion":"22.0.1",
             "deviceToken": token

@@ -35,7 +35,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   void loadSharedData() async {
     final result = await Future.wait([
       SharedPref.shared.getECollectMerchantID(),
-      SharedPref.shared.getTokenValue(),
+      SharedPref.shared.getECollectUserToken(),
       SharedPref.shared.getFcmToken(),
       SharedPref.shared.getMpinValue(),
       SharedPref.shared.getECollectUserNumber(),
@@ -49,7 +49,7 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
     if(fcmToken.isEmpty){
       print("Saving fcm");
       if(!mounted) return;
-      await saveFcmToken(custID, context, "GPIN", fcmToken, contactNum, "");
+      await saveFcmToken(custID, context, "GPIN", fcmToken, token,contactNum, "");
 
     }
     _authenticateWithBiometrics();

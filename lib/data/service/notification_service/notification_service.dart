@@ -114,6 +114,7 @@ class NotificationService {
 
   Future<void> addFcmToken(
       String token,
+      String bToken,
       String agentID,
       BuildContext context,
       String navPage,
@@ -123,24 +124,26 @@ class NotificationService {
 
     final body = {
       "customerId": agentID,
-      "mobileNumber": mobnum,
+      "mobileNumber": mobnum.startsWith("+91")? mobnum:"+91$mobnum",
       "deviceType":"Android",
       "appVersion":"22.0.1",
       "deviceToken": token.trim().toString()
     };
     final response = await http.post(
       url,
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Authorization': 'Bearer $bToken',
+        'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
 if(printStatementStatus){
   print('agentID = $agentID');
   print('mobnum = $mobnum');
+  print('bToken = $bToken');
   print('addFcmToken body = $body');
   print('addFcmToken response = ${response.body}');
   print('statusCode: ${response.statusCode}');
 }
-
     if (response.statusCode == 200) {
 
         print('stnavPageatusCode: $navPage');
@@ -203,6 +206,7 @@ Future<void> saveFcmToken(
     BuildContext context,
     String navPage,
     String tok,
+    String bToken,
     String mob,
     String mpin,
     ) async {
@@ -236,6 +240,7 @@ Future<void> saveFcmToken(
       try {
         await NotificationService().addFcmToken(
           fcmToken,
+          bToken,
           entityID,
           context,
           navPage,
