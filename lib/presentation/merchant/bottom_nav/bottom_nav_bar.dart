@@ -22,7 +22,6 @@ class BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
-
   int currentIndex = 0;
   String integrationStatus = "";
   String branCode = "";
@@ -99,11 +98,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
     eCollectVerifyStatus = result[15] as bool; //1021
     if (!mounted) return;
 
-    debugPrint("=================================");
-    debugPrint("Integration Status: [$integrationStatus]");
-    debugPrint("Branch Code: [$branCode]");
-    debugPrint("User Type: [$type]");
-    debugPrint("=================================");
+    // debugPrint("=================================");
+    // debugPrint("Integration Status: [$integrationStatus]");
+    // debugPrint("Branch Code: [$branCode]");
+    // debugPrint("User Type: [$type]");
+    // debugPrint("=================================");
 
     setState(() {
       this.integrationStatus = integrationStatus;
@@ -372,21 +371,21 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 return;
               }
       
-              debugPrint(
-                '------------------------------------------',
-              );
-      
-              debugPrint(
-                'Selected index: $index',
-              );
-      
-              debugPrint(
-                'Selected page: ${items[index].label}',
-              );
-      
-              debugPrint(
-                'Available types: $type',
-              );
+              // debugPrint(
+              //   '------------------------------------------',
+              // );
+              //
+              // debugPrint(
+              //   'Selected index: $index',
+              // );
+              //
+              // debugPrint(
+              //   'Selected page: ${items[index].label}',
+              // );
+              //
+              // debugPrint(
+              //   'Available types: $type',
+              // );
       
               setState(() {
                 currentIndex = index;

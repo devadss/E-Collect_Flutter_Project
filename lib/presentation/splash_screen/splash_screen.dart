@@ -95,7 +95,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
 
     var fcmtok = fcmToken;
-    print("fcmtok : $fcmToken");
+   // print("fcmtok : $fcmToken");
 
     if(fcmtok.isEmpty){
       getDeviceToken();
@@ -139,7 +139,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (loggedInUser) {
         if (fcmToken.isNotEmpty) {
           if (printStatementStatus) {
-            print("Gpin page from _onAnimationsComplete");
+          //  print("Gpin page from _onAnimationsComplete");
           }
 
            _navigateAfterAnimations(const GooglePinCodePage());
@@ -198,13 +198,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
               if(state is TokenVerificationSuccessState){
                 var data = state.tokenVerificationSuccessModel.tokenValidationSuccessResponse;
-                print(data.message);
+               // print(data.message);
                 data.isValid == true?
 
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) => const BottomNavBar()))
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
@@ -221,7 +217,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 SharedPref.shared.setECollectRefreshToken(state.tokenRegenerationSuccessModel.eCollectTokenGenSuccess.refreshToken);
               }
               else if(state is TokenVerificationFailureState){
-                print(state.tokenVerificationFailureModel.tokenValidationFailureResponse.message);
+               // print(state.tokenVerificationFailureModel.tokenValidationFailureResponse.message);
 
                 context.read<AuthenticationBloc>().add(TokenRegenerationEvent(ecollectTokenValue,ecollectRefreshToken ));
               }
@@ -248,17 +244,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     ),
 
                     const SizedBox(height: 10),
-
-                    // Subtitle with Fade Animation
-                    // _FadeInText(
-                    //   text: "SMART PAYMENT SOLUTION",
-                    //   style: GoogleFonts.poppins(
-                    //     fontSize: 16,
-                    //     color: black,
-                    //     letterSpacing: 1.2,
-                    //   ),
-                    //   onComplete: _onAnimationsComplete,
-                    // ),
+                    Text("Version 1.0.7", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w700),),
 
                     const SizedBox(height: 30),
 
@@ -276,6 +262,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
           ),
+
         ],
       ),
     );

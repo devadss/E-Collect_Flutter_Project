@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/e_collect_bloc/transaction_bloc/transaction_bloc.dart';
-import '../../data/storage/shared_pref_helper.dart';
 
 class ECollectHomepage extends StatefulWidget {
 final String eCollectUserName;
@@ -53,7 +52,6 @@ class ECollectHomepageState extends State<ECollectHomepage> {
   ];
 
   void getSharedData()  {
-  //  final userName = await SharedPref.shared.getECollectMerchantName();
     if (!mounted) return;
     setState(() {
       name = widget.eCollectUserName;
@@ -63,11 +61,6 @@ class ECollectHomepageState extends State<ECollectHomepage> {
       }
     });
 
-    // // Load the remaining data after the name is displayed
-    // final result = await Future.wait([
-    //   SharedPref.shared.getECollectMerchantID(),
-    //   SharedPref.shared.getECollectUserToken(),
-    // ]);
 
     if (!mounted) return;
 
@@ -76,21 +69,7 @@ class ECollectHomepageState extends State<ECollectHomepage> {
 
     getTransactionReport();
   }
-  // Future<void> getSharedData() async {
-  //   final result =  await Future.wait([
-  //   SharedPref.shared.getECollectMerchantID(),
-  //   SharedPref.shared.getECollectMerchantName(),
-  //     SharedPref.shared.getECollectUserToken(),
-  //   ]);
-  //   merchantID = result[0];
-  //   name = result[1];
-  //   eCollectToken = result[2];
-  //  formattedName=  name[0].toUpperCase() + name.substring(1);
-  //
-  //   if (!mounted) return;
-  //   getTransactionReport();
-  //
-  // }
+
 
   void getTransactionReport(){
     context.read<PaymentTransactionBloc>().add(GetTransactionByMerchant(merchantID, eCollectToken));
@@ -530,6 +509,121 @@ final List<String> bannerImages = [
     );
   }
 
+  Widget _buildAnimatedHeader(BuildContext context, Size size) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(20, 14, 20, 18),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Row(
+          children: [
+            // Avatar
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+        color: const Color(0xFFFCE7F1),
+              ),
+              child: Center(
+                child:
+                Icon(Icons.person, color: home1,)
+
+              ),
+            ),
+
+            const SizedBox(width: 13),
+
+            // Greeting
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Welcome back ",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey.shade500,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    formattedName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: -0.3,
+                      color: Color(0xFF171717),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Notification button
+            InkWell(
+              onTap: (){
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("No notifications")));
+              },
+              child: Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF7F7F8),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: Colors.black.withValues(alpha: 0.05),
+                  ),
+                ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Icon(
+                      Icons.notifications_none_rounded,
+                      size: 23,
+                      color: Colors.grey.shade800,
+                    ),
+
+                    Positioned(
+                      top: 10,
+                      right: 10,
+                      child: Container(
+                        width: 7,
+                        height: 7,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFEA307B),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    )
+        .animate()
+        .fadeIn(
+      duration: const Duration(milliseconds: 400),
+    )
+        .slideY(
+      begin: -0.08,
+      end: 0,
+      curve: Curves.easeOutCubic,
+    );
+  }
+
+}
+
+
 /*
   Widget _buildAnimatedBannerCarousel(Size size) {
     return SizedBox(
@@ -673,113 +767,5 @@ final List<String> bannerImages = [
     );
   }
 */
-  Widget _buildAnimatedHeader(BuildContext context, Size size) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(20, 14, 20, 18),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Row(
-          children: [
-            // Avatar
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-        color: const Color(0xFFFCE7F1),
-              ),
-              child: Center(
-                child:
-                Icon(Icons.person, color: home1,)
-
-              ),
-            ),
-
-            const SizedBox(width: 13),
-
-            // Greeting
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Welcome back ",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    formattedName,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: -0.3,
-                      color: Color(0xFF171717),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Notification button
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF7F7F8),
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                  color: Colors.black.withValues(alpha: 0.05),
-                ),
-              ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Icon(
-                    Icons.notifications_none_rounded,
-                    size: 23,
-                    color: Colors.grey.shade800,
-                  ),
-
-                  Positioned(
-                    top: 10,
-                    right: 10,
-                    child: Container(
-                      width: 7,
-                      height: 7,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFEA307B),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    )
-        .animate()
-        .fadeIn(
-      duration: const Duration(milliseconds: 400),
-    )
-        .slideY(
-      begin: -0.08,
-      end: 0,
-      curve: Curves.easeOutCubic,
-    );
-  }
-
-}
 
 
