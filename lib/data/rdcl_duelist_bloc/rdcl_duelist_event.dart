@@ -5,6 +5,8 @@ abstract class RdclDuelistEvent {
 }
 
 class RdclDueListFetchEvent extends RdclDuelistEvent {
+
+  final String baseUrl;
   final String agentId;
   final String branchCode;
   final String accNo;
@@ -12,6 +14,7 @@ class RdclDueListFetchEvent extends RdclDuelistEvent {
   final String pageNo;
   final String itemsPerPage;
   const RdclDueListFetchEvent(
+      this.baseUrl,
     this.agentId,
     this.branchCode,
     this.accNo,

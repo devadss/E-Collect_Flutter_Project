@@ -5,10 +5,11 @@ abstract class CustomerListEvent {
 }
 
 class CustomerListFetchEvent extends CustomerListEvent{
+  final String baseUrl;
   final String agentId;
   final String branchId;
   final String pageNo;
   final String pageSize;
   final String customerName;
-  const CustomerListFetchEvent(this.agentId, this.branchId, this.pageNo, this.pageSize, this.customerName);
+  const CustomerListFetchEvent(this.baseUrl,this.agentId, this.branchId, this.pageNo, this.pageSize, this.customerName);
 }

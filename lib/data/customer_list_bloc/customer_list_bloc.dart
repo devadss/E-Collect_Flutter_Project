@@ -9,7 +9,7 @@ class CustomerListBloc extends Bloc<CustomerListEvent, CustomerListState>{
   CustomerListBloc(this.customerListRepo):super(const CustomerListInitialState()){
     on<CustomerListFetchEvent>((event , emit) async {
       emit(CustomerListLoaderState());
-      final data = await customerListRepo.fetchCustList(event.agentId,
+      final data = await customerListRepo.fetchCustList(event.baseUrl,event.agentId,
           event.branchId, event.pageNo, event.pageSize, event.customerName);
       if(data is CustomerListSuccessModel){
         emit (CustomerListSuccessState(data));

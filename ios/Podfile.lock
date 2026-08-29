@@ -8,15 +8,12 @@ PODS:
     - Flutter
   - permission_handler_apple (9.3.0):
     - Flutter
-  - print_bluetooth_thermal (0.0.1):
-    - Flutter
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_sound (from `.symlinks/plugins/flutter_sound/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
-  - print_bluetooth_thermal (from `.symlinks/plugins/print_bluetooth_thermal/ios`)
 
 SPEC REPOS:
   trunk:
@@ -31,8 +28,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/fluttertoast/ios"
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
-  print_bluetooth_thermal:
-    :path: ".symlinks/plugins/print_bluetooth_thermal/ios"
 
 SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
@@ -40,7 +35,6 @@ SPEC CHECKSUMS:
   flutter_sound_core: 7f2626d249d3a57bfa6da892ef7e22d234482c1a
   fluttertoast: 2c67e14dce98bbdb200df9e1acf610d7a6264ea1
   permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
-  print_bluetooth_thermal: 28adf527ac4c47e42e268c13d21e5f2abf48ecdd
 
 PODFILE CHECKSUM: 3d68f7cb47d5f2fb7765407f663653c9b51100f3
 

@@ -9,10 +9,9 @@ import '../../../domain/model/rdcl_duelist_model/rdcl_due_list_model.dart';
 import '../../../domain/model/rdcl_duelist_model/rdcl_due_list_success.dart';
 
 class RdclDueListRepo {
-Future<String> loadVendorUrl()async{
-  return await SharedPref().getECollectRdclDuesListunderAgentUrl();
-}
+
   Future<RdclDueListModel> fetchRdclDueList(
+      String baseURL,
       String agentId,
       String branchCode,
       String accNo,
@@ -20,7 +19,7 @@ Future<String> loadVendorUrl()async{
       String pageNo,
       String itemsPerPage,
       ) async {
-    final vendorUrl = await loadVendorUrl();
+    final vendorUrl = baseURL;
     final uri = Uri.parse("$vendorUrl?agent_id=$agentId&br_code=$branchCode&acc_no=$accNo&PageNumber=$pageNo&PageSize=$itemsPerPage&CustName=$custName");
     final request =  await http.get(uri , headers: {"Content-Type":"application/json"});
     if(printStatementStatus ){

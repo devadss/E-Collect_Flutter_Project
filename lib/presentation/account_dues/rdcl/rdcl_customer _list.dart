@@ -3,19 +3,51 @@ import 'package:e_Collect/presentation/account_dues/rdcl/rdcl_due_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data/customer_list_bloc/customer_list_bloc.dart';
-import '../../../data/storage/shared_pref_helper.dart';
-import '../../../domain/model/customer_list_model/customer_list_success.dart' as prefix0;
+import '../../../domain/model/customer_list_model/customer_list_success.dart'
+    as prefix0;
+
+
+class RdclListModel{
+  String? branchid;
+  String? agentPhoneNumber;
+  String? agentIdValue;
+  String? eCollectMerchantName;
+  String? eCollectAgentEmail;
+  String? eCollectAgentBranchCode;
+  String? eCollectAgentMerchantID;
+  String? eCollectAgentOriginId;
+  String? eCollectAgentId;
+  String? eCollectToken;
+  List<String>? eCollectUrlList;
+  RdclListModel({
+    required this.branchid,
+    required this.agentPhoneNumber,
+    required this.agentIdValue,
+    required this.eCollectMerchantName,
+    required this.eCollectAgentEmail,
+    required this.eCollectAgentBranchCode,
+    required this.eCollectAgentMerchantID,
+    required this.eCollectAgentOriginId,
+    required this.eCollectAgentId,
+    required this.eCollectToken,
+    required this.eCollectUrlList,
+});
+}
 
 class RdclDueListBocPage extends StatefulWidget {
-  const RdclDueListBocPage({super.key});
+  final RdclListModel rdclListModel;
+  const RdclDueListBocPage(
+      {super.key, required this.rdclListModel});
 
   @override
   State<RdclDueListBocPage> createState() => RdclDueListBocPageState();
 }
+
 class RdclDueListBocPageState extends State<RdclDueListBocPage> {
-  String? branchid;
-  String? agentPhoneNumber;
-  String? agentIdValue;
+  String? _rdclDetailUrl;
+  String? _rdclUrl;
+  static const String rdcLCustomerListCode = "getRdclCustomerunderAgentList";
+  static const String rdcLCustomerDetailCode = "GetRdclDuesListunderAgent";
   final searchController = TextEditingController();
   bool iconSwitch = false;
   final FocusNode _searchFocusNode = FocusNode();
@@ -25,26 +57,25 @@ class RdclDueListBocPageState extends State<RdclDueListBocPage> {
     super.initState();
     loadSharedPrefs();
   }
-  Future<void> refresh()async{
-    print("Here");
-    searchController.clear();
-    context.read<CustomerListBloc>().add(CustomerListFetchEvent("", branchid.toString(), "1", "10", ""),);
 
-  }
   Future<void> loadSharedPrefs() async {
-    final result  = await Future.wait([
-      SharedPref.shared.getECollectMerchantBranchCode(),
-      SharedPref.shared.getParentAgentMobNum(),
-      SharedPref.shared.getAgentId(),
-    ]);
-    branchid = result[0];
-    agentPhoneNumber = result[1];
-    agentIdValue = result[2];
+    for (var x in widget.rdclListModel.eCollectUrlList!) {
+      if (x.contains(rdcLCustomerListCode)) {
+       // setState(() {
+          _rdclUrl = x;
+       // });
+      } else if (x.contains(rdcLCustomerDetailCode)) {
+        //setState(() {
+          _rdclDetailUrl = x;
+      //  });
+      }
+    }
 
-    if(!mounted) return;
-    context.read<CustomerListBloc>().add(CustomerListFetchEvent("", branchid.toString(), "1", "10", ""),);
-
-
+    if (!mounted) return;
+    context.read<CustomerListBloc>().add(
+          CustomerListFetchEvent(
+              _rdclUrl!, "", widget.rdclListModel.branchid.toString(), "0", "0", ""),
+        );
   }
 
   @override
@@ -62,9 +93,16 @@ class RdclDueListBocPageState extends State<RdclDueListBocPage> {
       }
     });
 
-    context.read<CustomerListBloc>().add(CustomerListFetchEvent("", branchid.toString(), "1", "10", iconSwitch ? searchController.text : "",
-      ),
-    );
+    context.read<CustomerListBloc>().add(
+          CustomerListFetchEvent(
+            _rdclUrl!,
+            "",
+            widget.rdclListModel.branchid.toString(),
+            "0",
+            "0",
+            iconSwitch ? searchController.text : "",
+          ),
+        );
   }
 
   @override
@@ -117,7 +155,8 @@ class RdclDueListBocPageState extends State<RdclDueListBocPage> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            state.customerListFailModel.customerListFailResponse.error,
+                            state.customerListFailModel.customerListFailResponse
+                                .error,
                             textAlign: TextAlign.center,
                             style: const TextStyle(color: Colors.red),
                           ),
@@ -128,7 +167,8 @@ class RdclDueListBocPageState extends State<RdclDueListBocPage> {
                 }
 
                 if (state is CustomerListSuccessState) {
-                  data = state.customerListSuccessModel.customerListSuccessResponse.customerList;
+                  data = state.customerListSuccessModel
+                      .customerListSuccessResponse.customerList;
 
                   if (data?.data == null || data!.data!.isEmpty) {
                     return Center(
@@ -172,7 +212,7 @@ class RdclDueListBocPageState extends State<RdclDueListBocPage> {
 
                   return ListView.builder(
                     padding: const EdgeInsets.all(16),
-                   // itemCount: data.totalCount ?? 0,
+                    // itemCount: data.totalCount ?? 0,
                     itemCount: data.data?.length ?? 0,
                     itemBuilder: (context, index) {
                       final customer = data?.data?[index];
@@ -197,15 +237,24 @@ class RdclDueListBocPageState extends State<RdclDueListBocPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => RdclDueDetail(
-                                    branchCode: branchid.toString(),
-                                    customeName: customer?.custName ?? "",
-                                    custPhoneNumber: agentPhoneNumber.toString(),
-                                    custIdNew: customer?.custId.toString() ?? "",
-                                    custAcNumber: customer?.rdclGlobalAccNo.toString() ?? "",
-                                    custId: customer?.custId.toString() ?? "",
-                                  ),
-                                ),
+                                    builder: (context) =>
+                                        RdclDueDetail(
+                                          rdclDetailModel: RdclDetailModel(
+                                              customerNumber: widget.rdclListModel.agentPhoneNumber.toString(),
+                                              baseUrl: _rdclDetailUrl!,
+                                              customerAccountNumber: customer!.rdclGlobalAccNo.toString(),
+                                              custId: customer?.custId.toString(),
+                                              eCollectAgentNumber: widget.rdclListModel.agentPhoneNumber,
+                                              eCollectMerchantName: widget.rdclListModel.eCollectMerchantName,
+                                              eCollectAgentEmail: widget.rdclListModel.eCollectAgentEmail,
+                                              eCollectCollectionType: 'RDCL',
+                                              eCollectAgentBranchCode: widget.rdclListModel.eCollectAgentBranchCode,
+                                              eCollectAgentMerchantID: widget.rdclListModel.eCollectAgentMerchantID,
+                                              eCollectAgentOriginId: widget.rdclListModel.eCollectAgentOriginId,
+                                              eCollectAgentId: widget.rdclListModel.eCollectAgentId,
+                                              eCollectToken: widget.rdclListModel.eCollectToken),
+                                        )
+                                    ),
                               );
                             },
                             child: Padding(
@@ -217,10 +266,12 @@ class RdclDueListBocPageState extends State<RdclDueListBocPage> {
                                   Row(
                                     children: [
                                       Container(
-                                         padding: const EdgeInsets.all(10),
+                                        padding: const EdgeInsets.all(10),
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(14),
-                                          color: Colors.green.withValues(alpha: 0.1),
+                                          borderRadius:
+                                              BorderRadius.circular(14),
+                                          color: Colors.green
+                                              .withValues(alpha: 0.1),
                                         ),
                                         child: Icon(
                                           Icons.person_rounded,
@@ -252,8 +303,10 @@ class RdclDueListBocPageState extends State<RdclDueListBocPage> {
                                       Container(
                                         padding: const EdgeInsets.all(10),
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(14),
-                                          color: Colors.blue.withValues(alpha: 0.1),
+                                          borderRadius:
+                                              BorderRadius.circular(14),
+                                          color: Colors.blue
+                                              .withValues(alpha: 0.1),
                                         ),
                                         child: Icon(
                                           Icons.account_balance_rounded,
@@ -264,7 +317,8 @@ class RdclDueListBocPageState extends State<RdclDueListBocPage> {
                                       const SizedBox(width: 12),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               "Account Number",
@@ -299,8 +353,10 @@ class RdclDueListBocPageState extends State<RdclDueListBocPage> {
                                       Container(
                                         padding: const EdgeInsets.all(10),
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(14),
-                                          color: Colors.orange.withValues(alpha: 0.1),
+                                          borderRadius:
+                                              BorderRadius.circular(14),
+                                          color: Colors.orange
+                                              .withValues(alpha: 0.1),
                                         ),
                                         child: Icon(
                                           Icons.category_rounded,
@@ -311,7 +367,8 @@ class RdclDueListBocPageState extends State<RdclDueListBocPage> {
                                       const SizedBox(width: 12),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               "Scheme Name",
@@ -357,85 +414,85 @@ class RdclDueListBocPageState extends State<RdclDueListBocPage> {
 
   Column buildLoader() {
     return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: home1.withValues(alpha: 0.1),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            color: home1,
-                            strokeWidth: 3,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        "Loading customers...",
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  );
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            color: home1.withValues(alpha: 0.1),
+            shape: BoxShape.circle,
+          ),
+          child: Center(
+            child: CircularProgressIndicator(
+              color: home1,
+              strokeWidth: 3,
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+        Text(
+          "Loading customers...",
+          style: TextStyle(
+            color: Colors.grey[600],
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
   }
 
   Container buildSearchContainer() {
     return Container(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withValues(alpha: 0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withValues(alpha: 0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              color: Colors.grey[100],
+        ],
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Colors.grey[100],
+        ),
+        child: TextField(
+          controller: searchController,
+          focusNode: _searchFocusNode,
+          decoration: InputDecoration(
+            hintText: "Search customers by name...",
+            hintStyle: TextStyle(
+              color: Colors.grey[500],
+              fontSize: 15,
             ),
-            child: TextField(
-              controller: searchController,
-              focusNode: _searchFocusNode,
-              decoration: InputDecoration(
-                hintText: "Search customers by name...",
-                hintStyle: TextStyle(
-                  color: Colors.grey[500],
-                  fontSize: 15,
-                ),
-                prefixIcon: Icon(Icons.search_rounded, color: home1, size: 24),
-                suffixIcon: IconButton(
-                  icon: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 200),
-                    child: Icon(
-                      iconSwitch ? Icons.close_rounded : Icons.send_rounded,
-                      key: ValueKey(iconSwitch),
-                      color: iconSwitch ? Colors.red : home1,
-                      size: 22,
-                    ),
-                  ),
-                  onPressed: _handleSearch,
-                ),
-                border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 14,
+            prefixIcon: Icon(Icons.search_rounded, color: home1, size: 24),
+            suffixIcon: IconButton(
+              icon: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: Icon(
+                  iconSwitch ? Icons.close_rounded : Icons.send_rounded,
+                  key: ValueKey(iconSwitch),
+                  color: iconSwitch ? Colors.red : home1,
+                  size: 22,
                 ),
               ),
-              onSubmitted: (_) => _handleSearch(),
+              onPressed: _handleSearch,
+            ),
+            border: InputBorder.none,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
             ),
           ),
-        );
+          onSubmitted: (_) => _handleSearch(),
+        ),
+      ),
+    );
   }
 
   AppBar buildAppBar() {
@@ -444,7 +501,7 @@ class RdclDueListBocPageState extends State<RdclDueListBocPage> {
       elevation: 0,
       automaticallyImplyLeading: false,
       centerTitle: true,
-      title: Text(
+      title: const Text(
         "Customer List",
         style: TextStyle(
           color: home1,
@@ -456,4 +513,3 @@ class RdclDueListBocPageState extends State<RdclDueListBocPage> {
     );
   }
 }
-

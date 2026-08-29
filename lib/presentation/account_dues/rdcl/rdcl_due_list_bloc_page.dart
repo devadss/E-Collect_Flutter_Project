@@ -3,21 +3,35 @@ import 'package:e_Collect/data/e_collect_bloc/payment_bloc/payment_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/alerts.dart';
 import '../../../core/utils.dart';
-import '../../../data/provider/cash_transcation_provider.dart';
 import '../../../data/rdcl_duelist_bloc/rdcl_duelist_bloc.dart';
-import '../../../data/storage/shared_pref_helper.dart';
 import '../../../domain/model/e_collect/payment/qr_request_model/qr_request_model.dart';
 import '../../paymentlink_request_ui.dart';
-import '../../profile/widgets/recipect_page.dart';
 import '../../qr_code/widgets/generate_qr_code_page.dart';
 //sdsd
+class RdclDueDetailDataModel{
+  String? eCollectBranchCode;
+  String? eCollectMerchantName;
+  String? eCollectUserID;
+  String? eCollectUserNumber;
+  String? eCollectUserEmail;
+  String? eCollectMerchantBranchCode;
+  String? eCollectMerchantID;
+  String? eCollectUserType;
+  String? eCollectTokenValue;
+  String? eCollectUserToken;
+  List<String>? eCollectUrlList;
+  RdclDueDetailDataModel({required this.eCollectBranchCode, required this.eCollectMerchantName, required this.eCollectUserID,
+  required this.eCollectUserNumber, required this.eCollectUserEmail, required this.eCollectMerchantBranchCode,
+  required this.eCollectMerchantID, required this.eCollectUserType, required this.eCollectTokenValue,
+  required this.eCollectUserToken, required this.eCollectUrlList});
+}
+
 class RdclDueDetailBlocPage extends StatefulWidget {
-  final String branchCode;
-  const RdclDueDetailBlocPage({super.key, required this.branchCode});
+  final RdclDueDetailDataModel rdclDueDetailDataModel;
+  const RdclDueDetailBlocPage({super.key, required this.rdclDueDetailDataModel});
 
   @override
   State<RdclDueDetailBlocPage> createState() => RdclDueDetailBlocPageState();
@@ -28,18 +42,13 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
   final List<bool> _isSelected = [false];
   final List<bool> _itemSelected = [false];
   bool didSearch = false;
-  String? eCollectAgentNumber;
+  String? rdclListingUrl;
+
   String? subagentPhoneNumber;
-  String? eCollectMerchantName;
-  String? eCollectAgentEmail;
-  String? eCollectCollectionType;
-  String? eCollectAgentBranchCode;
-  String? eCollectAgentMerchantID;
-  String? eCollectAgentOriginId;
-  String? eCollectAgentId;
+
+
   String? paymentSessionId;
   String? subAgentCodeNew;
-  String? eCollectToken;
   String selectedMethod ="";
   bool _showSendIcon = false;
   String? token;
@@ -53,109 +62,117 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
   }
 
   Future<void> loadSharedPrefs() async {
-    final result  = await Future.wait([
-      SharedPref.shared.getECollectMerchantName(),
-      SharedPref.shared.getECollectUserID(),
-      SharedPref.shared.getECollectUserID(),
-      SharedPref.shared.getECollectUserNumber(),
-      SharedPref.shared.getECollectUserEmail(),
-      SharedPref.shared.getECollectMerchantBranchCode(),
-      SharedPref.shared.getECollectMerchantID(),
-      SharedPref.shared.getECollectUserType(),
-      SharedPref.shared.getTokenValue(),
-      SharedPref.shared.getECollectUserToken(),
-    ]);
+    for(var x in widget.rdclDueDetailDataModel.eCollectUrlList!){
+      if(x.contains("GetRdclDuesListunderAgent")){
+        setState(() {
+          rdclListingUrl = x;
+        });
+        print((x));
+      }
+    }
+    // final result  = await Future.wait([
+    //   SharedPref.shared.getECollectMerchantName(),
+    //   SharedPref.shared.getECollectUserID(),
+    //   SharedPref.shared.getECollectUserID(),
+    //   SharedPref.shared.getECollectUserNumber(),
+    //   SharedPref.shared.getECollectUserEmail(),
+    //   SharedPref.shared.getECollectMerchantBranchCode(),
+    //   SharedPref.shared.getECollectMerchantID(),
+    //   SharedPref.shared.getECollectUserType(),
+    //   SharedPref.shared.getTokenValue(),
+    //   SharedPref.shared.getECollectUserToken(),
+    // ]);
     if(!mounted) return;
-    context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent("", widget.branchCode, "", "",'1', '10'));
+    context.read<RdclDuelistBloc>().add(RdclDueListFetchEvent(rdclListingUrl!,"", widget.rdclDueDetailDataModel.eCollectBranchCode!, "", "",'1', '10'));
 
     //-------------------------------------
-    eCollectMerchantName = result[0];
-    eCollectAgentId = result[1];
-    eCollectAgentOriginId = result[2];
-    eCollectAgentNumber = result[3];
-    eCollectAgentEmail = result[4];
-    eCollectAgentBranchCode = result[5];
-    eCollectAgentMerchantID = result[6];
-    eCollectCollectionType = result[7];
-    token = result[8];
-    eCollectToken = result[9];
+    // eCollectMerchantName = result[0];
+    // eCollectAgentId = result[1];
+    // eCollectAgentOriginId = result[2];
+    // eCollectAgentNumber = result[3];
+    // eCollectAgentEmail = result[4];
+    // eCollectAgentBranchCode = result[5];
+    // eCollectAgentMerchantID = result[6];
+    // eCollectCollectionType = result[7];
+    // token = result[8];
+    // eCollectToken = result[9];
   }
 
 
-  Future<void> getCashTrans(
-      {required String? token,
-      required String? customerName,
-      required String? custPhoneNumber,
-      required String? custAcNumber,
-      required String? custId,
-      required String? custEmail,
-      required String? amount,
-      required String? phoneNumber,
-      required String? entityId,
-      required String? note})
-  async {
-    final cashPaymentProvider =
-        Provider.of<CashTranscationProvider>(context, listen: false);
-    final cash = await cashPaymentProvider.getTranscations(
-        agentName: eCollectMerchantName,
-        agentId: eCollectAgentId,
-        agentOriginId: eCollectAgentOriginId,
-        agentPhone: phoneNumber,
-        agentEmail: eCollectAgentEmail,
-        subAgentId: eCollectAgentMerchantID,
-        customerName: customerName,
-        customerPhone: "",
-        customerAccNo: custAcNumber,
-        customerId: custId,
-        customerEmail: "",
-        amount: amount,
-        note: note,
-        corpCode: eCollectCollectionType,
-        cardRefNum: "",
-        token: token,
-        subagentBranchCode: subAgentCodeNew,
-        branchCode: subAgentCodeNew,
-        collectionType: 'RDCL');
-    cash.fold((err) {
-      Navigator.pop(context);
-      //print("getCashTrans $err");
-    }, (success) {
-      Navigator.pop(context);
-      // print("getCashTrans $success");
-      showDialog(
-        context: context,
-        builder: (context) => TransactionSuccessDialog(
-          success: success,
-          onViewReceipt: () {
-            Navigator.pop(context);
-            var receiptModel = ReceiptDataModel(
-              amount: success.amount.toString(),
-              bankName: getBankNameFromCorpCode(eCollectCollectionType!) ??
-                  "XYZ BANK",
-              agentName: eCollectMerchantName ?? "Name",
-              agentPhone: eCollectAgentNumber ?? "agentPhone",
-              custName: customerName!,
-              custPhone: custPhoneNumber!,
-              custId: custId!,
-              txnId: success.transactionId.toString(),
-              txnType: "CASH",
-              dat: '',
-              tranType: '',
-              accNo: '',
-            );
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ReceiptPage(
-                  receiptDataModel: receiptModel,
-                ),
-              ),
-            );
-          },
-        ),
-      );
-    });
-  }
+  // Future<void> getCashTrans(
+  //     {required String? token,
+  //     required String? customerName,
+  //     required String? custPhoneNumber,
+  //     required String? custAcNumber,
+  //     required String? custId,
+  //     required String? custEmail,
+  //     required String? amount,
+  //     required String? phoneNumber,
+  //     required String? entityId,
+  //     required String? note})
+  // async {
+  //   final cashPaymentProvider =
+  //       Provider.of<CashTranscationProvider>(context, listen: false);
+  //   final cash = await cashPaymentProvider.getTranscations(
+  //       agentName: widget.rdclDueDetailDataModel.eCollectMerchantName,
+  //       agentId: eCollectAgentId,
+  //       agentOriginId: eCollectAgentOriginId,
+  //       agentPhone: phoneNumber,
+  //       agentEmail: eCollectAgentEmail,
+  //       subAgentId: eCollectAgentMerchantID,
+  //       customerName: customerName,
+  //       customerPhone: "",
+  //       customerAccNo: custAcNumber,
+  //       customerId: custId,
+  //       customerEmail: "",
+  //       amount: amount,
+  //       note: note,
+  //       corpCode: eCollectCollectionType,
+  //       cardRefNum: "",
+  //       token: token,
+  //       subagentBranchCode: subAgentCodeNew,
+  //       branchCode: subAgentCodeNew,
+  //       collectionType: 'RDCL');
+  //   cash.fold((err) {
+  //     Navigator.pop(context);
+  //     //print("getCashTrans $err");
+  //   }, (success) {
+  //     Navigator.pop(context);
+  //     // print("getCashTrans $success");
+  //     showDialog(
+  //       context: context,
+  //       builder: (context) => TransactionSuccessDialog(
+  //         success: success,
+  //         onViewReceipt: () {
+  //           Navigator.pop(context);
+  //           var receiptModel = ReceiptDataModel(
+  //             amount: success.amount.toString(),
+  //             bankName: getBankNameFromCorpCode(eCollectCollectionType!) ??
+  //                 "XYZ BANK",
+  //             agentName: widget.rdclDueDetailDataModel.eCollectMerchantName ?? "Name",
+  //             agentPhone: eCollectAgentNumber ?? "agentPhone",
+  //             custName: customerName!,
+  //             custPhone: custPhoneNumber!,
+  //             custId: custId!,
+  //             txnId: success.transactionId.toString(),
+  //             txnType: "CASH",
+  //             dat: '',
+  //             tranType: '',
+  //             accNo: '',
+  //           );
+  //           Navigator.push(
+  //             context,
+  //             MaterialPageRoute(
+  //               builder: (context) => ReceiptPage(
+  //                 receiptDataModel: receiptModel,
+  //               ),
+  //             ),
+  //           );
+  //         },
+  //       ),
+  //     );
+  //   });
+  // }
 
 
   @override
@@ -265,18 +282,18 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          getCashTrans(
-                            token: token,
-                            customerName: name,
-                            custPhoneNumber: "",
-                            custAcNumber: accNo,
-                            custId: custId,
-                            custEmail: "",
-                            phoneNumber: "$eCollectAgentNumber",
-                            entityId: eCollectAgentId,
-                            note: "Payment For Agent $eCollectMerchantName",
-                            amount: amt,
-                          );
+                          // getCashTrans(
+                          //   token: token,
+                          //   customerName: name,
+                          //   custPhoneNumber: "",
+                          //   custAcNumber: accNo,
+                          //   custId: custId,
+                          //   custEmail: "",
+                          //   phoneNumber: "$eCollectAgentNumber",
+                          //   entityId: eCollectAgentId,
+                          //   note: "Payment For Agent ${widget.rdclDueDetailDataModel.eCollectMerchantName}",
+                          //   amount: amt,
+                          // );
                           Navigator.pop(context, true); // ✅ User confirmed
                           Navigator.pop(context, true); // ✅ User confirmed
                           showProgressDialog(context);
@@ -386,8 +403,8 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
                                   });
 
                                   context.read<RdclDuelistBloc>().add(
-                                        RdclDueListFetchEvent(
-                                            "", widget.branchCode, "", "",'1', '10'),
+                                        RdclDueListFetchEvent(rdclListingUrl!,
+                                            "", widget.rdclDueDetailDataModel.eCollectBranchCode!, "", "",'1', '10'),
                                       );
                                 },
                                 child: Container(
@@ -417,13 +434,13 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
 
                                   if (chekValue(text)) {
                                     context.read<RdclDuelistBloc>().add(
-                                          RdclDueListFetchEvent(
-                                              "", widget.branchCode, text, "", '0', '0'),
+                                          RdclDueListFetchEvent(rdclListingUrl!,
+                                              "", widget.rdclDueDetailDataModel.eCollectBranchCode!, text, "", '0', '0'),
                                         );
                                   } else {
                                     context.read<RdclDuelistBloc>().add(
-                                          RdclDueListFetchEvent(
-                                              "", widget.branchCode, "", text,'0', '0'),
+                                          RdclDueListFetchEvent(rdclListingUrl!,
+                                              "",widget.rdclDueDetailDataModel.eCollectBranchCode!, "", text,'0', '0'),
                                         );
                                   }
                                 },
@@ -1408,31 +1425,46 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
                                                                           return;
                                                                         }
                                                                       } else if (selectedMethod == "Link") {
-                                                                        context.read<PaymentBloc>().add(QrPaymentEvent(QrPaymentRequestModel(
-                                                                            agentDetails: AgentDetails(agentName: eCollectMerchantName!,
-                                                                                agentId: eCollectAgentOriginId!, agentOrginId: eCollectAgentId!, agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
-                                                                            customerDetails: CustomerDetails(customerName: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].name, customerPhone: eCollectAgentNumber!, customerAccno: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].accNo, customerId: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].custId, customerEmail: eCollectAgentEmail!),
-                                                                            collectionType: eCollectCollectionType!,
+                                                                        context.read<PaymentBloc>().add(QrPaymentEvent(
+                                                                            QrPaymentRequestModel(
+                                                                            agentDetails:
+                                                                            AgentDetails(
+                                                                                agentName: widget.rdclDueDetailDataModel.eCollectMerchantName!,
+                                                                                agentId: widget.rdclDueDetailDataModel.eCollectUserID!, agentOrginId:widget.rdclDueDetailDataModel.eCollectUserID!,
+                                                                                agentPhone: widget.rdclDueDetailDataModel.eCollectUserNumber!, agentEmail: widget.rdclDueDetailDataModel.eCollectUserEmail!, agentBranch: int.parse(widget.rdclDueDetailDataModel.eCollectBranchCode!)),
+                                                                            customerDetails:
+                                                                            CustomerDetails(
+                                                                                customerName: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].name, customerPhone: widget.rdclDueDetailDataModel.eCollectUserNumber!, customerAccno: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].accNo, customerId: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].custId, customerEmail: widget.rdclDueDetailDataModel.eCollectUserEmail!),
+                                                                            collectionType: "RDCL",
                                                                             amount: double.parse(controller.text),
                                                                             note: 'Payment for Order',
                                                                             qrSource: 'MOB',
                                                                             source: 'COLLECTION',
-                                                                            merchantId: int.parse(eCollectAgentMerchantID!)),eCollectToken!));
+                                                                            merchantId: int.parse(widget.rdclDueDetailDataModel.eCollectMerchantID!)),
+                                                                            widget.rdclDueDetailDataModel.eCollectUserToken!)
+                                                                        );
 
                                                                       } else {
                                                                         print(
                                                                             "QR API CALL");
 
-                                                                        context.read<PaymentBloc>().add(QrPaymentEvent(QrPaymentRequestModel(
-                                                                            agentDetails: AgentDetails(agentName: eCollectMerchantName!, agentId: eCollectAgentOriginId!, agentOrginId: eCollectAgentId!, agentPhone: eCollectAgentNumber!, agentEmail: eCollectAgentEmail!, agentBranch: int.parse(eCollectAgentBranchCode!)),
-                                                                            customerDetails: CustomerDetails(customerName: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].name, customerPhone: eCollectAgentNumber!, customerAccno: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].accNo, customerId: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].custId, customerEmail: eCollectAgentEmail!),
-                                                                            collectionType: eCollectCollectionType!,
-                                                                            amount: double.parse(controller.text),
-                                                                            note: 'Payment for Order',
-                                                                            qrSource: 'MOB',
-                                                                            source: 'COLLECTION',
-                                                                            merchantId: int.parse(eCollectAgentMerchantID!)),eCollectToken!));
-                                                                            //merchantId: 1)));
+                                                                        context.read<PaymentBloc>().add(QrPaymentEvent(
+                                                                            QrPaymentRequestModel(
+                                                                                agentDetails:
+                                                                                AgentDetails(
+                                                                                    agentName: widget.rdclDueDetailDataModel.eCollectMerchantName!,
+                                                                                    agentId: widget.rdclDueDetailDataModel.eCollectUserID!, agentOrginId:widget.rdclDueDetailDataModel.eCollectUserID!,
+                                                                                    agentPhone: widget.rdclDueDetailDataModel.eCollectUserNumber!, agentEmail: widget.rdclDueDetailDataModel.eCollectUserEmail!, agentBranch: int.parse(widget.rdclDueDetailDataModel.eCollectBranchCode!)),
+                                                                                customerDetails:
+                                                                                CustomerDetails(
+                                                                                    customerName: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].name, customerPhone: widget.rdclDueDetailDataModel.eCollectUserNumber!, customerAccno: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].accNo, customerId: state.rdclDulistSuccess.rdclduesListSuccessModel.rdclDuesList1!.data[index].custId, customerEmail: widget.rdclDueDetailDataModel.eCollectUserEmail!),
+                                                                                collectionType:"RDCL",
+                                                                                amount: double.parse(controller.text),
+                                                                                note: 'Payment for Order',
+                                                                                qrSource: 'MOB',
+                                                                                source: 'COLLECTION',
+                                                                                merchantId: int.parse(widget.rdclDueDetailDataModel.eCollectMerchantID!)),
+                                                                            widget.rdclDueDetailDataModel.eCollectUserToken!));
                                                                       }
                                                                     },
                                                                   ),

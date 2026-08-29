@@ -26,6 +26,7 @@ class PaymentRepository {
     print("eCollectToken $eCollectToken");
     print("PAYMENT body: ${jsonEncode(qrPaymentRequestModel)}");
     print("PAYMENT RES: ${data.body}");
+    print("PAYMENT QR CALL");
     if(data.statusCode == 200){
       return QrPaymentSuccess(PaymentResponseSuccess.fromJson(jsonDecode(data.body)));
     }else{
@@ -46,6 +47,7 @@ class PaymentRepository {
     );
     print(jsonEncode(qrPaymentRequestModel));
     print("PAYMENT RES: ${data.body}");
+    print("PAYMENT LINK CALL");
     if(data.statusCode == 200){
       return QrPaymentSuccess(PaymentResponseSuccess.fromJson(jsonDecode(data.body)));
     }else{
@@ -66,6 +68,7 @@ class PaymentRepository {
     );
     print(jsonEncode(qrPaymentRequestModel));
     print("PAYMENT RES: ${data.body}");
+    print("PAYMENT CASH CALL");
     if(data.statusCode == 200){
       return CashPaymentSuccess(CashPaymentSuccessResponse.fromJson(jsonDecode(data.body)));
     }else{

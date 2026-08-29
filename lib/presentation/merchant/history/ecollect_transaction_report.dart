@@ -795,7 +795,11 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
                       },
                     );
                   }
-
+else{
+                    if (Navigator.of(context).canPop()) {
+                      Navigator.of(context).pop();
+                    }
+                  }
                   return const SizedBox.shrink();
                 },
               ),

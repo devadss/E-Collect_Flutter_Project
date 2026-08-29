@@ -11,13 +11,12 @@ import '../../../domain/model/customer_list_model/customer_list_success.dart';
 import '../../storage/shared_pref_helper.dart';
 
 class CustomerListRepo {
-  Future<String> loadVendorUrl()async{
-    return await SharedPref().getECollectRdclCustomerunderAgentListUrl();
-  }
+
   Future<CustomerListModel> fetchCustList(
+      String baseUrl,
       String agentId, String branchId, String pageNo, String pageSize , String custName
       ) async {
-    final vendorUrl = await loadVendorUrl();
+    final vendorUrl = baseUrl;
     //final uri = Uri.parse("https://doorstepmeenachilmscs.digicob.in/getRdclCustomerunderAgentList");
     final uri = Uri.parse(vendorUrl);
     final request = await http.post(uri, body: jsonEncode(
