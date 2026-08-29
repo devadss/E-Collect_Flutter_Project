@@ -7,11 +7,9 @@ import 'colors.dart' hide home1;
 String baseUrl = "";
 String dopBaseUrl = "";
 String eCollectBaseUrl = "https://dev.collect.org.in/";
-
 const String uatTestMobileNumber = "+917663220991"; ///Currently this number is provided for appstore...
 final String termsUrl = "https://your-terms-url.com";
 final String privacyUrl = "https://your-privacy-url.com";
-
 const String terms = 'https://collect.org.in/terms-of-conditions.html';
 const String privacy = 'https://collect.org.in/privacy-policy.html';
 String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
@@ -68,17 +66,9 @@ AlertDialog exitAlert(BuildContext context){
 }
 
 class SharedPrefKeys {
-  static const String guestCartCount = "GET_CART_COUNT";
   static const String selectedBusinessCategory = "SELECTED_BUSINESS_CAT";
   static const String eCollectName = "E_COLLECT_NAME";
   static const String userId = "USER_ID";
-  static const String token = "TOKEN";
-  static const String dob = "DOB";
-  static const String pinCode = "PIN_CODE";
-  static const String kitNo = "KIT_NO";
-  static const String dateRange = "DATE_RANGE";
-  static const String nearestPinCode = "NEAREST_PIN_CODE";
-  static const String pinCodeText = "PIN_CODE_TEXT";
   static const String username = "USER_NAME";
   static const String eCollectUsername = "E-COLLECT_USER_NAME";
   static const String eCollectUserType = "E-COLLECT_USER_TYPE";
@@ -101,82 +91,21 @@ class SharedPrefKeys {
   static const String eCollectUserId= "E-COLLECT_USER_ID";
   static const String eCollectToken = "E-COLLECT_TOKEN";
   static const String eCollectRefreshToken = "E-COLLECT_REFRESH_TOKEN";
-  //static const String parent_username = "PARENT_USERNAME";
-  //----------------------------------------------------------------------------
-  //static const String RdclCustomervendorUrl = "getCustomerRdclUrl"; //
-  //static const String RdclDueListvendorUrl = "getDueListRdclUrl";//
-  //static const String RdCustomerVendorUrl = "getCustomerRdUrl";//
-  //static const String RdDueVendorUrl = "getDueListRdUrl";//
-  //static const String LoanCustomerVendorUrl = "getCustomerLoanUrl";//
-  //static const String LoanDueVendorUrl = "getDueListLoanUrl";
- // static const String LoanAccountHolderVendorUrl = "getLoanAccountHolderUrl";
-  static const String IOSNUMBERVALIDATOR = "ios_number_validator";
-
-  //----------------------------------------------------------------------------
-  static const String force_logout = "FORCE_LOGOUT";
-  //static const String vendorUrlTest = "VENDOR_TEST_URL";
- // static const String userType = "USER_TYPE";
-  //static const String subAgent_username = "SUB_AGENT_USERNAME";
- // static const String enteredusername = "ENTERED_USER_NAME";
- // static const String balance = "ACC_BALANCE";
- // static const String gendervalue = "GENDER_VALUE";
- // static const String password = "PASSWORD";
- // static const String parent_agent_password = "PARENT_AGENT_PASSWORD";
- // static const String encryptedPassword = "ENCRYPTED_PASSWORD";
-  final String login = "LOGIN";
   final String eCollectLoginStatus = "E-COLLECT_LOGIN_STATUS";
   final String eCollectActiveStatus = "E-COLLECT_ACTIVE_STATUS";
   final String eCollectVerifyStatus = "E-COLLECT_VERIFY_STATUS";
   final String eCollectUserEmail = "E-COLLECT_USER_EMAIL";
- // final String cartLogin = "CART_LOGIN";
- // final String cardLimit = "SET_CARDLIMIT";
- // static const String fullName = "FULL_NAME";
   static const String fcm_token = "FCM_TOKEN";
- // static const String phoneNumber = "PHONE_NUMBER";
- // static const String loggedInUserType = "LOGGED_IN_USER_TYPE";
   static const String corpCode = "CORP_CODE";
   static const String branchCode = "BRANCH_CODE";
   static const String email = "EMAIL_ID";
   static const String custid = "CUST_ID";
-  static const String mpin = "MPIN";
   static const String mpin_value = "MPIN_VALUE";
-  static const String mpin_status = "MPIN_STATUS";
-  static const String shopid = "SHOPID";
   static const String adsspay_token = "ADSSPAY_TOKEN";
-  static const String adsspay_user_name = "ADSSPAY_USER_NAME";
-  static const String mob_num = "MOB_NUM";
   static const String parentAgentMobNum = "PARENT_AGENT_MOB_NUM";
-  static const String subAgentMobNum = "SUB_AGENT_MOB_NUM";
   static const String subAgentCode = "SUB_AGENT_CODE";
   static const String subAgentCodeNew = "SUB_AGENT_CODE_NEW";
   static const String subAgentID = "SUB_AGENT_ID";
-  static const String adsspay_pswd = "ADSSPAY_PSWD";
-  static const String adsspay_entity_id = "ADSSPAY_ENTITY_ID";
-  static const String cardType = "CARDTYPE";
-  static const String refID = "REF_ID";
-  final String kycComplete = "KYC_COMPLETE";
-  final String fcmToken = "FCM_TOKEN";
-  final String referralCode = "REF_CODE";
-  final String fullKycComplete = "FULL_KYC_COMPLETE";
-  final String corpLoadRequest = "CORP_LOAD_REQUEST";
-  final String cartUserName = "CART_USER_NAME";
-  final String cartEmailId = "CART_EMAIL_ID";
-  final String cartDob = "CART_DOB";
-  final String cartPhoneNumber = "CART_PHONE_NUMBER";
-  final String cartUserId = "CART_USER_ID";
-  final String static = "STATIC";
-  final String quantity = "QUANTITY";
-  final String stock = "STOCK";
-  final String integrationStatus = "INTEGRATION_STATUS";
-  final String addressId = "ADDRESS_ID";
-  static const String notificationValue = "NOTIFICATION_VALUE";
-  static const String quickaction = "QUICK_ACTION";
-  static const String cardNumber = "CARD_NUMBER";
-  static const String businessId = "BUSINNESS_ID";
-  static const String businessCategoryId = "CATEGORY_ID";
-  static const String categoryId = "CATEGORY_ID";
-  static const String agentOriginId = "AGENT_ORIGIN_ID";
-  static const String cardRefNum = "CARD_REF_NUM";
 }
 
 String capitalizeFirstLetter(String? input){

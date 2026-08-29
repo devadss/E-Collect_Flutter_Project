@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import '../../../../core/constants.dart';
 import '../../../../domain/model/e_collect/payment/cash/cash_model.dart';
 import '../../../../domain/model/e_collect/payment/qr_request_model/qr_request_model.dart';
 import 'package:http/http.dart' as http;
@@ -8,7 +9,7 @@ import '../../../../domain/model/e_collect/payment/response/payment_qr_response.
 import '../../../../domain/model/e_collect/payment/response/payment_response_fail.dart';
 import '../../../../domain/model/e_collect/payment/response/payment_response_success.dart';
 class PaymentRepository {
-  final String baseURL = "https://dev.collect.org.in/";
+  final String baseURL = eCollectBaseUrl;
   final String qrEndpoint = "api/payment/UpiIntent";
   final String linkEndpoint = "api/payment/PaymentLink";
   final String cashEndpoint = "api/payment/Cash_Collection";

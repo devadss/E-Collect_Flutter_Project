@@ -79,22 +79,22 @@ class _BottomNavBarState extends State<BottomNavBar> {
       SharedPref.shared.getECollectVerifyStatus(),
       SharedPref.shared.getECollectMerchantIntegrationStatus(),
     ]);
-    eCollectBranchID = result[0] as String; //01
-    eCollectAgentID = result[1] as String; //1021
-    eCollectUrlList = result[2] as List<String>; //1021
-    eCollectUserToken = result[3] as String; //1021
-    eCollectUserName = result[4] as String; //1021
-    eCollectMerchantId = result[5] as String; //1021
-    eCollectMerchantNumber = result[6] as String; //1021
-    fcmToken = result[7] as String; //1021
-    eCollectUserID = result[8] as String; //1021
-    eCollectMerchantEmail = result[9] as String; //1021
-    eCollectMerchantRegName = result[10] as String; //1021
-    eCollectBranchName = result[11] as String; //1021
-    eCollectUserRole = result[12] as String; //1021
-    eCollectCommRate = result[13] as String; //1021
-    eCollectActiveStatus = result[14] as bool; //1021
-    eCollectVerifyStatus = result[15] as bool; //1021
+    eCollectBranchID = result[0] as String;
+    eCollectAgentID = result[1] as String;
+    eCollectUrlList = result[2] as List<String>;
+    eCollectUserToken = result[3] as String;
+    eCollectUserName = result[4] as String;
+    eCollectMerchantId = result[5] as String;
+    eCollectMerchantNumber = result[6] as String;
+    fcmToken = result[7] as String;
+    eCollectUserID = result[8] as String;
+    eCollectMerchantEmail = result[9] as String;
+    eCollectMerchantRegName = result[10] as String;
+    eCollectBranchName = result[11] as String;
+    eCollectUserRole = result[12] as String;
+    eCollectCommRate = result[13] as String;
+    eCollectActiveStatus = result[14] as bool;
+    eCollectVerifyStatus = result[15] as bool;
     if (!mounted) return;
     setState(() {
       this.integrationStatus = integrationStatus;

@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'package:e_Collect/core/constants.dart';
 import 'package:e_Collect/core/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -120,7 +121,7 @@ class NotificationService {
       String navPage,
       String mobnum) async {
    // final url = Uri.parse('${baseUrl}api/AgentRegisterToken');
-      final url = Uri.parse('https://dev.collect.org.in/api/device/register');
+      final url = Uri.parse('${eCollectBaseUrl}api/device/register');
 
     final body = {
       "customerId": agentID,

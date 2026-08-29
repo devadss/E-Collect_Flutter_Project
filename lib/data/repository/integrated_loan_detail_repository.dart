@@ -28,14 +28,14 @@ class IntegratedLoanDetailRepository implements IntegratedLoanDetailInterface{
           'Content-Type': 'application/json',
         }
     );
-    print({
-      "flag": flag,
-      "branch_id": branchId,
-      "sch_code": schemeCode,
-      "demandDate": demandDate,
-      "account_no": accountNumber
-    });
-    print(request.body);
+    // print({
+    //   "flag": flag,
+    //   "branch_id": branchId,
+    //   "sch_code": schemeCode,
+    //   "demandDate": demandDate,
+    //   "account_no": accountNumber
+    // });
+    //print(request.body);
     if(request.statusCode == 200){
       return Right(IntegratedLoanDetails.fromJson(jsonDecode(request.body)));
     }else{

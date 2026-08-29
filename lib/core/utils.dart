@@ -197,9 +197,9 @@ void isRunningLiveBaseUrl(bool status, String mobile) async {
   if(mobile.startsWith("+91")){
     if (status==true && mobile != null && mobile != uatTestMobileNumber){
       if(printStatementStatus){
-        print("STATUS :$status");
-        print("mobile :$mobile");
-        print("returning live url");
+        // print("STATUS :$status");
+        // print("mobile :$mobile");
+        // print("returning live url");
       }
 
      // baseUrl = "https://adsspay.aanvinsolutions.com:8444/";
@@ -208,15 +208,15 @@ void isRunningLiveBaseUrl(bool status, String mobile) async {
     }else{
       baseUrl ="https://adsspayweb.digicob.in/";
       if(printStatementStatus){
-        print("returning UAT url");
+     //   print("returning UAT url");
       }
     }
   }else{
     if (status==true && "+91$mobile" != null && "+91$mobile" != uatTestMobileNumber){
       if(printStatementStatus){
-        print("STATUS :$status");
-        print("mobile :$mobile");
-        print("returning live url");
+        // print("STATUS :$status");
+        // print("mobile :$mobile");
+        // print("returning live url");
       }
 
      // baseUrl = "https://adsspay.aanvinsolutions.com:8444/";
@@ -225,39 +225,11 @@ void isRunningLiveBaseUrl(bool status, String mobile) async {
     }else{
       baseUrl ="https://adsspayweb.digicob.in/";
       if(printStatementStatus){
-        print("returning UAT url");
+       // print("returning UAT url");
       }
     }
   }
 
-}
-class Validators {
-  static String? pan(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Please enter PAN';
-    }
-
-    final panRegex = RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]$');
-
-    if (!panRegex.hasMatch(value.trim().toUpperCase())) {
-      return 'Please enter a valid PAN';
-    }
-
-    return null;
-  }
-  static String? pinCode(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Please enter PIN Code';
-    }
-
-    final pinRegex = RegExp(r'^[1-9][0-9]{5}$');
-
-    if (!pinRegex.hasMatch(value.trim())) {
-      return 'Please enter a valid 6-digit PIN Code';
-    }
-
-    return null;
-  }
 }
 
 void isRunningLiveDopBaseUrl(bool status, String mobile) async {
@@ -288,6 +260,7 @@ class NavItem{
 }
 
 
+/*
 String getBankNameFromCorpCode(String corpCode) {
   //print("getBankNameFromCorpCode $corpCode");
   // Map corpcode to bank name
@@ -368,6 +341,7 @@ String getBankNameFromCorpCode(String corpCode) {
   // Return the bank name if found, otherwise return a default value
   return corpCodeToBankName[corpCode] ?? "Unknown Bank";
 }
+*/
 
 
 void checkForUpdate() async {
@@ -611,7 +585,7 @@ String extractOtp(List<TextEditingController> otpController){
   for(var x in otp){
     otpValue += x;
   }
-  print(otpValue);
+  //print(otpValue);
   if(otpValue.length !=6 && otpValue.isNotEmpty){
     return "Enter 6 digit Otp";
   }else if(otpValue.isEmpty){
@@ -682,8 +656,4 @@ Future<void> openGoogleMaps(double latitude , double longitude) async {
   }
 }
 
-class Cat{
-  String? name="";
-  Cat(this.name);
-}
 

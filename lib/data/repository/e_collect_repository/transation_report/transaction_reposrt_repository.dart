@@ -2,11 +2,12 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import '../../../../core/constants.dart';
 import '../../../../domain/model/e_collect/transaction_report/transaction_ok_report.dart';
 import '../../../../domain/model/e_collect/transaction_report/transaction_report.dart';
 
 class TransactionReportRepository {
-  final String baseURl = "https://dev.collect.org.in/";
+  final String baseURl = eCollectBaseUrl;
   final String transactionReportEndpoint =
       "api/Payment/transaction-history?merchantId=";
 

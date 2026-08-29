@@ -13,18 +13,6 @@ void showToast({required String message, required Color color}) {
       fontSize: 16.0);
 }
 
-/*//Display snack bar
-void showSnackBar(String message) {
-  final snackBarContent = SnackBar(
-    //padding: EdgeInsets.only(bottom: 16.0),
-    content: Text(message),
-    action: SnackBarAction(
-        label: 'OK',
-        onPressed: () => snackBarKey.currentState
-            ?.hideCurrentSnackBar(reason: SnackBarClosedReason.hide)),
-  );
-  snackBarKey.currentState?.showSnackBar(snackBarContent);
-}*/
 
 Future<dynamic> showAlertDialog(String message, BuildContext context) {
   return showDialog(

@@ -45,7 +45,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
   String? subAgentCodeNew;
   String? eCollectUserToken;
   String? corpCode;
-  String? token;
+ // String? token;
   String? paymentSessionId;
   String orderID = "";
   bool value = true;
@@ -593,7 +593,6 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
         agentOriginId = result[2];
         agentEmail = result[3];
         corpCode = result[4];
-        token = result[5];
         subAgentCodeNew = result[6];
 eCollectUserToken = result[20];
   }

@@ -37,13 +37,12 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
       SharedPref.shared.getECollectMerchantID(),
       SharedPref.shared.getECollectUserToken(),
       SharedPref.shared.getFcmToken(),
-      SharedPref.shared.getMpinValue(),
       SharedPref.shared.getECollectUserNumber(),
      ]);
     custID = result[0];
     token = result[1];
     fcmToken = result[2];
-    contactNum = result[4];
+    contactNum = result[3];
 
 
     if(fcmToken.isEmpty){

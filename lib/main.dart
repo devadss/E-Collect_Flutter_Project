@@ -304,14 +304,7 @@ Future<void> requestLocationPermission() async {
     await Permission.locationWhenInUse.request();
   }
 }
-// Future<void> requestLocationPermission() async {
-//   // Check if location permission is denied and request it if necessary
-//   await Permission.locationWhenInUse.isDenied.then((value) {
-//     if (value) {
-//       Permission.locationWhenInUse.request();
-//     }
-//   });
-// }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

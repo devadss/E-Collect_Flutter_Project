@@ -19,13 +19,8 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   bool loggedInUser = false;
   String fcmToken = "";
-  String entityid = "";
-  String subAgentid = "";
   String ecollectTokenValue = "";
   String ecollectRefreshToken = "";
-  String mobnum = "";
-  String subAgentmobnum = "";
-  String mpin = "";
   bool _animationsCompleted = false;
 
   @override
@@ -59,12 +54,9 @@ class _SplashScreenState extends State<SplashScreen> {
   }
   Future<void> getDeviceToken() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-    // Request permission (mainly for iOS)
     await messaging.requestPermission();
 
     var fcmToken = await messaging.getToken();
-   // SharedPref.shared.setFcmToken(fcmToken.toString());
     print("FCM Token: $fcmToken");
 
   }
@@ -72,38 +64,20 @@ class _SplashScreenState extends State<SplashScreen> {
     final results = await Future.wait([
       SharedPref.shared.getECollectLoginStatus(),
       SharedPref.shared.getFcmToken(),
-      SharedPref.shared.getAgentId(),
-      SharedPref.shared.getSubAgentId(),
       SharedPref.shared.getECollectUserToken(),
-      SharedPref.shared.getParentAgentMobNum(),
-      SharedPref.shared.getSubAgentMobNum(),
-      SharedPref.shared.getMpinValue(),
-      SharedPref.shared.getFcmToken(),
       SharedPref.shared.getECollectRefreshToken(),
     ]);
 
     final lgStatus = results[0] as bool;
-
     fcmToken = results[1] as String;
-    entityid = results[2] as String;
-    subAgentid = results[3] as String;
-    ecollectTokenValue = results[4] as String;
-    mobnum = results[5] as String;
-    subAgentmobnum = results[6] as String;
-    mpin = results[7] as String;
-    ecollectRefreshToken = results[8] as String;
+    ecollectTokenValue = results[2] as String;
+    ecollectRefreshToken = results[3] as String;
 
-
-    var fcmtok = fcmToken;
    // print("fcmtok : $fcmToken");
 
-    if(fcmtok.isEmpty){
+    if(fcmToken.isEmpty){
       getDeviceToken();
     }
-
-    isRunningLiveBaseUrl(true, subAgentmobnum);
-    isRunningLiveDopBaseUrl(true, subAgentmobnum);
-
     if (!mounted) return;
 
     setState(() {
