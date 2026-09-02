@@ -30,14 +30,14 @@ class RdclDueListRepo {
 
     var data  = jsonDecode(request.body);
     var d = data.toString();
-    if(request.statusCode == 200 && !d.contains("No results found")){
+    if(request.statusCode == 200 && !d.contains("No results found!")){
       final success =
       await compute(parseRdclDuesSuccess, request.body);
 
 
      // return CustomerListSuccessModel(successResponse);
       return RdclDulistSuccess(success);
-    }else if(request.statusCode == 200 && d.contains("No results found")){
+    }else if(request.statusCode == 200 && d.contains("No results found!")){
       return RdclDueListFail(request.body);
     }
 

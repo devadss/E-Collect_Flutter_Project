@@ -12,8 +12,7 @@ final String termsUrl = "https://your-terms-url.com";
 final String privacyUrl = "https://your-privacy-url.com";
 const String terms = 'https://collect.org.in/terms-of-conditions.html';
 const String privacy = 'https://collect.org.in/privacy-policy.html';
-String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
-RegExp regExp = RegExp(pattern);
+
 
 AlertDialog exitAlert(BuildContext context){
   return AlertDialog(
@@ -67,7 +66,6 @@ AlertDialog exitAlert(BuildContext context){
 
 class SharedPrefKeys {
   static const String selectedBusinessCategory = "SELECTED_BUSINESS_CAT";
-  static const String eCollectName = "E_COLLECT_NAME";
   static const String userId = "USER_ID";
   static const String username = "USER_NAME";
   static const String eCollectUsername = "E-COLLECT_USER_NAME";
@@ -108,7 +106,9 @@ class SharedPrefKeys {
   static const String subAgentID = "SUB_AGENT_ID";
 }
 
-String capitalizeFirstLetter(String? input){
-  if(input == null || input.isEmpty) return '';
-  return input[0].toUpperCase()+input.substring(1);
-}
+// String capitalizeFirstLetter(String? input){
+//   if(input == null || input.isEmpty) return '';
+//   return input[0].toUpperCase()+input.substring(1);
+// }
+//String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+//RegExp regExp = RegExp(pattern);

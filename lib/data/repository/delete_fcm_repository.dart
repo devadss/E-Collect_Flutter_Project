@@ -25,7 +25,7 @@ class DeleteFcmTokenRepository extends DeleteFcmTokenInterface {
          // body: json.encode({"EntityId": entityID}));
           body: json.encode({
             "customerId": entityID,
-            "mobileNumber": mobNum.startsWith("+91")? mobNum : "+91$mobNum",
+            "mobileNumber": mobNum,
             "deviceType":"Android",
             "appVersion":"22.0.1",
             "deviceToken": token

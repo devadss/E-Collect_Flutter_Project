@@ -1,7 +1,6 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'package:e_Collect/core/constants.dart';
 import 'package:e_Collect/core/utils.dart';
 import 'package:flutter/material.dart';
@@ -125,7 +124,7 @@ class NotificationService {
 
     final body = {
       "customerId": agentID,
-      "mobileNumber": mobnum.startsWith("+91")? mobnum:"+91$mobnum",
+      "mobileNumber": mobnum,
       "deviceType":"Android",
       "appVersion":"22.0.1",
       "deviceToken": token.trim().toString()

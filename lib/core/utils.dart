@@ -586,8 +586,8 @@ String extractOtp(List<TextEditingController> otpController){
     otpValue += x;
   }
   //print(otpValue);
-  if(otpValue.length !=6 && otpValue.isNotEmpty){
-    return "Enter 6 digit Otp";
+  if(otpValue.length !=4 && otpValue.isNotEmpty){
+    return "Enter 4 digit Otp";
   }else if(otpValue.isEmpty){
     return "Empty fields not allowed";
   }else{
@@ -634,16 +634,16 @@ void showNotification(BuildContext context , String content, Color color, Color 
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(content, style: TextStyle(color: txtColor, fontWeight: FontWeight.w700),), backgroundColor: color));
 }
 
-AppBar ptp_bucket_appbar(String appBarName) {
+AppBar ptpBucketAppbar(String appBarName) {
   return AppBar(
     centerTitle: true,
     title:  Text(
       appBarName,
 
       style: TextStyle(
-          color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
+          color: home1, fontSize: 23, fontWeight: FontWeight.w700),
     ),
-    backgroundColor: home1.withAlpha(180),
+    backgroundColor: Colors.white,
   );
 }
 

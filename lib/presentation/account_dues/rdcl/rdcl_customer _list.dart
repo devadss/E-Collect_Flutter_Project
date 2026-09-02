@@ -105,6 +105,63 @@ class RdclDueListBocPageState extends State<RdclDueListBocPage> {
         );
   }
 
+  Widget _buildInfoIcon(IconData icon) {
+    return SizedBox(
+      width: 42,
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: Container(
+          width: 38,
+          height: 38,
+          decoration: BoxDecoration(
+            color: home1.withValues(alpha: 0.07),
+            borderRadius: BorderRadius.circular(11),
+          ),
+          child: Icon(
+            icon,
+            size: 19,
+            color: home1,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLabel(String text) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 9,
+        fontWeight: FontWeight.w800,
+        letterSpacing: 0.9,
+        color: Colors.grey.shade500,
+      ),
+    );
+  }
+
+  Widget _buildBadge(String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 9,
+        vertical: 5,
+      ),
+      decoration: BoxDecoration(
+        color: home1.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(7),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 0.7,
+          color: home1,
+        ),
+      ),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -216,7 +273,254 @@ class RdclDueListBocPageState extends State<RdclDueListBocPage> {
                     itemCount: data.data?.length ?? 0,
                     itemBuilder: (context, index) {
                       final customer = data?.data?[index];
-                      return Container(
+                      return
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: const Color(0xFFE5E7EB),
+                              width: 1,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF101828).withValues(alpha: 0.035),
+                                blurRadius: 12,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(16),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(16),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => RdclDueDetail(
+                                      rdclDetailModel: RdclDetailModel(
+                                        customerNumber:
+                                        widget.rdclListModel.agentPhoneNumber.toString(),
+                                        baseUrl: _rdclDetailUrl!,
+                                        customerAccountNumber:
+                                        customer!.rdclGlobalAccNo.toString(),
+                                        custId: customer?.custId.toString(),
+                                        eCollectAgentNumber:
+                                        widget.rdclListModel.agentPhoneNumber,
+                                        eCollectMerchantName:
+                                        widget.rdclListModel.eCollectMerchantName,
+                                        eCollectAgentEmail:
+                                        widget.rdclListModel.eCollectAgentEmail,
+                                        eCollectCollectionType: 'RDCL',
+                                        eCollectAgentBranchCode:
+                                        widget.rdclListModel.eCollectAgentBranchCode,
+                                        eCollectAgentMerchantID:
+                                        widget.rdclListModel.eCollectAgentMerchantID,
+                                        eCollectAgentOriginId:
+                                        widget.rdclListModel.eCollectAgentOriginId,
+                                        eCollectAgentId:
+                                        widget.rdclListModel.eCollectAgentId,
+                                        eCollectToken:
+                                        widget.rdclListModel.eCollectToken,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(18, 17, 16, 17),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+
+                                    // ───────────────────────────────────────
+                                    // PRODUCT + CUSTOMER
+                                    // ───────────────────────────────────────
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+
+                                        Container(
+                                          width: 42,
+                                          height: 42,
+                                          decoration: BoxDecoration(
+                                            color: home1.withValues(alpha: 0.08),
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          child: Icon(
+                                            Icons.account_balance_outlined,
+                                            color: home1,
+                                            size: 20,
+                                          ),
+                                        ),
+
+                                        const SizedBox(width: 12),
+
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              const Text(
+                                                "RDCL ACCOUNT",
+                                                style: TextStyle(
+                                                  fontSize: 9,
+                                                  fontWeight: FontWeight.w800,
+                                                  letterSpacing: 1.0,
+                                                  color: home1,
+                                                ),
+                                              ),
+
+                                              const SizedBox(height: 4),
+
+                                              Text(
+                                                customer?.custName?.trim() ?? "",
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Color(0xFF171A1F),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+
+                                        Icon(
+                                          Icons.chevron_right_rounded,
+                                          size: 22,
+                                          color: Colors.grey.shade400,
+                                        ),
+                                      ],
+                                    ),
+
+                                    const SizedBox(height: 18),
+
+                                    // ───────────────────────────────────────
+                                    // ACCOUNT NUMBER
+                                    // ───────────────────────────────────────
+                                    Container(
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 14,
+                                        vertical: 13,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFF7F8FA),
+                                        borderRadius: BorderRadius.circular(11),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+
+                                          Text(
+                                            "ACCOUNT NUMBER",
+                                            style: TextStyle(
+                                              fontSize: 9,
+                                              fontWeight: FontWeight.w800,
+                                              letterSpacing: 1.0,
+                                              color: Colors.grey.shade500,
+                                            ),
+                                          ),
+
+                                          const SizedBox(height: 5),
+
+                                          Text(
+                                            customer?.rdclGlobalAccNo ?? "",
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w700,
+                                              letterSpacing: 1.2,
+                                              color: Color(0xFF18212B),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    const SizedBox(height: 16),
+
+                                    // ───────────────────────────────────────
+                                    // SCHEME + CODE
+                                    // ───────────────────────────────────────
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+
+                                              Text(
+                                                "SCHEME",
+                                                style: TextStyle(
+                                                  fontSize: 9,
+                                                  fontWeight: FontWeight.w800,
+                                                  letterSpacing: 1.0,
+                                                  color: Colors.grey.shade500,
+                                                ),
+                                              ),
+
+                                              const SizedBox(height: 5),
+
+                                              Text(
+                                                customer?.schName ?? "",
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontSize: 13,
+                                                  height: 1.3,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Color(0xFF343A40),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+
+                                        const SizedBox(width: 20),
+
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+
+                                            Text(
+                                              "CODE",
+                                              style: TextStyle(
+                                                fontSize: 9,
+                                                fontWeight: FontWeight.w800,
+                                                letterSpacing: 1.0,
+                                                color: Colors.grey.shade500,
+                                              ),
+                                            ),
+
+                                            const SizedBox(height: 5),
+
+                                            Text(
+                                              customer?.schCode ?? "",
+                                              style: const TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w700,
+                                                color: Color(0xFF343A40),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+
+
+                      /* Container(
                         margin: const EdgeInsets.only(bottom: 12),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
@@ -398,7 +702,7 @@ class RdclDueListBocPageState extends State<RdclDueListBocPage> {
                             ),
                           ),
                         ),
-                      );
+                      );*/
                     },
                   );
                 }

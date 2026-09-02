@@ -371,7 +371,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                 20,
                 0,
                 20,
-                40,
+                20,
               ),
 
               sliver: SliverList(
@@ -491,7 +491,152 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
       ),
     );
   }
+  Widget _statusBadge(
+      String text,
+      Color color,
+      ) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 9,
+        vertical: 5,
+      ),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(7),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
 
+          Container(
+            width: 5,
+            height: 5,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+            ),
+          ),
+
+          const SizedBox(width: 5),
+
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 9.5,
+              fontWeight: FontWeight.w700,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProfileHeader() {
+    final profile = widget.profileData;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        20,
+        20,
+        20,
+        24,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+
+          // =====================================================
+          // AVATAR
+          // =====================================================
+          Container(
+            width: 72,
+            height: 72,
+            decoration: BoxDecoration(
+              color: primary.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(22),
+            ),
+            child: Center(
+              child: Text(
+                _getInitials(
+                  profile.agentName ?? "",
+                ),
+                style: const TextStyle(
+                  color: primary,
+                  fontSize: 23,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.5,
+                ),
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 14),
+
+          // =====================================================
+          // NAME
+          // =====================================================
+          Text(
+            profile.agentName?.trim() ?? "",
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 21,
+              fontWeight: FontWeight.w700,
+              color: textDark,
+              letterSpacing: -0.4,
+            ),
+          ),
+
+          const SizedBox(height: 5),
+
+          // =====================================================
+          // ROLE + AGENT CODE
+          // =====================================================
+          Text(
+            "${profile.role}  •  Agent ${profile.agentCode}",
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: textMedium,
+            ),
+          ),
+
+          const SizedBox(height: 11),
+
+          // =====================================================
+          // STATUS
+          // =====================================================
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+
+              if (profile.isActive == true)
+                _statusBadge(
+                  "Active",
+                  success,
+                ),
+
+              if (profile.isActive == true &&
+                  profile.isVerified == true)
+                const SizedBox(width: 7),
+
+              if (profile.isVerified == true)
+                _statusBadge(
+                  "Verified",
+                  blue,
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+
+/*
   Widget _buildProfileHeader() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(
@@ -599,6 +744,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
       ),
     );
   }
+*/
 
   // ============================================================
   // MERCHANT
@@ -755,6 +901,16 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
             child: _serviceCard(
               title: "RD",
               subtitle: "Recurring Deposit",
+              icon: Icons.savings_outlined,
+              color: blue,
+              serviceCount: 4,
+            ),
+          ),
+        if (widget.profileData.enabledProducts!.contains("RDCL"))
+          Expanded(
+            child: _serviceCard(
+              title: "RDCL",
+              subtitle: "Rdcl Deposit",
               icon: Icons.savings_outlined,
               color: blue,
               serviceCount: 4,
@@ -1182,44 +1338,45 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
     );
   }
 
-  Widget _iconButton({
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
-    return Material(
-      color: Colors.white,
-
-      borderRadius:
-      BorderRadius.circular(13),
-
-      child: InkWell(
-        onTap: onTap,
-
-        borderRadius:
-        BorderRadius.circular(13),
-
-        child: Container(
-          width: 42,
-          height: 42,
-
-          decoration: BoxDecoration(
-            borderRadius:
-            BorderRadius.circular(13),
-
-            border: Border.all(
-              color: border,
-            ),
-          ),
-
-          child: Icon(
-            icon,
-            size: 17,
-            color: textDark,
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _iconButton({
+  //   required IconData icon,
+  //   required VoidCallback onTap,
+  // })
+  // {
+  //   return Material(
+  //     color: Colors.white,
+  //
+  //     borderRadius:
+  //     BorderRadius.circular(13),
+  //
+  //     child: InkWell(
+  //       onTap: onTap,
+  //
+  //       borderRadius:
+  //       BorderRadius.circular(13),
+  //
+  //       child: Container(
+  //         width: 42,
+  //         height: 42,
+  //
+  //         decoration: BoxDecoration(
+  //           borderRadius:
+  //           BorderRadius.circular(13),
+  //
+  //           border: Border.all(
+  //             color: border,
+  //           ),
+  //         ),
+  //
+  //         child: Icon(
+  //           icon,
+  //           size: 17,
+  //           color: textDark,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _detailRow(
       IconData icon,
@@ -1298,56 +1455,56 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
     );
   }
 
-  Widget _statusBadge(
-      String text,
-      Color color,
-      ) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: 4,
-      ),
-
-      decoration: BoxDecoration(
-        color: color.withValues(
-          alpha: 0.08,
-        ),
-
-        borderRadius:
-        BorderRadius.circular(20),
-      ),
-
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-
-        children: [
-
-          Container(
-            width: 5,
-            height: 5,
-
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
-          ),
-
-          const SizedBox(width: 5),
-
-          Text(
-            text,
-
-            style: TextStyle(
-              color: color,
-              fontSize: 10,
-              fontWeight:
-              FontWeight.w700,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _statusBadge(
+  //     String text,
+  //     Color color,
+  //     ) {
+  //   return Container(
+  //     padding: const EdgeInsets.symmetric(
+  //       horizontal: 8,
+  //       vertical: 4,
+  //     ),
+  //
+  //     decoration: BoxDecoration(
+  //       color: color.withValues(
+  //         alpha: 0.08,
+  //       ),
+  //
+  //       borderRadius:
+  //       BorderRadius.circular(20),
+  //     ),
+  //
+  //     child: Row(
+  //       mainAxisSize: MainAxisSize.min,
+  //
+  //       children: [
+  //
+  //         Container(
+  //           width: 5,
+  //           height: 5,
+  //
+  //           decoration: BoxDecoration(
+  //             color: color,
+  //             shape: BoxShape.circle,
+  //           ),
+  //         ),
+  //
+  //         const SizedBox(width: 5),
+  //
+  //         Text(
+  //           text,
+  //
+  //           style: TextStyle(
+  //             color: color,
+  //             fontSize: 10,
+  //             fontWeight:
+  //             FontWeight.w700,
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   String _getInitials(String name) {
     final parts = name

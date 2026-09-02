@@ -5,6 +5,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import '../../data/e_collect_bloc/transaction_bloc/transaction_bloc.dart';
 
 class ECollectHomepage extends StatefulWidget {
@@ -148,8 +149,6 @@ class ECollectHomepageState extends State<ECollectHomepage> {
                 height: 10,
               ),
               _buildAnimatedBannerCarousel(MediaQuery.of(context).size),
-
-
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: Text(
@@ -331,6 +330,119 @@ class ECollectHomepageState extends State<ECollectHomepage> {
         bool isPrimary = false,
       }) {
     return Container(
+      margin: const EdgeInsets.all(5),
+      padding: EdgeInsets.symmetric(
+        horizontal: 14,
+        vertical: isPrimary ? 15 : 13,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: const Color(0xFFE7E9EC),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.025),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+
+          // Small status/icon indicator
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: accentColor.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(
+              icon,
+              color: accentColor,
+              size: 18,
+            ),
+          ),
+
+          const SizedBox(width: 11),
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.2,
+                    color: Colors.grey.shade500,
+                  ),
+                ),
+
+                const SizedBox(height: 4),
+
+                BlocBuilder<PaymentTransactionBloc, TransactionState>(
+                  builder: (context, state) {
+                    String displayValue = "0";
+
+                    if (state is TransactionReportSuccessState) {
+                      if (label == "Total Transaction Amount") {
+                        displayValue = NumberFormat.currency(
+                          locale: 'en_IN',
+                          symbol: '₹',
+                          decimalDigits: 2,
+                        ).format(state.finalTotal);
+                      } else if (label == "Total Transactions") {
+                        displayValue = state.transactionSuccessModel
+                            .transactionOkReport
+                            .pagination
+                            .pageSize
+                            .toString();
+                      } else if (label == "Successful") {
+                        displayValue = state.successCount.toString();
+                      } else if (label == "Pending") {
+                        displayValue = state.pendingCount.toString();
+                      } else if (label == "Failed") {
+                        displayValue = state.failCount.toString();
+                      }
+                    }
+
+                    return Text(
+                      displayValue,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: isPrimary ? 20 : 17,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF20252B),
+                        letterSpacing: -0.2,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+/*  Widget transactionDataCard(
+      String label,
+      String value, {
+        required IconData icon,
+        required Color accentColor,
+        bool isPrimary = false,
+      }) {
+    return Container(
       margin: const EdgeInsets.all(6),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -409,7 +521,7 @@ class ECollectHomepageState extends State<ECollectHomepage> {
         ],
       ),
     );
-  }
+  }*/
 
 final List<String> bannerImages = [
   "assets/images/cq1.webp",
@@ -421,24 +533,111 @@ final List<String> bannerImages = [
   "assets/images/cq7.webp",
 ];
 
+  // Widget _buildAnimatedBannerCarousel(Size size) {
+  //   return Column(
+  //     children: [
+  //       CarouselSlider.builder(
+  //         carouselController: _carouselController,
+  //         itemCount: bannerImages.length,
+  //         options: CarouselOptions(
+  //           height: size.height * 0.17,
+  //           autoPlay: true,
+  //           autoPlayInterval: const Duration(seconds: 4),
+  //           autoPlayAnimationDuration: const Duration(milliseconds: 800),
+  //           autoPlayCurve: Curves.easeInOutCubic,
+  //
+  //           // Modern full-width feel
+  //           viewportFraction: 0.92,
+  //           enlargeCenterPage: false,
+  //
+  //           // Gives a little breathing room
+  //           padEnds: true,
+  //
+  //           onPageChanged: (index, reason) {
+  //             setState(() {
+  //               currentBannerIndex = index;
+  //             });
+  //           },
+  //         ),
+  //         itemBuilder: (context, index, realIndex) {
+  //           return AnimatedContainer(
+  //             duration: const Duration(milliseconds: 400),
+  //             curve: Curves.easeOutCubic,
+  //             margin: const EdgeInsets.symmetric(
+  //               horizontal: 5,
+  //               vertical: 4,
+  //             ),
+  //             decoration: BoxDecoration(
+  //               borderRadius: BorderRadius.circular(22),
+  //               boxShadow: [
+  //                 BoxShadow(
+  //                   color: Colors.black.withValues(alpha: 0.08),
+  //                   blurRadius: 18,
+  //                   offset: const Offset(0, 6),
+  //                 ),
+  //               ],
+  //             ),
+  //             child: ClipRRect(
+  //               borderRadius: BorderRadius.circular(22),
+  //               child: Image.asset(
+  //                 bannerImages[index],
+  //                 width: double.infinity,
+  //                 height: double.infinity,
+  //                 fit: BoxFit.cover,
+  //                 filterQuality: FilterQuality.high,
+  //               ),
+  //             ),
+  //           );
+  //         },
+  //       ),
+  //
+  //       const SizedBox(height: 10),
+  //
+  //       // Modern page indicator
+  //       Row(
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         children: List.generate(
+  //           bannerImages.length,
+  //               (index) {
+  //             final isActive = currentBannerIndex == index;
+  //
+  //             return AnimatedContainer(
+  //               duration: const Duration(milliseconds: 300),
+  //               curve: Curves.easeOutCubic,
+  //               margin: const EdgeInsets.symmetric(horizontal: 3),
+  //               width: isActive ? 22 : 7,
+  //               height: 6,
+  //               decoration: BoxDecoration(
+  //                 color: isActive
+  //                     ? Colors.black87
+  //                     : Colors.black.withValues(alpha: 0.18),
+  //                 borderRadius: BorderRadius.circular(20),
+  //               ),
+  //             );
+  //           },
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
   Widget _buildAnimatedBannerCarousel(Size size) {
     return Column(
       children: [
+
         CarouselSlider.builder(
           carouselController: _carouselController,
           itemCount: bannerImages.length,
           options: CarouselOptions(
             height: size.height * 0.17,
+
             autoPlay: true,
-            autoPlayInterval: const Duration(seconds: 4),
-            autoPlayAnimationDuration: const Duration(milliseconds: 800),
-            autoPlayCurve: Curves.easeInOutCubic,
+            autoPlayInterval: const Duration(seconds: 5),
+            autoPlayAnimationDuration:
+            const Duration(milliseconds: 700),
+            autoPlayCurve: Curves.easeOutCubic,
 
-            // Modern full-width feel
-            viewportFraction: 0.92,
+            viewportFraction: 0.94,
             enlargeCenterPage: false,
-
-            // Gives a little breathing room
             padEnds: true,
 
             onPageChanged: (index, reason) {
@@ -447,26 +646,25 @@ final List<String> bannerImages = [
               });
             },
           ),
+
           itemBuilder: (context, index, realIndex) {
-            return AnimatedContainer(
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.easeOutCubic,
+            return Container(
               margin: const EdgeInsets.symmetric(
-                horizontal: 5,
-                vertical: 4,
+                horizontal: 4,
+                vertical: 3,
               ),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(22),
+                borderRadius: BorderRadius.circular(18),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.08),
-                    blurRadius: 18,
-                    offset: const Offset(0, 6),
+                    color: Colors.black.withValues(alpha: 0.045),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(22),
+                borderRadius: BorderRadius.circular(18),
                 child: Image.asset(
                   bannerImages[index],
                   width: double.infinity,
@@ -479,27 +677,32 @@ final List<String> bannerImages = [
           },
         ),
 
-        const SizedBox(height: 10),
+        const SizedBox(height: 9),
 
-        // Modern page indicator
+        // =========================================================
+        // PAGE INDICATOR
+        // =========================================================
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(
             bannerImages.length,
                 (index) {
-              final isActive = currentBannerIndex == index;
+              final isActive =
+                  currentBannerIndex == index;
 
               return AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeOutCubic,
-                margin: const EdgeInsets.symmetric(horizontal: 3),
-                width: isActive ? 22 : 7,
-                height: 6,
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeOut,
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 3,
+                ),
+                width: isActive ? 18 : 6,
+                height: 5,
                 decoration: BoxDecoration(
                   color: isActive
-                      ? Colors.black87
-                      : Colors.black.withValues(alpha: 0.18),
-                  borderRadius: BorderRadius.circular(20),
+                      ? home1
+                      : const Color(0xFFD9DDE2),
+                  borderRadius: BorderRadius.circular(10),
                 ),
               );
             },
@@ -508,8 +711,169 @@ final List<String> bannerImages = [
       ],
     );
   }
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+
+    if (hour < 12) {
+      return "Good morning";
+    } else if (hour < 17) {
+      return "Good afternoon";
+    } else {
+      return "Good evening";
+    }
+  }
 
   Widget _buildAnimatedHeader(BuildContext context, Size size) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      color: Colors.white,
+      child: SafeArea(
+        bottom: false,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+
+            // =====================================================
+            // PROFILE
+            // =====================================================
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: home1.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(13),
+              ),
+              child: Icon(
+                Icons.person_outline_rounded,
+                color: home1,
+                size: 22,
+              ),
+            ),
+
+            const SizedBox(width: 12),
+
+            // =====================================================
+            // USER INFORMATION
+            // =====================================================
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+
+                  Row(
+                    children: [
+                      Text(
+                        _getGreeting(),
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey.shade500,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 3),
+
+                  Text(
+                    formattedName.trim(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: -0.25,
+                      color: Color(0xFF171A1F),
+                    ),
+                  ),
+
+                  const SizedBox(height: 3),
+
+                  Text(
+                    "Manage your collections & accounts",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 10.5,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.grey.shade500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(width: 8),
+
+            // =====================================================
+            // NOTIFICATION
+            // =====================================================
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(13),
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("No notifications"),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF7F8F9),
+                    borderRadius: BorderRadius.circular(13),
+                  ),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+
+                      const Icon(
+                        Icons.notifications_none_rounded,
+                        size: 22,
+                        color: Color(0xFF30363D),
+                      ),
+
+                      Positioned(
+                        top: 9,
+                        right: 9,
+                        child: Container(
+                          width: 6,
+                          height: 6,
+                          decoration: BoxDecoration(
+                            color: home1,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 1.5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    )
+        .animate()
+        .fadeIn(
+      duration: const Duration(milliseconds: 350),
+    )
+        .slideY(
+      begin: -0.04,
+      end: 0,
+      curve: Curves.easeOutCubic,
+    );
+  }
+
+ /* Widget _buildAnimatedHeader(BuildContext context, Size size) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 18),
@@ -619,7 +983,7 @@ final List<String> bannerImages = [
       end: 0,
       curve: Curves.easeOutCubic,
     );
-  }
+  }*/
 
 }
 

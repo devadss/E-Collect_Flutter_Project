@@ -16,7 +16,6 @@ class GooglePinCodePage extends StatefulWidget {
 }
 
 class _GooglePinCodePageState extends State<GooglePinCodePage> {
-  String pin = "";
   String custID = "";
   String token = "";
   bool authenticated = false;
@@ -109,12 +108,14 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
   Future<void> validateMpinFingerAuth() async {
     if (!mounted) return; // ✅ very important before using context
     if (fcmToken.isNotEmpty && authenticated == true) {
+      print("State one");
       Navigator.push(context,
           MaterialPageRoute(builder: (BuildContext context) => BottomNavBar()));
     } else if (fcmToken.isEmpty && authenticated == true) {
-
+      print("State two");
       //  await saveFcmToken(custID, context, "GPIN", fcmToken, subAgentContactNum, mpin);
     } else {
+      print("State three");
       if (!mounted) return; // ✅ re-check before using context again
     }
   }
@@ -296,12 +297,12 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
                                 ),
                                 const SizedBox(width: 8),
                                 Flexible(
-                                  child: Text(
+                                  child: const Text(
                                     "Your biometric data stays on your device",
                                     textAlign: TextAlign.center,
-                                    style: GoogleFonts.poppins(
+                                    style: TextStyle(
                                       fontSize: 11.5,
-                                      color: const Color(0xFF747A86),
+                                      color:  Color(0xFF747A86),
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),

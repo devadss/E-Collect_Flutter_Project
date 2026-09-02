@@ -25,7 +25,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-
     getSharedData();
     super.initState();
   }
@@ -42,24 +41,25 @@ class _SplashScreenState extends State<SplashScreen> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-
   void _navigateAfterAnimations(Widget page) {
     if (_animationsCompleted) {
       Future.delayed(const Duration(milliseconds: 200), () {
         if (mounted) {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => page));
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => page));
         }
       });
     }
   }
+
   Future<void> getDeviceToken() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     await messaging.requestPermission();
 
     var fcmToken = await messaging.getToken();
     print("FCM Token: $fcmToken");
-
   }
+
   Future<void> getSharedData() async {
     final results = await Future.wait([
       SharedPref.shared.getECollectLoginStatus(),
@@ -73,9 +73,7 @@ class _SplashScreenState extends State<SplashScreen> {
     ecollectTokenValue = results[2] as String;
     ecollectRefreshToken = results[3] as String;
 
-   // print("fcmtok : $fcmToken");
-
-    if(fcmToken.isEmpty){
+    if (fcmToken.isEmpty) {
       getDeviceToken();
     }
     if (!mounted) return;
@@ -96,12 +94,11 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
-
-  void validateECollectToken(){
-    context.read<AuthenticationBloc>().add(TokenVerificationEvent(ecollectTokenValue));
+  void validateECollectToken() {
+    context
+        .read<AuthenticationBloc>()
+        .add(TokenVerificationEvent(ecollectTokenValue));
   }
-
-
 
   void _onAnimationsComplete() {
     if (!_animationsCompleted) {
@@ -113,10 +110,10 @@ class _SplashScreenState extends State<SplashScreen> {
       if (loggedInUser) {
         if (fcmToken.isNotEmpty) {
           if (printStatementStatus) {
-          //  print("Gpin page from _onAnimationsComplete");
+            //  print("Gpin page from _onAnimationsComplete");
           }
 
-           _navigateAfterAnimations(const GooglePinCodePage());
+          _navigateAfterAnimations(const GooglePinCodePage());
         }
       } else {
         _navigateAfterAnimations(const MobileNumberVerificationPage());
@@ -133,8 +130,7 @@ class _SplashScreenState extends State<SplashScreen> {
           // Animated Gradient Background
           AnimatedContainer(
             duration: const Duration(seconds: 2),
-            decoration: BoxDecoration(color: Colors.grey.shade200
-                ),
+            decoration: BoxDecoration(color: Colors.grey.shade200),
           ),
 
           // Floating QR Code Particles
@@ -169,31 +165,35 @@ class _SplashScreenState extends State<SplashScreen> {
           // Main Content
           BlocListener<AuthenticationBloc, AuthenticationState>(
             listener: (BuildContext context, AuthenticationState state) {
-
-              if(state is TokenVerificationSuccessState){
-                var data = state.tokenVerificationSuccessModel.tokenValidationSuccessResponse;
-               // print(data.message);
-                data.isValid == true?
-
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const GooglePinCodePage()))
-                    :
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MobileNumberVerificationPage()));
-
+              if (state is TokenVerificationSuccessState) {
+                var data = state.tokenVerificationSuccessModel
+                    .tokenValidationSuccessResponse;
+                // print(data.message);
+                data.isValid == true
+                    ? Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const GooglePinCodePage()))
+                    : Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const MobileNumberVerificationPage()));
               }
-              if(state is TokenRegenerationSuccessState){
-                SharedPref.shared.setECollectToken(state.tokenRegenerationSuccessModel.eCollectTokenGenSuccess.token);
-                SharedPref.shared.setECollectRefreshToken(state.tokenRegenerationSuccessModel.eCollectTokenGenSuccess.refreshToken);
-              }
-              else if(state is TokenVerificationFailureState){
-               // print(state.tokenVerificationFailureModel.tokenValidationFailureResponse.message);
+              if (state is TokenRegenerationSuccessState) {
+                SharedPref.shared.setECollectToken(state
+                    .tokenRegenerationSuccessModel
+                    .eCollectTokenGenSuccess
+                    .token);
+                SharedPref.shared.setECollectRefreshToken(state
+                    .tokenRegenerationSuccessModel
+                    .eCollectTokenGenSuccess
+                    .refreshToken);
+              } else if (state is TokenVerificationFailureState) {
+                // print(state.tokenVerificationFailureModel.tokenValidationFailureResponse.message);
 
-                context.read<AuthenticationBloc>().add(TokenRegenerationEvent(ecollectTokenValue,ecollectRefreshToken ));
+                context.read<AuthenticationBloc>().add(TokenRegenerationEvent(
+                    ecollectTokenValue, ecollectRefreshToken));
               }
             },
             child: Center(
@@ -201,7 +201,6 @@ class _SplashScreenState extends State<SplashScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-
                     Image.asset("assets/images/ecollect.webp"),
                     const SizedBox(height: 40),
 
@@ -210,15 +209,19 @@ class _SplashScreenState extends State<SplashScreen> {
                       //text: "Collection QR",
                       text: "SMART PAYMENT SOLUTION",
                       style: TextStyle(
-    fontSize: 25,
-    fontWeight: FontWeight.bold,
-    color: Colors.grey,
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
                       ),
                       onComplete: _onAnimationsComplete,
                     ),
 
                     const SizedBox(height: 10),
-                    Text("Version 1.0.7", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w700),),
+                    Text(
+                      "Version 1.0.7",
+                      style: TextStyle(
+                          color: Colors.grey, fontWeight: FontWeight.w700),
+                    ),
 
                     const SizedBox(height: 30),
 
@@ -236,7 +239,6 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
           ),
-
         ],
       ),
     );
@@ -297,7 +299,8 @@ class _FloatingParticle extends StatefulWidget {
   __FloatingParticleState createState() => __FloatingParticleState();
 }
 
-class __FloatingParticleState extends State<_FloatingParticle> with SingleTickerProviderStateMixin {
+class __FloatingParticleState extends State<_FloatingParticle>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -402,7 +405,6 @@ class __TypingTextState extends State<_TypingText>
             }
           });
 
-
     _controller.forward();
   }
 
@@ -480,4 +482,3 @@ class __FadeInTextState extends State<_FadeInText>
     );
   }
 }
-

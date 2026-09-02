@@ -8,6 +8,7 @@ import 'package:e_Collect/data/repository/e_collect_repository/payment_repositor
 import 'package:e_Collect/data/repository/integrated_loan_detail_repository.dart';
 import 'package:e_Collect/data/repository/integration_loan_repository.dart';
 import 'package:e_Collect/data/repository/loan_cash_collection_repository.dart';
+import 'package:e_Collect/presentation/ptp_bucket/ptp_bucket_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import '../../data/provider/agent_customer_details_provider.dart';
@@ -327,8 +328,7 @@ class MyApp extends StatelessWidget {
             );
           },
           home: const SplashScreen(),
-       //   home: const TestPage(),
-
+          //home: const PtpBucketUi(),
         );
       },
     );

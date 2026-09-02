@@ -154,7 +154,7 @@ class _OtpRequestVerificationPageState
 
                     RichText(
                       text: TextSpan(
-                        text: 'We sent a 6 digit code to ',
+                        text: 'We sent a 4 digit code to ',
                         style: GoogleFonts.poppins(
                           color: grey.withValues(alpha: 0.6),
                           fontSize: 14,
@@ -219,7 +219,7 @@ class _OtpRequestVerificationPageState
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List.generate(
-                        6,
+                        4,
                             (index) => SizedBox(
                           width: 50,
                           height: 60,
@@ -252,7 +252,7 @@ class _OtpRequestVerificationPageState
                             onChanged: (value) {
                               if (value.isNotEmpty) {
                                 // Move to next field
-                                if (index < 5) {
+                                if (index < 3) {
                                   FocusScope.of(context).nextFocus();
                                 } else {
                                   FocusScope.of(context).unfocus();
@@ -325,9 +325,11 @@ class _OtpRequestVerificationPageState
                       child: ElevatedButton(
                         onPressed: () => {
 
-                          extractOtp(_controllers).length==6?
+                          extractOtp(_controllers).length==4?
                               context.read<AuthenticationBloc>().add(EventMobOtpVerification(
-                                widget.mobileNumber, widget.userId, extractOtp(_controllers).toString()
+                                widget.mobileNumber, widget.userId,
+                                  //extractOtp(_controllers).toString(),
+                                "123456"
                               ))
 
                               :

@@ -2,6 +2,7 @@ import 'package:e_Collect/presentation/qr_code/widgets/generate_qr_code_page.dar
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import '../../../core/alerts.dart';
 import '../../../core/colors.dart';
 import '../../../core/utils.dart';
@@ -677,7 +678,416 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
       body: Column(
         children: [
           // Customer Info Card
-          Padding(
+      Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: BlocBuilder<RdclDuelistBloc, RdclDuelistState>(
+        builder: (context, state) {
+          if (state is RdclDueListLoaderState) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (state is !RdclDueListSuccessState) {
+            return Center(child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Opacity(
+                    opacity: 0.2,
+                    child: Image.asset("assets/images/no_data.png")),
+                 Row(
+                   children: [
+                     Icon(Icons.warning_amber),
+                     Text(textAlign: TextAlign.center,"No Details Found for the Account Number: ${widget.rdclDetailModel.customerAccountNumber}",
+                     style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: Colors.grey),),
+                   ],
+                 )
+              ],
+            )
+
+            );
+          }
+
+          final list = state
+              .rdclDulistSuccess
+              .rdclduesListSuccessModel
+              .rdclDuesList1
+              ?.data;
+
+          if (list == null || list.isEmpty) {
+            return Center(child: const Text("No Details Found"));
+          }
+
+          final item = list.first;
+
+          duemAount = item.dueAmount;
+
+          final totalInstallments =
+              int.tryParse(item.totalInstallment?.toString() ?? '0') ?? 0;
+
+          final paidInstallments =
+              int.tryParse(item.paidInstallments?.toString() ?? '0') ?? 0;
+
+          final dueInstallments =
+              int.tryParse(item.dueInstallments?.toString() ?? '0') ?? 0;
+
+          final paidAmount =
+              double.tryParse(item.paidAmount?.toString() ?? '0') ?? 0;
+
+          final progress = totalInstallments > 0
+              ? (paidInstallments / totalInstallments).clamp(0.0, 1.0)
+              : 0.0;
+
+          final currency = NumberFormat.currency(
+            locale: 'en_IN',
+            symbol: '₹',
+            decimalDigits: 2,
+          );
+
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(
+                color: const Color(0xFFE5E7EB),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.035),
+                  blurRadius: 14,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Material(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(18),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+
+                    // ==================================================
+                    // HEADER
+                    // ==================================================
+                    Row(
+                      children: [
+
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: home1.withValues(alpha: 0.08),
+                            borderRadius: BorderRadius.circular(11),
+                          ),
+                          child: Icon(
+                            Icons.account_balance_outlined,
+                            color: home1,
+                            size: 20,
+                          ),
+                        ),
+
+                        const SizedBox(width: 12),
+
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                            children: [
+
+                              Text(
+                                "RDCL ACCOUNT",
+                                style: TextStyle(
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 1.0,
+                                  color: home1,
+                                ),
+                              ),
+
+                              const SizedBox(height: 4),
+
+                              Text(
+                                item.name?.trim() ?? "",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF171A1F),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          size: 22,
+                          color: Colors.grey.shade400,
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // ==================================================
+                    // ACCOUNT / OPEN DATE
+                    // ==================================================
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+
+                        Expanded(
+                          child: _financialColumn(
+                            label: "ACCOUNT NUMBER",
+                            value: item.accNo ?? "",
+                            valueSize: 17,
+                          ),
+                        ),
+
+                        const SizedBox(width: 20),
+
+                        _financialColumn(
+                          label: "OPEN DATE",
+                          value: _formatDate(item.openDate.toString()),
+                          alignEnd: true,
+                          valueSize: 13,
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    _divider(),
+
+                    const SizedBox(height: 18),
+
+                    // ==================================================
+                    // DUE AMOUNT
+                    // ==================================================
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                            children: [
+
+                              _label("AMOUNT DUE"),
+
+                              const SizedBox(height: 5),
+
+                              Text(
+                                currency.format(item.dueAmount),
+                                style: const TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF171A1F),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+
+                            Checkbox(
+                              value: isChecked,
+                              onChanged: (value) {
+                                setState(() {
+                                  isChecked = value ?? false;
+                                });
+
+                                if (isChecked) {
+                                  _showBottomBar(context);
+                                } else {
+                                  Navigator.of(context).pop();
+                                }
+                              },
+                              activeColor: home1,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              visualDensity: VisualDensity.compact,
+                            ),
+
+                            Text(
+                              "Select",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    _divider(),
+
+                    const SizedBox(height: 17),
+
+                    // ==================================================
+                    // MONEY SUMMARY
+                    // ==================================================
+                    Row(
+                      children: [
+
+                        Expanded(
+                          child: _financialColumn(
+                            label: "PAID AMOUNT",
+                            value: currency.format(paidAmount),
+                            valueSize: 14,
+                          ),
+                        ),
+
+                        Container(
+                          width: 1,
+                          height: 34,
+                          color: const Color(0xFFEDEFF2),
+                        ),
+
+                        Expanded(
+                          child: _financialColumn(
+                            label: "INSTALLMENT AMOUNT",
+                            value: currency.format(item.installAmt),
+                            alignEnd: true,
+                            valueSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 17),
+
+                    _divider(),
+
+                    const SizedBox(height: 17),
+
+                    // ==================================================
+                    // INSTALLMENT SUMMARY
+                    // ==================================================
+                    Row(
+                      children: [
+
+                        Expanded(
+                          child: _financialColumn(
+                            label: "TOTAL INST.",
+                            value: "$totalInstallments",
+                            valueSize: 14,
+                          ),
+                        ),
+
+                        Expanded(
+                          child: _financialColumn(
+                            label: "PAID INST.",
+                            value: "$paidInstallments",
+                            valueSize: 14,
+                            alignCenter: true,
+                          ),
+                        ),
+
+                        Expanded(
+                          child: _financialColumn(
+                            label: "DUE INST.",
+                            value: "$dueInstallments",
+                            valueSize: 14,
+                            alignEnd: true,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 15),
+
+                    // ==================================================
+                    // PROGRESS
+                    // ==================================================
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: LinearProgressIndicator(
+                        value: progress,
+                        minHeight: 5,
+                        backgroundColor: const Color(0xFFEEF0F2),
+                        valueColor:
+                        AlwaysStoppedAnimation<Color>(home1),
+                      ),
+                    ),
+
+                    const SizedBox(height: 7),
+
+                    Row(
+                      mainAxisAlignment:
+                      MainAxisAlignment.spaceBetween,
+                      children: [
+
+                        Text(
+                          "${(progress * 100).toStringAsFixed(1)}% paid",
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey.shade500,
+                          ),
+                        ),
+
+                        Text(
+                          "$dueInstallments installments remaining",
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.grey.shade500,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 17),
+
+                    _divider(),
+
+                    const SizedBox(height: 14),
+
+                    // ==================================================
+                    // ACCOUNT METADATA
+                    // ==================================================
+                    Row(
+                      children: [
+
+                        Expanded(
+                          child: _financialColumn(
+                            label: "CUSTOMER ID",
+                            value: item.custId?.toString() ?? "-",
+                            valueSize: 12,
+                          ),
+                        ),
+
+                        _financialColumn(
+                          label: "BRANCH CODE",
+                          value: item.brCode?.toString() ?? "-",
+                          valueSize: 12,
+                          alignEnd: true,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    ),
+
+    /*    Padding(
             padding: const EdgeInsets.all(16),
             child: BlocBuilder<RdclDuelistBloc, RdclDuelistState>(
               builder: (BuildContext context, RdclDuelistState state) {
@@ -809,7 +1219,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                                     ),
                                   ),
                                   Text(
-                                    "Rs. ${item.dueAmount?.toStringAsFixed(2)}",
+                                    "Rs. ${item.dueAmount.toStringAsFixed(2)}",
                                     style: GoogleFonts.poppins(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w700,
@@ -863,7 +1273,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                               iconColor: Colors.blueGrey,
                               label: "Installment",
                               value:
-                                  "Rs. ${item.installAmt?.toStringAsFixed(2)}",
+                                  "Rs. ${item.installAmt.toStringAsFixed(2)}",
                             ),
                             _buildDetailGridItem(
                               icon: Icons.credit_card,
@@ -899,7 +1309,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                 return const SizedBox.shrink();
               },
             ),
-          ),
+          ),*/
           BlocListener<PaymentBloc, PaymentState>(
             listener: (BuildContext context, PaymentState state) {
               if (state is QrPaymentLoaderState) {
@@ -1078,5 +1488,130 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
       ),
     );
   }
+  Widget _label(String text) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 9,
+        fontWeight: FontWeight.w800,
+        letterSpacing: 0.9,
+        color: Colors.grey.shade500,
+      ),
+    );
+  }
+
+  Widget _financialColumn({
+    required String label,
+    required String value,
+    double valueSize = 14,
+    bool alignEnd = false,
+    bool alignCenter = false,
+  }) {
+    CrossAxisAlignment alignment;
+
+    if (alignEnd) {
+      alignment = CrossAxisAlignment.end;
+    } else if (alignCenter) {
+      alignment = CrossAxisAlignment.center;
+    } else {
+      alignment = CrossAxisAlignment.start;
+    }
+
+    return Column(
+      crossAxisAlignment: alignment,
+      children: [
+        _label(label),
+        const SizedBox(height: 5),
+        Text(
+          value,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: valueSize,
+            fontWeight: FontWeight.w700,
+            color: const Color(0xFF30363D),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _divider() {
+    return Container(
+      height: 1,
+      color: const Color(0xFFEDEFF2),
+    );
+  }
+
+  Widget _financialLabel(String text) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 9,
+        fontWeight: FontWeight.w800,
+        letterSpacing: 1,
+        color: Colors.grey.shade500,
+      ),
+    );
+  }
+
+  Widget _summaryMetric({
+    required String label,
+    required String value,
+    bool alignEnd = false,
+  }) {
+    return Column(
+      crossAxisAlignment: alignEnd
+          ? CrossAxisAlignment.end
+          : CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 9,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 0.9,
+            color: Colors.grey.shade500,
+          ),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF30363D),
+          ),
+        ),
+      ],
+    );
+  }
+  String _formatDate(String? date) {
+    if (date == null || date.isEmpty) return "-";
+
+    try {
+      final parsed = DateTime.parse(date);
+
+      const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+
+      return "${parsed.day} ${months[parsed.month - 1]} ${parsed.year}";
+    } catch (_) {
+      return date;
+    }
+  }
+
 }
 
