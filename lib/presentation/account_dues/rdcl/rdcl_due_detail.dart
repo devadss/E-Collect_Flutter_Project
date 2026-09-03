@@ -7,6 +7,7 @@ import '../../../core/alerts.dart';
 import '../../../core/colors.dart';
 import '../../../core/utils.dart';
 import '../../../data/e_collect_bloc/payment_bloc/payment_bloc.dart';
+import '../../../data/e_collect_bloc/transaction_bloc/transaction_bloc.dart';
 import '../../../data/rdcl_duelist_bloc/rdcl_duelist_bloc.dart';
 import '../../../domain/model/e_collect/payment/qr_request_model/qr_request_model.dart';
 import '../../paymentlink_request_ui.dart';
@@ -43,6 +44,7 @@ class RdclDetailModel{
 class RdclDueDetail extends StatefulWidget {
   final RdclDetailModel rdclDetailModel;
 
+
   const RdclDueDetail(
       {super.key,
       required this.rdclDetailModel});
@@ -56,6 +58,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
   double? duemAount;
   bool isChecked = false;
   String? selectedMethod;
+  String? paymentOrderID;
 
   @override
   void initState() {
@@ -300,6 +303,216 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
       },
     );
   }
+
+//==============================================================================
+  void _showSuccessMessage(String? message) {
+    if (!mounted) return;
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return Dialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          insetPadding: const EdgeInsets.symmetric(
+            horizontal: 24,
+            vertical: 24,
+          ),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 500,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Column(
+                    children: [
+                      SizedBox(
+                        width: 90,
+                        height: 70,
+                        child: Image.asset(
+                          'assets/images/ecollect_white.png',
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      const SizedBox(height: 18),
+                      const Text(
+                        'Transaction Successful',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        message ??
+                            'Your transaction has been completed successfully.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade600,
+                          height: 1.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.grey.shade200,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        _buildDetailRow(
+                          'Transaction Status',
+                          'Successful',
+                          valueColor: Colors.green,
+                        ),
+                        const Divider(height: 20),
+                        _buildDetailRow(
+                          'Transaction Date',
+                          _getCurrentDate(),
+                        ),
+                        const Divider(height: 20),
+                        _buildDetailRow(
+                          'Order ID',
+                          paymentOrderID!,
+                        ),
+                        const Divider(height: 20),
+                        _buildDetailRow(
+                          'Transaction Time',
+                          _getCurrentTime(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            getHistoryData(message);
+                          },
+                          icon: const Icon(
+                            Icons.print_outlined,
+                            size: 20,
+                          ),
+                          label: const Text(
+                            'Print',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(48),
+                            side: BorderSide(
+                              color: Colors.grey.shade400,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: FilledButton(
+                          onPressed: () {
+
+                            if (!mounted) return;
+                            Navigator.of(context).pop();
+                          },
+                          style: FilledButton.styleFrom(
+                            minimumSize: const Size.fromHeight(48),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Text(
+                            'OK',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+  Widget _buildDetailRow(
+      String title,
+      String value, {
+        Color? valueColor,
+      }) {return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    child: Row(
+      children: [
+        Expanded(
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey.shade600,
+            ),
+          ),
+        ),
+        const SizedBox(width: 16),
+        Flexible(
+          child: Text(
+            value,
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: valueColor ?? Colors.black87,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );}
+  String _getCurrentDate() {
+    final now = DateTime.now();
+
+    return '${now.day.toString().padLeft(2, '0')}/'
+        '${now.month.toString().padLeft(2, '0')}/'
+        '${now.year}';
+  }
+  String _getCurrentTime() {
+    final now = DateTime.now();
+
+    return '${now.hour.toString().padLeft(2, '0')}:'
+        '${now.minute.toString().padLeft(2, '0')}';
+  }
+  void getHistoryData(String? message) {
+    debugPrint('Printing: ${message ?? ''}');
+    context.read<PaymentTransactionBloc>().add(GetTransactionByMerchant(widget.rdclDetailModel.eCollectAgentMerchantID!,
+        widget.rdclDetailModel.eCollectToken!));
+  }
+//===============================================================================
 
 
 
@@ -1317,7 +1530,7 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
               }
               if (state is QrPaymentSuccessState) {
                 Navigator.pop(context);
-                //print(state.qrPaymentSuccess.paymentResponseSuccess.paymentUrl);
+                paymentOrderID = state.qrPaymentSuccess.paymentResponseSuccess.orderId;
                 selectedMethod == "Link"
                     ? Navigator.push(
                     context,
@@ -1340,7 +1553,8 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
                       amount: amountController.text,
                       custName: widget.rdclDetailModel.customeName!,
                       custPhone: "custNumber",
-                      custId: widget.rdclDetailModel.custId!,
+                      custId: widget.rdclDetailModel.custId!, orderID: paymentOrderID!,
+                      merchantID: widget.rdclDetailModel.eCollectAgentMerchantID!, token: widget.rdclDetailModel.eCollectToken!,
                     ),
                   ),
                 );
@@ -1353,14 +1567,16 @@ class _RdclDueDetailState extends State<RdclDueDetail> {
               } else if (state is CashPaymentSuccessState) {
                 Navigator.pop(context);
                 Navigator.pop(context);
-                showAlert(
-                    state.cashPaymentSuccess.cashPaymentSuccessResponse
-                        .status ==
-                        "Y"
-                        ? "SUCCESS"
-                        : "FAILED",
-                    state.cashPaymentSuccess.cashPaymentSuccessResponse.message,
-                    context);
+                paymentOrderID = state.cashPaymentSuccess.cashPaymentSuccessResponse.transactionId;
+                _showSuccessMessage(state.cashPaymentSuccess.cashPaymentSuccessResponse.message);
+                // showAlert(
+                //     state.cashPaymentSuccess.cashPaymentSuccessResponse
+                //         .status ==
+                //         "Y"
+                //         ? "SUCCESS"
+                //         : "FAILED",
+                //     state.cashPaymentSuccess.cashPaymentSuccessResponse.message,
+                //     context);
               } else if (state is CashPaymentFailState) {
                 Navigator.pop(context);
               }

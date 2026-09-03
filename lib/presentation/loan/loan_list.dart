@@ -5,15 +5,21 @@ import 'package:e_Collect/domain/model/integrated_loan_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/utils.dart';
-import '../../data/storage/shared_pref_helper.dart';
 import 'integrated_loan_detail.dart';
 
 //THE LOAN CUSTOMER LISTING PAGE 1 OF 2....
 class LoanList extends StatefulWidget {
+  final String eCollectMerchantName;
   final String eCollectBranchId;
+  final String eCollectAgentMerchantID;
+  final String eCollectToken;
   final String eCollectAgentID;
+  final String eCollectAgentOriginID;
+  final String eCollectAgentMobNum;
+  final String eCollectAgentEmail;
+  final String eCollectAgentBranchCode;
   final List<String> eCollectLoanListingUrl;
-  const LoanList({super.key, required this.eCollectBranchId, required this.eCollectAgentID, required this.eCollectLoanListingUrl});
+  const LoanList({super.key, required this.eCollectBranchId, required this.eCollectAgentID, required this.eCollectLoanListingUrl, required this.eCollectMerchantName, required this.eCollectAgentOriginID, required this.eCollectAgentMobNum, required this.eCollectAgentEmail, required this.eCollectAgentBranchCode, required this.eCollectAgentMerchantID, required this.eCollectToken});
 
   @override
   State<LoanList> createState() => _LoanListState();
@@ -83,35 +89,27 @@ class _LoanListState extends State<LoanList> {
           context,
           MaterialPageRoute(
               builder: (context) => IntegratedLoanDetail(
-                    name: integratedLoanDetailProvider
-                            .integratedLoanListResponse?.name ??
-                        "",
-                    custNo: integratedLoanDetailProvider
-                            .integratedLoanListResponse?.custNo ??
-                        "",
-                    loanDate: integratedLoanDetailProvider
-                            .integratedLoanListResponse?.loanDate
-                            .toString() ??
-                        "",
+                     integratedLoanDetailModel:
+                IntegratedLoanDetailModel(loanDate: integratedLoanDetailProvider
+                    .integratedLoanListResponse?.loanDate
+                    .toString() ??"",
+                    name: integratedLoanDetailProvider.integratedLoanListResponse?.name?? "", custNo: integratedLoanDetailProvider.integratedLoanListResponse?.custNo ??"",
                     loanAmount: integratedLoanDetailProvider
-                            .integratedLoanListResponse?.loanAmount
-                            .toString() ??
+                        .integratedLoanListResponse?.loanAmount
+                        .toString() ??
+                        "", loanNumber:  integratedLoanDetailProvider
+                        .integratedLoanListResponse?.acno
+                        .toString() ??
+                        "",loanType: integratedLoanDetailProvider
+                        .integratedLoanListResponse?.loanType
+                        .toString() ??
+                        "", loanPeriod: integratedLoanDetailProvider
+                        .integratedLoanListResponse?.loanPeriod
+                        .toString() ??
                         "",
-                    loanNumber: integratedLoanDetailProvider
-                            .integratedLoanListResponse?.acno
-                            .toString() ??
-                        "",
-                    loanType: integratedLoanDetailProvider
-                            .integratedLoanListResponse?.loanType
-                            .toString() ??
-                        "",
-                    loanPeriod: integratedLoanDetailProvider
-                            .integratedLoanListResponse?.loanPeriod
-                            .toString() ??
-                        "",
-                    loanInterest: integratedLoanDetailProvider
-                            .integratedLoanListResponse?.interestRate
-                            .toString() ??
+                    loanInterest:integratedLoanDetailProvider
+                        .integratedLoanListResponse?.interestRate
+                        .toString() ??
                         "",
                     principalAmountReceived: integratedLoanDetailProvider
                         .integratedLoanListResponse!
@@ -133,7 +131,7 @@ class _LoanListState extends State<LoanList> {
                         .integratedLoanListResponse!.receiptDetails[1].balance,
                     interestAmountOverdue: integratedLoanDetailProvider
                         .integratedLoanListResponse!.receiptDetails[1].overdue,
-                    interestAmountReceipt: integratedLoanDetailProvider
+                    interestAmountReceipt:integratedLoanDetailProvider
                         .integratedLoanListResponse!
                         .receiptDetails[1]
                         .currentReceipt,
@@ -141,14 +139,23 @@ class _LoanListState extends State<LoanList> {
                         .integratedLoanListResponse!
                         .receiptDetails[2]
                         .totalReceived,
-                    penalInterestAmountBalance: integratedLoanDetailProvider
+                    penalInterestAmountBalance:  integratedLoanDetailProvider
                         .integratedLoanListResponse!.receiptDetails[2].balance,
+                    penalInterestAmountOverdue: integratedLoanDetailProvider
+                        .integratedLoanListResponse!.receiptDetails[2].overdue,
                     penalInterestAmountReceipt: integratedLoanDetailProvider
                         .integratedLoanListResponse!
                         .receiptDetails[2]
-                        .currentReceipt,
-                    penalInterestAmountOverdue: integratedLoanDetailProvider
-                        .integratedLoanListResponse!.receiptDetails[2].overdue,
+                        .currentReceipt), ecollectMerchantModelData: EcollectMerchantModelData(
+                  eCollectMerchantName: widget.eCollectMerchantName,
+                  eCollectAgentId: widget.eCollectAgentID,
+                  eCollectAgentOriginId: widget.eCollectAgentOriginID,
+                  eCollectAgentNumber:widget. eCollectAgentMobNum,
+                  eCollectAgentEmail: widget.eCollectAgentEmail,
+                  eCollectAgentBranchCode:widget. eCollectAgentBranchCode,
+                  eCollectAgentMerchantID: widget.eCollectAgentMerchantID,
+                  eCollectCollectionType: "LOAN", eCollectToken: widget.eCollectToken),
+
                   ))).then((_) {
         if (!mounted) return;
         Navigator.pop(context);

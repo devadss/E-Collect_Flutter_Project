@@ -1573,7 +1573,8 @@ class RdclDueDetailBlocPageState extends State<RdclDueDetailBlocPage> {
                       amount: controller.text,
                       custName: "",
                       custPhone: "custNumber",
-                      custId: "CustId",
+                      custId: "CustId", orderID: '', merchantID: widget.rdclDueDetailDataModel.eCollectMerchantID!,
+                      token: widget.rdclDueDetailDataModel.eCollectUserToken!,
                     ),
                   ),
                 );

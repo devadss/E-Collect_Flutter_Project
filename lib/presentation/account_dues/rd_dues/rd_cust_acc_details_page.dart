@@ -6,22 +6,53 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/alerts.dart';
 import '../../../core/utils.dart';
 import '../../../data/e_collect_bloc/payment_bloc/payment_bloc.dart';
-import '../../../data/storage/shared_pref_helper.dart';
+import '../../../data/e_collect_bloc/transaction_bloc/transaction_bloc.dart';
 import '../../../domain/model/e_collect/payment/qr_request_model/qr_request_model.dart';
+import '../../../domain/model/e_collect/transaction_report/transaction_ok_report.dart';
+import '../../merchant/history/ecollect_transaction_detail.dart';
 import '../../paymentlink_request_ui.dart';
 import '../../qr_code/widgets/generate_qr_code_page.dart';
 
+class RdDetailsModel{
+  final String? custName;
+  final String? accNo;
+  final String? scheme;
+  final String? custId;
+   RdDetailsModel({required this.custName,
+     required this.accNo, required this.scheme, required this.custId});
+
+}
+
+class EcollectMerchantModel{
+  final String? eCollectMerchantName;
+  final String? eCollectUserToken;
+  final String? eCollectAgentNumber;
+  final String? eCollectAgentEmail;
+  final String? eCollectCollectionType;
+  final String? eCollectAgentBranchCode;
+  final String? eCollectAgentMerchantID;
+  final String? eCollectExternalAgentId;
+  final String? eCollectAgentId;
+
+  EcollectMerchantModel({
+    required this.eCollectMerchantName, required this.eCollectUserToken,
+    required this.eCollectAgentNumber, required this.eCollectAgentEmail,
+    required this.eCollectCollectionType,
+    required this.eCollectAgentBranchCode,
+    required this.eCollectAgentMerchantID,
+    required this.eCollectExternalAgentId,
+    required this.eCollectAgentId,
+});
+
+}
+
+
 class AccountDetailNew extends StatefulWidget {
-  final String custName;
-  final String accNo;
-  final String scheme;
-  final String custId;
+ final RdDetailsModel rdDetailsModel;
+ final EcollectMerchantModel ecollectMerchantModel;
   const AccountDetailNew(
       {super.key,
-      required this.custName,
-      required this.accNo,
-      required this.scheme,
-      required this.custId});
+      required this.rdDetailsModel, required this.ecollectMerchantModel});
 
   @override
   State<AccountDetailNew> createState() => _AccountDetailNewState();
@@ -29,40 +60,18 @@ class AccountDetailNew extends StatefulWidget {
 //01042888
 class _AccountDetailNewState extends State<AccountDetailNew> {
   DateTime? dateTime;
-  String? agentId;
-  String? subagentId;
-  String? agentOriginId;
-  String? agentMobile;
   String selectedMethod = "";
-  String? agentName;
-  String? agentEmail;
   String? customerEmail;
   String? customerName;
   String? customerNumber;
   String? customerAccountNumber;
-  String? subAgentCodeNew;
-  String? eCollectUserToken;
-  String? corpCode;
- // String? token;
   String? paymentSessionId;
   String orderID = "";
   bool value = true;
-  String? eCollectAgentNumber;
-  String? subagentPhoneNumber;
-  String? eCollectMerchantName;
-  String? cid;
-  String? eCollectAgentEmail;
-  String? eCollectCollectionType;
-  String? eCollectAgentBranchCode;
-  String? eCollectAgentMerchantID;
-  String? eCollectExternalAgentId;
-  String? eCollectAgentId;
+  String? paymentOrderID;
+
   TextEditingController amountController = TextEditingController();
-  @override
-  void initState() {
-    loadSharedPrefs();
-    super.initState();
-  }
+
   @override
   void dispose() {
     amountController.dispose();
@@ -187,7 +196,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                             } else {
                               showToast(
                                   message: "Amount field cannot be empty",
-                                  color: Colors.orange);
+                                  color: Colors.black);
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -289,26 +298,26 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                   context.read<PaymentBloc>().add(QrPaymentEvent(
                       QrPaymentRequestModel(
                           agentDetails: AgentDetails(
-                              agentName: eCollectMerchantName!,
-                              agentId: eCollectAgentId!,
-                              agentOrginId: eCollectExternalAgentId!,
+                              agentName: widget.ecollectMerchantModel.eCollectMerchantName!,
+                              agentId: widget.ecollectMerchantModel.eCollectAgentId!,
+                              agentOrginId: widget.ecollectMerchantModel.eCollectExternalAgentId!,
 
-                              agentPhone: eCollectAgentNumber!,
-                              agentEmail: eCollectAgentEmail!,
-                              agentBranch: int.parse(eCollectAgentBranchCode!)),
+                              agentPhone:widget.ecollectMerchantModel. eCollectAgentNumber!,
+                              agentEmail: widget.ecollectMerchantModel.eCollectAgentEmail!,
+                              agentBranch: int.parse(widget.ecollectMerchantModel.eCollectAgentBranchCode!)),
                           customerDetails: CustomerDetails(
-                              customerName: widget.custName,
-                              customerPhone: eCollectAgentNumber!,
-                             customerAccno: widget.accNo,
-                              customerId: widget.custId,
-                              customerEmail: eCollectAgentEmail!),
-                          collectionType: eCollectCollectionType!,
+                              customerName: widget.rdDetailsModel.custName!,
+                              customerPhone: widget.ecollectMerchantModel.eCollectAgentNumber!,
+                             customerAccno: widget.rdDetailsModel.accNo!,
+                              customerId: widget.rdDetailsModel.custId!,
+                              customerEmail: widget.ecollectMerchantModel.eCollectAgentEmail!),
+                          collectionType: widget.ecollectMerchantModel.eCollectCollectionType!,
                           amount: double.parse(amountController.text),
                           note: 'Payment for Order',
                           qrSource: 'MOB',
                           source: 'COLLECTION',
-                          merchantId: int.parse(eCollectAgentMerchantID!)
-                          ), eCollectUserToken!
+                          merchantId: int.parse(widget.ecollectMerchantModel.eCollectAgentMerchantID!)
+                          ), widget.ecollectMerchantModel.eCollectUserToken!
 
                   ));
                 },
@@ -326,26 +335,25 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                   context.read<PaymentBloc>().add(LinkPaymentEvent(
                       QrPaymentRequestModel(
                           agentDetails: AgentDetails(
-                              agentName: eCollectMerchantName!,
-                              agentId: eCollectAgentId!,
-                              agentOrginId: eCollectExternalAgentId!,
-                              agentPhone: eCollectAgentNumber!,
-                              agentEmail: eCollectAgentEmail!,
-                              agentBranch: int.parse(eCollectAgentBranchCode!)),
+                              agentName: widget.ecollectMerchantModel.eCollectMerchantName!,
+                              agentId: widget.ecollectMerchantModel.eCollectAgentId!,
+                              agentOrginId: widget.ecollectMerchantModel.eCollectExternalAgentId!,
+                              agentPhone: widget.ecollectMerchantModel.eCollectAgentNumber!,
+                              agentEmail: widget.ecollectMerchantModel.eCollectAgentEmail!,
+                              agentBranch: int.parse(widget.ecollectMerchantModel.eCollectAgentBranchCode!)),
                           customerDetails: CustomerDetails(
-                              customerName: widget.custName,
-                              customerPhone: eCollectAgentNumber!,
-                              customerAccno: widget.accNo,
-                              customerId: widget.custId,
-                              customerEmail: eCollectAgentEmail!),
-                          collectionType: eCollectCollectionType!,
+                              customerName: widget.rdDetailsModel.custName!,
+                              customerPhone: widget.ecollectMerchantModel.eCollectAgentNumber!,
+                              customerAccno: widget.rdDetailsModel.accNo!,
+                              customerId: widget.rdDetailsModel.custId!,
+                              customerEmail: widget.ecollectMerchantModel.eCollectAgentEmail!),
+                          collectionType: widget.ecollectMerchantModel.eCollectCollectionType!,
                           amount: double.parse(amountController.text),
                           note: 'Payment for Order',
                           qrSource: 'MOB',
                           source: 'COLLECTION',
-                          merchantId: int.parse(eCollectAgentMerchantID!))
-                      //  merchantId: 1)
-                      ,eCollectUserToken!));
+                          merchantId: int.parse(widget.ecollectMerchantModel.eCollectAgentMerchantID!))
+                      ,widget.ecollectMerchantModel.eCollectUserToken!));
                 },
               ),
               const SizedBox(height: 12),
@@ -355,8 +363,8 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                 label: "Cash Payment",
                 onPressed: () {
                   Navigator.pop(context);
-                  paymentConfirmation(context, widget.custName, widget.accNo,
-                      widget.custId, "", amountController.text);
+                  paymentConfirmation(context, widget.rdDetailsModel.custName!, widget.rdDetailsModel.accNo!,
+                      widget.rdDetailsModel.custId!, "", amountController.text);
                 },
               ),
               const SizedBox(height: 20),
@@ -474,28 +482,28 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                           context.read<PaymentBloc>().add(CashPaymentEvent(
                               QrPaymentRequestModel(
                                   agentDetails: AgentDetails(
-                                      agentName: eCollectMerchantName!,
-                                      agentId: eCollectAgentId!,
-                                      agentOrginId: eCollectExternalAgentId!,
-                                      agentPhone: eCollectAgentNumber!,
-                                      agentEmail: eCollectAgentEmail!,
+                                      agentName: widget.ecollectMerchantModel.eCollectMerchantName!,
+                                      agentId: widget.ecollectMerchantModel.eCollectAgentId!,
+                                      agentOrginId: widget.ecollectMerchantModel.eCollectExternalAgentId!,
+                                      agentPhone: widget.ecollectMerchantModel.eCollectAgentNumber!,
+                                      agentEmail:widget.ecollectMerchantModel. eCollectAgentEmail!,
                                       agentBranch:
-                                          int.parse(eCollectAgentBranchCode!)),
+                                          int.parse(widget.ecollectMerchantModel.eCollectAgentBranchCode!)),
                                   customerDetails: CustomerDetails(
-                                      customerName: widget.custName,
-                                      customerPhone: eCollectAgentNumber!,
-                                      customerAccno: widget.accNo,
-                                      customerId: widget.custId,
-                                      customerEmail: eCollectAgentEmail!),
-                                  collectionType: eCollectCollectionType!,
+                                      customerName: widget.rdDetailsModel.custName!,
+                                      customerPhone: widget.ecollectMerchantModel.eCollectAgentNumber!,
+                                      customerAccno: widget.rdDetailsModel.accNo!,
+                                      customerId: widget.rdDetailsModel.custId!,
+                                      customerEmail: widget.ecollectMerchantModel.eCollectAgentEmail!),
+                                  collectionType: widget.ecollectMerchantModel.eCollectCollectionType!,
                                   amount: double.parse(amountController.text),
                                   note: 'Payment for Order',
                                   qrSource: 'MOB',
                                   source: 'COLLECTION',
                                   merchantId:
-                                      int.parse(eCollectAgentMerchantID!))
-                              // merchantId: 1)
-                              ,eCollectUserToken!));
+                                      int.parse(widget.ecollectMerchantModel.eCollectAgentMerchantID!))
+
+                              ,widget.ecollectMerchantModel.eCollectUserToken!));
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.redAccent,
@@ -550,53 +558,9 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
   }
 
 
-  Future<void> loadSharedPrefs() async {
-    final result = await Future.wait([
-      SharedPref.shared.getAgentId(),
-      SharedPref.shared.getSubAgentId(),
-      SharedPref.shared.getSubAgentCode(),
-      SharedPref.shared.getEmail(),
-      SharedPref.shared.getCorpCode(),
-      SharedPref.shared.getTokenValue(),
-      SharedPref.shared.getSubAgentCodeNew(),
-      SharedPref.shared.getCustId(),
-      SharedPref.shared.getCorpCode(),
-      SharedPref.shared.getAgentId(),
-      SharedPref.shared.getParentAgentMobNum(),
-      SharedPref.shared.getAgentName(),
-      SharedPref.shared.getBranchCode(),
-      SharedPref.shared.getECollectMerchantName(),
-      SharedPref.shared.getECollectUserID(),
-      SharedPref.shared.getExternalAgentID(),
-      SharedPref.shared.getECollectUserNumber(),
-      SharedPref.shared.getECollectUserEmail(),
-      SharedPref.shared.getECollectMerchantBranchCode(),
-      SharedPref.shared.getECollectMerchantID(),
-      SharedPref.shared.getECollectUserToken(),
-    ]);
-
-        cid = result[9];
-        eCollectMerchantName = result[13];
-        eCollectAgentId = result[14];
-        eCollectExternalAgentId = result[15];
-        eCollectAgentNumber = result[16];
-        eCollectAgentEmail = result[17];
-        eCollectAgentBranchCode = result[18];
-        eCollectAgentMerchantID = result[19];
-        eCollectCollectionType = "RD";
-        agentName = result[11];
-        subagentId = result[1];
-        agentMobile = result[10];
-        agentId = result[0];
-        agentOriginId = result[2];
-        agentEmail = result[3];
-        corpCode = result[4];
-        subAgentCodeNew = result[6];
-eCollectUserToken = result[20];
-  }
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+   // final theme = Theme.of(context);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF6F7FB),
@@ -639,14 +603,16 @@ eCollectUserToken = result[20];
                       ),
                     ),
                     const SizedBox(height: 5),
-                    Text(
-                      "Customer information",
-                      style: GoogleFonts.poppins(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF172033),
+
+                      Text(
+                        "Customer information",
+                        style: GoogleFonts.poppins(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xFF172033),
+                        ),
                       ),
-                    ),
+
 
                     const SizedBox(height: 20),
 
@@ -676,7 +642,7 @@ eCollectUserToken = result[20];
                             iconBackground: const Color(0xFFEFF4FF),
                             iconColor: const Color(0xFF4263EB),
                             title: "Customer",
-                            value: widget.custName,
+                            value: widget.rdDetailsModel.custName!,
                             trailing: Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 9,
@@ -718,12 +684,12 @@ eCollectUserToken = result[20];
                             iconBackground: home1.withValues(alpha: 0.2),
                             iconColor: home1,
                             title: "Account Number",
-                            value: widget.accNo,
+                            value: widget.rdDetailsModel.accNo!,
                             trailing: InkWell(
                               borderRadius: BorderRadius.circular(10),
                               onTap: () {
                                 Clipboard.setData(
-                                  ClipboardData(text: widget.accNo),
+                                  ClipboardData(text: widget.rdDetailsModel.accNo!),
                                 );
 
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -767,7 +733,7 @@ eCollectUserToken = result[20];
                             iconBackground: const Color(0xFFFFF4E8),
                             iconColor: const Color(0xFFE88A24),
                             title: "Scheme",
-                            value: widget.scheme,
+                            value: widget.rdDetailsModel.scheme!,
                             trailing: Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 10,
@@ -909,71 +875,335 @@ eCollectUserToken = result[20];
               ),
             ),
 
-            BlocListener<PaymentBloc, PaymentState>(
-              listener: (BuildContext context, PaymentState state) {
-                if (state is QrPaymentLoaderState) {
-                  showProgressDialog(context);
-                }
+            MultiBlocListener(
+              listeners: [
+                BlocListener<PaymentBloc, PaymentState>(
+                  listener: (BuildContext context, PaymentState state) {
+                    if (state is QrPaymentLoaderState) {
+                      showProgressDialog(context);
+                    }
 
-                if (state is QrPaymentSuccessState) {
-                  Navigator.pop(context);
+                    if (state is QrPaymentSuccessState) {
+                      paymentOrderID  = state.qrPaymentSuccess.paymentResponseSuccess.orderId;
 
-                  selectedMethod == "Link"
-                      ? Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          PaymentLinkRequestUi(
-                            customerMobileNumber: "",
-                            paymentLink: state
+                      Navigator.pop(context);
+
+                      selectedMethod == "Link"
+                          ? Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              PaymentLinkRequestUi(
+                                customerMobileNumber: "",
+                                paymentLink: state
+                                    .qrPaymentSuccess
+                                    .paymentResponseSuccess
+                                    .paymentUrl,
+                              ),
+                        ),
+                      )
+                          : Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NewQrCodePage(
+                            paymentSessionId: state
                                 .qrPaymentSuccess
                                 .paymentResponseSuccess
                                 .paymentUrl,
+                            amount: amountController.text,
+                            custName: "",
+                            custPhone: "custNumber",
+                            custId: "CustId", orderID: paymentOrderID!, merchantID:widget.ecollectMerchantModel.eCollectAgentMerchantID!
+                            , token: widget.ecollectMerchantModel.eCollectUserToken!,
                           ),
-                    ),
-                  )
-                      : Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => NewQrCodePage(
-                        paymentSessionId: state
-                            .qrPaymentSuccess
-                            .paymentResponseSuccess
-                            .paymentUrl,
-                        amount: amountController.text,
-                        custName: "",
-                        custPhone: "custNumber",
-                        custId: "CustId",
-                      ),
-                    ),
-                  );
-                } else if (state is QrPaymentFailState) {
-                  Navigator.pop(context);
-                  showAlertDialog(
-                    state.qrPaymentFail.paymentFailResponse.message,
-                    context,
-                  );
-                } else if (state is CashPaymentSuccessState) {
-                  Navigator.pop(context);
-                  showAlert(
-                    state.cashPaymentSuccess.cashPaymentSuccessResponse.status ==
-                        "Y"
-                        ? "SUCCESS"
-                        : "FAILED",
-                    state.cashPaymentSuccess.cashPaymentSuccessResponse.message,
-                    context,
-                  );
-                } else if (state is CashPaymentFailState) {
-                  Navigator.pop(context);
-                }
-              },
-              child: const SizedBox.shrink(),
+                        ),
+                      );
+                    } else if (state is QrPaymentFailState) {
+                      Navigator.pop(context);
+                      showAlertDialog(
+                        state.qrPaymentFail.paymentFailResponse.message,
+                        context,
+                      );
+                    } else if (state is CashPaymentSuccessState) {
+
+                        paymentOrderID  = state.cashPaymentSuccess.cashPaymentSuccessResponse.transactionId;
+
+                      Navigator.pop(context);
+                      _showSuccessMessage(state.cashPaymentSuccess.cashPaymentSuccessResponse.message,
+                      state.cashPaymentSuccess.cashPaymentSuccessResponse.transactionId);
+                    } else if (state is CashPaymentFailState) {
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: const SizedBox.shrink(),
+                ),
+                BlocListener<PaymentTransactionBloc, TransactionState>
+                  (listener: (BuildContext context, TransactionState state) {
+                  if (state is TransactionReportSuccessState) {
+                    final rawData =
+                        state.transactionSuccessModel
+                            .transactionOkReport.data;
+
+                    for (var orderid in rawData){
+                      if(orderid.paymentGatewayTransactionId.contains(paymentOrderID!)){
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => EcollectTransactionDetail(
+                              paymentTransaction: PaymentTransaction(
+                                id: orderid.id,
+                                orderId: orderid.orderId,
+                                transactionId: orderid.transactionId,
+                                paymentGatewayTransactionId:
+                                orderid.paymentGatewayTransactionId,
+                                amount: orderid.amount,
+                                currency: orderid.currency,
+                                description: orderid.description,
+                                customerName: orderid.customerName,
+                                customerEmail: orderid.customerEmail,
+                                customerPhone: orderid.customerPhone,
+                                paymentMode: orderid.paymentMode,
+                                paymentChannel: orderid.paymentChannel,
+                                status: orderid.status,
+                                responseCode: orderid.responseCode,
+                                responseMessage: orderid.responseMessage,
+                                createdAt: orderid.createdAt,
+                                completedAt: orderid.completedAt,
+                                merchantId: orderid.merchantId,
+                                merchantName: orderid.merchantName,
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                    }
+                  }
+                },)
+              ], child: Text(""),
+
             ),
+
+
           ],
         ),
       ),
     );
   }
+
+//==============================================================================
+  void _showSuccessMessage(String? message, String orderId) {
+    if (!mounted) return;
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return Dialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          insetPadding: const EdgeInsets.symmetric(
+            horizontal: 24,
+            vertical: 24,
+          ),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 500,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Column(
+                    children: [
+                      SizedBox(
+                        width: 90,
+                        height: 70,
+                        child: Image.asset(
+                          'assets/images/ecollect_white.png',
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      const SizedBox(height: 18),
+                      const Text(
+                        'Transaction Successful',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        message ??
+                            'Your transaction has been completed successfully.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade600,
+                          height: 1.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.grey.shade200,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        _buildDetailRow(
+                          'Transaction Status',
+                          'Successful',
+                          valueColor: Colors.green,
+                        ),
+                        const Divider(height: 20),
+                        _buildDetailRow(
+                          'Transaction Date',
+                          _getCurrentDate(),
+                        ),
+                        const Divider(height: 20),
+                        _buildDetailRow(
+                          'Order ID',
+                          orderId,
+                        ),
+                        const Divider(height: 20),
+                        _buildDetailRow(
+                          'Transaction Time',
+                          _getCurrentTime(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            getHistoryData(message);
+                          },
+                          icon: const Icon(
+                            Icons.print_outlined,
+                            size: 20,
+                          ),
+                          label: const Text(
+                            'Print',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(48),
+                            side: BorderSide(
+                              color: Colors.grey.shade400,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: FilledButton(
+                          onPressed: () {
+
+                            if (!mounted) return;
+                            Navigator.of(context).pop();
+                          },
+                          style: FilledButton.styleFrom(
+                            minimumSize: const Size.fromHeight(48),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Text(
+                            'OK',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+  Widget _buildDetailRow(
+      String title,
+      String value, {
+        Color? valueColor,
+      }) {
+    return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    child: Row(
+      children: [
+        Expanded(
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey.shade600,
+            ),
+          ),
+        ),
+        const SizedBox(width: 16),
+        Flexible(
+          child: Text(
+            value,
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: valueColor ?? Colors.black87,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );}
+  String _getCurrentDate() {
+    final now = DateTime.now();
+
+    return '${now.day.toString().padLeft(2, '0')}/'
+        '${now.month.toString().padLeft(2, '0')}/'
+        '${now.year}';
+  }
+  String _getCurrentTime() {
+    final now = DateTime.now();
+
+    return '${now.hour.toString().padLeft(2, '0')}:'
+        '${now.minute.toString().padLeft(2, '0')}';
+  }
+  void getHistoryData(String? message) {
+    debugPrint('Printing: ${message ?? ''}');
+    context.read<PaymentTransactionBloc>().add(GetTransactionByMerchant(widget.ecollectMerchantModel.eCollectAgentMerchantID!, widget.ecollectMerchantModel.eCollectUserToken!));
+  }
+//===============================================================================
+
+
+
+
   Widget _modernInfoTile({
     required IconData icon,
     required Color iconBackground,

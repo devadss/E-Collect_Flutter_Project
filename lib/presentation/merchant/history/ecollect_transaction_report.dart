@@ -57,9 +57,8 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
 
 
   void getTransactionReport(){
-    context
-        .read<PaymentTransactionBloc>()
-        .add(GetTransactionByMerchant(widget.eCollectMerchantID, widget.eCollectToken));
+    if(!mounted) return;
+    context.read<PaymentTransactionBloc>().add(GetTransactionByMerchant(widget.eCollectMerchantID, widget.eCollectToken));
   }
   @override
   void initState() {
@@ -757,15 +756,17 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
           // ─────────────────────────────────────────────
           // TRANSACTIONS
           // ─────────────────────────────────────────────
-          Expanded(
+        /*  Expanded(
             child: BlocListener<PaymentTransactionBloc, TransactionState>(
               listener: (context, state) {
                 if (state is TransactionReportLoaderState) {
+                  print("ONE");
                   showProgressDialog(context);
                 }
 
                 if (state is TransactionReportSuccessState ||
                     state is TransactionReportFailureState) {
+                  print("TWO");
                   if (Navigator.of(context).canPop()) {
                     Navigator.of(context).pop();
                   }
@@ -774,6 +775,7 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
               child: BlocBuilder<PaymentTransactionBloc, TransactionState>(
                 builder: (context, state) {
                   if (state is TransactionReportSuccessState) {
+                    print("THREE");
                     final rawData =
                         state.transactionSuccessModel
                             .transactionOkReport.data;
@@ -797,9 +799,59 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
                   }
 else{
                     if (Navigator.of(context).canPop()) {
+                      print("FOUR");
                       Navigator.of(context).pop();
                     }
                   }
+                  return const SizedBox.shrink();
+                },
+              ),
+            ),
+          ),*/
+          Expanded(
+            child: BlocListener<PaymentTransactionBloc, TransactionState>(
+              listener: (context, state) {
+                if (state is TransactionReportLoaderState) {
+                  print("ONE");
+                  showProgressDialog(context);
+                }
+
+                if (state is TransactionReportSuccessState ||
+                    state is TransactionReportFailureState) {
+                  print("TWO");
+
+                  if (Navigator.of(context).canPop()) {
+                    Navigator.of(context).pop();
+                  }
+                }
+              },
+              child: BlocBuilder<PaymentTransactionBloc, TransactionState>(
+                builder: (context, state) {
+                  if (state is TransactionReportSuccessState) {
+                    print("THREE");
+
+                    final rawData =
+                        state.transactionSuccessModel.transactionOkReport.data;
+
+                    final data = _applyFilters(rawData);
+
+                    if (data.isEmpty) {
+                      return _emptyState();
+                    }
+
+                    return ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 30),
+                      itemCount: data.length,
+                      itemBuilder: (context, index) {
+                        return _transactionCard(
+                          context,
+                          data[index],
+                        );
+                      },
+                    );
+                  }
+
+                  // Don't pop here.
                   return const SizedBox.shrink();
                 },
               ),

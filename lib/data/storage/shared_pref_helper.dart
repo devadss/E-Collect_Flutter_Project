@@ -27,12 +27,6 @@ class SharedPref {
   }
 
 
-  Future<String> getAgentId() async {
-    final prefs = await _getPrefs();
-    return prefs.getString(SharedPrefKeys.userId) ?? '';
-  }
-
-
   Future<Future<bool>> setBusinessCategory(String value) async {
     final prefs = await _getPrefs();
     return prefs.setString(SharedPrefKeys.selectedBusinessCategory, value);
@@ -42,12 +36,6 @@ class SharedPref {
     return prefs.getString(SharedPrefKeys.selectedBusinessCategory) ?? '';
   }
 
-
-
-  Future<String> getAgentName() async {
-    final prefs = await _getPrefs();
-    return prefs.getString(SharedPrefKeys.username) ?? '';
-  }
 
   //e-Collect////////
   Future<bool> setECollectTypeList(
@@ -313,60 +301,6 @@ class SharedPref {
 
   //e-Collect////////
 
-  Future<String> getMpinValue() async {
-    final prefs = await _getPrefs();
-    return prefs.getString(SharedPrefKeys.mpin_value) ?? '';
-  }
-
-
-
-  Future<String> getTokenValue() async {
-    final prefs = await _getPrefs();
-    return prefs.getString(SharedPrefKeys.adsspay_token) ?? '';
-  }
-
-
-  Future<String> getSubAgentCodeNew() async {
-    final prefs = await _getPrefs();
-    return prefs.getString(SharedPrefKeys.subAgentCodeNew) ?? '';
-  }
-
-  Future<String> getSubAgentId() async {
-    final prefs = await _getPrefs();
-    return prefs.getString(SharedPrefKeys.subAgentID) ?? '';
-  }
-  Future<String> getSubAgentCode() async {
-    final prefs = await _getPrefs();
-    return prefs.getString(SharedPrefKeys.subAgentCode) ?? '';
-  }
-
-
-
-  Future<String> getParentAgentMobNum() async {
-    final prefs = await _getPrefs();
-    return prefs.getString(SharedPrefKeys.parentAgentMobNum) ?? '';
-  }
-
-  Future<String> getEmail() async {
-    final prefs = await _getPrefs();
-    return prefs.getString(SharedPrefKeys.email) ?? '';
-  }
-
-  Future<String> getCustId() async {
-    final prefs = await _getPrefs();
-    return prefs.getString(SharedPrefKeys.custid) ?? '';
-  }
-
-
-  Future<String> getBranchCode() async {
-    final prefs = await _getPrefs();
-    return prefs.getString(SharedPrefKeys.branchCode) ?? '';
-  }
-
-  Future<String> getCorpCode() async {
-    final prefs = await _getPrefs();
-    return prefs.getString(SharedPrefKeys.corpCode) ?? '';
-  }
 
   Future<bool> clearAll() async {
     final prefs = await _getPrefs();

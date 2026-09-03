@@ -57,7 +57,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
   // ---------------------------------------------------------------------------
 
   Future<void> getSharedData() async {
-    final integrationStatus = await SharedPref.shared.getECollectMerchantIntegrationStatus();
+    final integrationStatus =
+        await SharedPref.shared.getECollectMerchantIntegrationStatus();
     final branCode = await SharedPref.shared.getECollectMerchantBranchCode();
     final type = await SharedPref.shared.getECollectTypeList();
     final result = await Future.wait([
@@ -79,6 +80,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       SharedPref.shared.getECollectVerifyStatus(),
       SharedPref.shared.getECollectMerchantIntegrationStatus(),
     ]);
+
     eCollectBranchID = result[0] as String;
     eCollectAgentID = result[1] as String;
     eCollectUrlList = result[2] as List<String>;
@@ -158,6 +160,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
             eCollectAgentID: eCollectAgentID,
             eCollectUserToken: eCollectUserToken,
             eCollectUrlList: eCollectUrlList,
+            eCollectMerchantID: eCollectMerchantId, eCollectMerchantName: eCollectUserName,
+            eCollectAgentNumber:eCollectMerchantNumber, eCollectAgentEmail: eCollectMerchantEmail,
+            eCollectExternalAgentId: eCollectAgentID,
           ),
         ),
       );
@@ -173,9 +178,17 @@ class _BottomNavBarState extends State<BottomNavBar> {
           label: 'Loan-List',
           icon: Icons.account_balance,
           page: LoanList(
-              eCollectBranchId: eCollectBranchID,
-              eCollectAgentID: eCollectAgentID,
-              eCollectLoanListingUrl: eCollectUrlList),
+            eCollectBranchId: eCollectBranchID,
+            eCollectAgentID: eCollectAgentID,
+            eCollectLoanListingUrl: eCollectUrlList,
+            eCollectMerchantName: eCollectUserName,
+            eCollectAgentOriginID: eCollectAgentID,
+            eCollectAgentMobNum: eCollectMerchantNumber,
+            eCollectAgentEmail: eCollectMerchantEmail,
+            eCollectAgentBranchCode: eCollectBranchID,
+            eCollectAgentMerchantID: eCollectMerchantId,
+            eCollectToken:eCollectUserToken,
+          ),
         ),
       );
     }

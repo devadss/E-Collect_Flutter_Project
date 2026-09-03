@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../../../../../../core/colors.dart';
@@ -9,12 +10,20 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/rendering.dart';
 import 'package:share_plus/share_plus.dart';
+
+import '../../../data/e_collect_bloc/transaction_bloc/transaction_bloc.dart';
+import '../../../domain/model/e_collect/transaction_report/transaction_ok_report.dart';
+import '../../merchant/history/ecollect_transaction_detail.dart';
+
 class NewQrCodePage extends StatefulWidget {
   final String paymentSessionId;
   final String amount;
   final String custName;
   final String custPhone;
   final String custId;
+  final String orderID;
+  final String merchantID;
+  final String token;
 
   const NewQrCodePage({
     super.key,
@@ -23,6 +32,9 @@ class NewQrCodePage extends StatefulWidget {
     required this.custName,
     required this.custPhone,
     required this.custId,
+    required this.orderID,
+    required this.merchantID,
+    required this.token,
   });
 
   @override
@@ -178,7 +190,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
 
     _timer = Timer.periodic(
       const Duration(seconds: 1),
-          (_) {
+      (_) {
         if (!mounted) return;
 
         if (_remainingSeconds <= 1) {
@@ -229,10 +241,9 @@ class _NewQrCodePageState extends State<NewQrCodePage>
 
     _messageOpenedSubscription?.cancel();
 
-    _messageOpenedSubscription =
-        FirebaseMessaging.onMessageOpenedApp.listen(
-          _handleNotificationOpened,
-        );
+    _messageOpenedSubscription = FirebaseMessaging.onMessageOpenedApp.listen(
+      _handleNotificationOpened,
+    );
 
     _handleInitialMessage();
   }
@@ -249,6 +260,8 @@ class _NewQrCodePageState extends State<NewQrCodePage>
         notificationTitle == "Amount Collected Successfully" ||
         notificationTitle?.isNotEmpty == true) {
       if (mounted) {
+        _stopTimer();
+
         _showSuccessMessage(notificationBody);
       }
     }
@@ -260,7 +273,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
 
   Future<void> _handleInitialMessage() async {
     final RemoteMessage? message =
-    await FirebaseMessaging.instance.getInitialMessage();
+        await FirebaseMessaging.instance.getInitialMessage();
 
     if (!mounted || message == null) return;
 
@@ -283,8 +296,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
           return;
         }
 
-          _showWarning();
-
+        _showWarning();
       },
       child: Scaffold(
         backgroundColor: _background,
@@ -296,7 +308,6 @@ class _NewQrCodePageState extends State<NewQrCodePage>
               child: Column(
                 children: [
                   _buildTopBar(),
-
                   Expanded(
                     child: LayoutBuilder(
                       builder: (context, constraints) {
@@ -315,22 +326,59 @@ class _NewQrCodePageState extends State<NewQrCodePage>
                             child: Column(
                               children: [
                                 _buildPaymentHeader(),
-
                                 const SizedBox(height: 24),
-
                                 _buildQrSection(),
-
                                 const SizedBox(height: 22),
-
                                 _buildPaymentStatus(),
-
                                 const SizedBox(height: 22),
-
                                 _buildActionButtons(),
-
                                 const SizedBox(height: 24),
-
                                 _buildTimerCard(),
+                                BlocListener<PaymentTransactionBloc, TransactionState>(
+                                  listener: (BuildContext context, TransactionState state) {
+                                    if (state is TransactionReportSuccessState) {
+                                      final rawData = state
+                                          .transactionSuccessModel.transactionOkReport.data;
+                                      print("ORDER ID = ${widget.orderID}");
+                                      for (var orderid in rawData) {
+                                        if (orderid.paymentGatewayTransactionId
+                                            .contains(widget.orderID) ||
+                                        orderid.orderId.contains(widget.orderID)
+                                        ) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) => EcollectTransactionDetail(
+                                                paymentTransaction: PaymentTransaction(
+                                                  id: orderid.id,
+                                                  orderId: orderid.orderId,
+                                                  transactionId: orderid.transactionId,
+                                                  paymentGatewayTransactionId:
+                                                  orderid.paymentGatewayTransactionId,
+                                                  amount: orderid.amount,
+                                                  currency: orderid.currency,
+                                                  description: orderid.description,
+                                                  customerName: orderid.customerName,
+                                                  customerEmail: orderid.customerEmail,
+                                                  customerPhone: orderid.customerPhone,
+                                                  paymentMode: orderid.paymentMode,
+                                                  paymentChannel: orderid.paymentChannel,
+                                                  status: orderid.status,
+                                                  responseCode: orderid.responseCode,
+                                                  responseMessage: orderid.responseMessage,
+                                                  createdAt: orderid.createdAt,
+                                                  completedAt: orderid.completedAt,
+                                                  merchantId: orderid.merchantId,
+                                                  merchantName: orderid.merchantName,
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      }
+                                    }
+                                  },
+                                )
                               ],
                             ),
                           ),
@@ -338,6 +386,10 @@ class _NewQrCodePageState extends State<NewQrCodePage>
                       },
                     ),
                   ),
+
+                  // MultiBlocListener(listeners: [
+                  //
+                  // ], child: Text(""))
                 ],
               ),
             ),
@@ -364,7 +416,6 @@ class _NewQrCodePageState extends State<NewQrCodePage>
               }
             },
           ),
-
           Expanded(
             child: Column(
               children: [
@@ -387,7 +438,6 @@ class _NewQrCodePageState extends State<NewQrCodePage>
               ],
             ),
           ),
-
           const SizedBox(width: 44),
         ],
       ),
@@ -449,14 +499,12 @@ class _NewQrCodePageState extends State<NewQrCodePage>
               letterSpacing: 1.4,
             ),
           ),
-
           const SizedBox(height: 6),
-
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-               Icon(
+              Icon(
                 Icons.currency_rupee_rounded,
                 size: 28,
                 color: _primary,
@@ -476,9 +524,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
               ),
             ],
           ),
-
           const SizedBox(height: 6),
-
           Text(
             'Scan the QR below to complete your payment',
             textAlign: TextAlign.center,
@@ -520,9 +566,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
         child: Column(
           children: [
             _buildQrCode(),
-
             const SizedBox(height: 18),
-
             Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: 12,
@@ -546,7 +590,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
                     child: Container(
                       width: 7,
                       height: 7,
-                      decoration:  BoxDecoration(
+                      decoration: BoxDecoration(
                         color: _success,
                         shape: BoxShape.circle,
                       ),
@@ -628,15 +672,13 @@ class _NewQrCodePageState extends State<NewQrCodePage>
               color: _primary.withValues(alpha: 0.08),
               shape: BoxShape.circle,
             ),
-            child:  Icon(
+            child: Icon(
               Icons.qr_code_scanner_rounded,
               color: _primary,
               size: 20,
             ),
           ),
-
           const SizedBox(width: 12),
-
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -660,7 +702,6 @@ class _NewQrCodePageState extends State<NewQrCodePage>
               ],
             ),
           ),
-
           Icon(
             Icons.verified_user_outlined,
             color: _success,
@@ -703,10 +744,11 @@ class _NewQrCodePageState extends State<NewQrCodePage>
       ],
     );
   }
+
   Future<void> _shareQrCode() async {
     try {
-      final boundary = _qrKey.currentContext?.findRenderObject()
-      as RenderRepaintBoundary?;
+      final boundary =
+          _qrKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
 
       if (boundary == null) {
         return;
@@ -749,6 +791,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
       );
     }
   }
+
   Widget _buildActionButton({
     required IconData icon,
     required String label,
@@ -818,14 +861,11 @@ class _NewQrCodePageState extends State<NewQrCodePage>
                 child: Icon(
                   Icons.timer_outlined,
                   size: 18,
-                  color: _isAlmostExpired
-                      ? const Color(0xFFFF8D8D)
-                      : Colors.white,
+                  color:
+                      _isAlmostExpired ? const Color(0xFFFF8D8D) : Colors.white,
                 ),
               ),
-
               const SizedBox(width: 10),
-
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -853,26 +893,21 @@ class _NewQrCodePageState extends State<NewQrCodePage>
                   ],
                 ),
               ),
-
               const SizedBox(width: 10),
-
               AnimatedDefaultTextStyle(
                 duration: const Duration(milliseconds: 250),
                 style: GoogleFonts.poppins(
                   fontSize: 23,
                   fontWeight: FontWeight.w800,
-                  color: _isAlmostExpired
-                      ? const Color(0xFFFF8D8D)
-                      : Colors.white,
+                  color:
+                      _isAlmostExpired ? const Color(0xFFFF8D8D) : Colors.white,
                   letterSpacing: 0.5,
                 ),
                 child: Text(_timeString),
               ),
             ],
           ),
-
           const SizedBox(height: 14),
-
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: TweenAnimationBuilder<double>(
@@ -903,7 +938,6 @@ class _NewQrCodePageState extends State<NewQrCodePage>
   // ===========================================================================
   // WARNING DIALOG
   // ===========================================================================
-
   void _showWarning() {
     showDialog<void>(
       context: context,
@@ -934,9 +968,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
                     size: 30,
                   ),
                 ),
-
                 const SizedBox(height: 16),
-
                 Text(
                   'Leave payment?',
                   style: GoogleFonts.poppins(
@@ -945,9 +977,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
                     color: _text,
                   ),
                 ),
-
                 const SizedBox(height: 8),
-
                 Text(
                   'Your current payment session will be cancelled if you leave this screen.',
                   textAlign: TextAlign.center,
@@ -957,9 +987,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
                     color: _mutedText,
                   ),
                 ),
-
                 const SizedBox(height: 22),
-
                 Row(
                   children: [
                     Expanded(
@@ -969,7 +997,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
                         },
                         style: OutlinedButton.styleFrom(
                           minimumSize: const Size(0, 48),
-                          side:  BorderSide(
+                          side: BorderSide(
                             color: _border,
                           ),
                           shape: RoundedRectangleBorder(
@@ -986,9 +1014,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
                         ),
                       ),
                     ),
-
                     const SizedBox(width: 10),
-
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
@@ -1028,39 +1054,276 @@ class _NewQrCodePageState extends State<NewQrCodePage>
     );
   }
 
-  // ===========================================================================
-  // SUCCESS DIALOG
-  // ===========================================================================
-
+//==============================================================================
   void _showSuccessMessage(String? message) {
     if (!mounted) return;
-
     showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) {
         return Dialog(
-          backgroundColor: Colors.transparent,
-          insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-          child: _SuccessDialogContent(
-            message: message,
-            onPressed: () {
-              Navigator.of(dialogContext).pop();
-
-              if (!mounted) return;
-
-              _stopTimer();
-
-              Navigator.of(context).pop();
-              Navigator.of(context).pop('fetch_balance');
-            },
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          insetPadding: const EdgeInsets.symmetric(
+            horizontal: 24,
+            vertical: 24,
+          ),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 500,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Column(
+                    children: [
+                      SizedBox(
+                        width: 90,
+                        height: 70,
+                        child: Image.asset(
+                          'assets/images/ecollect_white.png',
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      const SizedBox(height: 18),
+                      const Text(
+                        'Transaction Successful',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        message ??
+                            'Your transaction has been completed successfully.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade600,
+                          height: 1.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.grey.shade200,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        _buildDetailRow(
+                          'Transaction Status',
+                          'Successful',
+                          valueColor: Colors.green,
+                        ),
+                        const Divider(height: 20),
+                        _buildDetailRow(
+                          'Transaction Date',
+                          _getCurrentDate(),
+                        ),
+                        const Divider(height: 20),
+                        _buildDetailRow(
+                          'Order ID',
+                          widget.orderID,
+                        ),
+                        const Divider(height: 20),
+                        _buildDetailRow(
+                          'Transaction Time',
+                          _getCurrentTime(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            getHistoryData(message);
+                          },
+                          icon: const Icon(
+                            Icons.print_outlined,
+                            size: 20,
+                          ),
+                          label: const Text(
+                            'Print',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(48),
+                            side: BorderSide(
+                              color: Colors.grey.shade400,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: FilledButton(
+                          onPressed: () {
+                            if (!mounted) return;
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                          },
+                          style: FilledButton.styleFrom(
+                            minimumSize: const Size.fromHeight(48),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Text(
+                            'OK',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ),
         );
       },
     );
   }
-}
 
+  Widget _buildDetailRow(
+    String title,
+    String value, {
+    Color? valueColor,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: valueColor ?? Colors.black87,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _getCurrentDate() {
+    final now = DateTime.now();
+
+    return '${now.day.toString().padLeft(2, '0')}/'
+        '${now.month.toString().padLeft(2, '0')}/'
+        '${now.year}';
+  }
+
+  String _getCurrentTime() {
+    final now = DateTime.now();
+
+    return '${now.hour.toString().padLeft(2, '0')}:'
+        '${now.minute.toString().padLeft(2, '0')}';
+  }
+
+  void getHistoryData(String? message) {
+    debugPrint('Printing: ${message ?? ''}');
+    if (!mounted) return;
+    context
+        .read<PaymentTransactionBloc>()
+        .add(GetTransactionByMerchant(widget.merchantID, widget.token));
+  }
+//===============================================================================
+}
+/*  void _showSuccessMessage(String? message) {
+    if (!mounted) return;
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Row(
+            children: [
+              Icon(
+                Icons.check_circle,
+                color: Colors.green,
+                size: 28,
+              ),
+              SizedBox(width: 10),
+              Text('Success'),
+            ],
+          ),
+          content: Text(
+            message ?? 'Transaction completed successfully.',
+            style: const TextStyle(
+              fontSize: 15,
+              height: 1.4,
+            ),
+          ),
+          actions: [
+            TextButton.icon(
+              onPressed: () {
+                _printSuccessMessage(message);
+              },
+              icon: const Icon(Icons.print_outlined),
+              label: const Text('Print'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                if (!mounted) return;
+                _stopTimer();
+                Navigator.of(context).pop();
+                Navigator.of(context).pop('fetch_balance');
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _printSuccessMessage(String? message) {
+    debugPrint('Printing: ${message ?? ''}');
+  }*/
 // =============================================================================
 // SUCCESS DIALOG WIDGET
 // =============================================================================
@@ -1157,9 +1420,7 @@ class _SuccessDialogContentState extends State<_SuccessDialogContent>
                 ),
               ),
             ),
-
             const SizedBox(height: 20),
-
             Text(
               'Payment Successful',
               textAlign: TextAlign.center,
@@ -1169,12 +1430,9 @@ class _SuccessDialogContentState extends State<_SuccessDialogContent>
                 color: _text,
               ),
             ),
-
             const SizedBox(height: 8),
-
             Text(
-              widget.message ??
-                  'Your payment has been successfully completed.',
+              widget.message ?? 'Your payment has been successfully completed.',
               textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
                 fontSize: 12.5,
@@ -1182,9 +1440,7 @@ class _SuccessDialogContentState extends State<_SuccessDialogContent>
                 color: _muted,
               ),
             ),
-
             const SizedBox(height: 24),
-
             SizedBox(
               width: double.infinity,
               height: 50,
@@ -1948,4 +2204,3 @@ class _SuccessDialogContentState extends State<_SuccessDialogContent>
 //     );
 //   }
 // }
-

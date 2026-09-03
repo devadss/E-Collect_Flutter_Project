@@ -4,19 +4,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_longpress_preview/flutter_longpress_preview.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:palette_generator_master/palette_generator_master.dart';
-import 'package:provider/provider.dart';
-
 import '../../core/alerts.dart';
 import '../../core/utils.dart' as utl;
 import '../../data/e_collect_bloc/payment_bloc/payment_bloc.dart';
-import '../../data/provider/loan_cash_coolection_provider.dart';
-import '../../data/storage/shared_pref_helper.dart';
+import '../../data/e_collect_bloc/transaction_bloc/transaction_bloc.dart';
 import '../../domain/model/e_collect/payment/qr_request_model/qr_request_model.dart';
+import '../../domain/model/e_collect/transaction_report/transaction_ok_report.dart';
+import '../merchant/history/ecollect_transaction_detail.dart';
 import '../paymentlink_request_ui.dart';
 import '../qr_code/widgets/generate_qr_code_page.dart';
 //THE LOAN CUSTOMER DETAILS PAGE 2 OF 2....
-
-class IntegratedLoanDetail extends StatefulWidget {
+class IntegratedLoanDetailModel{
   final String loanDate;
   final String name;
   final String custNo;
@@ -37,70 +35,81 @@ class IntegratedLoanDetail extends StatefulWidget {
   final double penalInterestAmountBalance;
   final double penalInterestAmountOverdue;
   final double penalInterestAmountReceipt;
+  IntegratedLoanDetailModel({
+    required this.loanDate,
+    required this.name,
+    required this.custNo,
+    required this.loanAmount,
+    required this.loanNumber,
+    required this.loanType,
+    required this.loanPeriod,
+    required this.loanInterest,
+    required this.principalAmountReceived,
+    required this.principalAmountBalance,
+    required this.principalAmountOverdue,
+    required this.principalAmountReceipt,
+    required this.interestAmountReceived,
+    required this.interestAmountBalance,
+    required this.interestAmountOverdue,
+    required this.interestAmountReceipt,
+    required this.penalInterestAmountReceived,
+    required this.penalInterestAmountBalance,
+    required this.penalInterestAmountOverdue,
+    required this.penalInterestAmountReceipt,
+});
+}
+
+class EcollectMerchantModelData{
+  final String? eCollectMerchantName;
+  final String? eCollectAgentId;
+  final String? eCollectAgentOriginId;
+  final String? eCollectAgentNumber;
+  final String? eCollectAgentEmail;
+  final String? eCollectAgentBranchCode;
+  final String? eCollectAgentMerchantID;
+  final String? eCollectCollectionType;
+  final String? eCollectToken;
+
+  EcollectMerchantModelData({
+    required this.eCollectMerchantName,
+    required this.eCollectAgentId,
+    required this.eCollectAgentOriginId,
+    required this.eCollectAgentNumber,
+    required this.eCollectAgentEmail,
+    required this.eCollectAgentBranchCode,
+    required this.eCollectAgentMerchantID,
+    required this.eCollectCollectionType,
+    required this.eCollectToken,
+
+});
+
+}
+
+class IntegratedLoanDetail extends StatefulWidget {
+  final IntegratedLoanDetailModel integratedLoanDetailModel;
+  final EcollectMerchantModelData ecollectMerchantModelData;
   const IntegratedLoanDetail(
       {super.key,
-      required this.loanDate,
-      required this.loanAmount,
-      required this.loanNumber,
-      required this.loanType,
-      required this.loanPeriod,
-      required this.loanInterest,
-      required this.principalAmountReceived,
-      required this.principalAmountBalance,
-      required this.principalAmountOverdue,
-      required this.principalAmountReceipt,
-      required this.interestAmountReceived,
-      required this.interestAmountBalance,
-      required this.interestAmountOverdue,
-      required this.interestAmountReceipt,
-      required this.penalInterestAmountReceived,
-      required this.penalInterestAmountBalance,
-      required this.penalInterestAmountOverdue,
-      required this.penalInterestAmountReceipt,
-      required this.name,
-      required this.custNo});
+      required this.integratedLoanDetailModel, required this.ecollectMerchantModelData});
 
   @override
   State<IntegratedLoanDetail> createState() => _IntegratedLoanDetailState();
 }
 
 class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
-  String? agentId;
-  String? agent_Id;
-  String? corpCode;
-  String? agentEmail;
-  String? agentIdValue;
-  String? token;
-  String? agentMobile;
-  String? subAgentCodeNew;
-  String? cid;
-  String? subagentId;
-  String? eCollectToken;
-  String? agentName;
-  String? agentOriginId;
   String? paymentSessionId;
-  String? branchCode;
   String selectedMethod = "";
-  String? selectedAccNumber;
   TextEditingController editAmountController = TextEditingController();
   Color? dominantColor;
-  String? eCollectAgentNumber;
-  String? subagentPhoneNumber;
-  String? eCollectMerchantName;
-  String? eCollectAgentEmail;
-  String? eCollectCollectionType;
-  String? eCollectAgentBranchCode;
-  String? eCollectAgentMerchantID;
-  String? eCollectAgentOriginId;
-  String? eCollectAgentId;
+  String? paymentOrderID;
   @override
   void initState() {
     super.initState();
     loadSharedPrefs();
     createColorPallet("assets/images/person.png");
-    editAmountController.text = (widget.principalAmountBalance +
-            widget.interestAmountBalance +
-            widget.penalInterestAmountBalance)
+    editAmountController.text = (widget.integratedLoanDetailModel.principalAmountBalance +
+            widget.integratedLoanDetailModel.interestAmountBalance +
+            widget.integratedLoanDetailModel.penalInterestAmountBalance)
         .toString();
   }
 
@@ -108,8 +117,8 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
     if (editAmountController.text.isEmpty) return;
 
     final value = double.parse(editAmountController.text);
-    if (value != null && value > int.parse(widget.loanAmount)) {
-      editAmountController.text = widget.loanAmount.toString();
+    if (value > int.parse(widget.integratedLoanDetailModel.loanAmount)) {
+      editAmountController.text = widget.integratedLoanDetailModel.loanAmount.toString();
       editAmountController.selection = TextSelection.fromPosition(
           TextPosition(offset: editAmountController.text.length));
     }
@@ -122,56 +131,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
     super.dispose();
   }
 
-  Future<void> loadSharedPrefs() async {
-    final result = await Future.wait([
-      SharedPref.shared.getSubAgentCode(),
-      SharedPref.shared.getAgentId(),
-      SharedPref.shared.getCustId(),
-      SharedPref.shared.getCorpCode(),
-      SharedPref.shared.getTokenValue(),
-      SharedPref.shared.getEmail(),
-      SharedPref.shared.getSubAgentCode(),
-      SharedPref.shared.getAgentId(),
-      SharedPref.shared.getSubAgentId(),
-      SharedPref.shared.getSubAgentCodeNew(),
-      SharedPref.shared.getParentAgentMobNum(),
-      SharedPref.shared.getAgentName(),
-      SharedPref.shared.getBranchCode(),
-      SharedPref.shared.getECollectMerchantName(),
-      SharedPref.shared.getECollectUserID(),
-      SharedPref.shared.getExternalAgentID(),
-      SharedPref.shared.getECollectUserNumber(),
-      SharedPref.shared.getECollectUserEmail(),
-      SharedPref.shared.getECollectMerchantBranchCode(),
-      SharedPref.shared.getECollectMerchantID(),
-      SharedPref.shared.getECollectUserType(),
-      SharedPref.shared.getECollectUserToken(),
-    ]);
-
-    cid = result[2];
-    eCollectMerchantName = result[13];
-    eCollectAgentId = result[14];
-    eCollectAgentOriginId = result[15];
-    eCollectAgentNumber = result[16];
-    eCollectAgentEmail = result[17];
-    eCollectAgentBranchCode = result[18];
-    eCollectAgentMerchantID = result[19];
-    eCollectCollectionType = "LOAN";
-
-    subAgentCodeNew = result[9];
-    branchCode = result[12];
-    agent_Id = result[1];
-    agentId = result[0];
-    corpCode = result[3];
-    agentIdValue = result[7];
-    token = result[4];
-    agentName = result[11];
-    agentOriginId = result[6];
-    agentEmail = result[5];
-    agentMobile = result[10];
-    subagentId = result[8];
-    eCollectToken = result[21];
-
+   void loadSharedPrefs()  {
     editAmountController.addListener(validateInput);
   }
 
@@ -212,30 +172,30 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                   children: [
                     _buildModernAmountSection(
                       title: "Principal Amount",
-                      received: widget.principalAmountReceived.toString(),
-                      balance: widget.principalAmountBalance.toString(),
-                      overdue: widget.principalAmountOverdue.toString(),
-                      current: widget.principalAmountReceipt.toString(),
+                      received: widget.integratedLoanDetailModel.principalAmountReceived.toString(),
+                      balance: widget.integratedLoanDetailModel.principalAmountBalance.toString(),
+                      overdue: widget.integratedLoanDetailModel.principalAmountOverdue.toString(),
+                      current: widget.integratedLoanDetailModel.principalAmountReceipt.toString(),
                       icon: Icons.account_balance_wallet_rounded,
                       color: const Color(0xFF4361EE),
                     ),
                     _buildSectionDivider(),
                     _buildModernAmountSection(
                       title: "Interest",
-                      received: widget.interestAmountReceived.toString(),
-                      balance: widget.interestAmountBalance.toString(),
-                      overdue: widget.interestAmountOverdue.toString(),
-                      current: widget.interestAmountReceipt.toString(),
+                      received: widget.integratedLoanDetailModel.interestAmountReceived.toString(),
+                      balance: widget.integratedLoanDetailModel.interestAmountBalance.toString(),
+                      overdue: widget.integratedLoanDetailModel.interestAmountOverdue.toString(),
+                      current: widget.integratedLoanDetailModel.interestAmountReceipt.toString(),
                       icon: Icons.trending_up_rounded,
                       color: const Color(0xFFE76F51),
                     ),
                     _buildSectionDivider(),
                     _buildModernAmountSection(
                       title: "Penal Interest",
-                      received: widget.penalInterestAmountReceived.toString(),
-                      balance: widget.penalInterestAmountBalance.toString(),
-                      overdue: widget.penalInterestAmountOverdue.toString(),
-                      current: widget.penalInterestAmountReceipt.toString(),
+                      received: widget.integratedLoanDetailModel.penalInterestAmountReceived.toString(),
+                      balance: widget.integratedLoanDetailModel.penalInterestAmountBalance.toString(),
+                      overdue: widget.integratedLoanDetailModel.penalInterestAmountOverdue.toString(),
+                      current: widget.integratedLoanDetailModel.penalInterestAmountReceipt.toString(),
                       icon: Icons.warning_amber_rounded,
                       color: const Color(0xFFE63946),
                     ),
@@ -289,7 +249,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                                           onTap: () {
                                             Navigator.pop(context);
                                             editAmountController.text =
-                                                widget.loanAmount.toString();
+                                                widget.integratedLoanDetailModel.loanAmount.toString();
                                           },
                                           child: Container(
                                             padding: const EdgeInsets.all(8),
@@ -351,25 +311,25 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                                               QrPaymentRequestModel(
                                                   agentDetails: AgentDetails(
                                                       agentName:
-                                                          eCollectMerchantName!,
-                                                      agentId: eCollectAgentId!,
+                                                          widget.ecollectMerchantModelData.eCollectMerchantName!,
+                                                      agentId: widget.ecollectMerchantModelData.eCollectAgentId!,
                                                       agentOrginId:
-                                                          eCollectAgentOriginId!,
+                                                      widget.ecollectMerchantModelData.eCollectAgentOriginId!,
                                                       agentPhone:
-                                                          eCollectAgentNumber!,
+                                                      widget.ecollectMerchantModelData.eCollectAgentNumber!,
                                                       agentEmail:
-                                                          eCollectAgentEmail!,
+                                                      widget.ecollectMerchantModelData.eCollectAgentEmail!,
                                                       agentBranch: int.parse(
-                                                          eCollectAgentBranchCode!)),
+                                                          widget.ecollectMerchantModelData.eCollectAgentBranchCode!)),
                                                   customerDetails: CustomerDetails(
-                                                      customerName: widget.name,
+                                                      customerName: widget.integratedLoanDetailModel.name,
                                                       customerPhone:
-                                                          eCollectAgentNumber!,
+                                                      widget.ecollectMerchantModelData.eCollectAgentNumber!,
                                                       customerAccno:
-                                                          widget.loanNumber,
-                                                      customerId: widget.custNo,
+                                                          widget.integratedLoanDetailModel.loanNumber,
+                                                      customerId: widget.integratedLoanDetailModel.custNo,
                                                       customerEmail:
-                                                          eCollectAgentEmail!),
+                                                      widget.ecollectMerchantModelData. eCollectAgentEmail!),
                                                   collectionType: "LOAN",
                                                   amount: double.parse(
                                                       editAmountController
@@ -378,10 +338,9 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                                                   qrSource: 'MOB',
                                                   source: 'COLLECTION',
                                                   merchantId: int.parse(
-                                                      eCollectAgentMerchantID!)),
-                                              eCollectToken!));
-                                          // merchantId: 1)
-                                          // ));
+                                                      widget.ecollectMerchantModelData.eCollectAgentMerchantID!)),
+                                              widget.ecollectMerchantModelData.eCollectToken!));
+
                                         },
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: home1,
@@ -453,7 +412,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                                           onTap: () {
                                             Navigator.pop(context);
                                             editAmountController.text =
-                                                widget.loanAmount.toString();
+                                                widget.integratedLoanDetailModel.loanAmount.toString();
                                           },
                                           child: Container(
                                             padding: const EdgeInsets.all(8),
@@ -515,27 +474,27 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                                               QrPaymentRequestModel(
                                                   agentDetails: AgentDetails(
                                                       agentName:
-                                                          eCollectMerchantName!,
-                                                      agentId: eCollectAgentId!,
+                                                      widget.ecollectMerchantModelData.eCollectMerchantName!,
+                                                      agentId:widget.ecollectMerchantModelData. eCollectAgentId!,
                                                       agentOrginId:
-                                                          eCollectAgentOriginId!,
+                                                      widget.ecollectMerchantModelData.eCollectAgentOriginId!,
                                                       agentPhone:
-                                                          eCollectAgentNumber!,
+                                                      widget.ecollectMerchantModelData.eCollectAgentNumber!,
                                                       agentEmail:
-                                                          eCollectAgentEmail!,
+                                                      widget.ecollectMerchantModelData.eCollectAgentEmail!,
                                                       agentBranch: int.parse(
-                                                          eCollectAgentBranchCode!)),
+                                                          widget.ecollectMerchantModelData.eCollectAgentBranchCode!)),
                                                   customerDetails: CustomerDetails(
-                                                      customerName: widget.name,
+                                                      customerName: widget.integratedLoanDetailModel.name,
                                                       customerPhone:
-                                                          eCollectAgentNumber!,
+                                                      widget.ecollectMerchantModelData. eCollectAgentNumber!,
                                                       customerAccno:
-                                                          widget.loanNumber,
-                                                      customerId: widget.custNo,
+                                                          widget.integratedLoanDetailModel.loanNumber,
+                                                      customerId: widget.integratedLoanDetailModel.custNo,
                                                       customerEmail:
-                                                          eCollectAgentEmail!),
+                                                      widget.ecollectMerchantModelData.eCollectAgentEmail!),
                                                   collectionType:
-                                                      eCollectCollectionType!,
+                                                  widget.ecollectMerchantModelData.eCollectCollectionType!,
                                                   amount: double.parse(
                                                       editAmountController
                                                           .text),
@@ -543,8 +502,8 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                                                   qrSource: 'MOB',
                                                   source: 'COLLECTION',
                                                   merchantId: int.parse(
-                                                      eCollectAgentMerchantID!)),
-                                              eCollectToken!));
+                                                      widget.ecollectMerchantModelData. eCollectAgentMerchantID!)),
+                                              widget.ecollectMerchantModelData.eCollectToken!));
                                           //merchantId:1)));
                                         },
                                         style: ElevatedButton.styleFrom(
@@ -617,7 +576,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                                           onTap: () {
                                             Navigator.pop(context);
                                             editAmountController.text =
-                                                widget.loanAmount.toString();
+                                                widget.integratedLoanDetailModel.loanAmount.toString();
                                           },
                                           child: Container(
                                             padding: const EdgeInsets.all(8),
@@ -675,9 +634,9 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                                           Navigator.pop(context);
                                           paymentConfirmation(
                                             context,
-                                            agentName!,
-                                            widget.loanNumber,
-                                            widget.custNo,
+                                            widget.ecollectMerchantModelData.eCollectMerchantName!,
+                                            widget.integratedLoanDetailModel.loanNumber,
+                                            widget.integratedLoanDetailModel.custNo,
                                             editAmountController.text,
                                           );
                                         },
@@ -712,16 +671,19 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                   const SizedBox(width: 12),
                 ],
               ),
-              BlocListener<PaymentBloc, PaymentState>(
-                listener: (BuildContext context, PaymentState state) {
-                  if (state is QrPaymentLoaderState) {
-                    utl.showProgressDialog(context);
-                  }
-                  if (state is QrPaymentSuccessState) {
-                    Navigator.pop(context);
-                    // print(state.qrPaymentSuccess.paymentResponseSuccess.paymentUrl);
-                    selectedMethod == "Link"
-                        ? Navigator.push(
+              MultiBlocListener(
+                listeners: [
+                  BlocListener<PaymentBloc, PaymentState>(
+                    listener: (BuildContext context, PaymentState state) {
+                      if (state is QrPaymentLoaderState) {
+                        utl.showProgressDialog(context);
+                      }
+                      if (state is QrPaymentSuccessState) {
+                        paymentOrderID = state.qrPaymentSuccess.paymentResponseSuccess.orderId;
+                        Navigator.pop(context);
+
+                        selectedMethod == "Link"
+                            ? Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (BuildContext context) =>
@@ -730,45 +692,87 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                                       paymentLink: state.qrPaymentSuccess
                                           .paymentResponseSuccess.paymentUrl,
                                     )))
-                        : Navigator.push(
+                            : Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NewQrCodePage(
+                              paymentSessionId: state.qrPaymentSuccess
+                                  .paymentResponseSuccess.paymentUrl,
+                              amount: editAmountController.text,
+                              custName: "",
+                              custPhone: "custNumber",
+                              custId: "CustId", orderID: paymentOrderID!, merchantID:
+                              widget.ecollectMerchantModelData.eCollectAgentMerchantID!,
+                              token: widget.ecollectMerchantModelData.eCollectToken!,
+                            ),
+                          ),
+                        );
+                      } else if (state is QrPaymentFailState) {
+                        Navigator.pop(context);
+                        showAlertDialog(
+                            state.qrPaymentFail.paymentFailResponse.message,
+                            context);
+                        // print(state.qrPaymentFail.paymentFailResponse.message);
+                      } else if (state is CashPaymentSuccessState) {
+                        paymentOrderID = state.cashPaymentSuccess.cashPaymentSuccessResponse.transactionId;
+                        Navigator.pop(context);
+                      _showSuccessMessage(state.cashPaymentSuccess.cashPaymentSuccessResponse.message);
+                        // print(state.cashPaymentSuccess.cashPaymentSuccessResponse.message);
+                      } else if (state is CashPaymentFailState) {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        showAlertDialog(state.cashPaymentFail.payemtError, context);
+                        // print(state.cashPaymentFail.payemtError);
+                      }
+                    },
+                    child: SizedBox(),
+                  ),
+
+                  BlocListener<PaymentTransactionBloc, TransactionState>
+                    (listener: (BuildContext context, TransactionState state) {
+                    if (state is TransactionReportSuccessState) {
+                      final rawData =
+                          state.transactionSuccessModel
+                              .transactionOkReport.data;
+
+                      for (var orderid in rawData){
+                        if(orderid.paymentGatewayTransactionId.contains(paymentOrderID!)){
+
+                          Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => NewQrCodePage(
-                                paymentSessionId: state.qrPaymentSuccess
-                                    .paymentResponseSuccess.paymentUrl,
-                                amount: editAmountController.text,
-                                custName: "",
-                                custPhone: "custNumber",
-                                custId: "CustId",
+                              builder: (_) => EcollectTransactionDetail(
+                                paymentTransaction: PaymentTransaction(
+                                  id: orderid.id,
+                                  orderId: orderid.orderId,
+                                  transactionId: orderid.transactionId,
+                                  paymentGatewayTransactionId:
+                                  orderid.paymentGatewayTransactionId,
+                                  amount: orderid.amount,
+                                  currency: orderid.currency,
+                                  description: orderid.description,
+                                  customerName: orderid.customerName,
+                                  customerEmail: orderid.customerEmail,
+                                  customerPhone: orderid.customerPhone,
+                                  paymentMode: orderid.paymentMode,
+                                  paymentChannel: orderid.paymentChannel,
+                                  status: orderid.status,
+                                  responseCode: orderid.responseCode,
+                                  responseMessage: orderid.responseMessage,
+                                  createdAt: orderid.createdAt,
+                                  completedAt: orderid.completedAt,
+                                  merchantId: orderid.merchantId,
+                                  merchantName: orderid.merchantName,
+                                ),
                               ),
                             ),
                           );
-                  } else if (state is QrPaymentFailState) {
-                    Navigator.pop(context);
-                    showAlertDialog(
-                        state.qrPaymentFail.paymentFailResponse.message,
-                        context);
-                    // print(state.qrPaymentFail.paymentFailResponse.message);
-                  } else if (state is CashPaymentSuccessState) {
-                    Navigator.pop(context);
-                    showAlert(
-                        state.cashPaymentSuccess.cashPaymentSuccessResponse
-                                    .status ==
-                                "Y"
-                            ? "SUCCESS"
-                            : "FAILED",
-                        state.cashPaymentSuccess.cashPaymentSuccessResponse
-                            .message,
-                        context);
-                    // print(state.cashPaymentSuccess.cashPaymentSuccessResponse.message);
-                  } else if (state is CashPaymentFailState) {
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                    showAlertDialog(state.cashPaymentFail.payemtError, context);
-                    // print(state.cashPaymentFail.payemtError);
-                  }
-                },
-                child: SizedBox(),
+                        }
+                      }
+                    }
+                  },)
+                ],
+                child: Text("")
               ),
             ],
           ),
@@ -1010,7 +1014,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
         children: [
           // Modern Avatar with gradient background
           LongPressImagePreview(
-            imageProvider: AssetImage("assets/images/cq1.webp"),
+            imageProvider: AssetImage("assets/images/ecollect_white.png"),
             child: Container(
               decoration: BoxDecoration(
                 //  color: dominantColor,
@@ -1028,7 +1032,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                 padding: const EdgeInsets.all(5.0),
                 child: CircleAvatar(
                   radius: 40,
-                  backgroundImage: AssetImage("assets/images/cq1.webp"),
+                  backgroundImage: AssetImage("assets/images/ecollect_white.png"),
                 ),
               ),
             ),
@@ -1042,7 +1046,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                   children: [
                     Expanded(
                       child: Text(
-                        widget.name,
+                        widget.integratedLoanDetailModel.name,
                         style: const TextStyle(
                           overflow: TextOverflow.ellipsis,
                           fontSize: 18,
@@ -1102,7 +1106,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      "Customer ID: ${widget.custNo}",
+                      "Customer ID: ${widget.integratedLoanDetailModel.custNo}",
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
@@ -1186,32 +1190,32 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
               _buildDetailItem(
                 Icons.date_range,
                 "Loan Date",
-                widget.loanDate,
+                widget.integratedLoanDetailModel.loanDate,
               ),
               _buildDetailItem(
                 Icons.currency_rupee,
                 "Loan Amount",
-                widget.loanAmount,
+                widget.integratedLoanDetailModel.loanAmount,
               ),
               _buildDetailItem(
                 Icons.numbers,
                 "Loan Number",
-                widget.loanNumber,
+                widget.integratedLoanDetailModel.loanNumber,
               ),
               _buildDetailItem(
                 Icons.account_balance_wallet,
                 "Loan Type",
-                widget.loanType,
+                widget.integratedLoanDetailModel.loanType,
               ),
               _buildDetailItem(
                 Icons.schedule,
                 "Loan Period",
-                widget.loanPeriod,
+                widget.integratedLoanDetailModel.loanPeriod,
               ),
               _buildDetailItem(
                 Icons.percent,
                 "Interest",
-                widget.loanInterest,
+                widget.integratedLoanDetailModel.loanInterest,
               ),
             ],
           ),
@@ -1439,28 +1443,28 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                           context.read<PaymentBloc>().add(CashPaymentEvent(
                               QrPaymentRequestModel(
                                   agentDetails: AgentDetails(
-                                      agentName: eCollectMerchantName!,
-                                      agentId: eCollectAgentId!,
-                                      agentOrginId: eCollectAgentOriginId!,
-                                      agentPhone: eCollectAgentNumber!,
-                                      agentEmail: eCollectAgentEmail!,
+                                      agentName: widget.ecollectMerchantModelData.eCollectMerchantName!,
+                                      agentId: widget.ecollectMerchantModelData.eCollectAgentId!,
+                                      agentOrginId: widget.ecollectMerchantModelData.eCollectAgentOriginId!,
+                                      agentPhone: widget.ecollectMerchantModelData.eCollectAgentNumber!,
+                                      agentEmail: widget.ecollectMerchantModelData.eCollectAgentEmail!,
                                       agentBranch:
-                                          int.parse(eCollectAgentBranchCode!)),
+                                          int.parse(widget.ecollectMerchantModelData.eCollectAgentBranchCode!)),
                                   customerDetails: CustomerDetails(
-                                      customerName: widget.name,
-                                      customerPhone: eCollectAgentNumber!,
-                                      customerAccno: widget.loanNumber,
-                                      customerId: widget.custNo,
-                                      customerEmail: eCollectAgentEmail!),
-                                  collectionType: eCollectCollectionType!,
+                                      customerName: widget.integratedLoanDetailModel.name,
+                                      customerPhone: widget.ecollectMerchantModelData.eCollectAgentNumber!,
+                                      customerAccno: widget.integratedLoanDetailModel.loanNumber,
+                                      customerId: widget.integratedLoanDetailModel.custNo,
+                                      customerEmail: widget.ecollectMerchantModelData.eCollectAgentEmail!),
+                                  collectionType:widget.ecollectMerchantModelData. eCollectCollectionType!,
                                   amount:
                                       double.parse(editAmountController.text),
                                   note: 'Payment for Order',
                                   qrSource: 'MOB',
                                   source: 'COLLECTION',
                                   merchantId:
-                                      int.parse(eCollectAgentMerchantID!)),
-                              eCollectToken!));
+                                      int.parse(widget.ecollectMerchantModelData.eCollectAgentMerchantID!)),
+                              widget.ecollectMerchantModelData.eCollectToken!));
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.redAccent,
@@ -1489,7 +1493,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
     ).then((value) => value ?? false); // default to false if dismissed
   }
 
-  Future<void> loanCashCollection() async {
+/*  Future<void> loanCashCollection() async {
     utl.showProgressDialog(context);
     final loanCashProvider =
         Provider.of<LoanCashCollectionProvider>(context, listen: false);
@@ -1502,10 +1506,10 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
         int.parse(subagentId.toString()),
         "",
         subAgentCodeNew.toString(),
-        widget.name,
+        widget.integratedLoanDetailModel.name,
         "",
-        widget.loanNumber,
-        widget.custNo,
+        widget.integratedLoanDetailModel.loanNumber,
+        widget.integratedLoanDetailModel.custNo,
         "",
         double.parse(editAmountController.text),
         "",
@@ -1541,7 +1545,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                 context, false, loanCashProvider.loanCollectionErr.toString());
           });
     }
-  }
+  }*/
 
   AlertDialog linkShareAlert(BuildContext context, bool status, String msg) {
     return AlertDialog(
@@ -1592,4 +1596,216 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
       ),
     );
   }
+
+  //==============================================================================
+  void _showSuccessMessage(String? message) {
+    if (!mounted) return;
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return Dialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          insetPadding: const EdgeInsets.symmetric(
+            horizontal: 24,
+            vertical: 24,
+          ),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 500,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Column(
+                    children: [
+                      SizedBox(
+                        width: 90,
+                        height: 70,
+                        child: Image.asset(
+                          'assets/images/ecollect_white.png',
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      const SizedBox(height: 18),
+                      const Text(
+                        'Transaction Successful',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        message ??
+                            'Your transaction has been completed successfully.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade600,
+                          height: 1.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.grey.shade200,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        _buildDetailRow(
+                          'Transaction Status',
+                          'Successful',
+                          valueColor: Colors.green,
+                        ),
+                        const Divider(height: 20),
+                        _buildDetailRow(
+                          'Transaction Date',
+                          _getCurrentDate(),
+                        ),
+                        const Divider(height: 20),
+                        _buildDetailRow(
+                          'Order ID',
+                          paymentOrderID!,
+                        ),
+                        const Divider(height: 20),
+                        _buildDetailRow(
+                          'Transaction Time',
+                          _getCurrentTime(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            getHistoryData(message);
+                          },
+                          icon: const Icon(
+                            Icons.print_outlined,
+                            size: 20,
+                          ),
+                          label: const Text(
+                            'Print',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(48),
+                            side: BorderSide(
+                              color: Colors.grey.shade400,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: FilledButton(
+                          onPressed: () {
+
+                            if (!mounted) return;
+                            Navigator.of(context).pop();
+                          },
+                          style: FilledButton.styleFrom(
+                            minimumSize: const Size.fromHeight(48),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Text(
+                            'OK',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+  Widget _buildDetailRow(
+      String title,
+      String value, {
+        Color? valueColor,
+      }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: valueColor ?? Colors.black87,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );}
+  String _getCurrentDate() {
+    final now = DateTime.now();
+
+    return '${now.day.toString().padLeft(2, '0')}/'
+        '${now.month.toString().padLeft(2, '0')}/'
+        '${now.year}';
+  }
+  String _getCurrentTime() {
+    final now = DateTime.now();
+
+    return '${now.hour.toString().padLeft(2, '0')}:'
+        '${now.minute.toString().padLeft(2, '0')}';
+  }
+  void getHistoryData(String? message) {
+    debugPrint('Printing: ${message ?? ''}');
+    context.read<PaymentTransactionBloc>().add(GetTransactionByMerchant(widget.ecollectMerchantModelData.eCollectAgentMerchantID!,widget.ecollectMerchantModelData. eCollectToken!));
+  }
+//===============================================================================
+
+
 }

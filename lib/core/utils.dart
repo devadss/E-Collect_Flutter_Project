@@ -370,7 +370,75 @@ void showInSnackBar(String value, BuildContext context) {
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
 
+
 void showProgressDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    barrierColor: Colors.black54,
+    builder: (context) {
+      return Dialog(
+        backgroundColor: Colors.white,
+        elevation: 8,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 24,
+            vertical: 28,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                "assets/images/ecollect_white.png",
+                height: 55,
+                fit: BoxFit.contain,
+              ),
+
+              const SizedBox(height: 24),
+
+              const SizedBox(
+                width: 32,
+                height: 32,
+                child: CircularProgressIndicator(
+                  strokeWidth: 3,
+                  color: home1,
+                ),
+              ),
+
+              const SizedBox(height: 18),
+
+              const Text(
+                "Please wait...",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
+                ),
+              ),
+
+              const SizedBox(height: 6),
+
+              Text(
+                "Processing your request",
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+
+
+/*void showProgressDialog(BuildContext context) {
   showDialog(
       context: context,
       barrierDismissible: false,
@@ -378,14 +446,16 @@ void showProgressDialog(BuildContext context) {
         return Center(
           child: SingleChildScrollView(
             child: Dialog(
-              backgroundColor: Colors.grey.shade200,
+             // backgroundColor: Colors.grey.shade200,
+              backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)),
               child: Padding(
                 padding: const EdgeInsets.all(10),
                 child: Column(
                   children: [
-                    Image.asset("assets/images/ecollect.webp", scale: 10,),
+                  //  Image.asset("assets/images/ecollect.webp", scale: 10,),
+                    Image.asset("assets/images/ecollect_white.png", scale: 10,),
                     const CircularProgressIndicator(color: home1),
                     const SizedBox(height: 10,),
                     const Text("Please wait....", style: TextStyle(fontSize: 17,),
@@ -397,7 +467,7 @@ void showProgressDialog(BuildContext context) {
           ),
         );
       });
-}
+}*/
 
 
 class HomeVariablesModel{

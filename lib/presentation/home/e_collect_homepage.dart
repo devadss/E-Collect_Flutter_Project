@@ -9,10 +9,14 @@ import 'package:intl/intl.dart';
 import '../../data/e_collect_bloc/transaction_bloc/transaction_bloc.dart';
 
 class ECollectHomepage extends StatefulWidget {
-final String eCollectUserName;
-final String eCollectMerchantID;
-final String eCollectToken;
-  const ECollectHomepage({super.key, required this.eCollectUserName, required this.eCollectMerchantID, required this.eCollectToken});
+  final String eCollectUserName;
+  final String eCollectMerchantID;
+  final String eCollectToken;
+  const ECollectHomepage(
+      {super.key,
+      required this.eCollectUserName,
+      required this.eCollectMerchantID,
+      required this.eCollectToken});
 
   @override
   State<ECollectHomepage> createState() => ECollectHomepageState();
@@ -38,7 +42,7 @@ class ECollectHomepageState extends State<ECollectHomepage> {
     const FlSpot(8, 15.8),
   ];
   final CarouselSliderController _carouselController =
-    CarouselSliderController();
+      CarouselSliderController();
   int currentBannerIndex = 0;
   String merchantID = "";
   String selectedValue = "Today";
@@ -52,16 +56,14 @@ class ECollectHomepageState extends State<ECollectHomepage> {
     "Last Month"
   ];
 
-  void getSharedData()  {
+  void getSharedData() {
     if (!mounted) return;
     setState(() {
       name = widget.eCollectUserName;
       if (name.isNotEmpty) {
-        formattedName =
-            name[0].toUpperCase() + name.substring(1);
+        formattedName = name[0].toUpperCase() + name.substring(1);
       }
     });
-
 
     if (!mounted) return;
 
@@ -71,9 +73,10 @@ class ECollectHomepageState extends State<ECollectHomepage> {
     getTransactionReport();
   }
 
-
-  void getTransactionReport(){
-    context.read<PaymentTransactionBloc>().add(GetTransactionByMerchant(merchantID, eCollectToken));
+  void getTransactionReport() {
+    context
+        .read<PaymentTransactionBloc>()
+        .add(GetTransactionByMerchant(merchantID, eCollectToken));
   }
 
   @override
@@ -93,12 +96,17 @@ class ECollectHomepageState extends State<ECollectHomepage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildAnimatedHeader(context, MediaQuery.of(context).size),
-              transactionDataCard(
-                "Total Transaction Amount",
-                "₹ 48,000",
-                icon: Icons.currency_rupee_rounded,
-                accentColor: Colors.indigo,
-                isPrimary: true,
+              InkWell(
+                onTap: () {
+                  //_showSuccessMessage("Success");
+                },
+                child: transactionDataCard(
+                  "Total Transaction Amount",
+                  "₹ 48,000",
+                  icon: Icons.currency_rupee_rounded,
+                  accentColor: Colors.indigo,
+                  isPrimary: true,
+                ),
               ),
 
               const SizedBox(height: 4),
@@ -134,14 +142,14 @@ class ECollectHomepageState extends State<ECollectHomepage> {
                       accentColor: Colors.orange,
                     ),
                   ),
-                  Expanded(
-                    child: transactionDataCard(
-                      "Failed",
-                      "3",
-                      icon: Icons.close_rounded,
-                      accentColor: Colors.red,
-                    ),
-                  ),
+                  // Expanded(
+                  //   child: transactionDataCard(
+                  //     "Failed",
+                  //     "3",
+                  //     icon: Icons.close_rounded,
+                  //     accentColor: Colors.red,
+                  //   ),
+                  // ),
                 ],
               ),
 
@@ -150,7 +158,8 @@ class ECollectHomepageState extends State<ECollectHomepage> {
               ),
               _buildAnimatedBannerCarousel(MediaQuery.of(context).size),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: Text(
                   "Transaction Overview",
                   style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
@@ -163,20 +172,24 @@ class ECollectHomepageState extends State<ECollectHomepage> {
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Container(
                   padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(color: Colors.black12, blurRadius: 1)
-                  ]),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(color: Colors.black12, blurRadius: 1)
+                      ]),
                   child: AspectRatio(
                     aspectRatio: 1.8,
-                    child: BlocBuilder<PaymentTransactionBloc, TransactionState>(
+                    child:
+                        BlocBuilder<PaymentTransactionBloc, TransactionState>(
                       builder: (BuildContext context, TransactionState state) {
                         if (state is TransactionReportSuccessState) {
-                           transactionData = state.transactionSuccessModel.transactionOkReport.data;
-                          if(transactionData.isNotEmpty){
+                          transactionData = state
+                              .transactionSuccessModel.transactionOkReport.data;
+                          if (transactionData.isNotEmpty) {
                             return Padding(
-                              padding:
-                              const EdgeInsets.only(right: 5, top: 10, left: 5),
+                              padding: const EdgeInsets.only(
+                                  right: 5, top: 10, left: 5),
                               child: LineChart(
                                 LineChartData(
                                   gridData: FlGridData(
@@ -184,7 +197,8 @@ class ECollectHomepageState extends State<ECollectHomepage> {
                                     drawVerticalLine: false,
                                     horizontalInterval: 1.3,
                                     getDrawingHorizontalLine: (value) => FlLine(
-                                      color: Colors.black.withValues(alpha: 0.15),
+                                      color:
+                                          Colors.black.withValues(alpha: 0.15),
                                       strokeWidth: 1,
                                     ),
                                   ),
@@ -276,11 +290,9 @@ class ECollectHomepageState extends State<ECollectHomepage> {
                                 ),
                               ),
                             );
-
-                          }else{
+                          } else {
                             return SizedBox.shrink();
                           }
-
                         }
                         return SizedBox.shrink();
                       },
@@ -322,13 +334,14 @@ class ECollectHomepageState extends State<ECollectHomepage> {
       ),
     );
   }
+
   Widget transactionDataCard(
-      String label,
-      String value, {
-        required IconData icon,
-        required Color accentColor,
-        bool isPrimary = false,
-      }) {
+    String label,
+    String value, {
+    required IconData icon,
+    required Color accentColor,
+    bool isPrimary = false,
+  }) {
     return Container(
       margin: const EdgeInsets.all(5),
       padding: EdgeInsets.symmetric(
@@ -351,7 +364,6 @@ class ECollectHomepageState extends State<ECollectHomepage> {
       ),
       child: Row(
         children: [
-
           // Small status/icon indicator
           Container(
             width: 36,
@@ -373,7 +385,6 @@ class ECollectHomepageState extends State<ECollectHomepage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Text(
                   label,
                   maxLines: 1,
@@ -385,9 +396,7 @@ class ECollectHomepageState extends State<ECollectHomepage> {
                     color: Colors.grey.shade500,
                   ),
                 ),
-
                 const SizedBox(height: 4),
-
                 BlocBuilder<PaymentTransactionBloc, TransactionState>(
                   builder: (context, state) {
                     String displayValue = "0";
@@ -401,9 +410,7 @@ class ECollectHomepageState extends State<ECollectHomepage> {
                         ).format(state.finalTotal);
                       } else if (label == "Total Transactions") {
                         displayValue = state.transactionSuccessModel
-                            .transactionOkReport
-                            .pagination
-                            .pageSize
+                            .transactionOkReport.pagination.pageSize
                             .toString();
                       } else if (label == "Successful") {
                         displayValue = state.successCount.toString();
@@ -523,130 +530,41 @@ class ECollectHomepageState extends State<ECollectHomepage> {
     );
   }*/
 
-final List<String> bannerImages = [
-  "assets/images/cq1.webp",
-  "assets/images/cq2.webp",
-  "assets/images/cq3.webp",
-  "assets/images/cq4.webp",
-  "assets/images/cq5.webp",
-  "assets/images/cq6.webp",
-  "assets/images/cq7.webp",
-];
+  final List<String> bannerImages = [
+    "assets/images/cq1.webp",
+    "assets/images/cq2.webp",
+    "assets/images/cq3.webp",
+    "assets/images/cq4.webp",
+    "assets/images/cq5.webp",
+    "assets/images/cq6.webp",
+    "assets/images/cq7.webp",
+  ];
 
-  // Widget _buildAnimatedBannerCarousel(Size size) {
-  //   return Column(
-  //     children: [
-  //       CarouselSlider.builder(
-  //         carouselController: _carouselController,
-  //         itemCount: bannerImages.length,
-  //         options: CarouselOptions(
-  //           height: size.height * 0.17,
-  //           autoPlay: true,
-  //           autoPlayInterval: const Duration(seconds: 4),
-  //           autoPlayAnimationDuration: const Duration(milliseconds: 800),
-  //           autoPlayCurve: Curves.easeInOutCubic,
-  //
-  //           // Modern full-width feel
-  //           viewportFraction: 0.92,
-  //           enlargeCenterPage: false,
-  //
-  //           // Gives a little breathing room
-  //           padEnds: true,
-  //
-  //           onPageChanged: (index, reason) {
-  //             setState(() {
-  //               currentBannerIndex = index;
-  //             });
-  //           },
-  //         ),
-  //         itemBuilder: (context, index, realIndex) {
-  //           return AnimatedContainer(
-  //             duration: const Duration(milliseconds: 400),
-  //             curve: Curves.easeOutCubic,
-  //             margin: const EdgeInsets.symmetric(
-  //               horizontal: 5,
-  //               vertical: 4,
-  //             ),
-  //             decoration: BoxDecoration(
-  //               borderRadius: BorderRadius.circular(22),
-  //               boxShadow: [
-  //                 BoxShadow(
-  //                   color: Colors.black.withValues(alpha: 0.08),
-  //                   blurRadius: 18,
-  //                   offset: const Offset(0, 6),
-  //                 ),
-  //               ],
-  //             ),
-  //             child: ClipRRect(
-  //               borderRadius: BorderRadius.circular(22),
-  //               child: Image.asset(
-  //                 bannerImages[index],
-  //                 width: double.infinity,
-  //                 height: double.infinity,
-  //                 fit: BoxFit.cover,
-  //                 filterQuality: FilterQuality.high,
-  //               ),
-  //             ),
-  //           );
-  //         },
-  //       ),
-  //
-  //       const SizedBox(height: 10),
-  //
-  //       // Modern page indicator
-  //       Row(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: List.generate(
-  //           bannerImages.length,
-  //               (index) {
-  //             final isActive = currentBannerIndex == index;
-  //
-  //             return AnimatedContainer(
-  //               duration: const Duration(milliseconds: 300),
-  //               curve: Curves.easeOutCubic,
-  //               margin: const EdgeInsets.symmetric(horizontal: 3),
-  //               width: isActive ? 22 : 7,
-  //               height: 6,
-  //               decoration: BoxDecoration(
-  //                 color: isActive
-  //                     ? Colors.black87
-  //                     : Colors.black.withValues(alpha: 0.18),
-  //                 borderRadius: BorderRadius.circular(20),
-  //               ),
-  //             );
-  //           },
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
+
+
+
+
   Widget _buildAnimatedBannerCarousel(Size size) {
     return Column(
       children: [
-
         CarouselSlider.builder(
           carouselController: _carouselController,
           itemCount: bannerImages.length,
           options: CarouselOptions(
             height: size.height * 0.17,
-
             autoPlay: true,
             autoPlayInterval: const Duration(seconds: 5),
-            autoPlayAnimationDuration:
-            const Duration(milliseconds: 700),
+            autoPlayAnimationDuration: const Duration(milliseconds: 700),
             autoPlayCurve: Curves.easeOutCubic,
-
             viewportFraction: 0.94,
             enlargeCenterPage: false,
             padEnds: true,
-
             onPageChanged: (index, reason) {
               setState(() {
                 currentBannerIndex = index;
               });
             },
           ),
-
           itemBuilder: (context, index, realIndex) {
             return Container(
               margin: const EdgeInsets.symmetric(
@@ -686,9 +604,8 @@ final List<String> bannerImages = [
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(
             bannerImages.length,
-                (index) {
-              final isActive =
-                  currentBannerIndex == index;
+            (index) {
+              final isActive = currentBannerIndex == index;
 
               return AnimatedContainer(
                 duration: const Duration(milliseconds: 250),
@@ -699,9 +616,7 @@ final List<String> bannerImages = [
                 width: isActive ? 18 : 6,
                 height: 5,
                 decoration: BoxDecoration(
-                  color: isActive
-                      ? home1
-                      : const Color(0xFFD9DDE2),
+                  color: isActive ? home1 : const Color(0xFFD9DDE2),
                   borderRadius: BorderRadius.circular(10),
                 ),
               );
@@ -711,6 +626,7 @@ final List<String> bannerImages = [
       ],
     );
   }
+
   String _getGreeting() {
     final hour = DateTime.now().hour;
 
@@ -733,7 +649,6 @@ final List<String> bannerImages = [
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-
             // =====================================================
             // PROFILE
             // =====================================================
@@ -760,7 +675,6 @@ final List<String> bannerImages = [
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   Row(
                     children: [
                       Text(
@@ -773,9 +687,7 @@ final List<String> bannerImages = [
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 3),
-
                   Text(
                     formattedName.trim(),
                     maxLines: 1,
@@ -787,9 +699,7 @@ final List<String> bannerImages = [
                       color: Color(0xFF171A1F),
                     ),
                   ),
-
                   const SizedBox(height: 3),
-
                   Text(
                     "Manage your collections & accounts",
                     maxLines: 1,
@@ -830,13 +740,11 @@ final List<String> bannerImages = [
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-
                       const Icon(
                         Icons.notifications_none_rounded,
                         size: 22,
                         color: Color(0xFF30363D),
                       ),
-
                       Positioned(
                         top: 9,
                         right: 9,
@@ -864,16 +772,16 @@ final List<String> bannerImages = [
     )
         .animate()
         .fadeIn(
-      duration: const Duration(milliseconds: 350),
-    )
+          duration: const Duration(milliseconds: 350),
+        )
         .slideY(
-      begin: -0.04,
-      end: 0,
-      curve: Curves.easeOutCubic,
-    );
+          begin: -0.04,
+          end: 0,
+          curve: Curves.easeOutCubic,
+        );
   }
 
- /* Widget _buildAnimatedHeader(BuildContext context, Size size) {
+  /* Widget _buildAnimatedHeader(BuildContext context, Size size) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 18),
@@ -984,9 +892,7 @@ final List<String> bannerImages = [
       curve: Curves.easeOutCubic,
     );
   }*/
-
 }
-
 
 /*
   Widget _buildAnimatedBannerCarousel(Size size) {
@@ -1131,5 +1037,3 @@ final List<String> bannerImages = [
     );
   }
 */
-
-
