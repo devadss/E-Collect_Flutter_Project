@@ -60,6 +60,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
           }
 
         }
+
         SharedPref.shared.setECollectTypeList(typeList);
         SharedPref.shared.setECollectUrlList(eCollectUrlList);
         SharedPref.shared.setECollectMerchantUserName(data.loginResponse.user.name);

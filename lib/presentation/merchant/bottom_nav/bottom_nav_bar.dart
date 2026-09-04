@@ -7,6 +7,7 @@ import '../../account_dues/rd_dues/rd_cust_list_page.dart';
 import '../../account_dues/rdcl/rdcl_customer _list.dart';
 import '../../home/e_collect_homepage.dart';
 import '../../loan/loan_list.dart';
+import '../../loan/non_integrated/non_integrated_loan_page.dart';
 import '../../profile/profile_home_page.dart';
 import '../history/ecollect_transaction_report.dart';
 import '../pages/all-groups.dart';
@@ -57,8 +58,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   // ---------------------------------------------------------------------------
 
   Future<void> getSharedData() async {
-    final integrationStatus =
-        await SharedPref.shared.getECollectMerchantIntegrationStatus();
+    final integrationStatus = await SharedPref.shared.getECollectMerchantIntegrationStatus();
     final branCode = await SharedPref.shared.getECollectMerchantBranchCode();
     final type = await SharedPref.shared.getECollectTypeList();
     final result = await Future.wait([
@@ -173,6 +173,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
     // -------------------------------------------------------------------------
 
     if (hasType(USER_TYPE_LOAN)) {
+
+      integrationStatus == "Y"?
       items.add(
         NavItem(
           label: 'Loan-List',
@@ -189,6 +191,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
             eCollectAgentMerchantID: eCollectMerchantId,
             eCollectToken:eCollectUserToken,
           ),
+        ),
+      ):
+      items.add(
+        NavItem(
+          label: 'Loan-List',
+          icon: Icons.account_balance,
+          page: NonIntegratedLoanPage()
         ),
       );
     }

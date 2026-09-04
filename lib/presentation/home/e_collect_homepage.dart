@@ -314,9 +314,13 @@ bool dialogStatus = false;
                                 dialogStatus = false;
                                 Navigator.pop(context);
                               }
+                            }else{
+                              if(dialogStatus ==true){
+                                dialogStatus = false;
+                                Navigator.pop(context);
+                              }
                             }
                           },
-
                         ),
                   ),
                 ),
