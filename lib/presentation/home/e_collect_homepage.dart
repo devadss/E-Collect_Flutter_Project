@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:e_Collect/core/colors.dart';
+import 'package:e_Collect/core/utils.dart';
 import 'package:e_Collect/domain/model/e_collect/transaction_report/transaction_ok_report.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,7 @@ class ECollectHomepageState extends State<ECollectHomepage> {
     {"label": "Failed", "value": 20.0, "color": Colors.red},
   ];
   List<PaymentTransaction> transactionData = [];
-
+bool dialogStatus = false;
   final spots = [
     const FlSpot(0, 3),
     const FlSpot(1, 4.5),
@@ -181,122 +182,142 @@ class ECollectHomepageState extends State<ECollectHomepage> {
                   child: AspectRatio(
                     aspectRatio: 1.8,
                     child:
-                        BlocBuilder<PaymentTransactionBloc, TransactionState>(
-                      builder: (BuildContext context, TransactionState state) {
-                        if (state is TransactionReportSuccessState) {
-                          transactionData = state
-                              .transactionSuccessModel.transactionOkReport.data;
-                          if (transactionData.isNotEmpty) {
-                            return Padding(
-                              padding: const EdgeInsets.only(
-                                  right: 5, top: 10, left: 5),
-                              child: LineChart(
-                                LineChartData(
-                                  gridData: FlGridData(
-                                    show: true,
-                                    drawVerticalLine: false,
-                                    horizontalInterval: 1.3,
-                                    getDrawingHorizontalLine: (value) => FlLine(
-                                      color:
-                                          Colors.black.withValues(alpha: 0.15),
-                                      strokeWidth: 1,
-                                    ),
-                                  ),
-                                  titlesData: FlTitlesData(
-                                    rightTitles: const AxisTitles(
-                                      sideTitles: SideTitles(showTitles: false),
-                                    ),
-                                    topTitles: const AxisTitles(
-                                      sideTitles: SideTitles(showTitles: false),
-                                    ),
-                                    bottomTitles: AxisTitles(
-                                      sideTitles: SideTitles(
-                                        interval: 2,
-                                        showTitles: true,
-                                        reservedSize: 30,
-                                        getTitlesWidget: (value, meta) {
-                                          var days = [];
-                                          for (var d in transactionData) {
-                                            days.add(d.createdAt
-                                                .toString()
-                                                .replaceRange(10, null, ""));
-                                          }
-
-                                          final i = value.toInt();
-                                          if (i < 0 || i >= 2) {
-                                            return const SizedBox();
-                                          }
-                                          return Center(
-                                            child: Text(
-                                                textAlign: TextAlign.center,
-                                                days[i],
-                                                style: const TextStyle(
-                                                    fontSize: 10,
-                                                    color: Colors.grey)),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    leftTitles: AxisTitles(
-                                      sideTitles: SideTitles(
-                                        showTitles: true,
-                                        interval: 2,
-                                        reservedSize: 30,
-                                        getTitlesWidget: (value, meta) => Text(
-                                          value.toInt().toString(),
-                                          style: const TextStyle(
-                                              fontSize: 12, color: Colors.grey),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  borderData: FlBorderData(show: false),
-                                  minY: 0,
-                                  lineBarsData: [
-                                    LineChartBarData(
-                                      spots: spots,
-                                      isCurved: true,
-                                      curveSmoothness: 0.35,
-                                      gradient: const LinearGradient(
-                                        colors: [
-                                          Color(0xFF6C5CE7),
-                                          Color(0xFFEA307B)
-                                        ],
-                                      ),
-                                      barWidth: 2,
-                                      isStrokeCapRound: true,
-                                      dotData: const FlDotData(show: false),
-                                      belowBarData: BarAreaData(
+                        BlocConsumer<PaymentTransactionBloc, TransactionState>(
+                          builder: (BuildContext context, TransactionState state) {
+                            if (state is TransactionReportSuccessState) {
+                              transactionData = state
+                                  .transactionSuccessModel.transactionOkReport.data;
+                              if (transactionData.isNotEmpty) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(
+                                      right: 5, top: 10, left: 5),
+                                  child: LineChart(
+                                    LineChartData(
+                                      gridData: FlGridData(
                                         show: true,
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            const Color(0xFFEA307B)
-                                                .withValues(alpha: 0.25),
-                                            const Color(0xFF8609A8)
-                                                .withValues(alpha: 0.0),
-                                          ],
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter,
+                                        drawVerticalLine: false,
+                                        horizontalInterval: 1.3,
+                                        getDrawingHorizontalLine: (value) => FlLine(
+                                          color:
+                                          Colors.black.withValues(alpha: 0.15),
+                                          strokeWidth: 1,
+                                        ),
+                                      ),
+                                      titlesData: FlTitlesData(
+                                        rightTitles: const AxisTitles(
+                                          sideTitles: SideTitles(showTitles: false),
+                                        ),
+                                        topTitles: const AxisTitles(
+                                          sideTitles: SideTitles(showTitles: false),
+                                        ),
+                                        bottomTitles: AxisTitles(
+                                          sideTitles: SideTitles(
+                                            interval: 2,
+                                            showTitles: true,
+                                            reservedSize: 30,
+                                            getTitlesWidget: (value, meta) {
+                                              var days = [];
+                                              for (var d in transactionData) {
+                                                days.add(d.createdAt
+                                                    .toString()
+                                                    .replaceRange(10, null, ""));
+                                              }
+
+                                              final i = value.toInt();
+                                              if (i < 0 || i >= 2) {
+                                                return const SizedBox();
+                                              }
+                                              return Center(
+                                                child: Text(
+                                                    textAlign: TextAlign.center,
+                                                    days[i],
+                                                    style: const TextStyle(
+                                                        fontSize: 10,
+                                                        color: Colors.grey)),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        leftTitles: AxisTitles(
+                                          sideTitles: SideTitles(
+                                            showTitles: true,
+                                            interval: 2,
+                                            reservedSize: 30,
+                                            getTitlesWidget: (value, meta) => Text(
+                                              value.toInt().toString(),
+                                              style: const TextStyle(
+                                                  fontSize: 12, color: Colors.grey),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      borderData: FlBorderData(show: false),
+                                      minY: 0,
+                                      lineBarsData: [
+                                        LineChartBarData(
+                                          spots: spots,
+                                          isCurved: true,
+                                          curveSmoothness: 0.35,
+                                          gradient: const LinearGradient(
+                                            colors: [
+                                              Color(0xFF6C5CE7),
+                                              Color(0xFFEA307B)
+                                            ],
+                                          ),
+                                          barWidth: 2,
+                                          isStrokeCapRound: true,
+                                          dotData: const FlDotData(show: false),
+                                          belowBarData: BarAreaData(
+                                            show: true,
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                const Color(0xFFEA307B)
+                                                    .withValues(alpha: 0.25),
+                                                const Color(0xFF8609A8)
+                                                    .withValues(alpha: 0.0),
+                                              ],
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                      lineTouchData: LineTouchData(
+                                        touchTooltipData: LineTouchTooltipData(
+                                          getTooltipColor: (touchedSpot) =>
+                                              Colors.black.withValues(alpha: 0.8),
                                         ),
                                       ),
                                     ),
-                                  ],
-                                  lineTouchData: LineTouchData(
-                                    touchTooltipData: LineTouchTooltipData(
-                                      getTooltipColor: (touchedSpot) =>
-                                          Colors.black.withValues(alpha: 0.8),
-                                    ),
                                   ),
-                                ),
-                              ),
-                            );
-                          } else {
+                                );
+                              } else {
+                                return SizedBox.shrink();
+                              }
+                            }
                             return SizedBox.shrink();
-                          }
-                        }
-                        return SizedBox.shrink();
-                      },
-                    ),
+                          },
+                          listener: (BuildContext context, TransactionState state) {
+                            if(state is TransactionReportLoaderState){
+                              dialogStatus = true;
+                              showProgressDialog(context);
+                            }
+
+                            if(state is TransactionReportSuccessState){
+                              if(dialogStatus ==true){
+                                dialogStatus = false;
+                                Navigator.pop(context);
+                              }
+                            }
+                            else if(state is TransactionReportFailureState){
+                              if(dialogStatus ==true){
+                                dialogStatus = false;
+                                Navigator.pop(context);
+                              }
+                            }
+                          },
+
+                        ),
                   ),
                 ),
               ),

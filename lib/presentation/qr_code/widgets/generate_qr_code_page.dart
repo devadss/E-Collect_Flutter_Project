@@ -57,7 +57,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
   static Color get _mutedText => Colors.grey.shade600;
   static Color get _border => Colors.grey.shade200;
   static Color get _success => Colors.green;
-  static Color get _danger => Colors.red;
+  //static Color get _danger => Colors.red;
 
   // ===========================================================================
   // TIMER

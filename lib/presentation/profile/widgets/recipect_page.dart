@@ -12,7 +12,33 @@ import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../core/utils.dart';
-
+class ReceiptDataModel {
+  final String amount;
+  final String dat;
+  final String bankName;
+  final String agentName;
+  final String agentPhone;
+  final String custName;
+  final String custPhone;
+  final String custId;
+  final String txnId;
+  final String txnType;
+  final String tranType;
+  final String accNo;
+  ReceiptDataModel(
+      {required this.amount,
+        required this.dat,
+        required this.bankName,
+        required this.agentName,
+        required this.agentPhone,
+        required this.custName,
+        required this.custPhone,
+        required this.custId,
+        required this.txnId,
+        required this.txnType,
+        required this.tranType,
+        required this.accNo});
+}
 class ReceiptPage extends StatefulWidget {
   final ReceiptDataModel receiptDataModel;
 
@@ -209,7 +235,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
           .timeout(const Duration(seconds: 15));
 
       setState(() => devices = result);
-
+      if(!mounted) return;
       if (devices.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("No Bluetooth printers found")),
@@ -217,11 +243,13 @@ class _ReceiptPageState extends State<ReceiptPage> {
       }
     } on TimeoutException {
       setState(() => lastError = 'Device scan timed out');
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Device scan timed out")),
       );
     } catch (e) {
       setState(() => lastError = e.toString());
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Scan failed: ${e.toString()}")),
       );
@@ -262,11 +290,13 @@ class _ReceiptPageState extends State<ReceiptPage> {
       }
     } on TimeoutException {
       setState(() => lastError = 'Connection timed out');
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Connection timed out")),
       );
     } catch (e) {
       setState(() => lastError = e.toString());
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Connection failed: ${e.toString()}")),
       );
@@ -432,7 +462,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
       bytes.addAll([0x1D, 0x56, 0x41, 0x10]);
 
       await PrintBluetoothThermal.writeBytes(bytes);
-
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Receipt printed successfully!")),
       );

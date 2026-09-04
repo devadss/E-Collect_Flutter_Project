@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
-
 import '../../domain/model/integrated_loan_detail_model.dart';
 import '../repository/integrated_loan_detail_repository.dart';
 

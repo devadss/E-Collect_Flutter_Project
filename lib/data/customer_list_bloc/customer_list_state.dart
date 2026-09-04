@@ -20,3 +20,23 @@ class CustomerListFailState extends CustomerListState{
   final CustomerListFailModel customerListFailModel;
   const CustomerListFailState(this.customerListFailModel);
 }
+
+//------------------------------------------------------------
+class RdCustomerListLoaderState extends CustomerListState{
+  const RdCustomerListLoaderState();
+}
+
+class RdCustomerListSuccessState extends CustomerListState{
+  final RdCustomerListSuccessModel rdCustomerListSuccessModel;
+  const RdCustomerListSuccessState(this.rdCustomerListSuccessModel);
+}
+
+class RdCustomerListFailState extends CustomerListState{
+  final RdCustomerListFailModel rdCustomerListFailModel;
+  const RdCustomerListFailState(this.rdCustomerListFailModel);
+}
+//-----------------------------------------------------------------
+class RdCustomerListFilteredState extends CustomerListState{
+  final RdCustomerListSuccessModel rdCustomerListSuccessModel;
+  const RdCustomerListFilteredState(this.rdCustomerListSuccessModel);
+}

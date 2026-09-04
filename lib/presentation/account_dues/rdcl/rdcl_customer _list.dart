@@ -61,13 +61,13 @@ class RdclDueListBocPageState extends State<RdclDueListBocPage> {
   Future<void> loadSharedPrefs() async {
     for (var x in widget.rdclListModel.eCollectUrlList!) {
       if (x.contains(rdcLCustomerListCode)) {
-       // setState(() {
+
           _rdclUrl = x;
-       // });
+
       } else if (x.contains(rdcLCustomerDetailCode)) {
-        //setState(() {
+
           _rdclDetailUrl = x;
-      //  });
+
       }
     }
 
@@ -105,61 +105,61 @@ class RdclDueListBocPageState extends State<RdclDueListBocPage> {
         );
   }
 
-  Widget _buildInfoIcon(IconData icon) {
-    return SizedBox(
-      width: 42,
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: Container(
-          width: 38,
-          height: 38,
-          decoration: BoxDecoration(
-            color: home1.withValues(alpha: 0.07),
-            borderRadius: BorderRadius.circular(11),
-          ),
-          child: Icon(
-            icon,
-            size: 19,
-            color: home1,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLabel(String text) {
-    return Text(
-      text,
-      style: TextStyle(
-        fontSize: 9,
-        fontWeight: FontWeight.w800,
-        letterSpacing: 0.9,
-        color: Colors.grey.shade500,
-      ),
-    );
-  }
-
-  Widget _buildBadge(String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 9,
-        vertical: 5,
-      ),
-      decoration: BoxDecoration(
-        color: home1.withValues(alpha: 0.07),
-        borderRadius: BorderRadius.circular(7),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.w800,
-          letterSpacing: 0.7,
-          color: home1,
-        ),
-      ),
-    );
-  }
+  // Widget _buildInfoIcon(IconData icon) {
+  //   return SizedBox(
+  //     width: 42,
+  //     child: Align(
+  //       alignment: Alignment.topCenter,
+  //       child: Container(
+  //         width: 38,
+  //         height: 38,
+  //         decoration: BoxDecoration(
+  //           color: home1.withValues(alpha: 0.07),
+  //           borderRadius: BorderRadius.circular(11),
+  //         ),
+  //         child: Icon(
+  //           icon,
+  //           size: 19,
+  //           color: home1,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+  //
+  // Widget _buildLabel(String text) {
+  //   return Text(
+  //     text,
+  //     style: TextStyle(
+  //       fontSize: 9,
+  //       fontWeight: FontWeight.w800,
+  //       letterSpacing: 0.9,
+  //       color: Colors.grey.shade500,
+  //     ),
+  //   );
+  // }
+  //
+  // Widget _buildBadge(String text) {
+  //   return Container(
+  //     padding: const EdgeInsets.symmetric(
+  //       horizontal: 9,
+  //       vertical: 5,
+  //     ),
+  //     decoration: BoxDecoration(
+  //       color: home1.withValues(alpha: 0.07),
+  //       borderRadius: BorderRadius.circular(7),
+  //     ),
+  //     child: Text(
+  //       text,
+  //       style: TextStyle(
+  //         fontSize: 10,
+  //         fontWeight: FontWeight.w800,
+  //         letterSpacing: 0.7,
+  //         color: home1,
+  //       ),
+  //     ),
+  //   );
+  // }
 
 
   @override

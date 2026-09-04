@@ -2,7 +2,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/model/rdcl_duelist_model/rdcl_due_list_model.dart';
-import '../repository/rdcl_due_list_repo/rdcl_due_list_repo.dart';
+import '../repository/e_collect_repository/rdcl_due_list_repo/rdcl_due_list_repo.dart';
 
 
 part 'rdcl_duelist_event.dart';

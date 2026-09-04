@@ -1,8 +1,7 @@
 import 'package:e_Collect/core/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_longpress_preview/flutter_longpress_preview.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:palette_generator_master/palette_generator_master.dart';
 import '../../core/alerts.dart';
 import '../../core/utils.dart' as utl;
@@ -96,7 +95,2013 @@ class IntegratedLoanDetail extends StatefulWidget {
   State<IntegratedLoanDetail> createState() => _IntegratedLoanDetailState();
 }
 
+
 class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
+  String? paymentSessionId;
+  String selectedMethod = "";
+  String? paymentOrderID;
+
+  final TextEditingController editAmountController =
+  TextEditingController();
+
+  Color? dominantColor;
+
+  // ============================================================
+  // LIFECYCLE
+  // ============================================================
+  String formatAmount(String value) {
+    final amount = double.tryParse(value.replaceAll(',', '')) ?? 0;
+    return NumberFormat('#,##,##0.##', 'en_IN').format(amount);
+  }
+  @override
+  void initState() {
+    super.initState();
+
+    editAmountController.addListener(validateInput);
+
+    resetCollectionAmount();
+
+    //createColorPallet("assets/images/person.png");
+  }
+
+  @override
+  void dispose() {
+    editAmountController.removeListener(validateInput);
+    editAmountController.dispose();
+    super.dispose();
+  }
+
+  // ============================================================
+  // AMOUNT HELPERS
+  // ============================================================
+
+  double get totalOutstanding {
+    return widget.integratedLoanDetailModel.principalAmountBalance +
+        widget.integratedLoanDetailModel.interestAmountBalance +
+        widget.integratedLoanDetailModel.penalInterestAmountBalance;
+  }
+
+  String get formattedOutstanding {
+    return totalOutstanding.toStringAsFixed(2);
+  }
+
+  void resetCollectionAmount() {
+    editAmountController.text = formattedOutstanding;
+
+    editAmountController.selection =
+        TextSelection.fromPosition(
+          TextPosition(
+            offset: editAmountController.text.length,
+          ),
+        );
+  }
+
+  void validateInput() {
+    final text = editAmountController.text.trim();
+
+    if (text.isEmpty) {
+      return;
+    }
+
+    final value = double.tryParse(text);
+
+    if (value == null) {
+      return;
+    }
+
+    if (value > totalOutstanding) {
+      editAmountController.text =
+          totalOutstanding.toStringAsFixed(2);
+
+      editAmountController.selection =
+          TextSelection.fromPosition(
+            TextPosition(
+              offset: editAmountController.text.length,
+            ),
+          );
+    }
+  }
+
+  // ============================================================
+  // BUILD
+  // ============================================================
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocListener(
+      listeners: [
+        // ========================================================
+        // PAYMENT BLOC
+        // ========================================================
+
+        BlocListener<PaymentBloc, PaymentState>(
+          listener: (BuildContext context, PaymentState state) {
+            if (state is QrPaymentLoaderState) {
+              utl.showProgressDialog(context);
+            }
+
+            // ----------------------------------------------------
+            // QR / LINK SUCCESS
+            // ----------------------------------------------------
+
+            if (state is QrPaymentSuccessState) {
+              paymentOrderID = state
+                  .qrPaymentSuccess
+                  .paymentResponseSuccess
+                  .orderId;
+
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              }
+
+              final paymentUrl = state
+                  .qrPaymentSuccess
+                  .paymentResponseSuccess
+                  .paymentUrl;
+
+              if (selectedMethod == "Link") {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PaymentLinkRequestUi(
+                      customerMobileNumber: "",
+                      paymentLink: paymentUrl,
+                    ),
+                  ),
+                );
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NewQrCodePage(
+                      paymentSessionId: paymentUrl,
+                      amount: editAmountController.text,
+                      custName:
+                      widget.integratedLoanDetailModel.name,
+                      custPhone: "",
+                      custId:
+                      widget.integratedLoanDetailModel.custNo,
+                      orderID: paymentOrderID!,
+                      merchantID: widget
+                          .ecollectMerchantModelData
+                          .eCollectAgentMerchantID!,
+                      token: widget
+                          .ecollectMerchantModelData
+                          .eCollectToken!,
+                    ),
+                  ),
+                );
+              }
+            }
+
+            // ----------------------------------------------------
+            // QR / LINK FAILURE
+            // ----------------------------------------------------
+
+            else if (state is QrPaymentFailState) {
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              }
+
+              showAlertDialog(
+                state.qrPaymentFail
+                    .paymentFailResponse.message,
+                context,
+              );
+            }
+
+            // ----------------------------------------------------
+            // CASH SUCCESS
+            // ----------------------------------------------------
+
+            else if (state is CashPaymentSuccessState) {
+              paymentOrderID = state
+                  .cashPaymentSuccess
+                  .cashPaymentSuccessResponse
+                  .transactionId;
+
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              }
+
+              _showSuccessMessage(
+                state.cashPaymentSuccess
+                    .cashPaymentSuccessResponse
+                    .message,
+              );
+            }
+
+            // ----------------------------------------------------
+            // CASH FAILURE
+            // ----------------------------------------------------
+
+            else if (state is CashPaymentFailState) {
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              }
+
+              showAlertDialog(
+                state.cashPaymentFail.payemtError,
+                context,
+              );
+            }
+          },
+        ),
+
+        // ========================================================
+        // TRANSACTION BLOC
+        // ========================================================
+
+        BlocListener<PaymentTransactionBloc, TransactionState>(
+          listener: (
+              BuildContext context,
+              TransactionState state,
+              ) {
+            if (state is TransactionReportSuccessState) {
+              final rawData = state
+                  .transactionSuccessModel
+                  .transactionOkReport
+                  .data;
+
+              for (var orderid in rawData) {
+                if (paymentOrderID != null &&
+                    orderid.paymentGatewayTransactionId
+                        .contains(paymentOrderID!)) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          EcollectTransactionDetail(
+                            paymentTransaction:
+                            PaymentTransaction(
+                              id: orderid.id,
+                              orderId: orderid.orderId,
+                              transactionId:
+                              orderid.transactionId,
+                              paymentGatewayTransactionId:
+                              orderid
+                                  .paymentGatewayTransactionId,
+                              amount: orderid.amount,
+                              currency: orderid.currency,
+                              description:
+                              orderid.description,
+                              customerName:
+                              orderid.customerName,
+                              customerEmail:
+                              orderid.customerEmail,
+                              customerPhone:
+                              orderid.customerPhone,
+                              paymentMode:
+                              orderid.paymentMode,
+                              paymentChannel:
+                              orderid.paymentChannel,
+                              status: orderid.status,
+                              responseCode:
+                              orderid.responseCode,
+                              responseMessage:
+                              orderid.responseMessage,
+                              createdAt:
+                              orderid.createdAt,
+                              completedAt:
+                              orderid.completedAt,
+                              merchantId:
+                              orderid.merchantId,
+                              merchantName:
+                              orderid.merchantName,
+                            ),
+                          ),
+                    ),
+                  );
+
+                  break;
+                }
+              }
+            }
+          },
+        ),
+      ],
+
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF7F8FA),
+
+        // ========================================================
+        // APP BAR
+        // ========================================================
+
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
+          centerTitle: false,
+          titleSpacing: 20,
+          title: const Text(
+            "Loan Details",
+            style: TextStyle(
+              color: Color(0xFF172033),
+              fontSize: 19,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          iconTheme: const IconThemeData(
+            color: Color(0xFF172033),
+          ),
+        ),
+
+        // ========================================================
+        // BODY
+        // ========================================================
+
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(
+              16,
+              18,
+              16,
+              40,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // CUSTOMER
+                _buildCustomerHeader(),
+
+                const SizedBox(height: 16),
+
+                // OUTSTANDING
+                _buildOutstandingCard(),
+
+                const SizedBox(height: 16),
+
+                // BREAKDOWN
+                _buildPaymentBreakdown(),
+
+                const SizedBox(height: 24),
+
+                // LOAN INFORMATION TITLE
+                _buildSectionTitle(
+                  title: "Loan Information",
+                  subtitle:
+                  "Account and repayment details",
+                ),
+
+                const SizedBox(height: 12),
+
+                // LOAN INFORMATION
+                _buildLoanInformation(),
+
+                const SizedBox(height: 26),
+
+                // COLLECTION TITLE
+                _buildSectionTitle(
+                  title: "Collect Payment",
+                  subtitle:
+                  "Choose a collection method",
+                ),
+
+                const SizedBox(height: 12),
+
+                // QR
+                _buildPaymentMethod(
+                  icon: Icons.qr_code_2_rounded,
+                  title: "QR Payment",
+                  subtitle:
+                  "Customer scans and pays",
+                  isPrimary: true,
+                  onTap: () {
+                    _showAmountSheet(
+                      title: "QR Payment",
+                      buttonText:
+                      "Generate Payment QR",
+                      method: "QR",
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 10),
+
+                // LINK
+                _buildPaymentMethod(
+                  icon: Icons.link_rounded,
+                  title: "Payment Link",
+                  subtitle:
+                  "Send a secure payment link",
+                  onTap: () {
+                    _showAmountSheet(
+                      title: "Payment Link",
+                      buttonText:
+                      "Send Payment Link",
+                      method: "Link",
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 10),
+
+                // CASH
+                _buildPaymentMethod(
+                  icon: Icons.payments_outlined,
+                  title: "Cash Collection",
+                  subtitle:
+                  "Record cash received",
+                  isCash: true,
+                  onTap: () {
+                    _showAmountSheet(
+                      title: "Cash Collection",
+                      buttonText: "Continue",
+                      method: "Cash",
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 20),
+
+                // LOCATION
+                _buildLocationButton(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // CUSTOMER HEADER
+  // ============================================================
+
+  Widget _buildCustomerHeader() {
+    final loan = widget.integratedLoanDetailModel;
+
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: const Color(0xFFE7EAF0),
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              color: const Color(0xFFEAF0FF),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(
+              Icons.person_outline_rounded,
+              color: Color(0xFF3157D5),
+              size: 28,
+            ),
+          ),
+
+          const SizedBox(width: 14),
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment:
+              CrossAxisAlignment.start,
+              children: [
+                Text(
+                  loan.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF172033),
+                  ),
+                ),
+
+                const SizedBox(height: 5),
+
+                Text(
+                  "Customer ID: ${loan.custNo}",
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFF697386),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 9,
+              vertical: 6,
+            ),
+            decoration: BoxDecoration(
+              color: const Color(0xFFEAF8F0),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.verified_rounded,
+                  size: 13,
+                  color: Color(0xFF159957),
+                ),
+                SizedBox(width: 4),
+                Text(
+                  "ACTIVE",
+                  style: TextStyle(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF159957),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ============================================================
+  // OUTSTANDING CARD
+  // ============================================================
+
+  Widget _buildOutstandingCard() {
+    final loan = widget.integratedLoanDetailModel;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(
+        20,
+        20,
+        20,
+        18,
+      ),
+      decoration: BoxDecoration(
+        color: home1.withValues(alpha: 0.79),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment:
+        CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment:
+            MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "TOTAL OUTSTANDING",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.8,
+                ),
+              ),
+
+              Container(
+                padding:
+                const EdgeInsets.symmetric(
+                  horizontal: 9,
+                  vertical: 5,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white
+                      .withValues(alpha: 0.10),
+                  borderRadius:
+                  BorderRadius.circular(7),
+                ),
+                child: const Text(
+                  "DUE",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 9,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 8),
+
+          Text(
+            "₹ ${formatAmount(totalOutstanding.toStringAsFixed(2))}",
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 32,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -0.8,
+            ),
+          ),
+
+          const SizedBox(height: 6),
+
+          Text(
+            "Current amount payable on this loan",
+            style: TextStyle(
+              color: Colors.white
+                  .withValues(alpha: 0.9),
+              fontSize: 12,
+            ),
+          ),
+
+          const SizedBox(height: 18),
+
+          Container(
+            height: 1,
+            color:
+            Colors.white.withValues(alpha: 0.10),
+          ),
+
+          const SizedBox(height: 14),
+
+          Row(
+            children: [
+              Expanded(
+                child: _buildOutstandingMiniItem(
+                  "Principal",
+                  formatAmount(loan.principalAmountBalance.toStringAsFixed(2)),
+                ),
+              ),
+
+              _buildVerticalDivider(),
+
+              Expanded(
+                child: _buildOutstandingMiniItem(
+                  "Interest",
+                  formatAmount(loan.interestAmountBalance.toStringAsFixed(2)),
+                ),
+              ),
+
+              _buildVerticalDivider(),
+
+              Expanded(
+                child: _buildOutstandingMiniItem(
+                  "Penal",
+                  formatAmount(loan.penalInterestAmountBalance.toStringAsFixed(2)),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOutstandingMiniItem(
+      String title,
+      String value,
+      ) {
+    return Column(
+      crossAxisAlignment:
+      CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            color:
+            Colors.white.withValues(alpha: 0.9),
+            fontSize: 10,
+          ),
+        ),
+
+        const SizedBox(height: 4),
+
+        Text(
+          "₹ $value",
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildVerticalDivider() {
+    return Container(
+      height: 28,
+      width: 1,
+      margin:
+      const EdgeInsets.symmetric(horizontal: 10),
+      color:
+      Colors.white.withValues(alpha: 0.12),
+    );
+  }
+
+  // ============================================================
+  // PAYMENT BREAKDOWN
+  // ============================================================
+
+  Widget _buildPaymentBreakdown() {
+    final loan = widget.integratedLoanDetailModel;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: const Color(0xFFE7EAF0),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment:
+        CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Payment Breakdown",
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF172033),
+            ),
+          ),
+
+          const SizedBox(height: 15),
+
+          _buildFinancialRow(
+            "Principal Received",
+            formatAmount(loan.principalAmountReceived.toString()),
+          ),
+
+          _buildFinancialRow(
+            "Principal Balance",
+            formatAmount(loan.principalAmountBalance.toString()),
+            isImportant: true,
+          ),
+
+          const Divider(height: 22),
+
+          _buildFinancialRow(
+            "Interest Received",
+            formatAmount(loan.interestAmountReceived
+                .toString()),
+          ),
+
+          _buildFinancialRow(
+            "Interest Balance",
+            formatAmount(loan.interestAmountBalance
+                .toString()),
+            isImportant: true,
+          ),
+
+          const Divider(height: 22),
+
+          _buildFinancialRow(
+            "Penal Interest Received",
+            formatAmount(loan.penalInterestAmountReceived
+                .toString()),
+          ),
+
+          _buildFinancialRow(
+            "Penal Interest Balance",
+            formatAmount(loan.penalInterestAmountBalance
+                .toString()),
+            isImportant: true,
+            isWarning: true,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFinancialRow(
+      String title,
+      String value, {
+        bool isImportant = false,
+        bool isWarning = false,
+      }) {
+    return Padding(
+      padding:
+      const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: 12,
+                color: isWarning
+                    ? const Color(0xFFD64545)
+                    : const Color(0xFF697386),
+                fontWeight: isImportant
+                    ? FontWeight.w600
+                    : FontWeight.w400,
+              ),
+            ),
+          ),
+
+          Text(
+            "₹ $value",
+            style: TextStyle(
+              fontSize: 13,
+              color: isWarning
+                  ? const Color(0xFFD64545)
+                  : const Color(0xFF172033),
+              fontWeight: isImportant
+                  ? FontWeight.w700
+                  : FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ============================================================
+  // SECTION TITLE
+  // ============================================================
+
+  Widget _buildSectionTitle({
+    required String title,
+    required String subtitle,
+  }) {
+    return Column(
+      crossAxisAlignment:
+      CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF172033),
+          ),
+        ),
+
+        const SizedBox(height: 3),
+
+        Text(
+          subtitle,
+          style: const TextStyle(
+            fontSize: 11,
+            color: Color(0xFF8A94A6),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ============================================================
+  // LOAN INFORMATION
+  // ============================================================
+
+  Widget _buildLoanInformation() {
+    final loan =
+        widget.integratedLoanDetailModel;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: const Color(0xFFE7EAF0),
+        ),
+      ),
+      child: Column(
+        children: [
+          _buildInfoRow(
+            "Loan Number",
+            loan.loanNumber,
+          ),
+
+          _buildInfoRow(
+            "Loan Type",
+            loan.loanType,
+          ),
+
+          _buildInfoRow(
+            "Loan Date",
+            loan.loanDate,
+          ),
+
+          _buildInfoRow(
+            "Loan Amount",
+            "₹ ${formatAmount(loan.loanAmount)}",
+          ),
+
+          _buildInfoRow(
+            "Loan Period",
+            loan.loanPeriod,
+          ),
+
+          _buildInfoRow(
+            "Interest Rate",
+            loan.loanInterest,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(
+      String title,
+      String value,
+      ) {
+    return Padding(
+      padding:
+      const EdgeInsets.symmetric(vertical: 9),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 12,
+                color: Color(0xFF7A8496),
+              ),
+            ),
+          ),
+
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.right,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF172033),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ============================================================
+  // PAYMENT METHOD
+  // ============================================================
+
+  Widget _buildPaymentMethod({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+    bool isPrimary = false,
+    bool isCash = false,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Container(
+          padding: const EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            color: isPrimary
+                ? home1.withValues(alpha: 0.3)
+                : Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: isPrimary
+                  ? home1
+                  : const Color(0xFFE2E6ED),
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: isPrimary
+                      ?  home1
+                      .withValues(alpha: 0.12)
+                      : isCash
+                      ? const Color(0xFFFFF4E5)
+                      : const Color(0xFFEAF0FF),
+                  borderRadius:
+                  BorderRadius.circular(11),
+                ),
+                child: Icon(
+                  icon,
+                  color: isPrimary
+                      ? Colors.white
+                      : isCash
+                      ? const Color(0xFFE18A00)
+                      : const Color(0xFF3157D5),
+                  size: 23,
+                ),
+              ),
+
+              const SizedBox(width: 13),
+
+              Expanded(
+                child: Column(
+                  crossAxisAlignment:
+                  CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: isPrimary
+                            ? Colors.black
+                            : const Color(0xFF172033),
+                      ),
+                    ),
+
+                    const SizedBox(height: 4),
+
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: isPrimary
+                            ? Colors.black.withValues(
+                          alpha: 0.70,
+                        )
+                            : const Color(0xFF7A8496),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 15,
+                color: isPrimary
+                    ? Colors.white
+                    : const Color(0xFF9AA3B2),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // LOCATION
+  // ============================================================
+
+  Widget _buildLocationButton() {
+    return InkWell(
+      onTap: () {
+        utl.openGoogleMaps(
+          9.992079734802246,
+          76.27655792236328,
+        );
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 13,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: const Color(0xFFE1E5EB),
+          ),
+        ),
+        child: const Row(
+          children: [
+            Icon(
+              Icons.location_on_outlined,
+              size: 20,
+              color: Color(0xFF3157D5),
+            ),
+
+            SizedBox(width: 10),
+
+            Expanded(
+              child: Text(
+                "View Customer Location",
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF172033),
+                ),
+              ),
+            ),
+
+            Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: 14,
+              color: Color(0xFF9AA3B2),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // AMOUNT SHEET
+  // ============================================================
+
+  void _showAmountSheet({
+    required String title,
+    required String buttonText,
+    required String method,
+  }) {
+    resetCollectionAmount();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(sheetContext)
+                .viewInsets
+                .bottom,
+          ),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(
+              20,
+              12,
+              20,
+              24,
+            ),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(22),
+              ),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment:
+              CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 38,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFD9DEE7),
+                      borderRadius:
+                      BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 22),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 19,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF172033),
+                        ),
+                      ),
+                    ),
+
+                    IconButton(
+                      onPressed: () {
+                        Navigator.pop(sheetContext);
+                      },
+                      icon: const Icon(
+                        Icons.close_rounded,
+                        color: Color(0xFF697386),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 4),
+
+                const Text(
+                  "Enter the amount you want to collect",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFF7A8496),
+                  ),
+                ),
+
+                const SizedBox(height: 18),
+
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF7F8FA),
+                    borderRadius:
+                    BorderRadius.circular(14),
+                    border: Border.all(
+                      color: const Color(0xFFE1E5EB),
+                    ),
+                  ),
+                  child: TextField(
+                    controller:
+                    editAmountController,
+                    keyboardType:
+                    const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF172033),
+                    ),
+                    decoration:
+                    const InputDecoration(
+                      prefixIcon: Icon(
+                        Icons.currency_rupee_rounded,
+                        color: home1,
+                      ),
+                      hintText: "0.00",
+                      border: InputBorder.none,
+                      contentPadding:
+                      EdgeInsets.symmetric(
+                        vertical: 17,
+                        horizontal: 10,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                Row(
+                  mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Outstanding amount",
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Color(0xFF7A8496),
+                      ),
+                    ),
+
+                    Text(
+                      "₹ ${formatAmount(formattedOutstanding)}",
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: home1,
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 20),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      final amount =
+                      double.tryParse(
+                        editAmountController
+                            .text
+                            .trim(),
+                      );
+
+                      if (amount == null ||
+                          amount <= 0) {
+                        showAlertDialog(
+                          "Please enter a valid collection amount.",
+                          context,
+                        );
+                        return;
+                      }
+
+                      if (amount >
+                          totalOutstanding) {
+                        showAlertDialog(
+                          "Collection amount cannot exceed the outstanding amount.",
+                          context,
+                        );
+                        return;
+                      }
+
+                      Navigator.pop(sheetContext);
+
+                      if (method == "QR") {
+                        _processQrPayment();
+                      } else if (method == "Link") {
+                        _processLinkPayment();
+                      } else {
+                        paymentConfirmation(
+                          context,
+                          widget
+                              .ecollectMerchantModelData
+                              .eCollectMerchantName!,
+                          widget
+                              .integratedLoanDetailModel
+                              .loanNumber,
+                          widget
+                              .integratedLoanDetailModel
+                              .custNo,
+                          editAmountController.text,
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                      home1,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape:
+                      RoundedRectangleBorder(
+                        borderRadius:
+                        BorderRadius.circular(13),
+                      ),
+                    ),
+                    child: Text(
+                      buttonText,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // ============================================================
+  // PAYMENT REQUEST
+  // ============================================================
+
+  QrPaymentRequestModel _createPaymentRequest({
+    required String collectionType,
+  }) {
+    final merchant =
+        widget.ecollectMerchantModelData;
+
+    final loan =
+        widget.integratedLoanDetailModel;
+
+    return QrPaymentRequestModel(
+      agentDetails: AgentDetails(
+        agentName:
+        merchant.eCollectMerchantName!,
+        agentId:
+        merchant.eCollectAgentId!,
+        agentOrginId:
+        merchant.eCollectAgentOriginId!,
+        agentPhone:
+        merchant.eCollectAgentNumber!,
+        agentEmail:
+        merchant.eCollectAgentEmail!,
+        agentBranch: int.parse(
+          merchant.eCollectAgentBranchCode!,
+        ),
+      ),
+
+      customerDetails: CustomerDetails(
+        customerName: loan.name,
+        customerPhone:
+        merchant.eCollectAgentNumber!,
+        customerAccno: loan.loanNumber,
+        customerId: loan.custNo,
+        customerEmail:
+        merchant.eCollectAgentEmail!,
+      ),
+
+      collectionType: collectionType,
+
+      amount: double.parse(
+        editAmountController.text,
+      ),
+
+      note: "Payment for Order",
+
+      qrSource: "MOB",
+
+      source: "COLLECTION",
+
+      merchantId: int.parse(
+        merchant.eCollectAgentMerchantID!,
+      ),
+    );
+  }
+
+  // ============================================================
+  // QR PAYMENT
+  // ============================================================
+
+  void _processQrPayment() {
+    setState(() {
+      selectedMethod = "QR";
+    });
+
+    final merchant =
+        widget.ecollectMerchantModelData;
+
+    context.read<PaymentBloc>().add(
+      QrPaymentEvent(
+        _createPaymentRequest(
+          collectionType: "LOAN",
+        ),
+        merchant.eCollectToken!,
+      ),
+    );
+  }
+
+  // ============================================================
+  // LINK PAYMENT
+  // ============================================================
+
+  void _processLinkPayment() {
+    setState(() {
+      selectedMethod = "Link";
+    });
+
+    final merchant =
+        widget.ecollectMerchantModelData;
+
+    context.read<PaymentBloc>().add(
+      LinkPaymentEvent(
+        _createPaymentRequest(
+          collectionType:
+          merchant.eCollectCollectionType!,
+        ),
+        merchant.eCollectToken!,
+      ),
+    );
+  }
+
+  // ============================================================
+  // CASH CONFIRMATION
+  // ============================================================
+
+  Future<bool> paymentConfirmation(
+      BuildContext context,
+      String name,
+      String accNo,
+      String custId,
+      String amt,
+      ) async {
+    return await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius:
+              BorderRadius.circular(18),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFF0F0),
+                    borderRadius:
+                    BorderRadius.circular(16),
+                  ),
+                  child: const Icon(
+                    Icons.payments_outlined,
+                    color: Color(0xFFD64545),
+                    size: 32,
+                  ),
+                ),
+
+                const SizedBox(height: 18),
+
+                const Text(
+                  "Confirm Cash Collection",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 19,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF172033),
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                const Text(
+                  "Please verify the amount before recording this cash collection.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Color(0xFF697386),
+                    height: 1.4,
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                Container(
+                  width: double.infinity,
+                  padding:
+                  const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    color:
+                    const Color(0xFFF7F8FA),
+                    borderRadius:
+                    BorderRadius.circular(12),
+                    border: Border.all(
+                      color:
+                      const Color(0xFFE2E6ED),
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      const Text(
+                        "COLLECTION AMOUNT",
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight:
+                          FontWeight.w700,
+                          color:
+                          Color(0xFF8A94A6),
+                          letterSpacing: 0.6,
+                        ),
+                      ),
+
+                      const SizedBox(height: 5),
+
+                      Text(
+                        "₹ ${double.tryParse(amt)?.toStringAsFixed(2) ?? amt}",
+                        style:
+                        const TextStyle(
+                          fontSize: 25,
+                          fontWeight:
+                          FontWeight.w800,
+                          color:
+                          Color(0xFF172033),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 22),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child:
+                      OutlinedButton(
+                        onPressed: () {
+                          Navigator.pop(
+                            dialogContext,
+                            false,
+                          );
+                        },
+                        style:
+                        OutlinedButton
+                            .styleFrom(
+                          minimumSize:
+                          const Size.fromHeight(
+                              48),
+                          side:
+                          const BorderSide(
+                            color:
+                            Color(0xFF3157D5),
+                          ),
+                          shape:
+                          RoundedRectangleBorder(
+                            borderRadius:
+                            BorderRadius
+                                .circular(11),
+                          ),
+                        ),
+                        child:
+                        const Text(
+                          "Cancel",
+                          style:
+                          TextStyle(
+                            color:
+                            Color(0xFF3157D5),
+                            fontWeight:
+                            FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 10),
+
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            selectedMethod =
+                            "Cash";
+                          });
+
+                          Navigator.pop(
+                            dialogContext,
+                          );
+
+                          _processCashPayment();
+                        },
+                        style:
+                        ElevatedButton
+                            .styleFrom(
+                          backgroundColor:
+                          const Color(
+                              0xFF3157D5),
+                          foregroundColor:
+                          Colors.white,
+                          elevation: 0,
+                          minimumSize:
+                          const Size.fromHeight(
+                              48),
+                          shape:
+                          RoundedRectangleBorder(
+                            borderRadius:
+                            BorderRadius
+                                .circular(11),
+                          ),
+                        ),
+                        child:
+                        const Text(
+                          "Confirm",
+                          style:
+                          TextStyle(
+                            fontWeight:
+                            FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    ) ??
+        false;
+  }
+
+  // ============================================================
+  // CASH PAYMENT
+  // ============================================================
+
+  void _processCashPayment() {
+    final merchant =
+        widget.ecollectMerchantModelData;
+
+    context.read<PaymentBloc>().add(
+      CashPaymentEvent(
+        _createPaymentRequest(
+          collectionType:
+          merchant.eCollectCollectionType!,
+        ),
+        merchant.eCollectToken!,
+      ),
+    );
+  }
+
+  // ============================================================
+  // SUCCESS DIALOG
+  // ============================================================
+
+  void _showSuccessMessage(String? message) {
+    if (!mounted) return;
+
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return Dialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+          insetPadding:
+          const EdgeInsets.symmetric(
+            horizontal: 24,
+            vertical: 24,
+          ),
+          child: Padding(
+            padding:
+            const EdgeInsets.fromLTRB(
+              22,
+              26,
+              22,
+              22,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 68,
+                  height: 68,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFEAF8F0),
+                    borderRadius:
+                    BorderRadius.circular(18),
+                  ),
+                  child: const Icon(
+                    Icons.check_rounded,
+                    color: Color(0xFF159957),
+                    size: 38,
+                  ),
+                ),
+
+                const SizedBox(height: 18),
+
+                const Text(
+                  "Transaction Successful",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 21,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF172033),
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                Text(
+                  message ??
+                      "Your transaction has been completed successfully.",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: Color(0xFF697386),
+                    height: 1.5,
+                  ),
+                ),
+
+                const SizedBox(height: 22),
+
+                Container(
+                  padding:
+                  const EdgeInsets.symmetric(
+                    horizontal: 15,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color:
+                    const Color(0xFFF7F8FA),
+                    borderRadius:
+                    BorderRadius.circular(12),
+                    border: Border.all(
+                      color:
+                      const Color(0xFFE2E6ED),
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      _buildDetailRow(
+                        "Transaction Status",
+                        "Successful",
+                        valueColor:
+                        const Color(0xFF159957),
+                      ),
+
+                      const Divider(height: 18),
+
+                      _buildDetailRow(
+                        "Transaction Date",
+                        _getCurrentDate(),
+                      ),
+
+                      const Divider(height: 18),
+
+                      _buildDetailRow(
+                        "Order ID",
+                        paymentOrderID ?? "-",
+                      ),
+
+                      const Divider(height: 18),
+
+                      _buildDetailRow(
+                        "Transaction Time",
+                        _getCurrentTime(),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 22),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          getHistoryData(message);
+                        },
+                        icon: const Icon(
+                          Icons.print_outlined,
+                          size: 18,
+                        ),
+                        label: const Text(
+                          "Print",
+                          style: TextStyle(
+                            fontWeight:
+                            FontWeight.w600,
+                          ),
+                        ),
+                        style:
+                        OutlinedButton.styleFrom(
+                          minimumSize:
+                          const Size.fromHeight(
+                              48),
+                          side: const BorderSide(
+                            color:
+                            Color(0xFFD5DAE3),
+                          ),
+                          shape:
+                          RoundedRectangleBorder(
+                            borderRadius:
+                            BorderRadius.circular(
+                                10),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 10),
+
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(
+                            dialogContext,
+                          ).pop();
+                        },
+                        style:
+                        ElevatedButton.styleFrom(
+                          backgroundColor:
+                          const Color(
+                              0xFF3157D5),
+                          foregroundColor:
+                          Colors.white,
+                          elevation: 0,
+                          minimumSize:
+                          const Size.fromHeight(
+                              48),
+                          shape:
+                          RoundedRectangleBorder(
+                            borderRadius:
+                            BorderRadius.circular(
+                                10),
+                          ),
+                        ),
+                        child: const Text(
+                          "Done",
+                          style: TextStyle(
+                            fontWeight:
+                            FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // ============================================================
+  // DETAIL ROW
+  // ============================================================
+
+  Widget _buildDetailRow(
+      String title,
+      String value, {
+        Color? valueColor,
+      }) {
+    return Padding(
+      padding:
+      const EdgeInsets.symmetric(vertical: 7),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 12,
+                color: Color(0xFF697386),
+              ),
+            ),
+          ),
+
+          const SizedBox(width: 16),
+
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: valueColor ??
+                    const Color(0xFF172033),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ============================================================
+  // DATE / TIME
+  // ============================================================
+
+  String _getCurrentDate() {
+    final now = DateTime.now();
+
+    return "${now.day.toString().padLeft(2, '0')}/"
+        "${now.month.toString().padLeft(2, '0')}/"
+        "${now.year}";
+  }
+
+  String _getCurrentTime() {
+    final now = DateTime.now();
+
+    return "${now.hour.toString().padLeft(2, '0')}:"
+        "${now.minute.toString().padLeft(2, '0')}";
+  }
+
+  // ============================================================
+  // TRANSACTION HISTORY
+  // ============================================================
+
+  void getHistoryData(String? message) {
+    debugPrint(
+      "Printing: ${message ?? ''}",
+    );
+
+    context.read<PaymentTransactionBloc>().add(
+      GetTransactionByMerchant(
+        widget
+            .ecollectMerchantModelData
+            .eCollectAgentMerchantID!,
+        widget
+            .ecollectMerchantModelData
+            .eCollectToken!,
+      ),
+    );
+  }
+
+  // ============================================================
+  // COLOR PALETTE
+  // ============================================================
+
+  Future<void> createColorPallet(
+      String imageStr,
+      ) async {
+    final ImageProvider imageProvider =
+    AssetImage(imageStr);
+
+    final PaletteGeneratorMaster
+    paletteGenerator =
+    await PaletteGeneratorMaster
+        .fromImageProvider(
+      imageProvider,
+      maximumColorCount: 16,
+      generateHarmony: true,
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      dominantColor =
+          paletteGenerator
+              .dominantColor
+              ?.color;
+    });
+
+    if (utl.printStatementStatus) {
+      debugPrint(
+        "dominantColor = $dominantColor",
+      );
+    }
+  }
+}
+/*class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
   String? paymentSessionId;
   String selectedMethod = "";
   TextEditingController editAmountController = TextEditingController();
@@ -115,7 +2120,6 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
 
   void validateInput() {
     if (editAmountController.text.isEmpty) return;
-
     final value = double.parse(editAmountController.text);
     if (value > int.parse(widget.integratedLoanDetailModel.loanAmount)) {
       editAmountController.text = widget.integratedLoanDetailModel.loanAmount.toString();
@@ -140,7 +2144,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
     return Scaffold(
         backgroundColor: Colors.grey.shade50,
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             textAlign: TextAlign.center,
             "LOAN DETAILS",
             style: TextStyle(color: home1, fontWeight: FontWeight.w700),
@@ -722,7 +2726,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                         Navigator.pop(context);
                         Navigator.pop(context);
                         showAlertDialog(state.cashPaymentFail.payemtError, context);
-                        // print(state.cashPaymentFail.payemtError);
+                        //print(state.cashPaymentFail.payemtError);
                       }
                     },
                     child: SizedBox(),
@@ -731,9 +2735,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                   BlocListener<PaymentTransactionBloc, TransactionState>
                     (listener: (BuildContext context, TransactionState state) {
                     if (state is TransactionReportSuccessState) {
-                      final rawData =
-                          state.transactionSuccessModel
-                              .transactionOkReport.data;
+                      final rawData = state.transactionSuccessModel.transactionOkReport.data;
 
                       for (var orderid in rawData){
                         if(orderid.paymentGatewayTransactionId.contains(paymentOrderID!)){
@@ -948,45 +2950,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
     );
   }
 
-/*  Future<void> sendLinkFunction() async {
-    final send = await PaymentLinkRepository().getPaymentLink(
-        agentName: agentName!,
-        agentId: agentId!,
-        agentOriginId: agentOriginId!,
-        agentPhone: agentMobile!,
-        agentEmail: agentEmail!,
-        customerName: widget.name,
-        customerPhone: widget.custNo,
-        customerAccountNumber: widget.loanNumber,
-        customerEmail: "",
-        customerId: cid!,
-        linkAmount: num.parse(editAmountController.text),
-        note: "Payment for Order #12345",
-        corpCode: corpCode!,
-        cardRefNum: "",
-        token: token.toString(),
-        subAgentId: subagentId!);
 
-    send.fold(
-          (error) {
-
-      },
-          (sendLink) {
-        if (sendLink.linkUrl != null && sendLink.linkUrl!.isNotEmpty) {
-          //Share.share("Here is your payment link: ${sendLink.linkUrl}");
-          if(utl.printStatementStatus){
-            print("3");
-          }
-
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>
-              PaymentLinkRequestUi(customerMobileNumber: widget.custNo, paymentLink: sendLink.linkUrl.toString(),)
-          ));
-        } else {
-          // print("Payment link is empty or null");
-        }
-      },
-    );
-  }*/
   Future<void> createColorPallet(String imageStr) async {
     final ImageProvider imageProvider = AssetImage(imageStr);
     final PaletteGeneratorMaster paletteGenerator =
@@ -1061,7 +3025,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                     SizedBox(
                       width: 10,
                     ),
-                    /* Container(
+                    *//* Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: const Color(0xFF10B981).withValues(alpha:0.1),
@@ -1086,7 +3050,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                           ),
                         ],
                       ),
-                    ),*/
+                    ),*//*
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -1493,59 +3457,6 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
     ).then((value) => value ?? false); // default to false if dismissed
   }
 
-/*  Future<void> loanCashCollection() async {
-    utl.showProgressDialog(context);
-    final loanCashProvider =
-        Provider.of<LoanCashCollectionProvider>(context, listen: false);
-    await loanCashProvider.submitCashCollection(
-        agentName.toString(),
-        agent_Id.toString(),
-        agentOriginId.toString(),
-        agentMobile.toString(),
-        agentEmail.toString(),
-        int.parse(subagentId.toString()),
-        "",
-        subAgentCodeNew.toString(),
-        widget.integratedLoanDetailModel.name,
-        "",
-        widget.integratedLoanDetailModel.loanNumber,
-        widget.integratedLoanDetailModel.custNo,
-        "",
-        double.parse(editAmountController.text),
-        "",
-        corpCode.toString(),
-        branchCode.toString(),
-        "",
-        "MOB",
-        "CASH",
-        "",
-        "LOAN");
-    if (loanCashProvider.loanCashCollectionResponse != null) {
-      if (!mounted) return;
-      Navigator.pop(context);
-      //print(loanCashProvider.loanCashCollectionResponse?.message.toString());
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return linkShareAlert(
-                context,
-                loanCashProvider.loanCashCollectionResponse!.status == "Y"
-                    ? true
-                    : false,
-                loanCashProvider.loanCashCollectionResponse!.message
-                    .toString());
-          });
-    } else {
-      if (!mounted) return;
-      Navigator.pop(context);
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return linkShareAlert(
-                context, false, loanCashProvider.loanCollectionErr.toString());
-          });
-    }
-  }*/
 
   AlertDialog linkShareAlert(BuildContext context, bool status, String msg) {
     return AlertDialog(
@@ -1808,4 +3719,4 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
 //===============================================================================
 
 
-}
+}*/

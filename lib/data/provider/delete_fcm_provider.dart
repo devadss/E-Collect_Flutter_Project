@@ -20,11 +20,5 @@ class DeleteFcmProvider with ChangeNotifier {
 
       ) async {
     return _deleteFcmToken.deleteFcmToken(entityID,mobNum,  token,bToken);
-    // final result = await _deleteFcmToken.deleteFcmToken(entityID, token);
-    // result.fold((error) {}, (success) {
-    //   tokenResults = success;
-    //   notifyListeners();
-    // });
-    // return result;
   }
 }

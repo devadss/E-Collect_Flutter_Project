@@ -28,8 +28,8 @@ class LoanList extends StatefulWidget {
 class _LoanListState extends State<LoanList> {
   IntegratedLoanListResponse? _integratedLoanListResponse;
   List<CustomerData>? _filteredList;
-  bool? showShadowAcc = false;
-  bool? showShadowLoan = true;
+ // bool? showShadowAcc = false;
+ // bool? showShadowLoan = true;
 
   String? _branchId;
   String? _loanListingUrl;
@@ -38,25 +38,15 @@ class _LoanListState extends State<LoanList> {
 
    void loadSharedPrefs(BuildContext context)  {
     for (var x in widget.eCollectLoanListingUrl) {
-      if (x.contains("getLoanCustUnderAgent")) {
-        setState(() {
-          _loanListingUrl = x;
-        });
-        print((x));
-      }
-    }
-    for (var x in widget.eCollectLoanListingUrl) {
+      if (x.contains("getLoanCustUnderAgent")) _loanListingUrl = x;
       if (x.contains("getLoanAccountHolder")) {
-        setState(() {
           _loanDetailUrl = x;
-        });
-        print((x));
       } else {
         _loanDetailUrl = "https://mftctest.digicob.in/getLoanAccountHolder";
       }
     }
-      print("LOAN LIST URL : $_loanListingUrl");
-      print("LOAN detail URL : $_loanDetailUrl");
+      // print("LOAN LIST URL : $_loanListingUrl");
+      // print("LOAN detail URL : $_loanDetailUrl");
 
       _branchId = widget.eCollectBranchId;
       _agentId = widget.eCollectAgentID;
@@ -196,7 +186,7 @@ class _LoanListState extends State<LoanList> {
       title: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
+          const Text(
             "Loan List",
             style: TextStyle(
               color: home1,

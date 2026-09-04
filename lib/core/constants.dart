@@ -1,13 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-
 import '../presentation/merchant/pages/all-groups.dart';
 import 'colors.dart' hide home1;
 
-String baseUrl = "";
-String dopBaseUrl = "";
+
 String eCollectBaseUrl = "https://dev.collect.org.in/";
-const String uatTestMobileNumber = "+917663220991"; ///Currently this number is provided for appstore...
 final String termsUrl = "https://your-terms-url.com";
 final String privacyUrl = "https://your-privacy-url.com";
 const String terms = 'https://collect.org.in/terms-of-conditions.html';
@@ -66,8 +63,6 @@ AlertDialog exitAlert(BuildContext context){
 
 class SharedPrefKeys {
   static const String selectedBusinessCategory = "SELECTED_BUSINESS_CAT";
-  static const String userId = "USER_ID";
-  static const String username = "USER_NAME";
   static const String eCollectUsername = "E-COLLECT_USER_NAME";
   static const String eCollectUserType = "E-COLLECT_USER_TYPE";
   static const String eCollectRdclCustomerunderAgentList = "E-COLLECT_RDCL_CUSTOMER_UNDER_AGENT_LIST";
@@ -94,21 +89,5 @@ class SharedPrefKeys {
   final String eCollectVerifyStatus = "E-COLLECT_VERIFY_STATUS";
   final String eCollectUserEmail = "E-COLLECT_USER_EMAIL";
   static const String fcm_token = "FCM_TOKEN";
-  static const String corpCode = "CORP_CODE";
-  static const String branchCode = "BRANCH_CODE";
-  static const String email = "EMAIL_ID";
-  static const String custid = "CUST_ID";
-  static const String mpin_value = "MPIN_VALUE";
-  static const String adsspay_token = "ADSSPAY_TOKEN";
-  static const String parentAgentMobNum = "PARENT_AGENT_MOB_NUM";
-  static const String subAgentCode = "SUB_AGENT_CODE";
-  static const String subAgentCodeNew = "SUB_AGENT_CODE_NEW";
-  static const String subAgentID = "SUB_AGENT_ID";
 }
 
-// String capitalizeFirstLetter(String? input){
-//   if(input == null || input.isEmpty) return '';
-//   return input[0].toUpperCase()+input.substring(1);
-// }
-//String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
-//RegExp regExp = RegExp(pattern);

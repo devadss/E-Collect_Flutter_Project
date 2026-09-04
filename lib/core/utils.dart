@@ -1,10 +1,8 @@
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../domain/model/cash_transcation_model.dart';
 import 'colors.dart';
-import 'constants.dart';
 
 const bool printStatementStatus = true;
 class TransactionSuccessDialog extends StatelessWidget {
@@ -193,64 +191,7 @@ class TransactionSuccessDialog extends StatelessWidget {
     }
   }
 }
-void isRunningLiveBaseUrl(bool status, String mobile) async {
-  if(mobile.startsWith("+91")){
-    if (status==true && mobile != null && mobile != uatTestMobileNumber){
-      if(printStatementStatus){
-        // print("STATUS :$status");
-        // print("mobile :$mobile");
-        // print("returning live url");
-      }
 
-     // baseUrl = "https://adsspay.aanvinsolutions.com:8444/";
-      baseUrl ="https://adsspayweb.digicob.in/";
-
-    }else{
-      baseUrl ="https://adsspayweb.digicob.in/";
-      if(printStatementStatus){
-     //   print("returning UAT url");
-      }
-    }
-  }else{
-    if (status==true && "+91$mobile" != null && "+91$mobile" != uatTestMobileNumber){
-      if(printStatementStatus){
-        // print("STATUS :$status");
-        // print("mobile :$mobile");
-        // print("returning live url");
-      }
-
-     // baseUrl = "https://adsspay.aanvinsolutions.com:8444/";
-      baseUrl ="https://adsspayweb.digicob.in/";
-
-    }else{
-      baseUrl ="https://adsspayweb.digicob.in/";
-      if(printStatementStatus){
-       // print("returning UAT url");
-      }
-    }
-  }
-
-}
-
-void isRunningLiveDopBaseUrl(bool status, String mobile) async {
-  if(mobile.startsWith("+91")){
-    if (status== true && "+91$mobile" != null && "+91$mobile" != uatTestMobileNumber){
-     // dopBaseUrl =  "https://mydop.in/api/fetch/vendor/urls/";
-      dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";
-
-    }else{
-      dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";
-    }
-  }else{
-    if (status== true && "+91$mobile"!= null && "+91$mobile" != uatTestMobileNumber){
-      //dopBaseUrl =  "https://mydop.in/api/fetch/vendor/urls/";
-      dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";
-    }else{
-      dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";
-    }
-  }
-
-}
 class NavItem{
 
   final String label;
@@ -259,8 +200,383 @@ class NavItem{
   NavItem({required this.label, required this.icon, required this.page});
 }
 
+void checkForUpdate() async {
+  try {
+    AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
+    if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
+      InAppUpdate.performImmediateUpdate(); // or .startFlexibleUpdate()
+    }
+  } catch (e) {
+    //print("Update check failed: $e");
+  }
+}
 
-/*
+void showInSnackBar(String value, BuildContext context) {
+  var snackBar = SnackBar(
+    content: Text(
+      value,
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 17,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+    backgroundColor: Colors.red,
+  );
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+}
+
+void showProgressDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    barrierColor: Colors.black54,
+    builder: (context) {
+      return Dialog(
+        backgroundColor: Colors.white,
+        elevation: 8,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 24,
+            vertical: 28,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                "assets/images/ecollect_white.png",
+                height: 55,
+                fit: BoxFit.contain,
+              ),
+
+              const SizedBox(height: 24),
+
+              const SizedBox(
+                width: 32,
+                height: 32,
+                child: CircularProgressIndicator(
+                  strokeWidth: 3,
+                  color: home1,
+                ),
+              ),
+
+              const SizedBox(height: 18),
+
+              const Text(
+                "Please wait...",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
+                ),
+              ),
+
+              const SizedBox(height: 6),
+
+              Text(
+                "Processing your request",
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+String extractOtp(List<TextEditingController> otpController){
+  var otpValue = "";
+  var otp = otpController.map((x)=>  x.value.text);
+  for(var x in otp){
+    otpValue += x;
+  }
+
+  if(otpValue.length !=4 && otpValue.isNotEmpty){
+    return "Enter 4 digit Otp";
+  }else if(otpValue.isEmpty){
+    return "Empty fields not allowed";
+  }else{
+    return otpValue;
+  }
+
+}
+
+void showNotification(BuildContext context , String content, Color color, Color txtColor){
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(content, style: TextStyle(color: txtColor, fontWeight: FontWeight.w700),), backgroundColor: color));
+}
+
+AppBar ptpBucketAppbar(String appBarName) {
+  return AppBar(
+    centerTitle: true,
+    title:  Text(
+      appBarName,
+
+      style: TextStyle(
+          color: home1, fontSize: 23, fontWeight: FontWeight.w700),
+    ),
+    backgroundColor: Colors.white,
+  );
+}
+
+Future<void> openGoogleMaps(double latitude , double longitude) async {
+  final googleMapUri = Uri.parse("https://www.google.com/maps/dir/?api=1&destination=$latitude,$longitude&travelmode=driving");
+  if(await canLaunchUrl(googleMapUri)){
+    launchUrl(googleMapUri,mode: LaunchMode.externalApplication);
+  }else{
+    throw 'Could not open Google Maps';
+  }
+}
+
+ // void printLog(msg) => print(msg);
+ /*class HomeVariablesModel{
+  int todaysCount;
+  String? userName;
+  String? entityId;
+  String? token;
+  String? cashCollectionType;
+  String? userType;
+  String? corpCode;
+  String? agentOriginId;
+  String? mobNum;
+  String? subAgentID;
+  String? customerRdUrl;
+  bool forceLogout;
+  int selectedTabIndex;
+  bool isFilterApplied;
+  String currentFilterPeriod; // Track current filter period
+  String currentFromDate; // Track current from date
+  String currentToDate; // Track current to date
+  int currentBannerIndex;
+  HomeVariablesModel({
+    required this.todaysCount,
+    required this.userName,
+    required this.entityId,
+    required this.token,
+    required this.cashCollectionType,
+    required this.userType,
+    required this.corpCode,
+    required this.agentOriginId,
+    required this.mobNum,
+    required this.subAgentID,
+    required this.customerRdUrl,
+    required this.forceLogout,
+    required this.selectedTabIndex,
+    required this.isFilterApplied,
+    required this.currentFilterPeriod,
+    required this.currentFromDate,
+    required this.currentToDate,
+    required this.currentBannerIndex,
+
+});
+
+}*/
+
+ /*class LoanRequestModel {
+  final String? customerName;
+  final String? accountNo;
+  final String? status;
+  final String? scheme;
+  final String? agent;
+  final String? corpCode;
+  final int? page;
+  final int? pageSize;
+  LoanRequestModel(
+      {required this.customerName,
+        required  this.accountNo,
+        required   this.status,
+        required   this.scheme,
+        required   this.agent,
+        required  this.corpCode,
+        required    this.page,
+        required   this.pageSize});
+}*/
+
+ /*class TransactionHistoryModel {
+  final String paymentStatus;
+  final double amount;
+  final String dat;
+  final String accountNumber;
+  final String transactionType;
+  final String transferId;
+  final String agentName;
+  final String agentPhone;
+  final String customerName;
+  final String customerId;
+  final String customerNumber;
+  final String corpCode;
+  final String tnxType;
+  final String paymentMode;
+
+  TransactionHistoryModel(
+      {required this.paymentStatus,
+      required this.amount,
+      required this.dat,
+      required this.accountNumber,
+      required this.transactionType,
+      required this.transferId,
+      required this.agentName,
+      required this.agentPhone,
+      required this.customerName,
+      required this.customerId,
+      required this.customerNumber,
+      required this.corpCode,
+      required this.tnxType,
+      required this.paymentMode});
+}*/
+
+ // class LoanDetailsModel {
+ //   final String customerName;
+ //   final String customerPhoneNumber;
+ //   final String loanNumber;
+ //   final String loanStatus;
+ //   final num emiAmount;
+ //   final num loanTerm;
+ //   final num loanAmount;
+ //   final String scheme;
+ //   final String paymentDate;
+ //   final String collectionFrequency;
+ //   final String email;
+ //   final double dueAmount;
+ //   final String dueDate;
+ //   final String assignedAgent;
+ //   final String custId;
+ //   final String createdAt;
+ //
+ //   LoanDetailsModel({
+ //     required this.customerName,
+ //     required this.customerPhoneNumber,
+ //     required this.loanNumber,
+ //     required this.loanStatus,
+ //     required this.dueAmount,
+ //     required this.emiAmount,
+ //     required this.loanTerm,
+ //     required this.loanAmount,
+ //     required this.scheme,
+ //     required this.paymentDate,
+ //     required this.collectionFrequency,
+ //     required this.email,
+ //     required this.custId,
+ //     required this.dueDate,
+ //     required this.assignedAgent,
+ //     required this.createdAt,
+ //   });
+ // }
+
+ // class OtpPageData {
+ //   final String subAgentmobNum;
+ //   final String parentAgentMobNum;
+ //   final String userName;
+ //   final String password;
+ //   final String tokenStatus;
+ //   final String loggedInUserType;
+ //   OtpPageData(
+ //       {required this.subAgentmobNum,
+ //       required this.parentAgentMobNum,
+ //       required this.userName,
+ //       required this.password,
+ //       required this.tokenStatus,
+ //       required this.loggedInUserType});
+ // }
+ // void isRunningLiveBaseUrl(bool status, String mobile) async {
+ //   if(mobile.startsWith("+91")){
+ //     if (status==true && mobile != null && mobile != uatTestMobileNumber){
+ //       if(printStatementStatus){
+ //         // print("STATUS :$status");
+ //         // print("mobile :$mobile");
+ //         // print("returning live url");
+ //       }
+ //
+ //      // baseUrl = "https://adsspay.aanvinsolutions.com:8444/";
+ //       baseUrl ="https://adsspayweb.digicob.in/";
+ //
+ //     }else{
+ //       baseUrl ="https://adsspayweb.digicob.in/";
+ //       if(printStatementStatus){
+ //      //   print("returning UAT url");
+ //       }
+ //     }
+ //   }else{
+ //     if (status==true && "+91$mobile" != null && "+91$mobile" != uatTestMobileNumber){
+ //       if(printStatementStatus){
+ //         // print("STATUS :$status");
+ //         // print("mobile :$mobile");
+ //         // print("returning live url");
+ //       }
+ //
+ //      // baseUrl = "https://adsspay.aanvinsolutions.com:8444/";
+ //       baseUrl ="https://adsspayweb.digicob.in/";
+ //
+ //     }else{
+ //       baseUrl ="https://adsspayweb.digicob.in/";
+ //       if(printStatementStatus){
+ //        // print("returning UAT url");
+ //       }
+ //     }
+ //   }
+ //
+ // }
+
+ // void isRunningLiveDopBaseUrl(bool status, String mobile) async {
+ //   if(mobile.startsWith("+91")){
+ //     if (status== true && "+91$mobile" != null && "+91$mobile" != uatTestMobileNumber){
+ //      // dopBaseUrl =  "https://mydop.in/api/fetch/vendor/urls/";
+ //       dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";
+ //
+ //     }else{
+ //       dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";
+ //     }
+ //   }else{
+ //     if (status== true && "+91$mobile"!= null && "+91$mobile" != uatTestMobileNumber){
+ //       //dopBaseUrl =  "https://mydop.in/api/fetch/vendor/urls/";
+ //       dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";
+ //     }else{
+ //       dopBaseUrl =  "https://devops.mydop.in/api/fetch/vendor/urls/";
+ //     }
+ //   }
+ //
+ // }
+
+
+ // Uint8List padPKCS7(Uint8List input) {
+ //   final padLength = 16 - (input.length % 16);
+ //   final output = Uint8List(input.length + padLength)..setAll(0, input);
+ //   for (var i = input.length; i < output.length; i++) {
+ //     output[i] = padLength;
+ //   }
+ //   return output;
+ // }
+
+ // Future<void> resetInitialData() async {
+ //
+ //   SharedPref.shared.setEmail("");
+ //   SharedPref.shared.setCorpCode("");
+ //   SharedPref.shared.setBranchCode("");
+ //   SharedPref.shared.setMpinValue("");
+ //   await SharedPref.shared.setAgentId('');
+ //   await SharedPref.shared.setParentAgentMobNum('');
+ //   await SharedPref.shared.setSubAgentMobNum('');
+ //   await SharedPref.shared.setAgentOriginId('');
+ //   await SharedPref.shared.setSubAgentCode('');
+ //   await SharedPref.shared.setSubAgentCodeNew('');
+ //   await SharedPref.shared.setSubAgentId('');
+ //   SharedPref.shared.setRdclCustomerVendorUrl('');
+ //   SharedPref.shared.setDueListRdclUrl('');
+ //   SharedPref.shared.setCustomerRdUrl('');
+ //   SharedPref.shared.setDueListRdUrl('');
+ //   SharedPref.shared.setCustomerLoanUrl('');
+ //   SharedPref.shared.setDueListLoanUrl('');
+ //   SharedPref.shared.setLoanAccountHolderUrl('');
+ //   SharedPref.shared.setUserType('');
+ //
+ // }
+ /*
 String getBankNameFromCorpCode(String corpCode) {
   //print("getBankNameFromCorpCode $corpCode");
   // Map corpcode to bank name
@@ -342,388 +658,3 @@ String getBankNameFromCorpCode(String corpCode) {
   return corpCodeToBankName[corpCode] ?? "Unknown Bank";
 }
 */
-
-
-void checkForUpdate() async {
-  try {
-    AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
-    if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
-      InAppUpdate.performImmediateUpdate(); // or .startFlexibleUpdate()
-    }
-  } catch (e) {
-    //print("Update check failed: $e");
-  }
-}
-
-void showInSnackBar(String value, BuildContext context) {
-  var snackBar = SnackBar(
-    content: Text(
-      value,
-      style: const TextStyle(
-        color: Colors.white,
-        fontSize: 17,
-        fontWeight: FontWeight.w700,
-      ),
-    ),
-    backgroundColor: Colors.red,
-  );
-  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-}
-
-
-void showProgressDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    barrierColor: Colors.black54,
-    builder: (context) {
-      return Dialog(
-        backgroundColor: Colors.white,
-        elevation: 8,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 28,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(
-                "assets/images/ecollect_white.png",
-                height: 55,
-                fit: BoxFit.contain,
-              ),
-
-              const SizedBox(height: 24),
-
-              const SizedBox(
-                width: 32,
-                height: 32,
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                  color: home1,
-                ),
-              ),
-
-              const SizedBox(height: 18),
-
-              const Text(
-                "Please wait...",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                ),
-              ),
-
-              const SizedBox(height: 6),
-
-              Text(
-                "Processing your request",
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.grey.shade600,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  );
-}
-
-
-
-/*void showProgressDialog(BuildContext context) {
-  showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Center(
-          child: SingleChildScrollView(
-            child: Dialog(
-             // backgroundColor: Colors.grey.shade200,
-              backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                  //  Image.asset("assets/images/ecollect.webp", scale: 10,),
-                    Image.asset("assets/images/ecollect_white.png", scale: 10,),
-                    const CircularProgressIndicator(color: home1),
-                    const SizedBox(height: 10,),
-                    const Text("Please wait....", style: TextStyle(fontSize: 17,),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      });
-}*/
-
-
-class HomeVariablesModel{
-  int todaysCount;
-  String? userName;
-  String? entityId;
-  String? token;
-  String? cashCollectionType;
-  String? userType;
-  String? corpCode;
-  String? agentOriginId;
-  String? mobNum;
-  String? subAgentID;
-  String? customerRdUrl;
-  bool forceLogout;
-  int selectedTabIndex;
-  bool isFilterApplied;
-  String currentFilterPeriod; // Track current filter period
-  String currentFromDate; // Track current from date
-  String currentToDate; // Track current to date
-  int currentBannerIndex;
-  HomeVariablesModel({
-    required this.todaysCount,
-    required this.userName,
-    required this.entityId,
-    required this.token,
-    required this.cashCollectionType,
-    required this.userType,
-    required this.corpCode,
-    required this.agentOriginId,
-    required this.mobNum,
-    required this.subAgentID,
-    required this.customerRdUrl,
-    required this.forceLogout,
-    required this.selectedTabIndex,
-    required this.isFilterApplied,
-    required this.currentFilterPeriod,
-    required this.currentFromDate,
-    required this.currentToDate,
-    required this.currentBannerIndex,
-
-});
-
-}
-
-
-class LoanRequestModel {
-  final String? customerName;
-  final String? accountNo;
-  final String? status;
-  final String? scheme;
-  final String? agent;
-  final String? corpCode;
-  final int? page;
-  final int? pageSize;
-  LoanRequestModel(
-      {required this.customerName,
-        required  this.accountNo,
-        required   this.status,
-        required   this.scheme,
-        required   this.agent,
-        required  this.corpCode,
-        required    this.page,
-        required   this.pageSize});
-}
-
-class TransactionHistoryModel {
-  final String paymentStatus;
-  final double amount;
-  final String dat;
-  final String accountNumber;
-  final String transactionType;
-  final String transferId;
-  final String agentName;
-  final String agentPhone;
-  final String customerName;
-  final String customerId;
-  final String customerNumber;
-  final String corpCode;
-  final String tnxType;
-  final String paymentMode;
-
-  TransactionHistoryModel(
-      {required this.paymentStatus,
-      required this.amount,
-      required this.dat,
-      required this.accountNumber,
-      required this.transactionType,
-      required this.transferId,
-      required this.agentName,
-      required this.agentPhone,
-      required this.customerName,
-      required this.customerId,
-      required this.customerNumber,
-      required this.corpCode,
-      required this.tnxType,
-      required this.paymentMode});
-}
-
-class ReceiptDataModel {
-  final String amount;
-  final String dat;
-  final String bankName;
-  final String agentName;
-  final String agentPhone;
-  final String custName;
-  final String custPhone;
-  final String custId;
-  final String txnId;
-  final String txnType;
-  final String tranType;
-  final String accNo;
-  ReceiptDataModel(
-      {required this.amount,
-      required this.dat,
-      required this.bankName,
-      required this.agentName,
-      required this.agentPhone,
-      required this.custName,
-      required this.custPhone,
-      required this.custId,
-      required this.txnId,
-      required this.txnType,
-      required this.tranType,
-      required this.accNo});
-}
-
-class LoanDetailsModel {
-  final String customerName;
-  final String customerPhoneNumber;
-  final String loanNumber;
-  final String loanStatus;
-  final num emiAmount;
-  final num loanTerm;
-  final num loanAmount;
-  final String scheme;
-  final String paymentDate;
-  final String collectionFrequency;
-  final String email;
-  final double dueAmount;
-  final String dueDate;
-  final String assignedAgent;
-  final String custId;
-  final String createdAt;
-
-  LoanDetailsModel({
-    required this.customerName,
-    required this.customerPhoneNumber,
-    required this.loanNumber,
-    required this.loanStatus,
-    required this.dueAmount,
-    required this.emiAmount,
-    required this.loanTerm,
-    required this.loanAmount,
-    required this.scheme,
-    required this.paymentDate,
-    required this.collectionFrequency,
-    required this.email,
-    required this.custId,
-    required this.dueDate,
-    required this.assignedAgent,
-    required this.createdAt,
-  });
-}
-
-class OtpPageData {
-  final String subAgentmobNum;
-  final String parentAgentMobNum;
-  final String userName;
-  final String password;
-  final String tokenStatus;
-  final String loggedInUserType;
-  OtpPageData(
-      {required this.subAgentmobNum,
-      required this.parentAgentMobNum,
-      required this.userName,
-      required this.password,
-      required this.tokenStatus,
-      required this.loggedInUserType});
-}
-
-String extractOtp(List<TextEditingController> otpController){
-  var otpValue = "";
-  var otp = otpController.map((x)=>  x.value.text);
-  for(var x in otp){
-    otpValue += x;
-  }
-  //print(otpValue);
-  if(otpValue.length !=4 && otpValue.isNotEmpty){
-    return "Enter 4 digit Otp";
-  }else if(otpValue.isEmpty){
-    return "Empty fields not allowed";
-  }else{
-    return otpValue;
-  }
-
-}
-
-
-Uint8List padPKCS7(Uint8List input) {
-  final padLength = 16 - (input.length % 16);
-  final output = Uint8List(input.length + padLength)..setAll(0, input);
-  for (var i = input.length; i < output.length; i++) {
-    output[i] = padLength;
-  }
-  return output;
-}
-
-// Future<void> resetInitialData() async {
-//
-//   SharedPref.shared.setEmail("");
-//   SharedPref.shared.setCorpCode("");
-//   SharedPref.shared.setBranchCode("");
-//   SharedPref.shared.setMpinValue("");
-//   await SharedPref.shared.setAgentId('');
-//   await SharedPref.shared.setParentAgentMobNum('');
-//   await SharedPref.shared.setSubAgentMobNum('');
-//   await SharedPref.shared.setAgentOriginId('');
-//   await SharedPref.shared.setSubAgentCode('');
-//   await SharedPref.shared.setSubAgentCodeNew('');
-//   await SharedPref.shared.setSubAgentId('');
-//   SharedPref.shared.setRdclCustomerVendorUrl('');
-//   SharedPref.shared.setDueListRdclUrl('');
-//   SharedPref.shared.setCustomerRdUrl('');
-//   SharedPref.shared.setDueListRdUrl('');
-//   SharedPref.shared.setCustomerLoanUrl('');
-//   SharedPref.shared.setDueListLoanUrl('');
-//   SharedPref.shared.setLoanAccountHolderUrl('');
-//   SharedPref.shared.setUserType('');
-//
-// }
-
-void showNotification(BuildContext context , String content, Color color, Color txtColor){
-  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(content, style: TextStyle(color: txtColor, fontWeight: FontWeight.w700),), backgroundColor: color));
-}
-
-AppBar ptpBucketAppbar(String appBarName) {
-  return AppBar(
-    centerTitle: true,
-    title:  Text(
-      appBarName,
-
-      style: TextStyle(
-          color: home1, fontSize: 23, fontWeight: FontWeight.w700),
-    ),
-    backgroundColor: Colors.white,
-  );
-}
-
-Future<void> openGoogleMaps(double latitude , double longitude) async {
-  final googleMapUri = Uri.parse("https://www.google.com/maps/dir/?api=1&destination=$latitude,$longitude&travelmode=driving");
-  if(await canLaunchUrl(googleMapUri)){
-    launchUrl(googleMapUri,mode: LaunchMode.externalApplication);
-  }else{
-    throw 'Could not open Google Maps';
-  }
-}
-
-
