@@ -121,86 +121,117 @@ Divider(),
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
 
 // ----------------------------------------------------
 // LOAN SUMMARY CARD
 // ----------------------------------------------------
+    Container(
+    width: double.infinity,
+    padding: const EdgeInsets.fromLTRB(18, 16, 18, 18),
+    decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(16),
+    border: Border.all(
+    color: Colors.grey.shade100,
+    ),
+    ),
+    child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+    Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+    Text(
+    'Outstanding',
+    style: TextStyle(
+    fontSize: 13,
+    fontWeight: FontWeight.w500,
+    color: Colors.grey.shade600,
+    ),
+    ),
+    Container(
+    padding: const EdgeInsets.symmetric(
+    horizontal: 9,
+    vertical: 5,
+    ),
+    decoration: BoxDecoration(
+    color: Colors.grey.shade50,
+    borderRadius: BorderRadius.circular(8),
+    ),
+    child: Text(
+    'Loan balance',
+    style: TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.w500,
+    color: Colors.grey.shade600,
+    ),
+    ),
+    ),
+    ],
+    ),
 
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(18),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                  color: Colors.grey.shade200,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.03),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Outstanding',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey.shade600,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    '₹${NumberFormat('#,##,##0', 'en_IN').format(widget.loanData.outstandingAmount)}',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'EMI',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey.shade600,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Text(
-                        '₹${NumberFormat('#,##,##0', 'en_IN').format(widget.loanData.emiAmount)}',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Text(
-                        '•',
-                        style: TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Text(
-                        widget.loanData.emiFrequency,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.black54,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+    const SizedBox(height: 6),
+
+    Text(
+    '₹${NumberFormat('#,##,##0', 'en_IN').format(widget.loanData.outstandingAmount)}',
+    style: const TextStyle(
+    fontSize: 26,
+    fontWeight: FontWeight.w800,
+    letterSpacing: -0.6,
+    color: Colors.black87,
+    ),
+    ),
+
+    const SizedBox(height: 16),
+
+    Container(
+    padding: const EdgeInsets.symmetric(
+    horizontal: 12,
+    vertical: 11,
+    ),
+    decoration: BoxDecoration(
+    color: Colors.grey.shade50,
+    borderRadius: BorderRadius.circular(11),
+    ),
+    child: Row(
+    children: [
+    Text(
+    'EMI',
+    style: TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    color: Colors.grey.shade600,
+    ),
+    ),
+
+    const SizedBox(width: 10),
+
+    Text(
+    '₹${NumberFormat('#,##,##0', 'en_IN').format(widget.loanData.emiAmount)}',
+    style: const TextStyle(
+    fontSize: 15,
+    fontWeight: FontWeight.w700,
+    color: Colors.black87,
+    ),
+    ),
+
+    const Spacer(),
+
+    Text(
+    widget.loanData.emiFrequency,
+    style: TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    color: Colors.grey.shade600,
+    ),
+    ),
+    ],
+    ),
+    ),
+    ],
+    ),
+    ),
 
             const SizedBox(height: 26),
 
@@ -216,8 +247,8 @@ Divider(),
               ),
             ),
 
-            const SizedBox(height: 14),
-
+           // const SizedBox(height: 14),
+Divider(color: grey.shade300,),
             _infoRow(
               title: 'Last paid',
               value: widget.loanData.lastPaidDate.toString().replaceRange(10, 23, "")
@@ -238,7 +269,7 @@ Divider(),
               height: 1,
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 15),
 
 // ----------------------------------------------------
 // REMINDER
@@ -1313,29 +1344,72 @@ Divider(),
     String? value,
     Widget? valueWidget,
   }) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            title,
-            style: TextStyle(
-              fontSize: 13,
-              color: Colors.grey.shade600,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF8A93A3),
+              ),
             ),
           ),
-        ),
-        if (valueWidget != null)
-          valueWidget
-        else
-          Text(
-            value ?? '',
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
-            ),
+          const SizedBox(width: 16),
+          Flexible(
+            child: valueWidget ??
+                Text(
+                  value ?? '—',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.right,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF1F2937),
+                  ),
+                ),
           ),
-      ],
+        ],
+      ),
     );
   }
+
+
+  // Widget _infoRow({
+  //   required String title,
+  //   String? value,
+  //   Widget? valueWidget,
+  // }) {
+  //   return Row(
+  //     children: [
+  //       Expanded(
+  //         child: Text(
+  //           title,
+  //           style: TextStyle(
+  //             fontSize: 13,
+  //             color: Colors.grey.shade600,
+  //           ),
+  //         ),
+  //       ),
+  //       if (valueWidget != null)
+  //         valueWidget
+  //       else
+  //         Text(
+  //           value ?? '',
+  //           style: const TextStyle(
+  //             fontSize: 13,
+  //             fontWeight: FontWeight.w600,
+  //             color: Colors.black87,
+  //           ),
+  //         ),
+  //     ],
+  //   );
+  // }
 }

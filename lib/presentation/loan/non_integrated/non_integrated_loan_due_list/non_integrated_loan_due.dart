@@ -235,7 +235,7 @@ class _NonIntegratedLoanDuePaymentsScreenState
                 // ============================================================
 
                 SizedBox(
-                  height: 132,
+                  height: 160,
                   child:
                   ListView.separated(
                     scrollDirection: Axis.horizontal,
@@ -534,75 +534,145 @@ class DpdBucketCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color bucketColor = bucket["color"] as Color;
+
+    final String count = NumberFormat(
+      '#,##,##0',
+      'en_IN',
+    ).format(bucket["total_count"]);
+
+    final String overdue = NumberFormat(
+      '#,##,##0',
+      'en_IN',
+    ).format(bucket["total_overdue"]);
+
     return Container(
-        width: 158,
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(
-            color: const Color(0xFFE5E7EB),
-          ),
+      width: 165,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: const Color(0xFFE9ECF1),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: bucket["color"],
-                    shape: BoxShape.circle,
-                  ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.035),
+            blurRadius: 14,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Row(
+            children: [
+              Container(
+                width: 9,
+                height: 9,
+                decoration: BoxDecoration(
+                  color: bucketColor,
+                  shape: BoxShape.circle,
                 ),
-                const SizedBox(width: 7),
-                Text(
-                  bucket['bucket_name'],
+              ),
+              const SizedBox(width: 7),
+              Expanded(
+                child: Text(
+                  bucket['bucket_name'] ?? '',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                    fontSize: 14,
+                    fontSize: 13,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF111827),
+                    color: Color(0xFF18202F),
                   ),
                 ),
-                const SizedBox(width: 4),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 8),
+
+          // Risk description
+          Text(
+            bucket["risk"] ?? '',
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 11,
+              height: 1.35,
+              color: Color(0xFF8A93A3),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+
+          const Spacer(),
+
+          // Count
+          Text(
+            count,
+            style: const TextStyle(
+              fontSize: 23,
+              height: 1.1,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -0.7,
+              color: Color(0xFF111827),
+            ),
+          ),
+
+          const SizedBox(height: 3),
+
+          const Text(
+            'ACCOUNTS',
+            style: TextStyle(
+              fontSize: 9,
+              letterSpacing: 0.8,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF9CA3AF),
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          // Overdue section
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 9,
+              vertical: 8,
+            ),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF5F5),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.trending_up_rounded,
+                  size: 14,
+                  color: Colors.red.shade500,
+                ),
+                const SizedBox(width: 5),
+                Expanded(
+                  child: Text(
+                    '₹ $overdue',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.red.shade600,
+                    ),
+                  ),
+                ),
               ],
             ),
-            Expanded(
-              child: Text(
-                maxLines: 2,
-                bucket["risk"],
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: Colors.grey.shade500,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            const Spacer(),
-            Text(
-              "count ${NumberFormat('#,##,##0', 'en_IN').format(bucket["total_count"]).toString()} Nos",
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF111827),
-                letterSpacing: -0.2,
-              ),
-            ),
-            Divider(),
-            const SizedBox(height: 4),
-            Text(
-              "₹ ${NumberFormat('#,##,##0', 'en_IN').format(bucket['total_overdue']).toString()}",
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-                color: Colors.red.shade500,
-              ),
-            ),
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -611,6 +681,396 @@ class DpdBucketCard extends StatelessWidget {
 // ======================================================================
 
 class DueCustomerCard extends StatelessWidget {
+  final CustomerDue customer;
+  final VoidCallback? onTap;
+
+  const DueCustomerCard({
+    super.key,
+    required this.customer,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final risk = _getRiskStyle(customer.riskCategory);
+
+    final dueAmount = NumberFormat(
+      '#,##,##0',
+      'en_IN',
+    ).format(customer.dueAmount);
+
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              color: const Color(0xFFE8EBF0),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.035),
+                blurRadius: 16,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ============================================================
+              // CUSTOMER HEADER
+              // ============================================================
+
+              Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: risk.background,
+                      borderRadius: BorderRadius.circular(13),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      customer.customerName.isNotEmpty
+                          ? customer.customerName[0].toUpperCase()
+                          : '?',
+                      style: TextStyle(
+                        color: risk.foreground,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 11),
+
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          customer.customerName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style:  TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF111827),
+                            letterSpacing: -0.15,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Loan • ${customer.accountNumber}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF8A93A3),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(width: 8),
+
+                  // Risk badge
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 9,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: risk.background,
+                      borderRadius: BorderRadius.circular(9),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 6,
+                          height: 6,
+                          decoration: BoxDecoration(
+                            color: risk.foreground,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          customer.status,
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            color: risk.foreground,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 18),
+
+              // ============================================================
+              // AMOUNT SECTION
+              // ============================================================
+
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'TOTAL DUE',
+                          style: TextStyle(
+                            fontSize: 9,
+                            letterSpacing: 0.8,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF9CA3AF),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '₹ $dueAmount',
+                          style: const TextStyle(
+                            fontSize: 23,
+                            height: 1.1,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -0.7,
+                            color: Color(0xFF111827),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const Text(
+                        'NEXT DUE',
+                        style: TextStyle(
+                          fontSize: 9,
+                          letterSpacing: 0.7,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF9CA3AF),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        customer.nextDueDate,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: risk.foreground,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 14),
+
+              // ============================================================
+              // LAST PAYMENT
+              // ============================================================
+
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 9,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF8F9FB),
+                  borderRadius: BorderRadius.circular(11),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.history_rounded,
+                      size: 15,
+                      color: Color(0xFF8A93A3),
+                    ),
+                    const SizedBox(width: 7),
+                    const Text(
+                      'Last paid',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF8A93A3),
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Expanded(
+                      child: Text(
+                        customer.lastPaidDate,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF374151),
+                        ),
+                      ),
+                    ),
+                    const Icon(
+                      Icons.chevron_right_rounded,
+                      size: 17,
+                      color: Color(0xFFB0B7C3),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 14),
+
+              // ============================================================
+              // ACTIONS
+              // ============================================================
+
+              Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      height: 40,
+                      child: OutlinedButton.icon(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.phone_outlined,
+                          size: 15,
+                        ),
+                        label: const Text('Call'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: const Color(0xFF374151),
+                          textStyle: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                          ),
+                          side: const BorderSide(
+                            color: Color(0xFFE5E7EB),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(11),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 8),
+
+                  Expanded(
+                    child: SizedBox(
+                      height: 40,
+                      child: OutlinedButton.icon(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.chat_bubble_outline_rounded,
+                          size: 15,
+                        ),
+                        label: const Text('WhatsApp'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: const Color(0xFF374151),
+                          textStyle: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                          ),
+                          side: const BorderSide(
+                            color: Color(0xFFE5E7EB),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(11),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 8),
+
+                  SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: IconButton(
+                      onPressed: onTap,
+                      tooltip: 'View customer',
+                      style: IconButton.styleFrom(
+                        backgroundColor: const Color(0xFF111827),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(11),
+                        ),
+                      ),
+                      icon: const Icon(
+                        Icons.arrow_forward_rounded,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  _RiskStyle _getRiskStyle(String riskCategory) {
+    if (riskCategory.contains('Regular (0 DPD)')) {
+      return const _RiskStyle(
+        foreground: Color(0xFF15803D),
+        background: Color(0xFFF0FDF4),
+      );
+    }
+
+    if (riskCategory.contains('SMA-0 (2 DPD)')) {
+      return const _RiskStyle(
+        foreground: Color(0xFFB45309),
+        background: Color(0xFFFFFBEB),
+      );
+    }
+
+    if (riskCategory.contains('SMA-2 (61-90 DPD)')) {
+      return const _RiskStyle(
+        foreground: Color(0xFFEA580C),
+        background: Color(0xFFFFF7ED),
+      );
+    }
+
+    return const _RiskStyle(
+      foreground: Color(0xFFDC2626),
+      background: Color(0xFFFEF2F2),
+    );
+  }
+}
+
+class _RiskStyle {
+  final Color foreground;
+  final Color background;
+
+  const _RiskStyle({
+    required this.foreground,
+    required this.background,
+  });
+}
+
+
+/*class DueCustomerCard extends StatelessWidget {
   final CustomerDue customer;
   final VoidCallback? onTap;
 
@@ -924,4 +1384,4 @@ class DueCustomerCard extends StatelessWidget {
       ),
     );
   }
-}
+}*/
