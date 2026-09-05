@@ -1,11 +1,13 @@
 import 'dart:developer';
 import 'package:e_Collect/data/e_collect_bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:e_Collect/data/e_collect_bloc/payment_bloc/payment_bloc.dart';
+import 'package:e_Collect/data/non_integrated_bloc/non_integrated_bloc.dart';
 import 'package:e_Collect/data/provider/integrated_loan_detail_provider.dart';
 import 'package:e_Collect/data/provider/integration_loan_list_provider.dart';
 import 'package:e_Collect/data/repository/e_collect_repository/payment_repository/payment_repository.dart';
 import 'package:e_Collect/data/repository/integrated_loan_detail_repository.dart';
 import 'package:e_Collect/data/repository/integration_loan_repository.dart';
+import 'package:e_Collect/data/repository/non_integrated_repository/non_integrated_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import '../../data/provider/delete_fcm_provider.dart';
@@ -67,6 +69,7 @@ Future<void> main() async {
         RepositoryProvider(create: (_) => DeleteFcmTokenRepository()),
         RepositoryProvider(create: (_) => IntegrationLoanRepository()),
         RepositoryProvider(create: (_) => IntegratedLoanDetailRepository()),
+        RepositoryProvider(create: (_) => NonIntegratedRepository()),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -93,6 +96,11 @@ Future<void> main() async {
           BlocProvider(
             create: (context) => PaymentTransactionBloc(
               context.read<TransactionReportRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => NonIntegratedBloc(
+              context.read<NonIntegratedRepository>(),
             ),
           ),
         ],

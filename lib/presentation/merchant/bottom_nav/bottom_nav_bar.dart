@@ -58,7 +58,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
   // ---------------------------------------------------------------------------
 
   Future<void> getSharedData() async {
-    final integrationStatus = await SharedPref.shared.getECollectMerchantIntegrationStatus();
+    final integrationStatus =
+        await SharedPref.shared.getECollectMerchantIntegrationStatus();
     final branCode = await SharedPref.shared.getECollectMerchantBranchCode();
     final type = await SharedPref.shared.getECollectTypeList();
     final result = await Future.wait([
@@ -160,8 +161,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
             eCollectAgentID: eCollectAgentID,
             eCollectUserToken: eCollectUserToken,
             eCollectUrlList: eCollectUrlList,
-            eCollectMerchantID: eCollectMerchantId, eCollectMerchantName: eCollectUserName,
-            eCollectAgentNumber:eCollectMerchantNumber, eCollectAgentEmail: eCollectMerchantEmail,
+            eCollectMerchantID: eCollectMerchantId,
+            eCollectMerchantName: eCollectUserName,
+            eCollectAgentNumber: eCollectMerchantNumber,
+            eCollectAgentEmail: eCollectMerchantEmail,
             eCollectExternalAgentId: eCollectAgentID,
           ),
         ),
@@ -173,33 +176,42 @@ class _BottomNavBarState extends State<BottomNavBar> {
     // -------------------------------------------------------------------------
 
     if (hasType(USER_TYPE_LOAN)) {
-
-      integrationStatus == "Y"?
-      items.add(
-        NavItem(
-          label: 'Loan-List',
-          icon: Icons.account_balance,
-          page: LoanList(
-            eCollectBranchId: eCollectBranchID,
-            eCollectAgentID: eCollectAgentID,
-            eCollectLoanListingUrl: eCollectUrlList,
-            eCollectMerchantName: eCollectUserName,
-            eCollectAgentOriginID: eCollectAgentID,
-            eCollectAgentMobNum: eCollectMerchantNumber,
-            eCollectAgentEmail: eCollectMerchantEmail,
-            eCollectAgentBranchCode: eCollectBranchID,
-            eCollectAgentMerchantID: eCollectMerchantId,
-            eCollectToken:eCollectUserToken,
-          ),
-        ),
-      ):
-      items.add(
-        NavItem(
-          label: 'Loan-List',
-          icon: Icons.account_balance,
-          page: NonIntegratedLoanPage()
-        ),
-      );
+      integrationStatus == "Y"
+          ? items.add(
+              NavItem(
+                label: 'Loan-List',
+                icon: Icons.account_balance,
+                page: LoanList(
+                  eCollectBranchId: eCollectBranchID,
+                  eCollectAgentID: eCollectAgentID,
+                  eCollectLoanListingUrl: eCollectUrlList,
+                  eCollectMerchantName: eCollectUserName,
+                  eCollectAgentOriginID: eCollectAgentID,
+                  eCollectAgentMobNum: eCollectMerchantNumber,
+                  eCollectAgentEmail: eCollectMerchantEmail,
+                  eCollectAgentBranchCode: eCollectBranchID,
+                  eCollectAgentMerchantID: eCollectMerchantId,
+                  eCollectToken: eCollectUserToken,
+                ),
+              ),
+            )
+          : items.add(
+              NavItem(
+                  label: 'Loan-List',
+                  icon: Icons.account_balance,
+                  page: NonIntegratedLoanPage(
+                    endPoint: eCollectUrlList,
+                    branchCode: eCollectBranchID,
+                    agentID: eCollectAgentID,
+                    eCollectMerchantName: eCollectUserName,
+                    eCollectAgentMerchantID: eCollectMerchantId,
+                    eCollectToken: eCollectUserToken,
+                    eCollectAgentID: eCollectAgentID,
+                    eCollectAgentOriginID: eCollectAgentID,
+                    eCollectAgentMobNum: eCollectMerchantNumber,
+                    eCollectAgentEmail: eCollectMerchantEmail,eCollectBranchCode: eCollectBranchID,
+                  )),
+            );
     }
 
     // -------------------------------------------------------------------------
@@ -225,7 +237,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
       //     ),
       //   ),
       // );
-
       items.add(
         NavItem(
           label: 'Due-List',

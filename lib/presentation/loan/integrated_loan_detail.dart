@@ -307,11 +307,9 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
             }
           },
         ),
-
         // ========================================================
         // TRANSACTION BLOC
         // ========================================================
-
         BlocListener<PaymentTransactionBloc, TransactionState>(
           listener: (
               BuildContext context,
@@ -1209,7 +1207,8 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
     required String title,
     required String buttonText,
     required String method,
-  }) {
+  })
+  {
     resetCollectionAmount();
 
     showModalBottomSheet(
@@ -1443,7 +1442,8 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
 
   QrPaymentRequestModel _createPaymentRequest({
     required String collectionType,
-  }) {
+  })
+  {
     final merchant =
         widget.ecollectMerchantModelData;
 

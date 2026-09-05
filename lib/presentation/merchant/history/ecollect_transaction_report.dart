@@ -11,7 +11,11 @@ class EcollectTransactionReport extends StatefulWidget {
   final String eCollectMerchantID;
   final String eCollectMerchantName;
   final String eCollectToken;
-  const EcollectTransactionReport({super.key, required this.eCollectMerchantID, required this.eCollectMerchantName, required this.eCollectToken});
+  const EcollectTransactionReport(
+      {super.key,
+      required this.eCollectMerchantID,
+      required this.eCollectMerchantName,
+      required this.eCollectToken});
 
   @override
   State<EcollectTransactionReport> createState() =>
@@ -21,7 +25,7 @@ class EcollectTransactionReport extends StatefulWidget {
 class EcollectTransactionReportState extends State<EcollectTransactionReport> {
   String selectedValue = "This Week";
   //String selectedDateFilter = "All";
-
+  bool showProgress = false;
   String selectedStatusFilter = "All";
   bool sendIconVisibility = false;
   TextEditingController searchNameController = TextEditingController();
@@ -55,11 +59,12 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
   // ---- NEW: search text kept in state for filtering ----
   String searchQuery = "";
 
-
-  void getTransactionReport(){
-    if(!mounted) return;
-    context.read<PaymentTransactionBloc>().add(GetTransactionByMerchant(widget.eCollectMerchantID, widget.eCollectToken));
+  void getTransactionReport() {
+    if (!mounted) return;
+    context.read<PaymentTransactionBloc>().add(GetTransactionByMerchant(
+        widget.eCollectMerchantID, widget.eCollectToken));
   }
+
   @override
   void initState() {
     super.initState();
@@ -93,7 +98,7 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
         return DateTimeRange(start: todayStart, end: todayEnd);
 
       case "This Week":
-      // Week starts on Monday
+        // Week starts on Monday
         final weekStart = todayStart.subtract(Duration(days: now.weekday - 1));
         final weekEnd = weekStart
             .add(const Duration(days: 7))
@@ -224,9 +229,10 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
                             setState(() {
                               selectedPaymentModeFilter = "All";
                             });
-                            context
-                                .read<PaymentTransactionBloc>()
-                                .add(GetTransactionByMerchant(widget.eCollectMerchantID, widget.eCollectToken));
+                            context.read<PaymentTransactionBloc>().add(
+                                GetTransactionByMerchant(
+                                    widget.eCollectMerchantID,
+                                    widget.eCollectToken));
                           },
                           style: TextButton.styleFrom(
                             foregroundColor: Colors.grey.shade700,
@@ -282,7 +288,7 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
                           labelStyle: TextStyle(
                             fontSize: 13,
                             fontWeight:
-                            isSelected ? FontWeight.w600 : FontWeight.w500,
+                                isSelected ? FontWeight.w600 : FontWeight.w500,
                             color: isSelected ? home1 : Colors.grey.shade700,
                           ),
                           shape: RoundedRectangleBorder(
@@ -374,8 +380,8 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
                             Expanded(
                               child: Text(
                                 "${_formatDate(customRange!.start)}"
-                                    "  –  "
-                                    "${_formatDate(customRange!.end)}",
+                                "  –  "
+                                "${_formatDate(customRange!.end)}",
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
@@ -419,7 +425,7 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
                           labelStyle: TextStyle(
                             fontSize: 13,
                             fontWeight:
-                            isSelected ? FontWeight.w600 : FontWeight.w500,
+                                isSelected ? FontWeight.w600 : FontWeight.w500,
                             color: isSelected ? home1 : Colors.grey.shade700,
                           ),
                           shape: RoundedRectangleBorder(
@@ -469,7 +475,7 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
                           labelStyle: TextStyle(
                             fontSize: 13,
                             fontWeight:
-                            isSelected ? FontWeight.w600 : FontWeight.w500,
+                                isSelected ? FontWeight.w600 : FontWeight.w500,
                             color: isSelected ? home1 : Colors.grey.shade700,
                           ),
                           shape: RoundedRectangleBorder(
@@ -504,19 +510,21 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
 
                           if (range == null) return;
                           context.read<PaymentTransactionBloc>().add(
-                            GetTransactionByMerchantDateWithStatus(
-                                widget.eCollectMerchantID,
-                                range.start
-                                    .toIso8601String()
-                                    .replaceRange(10, null, "")
-                                    .toString(),
-                                range.end
-                                    .toIso8601String()
-                                    .replaceRange(10, null, "")
-                                    .toString(),
-                                selectedStatusFilter == "All"?"":
-                                selectedStatusFilter, widget.eCollectToken),
-                          );
+                                GetTransactionByMerchantDateWithStatus(
+                                    widget.eCollectMerchantID,
+                                    range.start
+                                        .toIso8601String()
+                                        .replaceRange(10, null, "")
+                                        .toString(),
+                                    range.end
+                                        .toIso8601String()
+                                        .replaceRange(10, null, "")
+                                        .toString(),
+                                    selectedStatusFilter == "All"
+                                        ? ""
+                                        : selectedStatusFilter,
+                                    widget.eCollectToken),
+                              );
                         },
                         icon: const Icon(
                           Icons.check_rounded,
@@ -548,7 +556,6 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
       },
     );
   }
-
 
   // void _runSearch() {
   //   setState(() {
@@ -599,19 +606,19 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
                         ),
                         suffixIcon: sendIconVisibility
                             ? IconButton(
-                          onPressed: () {
-                            searchNameController.clear();
-                            setState(() {
-                              searchQuery = "";
-                              sendIconVisibility = false;
-                            });
-                          },
-                          icon: Icon(
-                            Icons.close_rounded,
-                            size: 18,
-                            color: Colors.grey.shade500,
-                          ),
-                        )
+                                onPressed: () {
+                                  searchNameController.clear();
+                                  setState(() {
+                                    searchQuery = "";
+                                    sendIconVisibility = false;
+                                  });
+                                },
+                                icon: Icon(
+                                  Icons.close_rounded,
+                                  size: 18,
+                                  color: Colors.grey.shade500,
+                                ),
+                              )
                             : null,
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.symmetric(
@@ -645,7 +652,6 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
                             size: 21,
                           ),
                         ),
-
                         if (_activeFilterCount() > 0)
                           Positioned(
                             right: -2,
@@ -692,28 +698,24 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
               children: [
                 _filterPill(
                   icon: Icons.calendar_today_rounded,
-                  text: selectedValue == "Custom Range" &&
-                      customRange != null
+                  text: selectedValue == "Custom Range" && customRange != null
                       ? "${_formatDate(customRange!.start)} - "
-                      "${_formatDate(customRange!.end)}"
+                          "${_formatDate(customRange!.end)}"
                       : selectedValue,
                   selected: true,
                 ),
-
                 if (selectedStatusFilter != "All")
                   _filterPill(
                     icon: Icons.check_circle_outline_rounded,
                     text: selectedStatusFilter,
                     selected: true,
                   ),
-
                 if (selectedPaymentModeFilter != "All")
                   _filterPill(
                     icon: Icons.account_balance_wallet_outlined,
                     text: selectedPaymentModeFilter,
                     selected: true,
                   ),
-
                 if (_activeFilterCount() > 0)
                   GestureDetector(
                     onTap: _clearFilters,
@@ -756,7 +758,7 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
           // ─────────────────────────────────────────────
           // TRANSACTIONS
           // ─────────────────────────────────────────────
-        /*  Expanded(
+          /*  Expanded(
             child: BlocListener<PaymentTransactionBloc, TransactionState>(
               listener: (context, state) {
                 if (state is TransactionReportLoaderState) {
@@ -808,21 +810,27 @@ else{
               ),
             ),
           ),*/
+
           Expanded(
             child: BlocListener<PaymentTransactionBloc, TransactionState>(
               listener: (context, state) {
+
                 if (state is TransactionReportLoaderState) {
-                  print("ONE");
-                  showProgressDialog(context);
+                  // if (showProgress == false) {
+                  //   showProgressDialog(context);
+                  //   showProgress = true;
+                  // }
                 }
 
                 if (state is TransactionReportSuccessState ||
                     state is TransactionReportFailureState) {
                   print("TWO");
-
-                  if (Navigator.of(context).canPop()) {
-                    Navigator.of(context).pop();
-                  }
+                  // if (showProgress == true) {
+                  //
+                  //     Navigator.of(context).pop();
+                  //
+                  //   showProgress = false;
+                  // }
                 }
               },
               child: BlocBuilder<PaymentTransactionBloc, TransactionState>(
@@ -862,7 +870,6 @@ else{
     );
   }
 
-
 // ═════════════════════════════════════════════════════
 // MODERN APP BAR
 // ═════════════════════════════════════════════════════
@@ -872,7 +879,6 @@ else{
       backgroundColor: const Color(0xFFF5F7FA),
       elevation: 0,
       automaticallyImplyLeading: true,
-
       titleSpacing: 0,
       title: const Text(
         "Transactions",
@@ -885,7 +891,6 @@ else{
       ),
     );
   }
-
 
 // ═════════════════════════════════════════════════════
 // FILTER COUNT
@@ -900,7 +905,6 @@ else{
 
     return count;
   }
-
 
 // ═════════════════════════════════════════════════════
 // FILTER PILL
@@ -918,14 +922,10 @@ else{
         vertical: 8,
       ),
       decoration: BoxDecoration(
-        color: selected
-            ? home1.withValues(alpha: 0.10)
-            : Colors.white,
+        color: selected ? home1.withValues(alpha: 0.10) : Colors.white,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: selected
-              ? home1.withValues(alpha: 0.15)
-              : Colors.transparent,
+          color: selected ? home1.withValues(alpha: 0.15) : Colors.transparent,
         ),
       ),
       child: Row(
@@ -941,9 +941,7 @@ else{
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w700,
-              color: selected
-                  ? home1
-                  : Colors.grey.shade700,
+              color: selected ? home1 : Colors.grey.shade700,
             ),
           ),
         ],
@@ -951,14 +949,13 @@ else{
     );
   }
 
-
 // ═════════════════════════════════════════════════════
 // TRANSACTION CARD
 // ═════════════════════════════════════════════════════
   Widget _transactionCard(
-      BuildContext context,
-      dynamic transaction,
-      ) {
+    BuildContext context,
+    dynamic transaction,
+  ) {
     final status = transaction.status.toString().toLowerCase();
 
     final bool isPending = status.startsWith("pending");
@@ -967,14 +964,14 @@ else{
     final Color statusColor = isPending
         ? const Color(0xFFD97706)
         : isSuccess
-        ? const Color(0xFF16A34A)
-        : const Color(0xFFDC2626);
+            ? const Color(0xFF16A34A)
+            : const Color(0xFFDC2626);
 
     final Color statusBg = isPending
         ? const Color(0xFFFFF7ED)
         : isSuccess
-        ? const Color(0xFFF0FDF4)
-        : const Color(0xFFFEF2F2);
+            ? const Color(0xFFF0FDF4)
+            : const Color(0xFFFEF2F2);
 
     final String customerName =
         transaction.customerName?.toString() ?? "Unknown Customer";
@@ -983,8 +980,7 @@ else{
         ? customerName.trim()[0].toUpperCase()
         : "?";
 
-    final String orderId =
-        transaction.orderId?.toString() ?? "N/A";
+    final String orderId = transaction.orderId?.toString() ?? "N/A";
 
     final String paymentMode =
         transaction.paymentMode?.toString().toUpperCase() ?? "N/A";
@@ -1019,7 +1015,7 @@ else{
                     orderId: transaction.orderId,
                     transactionId: transaction.transactionId,
                     paymentGatewayTransactionId:
-                    transaction.paymentGatewayTransactionId,
+                        transaction.paymentGatewayTransactionId,
                     amount: transaction.amount,
                     currency: transaction.currency,
                     description: transaction.description,
@@ -1044,7 +1040,6 @@ else{
             padding: const EdgeInsets.fromLTRB(15, 15, 13, 13),
             child: Column(
               children: [
-
                 // =====================================================
                 // MAIN TRANSACTION ROW
                 // =====================================================
@@ -1052,7 +1047,6 @@ else{
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     // Avatar
                     Container(
                       width: 42,
@@ -1077,10 +1071,8 @@ else{
                     // Customer information
                     Expanded(
                       child: Column(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-
                           Text(
                             customerName,
                             maxLines: 1,
@@ -1092,12 +1084,9 @@ else{
                               letterSpacing: -0.15,
                             ),
                           ),
-
                           const SizedBox(height: 4),
-
                           Row(
                             children: [
-
                               Flexible(
                                 child: Text(
                                   "#$orderId",
@@ -1110,7 +1099,6 @@ else{
                                   ),
                                 ),
                               ),
-
                               const Padding(
                                 padding: EdgeInsets.symmetric(
                                   horizontal: 6,
@@ -1123,7 +1111,6 @@ else{
                                   ),
                                 ),
                               ),
-
                               Flexible(
                                 child: Text(
                                   DateFormat(
@@ -1132,8 +1119,7 @@ else{
                                     transaction.createdAt,
                                   ),
                                   maxLines: 1,
-                                  overflow:
-                                  TextOverflow.ellipsis,
+                                  overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
                                     fontSize: 10.5,
                                     color: Color(0xFF71717A),
@@ -1150,10 +1136,8 @@ else{
 
                     // Amount + status
                     Column(
-                      crossAxisAlignment:
-                      CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-
                         Text(
                           "₹${transaction.amount}",
                           style: TextStyle(
@@ -1163,9 +1147,7 @@ else{
                             letterSpacing: -0.3,
                           ),
                         ),
-
                         const SizedBox(height: 5),
-
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 7,
@@ -1173,13 +1155,11 @@ else{
                           ),
                           decoration: BoxDecoration(
                             color: statusBg,
-                            borderRadius:
-                            BorderRadius.circular(7),
+                            borderRadius: BorderRadius.circular(7),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-
                               Container(
                                 width: 5,
                                 height: 5,
@@ -1188,9 +1168,7 @@ else{
                                   shape: BoxShape.circle,
                                 ),
                               ),
-
                               const SizedBox(width: 4),
-
                               Text(
                                 transactionStatus,
                                 style: TextStyle(
@@ -1215,7 +1193,6 @@ else{
 
                 Row(
                   children: [
-
                     const SizedBox(width: 53),
 
                     // Payment mode
@@ -1524,26 +1501,22 @@ else{
     );
   }*/
 
-
 // ═════════════════════════════════════════════════════
 // TRANSACTION META
 // ═════════════════════════════════════════════════════
   Widget _transactionMeta(
-      String text,
-      IconData icon,
-      ) {
+    String text,
+    IconData icon,
+  ) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-
         Icon(
           icon,
           size: 14,
           color: const Color(0xFF71717A),
         ),
-
         const SizedBox(width: 5),
-
         Text(
           text,
           style: const TextStyle(
@@ -1579,7 +1552,6 @@ else{
   //   );
   // }
 
-
 // ═════════════════════════════════════════════════════
 // EMPTY STATE
 // ═════════════════════════════════════════════════════
@@ -1604,9 +1576,7 @@ else{
                 color: home1,
               ),
             ),
-
             const SizedBox(height: 18),
-
             const Text(
               "No transactions found",
               style: TextStyle(
@@ -1614,9 +1584,7 @@ else{
                 fontWeight: FontWeight.w800,
               ),
             ),
-
             const SizedBox(height: 7),
-
             Text(
               "Try changing your filters or search.",
               textAlign: TextAlign.center,
@@ -1631,7 +1599,6 @@ else{
     );
   }
 
-
 // ═════════════════════════════════════════════════════
 // CLEAR FILTERS
 // ═════════════════════════════════════════════════════
@@ -1645,11 +1612,11 @@ else{
     });
 
     context.read<PaymentTransactionBloc>().add(
-      GetTransactionByMerchant(
-        widget.eCollectMerchantID,
-        widget.eCollectToken,
-      ),
-    );
+          GetTransactionByMerchant(
+            widget.eCollectMerchantID,
+            widget.eCollectToken,
+          ),
+        );
   }
   // Widget build(BuildContext context) {
   //   return Scaffold(

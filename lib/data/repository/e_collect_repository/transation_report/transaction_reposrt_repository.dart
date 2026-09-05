@@ -21,6 +21,7 @@ class TransactionReportRepository {
 
     print("$baseURl$transactionReportEndpoint$merchantID");
     print("Bearer $eCollectToken");
+    print("TransactionReport status code ${request.statusCode}");
     print("TransactionReport ${request.body}");
     if (request.statusCode == 200) {
       return TransactionSuccessModel(

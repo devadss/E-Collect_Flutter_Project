@@ -1,208 +1,351 @@
-
+import 'package:e_Collect/data/non_integrated_bloc/non_integrated_bloc.dart';
+import 'package:e_Collect/domain/model/non_integrated/loan_all_data/complete_loanlist.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import '../../../../core/utils.dart';
+import '../../../../domain/model/non_integarted_loan_list_due.dart';
+import 'non_integrated_loan_due_detail.dart';
 
 class NonIntegratedLoanDuePaymentsScreen extends StatefulWidget {
-const NonIntegratedLoanDuePaymentsScreen({super.key});
+  final String baseUrl;
+  final String agentCode;
+  final String branchCode;
+  final String productType;
+  final String agentRouteCode;
+  final int pageNo;
+  final int pageSize;
+  final String eCollectMerchantName;
+  final String eCollectAgentMerchantID;
+  final String eCollectToken;
+  final String eCollectAgentID;
+  final String eCollectAgentOriginID;
+  final String eCollectAgentMobNum;
+  final String eCollectAgentEmail;
+  final String eCollectAgentBranchCode;
+  const NonIntegratedLoanDuePaymentsScreen(
+      {super.key,
+      required this.baseUrl,
+      required this.agentCode,
+      required this.branchCode,
+      required this.productType,
+      required this.pageNo,
+      required this.pageSize,
+      required this.agentRouteCode, required this.eCollectMerchantName, required this.eCollectAgentMerchantID, required this.eCollectToken, required this.eCollectAgentID, required this.eCollectAgentOriginID, required this.eCollectAgentMobNum, required this.eCollectAgentEmail, required this.eCollectAgentBranchCode});
 
-@override
-State<NonIntegratedLoanDuePaymentsScreen> createState() =>
-_NonIntegratedLoanDuePaymentsScreenState();
+  @override
+  State<NonIntegratedLoanDuePaymentsScreen> createState() =>
+      _NonIntegratedLoanDuePaymentsScreenState();
 }
 
 class _NonIntegratedLoanDuePaymentsScreenState
-extends State<NonIntegratedLoanDuePaymentsScreen> {
-final List<Map<String, dynamic>> buckets = [
-{
-'title': 'Current',
-'subtitle': 'On time',
-'customers': '2 customers',
-'amount': '₹67,19,405',
-'color': const Color(0xFF16A34A),
-},
-{
-'title': '1–30',
-'subtitle': 'DPD',
-'customers': '2 customers',
-'amount': '₹13,613',
-'color': const Color(0xFFF59E0B),
-},
-{
-'title': '61–90',
-'subtitle': 'DPD',
-'customers': '1 customer',
-'amount': '₹16,667',
-'color': const Color(0xFFDC2626),
-},
-];
+    extends State<NonIntegratedLoanDuePaymentsScreen> {
+  bool showProgress = false;
+  @override
+  void initState() {
+    super.initState();
 
-final List<Map<String, dynamic>> customers = [
-{
-'name': 'Manju',
-'account': '903U28828',
-'amount': '₹16,667',
-'overdue': '65 days overdue',
-'status': 'SMA-2',
-'statusLabel': '61–90 DPD',
-'color': const Color(0xFFDC2626),
-'initial': 'M',
-},
-{
-'name': 'www',
-'account': '122221',
-'amount': '₹13,580',
-'overdue': '15 days overdue',
-'status': 'SMA-0',
-'statusLabel': '1–30 DPD',
-'color': const Color(0xFFF59E0B),
-'initial': 'W',
-},
-];
+    context.read<NonIntegratedBloc>().add(FetchNonIntegratedLoanDues(
+        widget.baseUrl,
+        widget.agentCode,
+        widget.branchCode,
+        widget.productType,
+        widget.pageNo,
+        widget.pageSize,
+        widget.agentRouteCode));
+  }
 
-@override
-Widget build(BuildContext context) {
-return Scaffold(
-backgroundColor: const Color(0xFFF5F7FA),
-appBar: AppBar(
-backgroundColor: Colors.white,
-elevation: 0,
-surfaceTintColor: Colors.white,
-centerTitle: false,
-titleSpacing: 20,
-title: const Text(
-'Due Payments',
-style: TextStyle(
-color: Color(0xFF111827),
-fontSize: 20,
-fontWeight: FontWeight.w700,
-letterSpacing: -0.3,
-),
-),
-actions: [
-_HeaderIconButton(
-icon: Icons.search_rounded,
-onTap: () {},
-),
-const SizedBox(width: 4),
-_HeaderIconButton(
-icon: Icons.tune_rounded,
-onTap: () {},
-),
-const SizedBox(width: 12),
-],
-),
-body: ListView(
-padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
-children: [
-// ============================================================
-// SUMMARY CARD
-// ============================================================
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F7FA),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        surfaceTintColor: Colors.white,
+        centerTitle: false,
+        titleSpacing: 20,
+        title: const Text(
+          'Due Payments',
+          style: TextStyle(
+            color: Color(0xFF111827),
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            letterSpacing: -0.3,
+          ),
+        ),
+        actions: [
+          _HeaderIconButton(
+            icon: Icons.search_rounded,
+            onTap: () {},
+          ),
+          const SizedBox(width: 4),
+          _HeaderIconButton(
+            icon: Icons.tune_rounded,
+            onTap: () {},
+          ),
+          const SizedBox(width: 12),
+        ],
+      ),
+      body: BlocConsumer<NonIntegratedBloc, NonIntegratedState>(
+        builder: (BuildContext context, NonIntegratedState state) {
 
-_CollectionSummaryCard(),
+          if (state is NonIntegratedLoanDueSuccessState) {
 
-const SizedBox(height: 24),
+            var items = <Map<String, dynamic>>[];
+            var totalOne = 0;
+            var totalOneCount = 0;
+            var totalTwo = 0;
+            var totalTwoCount = 0;
+            var totalThree = 0;
+            var totalThreeCount = 0;
+            var totalFour = 0;
+            var totalFourCount = 0;
+            var totalFive = 0;
+            var totalFiveCount = 0;
+            List<String> riskType = [];
+            for (var daysPastDue in state
+                .dueLoanListNonIntegratedSuccess
+                .nonIntegratedLoanDueList
+                .data) {
+              if (daysPastDue.daysPastDue == 0) {
+                totalOne += daysPastDue.outstandingAmount;
+                totalOneCount++;
+                riskType.add(daysPastDue.riskCategory);
+              } else if (daysPastDue.daysPastDue > 0 &&
+                  daysPastDue.daysPastDue < 31) {
+                totalTwo += daysPastDue.outstandingAmount;
+                totalTwoCount++;
+                riskType.add(daysPastDue.riskCategory);
+              } else if (daysPastDue.daysPastDue > 30 &&
+                  daysPastDue.daysPastDue < 61) {
+                totalThree += daysPastDue.outstandingAmount;
+                totalThreeCount++;
+                riskType.add(daysPastDue.riskCategory);
+              } else if (daysPastDue.daysPastDue > 60 &&
+                  daysPastDue.daysPastDue < 91) {
+                totalFour += daysPastDue.outstandingAmount;
+                totalFourCount++;
+                riskType.add(daysPastDue.riskCategory);
+              } else if (daysPastDue.daysPastDue > 90) {
+                totalFive += daysPastDue.outstandingAmount;
+                totalFiveCount++;
+                riskType.add(daysPastDue.riskCategory);
+              }
+            }
 
-// ============================================================
-// BUCKET HEADER
-// ============================================================
+            if (totalOneCount > 0) {
+              items.add({
+                "bucket_name": "current",
+                "total_overdue": totalOne,
+                "total_count": totalOneCount,
+                "risk": riskType[0],
+                "color": Colors.green,
+              });
+            }
 
-Row(
-mainAxisAlignment: MainAxisAlignment.spaceBetween,
-children: [
-const Text(
-'Payment ageing',
-style: TextStyle(
-fontSize: 17,
-fontWeight: FontWeight.w700,
-color: Color(0xFF111827),
-letterSpacing: -0.2,
-),
-),
-Text(
-'3 buckets',
-style: TextStyle(
-fontSize: 12,
-color: Colors.grey.shade600,
-fontWeight: FontWeight.w500,
-),
-),
-],
-),
+            if (totalTwoCount > 0) {
+              items.add({
+                "bucket_name": "1-30",
+                "total_overdue": totalTwo,
+                "total_count": totalTwoCount,
+                "risk": riskType[1],
+                "color": Colors.yellow,
+              });
+            }
 
-const SizedBox(height: 12),
+            if (totalThreeCount > 0) {
+              items.add({
+                "bucket_name": "31-60",
+                "total_overdue": totalThree,
+                "total_count": totalThreeCount,
+                "risk": riskType[2],
+                "color": Colors.orange,
+              });
+            }
 
-// ============================================================
-// BUCKETS
-// ============================================================
+            if (totalFourCount > 0) {
+              items.add({
+                "bucket_name": "61-90",
+                "total_overdue": totalFour,
+                "total_count": totalFourCount,
+                "risk": riskType[3],
+                "color": Colors.purple,
+              });
+            }
 
-SizedBox(
-height: 132,
-child: ListView.separated(
-scrollDirection: Axis.horizontal,
-itemCount: buckets.length,
-separatorBuilder: (_, __) => const SizedBox(width: 10),
-itemBuilder: (context, index) {
-return DpdBucketCard(
-bucket: buckets[index],
-);
-},
-),
-),
+            if (totalFiveCount > 0) {
+              items.add({
+                "bucket_name": "90+",
+                "total_overdue": totalFive,
+                "total_count": totalFiveCount,
+                "risk": riskType[4],
+                "color": Colors.red,
+              });
+            }
+            var total = 0;
+            var emi = 0;
+            NonIntegratedLoanDueList data = state.dueLoanListNonIntegratedSuccess.nonIntegratedLoanDueList;
+            for (var x in data.data) {
+              total += x.outstandingAmount.toInt();
+              emi += x.emiAmount.toInt();
+            }
+            return ListView(
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+              children: [
+                // ============================================================
+                // SUMMARY CARD
+                // ============================================================
 
-const SizedBox(height: 28),
+                _CollectionSummaryCard(emi: emi, data: data, total: total),
 
-// ============================================================
-// CUSTOMER HEADER
-// ============================================================
+                const SizedBox(height: 24),
 
-Row(
-mainAxisAlignment: MainAxisAlignment.spaceBetween,
-children: [
-const Text(
-'Customers',
-style: TextStyle(
-fontSize: 17,
-fontWeight: FontWeight.w700,
-color: Color(0xFF111827),
-letterSpacing: -0.2,
-),
-),
-TextButton(
-onPressed: () {},
-style: TextButton.styleFrom(
-padding: EdgeInsets.zero,
-minimumSize: Size.zero,
-tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-),
-child: const Text(
-'View all',
-style: TextStyle(
-fontSize: 13,
-fontWeight: FontWeight.w600,
-),
-),
-),
-],
-),
+                // ============================================================
+                // BUCKET HEADER
+                // ============================================================
 
-const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Payment Due Analysis',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF111827),
+                        letterSpacing: -0.2,
+                      ),
+                    ),
+                    Text(
+                      '',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade600,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
 
-// ============================================================
-// CUSTOMER CARDS
-// ============================================================
+                const SizedBox(height: 12),
 
-...customers.map(
-(customer) => Padding(
-padding: const EdgeInsets.only(bottom: 12),
-child: DueCustomerCard(
-customer: customer,
-onTap: () {},
-),
-),
-),
-],
-),
-);
-}
+                // ============================================================
+                // BUCKETS
+                // ============================================================
+
+                SizedBox(
+                  height: 132,
+                  child:
+                  ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: items.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 10),
+                    itemBuilder: (context, index) {
+                      return DpdBucketCard(
+                        bucket: items[index],
+                      );
+                    },
+                  )
+                ),
+
+                const SizedBox(height: 28),
+
+                // ============================================================
+                // CUSTOMER HEADER
+                // ============================================================
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Customers',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF111827),
+                        letterSpacing: -0.2,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {},
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: const Text(
+                        'View all',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 10),
+
+                // ============================================================
+                // CUSTOMER CARDS
+                // ============================================================
+
+                ...state.dueLoanListNonIntegratedSuccess
+                    .nonIntegratedLoanDueList.data
+                    .map(
+                      (customer) => Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: DueCustomerCard(
+                      customer: customer,
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)
+                        => CustomerDetailPage(
+                     customer: customer, ecollectMerchantModelData:
+                        EcollectMerchantModelData(
+                            eCollectMerchantName: widget.eCollectMerchantName,
+                            eCollectAgentId: widget.eCollectAgentID,
+                            eCollectAgentOriginId: widget.eCollectAgentOriginID,
+                            eCollectAgentNumber:widget. eCollectAgentMobNum,
+                            eCollectAgentEmail: widget.eCollectAgentEmail,
+                            eCollectAgentBranchCode:widget.eCollectAgentBranchCode,
+                            eCollectAgentMerchantID: widget.eCollectAgentMerchantID,
+                            eCollectCollectionType: "LOAN", eCollectToken: widget.eCollectToken),
+
+                        )));
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
+          return SizedBox.shrink();
+        },
+        listener: (BuildContext context, NonIntegratedState state) {
+          if(state is NonIntegratedLoanDueLoaderState){
+            if (showProgress == false) {
+              showProgressDialog(context);
+              showProgress = true;
+            }
+          }
+          if(state is NonIntegratedLoanDueSuccessState){
+            if(showProgress == true){
+              Navigator.pop(context);
+              showProgress = false;
+            }
+          }
+          else if(state is NonIntegratedLoanDueFailureState){
+            if(showProgress == true){
+              Navigator.pop(context);
+              showProgress = false;
+            }
+          }
+        },
+
+      ),
+    );
+  }
 }
 
 // ======================================================================
@@ -210,165 +353,171 @@ onTap: () {},
 // ======================================================================
 
 class _HeaderIconButton extends StatelessWidget {
-final IconData icon;
-final VoidCallback onTap;
+  final IconData icon;
+  final VoidCallback onTap;
 
-const _HeaderIconButton({
-required this.icon,
-required this.onTap,
-});
+  const _HeaderIconButton({
+    required this.icon,
+    required this.onTap,
+  });
 
-@override
-Widget build(BuildContext context) {
-return IconButton(
-onPressed: onTap,
-splashRadius: 22,
-icon: Icon(
-icon,
-size: 22,
-color: const Color(0xFF374151),
-),
-);
-}
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: onTap,
+      splashRadius: 22,
+      icon: Icon(
+        icon,
+        size: 22,
+        color: const Color(0xFF374151),
+      ),
+    );
+  }
 }
 
 // ======================================================================
 // COLLECTION SUMMARY
 // ======================================================================
 
-class _CollectionSummaryCard extends StatelessWidget {
-@override
-Widget build(BuildContext context) {
-return Container(
-padding: const EdgeInsets.all(20),
-decoration: BoxDecoration(
-color: const Color(0xFF111827),
-borderRadius: BorderRadius.circular(18),
-),
-child: Column(
-crossAxisAlignment: CrossAxisAlignment.start,
-children: [
-Row(
-children: [
-Container(
-width: 32,
-height: 32,
-decoration: BoxDecoration(
-color: Colors.white.withOpacity(0.10),
-borderRadius: BorderRadius.circular(9),
-),
-child: const Icon(
-Icons.account_balance_wallet_outlined,
-color: Colors.white,
-size: 17,
-),
-),
-const SizedBox(width: 10),
-const Text(
-'Outstanding collections',
-style: TextStyle(
-color: Color(0xFFD1D5DB),
-fontSize: 13,
-fontWeight: FontWeight.w500,
-),
-),
-],
-),
+class _CollectionSummaryCard extends StatefulWidget {
+  final int emi;
+  final int total;
+  final NonIntegratedLoanDueList data;
 
-const SizedBox(height: 18),
+  const _CollectionSummaryCard({required this.emi, required this.data, required this.total});
 
-const Text(
-'₹67,49,685',
-style: TextStyle(
-color: Colors.white,
-fontSize: 30,
-fontWeight: FontWeight.w700,
-letterSpacing: -1,
-),
-),
-
-const SizedBox(height: 5),
-
-const Text(
-'Total amount to collect',
-style: TextStyle(
-color: Color(0xFF9CA3AF),
-fontSize: 12,
-),
-),
-
-const SizedBox(height: 20),
-
-Container(
-height: 1,
-color: Colors.white.withOpacity(0.08),
-),
-
-const SizedBox(height: 16),
-
-Row(
-children: [
-Expanded(
-child: _SummaryMetric(
-value: '5',
-label: 'Customers due',
-),
-),
-Container(
-width: 1,
-height: 30,
-color: Colors.white.withOpacity(0.08),
-),
-Expanded(
-child: _SummaryMetric(
-value: '₹30,280',
-label: 'Overdue',
-),
-),
-],
-),
-],
-),
-);
+  @override
+  State<_CollectionSummaryCard> createState() => _CollectionSummaryCardState();
 }
+
+class _CollectionSummaryCardState extends State<_CollectionSummaryCard> {
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: const Color(0xFF111827),
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(9),
+                ),
+                child: const Icon(
+                  Icons.account_balance_wallet_outlined,
+                  color: Colors.white,
+                  size: 17,
+                ),
+              ),
+              const SizedBox(width: 10),
+              const Text(
+                'Outstanding collections',
+                style: TextStyle(
+                  color: Color(0xFFD1D5DB),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 18),
+          Text(
+            '₹ ${NumberFormat('#,##,##0', 'en_IN').format(widget.emi)}',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 30,
+              fontWeight: FontWeight.w700,
+              letterSpacing: -1,
+            ),
+          ),
+          const SizedBox(height: 5),
+          const Text(
+            'Total amount to collect',
+            style: TextStyle(
+              color: Color(0xFF9CA3AF),
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Container(
+            height: 1,
+            color: Colors.white.withValues(alpha: 0.08),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: _SummaryMetric(
+                  value: "${widget.data.data.length.toString()} Nos",
+                  label: 'Customers count',
+                ),
+              ),
+              Container(
+                width: 1,
+                height: 30,
+                color: Colors.white.withValues(alpha: 0.08),
+              ),
+              Expanded(
+                child: _SummaryMetric(
+                  value:
+                  '₹${NumberFormat('#,##,##0', 'en_IN').format(widget.total)}',
+                  label: 'Overdue',
+                ),
+              ),
+            ],
+          ),
+        ],
+      )
+
+    );
+  }
 }
 
 class _SummaryMetric extends StatelessWidget {
-final String value;
-final String label;
+  final String value;
+  final String label;
 
-const _SummaryMetric({
-required this.value,
-required this.label,
-});
+  const _SummaryMetric({
+    required this.value,
+    required this.label,
+  });
 
-@override
-Widget build(BuildContext context) {
-return Padding(
-padding: const EdgeInsets.symmetric(horizontal: 10),
-child: Column(
-crossAxisAlignment: CrossAxisAlignment.start,
-children: [
-Text(
-value,
-style: const TextStyle(
-color: Colors.white,
-fontSize: 15,
-fontWeight: FontWeight.w700,
-),
-),
-const SizedBox(height: 3),
-Text(
-label,
-style: const TextStyle(
-color: Color(0xFF9CA3AF),
-fontSize: 11,
-),
-),
-],
-),
-);
-}
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            value,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 3),
+          Text(
+            label,
+            style: const TextStyle(
+              color: Color(0xFF9CA3AF),
+              fontSize: 11,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 // ======================================================================
@@ -376,89 +525,85 @@ fontSize: 11,
 // ======================================================================
 
 class DpdBucketCard extends StatelessWidget {
-final Map<String, dynamic> bucket;
+  final Map<String, dynamic> bucket;
 
-const DpdBucketCard({
-super.key,
-required this.bucket,
-});
+  const DpdBucketCard({
+    super.key,
+    required this.bucket,
+  });
 
-@override
-Widget build(BuildContext context) {
-final Color color = bucket['color'];
-
-return Container(
-width: 158,
-padding: const EdgeInsets.all(15),
-decoration: BoxDecoration(
-color: Colors.white,
-borderRadius: BorderRadius.circular(15),
-border: Border.all(
-color: const Color(0xFFE5E7EB),
-),
-),
-child: Column(
-crossAxisAlignment: CrossAxisAlignment.start,
-children: [
-Row(
-children: [
-Container(
-width: 8,
-height: 8,
-decoration: BoxDecoration(
-color: color,
-shape: BoxShape.circle,
-),
-),
-const SizedBox(width: 7),
-Text(
-bucket['title'],
-style: const TextStyle(
-fontSize: 14,
-fontWeight: FontWeight.w700,
-color: Color(0xFF111827),
-),
-),
-const SizedBox(width: 4),
-Expanded(
-child: Text(
-bucket['subtitle'],
-overflow: TextOverflow.ellipsis,
-style: TextStyle(
-fontSize: 11,
-color: Colors.grey.shade500,
-fontWeight: FontWeight.w500,
-),
-),
-),
-],
-),
-
-const Spacer(),
-
-Text(
-bucket['amount'],
-style: const TextStyle(
-fontSize: 16,
-fontWeight: FontWeight.w700,
-color: Color(0xFF111827),
-letterSpacing: -0.2,
-),
-),
-
-const SizedBox(height: 4),
-
-Text(
-bucket['customers'],
-style: TextStyle(
-fontSize: 11,
-color: Colors.grey.shade500,
-),
-),
-],
-),
-);
-}
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: 158,
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(
+            color: const Color(0xFFE5E7EB),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: bucket["color"],
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 7),
+                Text(
+                  bucket['bucket_name'],
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF111827),
+                  ),
+                ),
+                const SizedBox(width: 4),
+              ],
+            ),
+            Expanded(
+              child: Text(
+                maxLines: 2,
+                bucket["risk"],
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Colors.grey.shade500,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            const Spacer(),
+            Text(
+              "count ${NumberFormat('#,##,##0', 'en_IN').format(bucket["total_count"]).toString()} Nos",
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF111827),
+                letterSpacing: -0.2,
+              ),
+            ),
+            Divider(),
+            const SizedBox(height: 4),
+            Text(
+              "₹ ${NumberFormat('#,##,##0', 'en_IN').format(bucket['total_overdue']).toString()}",
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: Colors.red.shade500,
+              ),
+            ),
+          ],
+        ));
+  }
 }
 
 // ======================================================================
@@ -466,288 +611,317 @@ color: Colors.grey.shade500,
 // ======================================================================
 
 class DueCustomerCard extends StatelessWidget {
-final Map<String, dynamic> customer;
-final VoidCallback? onTap;
+  final CustomerDue customer;
+  final VoidCallback? onTap;
 
-const DueCustomerCard({
-super.key,
-required this.customer,
-this.onTap,
-});
+  const DueCustomerCard({
+    super.key,
+    required this.customer,
+    this.onTap,
+  });
 
-@override
-Widget build(BuildContext context) {
-final Color color = customer['color'];
+  @override
+  Widget build(BuildContext context) {
+    final Color color = Colors.orange;
 
-return Material(
-color: Colors.white,
-borderRadius: BorderRadius.circular(16),
-child: InkWell(
-onTap: onTap,
-borderRadius: BorderRadius.circular(16),
-child: Container(
-padding: const EdgeInsets.all(16),
-decoration: BoxDecoration(
-borderRadius: BorderRadius.circular(16),
-border: Border.all(
-color: const Color(0xFFE5E7EB),
-),
-),
-child: Column(
-crossAxisAlignment: CrossAxisAlignment.start,
-children: [
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: customer.riskCategory.contains("Regular (0 DPD)")
+                  ? Colors.green
+                  : customer.riskCategory.contains("SMA-0 (2 DPD)")
+                  ? Colors.yellow
+                  : customer.riskCategory
+                  .contains("SMA-2 (61-90 DPD)")
+                  ? Colors.orange
+                  : Colors.red,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 // ========================================================
 // CUSTOMER HEADER
 // ========================================================
+              Row(
+                children: [
+                  Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: customer.riskCategory.contains("Regular (0 DPD)")
+                          ? Colors.green.shade50
+                          : customer.riskCategory.contains("SMA-0 (2 DPD)")
+                          ? Colors.yellow.shade50
+                          : customer.riskCategory
+                          .contains("SMA-2 (61-90 DPD)")
+                          ? Colors.orange.shade50
+                          : Colors.red.shade50,
+                      shape: BoxShape.circle,
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      customer.customerName[0].toUpperCase(),
+                      style: TextStyle(
+                        color: customer.riskCategory.contains("Regular (0 DPD)")
+                            ? Colors.green
+                            : customer.riskCategory.contains("SMA-0 (2 DPD)")
+                            ? Colors.yellow
+                            : customer.riskCategory
+                            .contains("SMA-2 (61-90 DPD)")
+                            ? Colors.orange
+                            : Colors.red,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 11),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          customer.customerName.toUpperCase(),
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF111827),
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          'Loan • ${customer.accountNumber}',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
 
-Row(
-children: [
-Container(
-width: 42,
-height: 42,
-decoration: BoxDecoration(
-color: color.withOpacity(0.10),
-shape: BoxShape.circle,
-),
-alignment: Alignment.center,
-child: Text(
-customer['initial'],
-style: TextStyle(
-color: color,
-fontSize: 15,
-fontWeight: FontWeight.w700,
-),
-),
-),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 9,
+                      vertical: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: customer.riskCategory.contains("Regular (0 DPD)")
+                          ? Colors.green.shade50
+                          : customer.riskCategory.contains("SMA-0 (2 DPD)")
+                              ? Colors.yellow.shade50
+                              : customer.riskCategory
+                                      .contains("SMA-2 (61-90 DPD)")
+                                  ? Colors.orange.shade50
+                                  : Colors.red.shade50,
+                      borderRadius: BorderRadius.circular(7),
+                    ),
+                    child: Text(
+                      customer.status,
+                      style: TextStyle(
+                        color: customer.riskCategory.contains("Regular (0 DPD)")
+                            ? Colors.green
+                            : customer.riskCategory.contains("SMA-0 (2 DPD)")
+                            ? Colors.black
+                            : customer.riskCategory
+                            .contains("SMA-2 (61-90 DPD)")
+                            ? Colors.orange
+                            : Colors.red,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
 
-const SizedBox(width: 11),
-
-Expanded(
-child: Column(
-crossAxisAlignment: CrossAxisAlignment.start,
-children: [
-Text(
-customer['name'],
-style: const TextStyle(
-fontSize: 15,
-fontWeight: FontWeight.w700,
-color: Color(0xFF111827),
-),
-),
-const SizedBox(height: 3),
-Text(
-'Loan • ${customer['account']}',
-style: TextStyle(
-fontSize: 11,
-color: Colors.grey.shade500,
-),
-),
-],
-),
-),
-
-Container(
-padding: const EdgeInsets.symmetric(
-horizontal: 9,
-vertical: 5,
-),
-decoration: BoxDecoration(
-color: color.withOpacity(0.09),
-borderRadius: BorderRadius.circular(7),
-),
-child: Text(
-customer['status'],
-style: TextStyle(
-color: color,
-fontSize: 10,
-fontWeight: FontWeight.w700,
-),
-),
-),
-],
-),
-
-const SizedBox(height: 18),
+             // const SizedBox(height: 18),
 
 // ========================================================
 // AMOUNT
 // ========================================================
+              Divider(),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'AMOUNT DUE',
+                          style: TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey.shade500,
+                            letterSpacing: 0.7,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "₹ ${NumberFormat('#,##,##0', 'en_IN').format(customer.dueAmount)}",
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF111827),
+                            letterSpacing: -0.4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    customer.nextDueDate,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: color,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
 
-Row(
-crossAxisAlignment: CrossAxisAlignment.end,
-children: [
-Expanded(
-child: Column(
-crossAxisAlignment: CrossAxisAlignment.start,
-children: [
-Text(
-'AMOUNT DUE',
-style: TextStyle(
-fontSize: 9,
-fontWeight: FontWeight.w600,
-color: Colors.grey.shade500,
-letterSpacing: 0.7,
-),
-),
-const SizedBox(height: 4),
-Text(
-customer['amount'],
-style: const TextStyle(
-fontSize: 20,
-fontWeight: FontWeight.w700,
-color: Color(0xFF111827),
-letterSpacing: -0.4,
-),
-),
-],
-),
-),
-Text(
-customer['overdue'],
-style: TextStyle(
-fontSize: 11,
-color: color,
-fontWeight: FontWeight.w600,
-),
-),
-],
-),
-
-const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
 // ========================================================
 // STATUS
 // ========================================================
 
-Container(
-width: double.infinity,
-padding: const EdgeInsets.symmetric(
-horizontal: 11,
-vertical: 9,
-),
-decoration: BoxDecoration(
-color: const Color(0xFFF9FAFB),
-borderRadius: BorderRadius.circular(9),
-),
-child: Row(
-children: [
-Icon(
-Icons.schedule_rounded,
-size: 14,
-color: color,
-),
-const SizedBox(width: 7),
-Text(
-customer['statusLabel'],
-style: const TextStyle(
-fontSize: 11,
-color: Color(0xFF4B5563),
-fontWeight: FontWeight.w500,
-),
-),
-const Spacer(),
-const Icon(
-Icons.chevron_right_rounded,
-size: 17,
-color: Color(0xFF9CA3AF),
-),
-],
-),
-),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 11,
+                  vertical: 9,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF9FAFB),
+                  borderRadius: BorderRadius.circular(9),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.schedule_rounded,
+                      size: 14,
+                      color: color,
+                    ),
+                    const SizedBox(width: 7),
+                    Text(
+                      customer.lastPaidDate,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: Color(0xFF4B5563),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const Spacer(),
+                    const Icon(
+                      Icons.chevron_right_rounded,
+                      size: 17,
+                      color: Color(0xFF9CA3AF),
+                    ),
+                  ],
+                ),
+              ),
 
-const SizedBox(height: 14),
+              const SizedBox(height: 14),
 
 // ========================================================
 // ACTIONS
 // ========================================================
 
-Row(
-children: [
-Expanded(
-child: SizedBox(
-height: 42,
-child: OutlinedButton.icon(
-onPressed: () {},
-icon: const Icon(
-Icons.phone_outlined,
-size: 16,
-),
-label: const Text(
-'Call',
-style: TextStyle(
-fontWeight: FontWeight.w600,
-),
-),
-style: OutlinedButton.styleFrom(
-foregroundColor: const Color(0xFF374151),
-side: const BorderSide(
-color: Color(0xFFE5E7EB),
-),
-shape: RoundedRectangleBorder(
-borderRadius: BorderRadius.circular(10),
-),
-),
-),
-),
-),
-
-const SizedBox(width: 9),
-
-Expanded(
-child: SizedBox(
-height: 42,
-child: OutlinedButton.icon(
-onPressed: () {},
-icon: const Icon(
-Icons.chat_bubble_outline_rounded,
-size: 16,
-),
-label: const Text(
-'WhatsApp',
-style: TextStyle(
-fontWeight: FontWeight.w600,
-),
-),
-style: OutlinedButton.styleFrom(
-foregroundColor: const Color(0xFF374151),
-side: const BorderSide(
-color: Color(0xFFE5E7EB),
-),
-shape: RoundedRectangleBorder(
-borderRadius: BorderRadius.circular(10),
-),
-),
-),
-),
-),
-
-const SizedBox(width: 9),
-
-SizedBox(
-height: 42,
-width: 46,
-child: IconButton(
-onPressed: onTap,
-style: IconButton.styleFrom(
-backgroundColor: const Color(0xFF111827),
-foregroundColor: Colors.white,
-shape: RoundedRectangleBorder(
-borderRadius: BorderRadius.circular(10),
-),
-),
-icon: const Icon(
-Icons.arrow_forward_rounded,
-size: 18,
-),
-),
-),
-],
-),
-],
-),
-),
-),
-);
+              Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      height: 42,
+                      child: OutlinedButton.icon(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.phone_outlined,
+                          size: 16,
+                        ),
+                        label: const Text(
+                          'Call',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: const Color(0xFF374151),
+                          side: const BorderSide(
+                            color: Color(0xFFE5E7EB),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 9),
+                  Expanded(
+                    child: SizedBox(
+                      height: 42,
+                      child: OutlinedButton.icon(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.chat_bubble_outline_rounded,
+                          size: 16,
+                        ),
+                        label: const Text(
+                          'WhatsApp',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: const Color(0xFF374151),
+                          side: const BorderSide(
+                            color: Color(0xFFE5E7EB),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 9),
+                  SizedBox(
+                    height: 40,
+                    width: 40,
+                    child: IconButton(
+                      onPressed: onTap,
+                      style: IconButton.styleFrom(
+                        backgroundColor: const Color(0xFF111827),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      icon: const Icon(
+                        Icons.arrow_forward_rounded,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
-}
-

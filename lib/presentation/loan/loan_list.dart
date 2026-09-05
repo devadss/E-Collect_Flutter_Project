@@ -144,7 +144,8 @@ class _LoanListState extends State<LoanList> {
                   eCollectAgentEmail: widget.eCollectAgentEmail,
                   eCollectAgentBranchCode:widget. eCollectAgentBranchCode,
                   eCollectAgentMerchantID: widget.eCollectAgentMerchantID,
-                  eCollectCollectionType: "LOAN", eCollectToken: widget.eCollectToken),
+                  eCollectCollectionType: "LOAN", eCollectToken: widget.eCollectToken)
+                ,
 
                   ))).then((_) {
         if (!mounted) return;

@@ -337,8 +337,7 @@ class _NewQrCodePageState extends State<NewQrCodePage>
                                 BlocListener<PaymentTransactionBloc, TransactionState>(
                                   listener: (BuildContext context, TransactionState state) {
                                     if (state is TransactionReportSuccessState) {
-                                      final rawData = state
-                                          .transactionSuccessModel.transactionOkReport.data;
+                                      final rawData = state.transactionSuccessModel.transactionOkReport.data;
                                       print("ORDER ID = ${widget.orderID}");
                                       for (var orderid in rawData) {
                                         if (orderid.paymentGatewayTransactionId
@@ -378,7 +377,8 @@ class _NewQrCodePageState extends State<NewQrCodePage>
                                       }
                                     }
                                   },
-                                )
+                                  child: SizedBox.shrink(),
+                                ),
                               ],
                             ),
                           ),
