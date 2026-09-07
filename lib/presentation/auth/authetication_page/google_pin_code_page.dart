@@ -110,7 +110,10 @@ class _GooglePinCodePageState extends State<GooglePinCodePage> {
     if (fcmToken.isNotEmpty && authenticated == true) {
       print("State one");
       Navigator.push(context,
-          MaterialPageRoute(builder: (BuildContext context) => BottomNavBar()));
+          MaterialPageRoute(builder: (BuildContext context) =>
+
+              BottomNavBar()));
+              //BottomNavBarDummy()));
     } else if (fcmToken.isEmpty && authenticated == true) {
       print("State two");
       //  await saveFcmToken(custID, context, "GPIN", fcmToken, subAgentContactNum, mpin);

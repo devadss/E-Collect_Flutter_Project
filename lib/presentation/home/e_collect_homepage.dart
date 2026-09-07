@@ -1,15 +1,1420 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:e_Collect/core/colors.dart';
-import 'package:e_Collect/core/utils.dart';
 import 'package:e_Collect/domain/model/e_collect/transaction_report/transaction_ok_report.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import '../../data/e_collect_bloc/transaction_bloc/transaction_bloc.dart';
 
 class ECollectHomepage extends StatefulWidget {
+  final String eCollectUserName;
+  final String eCollectMerchantID;
+  final String eCollectToken;
+
+  const ECollectHomepage({
+    super.key,
+    required this.eCollectUserName,
+    required this.eCollectMerchantID,
+    required this.eCollectToken,
+  });
+
+  @override
+  State<ECollectHomepage> createState() => ECollectHomepageState();
+}
+
+class ECollectHomepageState extends State<ECollectHomepage> {
+  // ============================================================
+  // FINTECH COLORS
+  // ============================================================
+
+  static const Color _pageBg = Color(0xFFF5F7FA);
+  static const Color _cardBg = Colors.white;
+  static const Color _ink = Color(0xFF17202A);
+  static const Color _muted = Color(0xFF7A8491);
+  static const Color _border = Color(0xFFE5E9EE);
+
+  static const Color _navy = Color(0xFF14213D);
+  static const Color _blue = Color(0xFF2563EB);
+  static const Color _green = Color(0xFF16A34A);
+  static const Color _orange = Color(0xFFF59E0B);
+  static const Color _red = Color(0xFFDC2626);
+
+  // ============================================================
+  // DATA
+  // ============================================================
+
+  final List<Map<String, dynamic>> data = [
+    {
+      "label": "Successful",
+      "value": 35.0,
+      "color": _green,
+    },
+    {
+      "label": "Pending",
+      "value": 25.0,
+      "color": _orange,
+    },
+    {
+      "label": "Failed",
+      "value": 20.0,
+      "color": _red,
+    },
+  ];
+
+  List<PaymentTransaction> transactionData = [];
+
+  bool dialogStatus = false;
+
+  // Fallback chart data.
+  // Your actual transaction list is used when available.
+  final List<FlSpot> spots = const [
+    FlSpot(0, 3),
+    FlSpot(1, 4.5),
+    FlSpot(2, 3.8),
+    FlSpot(3, 6),
+    FlSpot(4, 5.2),
+    FlSpot(5, 7.5),
+    FlSpot(6, 6.8),
+    FlSpot(7, 8.8),
+    FlSpot(8, 15.8),
+  ];
+
+  final CarouselSliderController _carouselController =
+  CarouselSliderController();
+
+  int currentBannerIndex = 0;
+
+  String merchantID = "";
+  String selectedValue = "Today";
+  String name = "";
+  String formattedName = "";
+  String eCollectToken = "";
+
+  final List<String> filterItems = [
+    "Today",
+    "This Week",
+    "This Month",
+    "Last Month",
+  ];
+
+  final List<String> bannerImages = [
+    "assets/images/cq1.webp",
+    "assets/images/cq2.webp",
+    "assets/images/cq3.webp",
+    "assets/images/cq4.webp",
+    "assets/images/cq5.webp",
+    "assets/images/cq6.webp",
+    "assets/images/cq7.webp",
+  ];
+
+  // ============================================================
+  // LIFECYCLE
+  // ============================================================
+
+  @override
+  void initState() {
+    super.initState();
+    getSharedData();
+  }
+
+  // ============================================================
+  // API / BLOC
+  // ============================================================
+
+  void getSharedData() {
+    if (!mounted) return;
+
+    setState(() {
+      name = widget.eCollectUserName;
+
+      if (name.isNotEmpty) {
+        formattedName = name[0].toUpperCase() + name.substring(1).toLowerCase();
+      }
+    });
+
+    merchantID = widget.eCollectMerchantID;
+    eCollectToken = widget.eCollectToken;
+
+    getTransactionReport();
+  }
+
+  void getTransactionReport() {
+    if (merchantID.isEmpty || eCollectToken.isEmpty) {
+      return;
+    }
+
+    context.read<PaymentTransactionBloc>().add(
+      GetTransactionByMerchant(
+        merchantID,
+        eCollectToken,
+      ),
+    );
+  }
+
+  // ============================================================
+  // GREETING
+  // ============================================================
+
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+
+    if (hour < 12) {
+      return "Good morning";
+    }
+
+    if (hour < 17) {
+      return "Good afternoon";
+    }
+
+    return "Good evening";
+  }
+
+  // ============================================================
+  // MAIN BUILD
+  // ============================================================
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return Scaffold(
+      backgroundColor: _pageBg,
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: () async {
+            getTransactionReport();
+
+            await Future.delayed(
+              const Duration(milliseconds: 500),
+            );
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ------------------------------------------------
+                // HEADER
+                // ------------------------------------------------
+
+                _buildFintechHeader(context),
+
+                const SizedBox(height: 4),
+
+                // ------------------------------------------------
+                // MERCHANT COLLECTION CARD
+                // ------------------------------------------------
+
+                _buildCollectionCard(),
+
+                const SizedBox(height: 14),
+
+                // ------------------------------------------------
+                // PERIOD FILTER
+                // ------------------------------------------------
+
+                _buildPeriodSelector(),
+
+                const SizedBox(height: 14),
+
+                // ------------------------------------------------
+                // TRANSACTION SUMMARY
+                // ------------------------------------------------
+
+                _buildTransactionSummary(),
+
+                const SizedBox(height: 18),
+
+                // ------------------------------------------------
+                // TREND
+                // ------------------------------------------------
+
+                _buildCollectionTrend(),
+
+                const SizedBox(height: 18),
+
+                // ------------------------------------------------
+                // STATUS BREAKDOWN
+                // ------------------------------------------------
+
+                _buildStatusBreakdown(),
+
+                const SizedBox(height: 18),
+
+                // ------------------------------------------------
+                // PROMOTIONAL BANNER
+                // ------------------------------------------------
+
+                if (bannerImages.isNotEmpty)
+                  _buildSmallBanner(size),
+
+                const SizedBox(height: 24),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // FINTECH HEADER
+  // ============================================================
+
+  Widget _buildFintechHeader(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(18, 14, 18, 16),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          bottom: BorderSide(
+            color: _border,
+            width: 1,
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          // Merchant avatar
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: home1,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Center(
+              child: Text(
+                formattedName.isNotEmpty
+                    ? formattedName[0].toUpperCase()
+                    : "M",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+
+          const SizedBox(width: 12),
+
+          // Merchant information
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _getGreeting(),
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                    color: _muted,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  formattedName.isEmpty ? "Merchant" : formattedName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    color: _ink,
+                    letterSpacing: -0.2,
+                  ),
+                ),
+                if (merchantID.isNotEmpty) ...[
+                  const SizedBox(height: 3),
+                  Text(
+                    "MID: $merchantID",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 9.5,
+                      color: _muted,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+
+          const SizedBox(width: 10),
+
+          // Notification
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(10),
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("No new notifications"),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              },
+              child: Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF4F6F8),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: _border,
+                  ),
+                ),
+                child: const Icon(
+                  Icons.notifications_none_rounded,
+                  color: _ink,
+                  size: 21,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ============================================================
+  // COLLECTION CARD
+  // ============================================================
+
+  Widget _buildCollectionCard() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      child: BlocBuilder<PaymentTransactionBloc, TransactionState>(
+        builder: (context, state) {
+          String amount = "₹0.00";
+          String transactionCount = "0";
+
+          if (state is TransactionReportSuccessState) {
+            amount = NumberFormat.currency(
+              locale: 'en_IN',
+              symbol: '₹',
+              decimalDigits: 2,
+            ).format(state.finalTotal);
+
+            transactionCount = state
+                .transactionSuccessModel
+                .transactionOkReport
+                .pagination
+                .pageSize
+                .toString();
+          }
+
+          return Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: _navy.withValues(alpha: 0.7),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Expanded(
+                      child: Text(
+                        "COLLECTION VALUE",
+                        style: TextStyle(
+                          color: Color(0xFFB9C3D3),
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 1.1,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 9,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 6,
+                            height: 6,
+                            decoration: const BoxDecoration(
+                              color: _green,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 5),
+                          const Text(
+                            "LIVE",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 9,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 12),
+
+                Text(
+                  amount,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 29,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.7,
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                Container(
+                  height: 1,
+                  color: Colors.white.withValues(alpha: 0.10),
+                ),
+
+                const SizedBox(height: 14),
+
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.receipt_long_outlined,
+                      color: Color(0xFFAEB9CA),
+                      size: 16,
+                    ),
+                    const SizedBox(width: 7),
+                    const Text(
+                      "Transactions",
+                      style: TextStyle(
+                        color: Color(0xFFAEB9CA),
+                        fontSize: 11,
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      transactionCount,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  // ============================================================
+  // PERIOD SELECTOR
+  // ============================================================
+
+  Widget _buildPeriodSelector() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          const Text(
+            "Overview",
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w700,
+              color: _ink,
+            ),
+          ),
+
+          const Spacer(),
+
+          PopupMenuButton<String>(
+            initialValue: selectedValue,
+            onSelected: (value) {
+              setState(() {
+                selectedValue = value;
+              });
+
+              // If your API supports period filtering,
+              // call it here.
+              //
+              // getTransactionReport();
+            },
+            offset: const Offset(0, 42),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            itemBuilder: (context) {
+              return filterItems.map(
+                    (item) {
+                  return PopupMenuItem<String>(
+                    value: item,
+                    child: Row(
+                      children: [
+                        if (selectedValue == item)
+                          const Icon(
+                            Icons.check,
+                            size: 16,
+                            color: _blue,
+                          )
+                        else
+                          const SizedBox(width: 16),
+                        const SizedBox(width: 7),
+                        Text(
+                          item,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ).toList();
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 11,
+                vertical: 8,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(7),
+                border: Border.all(
+                  color: _border,
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    selectedValue,
+                    style: const TextStyle(
+                      color: _ink,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  const Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    size: 17,
+                    color: _muted,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ============================================================
+  // TRANSACTION SUMMARY
+  // ============================================================
+
+  Widget _buildTransactionSummary() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: BlocBuilder<PaymentTransactionBloc, TransactionState>(
+        builder: (context, state) {
+          String totalTransactions = "0";
+          String successful = "0";
+          String pending = "0";
+          String failed = "0";
+
+          if (state is TransactionReportSuccessState) {
+            totalTransactions = state
+                .transactionSuccessModel
+                .transactionOkReport
+                .pagination
+                .pageSize
+                .toString();
+
+            successful = state.successCount.toString();
+            pending = state.pendingCount.toString();
+            failed = state.failCount.toString();
+          }
+
+          return Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: _metricCard(
+                      title: "TOTAL",
+                      value: totalTransactions,
+                      icon: Icons.receipt_long_outlined,
+                      iconColor: _blue,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _metricCard(
+                      title: "SUCCESSFUL",
+                      value: successful,
+                      icon: Icons.check_circle_outline_rounded,
+                      iconColor: _green,
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 10),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: _metricCard(
+                      title: "PENDING",
+                      value: pending,
+                      icon: Icons.schedule_outlined,
+                      iconColor: _orange,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _metricCard(
+                      title: "FAILED",
+                      value: failed,
+                      icon: Icons.cancel_outlined,
+                      iconColor: _red,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  // ============================================================
+  // METRIC CARD
+  // ============================================================
+
+  Widget _metricCard({
+    required String title,
+    required String value,
+    required IconData icon,
+    required Color iconColor,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: _cardBg,
+        borderRadius: BorderRadius.circular(9),
+        border: Border.all(
+          color: _border,
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: iconColor.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(7),
+            ),
+            child: Icon(
+              icon,
+              color: iconColor,
+              size: 17,
+            ),
+          ),
+
+          const SizedBox(width: 10),
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.5,
+                    color: _muted,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: _ink,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ============================================================
+  // COLLECTION TREND
+  // ============================================================
+
+  Widget _buildCollectionTrend() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(15, 15, 10, 10),
+        decoration: BoxDecoration(
+          color: _cardBg,
+          borderRadius: BorderRadius.circular(9),
+          border: Border.all(
+            color: _border,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "TRANSACTION TREND",
+                        style: TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.8,
+                          color: _muted,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        "Collection activity",
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: _ink,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  Icons.show_chart_rounded,
+                  size: 19,
+                  color: home1,
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            SizedBox(
+              height: 210,
+              child: BlocConsumer<PaymentTransactionBloc, TransactionState>(
+                listener: (context, state) {
+                  if (state is TransactionReportLoaderState) {
+                    if (!dialogStatus) {
+                      dialogStatus = true;
+                    //  showProgressDialog(context);
+                    }
+                  }
+
+                  if (state is TransactionReportSuccessState ||
+                      state is TransactionReportFailureState) {
+                    if (dialogStatus) {
+                      dialogStatus = false;
+
+                      if (Navigator.canPop(context)) {
+                      //  Navigator.pop(context);
+                      }
+                    }
+                  }
+                },
+                builder: (context, state) {
+                  if (state is TransactionReportSuccessState) {
+                    transactionData = state
+                        .transactionSuccessModel
+                        .transactionOkReport
+                        .data;
+
+                    if (transactionData.isEmpty) {
+                      return _emptyChartCard();
+                    }
+
+                    return _buildActualChart();
+                  }
+
+                  if (state is TransactionReportFailureState) {
+                    return _emptyChartCard(
+                      message: "Unable to load transaction data",
+                    );
+                  }
+
+                  return _emptyChartCard(
+                    message: "Loading transaction data...",
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // ACTUAL CHART
+  // ============================================================
+
+  Widget _buildActualChart() {
+    final List<FlSpot> chartSpots = [];
+
+    final int count = transactionData.length > 10
+        ? 10
+        : transactionData.length;
+
+    for (int i = 0; i < count; i++) {
+      chartSpots.add(
+        FlSpot(
+          i.toDouble(),
+          (i + 1).toDouble(),
+        ),
+      );
+    }
+
+    if (chartSpots.isEmpty) {
+      return _emptyChartCard();
+    }
+
+    double maxY = 0;
+
+    for (final spot in chartSpots) {
+      if (spot.y > maxY) {
+        maxY = spot.y;
+      }
+    }
+
+    if (maxY < 5) {
+      maxY = 5;
+    }
+
+    return LineChart(
+      LineChartData(
+        minX: 0,
+        maxX: chartSpots.length > 1
+            ? (chartSpots.length - 1).toDouble()
+            : 1,
+        minY: 0,
+        maxY: maxY + 1,
+
+        gridData: FlGridData(
+          show: true,
+          drawVerticalLine: false,
+          horizontalInterval: maxY > 10 ? 5 : 1,
+          getDrawingHorizontalLine: (value) {
+            return FlLine(
+              color: _border,
+              strokeWidth: 1,
+            );
+          },
+        ),
+
+        borderData: FlBorderData(
+          show: false,
+        ),
+
+        titlesData: FlTitlesData(
+          topTitles: const AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: false,
+            ),
+          ),
+          rightTitles: const AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: false,
+            ),
+          ),
+
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 28,
+              interval: maxY > 10 ? 5 : 1,
+              getTitlesWidget: (value, meta) {
+                return Text(
+                  value.toInt().toString(),
+                  style: const TextStyle(
+                    fontSize: 9,
+                    color: _muted,
+                  ),
+                );
+              },
+            ),
+          ),
+
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 24,
+              interval: 1,
+              getTitlesWidget: (value, meta) {
+                final index = value.toInt();
+
+                if (index < 0 || index >= transactionData.length) {
+                  return const SizedBox();
+                }
+
+                String label = "";
+
+                try {
+                  final createdAt =
+                  transactionData[index].createdAt.toString();
+
+                  if (createdAt.length >= 10) {
+                    label = createdAt.substring(5, 10);
+                  } else {
+                    label = createdAt;
+                  }
+                } catch (_) {
+                  label = "${index + 1}";
+                }
+
+                return Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: Text(
+                    label,
+                    style: const TextStyle(
+                      fontSize: 8.5,
+                      color: _muted,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+
+        lineTouchData: LineTouchData(
+          handleBuiltInTouches: true,
+          touchTooltipData: LineTouchTooltipData(
+            getTooltipColor: (touchedSpot) {
+              return _navy;
+            },
+          ),
+        ),
+
+        lineBarsData: [
+          LineChartBarData(
+            spots: chartSpots,
+            isCurved: true,
+            curveSmoothness: 0.25,
+            barWidth: 2.5,
+            color: home1.withValues(alpha: 0.6),
+            isStrokeCapRound: true,
+
+            dotData: const FlDotData(
+              show: false,
+            ),
+
+            belowBarData: BarAreaData(
+              show: true,
+              gradient: LinearGradient(
+                colors: [
+                  home1.withValues(alpha: 0.15),
+                  home1.withValues(alpha: 0.01),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ============================================================
+  // EMPTY CHART
+  // ============================================================
+
+  Widget _emptyChartCard({
+    String message = "No transaction data available",
+  }) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: _blue.withValues(alpha: 0.07),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.bar_chart_rounded,
+              color: _blue,
+              size: 20,
+            ),
+          ),
+          const SizedBox(height: 9),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: _muted,
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ============================================================
+  // STATUS BREAKDOWN
+  // ============================================================
+
+  Widget _buildStatusBreakdown() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: BlocBuilder<PaymentTransactionBloc, TransactionState>(
+        builder: (context, state) {
+          int successful = 0;
+          int pending = 0;
+          int failed = 0;
+
+          if (state is TransactionReportSuccessState) {
+            successful = state.successCount;
+            pending = state.pendingCount;
+            failed = state.failCount;
+          }
+
+          final int total = successful + pending + failed;
+
+          double successPercentage = 0;
+          double pendingPercentage = 0;
+          double failedPercentage = 0;
+
+          if (total > 0) {
+            successPercentage = successful / total;
+            pendingPercentage = pending / total;
+            failedPercentage = failed / total;
+          }
+
+          return Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: _cardBg,
+              borderRadius: BorderRadius.circular(9),
+              border: Border.all(
+                color: _border,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "PAYMENT STATUS",
+                            style: TextStyle(
+                              fontSize: 9,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.8,
+                              color: _muted,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            "Transaction health",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              color: _ink,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 18),
+
+                // Progress bar
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: SizedBox(
+                    height: 7,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: successful > 0 ? successful : 1,
+                          child: Container(
+                            color: _green,
+                          ),
+                        ),
+                        Expanded(
+                          flex: pending > 0 ? pending : 1,
+                          child: Container(
+                            color: _orange,
+                          ),
+                        ),
+                        Expanded(
+                          flex: failed > 0 ? failed : 1,
+                          child: Container(
+                            color: _red,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                _statusRow(
+                  label: "Successful",
+                  count: successful,
+                  percentage: successPercentage,
+                  color: _green,
+                  icon: Icons.check_circle_outline_rounded,
+                ),
+
+                const SizedBox(height: 12),
+
+                _statusRow(
+                  label: "Pending",
+                  count: pending,
+                  percentage: pendingPercentage,
+                  color: _orange,
+                  icon: Icons.schedule_outlined,
+                ),
+
+                const SizedBox(height: 12),
+
+                _statusRow(
+                  label: "Failed",
+                  count: failed,
+                  percentage: failedPercentage,
+                  color: _red,
+                  icon: Icons.cancel_outlined,
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  // ============================================================
+  // STATUS ROW
+  // ============================================================
+
+  Widget _statusRow({
+    required String label,
+    required int count,
+    required double percentage,
+    required Color color,
+    required IconData icon,
+  }) {
+    final String percentageText =
+        "${(percentage * 100).toStringAsFixed(0)}%";
+
+    return Row(
+      children: [
+        Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Icon(
+            icon,
+            color: color,
+            size: 16,
+          ),
+        ),
+
+        const SizedBox(width: 10),
+
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      color: _ink,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    count.toString(),
+                    style: const TextStyle(
+                      color: _ink,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 3),
+              Text(
+                percentageText,
+                style: const TextStyle(
+                  color: _muted,
+                  fontSize: 9,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ============================================================
+  // SMALL BANNER
+  // ============================================================
+
+  Widget _buildSmallBanner(Size size) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: [
+          CarouselSlider.builder(
+            carouselController: _carouselController,
+            itemCount: bannerImages.length,
+            options: CarouselOptions(
+              height: size.height * 0.13,
+              autoPlay: true,
+              autoPlayInterval: const Duration(seconds: 5),
+              autoPlayAnimationDuration:
+              const Duration(milliseconds: 600),
+              autoPlayCurve: Curves.easeOutCubic,
+              viewportFraction: 1,
+              enlargeCenterPage: false,
+              padEnds: false,
+              onPageChanged: (index, reason) {
+                if (!mounted) return;
+
+                setState(() {
+                  currentBannerIndex = index;
+                });
+              },
+            ),
+            itemBuilder: (context, index, realIndex) {
+              return Container(
+                margin: const EdgeInsets.only(
+                  top: 2,
+                  bottom: 2,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: _border,
+                  ),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset(
+                    bannerImages[index],
+                    width: double.infinity,
+                    height: double.infinity,
+                    fit: BoxFit.cover,
+                    filterQuality: FilterQuality.high,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: const Color(0xFFF0F3F6),
+                        alignment: Alignment.center,
+                        child: const Icon(
+                          Icons.image_not_supported_outlined,
+                          color: _muted,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
+          ),
+
+          const SizedBox(height: 8),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              bannerImages.length,
+                  (index) {
+                final bool isActive =
+                    currentBannerIndex == index;
+
+                return AnimatedContainer(
+                  duration: const Duration(
+                    milliseconds: 220,
+                  ),
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 2.5,
+                  ),
+                  width: isActive ? 16 : 5,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: isActive
+                        ? _blue
+                        : const Color(0xFFD5DAE0),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/*class ECollectHomepage extends StatefulWidget {
   final String eCollectUserName;
   final String eCollectMerchantID;
   final String eCollectToken;
@@ -467,7 +1872,7 @@ bool dialogStatus = false;
     );
   }
 
-/*  Widget transactionDataCard(
+*//*  Widget transactionDataCard(
       String label,
       String value, {
         required IconData icon,
@@ -553,7 +1958,7 @@ bool dialogStatus = false;
         ],
       ),
     );
-  }*/
+  }*//*
 
   final List<String> bannerImages = [
     "assets/images/cq1.webp",
@@ -806,7 +2211,7 @@ bool dialogStatus = false;
         );
   }
 
-  /* Widget _buildAnimatedHeader(BuildContext context, Size size) {
+  *//* Widget _buildAnimatedHeader(BuildContext context, Size size) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 18),
@@ -916,149 +2321,7 @@ bool dialogStatus = false;
       end: 0,
       curve: Curves.easeOutCubic,
     );
-  }*/
-}
+  }*//*
+}*/
 
-/*
-  Widget _buildAnimatedBannerCarousel(Size size) {
-    return SizedBox(
-      height: size.height * 0.15,
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          CarouselSlider(
-            carouselController: _carouselController,
-            options: CarouselOptions(
-              height: size.height * 0.15,
-              autoPlay: true,
-              enlargeCenterPage: true,
-              viewportFraction: 0.8,
-              autoPlayInterval: 3.seconds,
-              autoPlayAnimationDuration: 1200.ms,
-              onPageChanged: (index, reason) {
-                setState(() {
-                  currentBannerIndex = index;
-                });
-              },
-            ),
-            items: bannerImages.map((imagePath) {
-              return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                    image: AssetImage(imagePath),
-                    fit: BoxFit.fitWidth,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.2),
-                      blurRadius: 5,
-                      spreadRadius: 2,
-                    ),
-                  ],
-                ),
-              ).animate().scale(
-                begin: const Offset(0.9, 0.9),
-                duration: 500.ms,
-              );
-            }).toList(),
-          ),
-          Positioned(
-            bottom: 5,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: bannerImages.asMap().entries.map((entry) {
-                return AnimatedContainer(
-                  duration: 300.ms,
-                  width: currentBannerIndex == entry.key ? 20 : 8,
-                  height: 15,
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    color: currentBannerIndex == entry.key
-                        ? Colors.red
-                        : Colors.red.withValues(alpha: 0.5),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-*/
-/*
-  Widget _buildAnimatedHeader(BuildContext context, Size size) {
 
-    final headerColor =Colors.white;
-    return AnimatedContainer(
-      duration: 100.ms,
-      curve: Curves.easeInOut,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: headerColor,
-      ),
-      child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-
-            /// HEADER TEXT
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 2),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      /// GREETING SMALL
-
-                      Text(
-                        "Welcome back",
-                        style: TextStyle(
-                          color: Colors.black.withValues(alpha: 0.8),
-                          fontSize: 13,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-
-                      const SizedBox(height: 4),
-
-                      /// USER NAME
-
-                      Text(
-                        "Hi, $formattedName ",
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFFEA307B),
-                          letterSpacing: 0.3,
-                        ),
-                      ).animate().fadeIn(duration: 100.ms).slideX(begin: -0.9),
-
-                      const SizedBox(height: 4),
-
-                      /// OPTIONAL SUBTEXT
-                      Text(
-                        "Here's your collection overview",
-                        style: TextStyle(
-                          color: Colors.black.withValues(alpha: 0.75),
-                          fontSize: 12,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-
-              ],
-            ),
-
-          ],
-        ),
-      ),
-    );
-  }
-*/

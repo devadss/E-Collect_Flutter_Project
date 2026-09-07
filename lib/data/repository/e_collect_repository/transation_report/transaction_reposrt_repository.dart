@@ -40,7 +40,7 @@ class TransactionReportRepository {
 
     print("TransactionReport ${request.body}");
     print(
-        "https://dev.collect.org.in/api/Payment/transaction-history?merchantId=$merchantID&fromDate=$fromDate&toDate=$toDate&status=$status");
+        "${baseURl}api/Payment/transaction-history?merchantId=$merchantID&fromDate=$fromDate&toDate=$toDate&status=$status");
     if (request.statusCode == 200) {
       return TransactionSuccessModel(
           TransactionOkReport.fromJson(jsonDecode(request.body)));

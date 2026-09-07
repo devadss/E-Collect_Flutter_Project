@@ -531,6 +531,177 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
     final loan = widget.integratedLoanDetailModel;
 
     return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: const Color(0xFFE9ECF2),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 16,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Avatar
+              Container(
+                width: 58,
+                height: 58,
+                decoration: BoxDecoration(
+                  color: home1.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(17),
+                ),
+                child: const Icon(
+                  Icons.person_rounded,
+                  color: home1,
+                  size: 30,
+                ),
+              ),
+
+              const SizedBox(width: 14),
+
+              // Customer details
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      loan.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF172033),
+                        letterSpacing: -0.2,
+                      ),
+                    ),
+
+                    const SizedBox(height: 5),
+
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.badge_outlined,
+                          size: 14,
+                          color: Color(0xFF8A93A5),
+                        ),
+                        const SizedBox(width: 5),
+                        Flexible(
+                          child: Text(
+                            loan.custNo,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF697386),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(width: 10),
+
+              // Status
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 7,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFEAF8F0),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: const Color(0xFFD4F0DF),
+                  ),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.check_circle_rounded,
+                      size: 14,
+                      color: Color(0xFF159957),
+                    ),
+                    SizedBox(width: 5),
+                    Text(
+                      "Active",
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF159957),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 18),
+
+          // Customer ID strip
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 13,
+              vertical: 11,
+            ),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF8F9FC),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                const Text(
+                  "CUSTOMER ID",
+                  style: TextStyle(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.7,
+                    color: Color(0xFF8A93A5),
+                  ),
+                ),
+                const Spacer(),
+                Flexible(
+                  child: Text(
+                    loan.custNo,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF30394A),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+ /* Widget _buildCustomerHeader() {
+    final loan = widget.integratedLoanDetailModel;
+
+    return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -619,13 +790,192 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
         ],
       ),
     );
-  }
+  }*/
 
   // ============================================================
   // OUTSTANDING CARD
   // ============================================================
 
   Widget _buildOutstandingCard() {
+    final loan = widget.integratedLoanDetailModel;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: const Color(0xFFE9ECF2),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.035),
+            blurRadius: 18,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Row(
+            children: [
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF4E5),
+                  borderRadius: BorderRadius.circular(11),
+                ),
+                child: const Icon(
+                  Icons.account_balance_wallet_outlined,
+                  size: 20,
+                  color: Color(0xFFE59A23),
+                ),
+              ),
+
+              const SizedBox(width: 11),
+
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Total Outstanding",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF172033),
+                      ),
+                    ),
+                    SizedBox(height: 3),
+                    Text(
+                      "Current amount payable",
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Color(0xFF8A93A5),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Due indicator
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF4E5),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.circle,
+                      size: 6,
+                      color: Color(0xFFE59A23),
+                    ),
+                    SizedBox(width: 5),
+                    Text(
+                      "Due",
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFFD48816),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 20),
+
+          // Outstanding amount
+          Text(
+            "₹ ${formatAmount(totalOutstanding.toStringAsFixed(2))}",
+            style: const TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -0.8,
+              color: Color(0xFF172033),
+            ),
+          ),
+
+          const SizedBox(height: 5),
+
+          const Text(
+            "Total amount remaining on this loan",
+            style: TextStyle(
+              fontSize: 11,
+              color: Color(0xFF8A93A5),
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          // Breakdown
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 14,
+            ),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF8F9FC),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: _buildOutstandingMiniItem(
+                    "Principal",
+                    formatAmount(
+                      loan.principalAmountBalance
+                          .toStringAsFixed(2),
+                    ),
+                  ),
+                ),
+
+                _buildVerticalDivider(),
+
+                Expanded(
+                  child: _buildOutstandingMiniItem(
+                    "Interest",
+                    formatAmount(
+                      loan.interestAmountBalance
+                          .toStringAsFixed(2),
+                    ),
+                  ),
+                ),
+
+                _buildVerticalDivider(),
+
+                Expanded(
+                  child: _buildOutstandingMiniItem(
+                    "Penal",
+                    formatAmount(
+                      loan.penalInterestAmountBalance
+                          .toStringAsFixed(2),
+                    ),
+
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+/*  Widget _buildOutstandingCard() {
     final loan = widget.integratedLoanDetailModel;
 
     return Container(
@@ -746,40 +1096,9 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
         ],
       ),
     );
-  }
+  }*/
 
-  Widget _buildOutstandingMiniItem(
-      String title,
-      String value,
-      ) {
-    return Column(
-      crossAxisAlignment:
-      CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            color:
-            Colors.white.withValues(alpha: 0.9),
-            fontSize: 10,
-          ),
-        ),
-
-        const SizedBox(height: 4),
-
-        Text(
-          "₹ $value",
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ],
-    );
-  }
+  Widget _buildOutstandingMiniItem( String label, String value, { bool isWarning = false, }) { return Column( mainAxisSize: MainAxisSize.min, children: [ Text( label, style: const TextStyle( fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xFF8A93A5), ), ), const SizedBox(height: 5), Text( value, maxLines: 1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center, style: TextStyle( fontSize: 13, fontWeight: FontWeight.w700, color: isWarning ? const Color(0xFFD48816) : const Color(0xFF30394A), ), ), ], ); }
 
   Widget _buildVerticalDivider() {
     return Container(
@@ -797,6 +1116,250 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
   // ============================================================
 
   Widget _buildPaymentBreakdown() {
+    final loan = widget.integratedLoanDetailModel;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: const Color(0xFFE9ECF2),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 16,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Row(
+            children: [
+              Container(
+                height: 38,
+                width: 38,
+                decoration: BoxDecoration(
+                  color: home1.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(11),
+                ),
+                child: const Icon(
+                  Icons.account_balance_wallet_outlined,
+                  size: 20,
+                  color: home1,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Payment Breakdown",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF172033),
+                      ),
+                    ),
+                    SizedBox(height: 3),
+                    Text(
+                      "Received & outstanding amounts",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFF8A93A5),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 20),
+
+          // Principal
+          _buildPaymentGroup(
+            title: "Principal",
+            icon: Icons.payments_outlined,
+            receivedLabel: "Received",
+            receivedValue:
+            formatAmount(loan.principalAmountReceived.toString()),
+            balanceLabel: "Outstanding",
+            balanceValue:
+            formatAmount(loan.principalAmountBalance.toString()),
+          ),
+
+          const SizedBox(height: 12),
+
+          // Interest
+          _buildPaymentGroup(
+            title: "Interest",
+            icon: Icons.percent_rounded,
+            receivedLabel: "Received",
+            receivedValue:
+            formatAmount(loan.interestAmountReceived.toString()),
+            balanceLabel: "Outstanding",
+            balanceValue:
+            formatAmount(loan.interestAmountBalance.toString()),
+          ),
+
+          const SizedBox(height: 12),
+
+          // Penal Interest
+          _buildPaymentGroup(
+            title: "Penal Interest",
+            icon: Icons.warning_amber_rounded,
+            receivedLabel: "Received",
+            receivedValue:
+            formatAmount(loan.penalInterestAmountReceived.toString()),
+            balanceLabel: "Outstanding",
+            balanceValue:
+            formatAmount(loan.penalInterestAmountBalance.toString()),
+            isWarning: true,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPaymentGroup({
+    required String title,
+    required IconData icon,
+    required String receivedLabel,
+    required String receivedValue,
+    required String balanceLabel,
+    required String balanceValue,
+    bool isWarning = false,
+  }) {
+    final accentColor = isWarning
+        ? const Color(0xFFE59A23)
+        : const Color(0xFF4169E1);
+
+    final backgroundColor = isWarning
+        ? const Color(0xFFFFF8EC)
+        : const Color(0xFFF8F9FC);
+
+    return Container(
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: isWarning
+              ? const Color(0xFFF7E5C2)
+              : const Color(0xFFEEF0F5),
+        ),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                height: 32,
+                width: 32,
+                decoration: BoxDecoration(
+                  color: isWarning
+                      ? const Color(0xFFFFEBC7)
+                      : const Color(0xFFEAF0FF),
+                  borderRadius: BorderRadius.circular(9),
+                ),
+                child: Icon(
+                  icon,
+                  size: 17,
+                  color: accentColor,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF30394A),
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 14),
+
+          Row(
+            children: [
+              Expanded(
+                child: _buildAmountItem(
+                  label: receivedLabel,
+                  value: receivedValue,
+                ),
+              ),
+              Container(
+                height: 32,
+                width: 1,
+                color: const Color(0xFFE1E4EA),
+              ),
+              Expanded(
+                child: _buildAmountItem(
+                  label: balanceLabel,
+                  value: balanceValue,
+                  isBalance: true,
+                  isWarning: isWarning,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAmountItem({
+    required String label,
+    required String value,
+    bool isBalance = false,
+    bool isWarning = false,
+  }) {
+    return Padding(
+      padding: EdgeInsets.only(
+        left: isBalance ? 15 : 0,
+        right: isBalance ? 0 : 15,
+      ),
+      child: Column(
+        crossAxisAlignment:
+        isBalance ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+              color: Color(0xFF8A93A5),
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: isWarning
+                  ? const Color(0xFFD48816)
+                  : isBalance
+                  ? const Color(0xFF172033)
+                  : const Color(0xFF263247),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+/*  Widget _buildPaymentBreakdown() {
     final loan = widget.integratedLoanDetailModel;
 
     return Container(
@@ -868,7 +1431,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
         ],
       ),
     );
-  }
+  }*/
 
   Widget _buildFinancialRow(
       String title,
@@ -952,6 +1515,234 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
   // ============================================================
 
   Widget _buildLoanInformation() {
+    final loan = widget.integratedLoanDetailModel;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: const Color(0xFFE9ECF2),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 16,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Row(
+            children: [
+              Container(
+                height: 38,
+                width: 38,
+                decoration: BoxDecoration(
+                  color: home1.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(11),
+                ),
+                child: const Icon(
+                  Icons.description_outlined,
+                  size: 20,
+                  color: home1,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Loan Information",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF172033),
+                      ),
+                    ),
+                    SizedBox(height: 3),
+                    Text(
+                      "Details of your loan",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFF8A93A5),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 20),
+
+          // Loan amount highlight
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF7F9FF),
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(
+                color: home1.withValues(alpha: 0.1),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "LOAN AMOUNT",
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.8,
+                    color: Color(0xFF8A93A5),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  "₹ ${formatAmount(loan.loanAmount)}",
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFF172033),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 14),
+
+          // Information grid
+          Row(
+            children: [
+              Expanded(
+                child: _buildLoanInfoItem(
+                  icon: Icons.confirmation_number_outlined,
+                  label: "Loan Number",
+                  value: loan.loanNumber,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildLoanInfoItem(
+                  icon: Icons.category_outlined,
+                  label: "Loan Type",
+                  value: loan.loanType,
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 12),
+
+          Row(
+            children: [
+              Expanded(
+                child: _buildLoanInfoItem(
+                  icon: Icons.calendar_today_outlined,
+                  label: "Loan Date",
+                  value: loan.loanDate,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildLoanInfoItem(
+                  icon: Icons.schedule_outlined,
+                  label: "Loan Period",
+                  value: loan.loanPeriod,
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 12),
+
+          Row(
+            children: [
+              Expanded(
+                child: _buildLoanInfoItem(
+                  icon: Icons.percent_outlined,
+                  label: "Interest Rate",
+                  value: loan.loanInterest,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: SizedBox(),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoanInfoItem({
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(13),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8F9FC),
+        borderRadius: BorderRadius.circular(13),
+        border: Border.all(
+          color: const Color(0xFFEEF0F5),
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            icon,
+            size: 17,
+            color: const Color(0xFF7B8495),
+          ),
+          const SizedBox(width: 9),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF8A93A5),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF30394A),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+/*  Widget _buildLoanInformation() {
     final loan =
         widget.integratedLoanDetailModel;
 
@@ -998,7 +1789,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
         ],
       ),
     );
-  }
+  }*/
 
   Widget _buildInfoRow(
       String title,
@@ -1591,7 +2382,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                   style: TextStyle(
                     fontSize: 19,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF172033),
+                    color: home1,
                   ),
                 ),
 
@@ -1676,7 +2467,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                           side:
                           const BorderSide(
                             color:
-                            Color(0xFF3157D5),
+                            home1,
                           ),
                           shape:
                           RoundedRectangleBorder(
@@ -1691,7 +2482,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                           style:
                           TextStyle(
                             color:
-                            Color(0xFF3157D5),
+                            home1,
                             fontWeight:
                             FontWeight.w600,
                           ),
@@ -1719,8 +2510,7 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
                         ElevatedButton
                             .styleFrom(
                           backgroundColor:
-                          const Color(
-                              0xFF3157D5),
+                          home1,
                           foregroundColor:
                           Colors.white,
                           elevation: 0,

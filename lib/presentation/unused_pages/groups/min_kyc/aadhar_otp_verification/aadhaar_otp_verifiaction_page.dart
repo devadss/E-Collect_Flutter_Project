@@ -256,7 +256,6 @@
 //             ScaleTransition(
 //               scale: _animation,
 //               child: Image.asset(
-//                 "assets/images/verify_otp.jpeg",
 //                 height: screenHeight * 0.25,
 //               ),
 //             ),

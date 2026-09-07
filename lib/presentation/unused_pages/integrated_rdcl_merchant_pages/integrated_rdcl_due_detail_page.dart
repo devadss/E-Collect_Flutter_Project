@@ -675,7 +675,6 @@
 //                           color: home2,
 //                         )
 //                             : Image.asset(
-//                           "assets/images/rupee_6414183.png",
 //                           scale: 10,
 //                         ),
 //                       ),

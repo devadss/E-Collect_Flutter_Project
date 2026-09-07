@@ -35,7 +35,7 @@ class IntegratedLoanDetailRepository implements IntegratedLoanDetailInterface{
     //   "demandDate": demandDate,
     //   "account_no": accountNumber
     // });
-    //print(request.body);
+    print(request.body);
     if(request.statusCode == 200){
       return Right(IntegratedLoanDetails.fromJson(jsonDecode(request.body)));
     }else{

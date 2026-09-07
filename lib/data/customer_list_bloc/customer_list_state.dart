@@ -21,7 +21,7 @@ class CustomerListFailState extends CustomerListState{
   const CustomerListFailState(this.customerListFailModel);
 }
 
-//------------------------------------------------------------
+//-------------------------RD-----------------------------------
 class RdCustomerListLoaderState extends CustomerListState{
   const RdCustomerListLoaderState();
 }
@@ -35,8 +35,22 @@ class RdCustomerListFailState extends CustomerListState{
   final RdCustomerListFailModel rdCustomerListFailModel;
   const RdCustomerListFailState(this.rdCustomerListFailModel);
 }
-//-----------------------------------------------------------------
+//----------------------RD FILTER-------------------------------------------
 class RdCustomerListFilteredState extends CustomerListState{
   final RdCustomerListSuccessModel rdCustomerListSuccessModel;
   const RdCustomerListFilteredState(this.rdCustomerListSuccessModel);
+}
+//-------------------------LOAN-----------------------------------
+class LoanCustomerListLoaderState extends CustomerListState{
+  const LoanCustomerListLoaderState();
+}
+
+class LoanCustomerListSuccessState extends CustomerListState{
+  final LoanCustomerListSuccessModel loanCustomerListSuccessModel;
+  const LoanCustomerListSuccessState(this.loanCustomerListSuccessModel);
+}
+
+class LoanCustomerListFailState extends CustomerListState{
+  final LoanCustomerListFailModel loanCustomerListFailModel;
+  const LoanCustomerListFailState(this.loanCustomerListFailModel);
 }

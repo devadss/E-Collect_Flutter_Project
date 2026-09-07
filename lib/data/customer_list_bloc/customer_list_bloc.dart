@@ -11,6 +11,7 @@ class CustomerListBloc extends Bloc<CustomerListEvent, CustomerListState> {
   RdCustomerListSuccessModel? _originalRdCustomerList;
   CustomerListBloc(this.customerListRepo)
       : super(const CustomerListInitialState()) {
+
     on<CustomerListFetchEvent>((event, emit) async {
       emit(CustomerListLoaderState());
       final data = await customerListRepo.fetchCustList(
@@ -51,11 +52,10 @@ class CustomerListBloc extends Bloc<CustomerListEvent, CustomerListState> {
 
       final originalData = _originalRdCustomerList!;
 
-      final filteredCustomers = originalData.rdCustomerListModel.data
-          .where((customer) {
+      final filteredCustomers =
+          originalData.rdCustomerListModel.data.where((customer) {
         final name = (customer.custName ?? '').toLowerCase();
-        final accNo =
-            customer.depGlobalAccNo?.toString().toLowerCase() ?? '';
+        final accNo = customer.depGlobalAccNo?.toString().toLowerCase() ?? '';
 
         final query = event.filterName.toLowerCase().trim();
 
@@ -71,15 +71,23 @@ class CustomerListBloc extends Bloc<CustomerListEvent, CustomerListState> {
       // Create filtered model
       final filteredCustomerModel = AgentCustomerDetailsModel(
         // your other required fields here
-        data: filteredCustomers, totalCount:filteredCustomers.length ,
+        data: filteredCustomers, totalCount: filteredCustomers.length,
       );
 
-      final filteredResult =
-      RdCustomerListSuccessModel(filteredCustomerModel);
+      final filteredResult = RdCustomerListSuccessModel(filteredCustomerModel);
 
       emit(RdCustomerListFilteredState(filteredResult));
     });
+
+    on<LoanCustomerListFetchEvent>((event, emit) async {
+      var data = await customerListRepo.fetchLoanCutomerList(event.baseUrl,
+          event.agentId, event.branchId, event.schemeCode, event.accNo);
+
+      if (data is LoanCustomerListSuccessModel) {
+        emit(LoanCustomerListSuccessState(data));
+      } else if (data is LoanCustomerListFailModel) {
+        emit(LoanCustomerListFailState(data));
+      }
+    });
   }
-
-
 }

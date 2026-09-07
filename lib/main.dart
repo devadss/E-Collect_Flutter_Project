@@ -31,7 +31,6 @@ import 'data/repository/e_collect_repository/transation_report/transaction_repos
 import 'data/service/notification_service/firebase_notification_services.dart';
 import 'firebase_options.dart';
 
-
 final GlobalKey<ScaffoldMessengerState> snackBarKey =
     GlobalKey<ScaffoldMessengerState>();
 
@@ -43,7 +42,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -106,8 +104,6 @@ Future<void> main() async {
         ],
         child: MultiProvider(
           providers: [
-
-
             ChangeNotifierProvider(
               create: (_) => DeleteFcmProvider(
                 DeleteFcmTokenRepository(),

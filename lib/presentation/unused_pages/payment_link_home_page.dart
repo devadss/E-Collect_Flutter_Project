@@ -1293,7 +1293,6 @@
 //           child: Column(
 //             children: [
 //               Lottie.asset(
-//                 'assets/animations/empty.json',
 //                 width: 120,
 //                 height: 120,
 //               ),

@@ -1,12 +1,9 @@
-import 'dart:ui';
-import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import '../../data/provider/delete_fcm_provider.dart';
 import '../../data/storage/shared_pref_helper.dart';
 import '../../presentation/profile/widgets/contact_us_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/colors.dart';
 import '../splash_screen/splash_screen.dart';
 
 
@@ -44,9 +41,2062 @@ class ProfileData{
     required this.bearerToken
   });
 }
-
-
 class ProfileHomePage extends StatefulWidget {
+  final ProfileData profileData;
+
+  const ProfileHomePage({
+    super.key,
+    required this.profileData,
+  });
+
+  @override
+  State<ProfileHomePage> createState() => _ProfileHomePageState();
+}
+
+class _ProfileHomePageState extends State<ProfileHomePage> {
+  // ============================================================
+  // FINTECH COLORS
+  // ============================================================
+
+  static const Color primary = Color(0xFFEA307B);
+
+  static const Color navy = Color(0xFF111827);
+  static const Color navySoft = Color(0xFF1F2937);
+
+  static const Color background = Color(0xFFF5F6F8);
+  static const Color surface = Colors.white;
+
+  static const Color textDark = Color(0xFF111827);
+  static const Color textMedium = Color(0xFF667085);
+  static const Color textLight = Color(0xFF98A2B3);
+
+  static const Color border = Color(0xFFE4E7EC);
+
+  static const Color success = Color(0xFF12B76A);
+  static const Color blue = Color(0xFF2563EB);
+  static const Color purple = Color(0xFF7C3AED);
+  static const Color danger = Color(0xFFDC2626);
+
+  // ============================================================
+  // LOGOUT DIALOG
+  // ============================================================
+
+  Future<void> showLogoutDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierColor: Colors.black.withValues(alpha: 0.50),
+      builder: (dialogContext) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(22, 22, 22, 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // =================================================
+                  // ICON
+                  // =================================================
+
+                  Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      color: danger.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const Icon(
+                      Icons.logout_rounded,
+                      color: danger,
+                      size: 24,
+                    ),
+                  ),
+
+                  const SizedBox(height: 17),
+
+                  // =================================================
+                  // TITLE
+                  // =================================================
+
+                  Text(
+                    "Log out?",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(
+                      color: textDark,
+                      fontSize: 19,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+
+                  const SizedBox(height: 7),
+
+                  Text(
+                    "Are you sure you want to log out of your account?",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.inter(
+                      color: textMedium,
+                      fontSize: 12,
+                      height: 1.5,
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // =================================================
+                  // SECURITY INFO
+                  // =================================================
+
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 13,
+                      vertical: 11,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF8F9FB),
+                      borderRadius: BorderRadius.circular(11),
+                      border: Border.all(
+                        color: border,
+                      ),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(
+                          Icons.lock_outline_rounded,
+                          color: navySoft,
+                          size: 17,
+                        ),
+                        const SizedBox(width: 9),
+                        Expanded(
+                          child: Text(
+                            "Your account remains secure. You'll need to sign in again to continue.",
+                            style: GoogleFonts.inter(
+                              color: textMedium,
+                              fontSize: 10.5,
+                              height: 1.45,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // =================================================
+                  // BUTTONS
+                  // =================================================
+
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          height: 45,
+                          child: OutlinedButton(
+                            onPressed: () {
+                              Navigator.pop(dialogContext);
+                            },
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: textDark,
+                              side: const BorderSide(
+                                color: border,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(11),
+                              ),
+                            ),
+                            child: Text(
+                              "Cancel",
+                              style: GoogleFonts.inter(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(width: 10),
+
+                      Expanded(
+                        child: SizedBox(
+                          height: 45,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              performLogout(dialogContext);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: danger,
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              shadowColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(11),
+                              ),
+                            ),
+                            child: Text(
+                              "Log out",
+                              style: GoogleFonts.inter(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // ============================================================
+  // LOGOUT
+  // ============================================================
+
+  Future<void> performLogout(BuildContext context) async {
+    final fcmProvider = Provider.of<DeleteFcmProvider>(
+      context,
+      listen: false,
+    );
+
+    await fcmProvider.deleteFirebaseToken(
+      widget.profileData.agentCode!,
+      widget.profileData.mobileNumber!,
+      widget.profileData.eCollectFcmToken!,
+      widget.profileData.bearerToken!,
+    );
+
+    await SharedPref.shared.clearAll();
+
+    if (!context.mounted) return;
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const SplashScreen(),
+      ),
+          (route) => false,
+    );
+  }
+
+  // ============================================================
+  // BUILD
+  // ============================================================
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: background,
+
+      body: SafeArea(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+
+          slivers: [
+            // =====================================================
+            // TOP BAR
+            // =====================================================
+
+            SliverToBoxAdapter(
+              child: _buildTopBar(),
+            ),
+
+            // =====================================================
+            // PROFILE IDENTITY
+            // =====================================================
+
+            SliverToBoxAdapter(
+              child: _buildIdentityCard(),
+            ),
+
+            // =====================================================
+            // CONTENT
+            // =====================================================
+
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(
+                18,
+                22,
+                18,
+                20,
+              ),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate(
+                  [
+                    // =================================================
+                    // BUSINESS
+                    // =================================================
+
+                    _sectionLabel("BUSINESS"),
+
+                    const SizedBox(height: 9),
+
+                    _buildMerchantCard(),
+
+                    const SizedBox(height: 22),
+
+                    // =================================================
+                    // FINANCIAL PROFILE
+                    // =================================================
+
+                    _sectionLabel("FINANCIAL PROFILE"),
+
+                    const SizedBox(height: 9),
+
+                    _buildFinancialCard(),
+
+                    const SizedBox(height: 22),
+
+                    // =================================================
+                    // SERVICES
+                    // =================================================
+
+                    _sectionLabel("ENABLED SERVICES"),
+
+                    const SizedBox(height: 9),
+
+                    _buildServices(),
+
+                    const SizedBox(height: 22),
+
+                    // =================================================
+                    // ACCOUNT
+                    // =================================================
+
+                    _sectionLabel("ACCOUNT"),
+
+                    const SizedBox(height: 9),
+
+                    _buildAccountCard(),
+
+                    const SizedBox(height: 22),
+
+                    // =================================================
+                    // SUPPORT
+                    // =================================================
+
+                    _sectionLabel("SUPPORT"),
+
+                    const SizedBox(height: 9),
+
+                    _buildActionCard(
+                      icon: Icons.support_agent_rounded,
+                      title: "Contact Support",
+                      subtitle: "Get help with your account",
+                      color: blue,
+                      onTap: () {
+                        handleProfileItemClick(
+                          context,
+                          "Contact Us",
+                        );
+                      },
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    // =================================================
+                    // LOGOUT
+                    // =================================================
+
+                    _buildActionCard(
+                      icon: Icons.logout_rounded,
+                      title: "Log out",
+                      subtitle: "End your current session",
+                      color: danger,
+                      onTap: () {
+                        handleProfileItemClick(
+                          context,
+                          "Logout",
+                        );
+                      },
+                    ),
+
+                    const SizedBox(height: 25),
+
+                    // =================================================
+                    // VERSION
+                    // =================================================
+
+                    Center(
+                      child: Column(
+                        children: [
+                          Text(
+                            "AGENT BANKING",
+                            style: GoogleFonts.inter(
+                              fontSize: 9,
+                              fontWeight: FontWeight.w800,
+                              color: textLight,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+
+                          const SizedBox(height: 4),
+
+                          Text(
+                            "Version 1.0.8",
+                            style: GoogleFonts.inter(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500,
+                              color: textLight,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // TOP BAR
+  // ============================================================
+
+  Widget _buildTopBar() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        18,
+        16,
+        18,
+        4,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              "Profile",
+              style: GoogleFonts.poppins(
+                fontSize: 23,
+                fontWeight: FontWeight.w700,
+                color: textDark,
+                letterSpacing: -0.5,
+              ),
+            ),
+          ),
+
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(11),
+              border: Border.all(
+                color: border,
+              ),
+            ),
+            child: const Icon(
+              Icons.person_outline_rounded,
+              size: 19,
+              color: textDark,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ============================================================
+  // IDENTITY CARD
+  // ============================================================
+
+  Widget _buildIdentityCard() {
+    final profile = widget.profileData;
+
+    final bool isActive = profile.isActive == true;
+    final bool isVerified = profile.isVerified == true;
+
+    return Container(
+      margin: const EdgeInsets.fromLTRB(
+        18,
+        14,
+        18,
+        0,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: border,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.025),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            // =======================================================
+            // PROFILE HEADER
+            // =======================================================
+
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // =================================================
+                // INITIALS
+                // =================================================
+
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(
+                    color: primary.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: primary.withValues(alpha: 0.12),
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      _getInitials(
+                        profile.agentName ?? "",
+                      ),
+                      style: const TextStyle(
+                        color: primary,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.4,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(width: 13),
+
+                // =================================================
+                // NAME + ROLE
+                // =================================================
+
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment:
+                    CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        profile.agentName?.trim().isNotEmpty == true
+                            ? profile.agentName!.trim()
+                            : "Agent",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.poppins(
+                          color: textDark,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: -0.35,
+                        ),
+                      ),
+
+                      const SizedBox(height: 3),
+
+                      Text(
+                        profile.role?.trim().isNotEmpty == true
+                            ? profile.role!.trim().toUpperCase()
+                            : "COLLECTION AGENT",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.inter(
+                          color: textLight,
+                          fontSize: 9,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.7,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // =================================================
+                // VERIFIED ICON
+                // =================================================
+
+                if (isVerified)
+                  Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: blue.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(9),
+                    ),
+                    child: const Icon(
+                      Icons.verified_rounded,
+                      color: blue,
+                      size: 17,
+                    ),
+                  ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            // =======================================================
+            // AGENT INFORMATION
+            // =======================================================
+
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 11,
+              ),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF8F9FB),
+                borderRadius: BorderRadius.circular(11),
+                border: Border.all(
+                  color: const Color(0xFFEEF0F3),
+                ),
+              ),
+              child: Row(
+                children: [
+                  // -----------------------------------------------
+                  // AGENT CODE
+                  // -----------------------------------------------
+
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "AGENT CODE",
+                          style: GoogleFonts.inter(
+                            fontSize: 7.5,
+                            fontWeight: FontWeight.w700,
+                            color: textLight,
+                            letterSpacing: 0.7,
+                          ),
+                        ),
+
+                        const SizedBox(height: 4),
+
+                        Text(
+                          profile.agentCode ?? "—",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: textDark,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // -----------------------------------------------
+                  // DIVIDER
+                  // -----------------------------------------------
+
+                  Container(
+                    width: 1,
+                    height: 28,
+                    color: border,
+                  ),
+
+                  const SizedBox(width: 14),
+
+                  // -----------------------------------------------
+                  // AGENT ID
+                  // -----------------------------------------------
+
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "AGENT ID",
+                          style: GoogleFonts.inter(
+                            fontSize: 7.5,
+                            fontWeight: FontWeight.w700,
+                            color: textLight,
+                            letterSpacing: 0.7,
+                          ),
+                        ),
+
+                        const SizedBox(height: 4),
+
+                        Text(
+                          profile.userId ?? "—",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: textDark,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 13),
+
+            // =======================================================
+            // STATUS
+            // =======================================================
+
+            Row(
+              children: [
+                if (isActive)
+                  _lightStatusBadge(
+                    "ACTIVE",
+                    success,
+                    Icons.circle,
+                  ),
+
+                if (isActive && isVerified)
+                  const SizedBox(width: 7),
+
+                if (isVerified)
+                  _lightStatusBadge(
+                    "VERIFIED",
+                    blue,
+                    Icons.verified_rounded,
+                  ),
+
+                const Spacer(),
+
+                Text(
+                  "AGENT PROFILE",
+                  style: GoogleFonts.inter(
+                    fontSize: 7.5,
+                    fontWeight: FontWeight.w700,
+                    color: textLight,
+                    letterSpacing: 0.8,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+  Widget _lightStatusBadge(
+      String label,
+      Color color,
+      IconData icon,
+      ) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 9,
+        vertical: 5,
+      ),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(7),
+        border: Border.all(
+          color: color.withValues(alpha: 0.12),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 8,
+            color: color,
+          ),
+
+          const SizedBox(width: 5),
+
+          Text(
+            label,
+            style: GoogleFonts.inter(
+              color: color,
+              fontSize: 8,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+/*  Widget _buildIdentityCard() {
+    final profile = widget.profileData;
+
+    final bool isActive = profile.isActive == true;
+    final bool isVerified = profile.isVerified == true;
+
+    return Container(
+      margin: const EdgeInsets.fromLTRB(
+        18,
+        14,
+        18,
+        0,
+      ),
+      decoration: BoxDecoration(
+        color: home1,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Stack(
+        children: [
+          // =======================================================
+          // BACKGROUND ACCENT
+          // =======================================================
+
+          Positioned(
+            right: -35,
+            top: -45,
+            child: Container(
+              width: 150,
+              height: 150,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: primary.withValues(alpha: 0.10),
+              ),
+            ),
+          ),
+
+          Positioned(
+            right: 25,
+            bottom: -60,
+            child: Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.025),
+              ),
+            ),
+          ),
+
+          // =======================================================
+          // CONTENT
+          // =======================================================
+
+          Padding(
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // =================================================
+                    // INITIALS
+                    // =================================================
+
+                    Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: primary.withValues(alpha: 0.13),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: primary.withValues(alpha: 0.22),
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          _getInitials(
+                            profile.agentName ?? "",
+                          ),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 13),
+
+                    // =================================================
+                    // NAME
+                    // =================================================
+
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment:
+                        CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            profile.agentName?.trim().isNotEmpty == true
+                                ? profile.agentName!.trim()
+                                : "Agent",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: -0.3,
+                            ),
+                          ),
+
+                          const SizedBox(height: 3),
+
+                          Text(
+                            profile.role?.trim().isNotEmpty == true
+                                ? profile.role!.trim().toUpperCase()
+                                : "COLLECTION AGENT",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.inter(
+                              color: Colors.white.withValues(alpha: 0.55),
+                              fontSize: 9.5,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.8,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 18),
+
+                // ===================================================
+                // AGENT CODE
+                // ===================================================
+
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.055),
+                    borderRadius: BorderRadius.circular(11),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.07),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        "AGENT CODE",
+                        style: GoogleFonts.inter(
+                          fontSize: 8.5,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white.withValues(alpha: 0.45),
+                          letterSpacing: 0.8,
+                        ),
+                      ),
+
+                      const Spacer(),
+
+                      Text(
+                        profile.agentCode ?? "—",
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          letterSpacing: 0.2,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 13),
+
+                // ===================================================
+                // STATUS
+                // ===================================================
+
+                Row(
+                  children: [
+                    if (isActive)
+                      _darkStatusBadge(
+                        "ACTIVE",
+                        success,
+                        Icons.circle,
+                      ),
+
+                    if (isActive && isVerified)
+                      const SizedBox(width: 7),
+
+                    if (isVerified)
+                      _darkStatusBadge(
+                        "VERIFIED",
+                        blue,
+                        Icons.verified_rounded,
+                      ),
+
+                    const Spacer(),
+
+                    Text(
+                      "AGENT PROFILE",
+                      style: GoogleFonts.inter(
+                        fontSize: 8,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white.withValues(alpha: 0.30),
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }*/
+
+  // ============================================================
+  // DARK STATUS
+  // ============================================================
+
+  Widget _darkStatusBadge(
+      String label,
+      Color color,
+      IconData icon,
+      ) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 9,
+        vertical: 6,
+      ),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: color.withValues(alpha: 0.18),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 9,
+            color: color,
+          ),
+
+          const SizedBox(width: 5),
+
+          Text(
+            label,
+            style: GoogleFonts.inter(
+              color: color,
+              fontSize: 8.5,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ============================================================
+  // MERCHANT CARD
+  // ============================================================
+
+  Widget _buildMerchantCard() {
+    final profile = widget.profileData;
+    final bool isIntegrated = profile.isIntegrated == true;
+
+    return _fintechCard(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                // =================================================
+                // MERCHANT ICON
+                // =================================================
+
+                Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: navy.withValues(alpha: 0.06),
+                    borderRadius: BorderRadius.circular(11),
+                  ),
+                  child: const Icon(
+                    Icons.account_balance_rounded,
+                    size: 20,
+                    color: navySoft,
+                  ),
+                ),
+
+                const SizedBox(width: 12),
+
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment:
+                    CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "MERCHANT",
+                        style: GoogleFonts.inter(
+                          fontSize: 8.5,
+                          fontWeight: FontWeight.w700,
+                          color: textLight,
+                          letterSpacing: 0.7,
+                        ),
+                      ),
+
+                      const SizedBox(height: 3),
+
+                      Text(
+                        profile.merchantName ?? "—",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: textDark,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(width: 8),
+
+                // =================================================
+                // LIVE STATUS
+                // =================================================
+
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isIntegrated
+                        ? success.withValues(alpha: 0.08)
+                        : Colors.grey.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(7),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 5,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color:
+                          isIntegrated ? success : textLight,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+
+                      const SizedBox(width: 5),
+
+                      Text(
+                        isIntegrated ? "LIVE" : "OFF",
+                        style: GoogleFonts.inter(
+                          fontSize: 8,
+                          fontWeight: FontWeight.w800,
+                          color:
+                          isIntegrated ? success : textLight,
+                          letterSpacing: 0.4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 15),
+
+            const Divider(
+              height: 1,
+              color: border,
+            ),
+
+            const SizedBox(height: 14),
+
+            // =====================================================
+            // MERCHANT DETAILS
+            // =====================================================
+
+            Row(
+              children: [
+                Expanded(
+                  child: _miniInfo(
+                    "MERCHANT ID",
+                    profile.merchantId,
+                  ),
+                ),
+
+                Container(
+                  width: 1,
+                  height: 30,
+                  color: border,
+                ),
+
+                const SizedBox(width: 18),
+
+                Expanded(
+                  child: _miniInfo(
+                    "INTEGRATION",
+                    isIntegrated ? "Active" : "Inactive",
+                    valueColor:
+                    isIntegrated ? success : textMedium,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // FINANCIAL CARD
+  // ============================================================
+
+  Widget _buildFinancialCard() {
+    final profile = widget.profileData;
+
+    final String commission =
+        profile.commissionRate?.toString() ?? "0";
+
+    return _fintechCard(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            // ===================================================
+            // COMMISSION ICON
+            // ===================================================
+
+            Container(
+              width: 45,
+              height: 45,
+              decoration: BoxDecoration(
+                color: primary.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.percent_rounded,
+                color: primary,
+                size: 21,
+              ),
+            ),
+
+            const SizedBox(width: 13),
+
+            // ===================================================
+            // LABEL
+            // ===================================================
+
+            Expanded(
+              child: Column(
+                crossAxisAlignment:
+                CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "COLLECTION COMMISSION",
+                    style: GoogleFonts.inter(
+                      fontSize: 8.5,
+                      fontWeight: FontWeight.w700,
+                      color: textLight,
+                      letterSpacing: 0.6,
+                    ),
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  Text(
+                    "Commission rate",
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: textMedium,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // ===================================================
+            // RATE
+            // ===================================================
+
+            Text(
+              "$commission%",
+              style: GoogleFonts.poppins(
+                fontSize: 23,
+                fontWeight: FontWeight.w800,
+                color: primary,
+                letterSpacing: -0.8,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // SERVICES
+  // ============================================================
+
+  Widget _buildServices() {
+    final products =
+        widget.profileData.enabledProducts ?? <String>[];
+
+    final List<Widget> services = [];
+
+    if (products.contains("RD")) {
+      services.add(
+        Expanded(
+          child: _serviceCard(
+            title: "RD",
+            subtitle: "Recurring Deposit",
+            icon: Icons.savings_outlined,
+            color: blue,
+            serviceCount: 4,
+          ),
+        ),
+      );
+    }
+
+    if (products.contains("RDCL")) {
+      if (services.isNotEmpty) {
+        services.add(const SizedBox(width: 10));
+      }
+
+      services.add(
+        Expanded(
+          child: _serviceCard(
+            title: "RDCL",
+            subtitle: "RD Collection",
+            icon: Icons.payments_outlined,
+            color: primary,
+            serviceCount: 4,
+          ),
+        ),
+      );
+    }
+
+    if (products.contains("LOAN")) {
+      if (services.isNotEmpty) {
+        services.add(const SizedBox(width: 10));
+      }
+
+      services.add(
+        Expanded(
+          child: _serviceCard(
+            title: "LOAN",
+            subtitle: "Loan Collection",
+            icon: Icons.account_balance_wallet_outlined,
+            color: purple,
+            serviceCount: 4,
+          ),
+        ),
+      );
+    }
+
+    if (services.isEmpty) {
+      return _emptyServicesCard();
+    }
+
+    // Keep the row safe for 2 services.
+    // If 3 services exist, make them horizontally scrollable.
+    return SizedBox(
+      height: 157,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        children: _buildServiceList(products),
+      ),
+    );
+  }
+
+  // ============================================================
+  // SERVICE LIST
+  // ============================================================
+
+  List<Widget> _buildServiceList(
+      List<String> products,
+      ) {
+    final List<Widget> result = [];
+
+    if (products.contains("RD")) {
+      result.add(
+        _serviceCard(
+          title: "RD",
+          subtitle: "Recurring Deposit",
+          icon: Icons.savings_outlined,
+          color: blue,
+          serviceCount: 4,
+        ),
+      );
+    }
+
+    if (products.contains("RDCL")) {
+      if (result.isNotEmpty) {
+        result.add(const SizedBox(width: 10));
+      }
+
+      result.add(
+        _serviceCard(
+          title: "RDCL",
+          subtitle: "RD Collection",
+          icon: Icons.payments_outlined,
+          color: primary,
+          serviceCount: 4,
+        ),
+      );
+    }
+
+    if (products.contains("LOAN")) {
+      if (result.isNotEmpty) {
+        result.add(const SizedBox(width: 10));
+      }
+
+      result.add(
+        _serviceCard(
+          title: "LOAN",
+          subtitle: "Loan Collection",
+          icon: Icons.account_balance_wallet_outlined,
+          color: purple,
+          serviceCount: 4,
+        ),
+      );
+    }
+
+    return result;
+  }
+
+  // ============================================================
+  // SERVICE CARD
+  // ============================================================
+
+  Widget _serviceCard({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Color color,
+    required int serviceCount,
+  }) {
+    return SizedBox(
+      width: 155,
+      child: _fintechCard(
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            crossAxisAlignment:
+            CrossAxisAlignment.start,
+            children: [
+              // =================================================
+              // ICON
+              // =================================================
+
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  icon,
+                  color: color,
+                  size: 19,
+                ),
+              ),
+
+              const Spacer(),
+
+              // =================================================
+              // TITLE
+              // =================================================
+
+              Text(
+                title,
+                style: GoogleFonts.poppins(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w800,
+                  color: textDark,
+                  letterSpacing: -0.2,
+                ),
+              ),
+
+              const SizedBox(height: 2),
+
+              Text(
+                subtitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.inter(
+                  fontSize: 9.5,
+                  fontWeight: FontWeight.w500,
+                  color: textLight,
+                ),
+              ),
+
+              const SizedBox(height: 9),
+
+              Row(
+                children: [
+                  Text(
+                    "$serviceCount services",
+                    style: GoogleFonts.inter(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w700,
+                      color: color,
+                    ),
+                  ),
+
+                  const Spacer(),
+
+                  Icon(
+                    Icons.arrow_forward_rounded,
+                    size: 14,
+                    color: color,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // EMPTY SERVICES
+  // ============================================================
+
+  Widget _emptyServicesCard() {
+    return _fintechCard(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.grid_view_rounded,
+              color: textLight,
+              size: 22,
+            ),
+            const SizedBox(width: 12),
+            Text(
+              "No services enabled",
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: textMedium,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // ACCOUNT CARD
+  // ============================================================
+
+  Widget _buildAccountCard() {
+    final profile = widget.profileData;
+
+    return _fintechCard(
+      child: Column(
+        children: [
+          // =====================================================
+          // ACCOUNT HEADER
+          // =====================================================
+
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              16,
+              15,
+              16,
+              13,
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: navy.withValues(alpha: 0.06),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(
+                    Icons.badge_outlined,
+                    size: 18,
+                    color: navySoft,
+                  ),
+                ),
+
+                const SizedBox(width: 10),
+
+                Text(
+                  "Account information",
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: textDark,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const Divider(
+            height: 1,
+            color: border,
+          ),
+
+          // =====================================================
+          // FIRST ROW
+          // =====================================================
+
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Row(
+              children: [
+                Expanded(
+                  child: _accountInfo(
+                    icon: Icons.phone_outlined,
+                    label: "Mobile",
+                    value: profile.mobileNumber,
+                  ),
+                ),
+
+                const SizedBox(width: 15),
+
+                Expanded(
+                  child: _accountInfo(
+                    icon: Icons.mail_outline_rounded,
+                    label: "Email",
+                    value: profile.email,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const Divider(
+            height: 1,
+            indent: 15,
+            endIndent: 15,
+            color: border,
+          ),
+
+          // =====================================================
+          // SECOND ROW
+          // =====================================================
+
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Row(
+              children: [
+                Expanded(
+                  child: _accountInfo(
+                    icon: Icons.work_outline_rounded,
+                    label: "Role",
+                    value: profile.role,
+                  ),
+                ),
+
+                const SizedBox(width: 15),
+
+                Expanded(
+                  child: _accountInfo(
+                    icon: Icons.badge_outlined,
+                    label: "Agent ID",
+                    value: profile.userId,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const Divider(
+            height: 1,
+            indent: 15,
+            endIndent: 15,
+            color: border,
+          ),
+
+          // =====================================================
+          // THIRD ROW
+          // =====================================================
+
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Row(
+              children: [
+                Expanded(
+                  child: _accountInfo(
+                    icon: Icons.account_balance_outlined,
+                    label: "Branch",
+                    value: profile.branchName,
+                  ),
+                ),
+
+                const SizedBox(width: 15),
+
+                Expanded(
+                  child: _accountInfo(
+                    icon: Icons.tag_rounded,
+                    label: "Branch Code",
+                    value: profile.branchCode,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const Divider(
+            height: 1,
+            indent: 15,
+            endIndent: 15,
+            color: border,
+          ),
+
+          // =====================================================
+          // AGENT CODE
+          // =====================================================
+
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: _accountInfo(
+              icon: Icons.numbers_rounded,
+              label: "Agent Code",
+              value: profile.agentCode,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ============================================================
+  // ACCOUNT INFO
+  // ============================================================
+
+  Widget _accountInfo({
+    required IconData icon,
+    required String label,
+    required String? value,
+  }) {
+    final String displayValue =
+    value?.trim().isNotEmpty == true
+        ? value!.trim()
+        : "—";
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+            color: const Color(0xFFF7F8FA),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            icon,
+            size: 15,
+            color: textMedium,
+          ),
+        ),
+
+        const SizedBox(width: 8),
+
+        Expanded(
+          child: Column(
+            crossAxisAlignment:
+            CrossAxisAlignment.start,
+            children: [
+              Text(
+                label.toUpperCase(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.inter(
+                  fontSize: 7.5,
+                  fontWeight: FontWeight.w700,
+                  color: textLight,
+                  letterSpacing: 0.5,
+                ),
+              ),
+
+              const SizedBox(height: 4),
+
+              Text(
+                displayValue,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.inter(
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w600,
+                  color: textDark,
+                  height: 1.3,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ============================================================
+  // MINI INFO
+  // ============================================================
+
+  Widget _miniInfo(
+      String label,
+      String? value, {
+        Color valueColor = textDark,
+      }) {
+    return Column(
+      crossAxisAlignment:
+      CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.inter(
+            fontSize: 7.5,
+            fontWeight: FontWeight.w700,
+            color: textLight,
+            letterSpacing: 0.5,
+          ),
+        ),
+
+        const SizedBox(height: 4),
+
+        Text(
+          value?.trim().isNotEmpty == true
+              ? value!.trim()
+              : "—",
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: GoogleFonts.inter(
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+            color: valueColor,
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ============================================================
+  // ACTION CARD
+  // ============================================================
+
+  Widget _buildActionCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(13),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(13),
+        child: Container(
+          constraints: const BoxConstraints(
+            minHeight: 64,
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 14,
+            vertical: 11,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(13),
+            border: Border.all(
+              color: border,
+            ),
+          ),
+          child: Row(
+            children: [
+              // =================================================
+              // ICON
+              // =================================================
+
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.07),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  icon,
+                  color: color,
+                  size: 19,
+                ),
+              ),
+
+              const SizedBox(width: 11),
+
+              // =================================================
+              // TEXT
+              // =================================================
+
+              Expanded(
+                child: Column(
+                  crossAxisAlignment:
+                  CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: GoogleFonts.inter(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w700,
+                        color: textDark,
+                      ),
+                    ),
+
+                    const SizedBox(height: 2),
+
+                    Text(
+                      subtitle,
+                      style: GoogleFonts.inter(
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w500,
+                        color: textLight,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // =================================================
+              // ARROW
+              // =================================================
+
+              Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 12,
+                color: Colors.grey.shade400,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // FINTECH CARD
+  // ============================================================
+
+  Widget _fintechCard({
+    required Widget child,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: surface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: border,
+        ),
+      ),
+      child: child,
+    );
+  }
+
+  // ============================================================
+  // SECTION LABEL
+  // ============================================================
+
+  Widget _sectionLabel(String title) {
+    return Text(
+      title,
+      style: GoogleFonts.inter(
+        fontSize: 9,
+        fontWeight: FontWeight.w800,
+        color: textLight,
+        letterSpacing: 1.0,
+      ),
+    );
+  }
+
+  // ============================================================
+  // INITIALS
+  // ============================================================
+
+  String _getInitials(String name) {
+    final parts = name
+        .trim()
+        .split(RegExp(r'\s+'))
+        .where((e) => e.isNotEmpty)
+        .toList();
+
+    if (parts.isEmpty) {
+      return "U";
+    }
+
+    if (parts.length == 1) {
+      return parts.first[0].toUpperCase();
+    }
+
+    return "${parts.first[0]}${parts.last[0]}"
+        .toUpperCase();
+  }
+
+  // ============================================================
+  // PROFILE ACTIONS
+  // ============================================================
+
+  void handleProfileItemClick(
+      BuildContext context,
+      String label,
+      ) {
+    if (label == "Logout") {
+      showLogoutDialog(context);
+    } else if (label == "Contact Us") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const ContactUsPage(),
+        ),
+      );
+    }
+  }
+}
+
+/*class ProfileHomePage extends StatefulWidget {
   final ProfileData profileData;
   const ProfileHomePage({super.key, required this.profileData});
 
@@ -78,7 +2128,181 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
 
   static const Color purple = Color(0xFF7C3AED);
 
+
   Future<void> showLogoutDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierColor: Colors.black.withValues(alpha: 0.45),
+      builder: (dialogContext) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(22),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(22, 22, 22, 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Icon
+                  Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF1F2),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: const Icon(
+                      Icons.logout_rounded,
+                      color: Color(0xFFDC2626),
+                      size: 25,
+                    ),
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  // Title
+                  Text(
+                    "Log out?",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(
+                      color: home1,
+                      fontSize: 19,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  // Description
+                  Text(
+                    "Are you sure you want to log out of your account?",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.inter(
+                      color: Colors.grey[600],
+                      fontSize: 12,
+                      height: 1.5,
+                    ),
+                  ),
+
+                  const SizedBox(height: 22),
+
+                  // Security information
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 13,
+                      vertical: 11,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF8F9FC),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: const Color(0xFFE9EBF0),
+                      ),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(
+                          Icons.lock_outline_rounded,
+                          color: home1,
+                          size: 17,
+                        ),
+                        const SizedBox(width: 9),
+                        Expanded(
+                          child: Text(
+                            "Your account remains secure. You'll need to sign in again to continue.",
+                            style: GoogleFonts.inter(
+                              color: Colors.grey[600],
+                              fontSize: 10.5,
+                              height: 1.45,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 22),
+
+                  // Buttons
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          height: 46,
+                          child: OutlinedButton(
+                            onPressed: () {
+                              Navigator.pop(dialogContext);
+                            },
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: home1,
+                              side: const BorderSide(
+                                color: Color(0xFFDDE0E7),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(13),
+                              ),
+                            ),
+                            child: Text(
+                              "Cancel",
+                              style: GoogleFonts.inter(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(width: 10),
+
+                      Expanded(
+                        child: SizedBox(
+                          height: 46,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              performLogout(context);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFDC2626),
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              shadowColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(13),
+                              ),
+                            ),
+                            child: Text(
+                              "Log out",
+                              style: GoogleFonts.inter(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
+*//*
+Future<void> showLogoutDialog(BuildContext context) {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -168,7 +2392,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
                                     ],
                                   ),
                                   child: Lottie.asset(
-                                    "assets/animations/logout.json",
+
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -319,7 +2543,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
     );
 
 
-  }
+  }*//*
   Future<void> performLogout(BuildContext context) async {
 
     final fcmProvider = Provider.of<DeleteFcmProvider>(
@@ -475,7 +2699,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
 
                   Center(
                     child: Text(
-                      "version 1.0.4",
+                      "version 1.0.8",
                       style: TextStyle(
                         fontSize: 11,
                         color: Colors.grey.shade400,
@@ -491,48 +2715,144 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
       ),
     );
   }
-  Widget _statusBadge(
-      String text,
-      Color color,
-      ) {
+  Widget _statusBadge(String label, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 9,
         vertical: 5,
       ),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.07),
-        borderRadius: BorderRadius.circular(7),
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: color.withValues(alpha: 0.12),
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-
           Container(
-            width: 5,
-            height: 5,
+            width: 6,
+            height: 6,
             decoration: BoxDecoration(
               color: color,
               shape: BoxShape.circle,
             ),
           ),
-
-          const SizedBox(width: 5),
-
+          const SizedBox(width: 6),
           Text(
-            text,
+            label,
             style: TextStyle(
-              fontSize: 9.5,
-              fontWeight: FontWeight.w700,
               color: color,
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ],
       ),
     );
   }
-
   Widget _buildProfileHeader() {
+    final profile = widget.profileData;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // =====================================================
+          // AVATAR
+          // =====================================================
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: primary.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(
+                color: primary.withValues(alpha: 0.10),
+              ),
+            ),
+            child: Center(
+              child: Text(
+                _getInitials(profile.agentName ?? ""),
+                style: const TextStyle(
+                  color: primary,
+                  fontSize: 21,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.4,
+                ),
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          // =====================================================
+          // NAME
+          // =====================================================
+          Text(
+            profile.agentName?.trim() ?? "",
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              color: textDark,
+              letterSpacing: -0.4,
+            ),
+          ),
+
+          const SizedBox(height: 4),
+
+          // =====================================================
+          // ROLE + AGENT CODE
+          // =====================================================
+          Text(
+            "${profile.role}  •  Agent ${profile.agentCode}",
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: textMedium,
+            ),
+          ),
+
+          // =====================================================
+          // STATUS
+          // =====================================================
+          if (profile.isActive == true || profile.isVerified == true) ...[
+            const SizedBox(height: 10),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (profile.isActive == true)
+                  _statusBadge(
+                    "Active",
+                    success,
+                  ),
+
+                if (profile.isActive == true &&
+                    profile.isVerified == true)
+                  const SizedBox(width: 6),
+
+                if (profile.isVerified == true)
+                  _statusBadge(
+                    "Verified",
+                    blue,
+                  ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+*//*  Widget _buildProfileHeader() {
     final profile = widget.profileData;
 
     return Padding(
@@ -633,124 +2953,167 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
         ],
       ),
     );
-  }
+  }*//*
 
 
-/*
-  Widget _buildProfileHeader() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        20,
-        15,
-        20,
-        28,
-      ),
-
-      child: Row(
-        children: [
-
-          // -------------------------------
-          // AVATAR
-          // -------------------------------
-
-          Container(
-            width: 66,
-            height: 66,
-
-            decoration: BoxDecoration(
-              color: const Color(0xFFFCE7F1),
-              borderRadius: BorderRadius.circular(20),
-            ),
-
-            child: Center(
-              child: Text(
-                _getInitials(widget.profileData.agentName!),
-
-                style: const TextStyle(
-                  color: primary,
-                  fontSize: 21,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ),
-          ),
-
-          const SizedBox(width: 14),
-
-          // -------------------------------
-          // USER INFO
-          // -------------------------------
-
-          Expanded(
-            child: Column(
-              crossAxisAlignment:
-              CrossAxisAlignment.start,
-
-              children: [
-
-                Text(
-                  widget.profileData.agentName!,
-
-                  maxLines: 1,
-
-                  overflow:
-                  TextOverflow.ellipsis,
-
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: textDark,
-                    letterSpacing: -0.4,
-                  ),
-                ),
-
-                const SizedBox(height: 4),
-
-                Text(
-                  "${widget.profileData.role}  •  Agent ${widget.profileData.agentCode}",
-
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: textMedium,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-
-                const SizedBox(height: 9),
-
-                Row(
-                  children: [
-
-                    if (widget.profileData.isActive!)
-                      _statusBadge(
-                        "Active",
-                        success,
-                      ),
-
-                    if (widget.profileData.isActive! && widget.profileData.isVerified!)
-                      const SizedBox(width: 6),
-
-                    if (widget.profileData.isVerified!)
-                      _statusBadge(
-                        "Verified",
-                        blue,
-                      ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-*/
 
   // ============================================================
   // MERCHANT
   // ============================================================
-
   Widget _buildMerchantCard() {
+    final profile = widget.profileData;
+    final isIntegrated = profile.isIntegrated == true;
+
+    return _baseCard(
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          children: [
+            // =====================================================
+            // MERCHANT HEADER
+            // =====================================================
+            Row(
+              children: [
+                Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: primary.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(
+                    Icons.storefront_outlined,
+                    size: 21,
+                    color: primary,
+                  ),
+                ),
+
+                const SizedBox(width: 12),
+
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Merchant",
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                          color: textLight,
+                        ),
+                      ),
+
+                      const SizedBox(height: 3),
+
+                      Text(
+                        profile.merchantName ?? "—",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: textDark,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(width: 12),
+
+                // =================================================
+                // MERCHANT ID
+                // =================================================
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const Text(
+                      "Merchant ID",
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                        color: textLight,
+                      ),
+                    ),
+
+                    const SizedBox(height: 3),
+
+                    Text(
+                      profile.merchantId ?? "—",
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: textDark,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            // =====================================================
+            // STATUS
+            // =====================================================
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 10,
+              ),
+              decoration: BoxDecoration(
+                color: isIntegrated
+                    ? success.withValues(alpha: 0.06)
+                    : const Color(0xFFF7F8FA),
+                borderRadius: BorderRadius.circular(11),
+                border: Border.all(
+                  color: isIntegrated
+                      ? success.withValues(alpha: 0.12)
+                      : border,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 7,
+                    height: 7,
+                    decoration: BoxDecoration(
+                      color: isIntegrated ? success : textLight,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+
+                  const SizedBox(width: 8),
+
+                  const Text(
+                    "Integration",
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: textMedium,
+                    ),
+                  ),
+
+                  const Spacer(),
+
+                  Text(
+                    isIntegrated ? "Active" : "Inactive",
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: isIntegrated ? success : textLight,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+*//*  Widget _buildMerchantCard() {
     return _baseCard(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -886,7 +3249,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
         ),
       ),
     );
-  }
+  }*//*
 
   // ============================================================
   // SERVICES
@@ -1019,8 +3382,174 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
   // ============================================================
   // ACCOUNT
   // ============================================================
-
   Widget _buildAccountCard() {
+    final profile = widget.profileData;
+
+    return _baseCard(
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // =====================================================
+            // HEADER
+            // =====================================================
+            Row(
+              children: [
+                Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(
+                    color: primary.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(11),
+                  ),
+                  child: const Icon(
+                    Icons.person_outline_rounded,
+                    size: 20,
+                    color: primary,
+                  ),
+                ),
+
+                const SizedBox(width: 11),
+
+                const Text(
+                  "Account Details",
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: textDark,
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 18),
+
+            // =====================================================
+            // DETAILS
+            // =====================================================
+            Row(
+              children: [
+                Expanded(
+                  child: _accountDetailItem(
+                    icon: Icons.phone_outlined,
+                    label: "Mobile",
+                    value: profile.mobileNumber,
+                  ),
+                ),
+
+                const SizedBox(width: 12),
+
+                Expanded(
+                  child: _accountDetailItem(
+                    icon: Icons.mail_outline_rounded,
+                    label: "Email",
+                    value: profile.email,
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            _divider(),
+
+            const SizedBox(height: 16),
+
+            Row(
+              children: [
+                Expanded(
+                  child: _accountDetailItem(
+                    icon: Icons.work_outline_rounded,
+                    label: "Role",
+                    value: profile.role,
+                  ),
+                ),
+
+                const SizedBox(width: 12),
+
+                Expanded(
+                  child: _accountDetailItem(
+                    icon: Icons.badge_outlined,
+                    label: "Agent ID",
+                    value: profile.userId,
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            _divider(),
+
+            const SizedBox(height: 16),
+
+            _accountDetailItem(
+              icon: Icons.numbers_rounded,
+              label: "Agent Code",
+              value: profile.agentCode,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  Widget _accountDetailItem({
+    required IconData icon,
+    required String? label,
+    required String? value,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: const Color(0xFFF6F7F9),
+            borderRadius: BorderRadius.circular(9),
+          ),
+          child: Icon(
+            icon,
+            size: 17,
+            color: textMedium,
+          ),
+        ),
+
+        const SizedBox(width: 9),
+
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label ?? "—",
+                style: const TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w500,
+                  color: textLight,
+                ),
+              ),
+
+              const SizedBox(height: 3),
+
+              Text(
+                value?.trim().isNotEmpty == true ? value!.trim() : "—",
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: textDark,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+*//*  Widget _buildAccountCard() {
     return _baseCard(
       child: Column(
         children: [
@@ -1065,7 +3594,7 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
         ],
       ),
     );
-  }
+  }*//*
 
   // ============================================================
   // BRANCH
@@ -1547,468 +4076,4 @@ class _ProfileHomePageState extends State<ProfileHomePage> {
 
 // Keep your existing showLogoutDialog()
 // Keep your existing performLogout()
-}
-// class ProfileHomePage extends StatefulWidget {
-//   final String eCollectMerchantName;
-//   final String eCollectMerchantID;
-//   final String eCollectFcmToken;
-//   final String eCollectMerchantNumber;
-//   const ProfileHomePage({super.key, required this.eCollectMerchantName, required this.eCollectMerchantNumber, required this.eCollectMerchantID, required this.eCollectFcmToken});
-//
-//   @override
-//   State<ProfileHomePage> createState() => _ProfileHomePageState();
-// }
-//
-// class _ProfileHomePageState extends State<ProfileHomePage> {
-//
-//   final List<Map<String, dynamic>> profileItems = [
-//     {
-//       "image": "assets/images/telephone_5586610.png",
-//       "label": "Contact Us",
-//       "color": home1,
-//       "icon": Icons.phone,
-//     },
-//     {
-//       "image": "assets/images/logout.png",
-//       "label": "Logout",
-//       "color": Colors.redAccent,
-//       "icon": Icons.logout,
-//     },
-//   ];
-//
-//   Widget _buildSectionTitle(String title) {
-//     return Text(
-//       title,
-//       style: TextStyle(
-//         fontSize: 13,
-//         fontWeight: FontWeight.w700,
-//         color: Colors.grey.shade600,
-//         letterSpacing: 0.2,
-//       ),
-//     );
-//   }
-//
-//   Widget _buildProfileHeader() {
-//     return Container(
-//       padding: const EdgeInsets.fromLTRB(20, 20, 20, 28),
-//       color: Colors.white,
-//       child: Column(
-//         children: [
-//           // Top bar
-//           Center(
-//             child: Text(
-//               "Profile",
-//               style: TextStyle(
-//                 fontSize: 22,
-//                 fontWeight: FontWeight.w700,
-//                 color: home1,
-//               ),
-//             ),
-//           ),
-//
-//           const SizedBox(width: 42),
-//
-//           const SizedBox(height: 30),
-//
-//           // Avatar
-//           Container(
-//             width: 82,
-//             height: 82,
-//             decoration: BoxDecoration(
-//               shape: BoxShape.circle,
-//               gradient: const LinearGradient(
-//                 begin: Alignment.topLeft,
-//                 end: Alignment.bottomRight,
-//                 colors: [
-//                   Color(0xFFEA307B),
-//                   Color(0xFF9B51E0),
-//                 ],
-//               ),
-//               boxShadow: [
-//                 BoxShadow(
-//                   color: const Color(0xFFEA307B).withValues(alpha: 0.18),
-//                   blurRadius: 20,
-//                   offset: const Offset(0, 8),
-//                 ),
-//               ],
-//             ),
-//             child: Center(
-//               child: Text(
-//                 widget.eCollectMerchantName.isNotEmpty
-//                     ? widget.eCollectMerchantName[0].toUpperCase()
-//                     : "U",
-//                 style: const TextStyle(
-//                   color: Colors.white,
-//                   fontSize: 30,
-//                   fontWeight: FontWeight.w700,
-//                 ),
-//               ),
-//             ),
-//           ),
-//
-//           const SizedBox(height: 16),
-//
-//           Text(
-//             widget.eCollectMerchantName,
-//             textAlign: TextAlign.center,
-//             maxLines: 1,
-//             overflow: TextOverflow.ellipsis,
-//             style:  TextStyle(
-//               fontSize: 22,
-//               fontWeight: FontWeight.w700,
-//               color: Color(0xFF171717),
-//               letterSpacing: -0.5,
-//             ),
-//           ),
-//
-//           const SizedBox(height: 7),
-//
-//           Row(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: [
-//               Icon(
-//                 Icons.phone_outlined,
-//                 size: 15,
-//                 color: Colors.grey.shade500,
-//               ),
-//               const SizedBox(width: 6),
-//               Text(
-//                 widget.eCollectMerchantNumber,
-//                 style: TextStyle(
-//                   fontSize: 13,
-//                   fontWeight: FontWeight.w500,
-//                   color: Colors.grey.shade500,
-//                 ),
-//               ),
-//             ],
-//           ),
-//
-//           const SizedBox(height: 18),
-//
-//           // Merchant ID
-//           Container(
-//             padding: const EdgeInsets.symmetric(
-//               horizontal: 12,
-//               vertical: 7,
-//             ),
-//             decoration: BoxDecoration(
-//               color: const Color(0xFFF6F6F7),
-//               borderRadius: BorderRadius.circular(20),
-//             ),
-//             child: Text(
-//               "Merchant ID  •  ${widget.eCollectMerchantID}",
-//               style: TextStyle(
-//                 fontSize: 11,
-//                 fontWeight: FontWeight.w500,
-//                 color: Colors.grey.shade600,
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//   Widget _buildProfileAction({
-//     required IconData icon,
-//     required String title,
-//     required String subtitle,
-//     required Color color,
-//     required VoidCallback onTap,
-//     bool showArrow = true,
-//   }) {
-//     return Material(
-//       color: Colors.white,
-//       borderRadius: BorderRadius.circular(18),
-//       child: InkWell(
-//         onTap: onTap,
-//         borderRadius: BorderRadius.circular(18),
-//         child: Container(
-//           padding: const EdgeInsets.all(16),
-//           decoration: BoxDecoration(
-//             borderRadius: BorderRadius.circular(18),
-//             border: Border.all(
-//               color: Colors.black.withValues(alpha: 0.05),
-//             ),
-//           ),
-//           child: Row(
-//             children: [
-//               Container(
-//                 width: 46,
-//                 height: 46,
-//                 decoration: BoxDecoration(
-//                   color: color.withValues(alpha: 0.09),
-//                   borderRadius: BorderRadius.circular(14),
-//                 ),
-//                 child: Icon(
-//                   icon,
-//                   color: color,
-//                   size: 22,
-//                 ),
-//               ),
-//
-//               const SizedBox(width: 14),
-//
-//               Expanded(
-//                 child: Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     Text(
-//                       title,
-//                       style: TextStyle(
-//                         fontSize: 15,
-//                         fontWeight: FontWeight.w600,
-//                         color: const Color(0xFF202020),
-//                       ),
-//                     ),
-//                     const SizedBox(height: 4),
-//                     Text(
-//                       subtitle,
-//                       maxLines: 1,
-//                       overflow: TextOverflow.ellipsis,
-//                       style: TextStyle(
-//                         fontSize: 11.5,
-//                         color: Colors.grey.shade500,
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//
-//               if (showArrow)
-//                 Icon(
-//                   Icons.chevron_right_rounded,
-//                   color: Colors.grey.shade400,
-//                   size: 23,
-//                 ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: const Color(0xFFF7F7F8),
-//       body: SafeArea(
-//         child: CustomScrollView(
-//           physics: const BouncingScrollPhysics(),
-//           slivers: [
-//             SliverToBoxAdapter(
-//               child: _buildProfileHeader(),
-//             ),
-//
-//             SliverPadding(
-//               padding: const EdgeInsets.fromLTRB(20, 8, 20, 30),
-//               sliver: SliverList(
-//                 delegate: SliverChildListDelegate([
-//                   _buildSectionTitle("Account"),
-//
-//                   const SizedBox(height: 10),
-//
-//                   _buildProfileAction(
-//                     icon: Icons.phone_outlined,
-//                     title: "Contact Us",
-//                     subtitle: "Get help or reach our support team",
-//                     color: const Color(0xFF2563EB),
-//                     onTap: () => handleProfileItemClick(
-//                       context,
-//                       "Contact Us",
-//                     ),
-//                   ),
-//
-//                   const SizedBox(height: 10),
-//
-//                   _buildProfileAction(
-//                     icon: Icons.logout_rounded,
-//                     title: "Logout",
-//                     subtitle: "Sign out from this account",
-//                     color: const Color(0xFFDC2626),
-//                     onTap: () => handleProfileItemClick(
-//                       context,
-//                       "Logout",
-//                     ),
-//                     showArrow: false,
-//                   ),
-//
-//                   const SizedBox(height: 28),
-//
-//                   Center(
-//                     child: Text(
-//                       "eCollect",
-//                       style: TextStyle(
-//                         fontSize: 12,
-//                         fontWeight: FontWeight.w600,
-//                         color: Colors.grey.shade400,
-//                         letterSpacing: 0.5,
-//                       ),
-//                     ),
-//                   ),
-//                 ]),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-//
-//   // Custom animated profile card widget
-//   // Widget animatedProfileCard({
-//   //   required int index,
-//   //   required String image,
-//   //   required String label,
-//   //   required Color color,
-//   //   required IconData icon,
-//   //   required VoidCallback onTap,
-//   // }) {
-//   //   return TweenAnimationBuilder(
-//   //     duration: Duration(milliseconds: 500 + (index * 200)),
-//   //     tween: Tween<double>(begin: 0, end: 1),
-//   //     curve: Curves.easeOutCubic,
-//   //     builder: (context, value, child) {
-//   //       return Opacity(
-//   //         opacity: value,
-//   //         child: Transform.translate(
-//   //           offset: Offset((1 - value) * 50, 0),
-//   //           child: Transform.scale(
-//   //             scale: 0.95 + (value * 0.05),
-//   //             child: child,
-//   //           ),
-//   //         ),
-//   //       );
-//   //     },
-//   //     child: Card(
-//   //       elevation: 0,
-//   //       shape: RoundedRectangleBorder(
-//   //         borderRadius: BorderRadius.circular(20),
-//   //       ),
-//   //       shadowColor: color.withValues(alpha: 0.2),
-//   //       color: Colors.white,
-//   //       child: InkWell(
-//   //         borderRadius: BorderRadius.circular(20),
-//   //         onTap: onTap,
-//   //         splashColor: color.withValues(alpha: 0.15),
-//   //         highlightColor: color.withValues(alpha: 0.05),
-//   //         child: Container(
-//   //           decoration: BoxDecoration(
-//   //             borderRadius: BorderRadius.circular(20),
-//   //             boxShadow: [
-//   //               BoxShadow(
-//   //                 color: Colors.black.withValues(alpha: 0.04),
-//   //                 blurRadius: 10,
-//   //                 offset: const Offset(0, 4),
-//   //               ),
-//   //             ],
-//   //           ),
-//   //           child: Padding(
-//   //             padding: const EdgeInsets.all(16),
-//   //             child: Row(
-//   //               children: [
-//   //                 // Modern icon container with gradient
-//   //                 Container(
-//   //                   width: 56,
-//   //                   height: 56,
-//   //                   decoration: BoxDecoration(
-//   //                     gradient: LinearGradient(
-//   //                       begin: Alignment.topLeft,
-//   //                       end: Alignment.bottomRight,
-//   //                       colors: [
-//   //                         color.withValues(alpha: 0.2),
-//   //                         color.withValues(alpha: 0.1),
-//   //                       ],
-//   //                     ),
-//   //                     borderRadius: BorderRadius.circular(18),
-//   //                     boxShadow: [
-//   //                       BoxShadow(
-//   //                         color: color.withValues(alpha: 0.2),
-//   //                         blurRadius: 8,
-//   //                         offset: const Offset(0, 2),
-//   //                       ),
-//   //                     ],
-//   //                   ),
-//   //                   child: Center(
-//   //                     child: Icon(
-//   //                       icon,
-//   //                       color: color,
-//   //                       size: 28,
-//   //                     ),
-//   //                   ),
-//   //                 ),
-//   //                 const SizedBox(width: 18),
-//   //
-//   //                 // Text content with modern styling
-//   //                 Expanded(
-//   //                   child: Column(
-//   //                     crossAxisAlignment: CrossAxisAlignment.start,
-//   //                     children: [
-//   //                       Text(
-//   //                         label,
-//   //                         style: GoogleFonts.inter(
-//   //                           fontSize: 17,
-//   //                           fontWeight: FontWeight.w600,
-//   //                           color: Colors.grey[800],
-//   //                           letterSpacing: -0.3,
-//   //                         ),
-//   //                       ),
-//   //                       const SizedBox(height: 4),
-//   //                     ],
-//   //                   ),
-//   //                 ),
-//   //
-//   //                 // Modern chevron with animation
-//   //                 AnimatedContainer(
-//   //                   duration: const Duration(milliseconds: 200),
-//   //                   transform: Matrix4.identity()..rotateZ(0),
-//   //                   child: Container(
-//   //                     width: 32,
-//   //                     height: 32,
-//   //                     decoration: BoxDecoration(
-//   //                       color: color.withValues(alpha: 0.1),
-//   //                       borderRadius: BorderRadius.circular(10),
-//   //                     ),
-//   //                     child: Icon(
-//   //                       Icons.arrow_forward_ios_rounded,
-//   //                       color: color,
-//   //                       size: 16,
-//   //                     ),
-//   //                   ),
-//   //                 ),
-//   //               ],
-//   //             ),
-//   //           ),
-//   //         ),
-//   //       ),
-//   //     ),
-//   //   );
-//   // }
-//
-//   // Enhanced logout dialog
-
-
-//   void handleProfileItemClick(BuildContext context, String label) {
-//     if (label == "Logout") {
-//       showLogoutDialog(context);
-//     } else if (label == "Contact Us") {
-//       Navigator.push(
-//         context,
-//         PageRouteBuilder(
-//           pageBuilder: (context, animation, secondaryAnimation) =>
-//               const ContactUsPage(),
-//           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-//             return SlideTransition(
-//               position: Tween<Offset>(
-//                 begin: const Offset(1, 0),
-//                 end: Offset.zero,
-//               ).animate(animation),
-//               child: child,
-//             );
-//           },
-//           transitionDuration: const Duration(milliseconds: 300),
-//         ),
-//       );
-//     }
-//   }
-//
-//
-// }
+}*/

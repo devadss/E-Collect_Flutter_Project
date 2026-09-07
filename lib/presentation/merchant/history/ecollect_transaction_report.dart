@@ -1,6 +1,7 @@
 import 'package:e_Collect/core/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../../core/colors.dart';
 import '../../../data/e_collect_bloc/transaction_bloc/transaction_bloc.dart';
@@ -11,6 +12,7 @@ class EcollectTransactionReport extends StatefulWidget {
   final String eCollectMerchantID;
   final String eCollectMerchantName;
   final String eCollectToken;
+
   const EcollectTransactionReport(
       {super.key,
       required this.eCollectMerchantID,
@@ -141,8 +143,645 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
       return matchesName && matchesPaymentMode;
     }).toList();
   }
-
   void _openFilterSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (sheetContext) {
+        return StatefulBuilder(
+          builder: (context, setSheetState) {
+            return Container(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.88,
+              ),
+              decoration: const BoxDecoration(
+                color: Color(0xFFF7F8FA),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(18),
+                ),
+              ),
+              child: Column(
+                children: [
+                  // ======================================================
+                  // HEADER
+                  // ======================================================
+
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(18, 12, 18, 14),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(18),
+                      ),
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Color(0xFFE5E8EC),
+                        ),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        // Drag handle
+                        Container(
+                          width: 34,
+                          height: 3,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFD1D5DB),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+
+                        const SizedBox(height: 14),
+
+                        Row(
+                          children: [
+                            Container(
+                              width: 38,
+                              height: 38,
+                              decoration: BoxDecoration(
+                                color: home1.withValues(alpha: 0.08),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                Icons.filter_alt_outlined,
+                                color: home1,
+                                size: 19,
+                              ),
+                            ),
+
+                            const SizedBox(width: 10),
+
+                            const Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Transaction Filters",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      color: Color(0xFF17202A),
+                                    ),
+                                  ),
+                                  SizedBox(height: 2),
+                                  Text(
+                                    "Narrow down your transaction records",
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Color(0xFF7A8491),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            // Reset
+                            InkWell(
+                              borderRadius: BorderRadius.circular(7),
+                              onTap: () {
+                                setSheetState(() {
+                                  selectedValue = "This Week";
+                                  selectedStatusFilter = "All";
+                                  selectedPaymentModeFilter = "All";
+                                  customRange = null;
+                                });
+
+                                setState(() {
+                                  selectedPaymentModeFilter = "All";
+                                });
+
+                                context
+                                    .read<PaymentTransactionBloc>()
+                                    .add(
+                                  GetTransactionByMerchant(
+                                    widget.eCollectMerchantID,
+                                    widget.eCollectToken,
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 9,
+                                  vertical: 7,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF3F4F6),
+                                  borderRadius: BorderRadius.circular(7),
+                                  border: Border.all(
+                                    color: const Color(0xFFE1E5E9),
+                                  ),
+                                ),
+                                child: const Text(
+                                  "Reset",
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF5F6873),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // ======================================================
+                  // FILTER CONTENT
+                  // ======================================================
+
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.fromLTRB(
+                        16,
+                        16,
+                        16,
+                        20,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // ==================================================
+                          // DATE RANGE
+                          // ==================================================
+
+                          _filterSectionTitle(
+                            title: "Date range",
+                            subtitle: "Select the transaction period",
+                            icon: Icons.date_range_outlined,
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          Wrap(
+                            spacing: 7,
+                            runSpacing: 7,
+                            children: filterItems.map((item) {
+                              final bool isSelected =
+                                  selectedValue == item;
+
+                              return _filterOption(
+                                label: item,
+                                selected: isSelected,
+                                onTap: () {
+                                  setSheetState(() {
+                                    selectedValue = item;
+                                    customRange = null;
+                                  });
+                                },
+                              );
+                            }).toList(),
+                          ),
+
+                          const SizedBox(height: 7),
+
+                          // Custom range
+                          _filterOption(
+                            label: "Custom Range",
+                            selected: selectedValue == "Custom Range",
+                            icon: Icons.calendar_month_outlined,
+                            onTap: () async {
+                              final now = DateTime.now();
+
+                              final picked =
+                              await showDateRangePicker(
+                                context: sheetContext,
+                                firstDate:
+                                DateTime(now.year - 2),
+                                lastDate: now,
+                                initialDateRange:
+                                customRange ??
+                                    DateTimeRange(
+                                      start: now,
+                                      end: now,
+                                    ),
+                                builder: (context, child) {
+                                  return Theme(
+                                    data: Theme.of(context).copyWith(
+                                      colorScheme:
+                                      ColorScheme.light(
+                                        primary:
+                                        home1,
+                                      ),
+                                    ),
+                                    child: child!,
+                                  );
+                                },
+                              );
+
+                              if (picked == null) return;
+
+                              setSheetState(() {
+                                selectedValue = "Custom Range";
+
+                                customRange = DateTimeRange(
+                                  start: DateTime(
+                                    picked.start.year,
+                                    picked.start.month,
+                                    picked.start.day,
+                                  ),
+                                  end: DateTime(
+                                    picked.end.year,
+                                    picked.end.month,
+                                    picked.end.day,
+                                    23,
+                                    59,
+                                    59,
+                                  ),
+                                );
+                              });
+                            },
+                          ),
+
+                          if (selectedValue == "Custom Range" &&
+                              customRange != null) ...[
+                            const SizedBox(height: 9),
+
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 10,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: home1.withValues(
+                                    alpha: 0.25,
+                                  ),
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.event_outlined,
+                                    color: home1,
+                                    size: 17,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      "${_formatDate(customRange!.start)}"
+                                          "  —  "
+                                          "${_formatDate(customRange!.end)}",
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight:
+                                        FontWeight.w600,
+                                        color: home1,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+
+                          const SizedBox(height: 22),
+
+                          // ==================================================
+                          // STATUS
+                          // ==================================================
+
+                          _filterSectionTitle(
+                            title: "Transaction status",
+                            subtitle: "Filter by payment outcome",
+                            icon: Icons.verified_outlined,
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          Wrap(
+                            spacing: 7,
+                            runSpacing: 7,
+                            children: statusFilters.map((status) {
+                              final bool isSelected =
+                                  selectedStatusFilter == status;
+
+                              return _filterOption(
+                                label: status,
+                                selected: isSelected,
+                                onTap: () {
+                                  setSheetState(() {
+                                    selectedStatusFilter = status;
+                                  });
+                                },
+                              );
+                            }).toList(),
+                          ),
+
+                          const SizedBox(height: 22),
+
+                          // ==================================================
+                          // PAYMENT TYPE
+                          // ==================================================
+
+                          _filterSectionTitle(
+                            title: "Transaction type",
+                            subtitle: "Select the payment channel",
+                            icon: Icons.account_balance_outlined,
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          Wrap(
+                            spacing: 7,
+                            runSpacing: 7,
+                            children:
+                            paymentModeFilters.map((mode) {
+                              final bool isSelected =
+                                  selectedPaymentModeFilter == mode;
+
+                              return _filterOption(
+                                label: mode,
+                                selected: isSelected,
+                                onTap: () {
+                                  setSheetState(() {
+                                    selectedPaymentModeFilter =
+                                        mode;
+                                  });
+                                },
+                              );
+                            }).toList(),
+                          ),
+
+                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // ==========================================================
+                  // APPLY FOOTER
+                  // ==========================================================
+
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(
+                      16,
+                      11,
+                      16,
+                      14,
+                    ),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      border: Border(
+                        top: BorderSide(
+                          color: Color(0xFFE5E8EC),
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "FILTERS",
+                                style: TextStyle(
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 0.7,
+                                  color: Color(0xFF8A939E),
+                                ),
+                              ),
+                              const SizedBox(height: 3),
+                              Text(
+                                "$selectedValue • "
+                                    "$selectedStatusFilter",
+                                maxLines: 1,
+                                overflow:
+                                TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF313942),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(width: 12),
+
+                        SizedBox(
+                          height: 43,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(sheetContext);
+
+                              if (!mounted) return;
+
+                              final range = _resolveDateRange();
+
+                              if (range == null) return;
+
+                              context
+                                  .read<PaymentTransactionBloc>()
+                                  .add(
+                                GetTransactionByMerchantDateWithStatus(
+                                  widget.eCollectMerchantID,
+                                  range.start
+                                      .toIso8601String()
+                                      .replaceRange(
+                                    10,
+                                    null,
+                                    "",
+                                  ),
+                                  range.end
+                                      .toIso8601String()
+                                      .replaceRange(
+                                    10,
+                                    null,
+                                    "",
+                                  ),
+                                  selectedStatusFilter ==
+                                      "All"
+                                      ? ""
+                                      : selectedStatusFilter,
+                                  widget.eCollectToken,
+                                ),
+                              );
+                            },
+                            style:
+                            ElevatedButton.styleFrom(
+                              elevation: 0,
+                              backgroundColor: home1,
+                              foregroundColor: Colors.white,
+                              padding:
+                              const EdgeInsets.symmetric(
+                                horizontal: 18,
+                              ),
+                              shape:
+                              RoundedRectangleBorder(
+                                borderRadius:
+                                BorderRadius.circular(7),
+                              ),
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.filter_alt_rounded,
+                                  size: 16,
+                                ),
+                                SizedBox(width: 7),
+                                Text(
+                                  "Apply Filters",
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+// ================================================================
+// FILTER SECTION TITLE
+// ================================================================
+
+  Widget _filterSectionTitle({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+  }) {
+    return Row(
+      children: [
+        Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+            color: const Color(0xFFEFF3F8),
+            borderRadius: BorderRadius.circular(7),
+          ),
+          child: Icon(
+            icon,
+            size: 15,
+            color: const Color(0xFF465568),
+          ),
+        ),
+
+        const SizedBox(width: 9),
+
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF202832),
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              subtitle,
+              style: const TextStyle(
+                fontSize: 9,
+                color: Color(0xFF8A939E),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+// ================================================================
+// FILTER OPTION
+// ================================================================
+
+  Widget _filterOption({
+    required String label,
+    required bool selected,
+    required VoidCallback onTap,
+    IconData? icon,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(7),
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 160),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 11,
+            vertical: 9,
+          ),
+          decoration: BoxDecoration(
+            color: selected
+                ? home1.withValues(alpha: 0.08)
+                : Colors.white,
+            borderRadius: BorderRadius.circular(7),
+            border: Border.all(
+              color: selected
+                  ? home1.withValues(alpha: 0.65)
+                  : const Color(0xFFE1E5E9),
+              width: selected ? 1.1 : 1,
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (icon != null) ...[
+                Icon(
+                  icon,
+                  size: 14,
+                  color: selected
+                      ? home1
+                      : const Color(0xFF78828E),
+                ),
+                const SizedBox(width: 6),
+              ],
+
+              if (selected) ...[
+                Icon(
+                  Icons.check_rounded,
+                  size: 14,
+                  color: home1,
+                ),
+                const SizedBox(width: 5),
+              ],
+
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 10.5,
+                  fontWeight: selected
+                      ? FontWeight.w700
+                      : FontWeight.w500,
+                  color: selected
+                      ? home1
+                      : const Color(0xFF59636F),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+/*  void _openFilterSheet() {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -555,7 +1194,7 @@ class EcollectTransactionReportState extends State<EcollectTransactionReport> {
         );
       },
     );
-  }
+  }*/
 
   // void _runSearch() {
   //   setState(() {
@@ -816,21 +1455,29 @@ else{
               listener: (context, state) {
 
                 if (state is TransactionReportLoaderState) {
-                  // if (showProgress == false) {
-                  //   showProgressDialog(context);
-                  //   showProgress = true;
-                  // }
+                  if (showProgress == false) {
+                    showProgressDialog(context);
+                    showProgress = true;
+                  }
                 }
 
-                if (state is TransactionReportSuccessState ||
-                    state is TransactionReportFailureState) {
+                if (state is TransactionReportSuccessState
+                    ) {
                   print("TWO");
-                  // if (showProgress == true) {
-                  //
-                  //     Navigator.of(context).pop();
-                  //
-                  //   showProgress = false;
-                  // }
+                  if (showProgress == true) {
+
+                      Navigator.of(context).pop();
+
+                    showProgress = false;
+                  }
+                }
+                else if(state is TransactionReportFailureState){
+                  if (showProgress == true) {
+
+                    Navigator.of(context).pop();
+
+                    showProgress = false;
+                  }
                 }
               },
               child: BlocBuilder<PaymentTransactionBloc, TransactionState>(
@@ -952,11 +1599,12 @@ else{
 // ═════════════════════════════════════════════════════
 // TRANSACTION CARD
 // ═════════════════════════════════════════════════════
+
   Widget _transactionCard(
-    BuildContext context,
-    dynamic transaction,
-  ) {
-    final status = transaction.status.toString().toLowerCase();
+      BuildContext context,
+      dynamic transaction,
+      ) {
+    final status = transaction.status?.toString().toLowerCase() ?? '';
 
     final bool isPending = status.startsWith("pending");
     final bool isSuccess = status.startsWith("success");
@@ -964,23 +1612,28 @@ else{
     final Color statusColor = isPending
         ? const Color(0xFFD97706)
         : isSuccess
-            ? const Color(0xFF16A34A)
-            : const Color(0xFFDC2626);
+        ? const Color(0xFF16A34A)
+        : const Color(0xFFDC2626);
 
-    final Color statusBg = isPending
+    final Color statusBackground = isPending
         ? const Color(0xFFFFF7ED)
         : isSuccess
-            ? const Color(0xFFF0FDF4)
-            : const Color(0xFFFEF2F2);
+        ? const Color(0xFFF0FDF4)
+        : const Color(0xFFFEF2F2);
 
     final String customerName =
-        transaction.customerName?.toString() ?? "Unknown Customer";
+    transaction.customerName?.toString().trim().isNotEmpty == true
+        ? transaction.customerName.toString().trim()
+        : "Unknown Customer";
 
-    final String initial = customerName.trim().isNotEmpty
-        ? customerName.trim()[0].toUpperCase()
+    final String initial = customerName.isNotEmpty
+        ? customerName[0].toUpperCase()
         : "?";
 
-    final String orderId = transaction.orderId?.toString() ?? "N/A";
+    final String orderId =
+    transaction.orderId?.toString().trim().isNotEmpty == true
+        ? transaction.orderId.toString()
+        : "N/A";
 
     final String paymentMode =
         transaction.paymentMode?.toString().toUpperCase() ?? "N/A";
@@ -995,288 +1648,16 @@ else{
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: const Color(0xFFE9E9ED),
+          color: const Color(0xFFE7E8EC),
           width: 1,
         ),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(18),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => EcollectTransactionDetail(
-                  paymentTransaction: PaymentTransaction(
-                    id: transaction.id,
-                    orderId: transaction.orderId,
-                    transactionId: transaction.transactionId,
-                    paymentGatewayTransactionId:
-                        transaction.paymentGatewayTransactionId,
-                    amount: transaction.amount,
-                    currency: transaction.currency,
-                    description: transaction.description,
-                    customerName: transaction.customerName,
-                    customerEmail: transaction.customerEmail,
-                    customerPhone: transaction.customerPhone,
-                    paymentMode: transaction.paymentMode,
-                    paymentChannel: transaction.paymentChannel,
-                    status: transaction.status,
-                    responseCode: transaction.responseCode,
-                    responseMessage: transaction.responseMessage,
-                    createdAt: transaction.createdAt,
-                    completedAt: transaction.completedAt,
-                    merchantId: transaction.merchantId,
-                    merchantName: transaction.merchantName,
-                  ),
-                ),
-              ),
-            );
-          },
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(15, 15, 13, 13),
-            child: Column(
-              children: [
-                // =====================================================
-                // MAIN TRANSACTION ROW
-                // =====================================================
-
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Avatar
-                    Container(
-                      width: 42,
-                      height: 42,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF4F4F5),
-                        borderRadius: BorderRadius.circular(13),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        initial,
-                        style: const TextStyle(
-                          color: Color(0xFF3F3F46),
-                          fontSize: 15,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(width: 11),
-
-                    // Customer information
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            customerName,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xFF18181B),
-                              letterSpacing: -0.15,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Row(
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  "#$orderId",
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 10.5,
-                                    color: Color(0xFF71717A),
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                ),
-                                child: Text(
-                                  "•",
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Color(0xFFD4D4D8),
-                                  ),
-                                ),
-                              ),
-                              Flexible(
-                                child: Text(
-                                  DateFormat(
-                                    'dd MMM, hh:mm a',
-                                  ).format(
-                                    transaction.createdAt,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 10.5,
-                                    color: Color(0xFF71717A),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(width: 10),
-
-                    // Amount + status
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          "₹${transaction.amount}",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w800,
-                            color: statusColor,
-                            letterSpacing: -0.3,
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 7,
-                            vertical: 3,
-                          ),
-                          decoration: BoxDecoration(
-                            color: statusBg,
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                width: 5,
-                                height: 5,
-                                decoration: BoxDecoration(
-                                  color: statusColor,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                transactionStatus,
-                                style: TextStyle(
-                                  color: statusColor,
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 13),
-
-                // =====================================================
-                // BOTTOM METADATA
-                // =====================================================
-
-                Row(
-                  children: [
-                    const SizedBox(width: 53),
-
-                    // Payment mode
-                    _transactionMeta(
-                      paymentMode,
-                      Icons.account_balance_wallet_outlined,
-                    ),
-
-                    const SizedBox(width: 10),
-
-                    Container(
-                      width: 4,
-                      height: 4,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFD4D4D8),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-
-                    const SizedBox(width: 10),
-
-                    Expanded(
-                      child: Text(
-                        paymentChannel,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 10,
-                          color: Color(0xFF71717A),
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(width: 8),
-
-                    // Arrow
-                    const Icon(
-                      Icons.chevron_right_rounded,
-                      size: 20,
-                      color: Color(0xFFA1A1AA),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-/*  Widget _transactionCard(
-      BuildContext context,
-      dynamic transaction,
-      )
-  {
-    final status = transaction.status.toLowerCase();
-
-    final bool isPending = status.startsWith("pending");
-    final bool isSuccess = status.startsWith("success");
-
-    final Color statusColor = isPending
-        ? Colors.orange.shade700
-        : isSuccess
-        ? Colors.green.shade600
-        : Colors.red.shade600;
-
-    final String customerName =
-    transaction.customerName.toString();
-
-    final String initial = customerName.isNotEmpty
-        ? customerName[0].toUpperCase()
-        : "?";
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(16),
           onTap: () {
             Navigator.push(
               context,
@@ -1309,83 +1690,220 @@ else{
             );
           },
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(15),
             child: Column(
               children: [
-                // ─────────────────────────────
-                // TOP
-                // ─────────────────────────────
+                // =========================================================
+                // PRIMARY TRANSACTION INFORMATION
+                // =========================================================
+
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    // Customer avatar
                     Container(
-                      height: 44,
                       width: 44,
+                      height: 44,
                       decoration: BoxDecoration(
-                        color: home1.withValues(alpha: 0.10),
-                        shape: BoxShape.circle,
+                        color: home1.withValues(alpha: 0.07),
+                        borderRadius: BorderRadius.circular(13),
                       ),
-                      child: Center(
-                        child: Text(
-                          initial,
-                          style: TextStyle(
-                            color: home1,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w800,
-                          ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        initial,
+                        style: GoogleFonts.inter(
+                          color: home1,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
 
                     const SizedBox(width: 12),
 
+                    // Customer + ID + Date
                     Expanded(
                       child: Column(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // Customer name
                           Text(
                             customerName,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
+                            style: GoogleFonts.inter(
+                              color: const Color(0xFF18181B),
                               fontSize: 14,
-                              fontWeight: FontWeight.w800,
-                              color: Color(0xFF171A1F),
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
 
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 7),
 
-                          Container(
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.grey.shade100
-                            ),
+                          // Transaction / Order ID
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.receipt_long_outlined,
+                                size: 13,
+                                color: Color(0xFF8A8F98),
+                              ),
+                              const SizedBox(width: 5),
+                              Expanded(
+                                child: Text(
+                                  "#$orderId",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.inter(
+                                    color: const Color(0xFF5F636B),
+                                    fontSize: 10.5,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 5),
+
+                          // Date and time - deliberately separated
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.schedule_outlined,
+                                size: 13,
+                                color: Color(0xFFA0A4AC),
+                              ),
+                              const SizedBox(width: 5),
+                              Text(
+                                DateFormat(
+                                  'dd MMM yyyy, hh:mm a',
+                                ).format(transaction.createdAt),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.inter(
+                                  color: const Color(0xFF8A8F98),
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    // Amount + Status
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          "₹${transaction.amount}",
+                          style: GoogleFonts.inter(
+                            color: const Color(0xFF18181B),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: -0.2,
+                          ),
+                        ),
+
+                        const SizedBox(height: 6),
+
+                        // Status
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: statusBackground,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 5,
+                                height: 5,
+                                decoration: BoxDecoration(
+                                  color: statusColor,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 5),
+                              Text(
+                                transactionStatus,
+                                style: GoogleFonts.inter(
+                                  color: statusColor,
+                                  fontSize: 9.5,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 14),
+
+                // =========================================================
+                // SUBTLE DIVIDER
+                // =========================================================
+
+                Container(
+                  height: 1,
+                  color: const Color(0xFFF0F1F3),
+                ),
+
+                const SizedBox(height: 12),
+
+                // =========================================================
+                // SECONDARY INFORMATION
+                // =========================================================
+
+                Row(
+                  children: [
+                    // Payment mode
+                    Expanded(
+                      child: _transactionMeta(
+                        paymentMode,
+                        Icons.account_balance_wallet_outlined,
+                      ),
+                    ),
+
+                    Container(
+                      width: 1,
+                      height: 18,
+                      color: const Color(0xFFE8E9ED),
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    // Payment channel
+                    Expanded(
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.swap_horiz_rounded,
+                            size: 15,
+                            color: Color(0xFF8A8F98),
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
                             child: Text(
-                              "ORDER ID :- ${transaction.orderId.toString()}",
+                              paymentChannel,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontStyle: FontStyle.italic,
-                                color: Colors.grey.shade700,
-                                fontWeight: FontWeight.w700,
+                              style: GoogleFonts.inter(
+                                color: const Color(0xFF6F747D),
+                                fontSize: 10.5,
+                                fontWeight: FontWeight.w500,
                               ),
-                            ),
-                          ),
-
-                          const SizedBox(height: 3),
-
-                          Text(
-                            DateFormat('dd MMM yyyy, hh:mm a')
-                                .format(transaction.createdAt),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: Colors.grey.shade600,
                             ),
                           ),
                         ],
@@ -1394,41 +1912,260 @@ else{
 
                     const SizedBox(width: 8),
 
+                    // Arrow
+                    const Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 12,
+                      color: Color(0xFFA5A8AF),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+
+
+/*  Widget _transactionCard(
+      BuildContext context,
+      dynamic transaction,
+      )
+  {
+    final status = transaction.status?.toString().toLowerCase() ?? '';
+
+    final bool isPending = status.startsWith("pending");
+    final bool isSuccess = status.startsWith("success");
+
+    final Color statusColor = isPending
+        ? const Color(0xFFD97706)
+        : isSuccess
+        ? const Color(0xFF16A34A)
+        : const Color(0xFFDC2626);
+
+    final Color statusBackground = isPending
+        ? const Color(0xFFFFF7ED)
+        : isSuccess
+        ? const Color(0xFFF0FDF4)
+        : const Color(0xFFFEF2F2);
+
+    final String customerName =
+    transaction.customerName?.toString().trim().isNotEmpty == true
+        ? transaction.customerName.toString().trim()
+        : "Unknown Customer";
+
+    final String initial = customerName.isNotEmpty
+        ? customerName[0].toUpperCase()
+        : "?";
+
+    final String orderId =
+    transaction.orderId?.toString().trim().isNotEmpty == true
+        ? transaction.orderId.toString()
+        : "N/A";
+
+    final String paymentMode =
+        transaction.paymentMode?.toString().toUpperCase() ?? "N/A";
+
+    final String paymentChannel =
+        transaction.paymentChannel?.toString().toUpperCase() ?? "N/A";
+
+    final String transactionStatus =
+        transaction.status?.toString() ?? "Unknown";
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: const Color(0xFFE7E8EC),
+          width: 1,
+        ),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => EcollectTransactionDetail(
+                  paymentTransaction: PaymentTransaction(
+                    id: transaction.id,
+                    orderId: transaction.orderId,
+                    transactionId: transaction.transactionId,
+                    paymentGatewayTransactionId:
+                    transaction.paymentGatewayTransactionId,
+                    amount: transaction.amount,
+                    currency: transaction.currency,
+                    description: transaction.description,
+                    customerName: transaction.customerName,
+                    customerEmail: transaction.customerEmail,
+                    customerPhone: transaction.customerPhone,
+                    paymentMode: transaction.paymentMode,
+                    paymentChannel: transaction.paymentChannel,
+                    status: transaction.status,
+                    responseCode: transaction.responseCode,
+                    responseMessage: transaction.responseMessage,
+                    createdAt: transaction.createdAt,
+                    completedAt: transaction.completedAt,
+                    merchantId: transaction.merchantId,
+                    merchantName: transaction.merchantName,
+                  ),
+                ),
+              ),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              children: [
+                // =========================================================
+                // PRIMARY TRANSACTION INFORMATION
+                // =========================================================
+
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Customer avatar
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: home1.withValues(alpha: 0.07),
+                        borderRadius: BorderRadius.circular(13),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        initial,
+                        style: GoogleFonts.inter(
+                          color: home1,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    // Customer + transaction ID
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            customerName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.inter(
+                              color: const Color(0xFF18181B),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+
+                          const SizedBox(height: 5),
+
+                          Row(
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  "#$orderId",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.inter(
+                                    color: const Color(0xFF8A8F98),
+                                    fontSize: 10.5,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                width: 3,
+                                height: 3,
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 7,
+                                ),
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFFC9CBD1),
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+
+                              Flexible(
+                                child: Text(
+                                  DateFormat(
+                                    'dd MMM, hh:mm a',
+                                  ).format(transaction.createdAt),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.inter(
+                                    color: const Color(0xFF8A8F98),
+                                    fontSize: 10.5,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    // Amount
                     Column(
-                      crossAxisAlignment:
-                      CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
                           "₹${transaction.amount}",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            color: statusColor,
-                            letterSpacing: -0.3,
+                          style: GoogleFonts.inter(
+                            color: const Color(0xFF18181B),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: -0.2,
                           ),
                         ),
 
                         const SizedBox(height: 6),
 
+                        // Status
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 9,
+                            horizontal: 8,
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: statusColor.withValues(
-                              alpha: 0.10,
-                            ),
-                            borderRadius:
-                            BorderRadius.circular(20),
+                            color: statusBackground,
+                            borderRadius: BorderRadius.circular(20),
                           ),
-                          child: Text(
-                            transaction.status.toString(),
-                            style: TextStyle(
-                              color: statusColor,
-                              fontSize: 9,
-                              fontWeight: FontWeight.w800,
-                            ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 5,
+                                height: 5,
+                                decoration: BoxDecoration(
+                                  color: statusColor,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 5),
+                              Text(
+                                transactionStatus,
+                                style: GoogleFonts.inter(
+                                  color: statusColor,
+                                  fontSize: 9.5,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -1436,60 +2173,74 @@ else{
                   ],
                 ),
 
-                Padding(
-                  padding: const EdgeInsets.only(left: 55),
-                  child: Divider(color: Colors.grey.shade300,),
+                const SizedBox(height: 14),
+
+                // =========================================================
+                // SUBTLE DIVIDER
+                // =========================================================
+
+                Container(
+                  height: 1,
+                  color: const Color(0xFFF0F1F3),
                 ),
-                // ─────────────────────────────
-                // BOTTOM INFO
-                // ─────────────────────────────
+
+                const SizedBox(height: 12),
+
+                // =========================================================
+                // SECONDARY INFORMATION
+                // =========================================================
 
                 Row(
                   children: [
-                   SizedBox(width: 55,),
-                    _transactionMeta(
-                      transaction.paymentMode
-                          .toString()
-                          .toUpperCase(),
-                      Icons.account_balance_wallet_outlined,
-                    ),
-
-                    const SizedBox(width: 10),
-
-                    Container(
-                      height: 4,
-                      width: 4,
-                      decoration: BoxDecoration(
-                        color: Colors.green.shade500,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-
-                    const SizedBox(width: 10),
-
+                    // Payment mode
                     Expanded(
-                      child: Text(
-                        "Transaction Type :- ${transaction.paymentChannel.toString().toUpperCase()}",
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Colors.grey.shade500,
-                          fontWeight: FontWeight.w700,
-                        ),
+                      child: _transactionMeta(
+                        paymentMode,
+                        Icons.account_balance_wallet_outlined,
                       ),
                     ),
 
                     Container(
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),
-                      color: Colors.grey.shade100
+                      width: 1,
+                      height: 18,
+                      color: const Color(0xFFE8E9ED),
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    // Payment channel
+                    Expanded(
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.swap_horiz_rounded,
+                            size: 15,
+                            color: Color(0xFF8A8F98),
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              paymentChannel,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.inter(
+                                color: const Color(0xFF6F747D),
+                                fontSize: 10.5,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      child: Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 13,
-                        color: Colors.grey,
-                      ),
+                    ),
+
+                    const SizedBox(width: 8),
+
+                    // Arrow
+                    const Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 12,
+                      color: Color(0xFFA5A8AF),
                     ),
                   ],
                 ),
@@ -1500,6 +2251,9 @@ else{
       ),
     );
   }*/
+
+
+
 
 // ═════════════════════════════════════════════════════
 // TRANSACTION META

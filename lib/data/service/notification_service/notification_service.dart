@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:convert';
 import 'package:e_Collect/core/constants.dart';
@@ -229,6 +228,7 @@ Future<void> saveFcmToken(
       context,
       MaterialPageRoute(
         builder: (context) => const BottomNavBar(),
+      //  builder: (context) => const BottomNavBarDummy(),
       ),
           (route) => false,
     );
@@ -262,6 +262,7 @@ Future<void> saveFcmToken(
       context,
       MaterialPageRoute(
         builder: (context) => const BottomNavBar(),
+        //builder: (context) => const BottomNavBarDummy(),
       ),
           (route) => false,
     );

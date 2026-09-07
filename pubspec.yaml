@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.7+7
+version: 1.0.8+8
 
 
 environment:
@@ -29,15 +29,12 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  #fluttertoast: ^9.0.0
   fluttertoast: ^10.0.0
   palette_generator_master: ^1.1.0
   flutter_sound: ^9.30.0
   url_launcher: ^6.3.2
   provider: ^6.1.5+1
- # fl_chart: ^0.69.0
   fl_chart: ^1.2.0
-  #flutter_longpress_preview: ^0.1.9
   iconsax_flutter: ^1.0.1
   http: ^1.6.0
   pager: ^0.0.6
@@ -49,59 +46,29 @@ dependencies:
   qr_flutter: ^4.1.0
   internet_connection_checker: ^3.0.1
   google_fonts: ^8.2.1
-  #google_fonts: ^8.0.2
   local_auth: ^2.3.0
-  #local_auth: ^3.0.2
   shimmer: ^3.0.0
-  #shimmer: ^4.0.0
-  #path_provider: ^2.1.5
   path_provider: ^2.1.6
   flutter_local_notifications: ^19.5.0
-  #flutter_local_notifications: ^22.3.0
-  #flutter_easyloading: ^3.0.5
   flutter_easyloading: ^4.0.2
   shared_preferences: ^2.5.5
-  #image: ^4.1.7
   image: ^4.9.2
   intl: ^0.20.2
-  #intl: ^0.20.3
-  #print_bluetooth_thermal: ^1.1.6
   print_bluetooth_thermal: ^1.2.2
-  #encrypt: ^5.0.3
-  #pointycastle: ^3.7.4
-  #permission_handler: ^12.0.1
   permission_handler: ^13.0.2
   image_picker: ^1.1.2
-  #firebase_core: ^4.10.0
   firebase_core: ^4.14.0
-  #firebase_messaging: ^16.3.0
   firebase_messaging: ^16.6.0
   pdf: ^3.11.3
-  #in_app_update: ^4.2.5
   in_app_update: ^5.0.0
   share_plus: ^12.0.1
-  #share_plus: ^13.3.0
   screenshot: ^3.0.0
   carousel_slider: ^5.0.0
   flutter_screenutil: ^5.9.3
   lottie: ^3.3.3
   vibration: ^3.1.3
   flutter_overlay_window: ^0.5.0
-  #flutter_contacts: ^1.1.9+2
-  #flutter_contacts: ^2.2.1
-  #animated_segmented_tab_control: ^2.0.0
   flutter_bloc: ^9.1.1
-  #glass: ^2.0.0+2
-  #pie_chart: ^5.4.0
-  #flutter_riverpod: ^3.3.1
-  #flutter_svg: ^2.1.0
-  #glass_kit: ^4.0.1
-  #flutter_screen_lock: ^9.2.2+2
-  #http: ^1.3.0
-  #local_auth: ^2.2.0
-  #animated_notch_bottom_bar: ^1.0.3
- # flutter_libserialport: ^0.5.0
- # usb_serial: ^0.3.0
 
   flutter:
     sdk: flutter
@@ -147,19 +114,9 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
-    - assets/images/b_assured _logo.png
-    - assets/images/b_assured logo.png
-    - assets/images/bbppl.png
-    - assets/images/india.png
     - assets/images/ecollect_white.png
-    - assets/images/verify_otp.jpeg
-    - assets/images/mobile_number.png
-    - assets/images/reset-password.png
     - assets/icons/
-    - assets/svg/
     - assets/images/checklist.webp
-    - assets/images/new_profile.png
-    - assets/animations/
 
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

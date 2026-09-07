@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -965,6 +966,7 @@ class _EcollectTransactionDetailState extends State<EcollectTransactionDetail> {
       ],
     );
   }
+
   Widget _buildTransactionSummary({
     required dynamic txn,
     required String status,
@@ -973,148 +975,374 @@ class _EcollectTransactionDetailState extends State<EcollectTransactionDetail> {
     required bool isSuccess,
     required bool isPending,
   }) {
+    final String orderId = txn.orderId?.toString() ?? "N/A";
+
+    final String formattedDate = DateFormat(
+      'dd MMM yyyy, hh:mm a',
+    ).format(txn.createdAt);
+
     return Container(
       width: double.infinity,
-
-      padding: const EdgeInsets.fromLTRB(
-        20,
-        20,
-        20,
-        18,
-      ),
-
       decoration: BoxDecoration(
         color: Colors.white,
-
-        borderRadius: BorderRadius.circular(22),
-
+        borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: const Color(0xFFE8E8EC),
+          color: const Color(0xFFE7E8EC),
+          width: 1,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.025),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // =========================================================
+            // TOP ROW
+            // =========================================================
 
-      child: Column(
-        children: [
-
-          // ---------------------------------------------------------
-          // STATUS
-          // ---------------------------------------------------------
-
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 6,
-            ),
-
-            decoration: BoxDecoration(
-              color: statusBackground,
-              borderRadius: BorderRadius.circular(30),
-            ),
-
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Amount",
+                        style: GoogleFonts.inter(
+                          color: const Color(0xFF8A8F98),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
 
-                Icon(
-                  isSuccess
-                      ? Icons.check_circle_rounded
-                      : isPending
-                      ? Icons.schedule_rounded
-                      : Icons.error_rounded,
+                      const SizedBox(height: 5),
 
-                  color: statusColor,
-                  size: 15,
+                      Text(
+                        "₹${txn.amount.toStringAsFixed(2)}",
+                        style: GoogleFonts.inter(
+                          color: const Color(0xFF18181B),
+                          fontSize: 30,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: -1.1,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
 
-                const SizedBox(width: 6),
+                // Status
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 9,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: statusBackground,
+                    borderRadius: BorderRadius.circular(9),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 6,
+                        height: 6,
+                        decoration: BoxDecoration(
+                          color: statusColor,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
 
-                Text(
-                  status,
-                  style: TextStyle(
-                    color: statusColor,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.3,
+                      const SizedBox(width: 6),
+
+                      Text(
+                        status,
+                        style: GoogleFonts.inter(
+                          color: statusColor,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-          ),
 
-          const SizedBox(height: 18),
+            const SizedBox(height: 4),
 
-          // ---------------------------------------------------------
-          // AMOUNT
-          // ---------------------------------------------------------
-
-          Text(
-            "₹${txn.amount.toStringAsFixed(2)}",
-
-            style: const TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.w800,
-              color: Color(0xFF18181B),
-              letterSpacing: -1,
+            Text(
+              isSuccess
+                  ? "Payment received successfully"
+                  : isPending
+                  ? "Payment is being processed"
+                  : "Payment was not completed",
+              style: GoogleFonts.inter(
+                color: const Color(0xFF8A8F98),
+                fontSize: 10.5,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ),
 
-          const SizedBox(height: 5),
+            const SizedBox(height: 18),
 
-          Text(
-            "Payment received",
+            // =========================================================
+            // TRANSACTION METADATA
+            // =========================================================
 
-            style: TextStyle(
-              fontSize: 11,
-              color: Colors.grey.shade500,
-              fontWeight: FontWeight.w500,
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFFF8F9FA),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                children: [
+                  // Order ID
+                  _summaryDetailRow(
+                    icon: Icons.receipt_long_outlined,
+                    label: "Order ID",
+                    value: "#$orderId",
+                  ),
+
+                  Container(
+                    height: 1,
+                    margin: const EdgeInsets.only(left: 48),
+                    color: const Color(0xFFEDEEF1),
+                  ),
+
+                  // Date
+                  _summaryDetailRow(
+                    icon: Icons.schedule_outlined,
+                    label: "Date & time",
+                    value: formattedDate,
+                  ),
+                ],
+              ),
             ),
-          ),
-
-          const SizedBox(height: 20),
-
-          Container(
-            height: 1,
-            color: const Color(0xFFEDEDEF),
-          ),
-
-          const SizedBox(height: 15),
-
-          // ---------------------------------------------------------
-          // ORDER / DATE
-          // ---------------------------------------------------------
-
-          Row(
-            children: [
-
-              Expanded(
-                child: _summaryItem(
-                  label: "ORDER ID",
-                  value: "#${txn.orderId}",
-                ),
-              ),
-
-              Container(
-                width: 1,
-                height: 28,
-                color: const Color(0xFFE5E5E7),
-              ),
-
-              Expanded(
-                child: _summaryItem(
-                  label: "DATE",
-                  value: DateFormat(
-                    'dd MMM yyyy',
-                  ).format(txn.createdAt),
-                  alignment: CrossAxisAlignment.end,
-                ),
-              ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
+
+Widget _summaryDetailRow({
+required IconData icon,
+required String label,
+required String value,
+}) {
+return Padding(
+padding: const EdgeInsets.symmetric(
+horizontal: 12,
+vertical: 11,
+),
+child: Row(
+children: [
+Container(
+width: 32,
+height: 32,
+decoration: BoxDecoration(
+color: Colors.white,
+borderRadius: BorderRadius.circular(9),
+),
+child: Icon(
+icon,
+size: 15,
+color: const Color(0xFF717780),
+),
+),
+
+const SizedBox(width: 10),
+
+Expanded(
+child: Text(
+label,
+style: GoogleFonts.inter(
+color: const Color(0xFF858A93),
+fontSize: 10.5,
+fontWeight: FontWeight.w500,
+),
+),
+),
+
+const SizedBox(width: 10),
+
+Flexible(
+child: Text(
+value,
+textAlign: TextAlign.right,
+maxLines: 1,
+overflow: TextOverflow.ellipsis,
+style: GoogleFonts.inter(
+color: const Color(0xFF27272A),
+fontSize: 11,
+fontWeight: FontWeight.w600,
+),
+),
+),
+],
+),
+);
+}
+
+
+
+  // Widget _buildTransactionSummary({
+  //   required dynamic txn,
+  //   required String status,
+  //   required Color statusColor,
+  //   required Color statusBackground,
+  //   required bool isSuccess,
+  //   required bool isPending,
+  // }) {
+  //   return Container(
+  //     width: double.infinity,
+  //
+  //     padding: const EdgeInsets.fromLTRB(
+  //       20,
+  //       20,
+  //       20,
+  //       18,
+  //     ),
+  //
+  //     decoration: BoxDecoration(
+  //       color: Colors.white,
+  //
+  //       borderRadius: BorderRadius.circular(22),
+  //
+  //       border: Border.all(
+  //         color: const Color(0xFFE8E8EC),
+  //       ),
+  //     ),
+  //
+  //     child: Column(
+  //       children: [
+  //
+  //         // ---------------------------------------------------------
+  //         // STATUS
+  //         // ---------------------------------------------------------
+  //
+  //         Container(
+  //           padding: const EdgeInsets.symmetric(
+  //             horizontal: 10,
+  //             vertical: 6,
+  //           ),
+  //
+  //           decoration: BoxDecoration(
+  //             color: statusBackground,
+  //             borderRadius: BorderRadius.circular(30),
+  //           ),
+  //
+  //           child: Row(
+  //             mainAxisSize: MainAxisSize.min,
+  //
+  //             children: [
+  //
+  //               Icon(
+  //                 isSuccess
+  //                     ? Icons.check_circle_rounded
+  //                     : isPending
+  //                     ? Icons.schedule_rounded
+  //                     : Icons.error_rounded,
+  //
+  //                 color: statusColor,
+  //                 size: 15,
+  //               ),
+  //
+  //               const SizedBox(width: 6),
+  //
+  //               Text(
+  //                 status,
+  //                 style: TextStyle(
+  //                   color: statusColor,
+  //                   fontSize: 10,
+  //                   fontWeight: FontWeight.w800,
+  //                   letterSpacing: 0.3,
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //
+  //         const SizedBox(height: 18),
+  //
+  //         // ---------------------------------------------------------
+  //         // AMOUNT
+  //         // ---------------------------------------------------------
+  //
+  //         Text(
+  //           "₹${txn.amount.toStringAsFixed(2)}",
+  //
+  //           style: const TextStyle(
+  //             fontSize: 32,
+  //             fontWeight: FontWeight.w800,
+  //             color: Color(0xFF18181B),
+  //             letterSpacing: -1,
+  //           ),
+  //         ),
+  //
+  //         const SizedBox(height: 5),
+  //
+  //         Text(
+  //           "Payment received",
+  //
+  //           style: TextStyle(
+  //             fontSize: 11,
+  //             color: Colors.grey.shade500,
+  //             fontWeight: FontWeight.w500,
+  //           ),
+  //         ),
+  //
+  //         const SizedBox(height: 20),
+  //
+  //         Container(
+  //           height: 1,
+  //           color: const Color(0xFFEDEDEF),
+  //         ),
+  //
+  //         const SizedBox(height: 15),
+  //
+  //         // ---------------------------------------------------------
+  //         // ORDER / DATE
+  //         // ---------------------------------------------------------
+  //
+  //         Row(
+  //           children: [
+  //
+  //             Expanded(
+  //               child: _summaryItem(
+  //                 label: "ORDER ID",
+  //                 value: "#${txn.orderId}",
+  //               ),
+  //             ),
+  //
+  //             Container(
+  //               width: 1,
+  //               height: 28,
+  //               color: const Color(0xFFE5E5E7),
+  //             ),
+  //
+  //             Expanded(
+  //               child: _summaryItem(
+  //                 label: "DATE",
+  //                 value: DateFormat(
+  //                   'dd MMM yyyy',
+  //                 ).format(txn.createdAt),
+  //                 alignment: CrossAxisAlignment.end,
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
   Widget _summaryItem({
     required String label,
     required String value,
@@ -1199,25 +1427,57 @@ class _EcollectTransactionDetailState extends State<EcollectTransactionDetail> {
       ),
     );
   }
+
   Widget _buildDetailsCard({
     required List<Widget> children,
   }) {
     return Container(
       width: double.infinity,
-
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: const Color(0xFFE8E8EC),
+          color: const Color(0xFFE9EAEE),
+          width: 1,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.035),
+            blurRadius: 14,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-
-      child: Column(
-        children: children,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: children,
+        ),
       ),
     );
   }
+
+
+  // Widget _buildDetailsCard({
+  //   required List<Widget> children,
+  // }) {
+  //   return Container(
+  //     width: double.infinity,
+  //
+  //     decoration: BoxDecoration(
+  //       color: Colors.white,
+  //       borderRadius: BorderRadius.circular(18),
+  //       border: Border.all(
+  //         color: const Color(0xFFE8E8EC),
+  //       ),
+  //     ),
+  //
+  //     child: Column(
+  //       children: children,
+  //     ),
+  //   );
+  // }
   Widget _detailItem({
     required String label,
     required String value,
@@ -1325,7 +1585,7 @@ class _EcollectTransactionDetailState extends State<EcollectTransactionDetail> {
       color: Color(0xFFF0F0F2),
     );
   }
-  Widget _buildCustomerCard({
+/*  Widget _buildCustomerCard({
     required String customerName,
     required String initial,
     required String email,
@@ -1428,7 +1688,149 @@ class _EcollectTransactionDetailState extends State<EcollectTransactionDetail> {
         ],
       ),
     );
+  }*/
+
+  Widget _buildCustomerCard({
+    required String customerName,
+    required String initial,
+    required String email,
+    required String phone,
+  }) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: const Color(0xFFE7E8EC),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.025),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // =========================================================
+            // CUSTOMER HEADER
+            // =========================================================
+
+            Row(
+              children: [
+                // Avatar
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: home1.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    initial.toUpperCase(),
+                    style: GoogleFonts.inter(
+                      color: home1,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(width: 12),
+
+                // Customer name
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        customerName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.inter(
+                          color: const Color(0xFF18181B),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+
+                      const SizedBox(height: 4),
+
+                      Row(
+                        children: [
+                          Container(
+                            width: 6,
+                            height: 6,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF16A34A),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+
+                          const SizedBox(width: 6),
+
+                          Text(
+                            "Customer",
+                            style: GoogleFonts.inter(
+                              color: const Color(0xFF8A8F98),
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            // =========================================================
+            // CONTACT INFORMATION
+            // =========================================================
+
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFFF8F9FA),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                children: [
+                  _customerContactRow(
+                    Icons.mail_outline_rounded,
+                    email,
+                  ),
+
+                  Container(
+                    height: 1,
+                    margin: const EdgeInsets.only(left: 44),
+                    color: const Color(0xFFEDEEF1),
+                  ),
+                  SizedBox(height: 10,),
+
+                  _customerContactRow(
+                    Icons.phone_outlined,
+                    phone,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
+
+
   Widget _customerContactRow(
       IconData icon,
       String value,

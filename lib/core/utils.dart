@@ -1,4 +1,6 @@
- import 'package:flutter/material.dart';
+ import 'dart:io';
+
+import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../domain/model/cash_transcation_model.dart';
@@ -200,16 +202,35 @@ class NavItem{
   NavItem({required this.label, required this.icon, required this.page});
 }
 
-void checkForUpdate() async {
-  try {
-    AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
-    if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
-      InAppUpdate.performImmediateUpdate(); // or .startFlexibleUpdate()
-    }
-  } catch (e) {
-    //print("Update check failed: $e");
-  }
-}
+ Future<void> checkForUpdate() async {
+   if (!Platform.isAndroid) {
+     return;
+   }
+
+   try {
+     final AppUpdateInfo updateInfo =
+     await InAppUpdate.checkForUpdate();
+
+     if (updateInfo.updateAvailability ==
+         UpdateAvailability.updateAvailable) {
+       await InAppUpdate.performImmediateUpdate();
+       // Or:
+       // await InAppUpdate.startFlexibleUpdate();
+     }
+   } catch (e) {
+     print('Update check failed: $e');
+   }
+ }
+// void checkForUpdate() async {
+//   try {
+//     AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
+//     if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
+//       InAppUpdate.performImmediateUpdate(); // or .startFlexibleUpdate()
+//     }
+//   } catch (e) {
+//     print("Update check failed: $e");
+//   }
+// }
 
 void showInSnackBar(String value, BuildContext context) {
   var snackBar = SnackBar(
@@ -226,70 +247,142 @@ void showInSnackBar(String value, BuildContext context) {
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
 
-void showProgressDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    barrierColor: Colors.black54,
-    builder: (context) {
-      return Dialog(
-        backgroundColor: Colors.white,
-        elevation: 8,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 28,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(
-                "assets/images/ecollect_white.png",
-                height: 55,
-                fit: BoxFit.contain,
-              ),
+ void showProgressDialog(
+     BuildContext context, {
+       String title = "Please wait...",
+       String message = "Processing your request",
+     }) {
+   showDialog(
+     context: context,
+     barrierDismissible: false,
+     barrierColor: Colors.black54,
+     builder: (_) {
+       return Dialog(
+         backgroundColor: Colors.white,
+         elevation: 8,
+         shape: RoundedRectangleBorder(
+           borderRadius: BorderRadius.circular(20),
+         ),
+         child: Padding(
+           padding: const EdgeInsets.symmetric(
+             horizontal: 24,
+             vertical: 28,
+           ),
+           child: Column(
+             mainAxisSize: MainAxisSize.min,
+             children: [
+               Image.asset(
+                 "assets/images/ecollect_white.png",
+                 height: 55,
+                 fit: BoxFit.contain,
+               ),
 
-              const SizedBox(height: 24),
+               const SizedBox(height: 24),
 
-              const SizedBox(
-                width: 32,
-                height: 32,
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                  color: home1,
-                ),
-              ),
+               const SizedBox(
+                 width: 32,
+                 height: 32,
+                 child: CircularProgressIndicator(
+                   strokeWidth: 3,
+                   color: home1,
+                 ),
+               ),
 
-              const SizedBox(height: 18),
+               const SizedBox(height: 18),
 
-              const Text(
-                "Please wait...",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                ),
-              ),
+               Text(
+                 title,
+                 style: const TextStyle(
+                   fontSize: 16,
+                   fontWeight: FontWeight.w600,
+                   color: Colors.black87,
+                 ),
+                 textAlign: TextAlign.center,
+               ),
 
-              const SizedBox(height: 6),
+               const SizedBox(height: 6),
 
-              Text(
-                "Processing your request",
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.grey.shade600,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  );
-}
+               Text(
+                 message,
+                 style: TextStyle(
+                   fontSize: 13,
+                   color: Colors.grey.shade600,
+                 ),
+                 textAlign: TextAlign.center,
+               ),
+             ],
+           ),
+         ),
+       );
+     },
+   );
+ }
+
+
+// void showProgressDialog(BuildContext context) {
+//   showDialog(
+//     context: context,
+//     barrierDismissible: false,
+//     barrierColor: Colors.black54,
+//     builder: (context) {
+//       return Dialog(
+//         backgroundColor: Colors.white,
+//         elevation: 8,
+//         shape: RoundedRectangleBorder(
+//           borderRadius: BorderRadius.circular(20),
+//         ),
+//         child: Padding(
+//           padding: const EdgeInsets.symmetric(
+//             horizontal: 24,
+//             vertical: 28,
+//           ),
+//           child: Column(
+//             mainAxisSize: MainAxisSize.min,
+//             children: [
+//               Image.asset(
+//                 "assets/images/ecollect_white.png",
+//                 height: 55,
+//                 fit: BoxFit.contain,
+//               ),
+//
+//               const SizedBox(height: 24),
+//
+//               const SizedBox(
+//                 width: 32,
+//                 height: 32,
+//                 child: CircularProgressIndicator(
+//                   strokeWidth: 3,
+//                   color: home1,
+//                 ),
+//               ),
+//
+//               const SizedBox(height: 18),
+//
+//               const Text(
+//                 "Please wait...",
+//                 style: TextStyle(
+//                   fontSize: 16,
+//                   fontWeight: FontWeight.w600,
+//                   color: Colors.black87,
+//                 ),
+//               ),
+//
+//               const SizedBox(height: 6),
+//
+//               Text(
+//                 "Processing your request",
+//                 style: TextStyle(
+//                   fontSize: 13,
+//                   color: Colors.grey.shade600,
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       );
+//     },
+//   );
+// }
 
 String extractOtp(List<TextEditingController> otpController){
   var otpValue = "";

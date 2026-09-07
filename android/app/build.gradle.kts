@@ -19,7 +19,13 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.ecollect.app"
-    compileSdk = flutter.compileSdkVersion
+
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 0
+        }
+    }
+
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -53,7 +59,6 @@ android {
 
     buildTypes {
         release {
-            // Use release signing config if keystore exists, otherwise fall back to debug
             signingConfig = if (keystorePropertiesFile.exists()) {
                 signingConfigs.getByName("release")
             } else {

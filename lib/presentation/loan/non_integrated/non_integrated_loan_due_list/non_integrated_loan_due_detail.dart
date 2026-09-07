@@ -59,6 +59,7 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
           'Loan Due Details',
@@ -127,6 +128,9 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
                   method: "QR",
                 );
               },
+            ),
+            SizedBox(
+              height: 10,
             ),
             _buildPaymentMethod(
               icon: Icons.link_rounded,

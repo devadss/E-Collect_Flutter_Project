@@ -1,9 +1,6 @@
 import 'package:e_Collect/core/colors.dart';
 import 'package:flutter/material.dart';
 import '../../core/utils.dart';
-
-import 'package:flutter/material.dart';
-
 class PtpPage extends StatefulWidget {
   const PtpPage({super.key});
 

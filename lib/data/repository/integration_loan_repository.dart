@@ -12,7 +12,8 @@ class IntegrationLoanRepository extends IntegrationLoanInterface {
       String? agentId,
       String? branchId,
       String? schemeCode,
-      String? accNo) async {
+      String? accNo)
+  async {
    // final uri = Uri.parse("https://mftctest.digicob.in/getLoanCustUnderAgent");
     final uri = Uri.parse(requestUrl!);
     final data = await http.post(uri,
@@ -23,12 +24,6 @@ class IntegrationLoanRepository extends IntegrationLoanInterface {
           "acno": accNo
         }),
         headers: {'Content-Type': 'application/json'});
-    print({
-      "agent_id": agentId,
-      "branch_id": branchId,
-      "sch_code": schemeCode,
-      "acno": accNo
-    });
     print({
       "agent_id": agentId,
       "branch_id": branchId,

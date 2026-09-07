@@ -92,6 +92,7 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       );
     }
+    checkForUpdate();
   }
 
   void validateECollectToken() {
@@ -218,7 +219,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
                     const SizedBox(height: 10),
                     Text(
-                      "Version 1.0.7",
+                      "Version 1.0.8",
                       style: TextStyle(
                           color: Colors.grey, fontWeight: FontWeight.w700),
                     ),

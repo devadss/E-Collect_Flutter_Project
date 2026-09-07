@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-
 import 'package:http/http.dart' as http;
 
 import '../../../../core/utils.dart';
@@ -10,7 +9,7 @@ import '../../../../domain/model/agent_customer_details_model.dart';
 import '../../../../domain/model/customer_list_model/customer_list_fail_model.dart';
 import '../../../../domain/model/customer_list_model/customer_list_model.dart';
 import '../../../../domain/model/customer_list_model/customer_list_success.dart';
-
+import '../../../../domain/model/integrated_loan_list_model.dart';
 
 class CustomerListRepo {
   Future<CustomerListModel> fetchCustList(String baseUrl, String agentId,
@@ -72,6 +71,31 @@ class CustomerListRepo {
           AgentCustomerDetailsModel.fromJson(jsonDecode(response.body)));
     } else {
       return RdCustomerListFailModel(response.body);
+    }
+  }
+
+  Future<CustomerListModel> fetchLoanCutomerList(
+    String baseUrl,
+    String agentId,
+    String branchId,
+    String schemeCode,
+    String accNo,
+  ) async {
+    final uri = Uri.parse(baseUrl);
+    final data = await http.post(uri,
+        body: jsonEncode({
+          "agent_id": agentId,
+          "branch_id": branchId,
+          "sch_code": schemeCode,
+          "acno": accNo
+        }),
+        headers: {"Content-Type": "application/json"});
+
+    if (data.statusCode == 200) {
+      return LoanCustomerListSuccessModel(
+          IntegratedLoanListResponse.fromJson(jsonDecode(data.body)));
+    } else {
+      return LoanCustomerListFailModel(data.body);
     }
   }
 }

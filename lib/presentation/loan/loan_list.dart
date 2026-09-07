@@ -5,6 +5,7 @@ import 'package:e_Collect/domain/model/integrated_loan_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/utils.dart';
+import '../../data/customer_list_bloc/customer_list_bloc.dart';
 import 'integrated_loan_detail.dart';
 
 //THE LOAN CUSTOMER LISTING PAGE 1 OF 2....
@@ -45,24 +46,20 @@ class _LoanListState extends State<LoanList> {
         _loanDetailUrl = "https://mftctest.digicob.in/getLoanAccountHolder";
       }
     }
-      // print("LOAN LIST URL : $_loanListingUrl");
-      // print("LOAN detail URL : $_loanDetailUrl");
-
       _branchId = widget.eCollectBranchId;
       _agentId = widget.eCollectAgentID;
     fetchIntegratedLoans();
   }
 
   Future<void> fetchIntegratedLoans() async {
-    final integratedLoanProvider =
-        Provider.of<IntegratedLoanListProvider>(context, listen: false);
-    await integratedLoanProvider.fetchIntegratedLoans(
-        _loanListingUrl, _agentId, _branchId, "", "");
-    setState(() {
-      _integratedLoanListResponse =
-          integratedLoanProvider.integratedLoanListResponse;
-      _filteredList = _integratedLoanListResponse!.data;
-    });
+    context.read<CustomerListBloc>().add(LoanCustomerListFetchEvent(_loanListingUrl!, _agentId!, _branchId!, "",""));
+    //  final integratedLoanProvider = Provider.of<IntegratedLoanListProvider>(context, listen: false);
+    //  await integratedLoanProvider.fetchIntegratedLoans(_loanListingUrl, _agentId, _branchId, "", "");
+    // setState(() {
+    //   _integratedLoanListResponse =
+    //       integratedLoanProvider.integratedLoanListResponse;
+    //   _filteredList = _integratedLoanListResponse!.data;
+    // });
   }
 
   Future<void> fetchIntegratedLoanDetails(String accNo) async {
@@ -210,31 +207,104 @@ class _LoanListState extends State<LoanList> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              child: Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(30), // modern pill shape
-                ),
-                child: TextField(
-                  onChanged: filterList, // ✅ your logic unchanged
-                  style: const TextStyle(fontSize: 14),
-                  decoration: InputDecoration(
-                    hintText: "Search account number...",
-                    hintStyle: TextStyle(color: Colors.grey.shade500),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            //   child: Container(
+            //     height: 50,
+            //     decoration: BoxDecoration(
+            //       color: Colors.grey.shade100,
+            //       borderRadius: BorderRadius.circular(30), // modern pill shape
+            //     ),
+            //     child: TextField(
+            //       onChanged: filterList, // ✅ your logic unchanged
+            //       style: const TextStyle(fontSize: 14),
+            //       decoration: InputDecoration(
+            //         hintText: "Search account number...",
+            //         hintStyle: TextStyle(color: Colors.grey.shade500),
+            //
+            //         prefixIcon: Icon(Icons.search, color: Colors.grey.shade600),
+            //
+            //         border: InputBorder.none, // remove box border
+            //         contentPadding: const EdgeInsets.symmetric(
+            //             vertical: 14, horizontal: 10),
+            //       ),
+            //     ),
+            //   ),
+            // ),
 
-                    prefixIcon: Icon(Icons.search, color: Colors.grey.shade600),
+        Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+        child: Container(
+          height: 48,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: const Color(0xFFE5E8ED),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.025),
+                blurRadius: 10,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: TextField(
+            onChanged: filterList,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF20242C),
+            ),
+            cursorColor: home1,
+            decoration: InputDecoration(
+              hintText: "Search account number",
+              hintStyle: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF9AA1AE),
+              ),
 
-                    border: InputBorder.none, // remove box border
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 14, horizontal: 10),
-                  ),
+              prefixIcon: const Padding(
+                padding: EdgeInsets.only(left: 4),
+                child: Icon(
+                  Icons.search_rounded,
+                  size: 20,
+                  color: Color(0xFF737B89),
                 ),
               ),
+
+              prefixIconConstraints: const BoxConstraints(
+                minWidth: 48,
+                minHeight: 48,
+              ),
+
+              suffixIcon: IconButton(
+                onPressed: () {
+                  // Clear search if you have a controller.
+                },
+                icon: const Icon(
+                  Icons.tune_rounded,
+                  size: 19,
+                  color: Color(0xFF737B89),
+                ),
+                tooltip: "Filter",
+              ),
+
+              border: InputBorder.none,
+
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 4,
+                vertical: 14,
+              ),
             ),
-            Expanded(
+          ),
+        ),
+      ),
+
+
+    Expanded(
               child: ListView.builder(
                   itemCount: _filteredList?.length,
                   itemBuilder: (BuildContext context, int index) {
@@ -243,330 +313,622 @@ class _LoanListState extends State<LoanList> {
                         fetchIntegratedLoanDetails(
                             _filteredList![index].lnGlobalAccNo.toString());
                       },
-                      child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 5),
-                          child: Card(
-                            elevation: 1,
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24),
-                              side: BorderSide(
-                                  color: Colors.grey.shade100, width: 1),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(24),
-                              child: Material(
-                                color: Colors.white,
-                                child: InkWell(
-                                  onTap: () {
-                                    // Add tap handling if needed
-                                  },
-                                  splashColor: home1.withValues(alpha: 0.08),
-                                  highlightColor: home1.withValues(alpha: 0.04),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(18),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        /// 🔹 Header Row with Customer + Menu
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            /// Avatar + Name Section
-                                            Expanded(
-                                              child: Row(
-                                                children: [
-                                                  /// Modern Avatar
-                                                  Container(
-                                                    width: 44,
-                                                    height: 44,
-                                                    decoration: BoxDecoration(
-                                                      gradient: LinearGradient(
-                                                        begin:
-                                                            Alignment.topLeft,
-                                                        end: Alignment
-                                                            .bottomRight,
-                                                        colors: [
-                                                          home1.withValues(
-                                                              alpha: 0.15),
-                                                          home1.withValues(
-                                                              alpha: 0.05),
-                                                        ],
-                                                      ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              14),
-                                                    ),
-                                                    child: Center(
-                                                      child: _filteredList?[
-                                                                      index]
-                                                                  .custName ==
-                                                              null
-                                                          ? _buildSkeleton(
-                                                              width: 24,
-                                                              height: 24)
-                                                          : Text(
-                                                              _filteredList?[
-                                                                          index]
-                                                                      .custName
-                                                                      .substring(
-                                                                          0, 1)
-                                                                      .toUpperCase() ??
-                                                                  "?",
-                                                              style: TextStyle(
-                                                                fontSize: 20,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w700,
-                                                                color: home1,
-                                                              ),
-                                                            ),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 14),
+                      child:
 
-                                                  /// Name & Scheme
-                                                  Expanded(
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        _filteredList?[index]
-                                                                    .custName ==
-                                                                null
-                                                            ? _buildSkeleton(
-                                                                width: 140,
-                                                                height: 18)
-                                                            : Text(
-                                                                _filteredList?[
-                                                                            index]
-                                                                        .custName ??
-                                                                    "",
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w700,
-                                                                  color: Colors
-                                                                      .grey
-                                                                      .shade900,
-                                                                  height: 1.3,
-                                                                ),
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                              ),
-                                                        const SizedBox(
-                                                            height: 6),
-                                                        _filteredList?[index]
-                                                                    .schName ==
-                                                                null
-                                                            ? _buildSkeleton(
-                                                                width: 100,
-                                                                height: 12)
-                                                            : Row(
-                                                                children: [
-                                                                  Container(
-                                                                    width: 6,
-                                                                    height: 6,
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      color: Colors
-                                                                          .green
-                                                                          .shade500,
-                                                                      shape: BoxShape
-                                                                          .circle,
-                                                                    ),
-                                                                  ),
-                                                                  const SizedBox(
-                                                                      width: 6),
-                                                                  Text(
-                                                                    _filteredList?[index]
-                                                                            .schName ??
-                                                                        "",
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          10,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      color: Colors
-                                                                          .grey
-                                                                          .shade600,
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
+                    //   Padding(
+                    //   padding: const EdgeInsets.symmetric(
+                    //   horizontal: 12,
+                    //   vertical: 6,
+                    // ),
+                    // child: Container(
+                    // decoration: BoxDecoration(
+                    // color: Colors.white,
+                    // borderRadius: BorderRadius.circular(18),
+                    // border: Border.all(
+                    // color: const Color(0xFFE8EBF0),
+                    // ),
+                    // boxShadow: [
+                    // BoxShadow(
+                    // color: Colors.black.withOpacity(0.035),
+                    // blurRadius: 14,
+                    // offset: const Offset(0, 4),
+                    // ),
+                    // ],
+                    // ),
+                    // child: Material(
+                    // color: Colors.transparent,
+                    // borderRadius: BorderRadius.circular(18),
+                    // child: InkWell(
+                    // borderRadius: BorderRadius.circular(18),
+                    // splashColor: home1.withValues(alpha: 0.05),
+                    // highlightColor: home1.withValues(alpha: 0.02),
+                    // onTap: () {
+                    // fetchIntegratedLoanDetails(
+                    // _filteredList![index].lnGlobalAccNo.toString(),
+                    // );
+                    // },
+                    // child: Padding(
+                    // padding: const EdgeInsets.all(16),
+                    // child: Column(
+                    // children: [
+                    // // --------------------------------------------------
+                    // // Customer Header
+                    // // --------------------------------------------------
+                    // Row(
+                    // children: [
+                    // Container(
+                    // width: 48,
+                    // height: 48,
+                    // decoration: BoxDecoration(
+                    // color: home1.withValues(alpha: 0.08),
+                    // borderRadius: BorderRadius.circular(14),
+                    // ),
+                    // child: Center(
+                    // child: _filteredList?[index].custName == null
+                    // ? _buildSkeleton(
+                    // width: 22,
+                    // height: 22,
+                    // )
+                    //     : Text(
+                    // (_filteredList?[index].custName ?? "?")
+                    //     .substring(0, 1)
+                    //     .toUpperCase(),
+                    // style: TextStyle(
+                    // fontSize: 18,
+                    // fontWeight: FontWeight.w800,
+                    // color: home1,
+                    // ),
+                    // ),
+                    // ),
+                    // ),
+                    //
+                    // const SizedBox(width: 12),
+                    //
+                    // Expanded(
+                    // child: Column(
+                    // crossAxisAlignment: CrossAxisAlignment.start,
+                    // children: [
+                    // _filteredList?[index].custName == null
+                    // ? _buildSkeleton(
+                    // width: 140,
+                    // height: 17,
+                    // )
+                    //     : Text(
+                    // _filteredList?[index].custName ?? "",
+                    // maxLines: 1,
+                    // overflow: TextOverflow.ellipsis,
+                    // style: const TextStyle(
+                    // fontSize: 15,
+                    // fontWeight: FontWeight.w700,
+                    // color: Color(0xFF172033),
+                    // ),
+                    // ),
+                    //
+                    // const SizedBox(height: 5),
+                    //
+                    // Row(
+                    // children: [
+                    // Container(
+                    // width: 6,
+                    // height: 6,
+                    // decoration: const BoxDecoration(
+                    // color: Color(0xFF22A06B),
+                    // shape: BoxShape.circle,
+                    // ),
+                    // ),
+                    // const SizedBox(width: 6),
+                    // Flexible(
+                    // child: Text(
+                    // _filteredList?[index].schName ?? "",
+                    // maxLines: 1,
+                    // overflow: TextOverflow.ellipsis,
+                    // style: const TextStyle(
+                    // fontSize: 11,
+                    // fontWeight: FontWeight.w500,
+                    // color: Color(0xFF7B8495),
+                    // ),
+                    // ),
+                    // ),
+                    // ],
+                    // ),
+                    // ],
+                    // ),
+                    // ),
+                    //
+                    // // Active status
+                    // Container(
+                    // padding: const EdgeInsets.symmetric(
+                    // horizontal: 9,
+                    // vertical: 5,
+                    // ),
+                    // decoration: BoxDecoration(
+                    // color: const Color(0xFFEAF8F0),
+                    // borderRadius: BorderRadius.circular(20),
+                    // ),
+                    // child: const Row(
+                    // mainAxisSize: MainAxisSize.min,
+                    // children: [
+                    // Icon(
+                    // Icons.check_circle_rounded,
+                    // size: 12,
+                    // color: Color(0xFF159957),
+                    // ),
+                    // SizedBox(width: 4),
+                    // Text(
+                    // "Active",
+                    // style: TextStyle(
+                    // fontSize: 9,
+                    // fontWeight: FontWeight.w700,
+                    // color: Color(0xFF159957),
+                    // ),
+                    // ),
+                    // ],
+                    // ),
+                    // ),
+                    // ],
+                    // ),
+                    //
+                    // const SizedBox(height: 16),
+                    //
+                    // // --------------------------------------------------
+                    // // Account Information
+                    // // --------------------------------------------------
+                    // Container(
+                    // padding: const EdgeInsets.symmetric(
+                    // horizontal: 13,
+                    // vertical: 12,
+                    // ),
+                    // decoration: BoxDecoration(
+                    // color: const Color(0xFFF8F9FB),
+                    // borderRadius: BorderRadius.circular(13),
+                    // ),
+                    // child: Row(
+                    // children: [
+                    // Expanded(
+                    // child: _buildModernMetric(
+                    // label: "Customer ID",
+                    // value: _filteredList?[index].custId,
+                    // icon: Icons.person_outline_rounded,
+                    // ),
+                    // ),
+                    //
+                    // _buildMetricDivider(),
+                    //
+                    // Expanded(
+                    // child: _buildModernMetric(
+                    // label: "Account",
+                    // value: _filteredList?[index].lnGlobalAccNo,
+                    // icon: Icons.account_balance_wallet_outlined,
+                    // ),
+                    // ),
+                    //
+                    // _buildMetricDivider(),
+                    //
+                    // Expanded(
+                    // child: _buildModernMetric(
+                    // label: "Scheme",
+                    // value: _filteredList?[index].schCode,
+                    // icon: Icons.layers_outlined,
+                    // ),
+                    // ),
+                    // ],
+                    // ),
+                    // ),
+                    //
+                    // const SizedBox(height: 14),
+                    //
+                    // // --------------------------------------------------
+                    // // Actions
+                    // // --------------------------------------------------
+                    // Row(
+                    // children: [
+                    // Expanded(
+                    // child: OutlinedButton(
+                    // onPressed: () {
+                    // fetchIntegratedLoanDetails(
+                    // _filteredList![index]
+                    //     .lnGlobalAccNo
+                    //     .toString(),
+                    // );
+                    // },
+                    // style: OutlinedButton.styleFrom(
+                    // foregroundColor: const Color(0xFF4E5768),
+                    // side: const BorderSide(
+                    // color: Color(0xFFDDE1E8),
+                    // ),
+                    // shape: RoundedRectangleBorder(
+                    // borderRadius: BorderRadius.circular(11),
+                    // ),
+                    // padding: const EdgeInsets.symmetric(
+                    // vertical: 11,
+                    // ),
+                    // ),
+                    // child: const Row(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    // children: [
+                    // Icon(
+                    // Icons.visibility_outlined,
+                    // size: 17,
+                    // ),
+                    // SizedBox(width: 7),
+                    // Text(
+                    // "Details",
+                    // style: TextStyle(
+                    // fontSize: 12,
+                    // fontWeight: FontWeight.w700,
+                    // ),
+                    // ),
+                    // ],
+                    // ),
+                    // ),
+                    // ),
+                    //
+                    // const SizedBox(width: 10),
+                    //
+                    // Expanded(
+                    // flex: 1,
+                    // child: FilledButton(
+                    // onPressed: () {
+                    // fetchIntegratedLoanDetails(
+                    // _filteredList![index]
+                    //     .lnGlobalAccNo
+                    //     .toString(),
+                    // );
+                    // },
+                    // style: FilledButton.styleFrom(
+                    // backgroundColor: home1,
+                    // foregroundColor: Colors.white,
+                    // elevation: 0,
+                    // shape: RoundedRectangleBorder(
+                    // borderRadius: BorderRadius.circular(11),
+                    // ),
+                    // padding: const EdgeInsets.symmetric(
+                    // vertical: 11,
+                    // ),
+                    // ),
+                    // child: const Row(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    // children: [
+                    // Icon(
+                    // Icons.payments_outlined,
+                    // size: 17,
+                    // ),
+                    // SizedBox(width: 7),
+                    // Text(
+                    // "Collect",
+                    // style: TextStyle(
+                    // fontSize: 12,
+                    // fontWeight: FontWeight.w700,
+                    // ),
+                    // ),
+                    // ],
+                    // ),
+                    // ),
+                    // ),
+                    // ],
+                    // ),
+                    // ],
+                    // ),
+                    // ),
+                    // ),
+                    // ),
+                    // ),
+                    // )
 
-                                            /// Menu Button
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.green.shade50,
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: IconButton(
-                                                icon: Icon(
-                                                    Icons.verified_user,
-                                                    size: 20,
-                                                    color:
-                                                        Colors.green.shade700),
-                                                onPressed: () {
-                                                  // Show options menu
-                                                },
-                                                padding: EdgeInsets.zero,
-                                                constraints:
-                                                    const BoxConstraints(
-                                                        minWidth: 32,
-                                                        minHeight: 32),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
 
-                                        const SizedBox(height: 10),
+                    Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 7,
+                    ),
+                    child: Material(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    child: InkWell(
+                    borderRadius: BorderRadius.circular(20),
+                    onTap: () {
+                    fetchIntegratedLoanDetails(
+                    _filteredList![index].lnGlobalAccNo.toString(),
+                    );
+                    },
+                    splashColor: home1.withValues(alpha: 0.04),
+                    highlightColor: home1.withValues(alpha: 0.02),
+                    child: Container(
+                    padding: const EdgeInsets.all(18),
+                    decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                    color: const Color(0xFFE9ECF1),
+                    ),
+                    ),
+                    child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
 
-                                        /// 🔹 Stats Row - Modern Metrics Display
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 12),
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              begin: Alignment.topLeft,
-                                              end: Alignment.bottomRight,
-                                              colors: [
-                                                home1.withValues(alpha: 0.04),
-                                                home1.withValues(alpha: 0.02),
-                                              ],
-                                            ),
-                                            borderRadius:
-                                                BorderRadius.circular(16),
-                                            border: Border.all(
-                                                color: home1.withValues(
-                                                    alpha: 0.08)),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: _buildModernMetric(
-                                                  label: "Customer ID",
-                                                  value: _filteredList?[index]
-                                                      .custId,
-                                                  icon: Icons
-                                                      .person_outline_rounded,
-                                                ),
-                                              ),
-                                              Container(
-                                                width: 1,
-                                                height: 30,
-                                                color: Colors.grey.shade200,
-                                              ),
-                                              Expanded(
-                                                child: _buildModernMetric(
-                                                  label: "Account",
-                                                  value: _filteredList?[index]
-                                                      .lnGlobalAccNo,
-                                                  icon: Icons
-                                                      .account_balance_wallet_rounded,
-                                                ),
-                                              ),
-                                              Container(
-                                                width: 1,
-                                                height: 30,
-                                                color: Colors.grey.shade200,
-                                              ),
-                                              Expanded(
-                                                child: _buildModernMetric(
-                                                  label: "Scheme",
-                                                  value: _filteredList?[index]
-                                                      .schCode,
-                                                  icon: Icons.code_rounded,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
+                    // ------------------------------------------------------------
+                    // HEADER
+                    // ------------------------------------------------------------
+                    Row(
+                    children: [
 
-                                        const SizedBox(height: 16),
+                    // Customer avatar
+                    Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                    color: home1.withValues(alpha: 0.09),
+                    shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                    child: _filteredList?[index].custName == null
+                    ? _buildSkeleton(
+                    width: 20,
+                    height: 20,
+                    )
+                        : Text(
+                    (_filteredList?[index].custName ?? "?")
+                        .substring(0, 1)
+                        .toUpperCase(),
+                    style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: home1,
+                    ),
+                    ),
+                    ),
+                    ),
 
-                                        /// 🔹 Action Buttons Row
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: OutlinedButton.icon(
-                                                onPressed: () {
-                                                  fetchIntegratedLoanDetails(
-                                                      _filteredList![index]
-                                                          .lnGlobalAccNo
-                                                          .toString());
-                                                },
-                                                icon: Icon(
-                                                    Icons.visibility_rounded,
-                                                    size: 18,
-                                                    color: home1),
-                                                label: const Text('Details'),
-                                                style: OutlinedButton.styleFrom(
-                                                  foregroundColor: home1,
-                                                  side: BorderSide(
-                                                      color: home1.withValues(
-                                                          alpha: 0.3)),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
-                                                  ),
-                                                  padding: const EdgeInsets
-                                                      .symmetric(vertical: 10),
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 12),
-                                            Expanded(
-                                              child: FilledButton.icon(
-                                                onPressed: () {
-                                                  fetchIntegratedLoanDetails(
-                                                      _filteredList![index]
-                                                          .lnGlobalAccNo
-                                                          .toString());
-                                                },
-                                                icon: Icon(
-                                                    Icons.payments_rounded,
-                                                    size: 18),
-                                                label: const Text('Collect'),
-                                                style: FilledButton.styleFrom(
-                                                  backgroundColor: home1,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
-                                                  ),
-                                                  padding: const EdgeInsets
-                                                      .symmetric(vertical: 10),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )),
+                    const SizedBox(width: 11),
+
+                    Expanded(
+                    child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+
+                    _filteredList?[index].custName == null
+                    ? _buildSkeleton(
+                    width: 130,
+                    height: 16,
+                    )
+                        : Text(
+                    _filteredList?[index].custName ?? "",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF151922),
+                    ),
+                    ),
+
+                    const SizedBox(height: 4),
+
+                    Text(
+                    _filteredList?[index].schName ?? "",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF8A91A0),
+                    ),
+                    ),
+                    ],
+                    ),
+                    ),
+
+                    // Status
+                    Container(
+                    padding: const EdgeInsets.symmetric(
+                    horizontal: 9,
+                    vertical: 5,
+                    ),
+                    decoration: BoxDecoration(
+                    color: const Color(0xFFEAF8F1),
+                    borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                    Icon(
+                    Icons.circle,
+                    size: 6,
+                    color: Color(0xFF159957),
+                    ),
+                    SizedBox(width: 5),
+                    Text(
+                    "Active",
+                    style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF159957),
+                    ),
+                    ),
+                    ],
+                    ),
+                    ),
+                    ],
+                    ),
+
+                    const SizedBox(height: 22),
+
+                    // ------------------------------------------------------------
+                    // ACCOUNT / BALANCE HERO
+                    // ------------------------------------------------------------
+                    Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+
+                    Expanded(
+                    child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+
+                    const Text(
+                    "Loan Account",
+                    style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF8A91A0),
+                    ),
+                    ),
+
+                    const SizedBox(height: 6),
+
+                    Text(
+                    _filteredList?[index].lnGlobalAccNo ?? "—",
+                    style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.2,
+                    color: Color(0xFF171A21),
+                    ),
+                    ),
+                    ],
+                    ),
+                    ),
+
+                    // Arrow
+                    Container(
+                    width: 34,
+                    height: 34,
+                    decoration: BoxDecoration(
+                    color: const Color(0xFFF5F6F8),
+                    borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 13,
+                    color: Color(0xFF687080),
+                    ),
+                    ),
+                    ],
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    // ------------------------------------------------------------
+                    // ACCOUNT METADATA
+                    // ------------------------------------------------------------
+                    Row(
+                    children: [
+
+                    Expanded(
+                    child: _buildFintechInfo(
+                    label: "Customer ID",
+                    value: _filteredList?[index].custId,
+                    ),
+                    ),
+
+                    Expanded(
+                    child: _buildFintechInfo(
+                    label: "Scheme",
+                    value: _filteredList?[index].schCode,
+                    ),
+                    ),
+
+                    Expanded(
+                    child: _buildFintechInfo(
+                    label: "Type",
+                    value: "Loan",
+                    ),
+                    ),
+                    ],
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    // ------------------------------------------------------------
+                    // ACTIONS
+                    // ------------------------------------------------------------
+                    Row(
+                    children: [
+
+                    // Details
+                    Expanded(
+                    child: SizedBox(
+                    height: 44,
+                    child: OutlinedButton(
+                    onPressed: () {
+                    fetchIntegratedLoanDetails(
+                    _filteredList![index]
+                        .lnGlobalAccNo
+                        .toString(),
+                    );
+                    },
+                    style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFF424956),
+                    side: const BorderSide(
+                    color: Color(0xFFE1E4E9),
+                    ),
+                    shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    ),
+                    ),
+                    child: const Text(
+                    "Details",
+                    style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    ),
+                    ),
+                    ),
+                    ),
+                    ),
+
+                    const SizedBox(width: 10),
+
+                    // Primary action
+                    Expanded(
+                    flex: 2,
+                    child: SizedBox(
+                    height: 44,
+                    child: FilledButton(
+                    onPressed: () {
+                    fetchIntegratedLoanDetails(
+                    _filteredList![index]
+                        .lnGlobalAccNo
+                        .toString(),
+                    );
+                    },
+                    style: FilledButton.styleFrom(
+                    backgroundColor: home1,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    ),
+                    ),
+                    child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                    Icon(
+                    Icons.payments_outlined,
+                    size: 17,
+                    ),
+                    SizedBox(width: 7),
+                    Text(
+                    "Collect Payment",
+                    style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    ),
+                    ),
+                    ],
+                    ),
+                    ),
+                    ),
+                    ),
+                    ],
+                    ),
+                    ],
+                    ),
+                    ),
+                    ),
+                    ),
+                    )
+
+
                     );
                   }),
             )
@@ -577,55 +939,97 @@ class _LoanListState extends State<LoanList> {
   }
 }
 
-Widget _buildModernMetric({
+Widget _buildFintechInfo({
   required String label,
   required String? value,
-  required IconData icon,
 }) {
-  if (value == null) {
-    return _buildSkeleton(width: 60, height: 32);
-  }
-
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Row(
-        children: [
-          Icon(icon, size: 12, color: home1.withValues(alpha: 0.6)),
-          const SizedBox(width: 4),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w500,
-              color: Colors.grey.shade500,
-              letterSpacing: 0.5,
-            ),
-          ),
-        ],
+      Text(
+        label,
+        style: const TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w500,
+          color: Color(0xFF9299A7),
+        ),
       ),
-      const SizedBox(height: 6),
-      Container(
-        padding: EdgeInsets.all(5),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: home2.withValues(alpha: 0.03)),
-        child: Text(
-          textAlign: TextAlign.center,
-          value,
-          style: TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-            color: Colors.grey.shade900,
-            letterSpacing: 0.9,
-          ),
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
+      const SizedBox(height: 4),
+      Text(
+        value ?? "—",
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+          color: Color(0xFF303641),
         ),
       ),
     ],
   );
 }
+
+
+// Widget _buildMetricDivider() {
+//   return Container(
+//     width: 1,
+//     height: 28,
+//     margin: const EdgeInsets.symmetric(horizontal: 6),
+//     color: const Color(0xFFE1E4EA),
+//   );
+// }
+
+
+// Widget _buildModernMetric({
+//   required String label,
+//   required String? value,
+//   required IconData icon,
+// })
+// {
+//   if (value == null) {
+//     return _buildSkeleton(width: 60, height: 32);
+//   }
+//
+//   return Column(
+//     crossAxisAlignment: CrossAxisAlignment.start,
+//     children: [
+//       Row(
+//         children: [
+//           Icon(icon, size: 12, color: home1.withValues(alpha: 0.6)),
+//           const SizedBox(width: 4),
+//           Text(
+//             label,
+//             style: TextStyle(
+//               fontSize: 10,
+//               fontWeight: FontWeight.w500,
+//               color: Colors.grey.shade500,
+//               letterSpacing: 0.5,
+//             ),
+//           ),
+//         ],
+//       ),
+//       const SizedBox(height: 6),
+//       Container(
+//         padding: EdgeInsets.all(5),
+//         decoration: BoxDecoration(
+//             borderRadius: BorderRadius.circular(10),
+//             color: home2.withValues(alpha: 0.03)),
+//         child: Text(
+//           textAlign: TextAlign.center,
+//           value,
+//           style: TextStyle(
+//             fontSize: 11,
+//             fontWeight: FontWeight.w600,
+//             color: Colors.grey.shade900,
+//             letterSpacing: 0.9,
+//           ),
+//           overflow: TextOverflow.ellipsis,
+//           maxLines: 1,
+//         ),
+//       ),
+//     ],
+//   );
+// }
 
 Widget _buildSkeleton({double width = 100, double height = 12}) {
   return Container(

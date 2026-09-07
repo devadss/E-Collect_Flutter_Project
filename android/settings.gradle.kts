@@ -19,11 +19,13 @@ pluginManagement {
 
 plugins {
     id("dev.flutter.flutter-plugin-loader") version "1.0.0"
-    id("com.android.application") version "8.6.0" apply false  // More stable AGP version
+  //  id("com.android.application") version "8.6.0" apply false  // More stable AGP version
+    id("com.android.application") version "8.13.2" apply false // More stable AGP version
     // START: FlutterFire Configuration
     id("com.google.gms.google-services") version("4.4.4") apply false
     // END: FlutterFire Configuration
-    id("org.jetbrains.kotlin.android") version "2.1.0" apply false  // Compatible Kotlin version
+    id("org.jetbrains.kotlin.android") version "2.2.20" apply false
+   // id("org.jetbrains.kotlin.android") version "2.1.0" apply false  // Compatible Kotlin version
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.10.0"
 }
 

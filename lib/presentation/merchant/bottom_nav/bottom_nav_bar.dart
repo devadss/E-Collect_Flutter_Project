@@ -58,8 +58,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   // ---------------------------------------------------------------------------
 
   Future<void> getSharedData() async {
-    final integrationStatus =
-        await SharedPref.shared.getECollectMerchantIntegrationStatus();
+    final integrationStatus = await SharedPref.shared.getECollectMerchantIntegrationStatus();
     final branCode = await SharedPref.shared.getECollectMerchantBranchCode();
     final type = await SharedPref.shared.getECollectTypeList();
     final result = await Future.wait([
@@ -81,7 +80,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
       SharedPref.shared.getECollectVerifyStatus(),
       SharedPref.shared.getECollectMerchantIntegrationStatus(),
     ]);
-
     eCollectBranchID = result[0] as String;
     eCollectAgentID = result[1] as String;
     eCollectUrlList = result[2] as List<String>;
@@ -119,13 +117,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
   // ---------------------------------------------------------------------------
   List<NavItem> get navItems {
     final List<NavItem> items = [];
-    // -------------------------------------------------------------------------
-    // HOME
-    //
-    // GROUP users get GroupHomePageUI.
-    // Everyone else gets ECollectHomepage.
-    // -------------------------------------------------------------------------
-
     if (hasType(USER_TYPE_GROUP)) {
       items.add(
         NavItem(
@@ -170,11 +161,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
         ),
       );
     }
-
-    // -------------------------------------------------------------------------
-    // LOAN
-    // -------------------------------------------------------------------------
-
     if (hasType(USER_TYPE_LOAN)) {
       integrationStatus == "Y"
           ? items.add(
@@ -209,7 +195,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
                     eCollectAgentID: eCollectAgentID,
                     eCollectAgentOriginID: eCollectAgentID,
                     eCollectAgentMobNum: eCollectMerchantNumber,
-                    eCollectAgentEmail: eCollectMerchantEmail,eCollectBranchCode: eCollectBranchID,
+                    eCollectAgentEmail: eCollectMerchantEmail,
+                    eCollectBranchCode: eCollectBranchID,
                   )),
             );
     }
@@ -219,24 +206,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
     // -------------------------------------------------------------------------
 
     if (hasType(USER_TYPE_RDCL)) {
-      // items.add(
-      //   NavItem(
-      //     label: 'Due-Detail',
-      //     icon: Icons.receipt_long,
-      //     page: RdclDueDetailBlocPage(rdclDueDetailDataModel:
-      //     RdclDueDetailDataModel(eCollectBranchCode: eCollectBranchID,
-      //         eCollectMerchantName: eCollectUserName,
-      //         eCollectUserID: eCollectUserID, eCollectUserNumber: eCollectMerchantNumber,
-      //         eCollectUserEmail: eCollectMerchantEmail,
-      //         eCollectMerchantBranchCode: eCollectBranchID,
-      //         eCollectMerchantID: eCollectMerchantId,
-      //         eCollectUserType: "RDCL", eCollectTokenValue: eCollectUserToken,
-      //         eCollectUserToken: eCollectUserToken, eCollectUrlList: eCollectUrlList
-      //     ),
-      //
-      //     ),
-      //   ),
-      // );
       items.add(
         NavItem(
           label: 'Due-List',
@@ -387,73 +356,108 @@ class _BottomNavBarState extends State<BottomNavBar> {
         // -----------------------------------------------------------------------
         // CURRENT PAGE
         // -----------------------------------------------------------------------
-
         body: items[currentIndex].page,
-
         // -----------------------------------------------------------------------
         // BOTTOM NAVIGATION
         // -----------------------------------------------------------------------
-
-        bottomNavigationBar: Container(
+        bottomNavigationBar:
+        Container(
           decoration: BoxDecoration(
+            color: Colors.white,
+            border: const Border(
+              top: BorderSide(
+                color: Color(0xFFEDEDED),
+                width: 0.8,
+              ),
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 10,
-                offset: const Offset(0, -5),
+                color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 20,
+                offset: const Offset(0, -4),
               ),
             ],
           ),
-          child: BottomNavigationBar(
-            selectedItemColor: const Color(0xFFEA307B),
-            unselectedItemColor: Colors.grey.shade500,
-            backgroundColor: Colors.white,
+          child: SafeArea(
+            top: false,
+            child: SizedBox(
+              height: 68,
+              child: Row(
+                children: List.generate(
+                  items.length,
+                      (index) {
+                    final item = items[index];
+                    final isSelected = currentIndex == index;
 
-            // Required because the number of items can be greater than 3.
-            type: BottomNavigationBarType.fixed,
+                    return Expanded(
+                      child: InkWell(
+                        onTap: () {
+                          if (index < 0 || index >= items.length) return;
 
-            currentIndex: currentIndex,
+                          setState(() {
+                            currentIndex = index;
+                          });
+                        },
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.easeOut,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 8,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 5,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: isSelected
+                                      ? const Color(0xFFFFE6F0)
+                                      : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Icon(
+                                  item.icon,
+                                  size: 22,
+                                  color: isSelected
+                                      ? const Color(0xFFEA307B)
+                                      : const Color(0xFF8A8F98),
+                                ),
+                              ),
 
-            // -------------------------------------------------------------------
-            // DYNAMIC PAGE SWITCHING
-            // -------------------------------------------------------------------
+                              const SizedBox(height: 3),
 
-            onTap: (index) {
-              if (index < 0 || index >= items.length) {
-                return;
-              }
-
-              // debugPrint(
-              //   '------------------------------------------',
-              // );
-              //
-              // debugPrint(
-              //   'Selected index: $index',
-              // );
-              //
-              // debugPrint(
-              //   'Selected page: ${items[index].label}',
-              // );
-              //
-              // debugPrint(
-              //   'Available types: $type',
-              // );
-
-              setState(() {
-                currentIndex = index;
-              });
-            },
-
-            // -------------------------------------------------------------------
-            // DYNAMIC NAVIGATION ITEMS
-            // -------------------------------------------------------------------
-
-            items: items.map((item) {
-              return BottomNavigationBarItem(
-                icon: Icon(item.icon),
-                label: item.label,
-              );
-            }).toList(),
+                              AnimatedDefaultTextStyle(
+                                duration: const Duration(milliseconds: 200),
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: isSelected
+                                      ? FontWeight.w600
+                                      : FontWeight.w500,
+                                  color: isSelected
+                                      ? const Color(0xFFEA307B)
+                                      : const Color(0xFF8A8F98),
+                                ),
+                                child: Text(
+                                  item.label,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              )
+            ),
           ),
         ),
       ),

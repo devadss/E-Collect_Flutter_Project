@@ -386,158 +386,7 @@ class _PortfolioMetric extends StatelessWidget {
   }
 }
 
-// class _PortfolioSummary extends StatelessWidget {
-//   final int loanCount;
-//
-//   const _PortfolioSummary({
-//     required this.loanCount,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//         padding: const EdgeInsets.all(20),
-//         decoration: BoxDecoration(
-//           // color: const Color(0xFF111827),
-//           color: const Color(0xFF111827),
-//           borderRadius: BorderRadius.circular(18),
-//         ),
-//         child: BlocBuilder<NonIntegratedBloc, NonIntegratedState>(
-//           builder: (BuildContext context, NonIntegratedState state) {
-//             double? total = 0;
-//             double? emiTotal = 0;
-//             if (state is AllNonIntegratedLoanSuccessState) {
-//               var data = state.completeLoanListNonIntegratedSuccess
-//                   .completeLoanLisResponse.data;
-//               for (var t in data) {
-//                 total = (total! + t.outstandingAmount) as double?;
-//                 emiTotal = (emiTotal! + t.emiAmount) as double?;
-//               }
-//               return Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   Row(
-//                     children: [
-//                       Container(
-//                         width: 32,
-//                         height: 32,
-//                         decoration: BoxDecoration(
-//                           color: Colors.white.withValues(alpha: 0.10),
-//                           borderRadius: BorderRadius.circular(9),
-//                         ),
-//                         child: const Icon(
-//                           Icons.account_balance_outlined,
-//                           color: Colors.white,
-//                           size: 17,
-//                         ),
-//                       ),
-//                       const SizedBox(width: 10),
-//                       const Text(
-//                         'Loan portfolio',
-//                         style: TextStyle(
-//                           color: Color(0xFFD1D5DB),
-//                           fontSize: 13,
-//                           fontWeight: FontWeight.w500,
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                   const SizedBox(height: 18),
-//                   Text(
-//                     '₹${NumberFormat('#,##,##0', 'en_IN').format(total)}',
-//                     style: TextStyle(
-//                       color: Colors.white,
-//                       fontSize: 30,
-//                       fontWeight: FontWeight.w700,
-//                       letterSpacing: -1,
-//                     ),
-//                   ),
-//                   const SizedBox(height: 4),
-//                   const Text(
-//                     'Total outstanding',
-//                     style: TextStyle(
-//                       color: Color(0xFF9CA3AF),
-//                       fontSize: 12,
-//                     ),
-//                   ),
-//                   const SizedBox(height: 20),
-//                   Container(
-//                     height: 1,
-//                     color: Colors.white.withValues(alpha: 0.08),
-//                   ),
-//                   const SizedBox(height: 16),
-//                   Row(
-//                     children: [
-//                       Expanded(
-//                         child: _PortfolioMetric(
-//                           value: '$loanCount',
-//                           label: 'Active loans',
-//                         ),
-//                       ),
-//                       Container(
-//                         width: 1,
-//                         height: 30,
-//                         color: Colors.white.withValues(alpha: 0.08),
-//                       ),
-//                       Expanded(
-//                         child: _PortfolioMetric(
-//                           value:
-//                               '₹${NumberFormat('#,##,##0', 'en_IN').format(emiTotal)}',
-//                           label: 'Total EMI',
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ],
-//               );
-//             }
-//             return SizedBox.shrink();
-//           },
-//         ));
-//   }
-// }
-//
-// class _PortfolioMetric extends StatelessWidget {
-//   final String value;
-//   final String label;
-//
-//   const _PortfolioMetric({
-//     required this.value,
-//     required this.label,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(horizontal: 10),
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           Text(
-//             value,
-//             style: const TextStyle(
-//               color: Colors.white,
-//               fontSize: 15,
-//               fontWeight: FontWeight.w700,
-//             ),
-//           ),
-//           const SizedBox(height: 3),
-//           Text(
-//             label,
-//             style: const TextStyle(
-//               color: Color(0xFF9CA3AF),
-//               fontSize: 11,
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
 
-// ======================================================================
-// LOAN CARD
-// ======================================================================
 
 class LoanCard extends StatelessWidget {
   final LoanData loan;
@@ -879,7 +728,158 @@ class _MetricDivider extends StatelessWidget {
   }
 }
 
+// class _PortfolioSummary extends StatelessWidget {
+//   final int loanCount;
+//
+//   const _PortfolioSummary({
+//     required this.loanCount,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//         padding: const EdgeInsets.all(20),
+//         decoration: BoxDecoration(
+//           // color: const Color(0xFF111827),
+//           color: const Color(0xFF111827),
+//           borderRadius: BorderRadius.circular(18),
+//         ),
+//         child: BlocBuilder<NonIntegratedBloc, NonIntegratedState>(
+//           builder: (BuildContext context, NonIntegratedState state) {
+//             double? total = 0;
+//             double? emiTotal = 0;
+//             if (state is AllNonIntegratedLoanSuccessState) {
+//               var data = state.completeLoanListNonIntegratedSuccess
+//                   .completeLoanLisResponse.data;
+//               for (var t in data) {
+//                 total = (total! + t.outstandingAmount) as double?;
+//                 emiTotal = (emiTotal! + t.emiAmount) as double?;
+//               }
+//               return Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Row(
+//                     children: [
+//                       Container(
+//                         width: 32,
+//                         height: 32,
+//                         decoration: BoxDecoration(
+//                           color: Colors.white.withValues(alpha: 0.10),
+//                           borderRadius: BorderRadius.circular(9),
+//                         ),
+//                         child: const Icon(
+//                           Icons.account_balance_outlined,
+//                           color: Colors.white,
+//                           size: 17,
+//                         ),
+//                       ),
+//                       const SizedBox(width: 10),
+//                       const Text(
+//                         'Loan portfolio',
+//                         style: TextStyle(
+//                           color: Color(0xFFD1D5DB),
+//                           fontSize: 13,
+//                           fontWeight: FontWeight.w500,
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                   const SizedBox(height: 18),
+//                   Text(
+//                     '₹${NumberFormat('#,##,##0', 'en_IN').format(total)}',
+//                     style: TextStyle(
+//                       color: Colors.white,
+//                       fontSize: 30,
+//                       fontWeight: FontWeight.w700,
+//                       letterSpacing: -1,
+//                     ),
+//                   ),
+//                   const SizedBox(height: 4),
+//                   const Text(
+//                     'Total outstanding',
+//                     style: TextStyle(
+//                       color: Color(0xFF9CA3AF),
+//                       fontSize: 12,
+//                     ),
+//                   ),
+//                   const SizedBox(height: 20),
+//                   Container(
+//                     height: 1,
+//                     color: Colors.white.withValues(alpha: 0.08),
+//                   ),
+//                   const SizedBox(height: 16),
+//                   Row(
+//                     children: [
+//                       Expanded(
+//                         child: _PortfolioMetric(
+//                           value: '$loanCount',
+//                           label: 'Active loans',
+//                         ),
+//                       ),
+//                       Container(
+//                         width: 1,
+//                         height: 30,
+//                         color: Colors.white.withValues(alpha: 0.08),
+//                       ),
+//                       Expanded(
+//                         child: _PortfolioMetric(
+//                           value:
+//                               '₹${NumberFormat('#,##,##0', 'en_IN').format(emiTotal)}',
+//                           label: 'Total EMI',
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ],
+//               );
+//             }
+//             return SizedBox.shrink();
+//           },
+//         ));
+//   }
+// }
+//
+// class _PortfolioMetric extends StatelessWidget {
+//   final String value;
+//   final String label;
+//
+//   const _PortfolioMetric({
+//     required this.value,
+//     required this.label,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 10),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Text(
+//             value,
+//             style: const TextStyle(
+//               color: Colors.white,
+//               fontSize: 15,
+//               fontWeight: FontWeight.w700,
+//             ),
+//           ),
+//           const SizedBox(height: 3),
+//           Text(
+//             label,
+//             style: const TextStyle(
+//               color: Color(0xFF9CA3AF),
+//               fontSize: 11,
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
+// ======================================================================
+// LOAN CARD
+// ======================================================================
 /*class LoanCard extends StatelessWidget {
   final LoanData loan;
   final VoidCallback? onTap;

@@ -477,61 +477,180 @@ class _NewQrCodePageState extends State<NewQrCodePage>
   // PAYMENT HEADER
   // ===========================================================================
 
+  // Widget _buildPaymentHeader() {
+  //   return Container(
+  //     width: double.infinity,
+  //     padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
+  //     decoration: BoxDecoration(
+  //       color: Colors.grey.shade50,
+  //       borderRadius: BorderRadius.circular(24),
+  //       border: Border.all(
+  //         color: _border,
+  //       ),
+  //     ),
+  //     child: Column(
+  //       children: [
+  //         Text(
+  //           'PAYMENT REQUEST',
+  //           style: GoogleFonts.poppins(
+  //             fontSize: 10,
+  //             fontWeight: FontWeight.w700,
+  //             color: _mutedText,
+  //             letterSpacing: 1.4,
+  //           ),
+  //         ),
+  //         const SizedBox(height: 6),
+  //         Row(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           crossAxisAlignment: CrossAxisAlignment.center,
+  //           children: [
+  //             Icon(
+  //               Icons.currency_rupee_rounded,
+  //               size: 28,
+  //               color: _primary,
+  //             ),
+  //             const SizedBox(width: 3),
+  //             Flexible(
+  //               child: Text(
+  //                 widget.amount,
+  //                 overflow: TextOverflow.ellipsis,
+  //                 style: GoogleFonts.poppins(
+  //                   fontSize: 34,
+  //                   fontWeight: FontWeight.w800,
+  //                   color: _primary,
+  //                   height: 1.1,
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //         const SizedBox(height: 6),
+  //         Text(
+  //           'Scan the QR below to complete your payment',
+  //           textAlign: TextAlign.center,
+  //           style: GoogleFonts.poppins(
+  //             fontSize: 12,
+  //             color: _mutedText,
+  //             fontWeight: FontWeight.w400,
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
   Widget _buildPaymentHeader() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 18),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(24),
+        color: _surface,
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: _border,
         ),
       ),
       child: Column(
         children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  color: _primary.withValues(alpha: 0.08),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.receipt_long_rounded,
+                  size: 13,
+                  color: _primary,
+                ),
+              ),
+              const SizedBox(width: 7),
+              Text(
+                'PAYMENT REQUEST',
+                style: GoogleFonts.poppins(
+                  fontSize: 9.5,
+                  fontWeight: FontWeight.w700,
+                  color: _mutedText,
+                  letterSpacing: 1.3,
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 12),
+
           Text(
-            'PAYMENT REQUEST',
+            'Amount to pay',
             style: GoogleFonts.poppins(
-              fontSize: 10,
-              fontWeight: FontWeight.w700,
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
               color: _mutedText,
-              letterSpacing: 1.4,
             ),
           ),
-          const SizedBox(height: 6),
+
+          const SizedBox(height: 2),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
             children: [
-              Icon(
-                Icons.currency_rupee_rounded,
-                size: 28,
-                color: _primary,
+              Text(
+                '₹',
+                style: TextStyle(
+                  fontSize: 27,
+                  fontWeight: FontWeight.w700,
+                  color: _primary,
+                ),
               ),
-              const SizedBox(width: 3),
+              const SizedBox(width: 4),
               Flexible(
                 child: Text(
                   widget.amount,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.poppins(
-                    fontSize: 34,
+                    fontSize: 36,
                     fontWeight: FontWeight.w800,
-                    color: _primary,
-                    height: 1.1,
+                    color: _primaryDark,
+                    height: 1,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 6),
-          Text(
-            'Scan the QR below to complete your payment',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
-              fontSize: 12,
-              color: _mutedText,
-              fontWeight: FontWeight.w400,
+
+          const SizedBox(height: 10),
+
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 11,
+              vertical: 6,
+            ),
+            decoration: BoxDecoration(
+              color: _primary.withValues(alpha: 0.045),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.qr_code_2_rounded,
+                  size: 13,
+                  color: _primary,
+                ),
+                const SizedBox(width: 5),
+                Text(
+                  'Scan the QR below to pay',
+                  style: GoogleFonts.poppins(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: _primaryDark,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -548,59 +667,180 @@ class _NewQrCodePageState extends State<NewQrCodePage>
       scale: _qrScaleAnimation,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.fromLTRB(18, 20, 18, 20),
+        padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
         decoration: BoxDecoration(
           color: _surface,
-          borderRadius: BorderRadius.circular(28),
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: _border,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.035),
-              blurRadius: 30,
-              offset: const Offset(0, 12),
-            ),
-          ],
         ),
         child: Column(
           children: [
-            _buildQrCode(),
-            const SizedBox(height: 18),
+            // --------------------------------------------------
+            // HEADER
+            // --------------------------------------------------
+            Row(
+              children: [
+                Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(
+                    color: _primary.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(11),
+                  ),
+                  child: Icon(
+                    Icons.qr_code_2_rounded,
+                    color: _primary,
+                    size: 21,
+                  ),
+                ),
+
+                const SizedBox(width: 11),
+
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Scan to pay',
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: _primaryDark,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Ask the customer to scan this QR',
+                        style: GoogleFonts.poppins(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Live status
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _success.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      AnimatedBuilder(
+                        animation: _pulseController,
+                        builder: (context, child) {
+                          return Transform.scale(
+                            scale: 0.85 +
+                                (_pulseController.value * 0.15),
+                            child: child,
+                          );
+                        },
+                        child: Container(
+                          width: 6,
+                          height: 6,
+                          decoration: BoxDecoration(
+                            color: _success,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        'Ready',
+                        style: GoogleFonts.poppins(
+                          fontSize: 9,
+                          fontWeight: FontWeight.w700,
+                          color: _success,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 20),
+
+            // --------------------------------------------------
+            // QR CODE
+            // --------------------------------------------------
             Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: _border,
+                ),
+              ),
+              child: _buildQrCode(),
+            ),
+
+            const SizedBox(height: 18),
+
+            // --------------------------------------------------
+            // INSTRUCTION
+            // --------------------------------------------------
+            Text(
+              'Scan with any UPI app',
+              style: GoogleFonts.poppins(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: _primaryDark,
+              ),
+            ),
+
+            const SizedBox(height: 4),
+
+            Text(
+              'Keep this screen open until the payment is completed.',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                fontSize: 10.5,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey.shade600,
+                height: 1.4,
+              ),
+            ),
+
+            const SizedBox(height: 15),
+
+            // --------------------------------------------------
+            // PAYMENT STATUS
+            // --------------------------------------------------
+            Container(
+              width: double.infinity,
               padding: const EdgeInsets.symmetric(
                 horizontal: 12,
-                vertical: 7,
+                vertical: 10,
               ),
               decoration: BoxDecoration(
-                color: _primary.withValues(alpha: 0.07),
-                borderRadius: BorderRadius.circular(50),
+                color: _primary.withValues(alpha: 0.045),
+                borderRadius: BorderRadius.circular(11),
               ),
               child: Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  AnimatedBuilder(
-                    animation: _pulseController,
-                    builder: (context, child) {
-                      return Transform.scale(
-                        scale: 0.85 + (_pulseController.value * 0.15),
-                        child: child,
-                      );
-                    },
-                    child: Container(
-                      width: 7,
-                      height: 7,
-                      decoration: BoxDecoration(
-                        color: _success,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
+                  Icon(
+                    Icons.lock_outline_rounded,
+                    size: 14,
+                    color: _primary,
                   ),
-                  const SizedBox(width: 7),
+                  const SizedBox(width: 6),
                   Text(
-                    'QR ready to scan',
+                    'Secure payment',
                     style: GoogleFonts.poppins(
-                      fontSize: 11,
+                      fontSize: 10,
                       fontWeight: FontWeight.w600,
                       color: _primaryDark,
                     ),
@@ -613,6 +853,78 @@ class _NewQrCodePageState extends State<NewQrCodePage>
       ),
     );
   }
+
+
+  // Widget _buildQrSection() {
+  //   return ScaleTransition(
+  //     scale: _qrScaleAnimation,
+  //     child: Container(
+  //       width: double.infinity,
+  //       padding: const EdgeInsets.fromLTRB(18, 20, 18, 20),
+  //       decoration: BoxDecoration(
+  //         color: _surface,
+  //         borderRadius: BorderRadius.circular(28),
+  //         border: Border.all(
+  //           color: _border,
+  //         ),
+  //         boxShadow: [
+  //           BoxShadow(
+  //             color: Colors.black.withValues(alpha: 0.035),
+  //             blurRadius: 30,
+  //             offset: const Offset(0, 12),
+  //           ),
+  //         ],
+  //       ),
+  //       child: Column(
+  //         children: [
+  //           _buildQrCode(),
+  //           const SizedBox(height: 18),
+  //           Container(
+  //             padding: const EdgeInsets.symmetric(
+  //               horizontal: 12,
+  //               vertical: 7,
+  //             ),
+  //             decoration: BoxDecoration(
+  //               color: _primary.withValues(alpha: 0.07),
+  //               borderRadius: BorderRadius.circular(50),
+  //             ),
+  //             child: Row(
+  //               mainAxisSize: MainAxisSize.min,
+  //               children: [
+  //                 AnimatedBuilder(
+  //                   animation: _pulseController,
+  //                   builder: (context, child) {
+  //                     return Transform.scale(
+  //                       scale: 0.85 + (_pulseController.value * 0.15),
+  //                       child: child,
+  //                     );
+  //                   },
+  //                   child: Container(
+  //                     width: 7,
+  //                     height: 7,
+  //                     decoration: BoxDecoration(
+  //                       color: _success,
+  //                       shape: BoxShape.circle,
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 const SizedBox(width: 7),
+  //                 Text(
+  //                   'QR ready to scan',
+  //                   style: GoogleFonts.poppins(
+  //                     fontSize: 11,
+  //                     fontWeight: FontWeight.w600,
+  //                     color: _primaryDark,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildQrCode() {
     return RepaintBoundary(
@@ -942,52 +1254,110 @@ class _NewQrCodePageState extends State<NewQrCodePage>
     showDialog<void>(
       context: context,
       barrierDismissible: true,
+      barrierColor: Colors.black.withValues(alpha: 0.45),
       builder: (dialogContext) {
         return Dialog(
           backgroundColor: Colors.transparent,
           insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+          elevation: 0,
           child: Container(
-            padding: const EdgeInsets.all(22),
+            width: double.infinity,
+            padding: const EdgeInsets.fromLTRB(22, 22, 22, 20),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(24),
+              color: _surface,
+              borderRadius: BorderRadius.circular(22),
+              border: Border.all(
+                color: _border,
+              ),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                // Warning icon
                 Container(
-                  width: 58,
-                  height: 58,
+                  width: 52,
+                  height: 52,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF3E8),
+                    color: const Color(0xFFFFF6EA),
                     shape: BoxShape.circle,
+                    border: Border.all(
+                      color: const Color(0xFFFFE5C7),
+                    ),
                   ),
                   child: const Icon(
                     Icons.warning_amber_rounded,
-                    color: Colors.orange,
-                    size: 30,
+                    color: Color(0xFFE58A18),
+                    size: 27,
                   ),
                 ),
+
                 const SizedBox(height: 16),
+
                 Text(
                   'Leave payment?',
-                  style: GoogleFonts.poppins(
-                    fontSize: 19,
-                    fontWeight: FontWeight.w700,
-                    color: _text,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Your current payment session will be cancelled if you leave this screen.',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
-                    fontSize: 10,
-                    height: 1.5,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: _text,
+                    height: 1.2,
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                Text(
+                  'Leaving now will cancel the current payment session.',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: 11,
+                    height: 1.55,
+                    fontWeight: FontWeight.w400,
                     color: _mutedText,
                   ),
                 ),
-                const SizedBox(height: 22),
+
+                const SizedBox(height: 18),
+
+                // Session warning
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFFAF4),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: const Color(0xFFFFE9D0),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.info_outline_rounded,
+                        size: 16,
+                        color: Color(0xFFE58A18),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'You can stay here and continue the payment.',
+                          style: GoogleFonts.poppins(
+                            fontSize: 10,
+                            height: 1.4,
+                            fontWeight: FontWeight.w500,
+                            color: _text,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
                 Row(
                   children: [
                     Expanded(
@@ -996,25 +1366,31 @@ class _NewQrCodePageState extends State<NewQrCodePage>
                           Navigator.of(dialogContext).pop();
                         },
                         style: OutlinedButton.styleFrom(
-                          minimumSize: const Size(0, 48),
+                          minimumSize: const Size(0, 46),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                          ),
                           side: BorderSide(
                             color: _border,
                           ),
+                          backgroundColor: _surface,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(13),
                           ),
                         ),
                         child: Text(
                           'Stay',
                           style: GoogleFonts.poppins(
-                            fontSize: 13,
+                            fontSize: 12.5,
                             fontWeight: FontWeight.w600,
                             color: _text,
                           ),
                         ),
                       ),
                     ),
+
                     const SizedBox(width: 10),
+
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
@@ -1027,18 +1403,21 @@ class _NewQrCodePageState extends State<NewQrCodePage>
                           Navigator.of(context).pop();
                         },
                         style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(0, 48),
+                          minimumSize: const Size(0, 46),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                          ),
                           backgroundColor: home1,
                           foregroundColor: Colors.white,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(13),
                           ),
                         ),
                         child: Text(
                           'Leave',
                           style: GoogleFonts.poppins(
-                            fontSize: 13,
+                            fontSize: 12.5,
                             fontWeight: FontWeight.w600,
                           ),
                         ),

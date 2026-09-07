@@ -113,7 +113,6 @@
 //             ScaleTransition(
 //               scale: _animation,
 //               child: Image.asset(
-//                 "assets/images/india.png",
 //                 height: screenHeight * 0.25,
 //               ),
 //             ),
@@ -209,7 +208,7 @@
 //                               color: const Color(0xFFEA307B).withOpacity(0.1),
 //                               borderRadius: BorderRadius.circular(10),
 //                             ),
-//                             child: Image.asset("assets/images/india.png",scale: 15,)
+//                             child: Image.asset
 //                         ),
 //                         contentPadding: const EdgeInsets.
 //                         symmetric(
