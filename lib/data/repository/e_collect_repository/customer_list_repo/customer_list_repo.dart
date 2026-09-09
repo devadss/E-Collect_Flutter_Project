@@ -9,7 +9,9 @@ import '../../../../domain/model/agent_customer_details_model.dart';
 import '../../../../domain/model/customer_list_model/customer_list_fail_model.dart';
 import '../../../../domain/model/customer_list_model/customer_list_model.dart';
 import '../../../../domain/model/customer_list_model/customer_list_success.dart';
+import '../../../../domain/model/integrated_loan_detail_model.dart';
 import '../../../../domain/model/integrated_loan_list_model.dart';
+import '../../../customer_list_bloc/customer_list_bloc.dart';
 
 class CustomerListRepo {
   Future<CustomerListModel> fetchCustList(String baseUrl, String agentId,
@@ -80,7 +82,8 @@ class CustomerListRepo {
     String branchId,
     String schemeCode,
     String accNo,
-  ) async {
+  )
+  async {
     final uri = Uri.parse(baseUrl);
     final data = await http.post(uri,
         body: jsonEncode({
@@ -96,6 +99,41 @@ class CustomerListRepo {
           IntegratedLoanListResponse.fromJson(jsonDecode(data.body)));
     } else {
       return LoanCustomerListFailModel(data.body);
+    }
+  }
+
+
+  Future<CustomerListModel> fetchLoanDetailList(
+      String baseUrl,
+      String flag,
+      String branchId,
+      String schemeCode,
+      String demandDate,
+      String accountNumber,
+      ) async {
+    final uri = Uri.parse(baseUrl);
+    final data = await http.post(uri,
+        body: jsonEncode({
+          "flag": flag,
+          "branch_id": branchId,
+          "sch_code": schemeCode,
+          "demandDate": demandDate,
+          "account_no": accountNumber
+        }),
+        headers: {"Content-Type": "application/json"});
+
+    print(data.body);
+    print({
+      "flag": flag,
+      "branch_id": branchId,
+      "sch_code": schemeCode,
+      "demandDate": demandDate,
+      "account_no": accountNumber
+    });
+    if (data.statusCode == 200) {
+      return LoanDetailListSuccessModel(IntegratedLoanDetails.fromJson(jsonDecode(data.body)));
+    } else {
+      return LoanDetailListFailModel(data.body);
     }
   }
 }

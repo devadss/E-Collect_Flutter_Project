@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:location_finder/location_finder.dart';
 import '../../../core/alerts.dart';
 import '../../../core/utils.dart';
 import '../../../data/e_collect_bloc/payment_bloc/payment_bloc.dart';
@@ -13,17 +14,19 @@ import '../../merchant/history/ecollect_transaction_detail.dart';
 import '../../paymentlink_request_ui.dart';
 import '../../qr_code/widgets/generate_qr_code_page.dart';
 
-class RdDetailsModel{
+class RdDetailsModel {
   final String? custName;
   final String? accNo;
   final String? scheme;
   final String? custId;
-   RdDetailsModel({required this.custName,
-     required this.accNo, required this.scheme, required this.custId});
-
+  RdDetailsModel(
+      {required this.custName,
+      required this.accNo,
+      required this.scheme,
+      required this.custId});
 }
 
-class EcollectMerchantModel{
+class EcollectMerchantModel {
   final String? eCollectMerchantName;
   final String? eCollectUserToken;
   final String? eCollectAgentNumber;
@@ -35,17 +38,17 @@ class EcollectMerchantModel{
   final String? eCollectAgentId;
 
   EcollectMerchantModel({
-    required this.eCollectMerchantName, required this.eCollectUserToken,
-    required this.eCollectAgentNumber, required this.eCollectAgentEmail,
+    required this.eCollectMerchantName,
+    required this.eCollectUserToken,
+    required this.eCollectAgentNumber,
+    required this.eCollectAgentEmail,
     required this.eCollectCollectionType,
     required this.eCollectAgentBranchCode,
     required this.eCollectAgentMerchantID,
     required this.eCollectExternalAgentId,
     required this.eCollectAgentId,
-});
-
+  });
 }
-
 
 class AccountDetailNew extends StatefulWidget {
   final RdDetailsModel rdDetailsModel;
@@ -82,6 +85,8 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
   static const Color textSecondary = Color(0xFF6B7280);
   static const Color border = Color(0xFFE7E9EE);
   static const Color success = Color(0xFF159957);
+  String agentLocation = "Fetching location ....";
+  bool visitCompleteStatus = false;
 
   // ============================================================
   // HELPERS
@@ -103,6 +108,11 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
     return "₹${amountController.text}";
   }
 
+  @override
+  void initState() {
+    super.initState();
+    getLocation();
+  }
   // ============================================================
   // MAIN BUILD
   // ============================================================
@@ -132,29 +142,322 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildCustomerHeader(),
-
                       const SizedBox(height: 28),
-
                       _buildAmountSection(),
-
                       const SizedBox(height: 24),
-
                       _buildAccountSection(),
-
                       const SizedBox(height: 24),
-
+                      customerVisitWidget(),
+                      const SizedBox(height: 16),
                       _buildSecurityBanner(),
                     ],
                   ),
                 ),
               ),
-
               _buildBottomCTA(),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Column customerVisitWidget() {
+    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Section Header
+                        const Text(
+                          'Customer Visit',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF111827),
+                            letterSpacing: -0.2,
+                          ),
+                        ),
+
+                        const SizedBox(height: 4),
+
+                        Text(
+                          'Verify the customer visit before completing.',
+                          style: TextStyle(
+                            fontSize: 12.5,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+
+                        const SizedBox(height: 18),
+
+                        // Customer Mobile
+                        Text(
+                          'CUSTOMER MOBILE NUMBER',
+                          style: TextStyle(
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.grey.shade600,
+                            letterSpacing: 0.7,
+                          ),
+                        ),
+
+                        const SizedBox(height: 8),
+
+                        TextField(
+                          keyboardType: TextInputType.phone,
+                          decoration: InputDecoration(
+                            hintText: 'Enter mobile number',
+                            hintStyle: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey.shade400,
+                            ),
+                            prefixIcon: Icon(
+                              Icons.phone_outlined,
+                              size: 20,
+                              color: Colors.grey.shade600,
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 15,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade200,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade200,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(
+                                color: Color(0xFF1B8A5A),
+                                width: 1.3,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        // Visit Verification
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: Colors.grey.shade200,
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  // Location Icon
+                                  Container(
+                                    width: 42,
+                                    height: 42,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFF0FDF4),
+                                      borderRadius: BorderRadius.circular(11),
+                                    ),
+                                    child: const Icon(
+                                      Icons.location_on_outlined,
+                                      size: 21,
+                                      color: Color(0xFF168A57),
+                                    ),
+                                  ),
+
+                                  const SizedBox(width: 12),
+
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          'Visit location',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: Color(0xFF111827),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 3),
+                                        Text(
+                                          'GPS location captured',
+                                          style: TextStyle(
+                                            fontSize: 11.5,
+                                            color: Colors.grey.shade500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  // Status
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 9,
+                                      vertical: 5,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: visitCompleteStatus
+                                          ? const Color(0xFFF0FDF4)
+                                          : const Color(0xFFFFF7ED),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          visitCompleteStatus
+                                              ? Icons.check_circle
+                                              : Icons.schedule,
+                                          size: 13,
+                                          color: visitCompleteStatus
+                                              ? const Color(0xFF168A57)
+                                              : const Color(0xFFEA8A15),
+                                        ),
+                                        const SizedBox(width: 5),
+                                        Text(
+                                          visitCompleteStatus
+                                              ? 'Verified'
+                                              : 'Pending',
+                                          style: TextStyle(
+                                            fontSize: 10.5,
+                                            fontWeight: FontWeight.w700,
+                                            color: visitCompleteStatus
+                                                ? const Color(0xFF168A57)
+                                                : const Color(0xFFB96B08),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              const SizedBox(height: 14),
+
+                              // Location Details
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(11),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF8FAFC),
+                                  borderRadius: BorderRadius.circular(9),
+                                ),
+                                child: Row(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    Icon(
+                                      Icons.my_location_outlined,
+                                      size: 15,
+                                      color: Colors.grey.shade500,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        agentLocation.toString().isEmpty
+                                            ? 'Please wait, location is being fetched...'
+                                            : agentLocation.toString(),
+                                        style: TextStyle(
+                                          fontSize: 11.5,
+                                          height: 1.35,
+                                          color: Colors.grey.shade700,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(height: 12),
+
+                        // Information Note
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.info_outline,
+                              size: 15,
+                              color: Colors.grey.shade500,
+                            ),
+                            const SizedBox(width: 7),
+                            Expanded(
+                              child: Text(
+                                'Your current location will be securely recorded '
+                                'as proof of the customer visit.',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  height: 1.4,
+                                  color: Colors.grey.shade500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        // Complete Visit Button
+                        SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                visitCompleteStatus = true;
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              backgroundColor: visitCompleteStatus
+                                  ? const Color(0xFF168A57)
+                                  : const Color(0xFF111827),
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(11),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  visitCompleteStatus
+                                      ? Icons.check_circle_outline
+                                      : Icons.arrow_forward_rounded,
+                                  size: 19,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  visitCompleteStatus
+                                      ? 'Visit Completed'
+                                      : 'Complete Visit',
+                                  style: const TextStyle(
+                                    fontSize: 13.5,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
   }
 
   // ============================================================
@@ -203,9 +506,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
             color: textSecondary,
           ),
         ),
-
         const SizedBox(height: 10),
-
         Row(
           children: [
             Container(
@@ -226,9 +527,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                 ),
               ),
             ),
-
             const SizedBox(width: 13),
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -237,15 +536,13 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                     customerName,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style:  TextStyle(
+                    style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                       color: textPrimary,
                     ),
                   ),
-
                   const SizedBox(height: 4),
-
                   Row(
                     children: [
                       Text(
@@ -256,9 +553,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-
                       const SizedBox(width: 7),
-
                       Container(
                         width: 4,
                         height: 4,
@@ -267,9 +562,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                           shape: BoxShape.circle,
                         ),
                       ),
-
                       const SizedBox(width: 7),
-
                       Text(
                         maskedAccount,
                         style: TextStyle(
@@ -283,7 +576,6 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                 ],
               ),
             ),
-
             Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: 9,
@@ -344,9 +636,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
               color: textSecondary,
             ),
           ),
-
           const SizedBox(height: 16),
-
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -358,9 +648,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                   color: textSecondary,
                 ),
               ),
-
               const SizedBox(width: 6),
-
               Expanded(
                 child: TextField(
                   controller: amountController,
@@ -390,9 +678,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
               ),
             ],
           ),
-
           const SizedBox(height: 10),
-
           const Text(
             "Enter the amount you want to collect from this customer.",
             style: TextStyle(
@@ -423,9 +709,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
             color: textSecondary,
           ),
         ),
-
         const SizedBox(height: 10),
-
         Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -457,13 +741,11 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                   ),
                 ),
               ),
-
               const Divider(
                 height: 1,
                 indent: 60,
                 endIndent: 16,
               ),
-
               _accountRow(
                 icon: Icons.description_outlined,
                 title: "Scheme",
@@ -520,9 +802,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
               color: textSecondary,
             ),
           ),
-
           const SizedBox(width: 12),
-
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -535,9 +815,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-
                 const SizedBox(height: 4),
-
                 Text(
                   value.isEmpty ? "-" : value,
                   maxLines: 1,
@@ -551,7 +829,6 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
               ],
             ),
           ),
-
           if (trailing != null) trailing,
         ],
       ),
@@ -585,9 +862,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
               size: 19,
             ),
           ),
-
           const SizedBox(width: 11),
-
           const Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -726,9 +1001,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-
                 const SizedBox(height: 22),
-
                 Row(
                   children: [
                     const Expanded(
@@ -747,9 +1020,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 4),
-
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -760,9 +1031,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 20),
-
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(
@@ -794,9 +1063,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 18),
-
                 _paymentMethodTile(
                   icon: Icons.qr_code_2_rounded,
                   title: "QR Code",
@@ -804,12 +1071,11 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                   onTap: () {
                     Navigator.pop(context);
                     selectedMethod = "QR";
+
                     _createQrPayment();
                   },
                 ),
-
                 const SizedBox(height: 10),
-
                 _paymentMethodTile(
                   icon: Icons.link_rounded,
                   title: "Payment Link",
@@ -820,9 +1086,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                     _createLinkPayment();
                   },
                 ),
-
                 const SizedBox(height: 10),
-
                 _paymentMethodTile(
                   icon: Icons.payments_outlined,
                   title: "Cash",
@@ -832,9 +1096,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                     _showCashConfirmation();
                   },
                 ),
-
                 const SizedBox(height: 14),
-
                 TextButton(
                   onPressed: () => Navigator.pop(context),
                   child: const Text(
@@ -851,6 +1113,22 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
         );
       },
     );
+  }
+
+  Future<void> getLocation() async {
+    final LocationDetails? details = await LocationFinder.init();
+
+    if (details != null) {
+      print('Location: ${details.toString()}');
+      setState(() {
+        agentLocation = details.address.toString();
+      });
+
+      // Use the fields available on LocationDetails
+      print(details);
+    } else {
+      print('Could not fetch location or permission denied.');
+    }
   }
 
   Widget _paymentMethodTile({
@@ -885,9 +1163,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                   size: 23,
                 ),
               ),
-
               const SizedBox(width: 13),
-
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -911,7 +1187,6 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                   ],
                 ),
               ),
-
               const Icon(
                 Icons.chevron_right_rounded,
                 color: Color(0xFF9CA3AF),
@@ -929,59 +1204,51 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
 
   void _createQrPayment() {
     context.read<PaymentBloc>().add(
-      QrPaymentEvent(
-        _buildPaymentRequest(),
-        widget.ecollectMerchantModel.eCollectUserToken!,
-      ),
-    );
+          QrPaymentEvent(
+            _buildPaymentRequest(),
+            widget.ecollectMerchantModel.eCollectUserToken!,
+          ),
+        );
   }
 
   void _createLinkPayment() {
     context.read<PaymentBloc>().add(
-      LinkPaymentEvent(
-        _buildPaymentRequest(),
-        widget.ecollectMerchantModel.eCollectUserToken!,
-      ),
-    );
+          LinkPaymentEvent(
+            _buildPaymentRequest(),
+            widget.ecollectMerchantModel.eCollectUserToken!,
+          ),
+        );
   }
 
   void _createCashPayment() {
     context.read<PaymentBloc>().add(
-      CashPaymentEvent(
-        _buildPaymentRequest(),
-        widget.ecollectMerchantModel.eCollectUserToken!,
-      ),
-    );
+          CashPaymentEvent(
+            _buildPaymentRequest(),
+            widget.ecollectMerchantModel.eCollectUserToken!,
+          ),
+        );
   }
 
   QrPaymentRequestModel _buildPaymentRequest() {
     return QrPaymentRequestModel(
       agentDetails: AgentDetails(
-        agentName:
-        widget.ecollectMerchantModel.eCollectMerchantName!,
-        agentId:
-        widget.ecollectMerchantModel.eCollectAgentId!,
-        agentOrginId:
-        widget.ecollectMerchantModel.eCollectExternalAgentId!,
-        agentPhone:
-        widget.ecollectMerchantModel.eCollectAgentNumber!,
-        agentEmail:
-        widget.ecollectMerchantModel.eCollectAgentEmail!,
+        agentName: widget.ecollectMerchantModel.eCollectMerchantName!,
+        agentId: widget.ecollectMerchantModel.eCollectAgentId!,
+        agentOrginId: widget.ecollectMerchantModel.eCollectExternalAgentId!,
+        agentPhone: widget.ecollectMerchantModel.eCollectAgentNumber!,
+        agentEmail: widget.ecollectMerchantModel.eCollectAgentEmail!,
         agentBranch: int.parse(
           widget.ecollectMerchantModel.eCollectAgentBranchCode!,
         ),
       ),
       customerDetails: CustomerDetails(
         customerName: widget.rdDetailsModel.custName!,
-        customerPhone:
-        widget.ecollectMerchantModel.eCollectAgentNumber!,
+        customerPhone: widget.ecollectMerchantModel.eCollectAgentNumber!,
         customerAccno: widget.rdDetailsModel.accNo!,
         customerId: widget.rdDetailsModel.custId!,
-        customerEmail:
-        widget.ecollectMerchantModel.eCollectAgentEmail!,
+        customerEmail: widget.ecollectMerchantModel.eCollectAgentEmail!,
       ),
-      collectionType:
-      widget.ecollectMerchantModel.eCollectCollectionType!,
+      collectionType: widget.ecollectMerchantModel.eCollectCollectionType!,
       amount: double.parse(amountController.text),
       note: 'Payment for Order',
       qrSource: 'MOB',
@@ -1049,16 +1316,15 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
   // ============================================================
 
   void _handlePaymentState(
-      BuildContext context,
-      PaymentState state,
-      ) {
+    BuildContext context,
+    PaymentState state,
+  ) {
     if (state is QrPaymentLoaderState) {
       showProgressDialog(context);
     }
 
     if (state is QrPaymentSuccessState) {
-      paymentOrderID =
-          state.qrPaymentSuccess.paymentResponseSuccess.orderId;
+      paymentOrderID = state.qrPaymentSuccess.paymentResponseSuccess.orderId;
 
       Navigator.pop(context);
 
@@ -1086,12 +1352,8 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
               custPhone: "",
               custId: widget.rdDetailsModel.custId!,
               orderID: paymentOrderID!,
-              merchantID: widget
-                  .ecollectMerchantModel
-                  .eCollectAgentMerchantID!,
-              token: widget
-                  .ecollectMerchantModel
-                  .eCollectUserToken!,
+              merchantID: widget.ecollectMerchantModel.eCollectAgentMerchantID!,
+              token: widget.ecollectMerchantModel.eCollectUserToken!,
             ),
           ),
         );
@@ -1108,10 +1370,8 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
     }
 
     if (state is CashPaymentSuccessState) {
-      paymentOrderID = state
-          .cashPaymentSuccess
-          .cashPaymentSuccessResponse
-          .transactionId;
+      paymentOrderID =
+          state.cashPaymentSuccess.cashPaymentSuccessResponse.transactionId;
 
       Navigator.pop(context);
 
@@ -1131,12 +1391,11 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
   // ============================================================
 
   void _handleTransactionState(
-      BuildContext context,
-      TransactionState state,
-      ) {
+    BuildContext context,
+    TransactionState state,
+  ) {
     if (state is TransactionReportSuccessState) {
-      final rawData =
-          state.transactionSuccessModel.transactionOkReport.data;
+      final rawData = state.transactionSuccessModel.transactionOkReport.data;
 
       for (final order in rawData) {
         if (order.paymentGatewayTransactionId.contains(
@@ -1151,7 +1410,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                   orderId: order.orderId,
                   transactionId: order.transactionId,
                   paymentGatewayTransactionId:
-                  order.paymentGatewayTransactionId,
+                      order.paymentGatewayTransactionId,
                   amount: order.amount,
                   currency: order.currency,
                   description: order.description,
@@ -1183,9 +1442,9 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
   // ============================================================
 
   void _showSuccessMessage(
-      String? message,
-      String orderId,
-      ) {
+    String? message,
+    String orderId,
+  ) {
     if (!mounted) return;
 
     showDialog<void>(
@@ -1214,9 +1473,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                     size: 38,
                   ),
                 ),
-
                 const SizedBox(height: 18),
-
                 const Text(
                   "Payment successful",
                   style: TextStyle(
@@ -1225,12 +1482,9 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                     color: textPrimary,
                   ),
                 ),
-
                 const SizedBox(height: 8),
-
                 Text(
-                  message ??
-                      "The payment has been recorded successfully.",
+                  message ?? "The payment has been recorded successfully.",
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 13,
@@ -1238,9 +1492,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                     height: 1.45,
                   ),
                 ),
-
                 const SizedBox(height: 22),
-
                 Container(
                   padding: const EdgeInsets.all(15),
                   decoration: BoxDecoration(
@@ -1266,9 +1518,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 22),
-
                 SizedBox(
                   width: double.infinity,
                   height: 48,
@@ -1299,9 +1549,9 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
   }
 
   Widget _successRow(
-      String title,
-      String value,
-      ) {
+    String title,
+    String value,
+  ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1359,7 +1609,7 @@ class _AccountDetailNewState extends State<AccountDetailNew> {
     }
 
     return "${parts.first.substring(0, 1)}"
-        "${parts.last.substring(0, 1)}"
+            "${parts.last.substring(0, 1)}"
         .toUpperCase();
   }
 

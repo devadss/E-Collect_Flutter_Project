@@ -54,3 +54,18 @@ class LoanCustomerListFailState extends CustomerListState{
   final LoanCustomerListFailModel loanCustomerListFailModel;
   const LoanCustomerListFailState(this.loanCustomerListFailModel);
 }
+
+//-------------------------LOAN_DETAIL-----------------------------------
+class LoanDetailListLoaderState extends CustomerListState{
+  const LoanDetailListLoaderState();
+}
+
+class LoanDetailListSuccessState extends CustomerListState{
+  final LoanDetailListSuccessModel loanDetailListSuccessModel;
+  const LoanDetailListSuccessState(this.loanDetailListSuccessModel);
+}
+
+class LoanDetailListFailState extends CustomerListState{
+  final LoanDetailListFailModel loanDetailListFailModel;
+  const LoanDetailListFailState(this.loanDetailListFailModel);
+}

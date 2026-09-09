@@ -5,6 +5,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:location_finder/location_finder.dart';
 import '../../data/e_collect_bloc/transaction_bloc/transaction_bloc.dart';
 
 class ECollectHomepage extends StatefulWidget {
@@ -116,6 +117,7 @@ class ECollectHomepageState extends State<ECollectHomepage> {
   void initState() {
     super.initState();
     getSharedData();
+
   }
 
   // ============================================================

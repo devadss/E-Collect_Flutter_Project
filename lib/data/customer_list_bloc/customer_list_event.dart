@@ -36,3 +36,15 @@ class LoanCustomerListFetchEvent extends CustomerListEvent{
   final String accNo;
   const LoanCustomerListFetchEvent(this.baseUrl,this.agentId, this.branchId, this.schemeCode, this.accNo);
 }
+//--------------------------LOAN_DETAIL----------------------------------------------
+
+class LoanDetailListFetchEvent extends CustomerListEvent{
+  final String requestUrl;
+      final String flag;
+  final String branchId;
+      final String schemeCode;
+  final String demandDate;
+      final String accountNumber;
+  const LoanDetailListFetchEvent(this.requestUrl,this.flag, this.branchId, this.schemeCode, this.demandDate, this.accountNumber);
+}
+

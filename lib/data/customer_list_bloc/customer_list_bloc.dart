@@ -80,6 +80,7 @@ class CustomerListBloc extends Bloc<CustomerListEvent, CustomerListState> {
     });
 
     on<LoanCustomerListFetchEvent>((event, emit) async {
+      emit(LoanCustomerListLoaderState());
       var data = await customerListRepo.fetchLoanCutomerList(event.baseUrl,
           event.agentId, event.branchId, event.schemeCode, event.accNo);
 
@@ -87,6 +88,16 @@ class CustomerListBloc extends Bloc<CustomerListEvent, CustomerListState> {
         emit(LoanCustomerListSuccessState(data));
       } else if (data is LoanCustomerListFailModel) {
         emit(LoanCustomerListFailState(data));
+      }
+    });
+
+    on<LoanDetailListFetchEvent>((event, emit) async {
+      emit(LoanDetailListLoaderState());
+      var data = await customerListRepo.fetchLoanDetailList(event.requestUrl, event.flag, event.branchId, event.schemeCode, event.demandDate, event.accountNumber);
+      if (data is LoanDetailListSuccessModel) {
+        emit(LoanDetailListSuccessState(data));
+      } else if (data is LoanDetailListFailModel) {
+        emit(LoanDetailListFailState(data));
       }
     });
   }

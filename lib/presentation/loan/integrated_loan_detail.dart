@@ -2,6 +2,7 @@ import 'package:e_Collect/core/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:location_finder/location_finder.dart';
 import 'package:palette_generator_master/palette_generator_master.dart';
 import '../../core/alerts.dart';
 import '../../core/utils.dart' as utl;
@@ -100,7 +101,8 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
   String? paymentSessionId;
   String selectedMethod = "";
   String? paymentOrderID;
-
+  String agentLocation = "Fetching location ....";
+  bool visitCompleteStatus = false;
   final TextEditingController editAmountController =
   TextEditingController();
 
@@ -113,12 +115,28 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
     final amount = double.tryParse(value.replaceAll(',', '')) ?? 0;
     return NumberFormat('#,##,##0.##', 'en_IN').format(amount);
   }
+  Future<void> getLocation() async {
+    final LocationDetails? details = await LocationFinder.init();
+
+    if (details != null) {
+      print('Location: ${details.toString()}');
+      setState(() {
+        agentLocation = details.address.toString();
+      });
+
+      // Use the fields available on LocationDetails
+      print(details);
+    } else {
+      showToast(message: "Could not fetch location or permission denied.", color: orange);
+      print('Could not fetch location or permission denied.');
+    }
+  }
   @override
   void initState() {
     super.initState();
 
     editAmountController.addListener(validateInput);
-
+    getLocation();
     resetCollectionAmount();
 
     //createColorPallet("assets/images/person.png");
@@ -446,7 +464,8 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
 
                 // LOAN INFORMATION
                 _buildLoanInformation(),
-
+                const SizedBox(height: 12),
+                customerVisitWidget(),
                 const SizedBox(height: 26),
 
                 // COLLECTION TITLE
@@ -522,7 +541,303 @@ class _IntegratedLoanDetailState extends State<IntegratedLoanDetail> {
       ),
     );
   }
+  Column customerVisitWidget() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Section Header
+        const Text(
+          'Customer Visit',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF111827),
+            letterSpacing: -0.2,
+          ),
+        ),
 
+        const SizedBox(height: 4),
+
+        Text(
+          'Verify the customer visit before completing.',
+          style: TextStyle(
+            fontSize: 12.5,
+            color: Colors.grey.shade600,
+          ),
+        ),
+
+        const SizedBox(height: 18),
+
+        // Customer Mobile
+        Text(
+          'CUSTOMER MOBILE NUMBER',
+          style: TextStyle(
+            fontSize: 10.5,
+            fontWeight: FontWeight.w700,
+            color: Colors.grey.shade600,
+            letterSpacing: 0.7,
+          ),
+        ),
+
+        const SizedBox(height: 8),
+
+        TextField(
+          keyboardType: TextInputType.phone,
+          decoration: InputDecoration(
+            hintText: 'Enter mobile number',
+            hintStyle: TextStyle(
+              fontSize: 14,
+              color: Colors.grey.shade400,
+            ),
+            prefixIcon: Icon(
+              Icons.phone_outlined,
+              size: 20,
+              color: Colors.grey.shade600,
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 15,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: Colors.grey.shade200,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: Colors.grey.shade200,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(
+                color: Color(0xFF1B8A5A),
+                width: 1.3,
+              ),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        // Visit Verification
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: Colors.grey.shade200,
+            ),
+          ),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  // Location Icon
+                  Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF0FDF4),
+                      borderRadius: BorderRadius.circular(11),
+                    ),
+                    child: const Icon(
+                      Icons.location_on_outlined,
+                      size: 21,
+                      color: Color(0xFF168A57),
+                    ),
+                  ),
+
+                  const SizedBox(width: 12),
+
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Visit location',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF111827),
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          'GPS location captured',
+                          style: TextStyle(
+                            fontSize: 11.5,
+                            color: Colors.grey.shade500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Status
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 9,
+                      vertical: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: visitCompleteStatus
+                          ? const Color(0xFFF0FDF4)
+                          : const Color(0xFFFFF7ED),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          visitCompleteStatus
+                              ? Icons.check_circle
+                              : Icons.schedule,
+                          size: 13,
+                          color: visitCompleteStatus
+                              ? const Color(0xFF168A57)
+                              : const Color(0xFFEA8A15),
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          visitCompleteStatus
+                              ? 'Verified'
+                              : 'Pending',
+                          style: TextStyle(
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w700,
+                            color: visitCompleteStatus
+                                ? const Color(0xFF168A57)
+                                : const Color(0xFFB96B08),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 14),
+
+              // Location Details
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(11),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF8FAFC),
+                  borderRadius: BorderRadius.circular(9),
+                ),
+                child: Row(
+                  crossAxisAlignment:
+                  CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.my_location_outlined,
+                      size: 15,
+                      color: Colors.grey.shade500,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        agentLocation.toString().isEmpty
+                            ? 'Please wait, location is being fetched...'
+                            : agentLocation.toString(),
+                        style: TextStyle(
+                          fontSize: 11.5,
+                          height: 1.35,
+                          color: Colors.grey.shade700,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 12),
+
+        // Information Note
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.info_outline,
+              size: 15,
+              color: Colors.grey.shade500,
+            ),
+            const SizedBox(width: 7),
+            Expanded(
+              child: Text(
+                'Your current location will be securely recorded '
+                    'as proof of the customer visit.',
+                style: TextStyle(
+                  fontSize: 11,
+                  height: 1.4,
+                  color: Colors.grey.shade500,
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 20),
+
+        // Complete Visit Button
+        SizedBox(
+          width: double.infinity,
+          height: 50,
+          child: ElevatedButton(
+            onPressed: () {
+              setState(() {
+                visitCompleteStatus = true;
+              });
+            },
+            style: ElevatedButton.styleFrom(
+              elevation: 0,
+              backgroundColor: visitCompleteStatus
+                  ? const Color(0xFF168A57)
+                  : const Color(0xFF111827),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(11),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  visitCompleteStatus
+                      ? Icons.check_circle_outline
+                      : Icons.arrow_forward_rounded,
+                  size: 19,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  visitCompleteStatus
+                      ? 'Visit Completed'
+                      : 'Complete Visit',
+                  style: const TextStyle(
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
   // ============================================================
   // CUSTOMER HEADER
   // ============================================================

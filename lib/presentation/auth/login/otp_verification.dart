@@ -473,7 +473,7 @@ class _OtpRequestVerificationPageState
                             EventMobOtpVerification(
                               widget.mobileNumber,
                               widget.userId,
-                              "123456",
+                              extractOtp(_controllers).toString(),
                             ),
                           );
                         } else {

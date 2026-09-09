@@ -1,4 +1,5 @@
 import '../agent_customer_details_model.dart';
+import '../integrated_loan_detail_model.dart';
 import '../integrated_loan_list_model.dart';
 import 'customer_list_fail_model.dart';
 import 'customer_list_success.dart';
@@ -37,3 +38,14 @@ class LoanCustomerListFailModel extends CustomerListModel{
   const LoanCustomerListFailModel(this.rdCustomerListFailError);
 }
 //---------------------------------------------------------------
+
+//---------------------------LOAN_DETAIL----------------------------------
+class LoanDetailListSuccessModel extends CustomerListModel{
+  final IntegratedLoanDetails loanDetailListSuccessModel;
+  const LoanDetailListSuccessModel(this.loanDetailListSuccessModel);
+}
+
+class LoanDetailListFailModel extends CustomerListModel{
+  final String loanDetailListFailError;
+  const LoanDetailListFailModel(this.loanDetailListFailError);
+}
